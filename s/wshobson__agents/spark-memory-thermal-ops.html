@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spark-memory-thermal-ops｜Skill 寫法圖鑑</title>
+<meta name="description" content="管理 DGX Spark 統一記憶體和散熱，處理長時間訓練 OOM 與降頻">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>spark-memory-thermal-ops</h1>
+<p class="meta">wshobson ｜ 雲端與基礎設施 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/dgx-spark-ops/skills/spark-memory-thermal-ops/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">管理 DGX Spark 統一記憶體和散熱，處理長時間訓練 OOM 與降頻</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: spark-memory-thermal-ops
+description: 在 NVIDIA DGX Spark 上跑長時間 ML 任務時，管理統一記憶體和散熱。在規劃 GB10 上訓練執行的記憶體餘裕、任務在統一記憶體上 OOM，或監控數小時訓練期間的溫度和功耗時使用。
+---
+
+# Spark Memory &amp; Thermal Ops
+
+DGX Spark 的 GB10 晶片只有一個 128GB 的統一記憶體（UMA）池，由 CPU 和 GPU 共用，而且持續功耗的上限遠低於它的額定值。這兩點都打破了獨立 GPU 的假設：餘裕不是 `nvidia-smi` 回報的那樣，而且一個一開始很快的任務，會在執行到一半時變慢，卻沒有任何東西設定錯誤。這個 skill 涵蓋規劃記憶體餘裕、處理真正發生的 OOM，以及在長時間任務中監看散熱。啟動時的失敗模式（ABI 不匹配、flash-attn、playbook 損壞），請看 `spark-training-gotchas`，這個 skill 假設任務已經成功啟動。
+
+## Common Issues Quick Reference
+
+| Situation | Do this |
+|---|---|
+| Planning headroom before launch | Budget against `free -g`, not `nvidia-smi` — see UMA Memory Model |
+| Job OOMs on unified memory | Work the OOM Ladder in order: flush, then batch/pack, then method downgrade |
+| Throughput drops mid-run | Check the power/temp log before assuming a config bug — see Thermal Monitoring |
+| Trainer + inference server both wanted | Run one at a time — see Concurrent Workloads |
+
+## When to Use This Skill
+
+- 在啟動前，對照 128GB 的記憶體池估算訓練執行的大小：這個模型、方法，加上 batch/packing 的組合放不放得下。
+- 執行在載入中途或某個 step 中途 OOM，而處理的順序很重要：第一步、第二步、第三步該試什麼。
+- 在數小時的任務期間監看溫度和功耗，判斷變慢是散熱降頻，還是別的原因。
+- 打算在同一台機器上，同時跑 trainer 和推論伺服器（vLLM、Ollama）。
+
+## UMA Memory Model
+
+Spark 沒有獨立的 GPU VRAM，GPU 和 CPU 共用同一個 128GB 的記憶體池。這帶來兩個結果：
+
+- **`nvidia-smi` 和 `cudaMemGetInfo` 會低估壓力，甚至什麼都不回報。** 兩者回報的都是 CUDA allocator 看得到的記憶體，不是記憶體池實際的狀態。一台機器可以在 `nvidia-smi` 裡顯示還有餘裕，卻照樣 OOM，因為 page cache 和 allocator 看不到的 mmap 頁面，消耗的是同一個記憶體池。在某些 driver/環境下，記憶體查詢會直接回傳 `[N/A], [N/A]` 而不是數字，腳本如果去 grep 數值，什麼都拿不到，而不是一個會誤導人的低估值（見 `spark-training-gotchas` 的 gotcha G3）。
+
+- **模型載入是暫時的尖峰，不是穩定狀態。** 載入 safetensors 權重時，會先 mmap 這個檔案，再複製進 CUDA tensor。在載入期間的一段時間內，mmap 的頁面和 CUDA 的副本會同時算在記憶體池裡。如果餘裕是依載入後的用量來估，而不是這個加倍的暫時尖峰，一個訓練時放得下的模型，還是可能在載入時 OOM。
+
+規劃和診斷要用 `free -g`，不要用 `nvidia-smi`：
+
+```bash
+free -g | awk &#x27;NR==2 {print &quot;free:&quot;, $4, &quot;GB&quot;}&#x27;
+```
+
+經驗法則：取那個 free 的數字，扣掉幾 GB 給 OS/driver 的開銷，然後對照結果來抓預算，不要對照 128GB 的規格數字。`references/uma-accounting.md` 裡的試算表接受參數量、dtype 和方法當輸入，回傳一個記憶體估算值，用來對照已知的基準點。
+
+### Planning Sequence
+
+啟動前，依序處理這些：
+
+1. 讀取 `free -g`；扣掉 OS/driver 的開銷，得出預算。
+2. 從 `references/uma-accounting.md` 估算權重 + optimizer + 梯度 + activation。
+3. 對照最接近的基準點（70B QLoRA、27B LoRA、9B 全量微調），不要只看估算值。
+4. 如果估算值很接近預算，一開始就用比較短的 packing 或比較小的 batch，這比在執行到一半撞上 OOM Ladder 便宜。
+
+### Example: Sizing a 70B QLoRA Run
+
+用試算表的公式，對照 ≈40GB 的基準點做健全性檢查：
+
+```python
+params = 70e9
+weights_gb = params * 0.5 / 1e9      # NF4, step 1
+adapter_gb = 0.5                     # step 5, negligible
+total_gb = weights_gb + adapter_gb   # + activations
+print(f&quot;{total_gb:.0f}GB before activations&quot;)
+```
+
+光是權重就落在 ≈40GB 的基準點附近。同一類模型，如果計畫估出來遠高於這個數字，就是該重新檢查 dtype 和方法的訊號。
+
+## The OOM Ladder
+
+任務在統一記憶體上 OOM 時，依序處理這個階梯。每一步都比前一步更有破壞性，不要跳著做：**縮小 batch size 絕對不是第 1 步。**
+
+1. **清掉 buffer cache。** 先前執行留下的 page cache，或是讀取大型資料集的 page cache，常常佔掉好幾 GB「不見的」餘裕。這一步只需要重跑一次，不會動到任務的設定：
+
+   ```bash
+   sync; echo 3 &gt; /proc/sys/vm/drop_caches
+   ```
+
+   需要 root；這是兩次執行之間的重置，不是訓練中途的步驟。這一步背後完整的診斷，請看 `spark-training-gotchas`（gotcha G3）。
+
+2. **縮小 batch size 或 packing 長度。** 只有在清掉 cache 後仍騰不出足夠餘裕時，才縮小 batch size 或 packing 長度，這是第一個會改變執行內容的步驟。優先縮 packing 長度，在長 context 下，它對 activation 用量的影響更直接。
+
+3. **降級方法：先試 bf16 LoRA，再來才是 QLoRA。** 如果清掉 cache、縮小 batch/pack 後仍然 OOM，就把方法降一級，下一步是 bf16 LoRA，不是反過來。QLoRA 的 bitsandbytes 反量化緩衝區是暫時性的 CUDA 端配置，可能比同等的 bf16 LoRA 執行更早 OOM，雖然 QLoRA 的穩定狀態用量比較小。QLoRA 發生 OOM，不代表這個模型放不下。
+
+三步都做完、任務還是放不下，才往下退（換更小的模型、多台 Spark）。
+
+## Thermal Monitoring
+
+數小時的執行會頂到 Spark 的持續功耗上限，遠低於額定值，這是平台預期中的行為，不是該拿來硬找理由解釋的症狀：
+
+- 溫度和功耗要跟著訓練 log 一起取樣，不要等發現變慢之後才取樣。每 30-60 秒一次，就能把吞吐量的下降跟散熱事件對應起來。保留 `assets/thermal-sample.sh` 寫出的 CSV 輸出格式，這樣時間戳記才能跟 log 對得上：
+
+  ```bash
+  bash assets/thermal-sample.sh 30 thermal.log
+  ```
+
+- **持續約 100W 的功耗是平台的上限，不是設定的 bug。** 不要為了「修好」一個高原期而重新調整 batch size 或精度，那是機器在負載下的正常行為。如果溫度持續攀升，功耗卻停留在額定的 240W 以下，那就是要認出來的特徵。
+
+- 要明確記錄降頻事件，不要讓執行悄悄變慢卻沒留下紀錄。一個執行兩小時後每個 step 的時間翻倍，應該在 log 裡看得到，並對照該時間戳記的散熱取樣。完整的降頻診斷：`spark-training-gotchas`（gotcha G4）。
+
+## Concurrent Workloads
+
+因為 128GB 的記憶體池是全域的，被驅逐（eviction）發生時，兩個行程的 log 都不會顯示 OOM：
+
+- 「一次只跑一個重量級任務」這條規則，適用於**沒有上限或接近滿載**的工作負載：沒設上限的 trainer 和推論伺服器（vLLM、Ollama）會競爭同一個記憶體池。小型、有設上限的工作負載就不會：一個 &lt;4GB 的 LoRA 微調，可以跟 `gpu-memory-utilization&lt;=0.5` 的 vLLM 並存，所以在停掉另一個行程之前，要檢查的是它的上限，不是只看它有沒有在跑。
+
+- 在沒有上限/接近滿載的競爭下，推論伺服器會悄悄驅逐 trainer 的頁面，反過來也一樣，兩邊都不會記錄錯誤，所以執行變慢或 KV cache 不見了，是要檢查的競爭症狀。在長時間或吃滿整個記憶體池的執行之前，先停掉不相關、*沒有上限*的伺服器。
+
+先檢查有哪些佔用 GPU 的行程：
+
+```bash
+ps aux | grep -E &#x27;vllm|ollama|trl|axolotl&#x27; | grep -v grep
+```
+
+這個流程是 `spark-training-gotchas`（gotcha G3、G4、G6）的補充，那個 skill 處理的是啟動時的失敗；這個處理的是執行中的任務。
+
+記憶體試算表：`references/uma-accounting.md`。</pre></section><section><h2>英文原文</h2><pre>---
+name: spark-memory-thermal-ops
+description: Manage unified memory and thermals during long-running ML jobs on NVIDIA DGX Spark. Use when planning memory headroom for a training run on GB10, when a job OOMs on unified memory, or when monitoring temperature and power during multi-hour training.
+---
+
+# Spark Memory &amp; Thermal Ops
+
+DGX Spark&#x27;s GB10 chip has one 128GB unified
+memory (UMA) pool shared by CPU and GPU, and a
+sustained power ceiling well below its rated
+figure. Both break discrete-GPU assumptions:
+headroom isn&#x27;t what `nvidia-smi` reports, and a
+run that starts fast will slow down mid-job
+with nothing misconfigured. This skill covers
+planning memory headroom, working an actual
+OOM, and watching thermals across a long job.
+For launch-time failure modes (ABI mismatches,
+flash-attn, playbook breakage), see
+`spark-training-gotchas` — this skill assumes
+the job starts.
+
+## Common Issues Quick Reference
+
+| Situation | Do this |
+|---|---|
+| Planning headroom before launch | Budget against `free -g`, not `nvidia-smi` — see UMA Memory Model |
+| Job OOMs on unified memory | Work the OOM Ladder in order: flush, then batch/pack, then method downgrade |
+| Throughput drops mid-run | Check the power/temp log before assuming a config bug — see Thermal Monitoring |
+| Trainer + inference server both wanted | Run one at a time — see Concurrent Workloads |
+
+## When to Use This Skill
+
+- Sizing a training run against the 128GB pool
+  before launch — will this model, method, and
+  batch/pack combination fit.
+- A run OOMs mid-load or mid-step and the
+  remediation order matters — what to try first,
+  second, third.
+- Watching temperature and power during a
+  multi-hour job, deciding whether a slowdown is
+  thermal throttling or something else.
+- Planning to run a trainer alongside an
+  inference server (vLLM, Ollama) on the same box.
+
+## UMA Memory Model
+
+Spark has no separate GPU VRAM — the GPU and
+CPU share one 128GB pool. Two consequences:
+
+- **`nvidia-smi` and `cudaMemGetInfo`
+  underreport pressure — or report nothing at
+  all.** Both report CUDA-allocator-visible
+  memory, not the pool&#x27;s actual state — a box can
+  show headroom in `nvidia-smi` and still OOM,
+  because page-cache and mmap&#x27;d pages the
+  allocator doesn&#x27;t see consume the same pool. On
+  some driver/setups, the memory query returns
+  `[N/A], [N/A]` outright instead of a number — a
+  script grepping for a numeric value there gets
+  nothing, not a misleading undercount (see
+  `spark-training-gotchas` gotcha G3).
+
+- **Model load is a transient peak, not the
+  steady state.** Loading safetensors weights
+  mmaps the file, then copies into CUDA
+  tensors — for a window during load, both the
+  mmap&#x27;d pages and the CUDA copy count against
+  the pool at once. A model that fits while
+  training can still OOM during load if headroom
+  was sized for the post-load footprint instead
+  of this doubled transient.
+
+Plan and diagnose with `free -g`, not
+`nvidia-smi`:
+
+```bash
+free -g | awk &#x27;NR==2 {print &quot;free:&quot;, $4, &quot;GB&quot;}&#x27;
+```
+
+Rule of thumb: take that free figure, subtract a
+few GB for OS/driver overhead, and budget against
+the result — not the 128GB spec number.
+The worksheet in `references/uma-accounting.md`
+accepts parameter count, dtype, and method as
+input, and returns a memory estimate to compare
+against known anchors.
+
+### Planning Sequence
+
+Before launch, work through these in order:
+
+1. Read `free -g`; subtract OS/driver overhead
+   for the budget.
+2. Estimate weights + optimizer + gradients +
+   activations from `references/uma-accounting.md`.
+3. Compare against the closest anchor (70B
+   QLoRA, 27B LoRA, 9B full FT), not the
+   estimate alone.
+4. If the estimate is close to the budget, start
+   with shorter packing or a smaller batch —
+   cheaper than hitting the OOM Ladder mid-run.
+
+### Example: Sizing a 70B QLoRA Run
+
+A sanity check of the worksheet formula against
+the ≈40GB anchor:
+
+```python
+params = 70e9
+weights_gb = params * 0.5 / 1e9      # NF4, step 1
+adapter_gb = 0.5                     # step 5, negligible
+total_gb = weights_gb + adapter_gb   # + activations
+print(f&quot;{total_gb:.0f}GB before activations&quot;)
+```
+
+Weights alone land near the ≈40GB anchor — a plan
+estimating far above that for the same model
+class is a signal to recheck dtype and method.
+
+## The OOM Ladder
+
+When a job OOMs on unified memory, work this
+ladder in order. Each step is more disruptive
+than the last — don&#x27;t skip ahead:
+**reducing batch size is never step 1.**
+
+1. **Flush the buffer cache.** Page cache from a
+   previous run or a large dataset read often
+   accounts for GB of the &quot;missing&quot; headroom.
+   This costs nothing but a rerun and doesn&#x27;t
+   touch the job&#x27;s configuration:
+
+   ```bash
+   sync; echo 3 &gt; /proc/sys/vm/drop_caches
+   ```
+
+   Needs root; a between-run reset, not a
+   mid-training step. See
+   `spark-training-gotchas` (gotcha G3) for the
+   full diagnostic behind this step.
+
+2. **Reduce batch size or packing length.** Only
+   after a flush fails to free enough headroom,
+   cut batch size or packing length — the first
+   step that changes what the run does. Prefer
+   packing length first; it drives activation
+   footprint more directly at long context.
+
+3. **Downgrade the method: bf16 LoRA before
+   QLoRA.** If flushing and shrinking batch/pack
+   still OOM, drop the method a tier — bf16 LoRA
+   is next, not the reverse. QLoRA&#x27;s bitsandbytes
+   dequantization buffers are transient CUDA-side
+   allocations that can OOM before an equivalent
+   bf16 LoRA run would, even though QLoRA&#x27;s
+   steady-state footprint is smaller. A QLoRA OOM
+   is not proof the model doesn&#x27;t fit.
+
+Fall back further (smaller model, multi-Spark)
+only after all three steps and the job still
+won&#x27;t fit.
+
+## Thermal Monitoring
+
+Multi-hour runs push into Spark&#x27;s sustained
+power ceiling, well under the rated figure —
+expected platform behavior, not a symptom to
+explain away:
+
+- Sample temperature and power alongside the
+  training logs, not after a slowdown is
+  noticed — every 30-60 seconds correlates a
+  throughput drop with a thermal event. Keep
+  the CSV output format `assets/thermal-sample.sh`
+  writes, so timestamps line up against the log:
+
+  ```bash
+  bash assets/thermal-sample.sh 30 thermal.log
+  ```
+
+- **A sustained ~100W power draw is the platform
+  cap, not a configuration bug.** Don&#x27;t re-tune
+  batch size or precision to &quot;fix&quot; a plateau
+  that&#x27;s the box behaving normally under load.
+  If temperature climbs while power stays flat
+  under the rated 240W figure, that&#x27;s the
+  signature to recognize.
+
+- Log throttle events explicitly instead of
+  letting a run silently slow down unrecorded. A
+  run whose per-step time doubles two hours in
+  should show that in the log, correlated against
+  the thermal sample at that timestamp. Full
+  throttling diagnostics: `spark-training-gotchas`
+  (gotcha G4).
+
+## Concurrent Workloads
+
+Because the 128GB pool is global, eviction
+happens without either process&#x27;s logs showing
+an OOM:
+
+- The one-heavy-job rule applies to **uncapped or
+  near-capacity** workloads — an uncapped trainer
+  and inference server (vLLM, Ollama) compete for
+  the same pool. A small, capped workload doesn&#x27;t:
+  a &lt;4GB LoRA fine-tune coexists fine alongside
+  vLLM capped at `gpu-memory-utilization&lt;=0.5` —
+  check the other process&#x27;s cap, not just its
+  presence, before stopping it.
+
+- Inference servers evict trainer pages silently
+  under uncapped/near-capacity contention, and
+  vice versa — neither logs an error, so a slow
+  run or lost KV cache is a contention symptom to
+  check for. Stop unrelated *uncapped* servers
+  before a long or full-pool run.
+
+Check for GPU-resident processes first:
+
+```bash
+ps aux | grep -E &#x27;vllm|ollama|trl|axolotl&#x27; | grep -v grep
+```
+
+This procedure complements `spark-training-gotchas`
+(gotchas G3, G4, G6) — that skill covers launch-time
+failures; this one, the running job.
+
+Memory math worksheets:
+`references/uma-accounting.md`.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
 name: e2e-testing-patterns
-description: 建立可靠、快速又好維護的端對端測試套件，讓你有信心快速出貨，並在使用者之前抓到 regression。適用於實作 E2E 測試自動化、除錯不穩定的測試、測試關鍵使用者流程的時候。
+description: 精通用 Playwright 和 Cypress 做端對端測試，建立可靠的測試套件，抓出 bug、提升信心並支援快速 deploy。適用於實作 E2E 測試、除錯不穩定的測試，或建立測試標準的時候。
 ---
 
 # E2E 測試模式

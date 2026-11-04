@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>checkpoint-promotion｜Skill 寫法圖鑑</title>
+<meta name="description" content="fine-tune 的 checkpoint 上線前，用 drift budget、成對比較和遺忘檢查把關">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>checkpoint-promotion</h1>
+<p class="meta">wshobson ｜ 測試與驗證 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/llm-finetuning/skills/checkpoint-promotion/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">fine-tune 的 checkpoint 上線前，用 drift budget、成對比較和遺忘檢查把關</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: checkpoint-promotion
+description: 在 promote 之前，用 drift budget、成對比較和遺忘檢查，把關 fine-tune 出來的 checkpoint。訓練跑完產出 checkpoint 之後、判斷調整後的模型要不要上線時，或已 promote 的模型需要對更新後的 golden 重新把關時使用。
+---
+
+# Checkpoint Promotion
+
+整個 plugin 的 Phase 5 關卡：一個訓練得很順利、task 指標也贏過基準的 checkpoint，沒有通過下面四個階段，仍然不能上線。`eval-harness-first` 建好了這裡要重跑的 suite，這個 skill 就是用那個 suite 的 baseline 來做決定的地方。
+
+**輸入：** 一個訓練好的 checkpoint、`eval-harness-first` 產生的 `eval/baseline-&lt;model&gt;.json`，以及凍結的 `eval/drift-suite.yaml`。
+**輸出格式：** `promotion-report.md`，包含四個階段的證據，以及最後的 `PROMOTE` 或 `REJECT` 結論，`/finetune` 的 Phase 5 和 `/promote-checkpoint` 會直接使用這個結論。
+
+## 四階段關卡
+
+每個階段都把關下一個階段：階段 2 失敗，階段 3 就不會跑。階段 2 和 3 共用一次昂貴的推論 pass，所以在**確定性（deterministic）**的 arena 上，可以讓它們同時執行，到做出結論時再套用關卡順序（序列化也省不了什麼）；以 judge 為基礎的 arena 仍然應該先等階段 2，那裡才是真正省下成本的地方。
+
+1. **資料品質關卡。** 在任何評估碰到 checkpoint 之前：把訓練集去重、檢查是否有 eval golden 洩漏（這正是 `trace-to-training-data` 的 Hygiene 章節要預防的失敗），並掃描標籤雜訊。用洩漏的 golden 訓練出來的 checkpoint，會讓後面每個階段都失效。
+2. **Held-out + 凍結的能力漂移 suite。** 對 checkpoint 重新跑 `eval-harness-first` 的 `eval/drift-suite.yaml`（MMLU/GSM8K/IFEval 加上 200 到 500 個領域相鄰的題目），並逐個 benchmark 跟 `baseline-&lt;model&gt;.json` 比對，對照下面的 Drift Budget 表。
+3. **跟 base 的成對 arena。** 位置隨機化的 judge，checkpoint 對 base model，同樣的 prompt。或者，當 harness 裡每個評分器都是確定性的（沒有 LLM judge，位置隨機化不適用）時，使用 `references/gate-templates.md` 裡確定性的成對比較變體。**在 holdout 上贏、卻輸掉即時 arena 的，不能上線**：階段 2 的數字和階段 3 的判斷必須一致；在凍結的 golden 上贏、成對比較卻輸，是真實的訊號，不是要想辦法解釋掉的差異。
+4. **Canary。** 任何要進到正式流量的 checkpoint，都要做 5 到 10% 分層抽樣的 rollout，並帶自動 rollback。**只在本機使用的人，到階段 3 就停止**：本機部署跳過階段 4，是正確的停止點，不是走捷徑。
+
+### Drift Budget
+
+| Drift（百分點） | 結論 |
+|---|---|
+| ≤1 | 雜訊，繼續 |
+| 2–5 | 決定之前，先用不同的 seed 重跑 |
+| &gt;5 | **HARD FAIL**，不因 task 的進步而例外 |
+
+不管其他列怎麼說，&gt;5 個百分點那一列都優先生效：一個在目標 task 上進步 8 分、卻掉了 6 分通用能力的 checkpoint，在這裡仍然是失敗，task 的進步永遠買不回違反 drift budget 的代價。
+
+**題目數量來自預算，不是來自方便：** 要讓半寬度小於 5 個百分點 hard-fail 門檻的一半，嚴格的 n 在典型準確率（p≈0.7）下約是 1,300；n=200 是務實的下限（同樣的 p 下半寬度約 ±6 個百分點，n=50 則是 ±13 個百分點）。每個結論都要回報半寬度，而且當差距小於半寬度時，要當成 `REJECT (uncertain)`，不是 PASS/HARD FAIL。完整的算式和一個跑了 5 次的警示範例見：`references/gate-templates.md`。
+
+**RERUN 不是結論。** 2 到 5 個百分點的 drift，必須在不同 seed 的重跑完成之後，才會產生 `PROMOTE` 或 `REJECT`：`PROMOTE` 要求回到 ≤1 個百分點（雜訊）；任何重跑後仍然 &gt;1 個百分點的情況，不論是在 2 到 5 的區間還是 &gt;5 的違規，階段 2 都會判成硬性的 `REJECT`。任何報告在到達 Verdict 區段時，階段 2 都不能還顯示 `RERUN`。
+
+## 災難性遺忘
+
+沒有管理的 LoRA fine-tuning 會喪失真正的通用能力，而階段 2 就是用來抓這個的：
+
+- **沒管理時約損失 43% 的知識**：沒有 replay、沒有 regularization。
+- **有基本管理時約 10%**：有一些 replay 或保守的 LR。
+- **replay + EWC 時約 3%**：有紀律的情況。
+- **10 到 30% 的通用資料 replay 混合是標準的緩解方式**：訓練時混入通用領域的資料，不要只用目標 task 的資料。
+
+如果 checkpoint 在階段 2 碰到 &gt;5 個百分點的 hard fail，依序走這個升級階梯，這是這個 skill 和 `references/gate-templates.md` 共同指向的唯一標準順序：
+
+1. **調整 replay 混合的比例：用換的，不要用加的**（加上去會讓比例和總 optimizer step 數混在一起）。在小規模的執行（&lt;~100 step）下，劑量不是單調的：任何調換之後都要重新檢查 drift。
+2. **降低 learning rate。**
+3. **減少 epoch。**
+4. **更小的 LoRA rank**：就是 `lora-qlora-recipes` 和 `preference-optimization` 為訓練執行調整的同一組 rank/LR 槓桿，只是在這裡反向套用。
+
+這個順序是預設，不是定律：**只靠一組前後對照的執行得到的補救建議，只是假設**：一旦任何槓桿造成反轉，就把它標成低信心，而且要偏向做不同 seed 的重複實驗，不要盲目相信下一階。如果某個槓桿解決了 drift 違規，卻讓某個成功標準指標掉到目標以下，這是要交給人去判斷的雙面取捨，不是繼續往階梯下面走的理由。這兩個但書背後完整的推理和 5 次執行的軌跡見：`references/gate-templates.md`。
+
+**要揭露 drift suite 的指令重複使用。** 如果某一列 replay 複製了 drift harness 完全相同的指令措辭（不只是來源題目不重疊），那個 benchmark replay 之後的分數就只是上限：在把接近預算的通過當成乾淨之前，要標示它對指令熟悉，或是用改寫過的說法重新探測。
+
+## 結論
+
+`promotion-report.md` 要把四個階段都當成區段涵蓋，而且**必須以最終結論結尾：`PROMOTE` 或 `REJECT`**，附上產生這個結論的證據，以及當結論是 `REJECT` 時，恰好一個最優先的補救建議。範本：`references/gate-templates.md`。其他 skill 會解析的最終格式：
+
+```
+## Verdict
+
+REJECT
+
+Evidence: domain-adjacent drift
+suite dropped 6.2pt (threshold:
+&gt;5pt hard fail) despite +8pt on
+the target task.
+
+Top remediation: swap the
+replay-mix fraction from 10%
+toward 20%, holding step count
+constant.
+```
+
+- **REJECT 是結果，不是錯誤。** 一個沒通過階段 2 的 drift budget 或階段 3 的 arena 比較的 checkpoint，已經做到它該做的事。不要把 REJECT 當成需要重跑這個 skill 的失敗；它是運作正常的關卡該有的正確輸出。
+- **一個補救建議，不是一份選單。** 證據區段可以列出所有觀察到的東西；結論區段要依上面的升級階梯，指出單一槓桿最大的修法。一份在三種可能的修法之間猶豫不決的報告，沒有做到這個 skill 存在的目的：排出優先順序。
+- **不自動重新訓練。** 這個 skill 產出的是結論和報告，不是重新觸發的訓練執行。`REJECT` 會把補救交還給人，在 `finetuning-method-selection` 或相關的訓練 skill 那裡做決定。
+
+## 相關 Skill
+
+- `eval-harness-first`：擁有這個 skill 重新執行並對照比較的 drift suite 和 baseline；沒有 `baseline-&lt;model&gt;.json`，就沒有東西可以拿來把關。
+- `quantized-export`：`PROMOTE` 結論之後唯一有效的下一步。
+- `preference-optimization` 和 `lora-qlora-recipes`：擁有災難性遺忘升級路徑中的 LR 和 rank 槓桿；這個 skill 診斷違規，那些 skill 擁有造成違規的設定。
+- `dataset-curation`：擁有 replay 混合的建構做法，也就是升級階梯第一階所套用的。
+
+完整的 `promotion-report.md` 範本，包含四個階段、drift suite 的評分表、成對 arena 的協定（題目數、位置隨機化、勝率門檻），以及 replay 混合的設定範例：`references/gate-templates.md`。</pre></section><section><h2>英文原文</h2><pre>---
+name: checkpoint-promotion
+description: Gate fine-tuned checkpoints with drift budgets, paired comparison, and forgetting checks before promotion. Use after a training run produces a checkpoint, when deciding whether a tuned model ships, or when a promoted model needs re-gating against updated goldens.
+---
+
+# Checkpoint Promotion
+
+The Phase 5 gate for the whole
+plugin: a checkpoint that trains
+cleanly and beats its task metric
+still doesn&#x27;t ship without
+clearing all four stages below.
+`eval-harness-first` built the
+suite re-run here — this skill is
+where that suite&#x27;s baseline
+decides something.
+
+**Input:** a trained checkpoint,
+`eval/baseline-&lt;model&gt;.json` from
+`eval-harness-first`, and the
+frozen `eval/drift-suite.yaml`.
+**Output format:**
+`promotion-report.md` — the
+four-stage evidence plus a
+terminal `PROMOTE` or `REJECT`
+verdict that `/finetune` Phase 5
+and `/promote-checkpoint` consume
+directly.
+
+## The Four-Stage Gate
+
+Each stage gates the next — a
+failure at stage 2 means stage 3
+doesn&#x27;t run. Stages 2 and 3 share
+one expensive inference pass, so
+running them concurrently and
+applying gate order at verdict
+time is licensed on a
+**deterministic** arena (nothing
+saved by serializing); a
+judge-based arena should still
+wait for stage 2 first — that&#x27;s
+where the real savings are.
+
+1. **Data-quality gate.** Before
+   any eval touches the
+   checkpoint: dedup the training
+   set, check for eval-goldens
+   leakage (the exact failure
+   `trace-to-training-data`&#x27;s
+   Hygiene section exists to
+   prevent), and scan for label
+   noise. A checkpoint trained on
+   leaked goldens invalidates
+   every later stage.
+2. **Held-out + frozen
+   capability-drift suite.**
+   Re-run `eval-harness-first`&#x27;s
+   `eval/drift-suite.yaml` —
+   MMLU/GSM8K/IFEval plus 200–500
+   domain-adjacent items — against
+   the checkpoint and diff against
+   `baseline-&lt;model&gt;.json` per
+   benchmark against the Drift
+   Budget table below.
+3. **Paired arena vs. base.**
+   Position-randomized judge,
+   checkpoint vs. base model, same
+   prompts — or the deterministic
+   paired-comparison variant in
+   `references/gate-templates.md`
+   when every grader in the
+   harness is deterministic (no
+   LLM-judge; position
+   randomization N/A there).
+   **A holdout win that
+   loses the live arena does not
+   ship** — stage-2 numbers and
+   stage-3 judgments must agree; a
+   win on frozen goldens and a
+   loss in paired comparison is a
+   real signal, not a discrepancy
+   to explain away.
+4. **Canary.** 5–10% stratified
+   rollout with auto-rollback for
+   any checkpoint reaching
+   production traffic. **Local-only
+   users stop at stage 3** —
+   skipping stage 4 for a local
+   deployment is the correct
+   stopping point, not a shortcut.
+
+### Drift Budget
+
+| Drift (pts) | Verdict |
+|---|---|
+| ≤1 | Noise — proceed |
+| 2–5 | Rerun with seed variation before deciding |
+| &gt;5 | **HARD FAIL** — no exception for task gains |
+
+The &gt;5pt row governs regardless
+of the others: a checkpoint that
+gained 8 points on the target
+task and lost 6 points of general
+capability still fails here —
+task improvement never buys back
+a drift-budget breach.
+
+**Item count derives from the
+budget, not convenience:** the
+strict n for a half-width under
+half the 5pt hard-fail threshold
+is ~1,300 at typical accuracy
+(p≈0.7); n=200 is a pragmatic
+floor (±6pt half-width at that
+same p, n=50 ±13pt) — report the
+half-width with every verdict,
+and treat a margin smaller than
+it as `REJECT (uncertain)`, not
+PASS/HARD FAIL. Full math and a
+5-run cautionary example:
+`references/gate-templates.md`.
+
+**RERUN is not a verdict.** A
+2–5pt drift only ever produces a
+`PROMOTE` or `REJECT` after the
+seed-variation rerun completes —
+`PROMOTE` requires landing back
+at ≤1pt (noise); any rerun still
+&gt;1pt — 2–5pt band or &gt;5pt breach
+alike — resolves stage 2 to a
+hard `REJECT`. No report may
+reach the Verdict section with
+stage 2 still showing `RERUN`.
+
+## Catastrophic Forgetting
+
+Unmanaged LoRA fine-tuning loses
+real general capability, and
+stage 2 is what catches it:
+
+- **~43% knowledge loss
+  unmanaged** — no replay, no
+  regularization.
+- **~10% with basic management**
+  — some replay or a conservative
+  LR.
+- **~3% with replay + EWC** — the
+  disciplined case.
+- **10–30% general-data replay
+  mix is the standard
+  mitigation** — blend general-
+  domain data into training
+  rather than target-task data
+  alone.
+
+If a checkpoint hits the &gt;5pt
+hard fail in stage 2, work this
+escalation ladder in order — the
+one canonical order this skill
+and `references/gate-templates.md`
+both point to:
+
+1. **Adjust the replay-mix
+   fraction — swap rows, don&#x27;t
+   add them** (adding confounds
+   fraction with total optimizer
+   steps). Dose is not monotonic
+   at small-run scale (&lt;~100
+   steps) — re-check drift after
+   any swap.
+2. **Lower the learning rate.**
+3. **Fewer epochs.**
+4. **A smaller LoRA rank** — the
+   same rank/LR levers
+   `lora-qlora-recipes` and
+   `preference-optimization` tune
+   for the training run, applied
+   here in reverse.
+
+This order is a default, not a
+law: **remediation guidance from
+a single before/after run pair
+is a hypothesis** — label it
+low-confidence once any lever
+produces a reversal, and prefer
+a seed-variation repeat over
+trusting the next rung blindly.
+A lever that clears the drift
+breach but drops a
+success-criterion metric below
+target is a two-sided tradeoff
+for a human, not a reason to
+keep descending the ladder. Full
+reasoning and the 5-run
+trajectory behind both caveats:
+`references/gate-templates.md`.
+
+**Disclose drift-suite
+instruction reuse.** A replay row
+copying the drift harness&#x27;s exact
+instruction phrasing (not just
+disjoint source items) makes that
+benchmark&#x27;s post-replay score an
+upper bound — flag it
+instruction-familiar, or re-probe
+with a paraphrase, before
+treating a near-budget pass as
+clean.
+
+## The Verdict
+
+`promotion-report.md` covers all
+four stages as sections and
+**must end with a terminal
+verdict: `PROMOTE` or `REJECT`**,
+the evidence that produced it,
+and exactly one top remediation
+when the verdict is `REJECT`.
+Template: `references/gate-templates.md`.
+The terminal contract other
+skills parse:
+
+```
+## Verdict
+
+REJECT
+
+Evidence: domain-adjacent drift
+suite dropped 6.2pt (threshold:
+&gt;5pt hard fail) despite +8pt on
+the target task.
+
+Top remediation: swap the
+replay-mix fraction from 10%
+toward 20%, holding step count
+constant.
+```
+
+- **REJECT is a result, not an
+  error.** A checkpoint that
+  fails stage 2&#x27;s drift budget or
+  stage 3&#x27;s arena comparison did
+  its job. Don&#x27;t treat a REJECT
+  as a failed run needing a rerun
+  of this skill; it&#x27;s the correct
+  output of a working gate.
+- **One remediation, not a
+  menu.** Evidence sections may
+  list everything observed; the
+  verdict section names the
+  single highest-leverage fix per
+  the escalation ladder above. A
+  report that hedges across three
+  possible fixes hasn&#x27;t done the
+  prioritization this skill
+  exists to do.
+- **No auto-retraining.** This
+  skill produces a verdict and a
+  report, not a re-triggered
+  training run. A `REJECT` hands
+  the remediation back to a human
+  decision at
+  `finetuning-method-selection` or
+  the relevant training skill.
+
+## Related Skills
+
+- `eval-harness-first` — owns the
+  drift suite and baseline this
+  skill re-runs and diffs
+  against; no `baseline-&lt;model&gt;.json`
+  means nothing to gate against.
+- `quantized-export` — the only
+  valid next step after a
+  `PROMOTE` verdict.
+- `preference-optimization` and
+  `lora-qlora-recipes` — own the
+  LR and rank levers in the
+  Catastrophic Forgetting
+  escalation path; this skill
+  diagnoses the breach, those
+  skills own the config that
+  caused it.
+- `dataset-curation` — owns the
+  replay-mix construction recipe
+  the escalation ladder&#x27;s first
+  rung applies.
+
+Complete `promotion-report.md`
+template with all four stages,
+the drift-suite scoring table,
+the paired-arena protocol (item
+count, position randomization,
+win-rate threshold), and a
+replay-mix configuration example:
+`references/gate-templates.md`.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>signed-audit-trails-recipe｜Skill 寫法圖鑑</title>
+<meta name="description" content="教你替 Claude Code 工具呼叫產生 Ed25519 簽章收據，並離線驗證">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>signed-audit-trails-recipe</h1>
+<p class="meta">wshobson ｜ 安全護欄 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/signed-audit-trails/skills/signed-audit-trails-recipe/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">教你替 Claude Code 工具呼叫產生 Ed25519 簽章收據，並離線驗證</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: signed-audit-trails-recipe
+description: 一步一步的 cookbook，教你在 Claude Code 的工具呼叫上設定有密碼學簽章的稽核軌跡。在正式採用 protect-mcp runtime hook 之前，需要說明、評估或展示這個模式時使用。涵蓋 Cedar policy、Ed25519 收據、離線驗證、竄改偵測、CI/CD 整合，以及跟 SLSA 的組合。
+---
+
+# Signed Audit Trails for Claude Code Tool Calls
+
+用 cookbook 的方式，一步步帶你走過替每一次 Claude Code 工具呼叫產生密碼學簽章收據的做法。這是教學用的 skill。要看 runtime 的實作，請安裝 [`protect-mcp`](../../../protect-mcp/) plugin。
+
+## What this gives you
+
+每一次工具呼叫（`Bash`、`Edit`、`Write`、`WebFetch`）都會：
+
+1. 在執行前**對照 Cedar policy 評估**。如果 policy 拒絕這次呼叫，工具就不會執行。
+2. 在執行後**簽成一份 Ed25519 收據**。收據是 JCS 正規化的，任何拿到公鑰的人都能離線驗證。
+
+稽核人員、監管機關或交易對手之後都可以驗證每一份收據（Step 5）。不需要網路呼叫，不需要向廠商查詢，也不必信任營運者。
+
+## When to use the pattern
+
+- **受管制的環境**（金融、醫療、關鍵基礎設施），需要 agent 行為的防竄改證據
+- **CI/CD pipeline**，想證明每個自動化建置步驟都有通過 policy 關卡
+- **多方協作**，交易對手想驗證你 agent 的行為，又不想信任你的營運者
+- **合規情境**（EU AI Act 第 12 條、agent 所建構軟體的 SLSA provenance），一般的 logging 不夠用的時候
+
+## Step 1: Install the hook configuration
+
+用 `/plugin install protect-mcp` 安裝 `protect-mcp` plugin。它的 hook 會在每次工具呼叫之前執行 `evaluate.sh`，之後執行 `sign.sh`。兩個腳本都是從 stdin 讀取 hook 事件，因為 Claude Code 不會設定 `TOOL_NAME` 或 `TOOL_INPUT` 變數。hook 設定，以及每個腳本傳給 protect-mcp 的內容，請看 [`references/hook-wiring.md`](references/hook-wiring.md)。
+
+protect-mcp 0.7.4 不會建立簽章用的 key，沒有 key 的話，收據就是未簽章的。要建立一次 `./protect-mcp.key`。這個指令絕對不會覆蓋現有的 key：
+
+```bash
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) &amp;&amp; npx protect-mcp@0.7.4 init --dir &quot;$d&quot; &amp;&amp; mv &quot;$d/keys/gateway.json&quot; ./protect-mcp.key
+fi
+```
+
+要給稽核人員的是那個檔案裡的 `publicKey` 值。不要 commit 這個檔案，因為它同時也存著私鑰。
+
+把私鑰和收據目錄加進 `.gitignore`：
+
+```bash
+echo &quot;/protect-mcp.key&quot; &gt;&gt; .gitignore
+echo &quot;/receipts/&quot; &gt;&gt; .gitignore
+```
+
+## Step 2: Write a Cedar policy
+
+用 [`references/cedar-policy.md`](references/cedar-policy.md) 裡的範例建立 `./protect.cedar`。它允許唯讀的工具和一小份 Bash 指令清單，拒絕 shell 串接和破壞性指令，並把寫入限制在專案內，含有 `..` 的路徑一律拒絕。
+
+## Step 3: Use Claude Code normally
+
+啟動 Claude Code。每一次工具呼叫都會經過兩個 hook：
+
+```
+You: Please read the README and summarize it.
+
+Claude: I will read README.md.
+  [PreToolUse: Read ./README.md -&gt; allow]
+  [Tool: Read executes]
+  [PostToolUse: receipt rcpt-a8f3c9d2 signed to ./receipts/]
+
+... summary of README ...
+```
+
+一個有 20 次工具呼叫的 session，會在 `./receipts/receipts.jsonl` 附加 20 份收據。
+
+## Step 4: Inspect a receipt
+
+protect-mcp 0.7.4 會把每份收據以一行的形式附加到 `./receipts/receipts.jsonl`。印出最新的一份：
+
+```bash
+tail -n 1 ./receipts/receipts.jsonl | python3 -m json.tool
+```
+
+收據是簽章過的 v2 envelope，裡面會標明工具名稱，而且不包含公鑰。範例和被簽章的欄位，請看 [`references/receipt-format.md`](references/receipt-format.md)。
+
+## Step 5: Verify the receipts
+
+把 `./protect-mcp.key` 裡的 `publicKey` 值傳給 verifier：
+
+```bash
+PUB=$(node -p &#x27;JSON.parse(require(&quot;fs&quot;).readFileSync(&quot;./protect-mcp.key&quot;)).publicKey&#x27;)
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key &quot;$PUB&quot;
+```
+
+Exit code：
+
+| Code | Meaning |
+|------|---------|
+| `0`  | 每一份收據都驗證通過 |
+| `1`  | 有收據驗證失敗（被竄改、key 錯誤，或某一行格式不對） |
+| `2`  | 讀不到收據檔 |
+
+## Step 6: Demonstrate tamper detection
+
+把最新一份收據的 `decision` 從 `allow` 改成 `deny`：
+
+```bash
+python3 -c &quot;
+import json
+path = &#x27;./receipts/receipts.jsonl&#x27;
+lines = open(path).read().splitlines()
+r = json.loads(lines[-1])
+r[&#x27;payload&#x27;][&#x27;decision&#x27;] = &#x27;deny&#x27;
+lines[-1] = json.dumps(r)
+open(path, &#x27;w&#x27;).write(&#x27;\n&#x27;.join(lines) + &#x27;\n&#x27;)
+&quot;
+
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key &quot;$PUB&quot;
+```
+
+verifier 會以 exit code `1` 結束，並指出哪一行失敗。Ed25519 簽章跟被竄改過的 payload 的 JCS 正規化 byte 已經對不上了。
+
+把欄位還原，驗證就會再次通過。
+
+## How the cryptography works
+
+兩個不變條件，讓收據可以在任何符合規範的實作之間離線驗證：
+
+1. 簽章前先做 **JCS 正規化（RFC 8785）**。Key 依 UTF-16 code unit 排序、空白最少化、字串不做正規化。兩個獨立的實作，對同樣的收據內容會產生逐 byte 一致的簽章 payload。
+2. 對正規化後的 byte 做 **Ed25519 簽章（RFC 8032）**。確定性、固定大小、不依賴 nonce。
+
+protect-mcp 0.7.4 的收據沒有連結到前一份收據，所以被刪掉的收據不會被發現。
+
+正式的 wire format 請看 [draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/)。
+
+## Cross-implementation interop
+
+這個收據格式目前有四個獨立的實作：
+
+| Implementation | Language | Use case |
+|----------------|----------|----------|
+| [protect-mcp](https://www.npmjs.com/package/protect-mcp) | TypeScript | Claude Code, Cursor, MCP hosts |
+| [protect-mcp-adk](https://pypi.org/project/protect-mcp-adk/) | Python | Google Agent Development Kit |
+| [sb-runtime](https://github.com/ScopeBlind/sb-runtime) | Rust | OS-level sandbox (Landlock + seccomp) |
+| APS governance hook | Python | CrewAI, LangChain |
+
+任何一個實作產生的收據，都能用 [`@veritasacta/verify`](https://www.npmjs.com/package/@veritasacta/verify) 驗證。稽核人員不需要信任營運者選了什麼工具，格式本身就是合約。
+
+## CI/CD integration
+
+在 CI 裡驗證收據，讓被竄改的收據讓建置失敗。[`references/ci-cd.md`](references/ci-cd.md) 有一份 GitHub Actions workflow，在 push 到預設 branch 時執行。它從限定 branch 的 environment 安裝簽章 key、執行 agent、驗證收據，再把收據上傳。它不會在 pull request 上執行，因為那樣會把 key 交給還沒審查過的程式碼。
+
+## Composition with SLSA provenance for agent-built software
+
+當 Claude Code 建構並發布軟體時（把 `npm install`、`npm build`、`npm publish` 當成工具呼叫來執行），收據鏈就是逐步驟的建置紀錄。SLSA Provenance v1 為此留了一個擴充點：`byproducts` 欄位可以跟建置證明（build attestation）並列，引用收據鏈。
+
+[agent-commit build type](https://refs.arewm.com/agent-commit/v0.2) 用 ResourceDescriptor 的形狀記錄了這個模式：
+
+```json
+{
+  &quot;name&quot;: &quot;decision-receipts&quot;,
+  &quot;digest&quot;: { &quot;sha256&quot;: &quot;...&quot; },
+  &quot;uri&quot;: &quot;oci://registry/org/build-xyz/receipts:sha256-...&quot;,
+  &quot;annotations&quot;: {
+    &quot;predicateType&quot;: &quot;https://veritasacta.com/attestation/decision-receipt/v0.1&quot;,
+    &quot;signerRole&quot;: &quot;supervisor-hook&quot;
+  }
+}
+```
+
+SLSA provenance 由 builder 身分簽章；收據的證明（attestation）則由 supervisor-hook 身分簽章。兩個信任域，在 byproduct 這一層互相交叉引用。組合方式的討論請看 [slsa-framework/slsa#1594](https://github.com/slsa-framework/slsa/issues/1594)。
+
+## Common pitfalls
+
+**私鑰被放進版本控制。** 產生出來的 `./protect-mcp.key` 絕對不能 commit。上面的範例已經把它加進 `.gitignore`。如果 key 不小心被 commit 了，要立刻輪替。把 key 和 `./receipts/receipts.jsonl` 移到封存位置，再重新執行 Step 1 的指令。封存的收據要用舊的公鑰驗證。
+
+**Hook 的 payload 在 stdin。** Claude Code 不會設定 `$TOOL_NAME` 或 `$TOOL_INPUT` 變數。如果 hook 指令傳了 `--tool &quot;$TOOL_NAME&quot;`，送出去的工具名稱會是空的，所以 policy 會拒絕每一次呼叫。要像 plugin 腳本那樣，從 stdin 讀取 payload。
+
+**CI 裡的收據目錄。** 如果 Claude Code 在 CI 裡執行，要在 job 結束時把收據上傳成 artifact，不然收據會在 job 結束時消失。
+
+**Policy 不存在。** 當 `./protect.cedar` 不存在時，`evaluate.sh` 會往 stderr 印出警告，然後放行這次呼叫。在你於 Step 2 建立 policy 之前，沒有任何呼叫會被把關。
+
+## Related in this marketplace
+
+- [`protect-mcp`](../../../protect-mcp/) — runtime 的 hook 實作
+  （正式環境請用這個 plugin）
+- [`review-agent-governance`](../../../review-agent-governance/) — 在 review 範圍內的動作之前要求
+  人工核准；可以跟 protect-mcp 組合使用
+
+## References
+
+- [`draft-farley-acta-signed-receipts`](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/) — IETF draft，收據的 wire format
+- [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) — Ed25519
+- [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785) — JCS
+- [Cedar policy language](https://docs.cedarpolicy.com/)
+- [protect-mcp on npm](https://www.npmjs.com/package/protect-mcp)
+- [@veritasacta/verify on npm](https://www.npmjs.com/package/@veritasacta/verify)
+- [in-toto/attestation#549](https://github.com/in-toto/attestation/pull/549) — Decision Receipt predicate 提案
+- [agent-commit build type](https://refs.arewm.com/agent-commit/v0.2) — agent 產生的 commit 所用的 SLSA provenance
+- [Microsoft Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) (`examples/protect-mcp-governed/`)
+- [AWS Cedar for Agents](https://github.com/cedar-policy/cedar-for-agents)</pre></section><section><h2>英文原文</h2><pre>---
+name: signed-audit-trails-recipe
+description: Step-by-step cookbook for setting up cryptographically signed audit trails on Claude Code tool calls. Use when explaining, evaluating, or demonstrating the pattern before committing to the protect-mcp runtime hooks. Covers Cedar policy, Ed25519 receipts, offline verification, tamper detection, CI/CD integration, and SLSA composition.
+---
+
+# Signed Audit Trails for Claude Code Tool Calls
+
+Cookbook-style walkthrough for cryptographically signed receipts on every
+Claude Code tool call. This is the teaching skill. For the runtime
+implementation, install the [`protect-mcp`](../../../protect-mcp/) plugin.
+
+## What this gives you
+
+Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
+
+1. **Evaluated against a Cedar policy** before execution. If the policy denies
+   the call, the tool does not run.
+2. **Signed as an Ed25519 receipt** after execution. Receipts are
+   JCS-canonical and verifiable offline by anyone with the public key.
+
+An auditor, regulator, or counterparty can verify every receipt later
+(Step 5). No network call, no vendor lookup, no trust in the operator.
+
+## When to use the pattern
+
+- **Regulated environments** (finance, healthcare, critical infrastructure)
+  where you need tamper-evident evidence of agent behavior
+- **CI/CD pipelines** where you want to prove that a policy gate held for
+  every automated build step
+- **Multi-party collaboration** where a counterparty wants to verify your
+  agent&#x27;s behavior without trusting your operator
+- **Compliance contexts** (EU AI Act Article 12, SLSA provenance for
+  agent-built software) where standard logging is not sufficient
+
+## Step 1: Install the hook configuration
+
+Install the `protect-mcp` plugin with `/plugin install protect-mcp`. Its hooks
+run `evaluate.sh` before each tool call and `sign.sh` after it. Both scripts
+read the hook event from stdin, because Claude Code sets no `TOOL_NAME` or
+`TOOL_INPUT` variables. See
+[`references/hook-wiring.md`](references/hook-wiring.md) for the hook
+configuration and what each script passes to protect-mcp.
+
+protect-mcp 0.7.4 does not create the signing key, and without a key the
+receipts are unsigned. Create `./protect-mcp.key` once. The command never
+replaces an existing key:
+
+```bash
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) &amp;&amp; npx protect-mcp@0.7.4 init --dir &quot;$d&quot; &amp;&amp; mv &quot;$d/keys/gateway.json&quot; ./protect-mcp.key
+fi
+```
+
+Give auditors the `publicKey` value from that file. Do not commit the file,
+because it also holds the private key.
+
+Add the private key and receipt directory to `.gitignore`:
+
+```bash
+echo &quot;/protect-mcp.key&quot; &gt;&gt; .gitignore
+echo &quot;/receipts/&quot; &gt;&gt; .gitignore
+```
+
+## Step 2: Write a Cedar policy
+
+Create `./protect.cedar` from the example in
+[`references/cedar-policy.md`](references/cedar-policy.md). It allows read-only
+tools and a short list of Bash commands, denies shell chaining and destructive
+commands, and limits writes to the project with `..` segments denied.
+
+## Step 3: Use Claude Code normally
+
+Start Claude Code. Every tool call goes through both hooks:
+
+```
+You: Please read the README and summarize it.
+
+Claude: I will read README.md.
+  [PreToolUse: Read ./README.md -&gt; allow]
+  [Tool: Read executes]
+  [PostToolUse: receipt rcpt-a8f3c9d2 signed to ./receipts/]
+
+... summary of README ...
+```
+
+A session of 20 tool calls appends 20 receipts to `./receipts/receipts.jsonl`.
+
+## Step 4: Inspect a receipt
+
+protect-mcp 0.7.4 appends each receipt as one line of
+`./receipts/receipts.jsonl`. Print the newest one:
+
+```bash
+tail -n 1 ./receipts/receipts.jsonl | python3 -m json.tool
+```
+
+The receipt is a signed v2 envelope that names the tool, and it holds no
+public key. See [`references/receipt-format.md`](references/receipt-format.md)
+for a sample and the signed fields.
+
+## Step 5: Verify the receipts
+
+Pass the `publicKey` value from `./protect-mcp.key` to the verifier:
+
+```bash
+PUB=$(node -p &#x27;JSON.parse(require(&quot;fs&quot;).readFileSync(&quot;./protect-mcp.key&quot;)).publicKey&#x27;)
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key &quot;$PUB&quot;
+```
+
+Exit codes:
+
+| Code | Meaning |
+|------|---------|
+| `0`  | Every receipt verified |
+| `1`  | A receipt failed verification (tampered, wrong key, or malformed line) |
+| `2`  | The receipts file could not be read |
+
+## Step 6: Demonstrate tamper detection
+
+Change the newest receipt&#x27;s `decision` from `allow` to `deny`:
+
+```bash
+python3 -c &quot;
+import json
+path = &#x27;./receipts/receipts.jsonl&#x27;
+lines = open(path).read().splitlines()
+r = json.loads(lines[-1])
+r[&#x27;payload&#x27;][&#x27;decision&#x27;] = &#x27;deny&#x27;
+lines[-1] = json.dumps(r)
+open(path, &#x27;w&#x27;).write(&#x27;\n&#x27;.join(lines) + &#x27;\n&#x27;)
+&quot;
+
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key &quot;$PUB&quot;
+```
+
+The verifier exits with code `1` and reports which line failed. The
+Ed25519 signature no longer matches the JCS-canonical bytes of the
+tampered payload.
+
+Restore the field and verification passes again.
+
+## How the cryptography works
+
+Two invariants make receipts verifiable offline across any conformant
+implementation:
+
+1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted by
+   UTF-16 code units, whitespace minimized, strings not normalized. Two
+   independent implementations produce byte-identical signing payloads for the same
+   receipt content.
+2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
+   Deterministic, fixed-size, no nonce dependency.
+
+protect-mcp 0.7.4 receipts carry no link to the previous receipt, so a
+deleted receipt goes undetected.
+
+For the formal wire format see
+[draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).
+
+## Cross-implementation interop
+
+The receipt format has four independent implementations today:
+
+| Implementation | Language | Use case |
+|----------------|----------|----------|
+| [protect-mcp](https://www.npmjs.com/package/protect-mcp) | TypeScript | Claude Code, Cursor, MCP hosts |
+| [protect-mcp-adk](https://pypi.org/project/protect-mcp-adk/) | Python | Google Agent Development Kit |
+| [sb-runtime](https://github.com/ScopeBlind/sb-runtime) | Rust | OS-level sandbox (Landlock + seccomp) |
+| APS governance hook | Python | CrewAI, LangChain |
+
+A receipt produced by any of them verifies against
+[`@veritasacta/verify`](https://www.npmjs.com/package/@veritasacta/verify).
+The auditor does not need to trust the operator&#x27;s tooling choice: the format
+is the contract.
+
+## CI/CD integration
+
+Verify receipts in CI so a tampered receipt fails the build.
+[`references/ci-cd.md`](references/ci-cd.md) has a GitHub Actions workflow
+that runs on pushes to the default branch. It installs the signing key from a
+branch-limited environment, runs the agent, verifies the receipts, and uploads
+them. It does not run on pull requests, because that would hand the key to
+unreviewed code.
+
+## Composition with SLSA provenance for agent-built software
+
+When Claude Code builds and releases software (running `npm install`,
+`npm build`, `npm publish` as tool calls), the receipt chain is the
+per-step build log. SLSA Provenance v1 has an extension point for this: the
+`byproducts` field can reference the receipt chain alongside the build
+attestation.
+
+The [agent-commit build type](https://refs.arewm.com/agent-commit/v0.2)
+documents the pattern using the ResourceDescriptor shape:
+
+```json
+{
+  &quot;name&quot;: &quot;decision-receipts&quot;,
+  &quot;digest&quot;: { &quot;sha256&quot;: &quot;...&quot; },
+  &quot;uri&quot;: &quot;oci://registry/org/build-xyz/receipts:sha256-...&quot;,
+  &quot;annotations&quot;: {
+    &quot;predicateType&quot;: &quot;https://veritasacta.com/attestation/decision-receipt/v0.1&quot;,
+    &quot;signerRole&quot;: &quot;supervisor-hook&quot;
+  }
+}
+```
+
+The SLSA provenance is signed by the builder identity; the receipt
+attestation is signed by the supervisor-hook identity. Two trust domains,
+cross-referenced at the byproduct layer. See
+[slsa-framework/slsa#1594](https://github.com/slsa-framework/slsa/issues/1594)
+for the composition discussion.
+
+## Common pitfalls
+
+**Private key in version control.** The generated `./protect-mcp.key` must
+not be committed. The examples above add it to `.gitignore`. If a key is
+accidentally committed, rotate it immediately. Move the key and
+`./receipts/receipts.jsonl` to an archive, then run the Step 1 command again.
+Verify the archived receipts with the old public key.
+
+**Hook payload on stdin.** Claude Code sets no `$TOOL_NAME` or `$TOOL_INPUT`
+variables. A hook command that passes `--tool &quot;$TOOL_NAME&quot;` sends an empty
+tool name, so the policy denies every call. Read the payload from stdin as the
+plugin scripts do.
+
+**Receipts directory in CI.** If Claude Code runs in CI, upload receipts as
+an artifact at the end of the job or the receipts are lost at job end.
+
+**Policy is missing.** When `./protect.cedar` does not exist, `evaluate.sh`
+prints a warning to stderr and allows the call. No call is gated until you
+create the policy in Step 2.
+
+## Related in this marketplace
+
+- [`protect-mcp`](../../../protect-mcp/) — the runtime hook implementation
+  (use this plugin in production)
+- [`review-agent-governance`](../../../review-agent-governance/) — require
+  human approval before review-surface actions; composes with protect-mcp
+
+## References
+
+- [`draft-farley-acta-signed-receipts`](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/) — IETF draft, receipt wire format
+- [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) — Ed25519
+- [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785) — JCS
+- [Cedar policy language](https://docs.cedarpolicy.com/)
+- [protect-mcp on npm](https://www.npmjs.com/package/protect-mcp)
+- [@veritasacta/verify on npm](https://www.npmjs.com/package/@veritasacta/verify)
+- [in-toto/attestation#549](https://github.com/in-toto/attestation/pull/549) — Decision Receipt predicate proposal
+- [agent-commit build type](https://refs.arewm.com/agent-commit/v0.2) — SLSA provenance for agent-produced commits
+- [Microsoft Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) (`examples/protect-mcp-governed/`)
+- [AWS Cedar for Agents](https://github.com/cedar-policy/cedar-for-agents)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

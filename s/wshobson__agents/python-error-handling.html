@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-error-handling｜Skill 寫法圖鑑</title>
+<meta name="description" content="設計 Python 的輸入驗證、例外階層與部分失敗處理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-error-handling</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-error-handling/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">設計 Python 的輸入驗證、例外階層與部分失敗處理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-error-handling
+description: Python 錯誤處理模式，包含輸入驗證、例外階層與部分失敗的處理。在實作驗證邏輯、設計例外策略、處理批次處理的失敗，或建構穩健的 API 時使用。
+---
+
+# Python Error Handling
+
+用適當的輸入驗證、有意義的例外與優雅的失敗處理，建構穩健的 Python 應用程式。好的錯誤處理讓除錯更容易，系統也更可靠。
+
+## When to Use This Skill
+
+- 驗證使用者輸入與 API 參數
+- 為應用程式設計例外階層
+- 處理批次操作中的部分失敗
+- 把外部資料轉換成領域型別
+- 建立對使用者友善的錯誤訊息
+- 實作 fail-fast 的驗證模式
+
+## Core Concepts
+
+### 1. Fail Fast
+
+在昂貴的操作之前就先驗證輸入。可行的話，一次回報所有驗證錯誤。
+
+### 2. Meaningful Exceptions
+
+使用適當的例外型別並附上 context。訊息應該說明什麼失敗了、為什麼，以及怎麼修正。
+
+### 3. Partial Failures
+
+在批次操作中，不要讓一個失敗就讓全部中止。把成功與失敗分開追蹤。
+
+### 4. Preserve Context
+
+串接例外，保留完整的錯誤軌跡以利除錯。
+
+## Quick Start
+
+```python
+def fetch_page(url: str, page_size: int) -&gt; Page:
+    if not url:
+        raise ValueError(&quot;&#x27;url&#x27; is required&quot;)
+    if not 1 &lt;= page_size &lt;= 100:
+        raise ValueError(f&quot;&#x27;page_size&#x27; must be 1-100, got {page_size}&quot;)
+    # Now safe to proceed...
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Early Input Validation
+
+在開始任何處理之前，先在 API 邊界驗證所有輸入。
+
+```python
+def process_order(
+    order_id: str,
+    quantity: int,
+    discount_percent: float,
+) -&gt; OrderResult:
+    &quot;&quot;&quot;Process an order with validation.&quot;&quot;&quot;
+    # Validate required fields
+    if not order_id:
+        raise ValueError(&quot;&#x27;order_id&#x27; is required&quot;)
+
+    # Validate ranges
+    if quantity &lt;= 0:
+        raise ValueError(f&quot;&#x27;quantity&#x27; must be positive, got {quantity}&quot;)
+
+    if not 0 &lt;= discount_percent &lt;= 100:
+        raise ValueError(
+            f&quot;&#x27;discount_percent&#x27; must be 0-100, got {discount_percent}&quot;
+        )
+
+    # Validation passed, proceed with processing
+    return _process_validated_order(order_id, quantity, discount_percent)
+```
+
+### Pattern 2: Convert to Domain Types Early
+
+在系統邊界就把字串與外部資料解析成有型別的領域物件。
+
+```python
+from enum import Enum
+
+class OutputFormat(Enum):
+    JSON = &quot;json&quot;
+    CSV = &quot;csv&quot;
+    PARQUET = &quot;parquet&quot;
+
+def parse_output_format(value: str) -&gt; OutputFormat:
+    &quot;&quot;&quot;Parse string to OutputFormat enum.
+
+    Args:
+        value: Format string from user input.
+
+    Returns:
+        Validated OutputFormat enum member.
+
+    Raises:
+        ValueError: If format is not recognized.
+    &quot;&quot;&quot;
+    try:
+        return OutputFormat(value.lower())
+    except ValueError:
+        valid_formats = [f.value for f in OutputFormat]
+        raise ValueError(
+            f&quot;Invalid format &#x27;{value}&#x27;. &quot;
+            f&quot;Valid options: {&#x27;, &#x27;.join(valid_formats)}&quot;
+        )
+
+# Usage at API boundary
+def export_data(data: list[dict], format_str: str) -&gt; bytes:
+    output_format = parse_output_format(format_str)  # Fail fast
+    # Rest of function uses typed OutputFormat
+    ...
+```
+
+### Pattern 3: Pydantic for Complex Validation
+
+用 Pydantic model 做結構化的輸入驗證，並自動產生錯誤訊息。
+
+```python
+from pydantic import BaseModel, Field, field_validator
+
+class CreateUserInput(BaseModel):
+    &quot;&quot;&quot;Input model for user creation.&quot;&quot;&quot;
+
+    email: str = Field(..., min_length=5, max_length=255)
+    name: str = Field(..., min_length=1, max_length=100)
+    age: int = Field(ge=0, le=150)
+
+    @field_validator(&quot;email&quot;)
+    @classmethod
+    def validate_email_format(cls, v: str) -&gt; str:
+        if &quot;@&quot; not in v or &quot;.&quot; not in v.split(&quot;@&quot;)[-1]:
+            raise ValueError(&quot;Invalid email format&quot;)
+        return v.lower()
+
+    @field_validator(&quot;name&quot;)
+    @classmethod
+    def normalize_name(cls, v: str) -&gt; str:
+        return v.strip().title()
+
+# Usage
+try:
+    user_input = CreateUserInput(
+        email=&quot;user@example.com&quot;,
+        name=&quot;john doe&quot;,
+        age=25,
+    )
+except ValidationError as e:
+    # Pydantic provides detailed error information
+    print(e.errors())
+```
+
+### Pattern 4: Map Errors to Standard Exceptions
+
+適當地使用 Python 內建的例外型別，並視需要加上 context。
+
+| Failure Type | Exception | Example |
+|--------------|-----------|---------|
+| 無效輸入 | `ValueError` | 錯誤的參數值 |
+| 型別錯誤 | `TypeError` | 預期字串，卻拿到 int |
+| 缺少項目 | `KeyError` | 找不到 dict 的 key |
+| 操作失敗 | `RuntimeError` | 服務無法使用 |
+| 逾時 | `TimeoutError` | 操作花太久 |
+| 找不到檔案 | `FileNotFoundError` | 路徑不存在 |
+| 權限被拒 | `PermissionError` | 禁止存取 |
+
+```python
+# Good: Specific exception with context
+raise ValueError(f&quot;&#x27;page_size&#x27; must be 1-100, got {page_size}&quot;)
+
+# Avoid: Generic exception, no context
+raise Exception(&quot;Invalid parameter&quot;)
+```
+
+## Detailed worked examples and patterns
+
+詳細的章節（從 `## Advanced Patterns` 開始）放在 `references/details.md`。上面的導覽摘要不夠用時，再去讀那個檔案。
+
+## Best Practices Summary
+
+1. **及早驗證** - 在昂貴的操作之前先檢查輸入
+2. **使用特定的例外** - 用 `ValueError`、`TypeError`，不要用籠統的 `Exception`
+3. **附上 context** - 訊息應該說明是什麼、為什麼，以及怎麼修正
+4. **在邊界轉換型別** - 及早把字串解析成 enum/領域型別
+5. **串接例外** - 用 `raise ... from e` 保留除錯資訊
+6. **處理部分失敗** - 不要因為單一項目的錯誤就中止整批
+7. **使用 Pydantic** - 用於複雜的輸入驗證，並取得結構化的錯誤
+8. **記錄失敗模式** - Docstring 應該列出可能的例外
+9. **記錄時附上 context** - 包含 ID、數量與其他除錯資訊
+10. **測試錯誤路徑** - 驗證例外有被正確拋出</pre></section><section><h2>英文原文</h2><pre>---
+name: python-error-handling
+description: Python error handling patterns including input validation, exception hierarchies, and partial failure handling. Use when implementing validation logic, designing exception strategies, handling batch processing failures, or building robust APIs.
+---
+
+# Python Error Handling
+
+Build robust Python applications with proper input validation, meaningful exceptions, and graceful failure handling. Good error handling makes debugging easier and systems more reliable.
+
+## When to Use This Skill
+
+- Validating user input and API parameters
+- Designing exception hierarchies for applications
+- Handling partial failures in batch operations
+- Converting external data to domain types
+- Building user-friendly error messages
+- Implementing fail-fast validation patterns
+
+## Core Concepts
+
+### 1. Fail Fast
+
+Validate inputs early, before expensive operations. Report all validation errors at once when possible.
+
+### 2. Meaningful Exceptions
+
+Use appropriate exception types with context. Messages should explain what failed, why, and how to fix it.
+
+### 3. Partial Failures
+
+In batch operations, don&#x27;t let one failure abort everything. Track successes and failures separately.
+
+### 4. Preserve Context
+
+Chain exceptions to maintain the full error trail for debugging.
+
+## Quick Start
+
+```python
+def fetch_page(url: str, page_size: int) -&gt; Page:
+    if not url:
+        raise ValueError(&quot;&#x27;url&#x27; is required&quot;)
+    if not 1 &lt;= page_size &lt;= 100:
+        raise ValueError(f&quot;&#x27;page_size&#x27; must be 1-100, got {page_size}&quot;)
+    # Now safe to proceed...
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Early Input Validation
+
+Validate all inputs at API boundaries before any processing begins.
+
+```python
+def process_order(
+    order_id: str,
+    quantity: int,
+    discount_percent: float,
+) -&gt; OrderResult:
+    &quot;&quot;&quot;Process an order with validation.&quot;&quot;&quot;
+    # Validate required fields
+    if not order_id:
+        raise ValueError(&quot;&#x27;order_id&#x27; is required&quot;)
+
+    # Validate ranges
+    if quantity &lt;= 0:
+        raise ValueError(f&quot;&#x27;quantity&#x27; must be positive, got {quantity}&quot;)
+
+    if not 0 &lt;= discount_percent &lt;= 100:
+        raise ValueError(
+            f&quot;&#x27;discount_percent&#x27; must be 0-100, got {discount_percent}&quot;
+        )
+
+    # Validation passed, proceed with processing
+    return _process_validated_order(order_id, quantity, discount_percent)
+```
+
+### Pattern 2: Convert to Domain Types Early
+
+Parse strings and external data into typed domain objects at system boundaries.
+
+```python
+from enum import Enum
+
+class OutputFormat(Enum):
+    JSON = &quot;json&quot;
+    CSV = &quot;csv&quot;
+    PARQUET = &quot;parquet&quot;
+
+def parse_output_format(value: str) -&gt; OutputFormat:
+    &quot;&quot;&quot;Parse string to OutputFormat enum.
+
+    Args:
+        value: Format string from user input.
+
+    Returns:
+        Validated OutputFormat enum member.
+
+    Raises:
+        ValueError: If format is not recognized.
+    &quot;&quot;&quot;
+    try:
+        return OutputFormat(value.lower())
+    except ValueError:
+        valid_formats = [f.value for f in OutputFormat]
+        raise ValueError(
+            f&quot;Invalid format &#x27;{value}&#x27;. &quot;
+            f&quot;Valid options: {&#x27;, &#x27;.join(valid_formats)}&quot;
+        )
+
+# Usage at API boundary
+def export_data(data: list[dict], format_str: str) -&gt; bytes:
+    output_format = parse_output_format(format_str)  # Fail fast
+    # Rest of function uses typed OutputFormat
+    ...
+```
+
+### Pattern 3: Pydantic for Complex Validation
+
+Use Pydantic models for structured input validation with automatic error messages.
+
+```python
+from pydantic import BaseModel, Field, field_validator
+
+class CreateUserInput(BaseModel):
+    &quot;&quot;&quot;Input model for user creation.&quot;&quot;&quot;
+
+    email: str = Field(..., min_length=5, max_length=255)
+    name: str = Field(..., min_length=1, max_length=100)
+    age: int = Field(ge=0, le=150)
+
+    @field_validator(&quot;email&quot;)
+    @classmethod
+    def validate_email_format(cls, v: str) -&gt; str:
+        if &quot;@&quot; not in v or &quot;.&quot; not in v.split(&quot;@&quot;)[-1]:
+            raise ValueError(&quot;Invalid email format&quot;)
+        return v.lower()
+
+    @field_validator(&quot;name&quot;)
+    @classmethod
+    def normalize_name(cls, v: str) -&gt; str:
+        return v.strip().title()
+
+# Usage
+try:
+    user_input = CreateUserInput(
+        email=&quot;user@example.com&quot;,
+        name=&quot;john doe&quot;,
+        age=25,
+    )
+except ValidationError as e:
+    # Pydantic provides detailed error information
+    print(e.errors())
+```
+
+### Pattern 4: Map Errors to Standard Exceptions
+
+Use Python&#x27;s built-in exception types appropriately, adding context as needed.
+
+| Failure Type | Exception | Example |
+|--------------|-----------|---------|
+| Invalid input | `ValueError` | Bad parameter values |
+| Wrong type | `TypeError` | Expected string, got int |
+| Missing item | `KeyError` | Dict key not found |
+| Operational failure | `RuntimeError` | Service unavailable |
+| Timeout | `TimeoutError` | Operation took too long |
+| File not found | `FileNotFoundError` | Path doesn&#x27;t exist |
+| Permission denied | `PermissionError` | Access forbidden |
+
+```python
+# Good: Specific exception with context
+raise ValueError(f&quot;&#x27;page_size&#x27; must be 1-100, got {page_size}&quot;)
+
+# Avoid: Generic exception, no context
+raise Exception(&quot;Invalid parameter&quot;)
+```
+
+## Detailed worked examples and patterns
+
+Detailed sections (starting with `## Advanced Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
+
+## Best Practices Summary
+
+1. **Validate early** - Check inputs before expensive operations
+2. **Use specific exceptions** - `ValueError`, `TypeError`, not generic `Exception`
+3. **Include context** - Messages should explain what, why, and how to fix
+4. **Convert types at boundaries** - Parse strings to enums/domain types early
+5. **Chain exceptions** - Use `raise ... from e` to preserve debug info
+6. **Handle partial failures** - Don&#x27;t abort batches on single item errors
+7. **Use Pydantic** - For complex input validation with structured errors
+8. **Document failure modes** - Docstrings should list possible exceptions
+9. **Log with context** - Include IDs, counts, and other debugging info
+10. **Test error paths** - Verify exceptions are raised correctly</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

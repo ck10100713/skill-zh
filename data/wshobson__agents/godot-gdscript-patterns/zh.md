@@ -1,6 +1,6 @@
 ---
 name: godot-gdscript-patterns
-description: Godot 4.x 遊戲開發的 GDScript 模式，涵蓋架構、signal、scene 與最佳化。適用於用 Godot 4 做遊戲、用 GDScript 實作遊戲系統、設計 scene 架構的時候。
+description: 精通 Godot 4 的 GDScript 模式，包含 signal、scene、狀態機與最佳化。適用於用 Godot 做遊戲、實作遊戲系統，或學習 GDScript 最佳實務的時候。
 ---
 
 # Godot GDScript 模式

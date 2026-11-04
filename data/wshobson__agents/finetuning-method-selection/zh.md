@@ -1,6 +1,6 @@
 ---
 name: finetuning-method-selection
-description: Fine-tuning 生命週期的路由 skill：決定到底該不該 fine-tune，如果要，該用哪種方法、哪個 base-model 大小級距。適用於在選定 framework 或 base model 之前，要開始任何 fine-tuning 工作的時候。
+description: 判斷到底要不要 fine-tune，並導向正確的方法（SFT、DPO/ORPO/KTO、GRPO/RLVR、continued pretraining）與 base model。適用於開始任何 fine-tuning 工作、不確定 RAG 或 prompting 夠不夠用，或在偏好最佳化與強化學習方法之間做選擇的時候。
 ---
 
 # Fine-Tuning 方法選擇

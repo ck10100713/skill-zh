@@ -1,6 +1,6 @@
 ---
 name: gdpr-data-handling
-description: 實作符合 GDPR 的資料處理、同意管理與隱私控制的實務指南。適用於建構處理歐盟個人資料的系統、實作同意管理、處理資料當事人請求（DSR），或進行 GDPR 合規審查的時候。
+description: 實作符合 GDPR 的資料處理，包含同意管理、資料當事人權利與 privacy by design。適用於建構處理歐盟個人資料的系統、實作隱私控制，或進行 GDPR 合規審查的時候。
 ---
 
 # GDPR 資料處理

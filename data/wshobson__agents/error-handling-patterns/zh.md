@@ -1,6 +1,6 @@
 ---
 name: error-handling-patterns
-description: 用穩健的錯誤處理策略打造有韌性的應用，優雅地處理失敗並提供絕佳的除錯體驗。適用於在新功能中實作錯誤處理、設計能容錯的 API、除錯 production 問題的時候。
+description: 精通跨語言的錯誤處理模式，包含 exception、Result 型別、錯誤傳遞與優雅降級，用來建構有韌性的應用。適用於實作錯誤處理、設計 API，或提升應用可靠度的時候。
 ---
 
 # 錯誤處理模式

@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>k8s-security-policies｜Skill 寫法圖鑑</title>
+<meta name="description" content="在 Kubernetes 實作 NetworkPolicy、RBAC 與 Pod 安全標準做縱深防禦">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>k8s-security-policies</h1>
+<p class="meta">wshobson ｜ 雲端與基礎設施 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/kubernetes-operations/skills/k8s-security-policies/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">在 Kubernetes 實作 NetworkPolicy、RBAC 與 Pod 安全標準做縱深防禦</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: k8s-security-policies
+description: 實作 Kubernetes 安全政策，包含 NetworkPolicy、PodSecurityPolicy 與 RBAC，達到正式環境等級的安全性。在加固 Kubernetes cluster、實作網路隔離或落實 pod 安全標準時使用。
+---
+
+# Kubernetes Security Policies
+
+在 Kubernetes 實作 NetworkPolicy、PodSecurityPolicy、RBAC 與 Pod Security Standards 的完整指南。
+
+## Purpose
+
+用 network policy、pod security standards 和 RBAC，替 Kubernetes cluster 做縱深防禦。
+
+## When to Use This Skill
+
+- 實作網路分段
+- 設定 pod security standards
+- 建立符合最小權限的 RBAC
+- 為合規需求建立安全政策
+- 實作 admission control
+- 加固多租戶 cluster
+
+## Pod Security Standards
+
+### 1. Privileged (Unrestricted)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: privileged-ns
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+```
+
+### 2. Baseline (Minimally restrictive)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: baseline-ns
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline
+```
+
+### 3. Restricted (Most restrictive)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restricted-ns
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+```
+
+## Network Policies
+
+### Default Deny All
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+```
+
+### Allow Frontend to Backend
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8080
+```
+
+### Allow DNS
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+```
+
+**參考：** 見 `assets/network-policy-template.yaml`
+
+## RBAC Configuration
+
+### Role (Namespace-scoped)
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: production
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods&quot;]
+    verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]
+```
+
+### ClusterRole (Cluster-wide)
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-reader
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;secrets&quot;]
+    verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]
+```
+
+### RoleBinding
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: production
+subjects:
+  - kind: User
+    name: jane
+    apiGroup: rbac.authorization.k8s.io
+  - kind: ServiceAccount
+    name: default
+    namespace: production
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+**參考：** 見 `references/rbac-patterns.md`
+
+## Pod Security Context
+
+### Restricted Pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: myapp:1.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+```
+
+## Policy Enforcement with OPA Gatekeeper
+
+### ConstraintTemplate
+
+```yaml
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredlabels
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredLabels
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            labels:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredlabels
+        violation[{&quot;msg&quot;: msg, &quot;details&quot;: {&quot;missing_labels&quot;: missing}}] {
+          provided := {label | input.review.object.metadata.labels[label]}
+          required := {label | label := input.parameters.labels[_]}
+          missing := required - provided
+          count(missing) &gt; 0
+          msg := sprintf(&quot;missing required labels: %v&quot;, [missing])
+        }
+```
+
+### Constraint
+
+```yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: require-app-label
+spec:
+  match:
+    kinds:
+      - apiGroups: [&quot;apps&quot;]
+        kinds: [&quot;Deployment&quot;]
+  parameters:
+    labels: [&quot;app&quot;, &quot;environment&quot;]
+```
+
+## Service Mesh Security (Istio)
+
+### PeerAuthentication (mTLS)
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: production
+spec:
+  mtls:
+    mode: STRICT
+```
+
+### AuthorizationPolicy
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-frontend
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [&quot;cluster.local/ns/production/sa/frontend&quot;]
+```
+
+## Best Practices
+
+1. **在 namespace 層級實作 Pod Security Standards**
+2. **用 Network Policies** 做網路分段
+3. **對所有 service account 套用最小權限的 RBAC**
+4. **啟用 admission control**（OPA Gatekeeper/Kyverno）
+5. **用非 root 身分跑 container**
+6. **使用唯讀的 root filesystem**
+7. **除非必要，否則 drop 所有 capabilities**
+8. **實作 resource quota** 和 limit range
+9. **對安全事件啟用 audit logging**
+10. **定期對 image 做安全掃描**
+
+## Compliance Frameworks
+
+### CIS Kubernetes Benchmark
+
+- 使用 RBAC 授權
+- 啟用 audit logging
+- 使用 Pod Security Standards
+- 設定 network policy
+- 實作 secrets 靜態加密
+- 啟用 node 身分驗證
+
+### NIST Cybersecurity Framework
+
+- 實作縱深防禦
+- 使用網路分段
+- 設定安全監控
+- 實作存取控制
+- 啟用 logging 與監控
+
+## Troubleshooting
+
+**NetworkPolicy 沒作用：**
+
+```bash
+# Check if CNI supports NetworkPolicy
+kubectl get nodes -o wide
+kubectl describe networkpolicy &lt;name&gt;
+```
+
+**RBAC 權限被拒：**
+
+```bash
+# Check effective permissions
+kubectl auth can-i list pods --as system:serviceaccount:default:my-sa
+kubectl auth can-i &#x27;*&#x27; &#x27;*&#x27; --as system:serviceaccount:default:my-sa
+```
+
+
+## Related Skills
+
+- `k8s-manifest-generator` - 用來建立安全的 manifest
+- `gitops-workflow` - 用來自動部署政策</pre></section><section><h2>英文原文</h2><pre>---
+name: k8s-security-policies
+description: Implement Kubernetes security policies including NetworkPolicy, PodSecurityPolicy, and RBAC for production-grade security. Use when securing Kubernetes clusters, implementing network isolation, or enforcing pod security standards.
+---
+
+# Kubernetes Security Policies
+
+Comprehensive guide for implementing NetworkPolicy, PodSecurityPolicy, RBAC, and Pod Security Standards in Kubernetes.
+
+## Purpose
+
+Implement defense-in-depth security for Kubernetes clusters using network policies, pod security standards, and RBAC.
+
+## When to Use This Skill
+
+- Implement network segmentation
+- Configure pod security standards
+- Set up RBAC for least-privilege access
+- Create security policies for compliance
+- Implement admission control
+- Secure multi-tenant clusters
+
+## Pod Security Standards
+
+### 1. Privileged (Unrestricted)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: privileged-ns
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+```
+
+### 2. Baseline (Minimally restrictive)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: baseline-ns
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/warn: baseline
+```
+
+### 3. Restricted (Most restrictive)
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restricted-ns
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+```
+
+## Network Policies
+
+### Default Deny All
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+```
+
+### Allow Frontend to Backend
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8080
+```
+
+### Allow DNS
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+```
+
+**Reference:** See `assets/network-policy-template.yaml`
+
+## RBAC Configuration
+
+### Role (Namespace-scoped)
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: production
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods&quot;]
+    verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]
+```
+
+### ClusterRole (Cluster-wide)
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-reader
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;secrets&quot;]
+    verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]
+```
+
+### RoleBinding
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: production
+subjects:
+  - kind: User
+    name: jane
+    apiGroup: rbac.authorization.k8s.io
+  - kind: ServiceAccount
+    name: default
+    namespace: production
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+**Reference:** See `references/rbac-patterns.md`
+
+## Pod Security Context
+
+### Restricted Pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: myapp:1.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+```
+
+## Policy Enforcement with OPA Gatekeeper
+
+### ConstraintTemplate
+
+```yaml
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredlabels
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredLabels
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            labels:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredlabels
+        violation[{&quot;msg&quot;: msg, &quot;details&quot;: {&quot;missing_labels&quot;: missing}}] {
+          provided := {label | input.review.object.metadata.labels[label]}
+          required := {label | label := input.parameters.labels[_]}
+          missing := required - provided
+          count(missing) &gt; 0
+          msg := sprintf(&quot;missing required labels: %v&quot;, [missing])
+        }
+```
+
+### Constraint
+
+```yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: require-app-label
+spec:
+  match:
+    kinds:
+      - apiGroups: [&quot;apps&quot;]
+        kinds: [&quot;Deployment&quot;]
+  parameters:
+    labels: [&quot;app&quot;, &quot;environment&quot;]
+```
+
+## Service Mesh Security (Istio)
+
+### PeerAuthentication (mTLS)
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: production
+spec:
+  mtls:
+    mode: STRICT
+```
+
+### AuthorizationPolicy
+
+```yaml
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-frontend
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [&quot;cluster.local/ns/production/sa/frontend&quot;]
+```
+
+## Best Practices
+
+1. **Implement Pod Security Standards** at namespace level
+2. **Use Network Policies** for network segmentation
+3. **Apply least-privilege RBAC** for all service accounts
+4. **Enable admission control** (OPA Gatekeeper/Kyverno)
+5. **Run containers as non-root**
+6. **Use read-only root filesystem**
+7. **Drop all capabilities** unless needed
+8. **Implement resource quotas** and limit ranges
+9. **Enable audit logging** for security events
+10. **Regular security scanning** of images
+
+## Compliance Frameworks
+
+### CIS Kubernetes Benchmark
+
+- Use RBAC authorization
+- Enable audit logging
+- Use Pod Security Standards
+- Configure network policies
+- Implement secrets encryption at rest
+- Enable node authentication
+
+### NIST Cybersecurity Framework
+
+- Implement defense in depth
+- Use network segmentation
+- Configure security monitoring
+- Implement access controls
+- Enable logging and monitoring
+
+## Troubleshooting
+
+**NetworkPolicy not working:**
+
+```bash
+# Check if CNI supports NetworkPolicy
+kubectl get nodes -o wide
+kubectl describe networkpolicy &lt;name&gt;
+```
+
+**RBAC permission denied:**
+
+```bash
+# Check effective permissions
+kubectl auth can-i list pods --as system:serviceaccount:default:my-sa
+kubectl auth can-i &#x27;*&#x27; &#x27;*&#x27; --as system:serviceaccount:default:my-sa
+```
+
+
+## Related Skills
+
+- `k8s-manifest-generator` - For creating secure manifests
+- `gitops-workflow` - For automated policy deployment</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

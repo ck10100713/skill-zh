@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>postmortem-writing｜Skill 寫法圖鑑</title>
+<meta name="description" content="寫出 blameless postmortem，含根因分析、時間軸與行動項目">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>postmortem-writing</h1>
+<p class="meta">wshobson ｜ 寫作與文件 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/incident-response/skills/postmortem-writing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">寫出 blameless postmortem，含根因分析、時間軸與行動項目</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: postmortem-writing
+description: 撰寫有效的 blameless postmortem，包含根因分析、時間軸與行動項目。在進行事件檢討、撰寫 postmortem 文件或改善事件應變流程時使用。
+---
+
+# Postmortem Writing
+
+撰寫有效的 blameless postmortem 的完整指南，用來推動組織學習並防止事件再次發生。
+
+## When to Use This Skill
+
+- 進行事後事件檢討
+- 撰寫 postmortem 文件
+- 主持 blameless postmortem 會議
+- 找出根因與促成因素
+- 建立可執行的後續項目
+- 建立組織的學習文化
+
+## Core Concepts
+
+### 1. Blameless Culture
+
+| Blame-Focused            | Blameless                         |
+| ------------------------ | --------------------------------- |
+| 「這是誰造成的？」       | 「是什麼條件讓這件事會發生？」   |
+| 「有人犯了錯」 | 「系統允許了這個錯誤」 |
+| 懲罰個人       | 改善系統                   |
+| 隱藏資訊         | 分享學到的事                   |
+| 不敢發言      | 心理安全感              |
+
+### 2. Postmortem Triggers
+
+- SEV1 或 SEV2 事件
+- 影響客戶、超過 15 分鐘的停機
+- 資料遺失或資安事件
+- 差點釀成嚴重後果的 near-miss
+- 全新的失效模式
+- 需要非常規介入的事件
+
+## Quick Start
+
+### Postmortem Timeline
+
+```
+Day 0: Incident occurs
+Day 1-2: Draft postmortem document
+Day 3-5: Postmortem meeting
+Day 5-7: Finalize document, create tickets
+Week 2+: Action item completion
+Quarterly: Review patterns across incidents
+```
+
+## Templates and detailed worked examples
+
+完整的範本庫與詳細的範例放在 `references/details.md`。需要具體範本時，再去讀那個檔案。
+
+### Template 2: 5 Whys Analysis
+
+```markdown
+# 5 Whys Analysis: [Incident]
+
+## Problem Statement
+
+Payment service experienced 47-minute outage due to database connection exhaustion.
+
+## Analysis
+
+### Why #1: Why did the service fail?
+
+**Answer**: Database connections were exhausted, causing all new requests to fail.
+
+**Evidence**: Metrics showed connection count at 100/100 (max), with 500+ pending requests.
+
+---
+
+### Why #2: Why were database connections exhausted?
+
+**Answer**: Each incoming request opened a new database connection instead of using the connection pool.
+
+**Evidence**: Code diff shows direct `DriverManager.getConnection()` instead of pooled `DataSource`.
+
+---
+
+### Why #3: Why did the code bypass the connection pool?
+
+**Answer**: A developer refactored the repository class and inadvertently changed the connection acquisition method.
+
+**Evidence**: PR #1234 shows the change, made while fixing a different bug.
+
+---
+
+### Why #4: Why wasn&#x27;t this caught in code review?
+
+**Answer**: The reviewer focused on the functional change (the bug fix) and didn&#x27;t notice the infrastructure change.
+
+**Evidence**: Review comments only discuss business logic.
+
+---
+
+### Why #5: Why isn&#x27;t there a safety net for this type of change?
+
+**Answer**: We lack automated tests that verify connection pool behavior and lack documentation about our connection patterns.
+
+**Evidence**: Test suite has no tests for connection handling; wiki has no article on database connections.
+
+## Root Causes Identified
+
+1. **Primary**: Missing automated tests for infrastructure behavior
+2. **Secondary**: Insufficient documentation of architectural patterns
+3. **Tertiary**: Code review checklist doesn&#x27;t include infrastructure considerations
+
+## Systemic Improvements
+
+| Root Cause    | Improvement                       | Type       |
+| ------------- | --------------------------------- | ---------- |
+| Missing tests | Add infrastructure behavior tests | Prevention |
+| Missing docs  | Document connection patterns      | Prevention |
+| Review gaps   | Update review checklist           | Detection  |
+| No canary     | Implement canary deployments      | Mitigation |
+```
+
+### Template 3: Quick Postmortem (Minor Incidents)
+
+```markdown
+# Quick Postmortem: [Brief Title]
+
+**Date**: 2024-01-15 | **Duration**: 12 min | **Severity**: SEV3
+
+## What Happened
+
+API latency spiked to 5s due to cache miss storm after cache flush.
+
+## Timeline
+
+- 10:00 - Cache flush initiated for config update
+- 10:02 - Latency alerts fire
+- 10:05 - Identified as cache miss storm
+- 10:08 - Enabled cache warming
+- 10:12 - Latency normalized
+
+## Root Cause
+
+Full cache flush for minor config update caused thundering herd.
+
+## Fix
+
+- Immediate: Enabled cache warming
+- Long-term: Implement partial cache invalidation (ENG-999)
+
+## Lessons
+
+Don&#x27;t full-flush cache in production; use targeted invalidation.
+```
+
+## Facilitation Guide
+
+### Running a Postmortem Meeting
+
+```markdown
+## Meeting Structure (60 minutes)
+
+### 1. Opening (5 min)
+
+- Remind everyone of blameless culture
+- &quot;We&#x27;re here to learn, not to blame&quot;
+- Review meeting norms
+
+### 2. Timeline Review (15 min)
+
+- Walk through events chronologically
+- Ask clarifying questions
+- Identify gaps in timeline
+
+### 3. Analysis Discussion (20 min)
+
+- What failed?
+- Why did it fail?
+- What conditions allowed this?
+- What would have prevented it?
+
+### 4. Action Items (15 min)
+
+- Brainstorm improvements
+- Prioritize by impact and effort
+- Assign owners and due dates
+
+### 5. Closing (5 min)
+
+- Summarize key learnings
+- Confirm action item owners
+- Schedule follow-up if needed
+
+## Facilitation Tips
+
+- Keep discussion on track
+- Redirect blame to systems
+- Encourage quiet participants
+- Document dissenting views
+- Time-box tangents
+```
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern            | Problem                    | Better Approach                 |
+| ----------------------- | -------------------------- | ------------------------------- |
+| **Blame game**          | 讓學習停擺        | 專注在系統                |
+| **Shallow analysis**    | 無法防止再次發生 | 問五次「為什麼」               |
+| **No action items**     | 浪費時間              | 一定要有具體的下一步 |
+| **Unrealistic actions** | 永遠做不完            | 把範圍縮到做得到的任務       |
+| **No follow-up**        | 行動項目被遺忘          | 在工單系統裡追蹤       |
+
+## Best Practices
+
+### Do&#x27;s
+
+- **立刻開始** - 記憶消退得很快
+- **要具體** - 精確的時間、精確的錯誤
+- **附上圖表** - 視覺化的證據
+- **指定負責人** - 不要有沒人認領的行動項目
+- **廣泛分享** - 組織學習
+
+### Don&#x27;ts
+
+- **不要點名羞辱** - 絕對不要
+- **不要跳過小事件** - 它們會揭露模式
+- **不要把它寫成究責文件** - 那會扼殺學習
+- **不要製造瑣事** - 行動項目要有意義
+- **不要跳過後續追蹤** - 驗證行動項目有完成</pre></section><section><h2>英文原文</h2><pre>---
+name: postmortem-writing
+description: Write effective blameless postmortems with root cause analysis, timelines, and action items. Use when conducting incident reviews, writing postmortem documents, or improving incident response processes.
+---
+
+# Postmortem Writing
+
+Comprehensive guide to writing effective, blameless postmortems that drive organizational learning and prevent incident recurrence.
+
+## When to Use This Skill
+
+- Conducting post-incident reviews
+- Writing postmortem documents
+- Facilitating blameless postmortem meetings
+- Identifying root causes and contributing factors
+- Creating actionable follow-up items
+- Building organizational learning culture
+
+## Core Concepts
+
+### 1. Blameless Culture
+
+| Blame-Focused            | Blameless                         |
+| ------------------------ | --------------------------------- |
+| &quot;Who caused this?&quot;       | &quot;What conditions allowed this?&quot;   |
+| &quot;Someone made a mistake&quot; | &quot;The system allowed this mistake&quot; |
+| Punish individuals       | Improve systems                   |
+| Hide information         | Share learnings                   |
+| Fear of speaking up      | Psychological safety              |
+
+### 2. Postmortem Triggers
+
+- SEV1 or SEV2 incidents
+- Customer-facing outages &gt; 15 minutes
+- Data loss or security incidents
+- Near-misses that could have been severe
+- Novel failure modes
+- Incidents requiring unusual intervention
+
+## Quick Start
+
+### Postmortem Timeline
+
+```
+Day 0: Incident occurs
+Day 1-2: Draft postmortem document
+Day 3-5: Postmortem meeting
+Day 5-7: Finalize document, create tickets
+Week 2+: Action item completion
+Quarterly: Review patterns across incidents
+```
+
+## Templates and detailed worked examples
+
+Full template library and detailed worked examples live in `references/details.md`. Read that file when you need the concrete templates.
+
+### Template 2: 5 Whys Analysis
+
+```markdown
+# 5 Whys Analysis: [Incident]
+
+## Problem Statement
+
+Payment service experienced 47-minute outage due to database connection exhaustion.
+
+## Analysis
+
+### Why #1: Why did the service fail?
+
+**Answer**: Database connections were exhausted, causing all new requests to fail.
+
+**Evidence**: Metrics showed connection count at 100/100 (max), with 500+ pending requests.
+
+---
+
+### Why #2: Why were database connections exhausted?
+
+**Answer**: Each incoming request opened a new database connection instead of using the connection pool.
+
+**Evidence**: Code diff shows direct `DriverManager.getConnection()` instead of pooled `DataSource`.
+
+---
+
+### Why #3: Why did the code bypass the connection pool?
+
+**Answer**: A developer refactored the repository class and inadvertently changed the connection acquisition method.
+
+**Evidence**: PR #1234 shows the change, made while fixing a different bug.
+
+---
+
+### Why #4: Why wasn&#x27;t this caught in code review?
+
+**Answer**: The reviewer focused on the functional change (the bug fix) and didn&#x27;t notice the infrastructure change.
+
+**Evidence**: Review comments only discuss business logic.
+
+---
+
+### Why #5: Why isn&#x27;t there a safety net for this type of change?
+
+**Answer**: We lack automated tests that verify connection pool behavior and lack documentation about our connection patterns.
+
+**Evidence**: Test suite has no tests for connection handling; wiki has no article on database connections.
+
+## Root Causes Identified
+
+1. **Primary**: Missing automated tests for infrastructure behavior
+2. **Secondary**: Insufficient documentation of architectural patterns
+3. **Tertiary**: Code review checklist doesn&#x27;t include infrastructure considerations
+
+## Systemic Improvements
+
+| Root Cause    | Improvement                       | Type       |
+| ------------- | --------------------------------- | ---------- |
+| Missing tests | Add infrastructure behavior tests | Prevention |
+| Missing docs  | Document connection patterns      | Prevention |
+| Review gaps   | Update review checklist           | Detection  |
+| No canary     | Implement canary deployments      | Mitigation |
+```
+
+### Template 3: Quick Postmortem (Minor Incidents)
+
+```markdown
+# Quick Postmortem: [Brief Title]
+
+**Date**: 2024-01-15 | **Duration**: 12 min | **Severity**: SEV3
+
+## What Happened
+
+API latency spiked to 5s due to cache miss storm after cache flush.
+
+## Timeline
+
+- 10:00 - Cache flush initiated for config update
+- 10:02 - Latency alerts fire
+- 10:05 - Identified as cache miss storm
+- 10:08 - Enabled cache warming
+- 10:12 - Latency normalized
+
+## Root Cause
+
+Full cache flush for minor config update caused thundering herd.
+
+## Fix
+
+- Immediate: Enabled cache warming
+- Long-term: Implement partial cache invalidation (ENG-999)
+
+## Lessons
+
+Don&#x27;t full-flush cache in production; use targeted invalidation.
+```
+
+## Facilitation Guide
+
+### Running a Postmortem Meeting
+
+```markdown
+## Meeting Structure (60 minutes)
+
+### 1. Opening (5 min)
+
+- Remind everyone of blameless culture
+- &quot;We&#x27;re here to learn, not to blame&quot;
+- Review meeting norms
+
+### 2. Timeline Review (15 min)
+
+- Walk through events chronologically
+- Ask clarifying questions
+- Identify gaps in timeline
+
+### 3. Analysis Discussion (20 min)
+
+- What failed?
+- Why did it fail?
+- What conditions allowed this?
+- What would have prevented it?
+
+### 4. Action Items (15 min)
+
+- Brainstorm improvements
+- Prioritize by impact and effort
+- Assign owners and due dates
+
+### 5. Closing (5 min)
+
+- Summarize key learnings
+- Confirm action item owners
+- Schedule follow-up if needed
+
+## Facilitation Tips
+
+- Keep discussion on track
+- Redirect blame to systems
+- Encourage quiet participants
+- Document dissenting views
+- Time-box tangents
+```
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern            | Problem                    | Better Approach                 |
+| ----------------------- | -------------------------- | ------------------------------- |
+| **Blame game**          | Shuts down learning        | Focus on systems                |
+| **Shallow analysis**    | Doesn&#x27;t prevent recurrence | Ask &quot;why&quot; 5 times               |
+| **No action items**     | Waste of time              | Always have concrete next steps |
+| **Unrealistic actions** | Never completed            | Scope to achievable tasks       |
+| **No follow-up**        | Actions forgotten          | Track in ticketing system       |
+
+## Best Practices
+
+### Do&#x27;s
+
+- **Start immediately** - Memory fades fast
+- **Be specific** - Exact times, exact errors
+- **Include graphs** - Visual evidence
+- **Assign owners** - No orphan action items
+- **Share widely** - Organizational learning
+
+### Don&#x27;ts
+
+- **Don&#x27;t name and shame** - Ever
+- **Don&#x27;t skip small incidents** - They reveal patterns
+- **Don&#x27;t make it a blame doc** - That kills learning
+- **Don&#x27;t create busywork** - Actions should be meaningful
+- **Don&#x27;t skip follow-up** - Verify actions completed</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
 name: go-concurrency-patterns
-description: 精通 Go 並行模式，包含 goroutine、channel、同步原語與 context 管理，用來建構高效能的並行應用。適用於寫並行的 Go 程式、實作 worker pool、除錯 race condition 的時候。
+description: 精通 Go 並行，包含 goroutine、channel、同步原語與 context。適用於建構並行的 Go 應用、實作 worker pool，或除錯 race condition 的時候。
 ---
 
 # Go 並行模式

@@ -1,6 +1,6 @@
 ---
 name: github-actions-templates
-description: 為測試、建置與 deploy 應用程式提供可上 production 的 GitHub Actions workflow 範本。適用於為專案建立 CI/CD、自動化測試與 deploy 流程，或設定安全的 GitHub Actions workflow 的時候。
+description: 建立可上 production 的 GitHub Actions workflow，用於自動化測試、建置與 deploy 應用程式。適用於用 GitHub Actions 設定 CI/CD、自動化開發流程，或建立可重用的 workflow 範本的時候。
 ---
 
 # GitHub Actions 範本

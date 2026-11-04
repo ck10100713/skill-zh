@@ -1,6 +1,6 @@
 ---
 name: grafana-dashboards
-description: 為完整的系統 observability 建立並管理可上 production 的 Grafana dashboard。適用於視覺化 Prometheus 指標、建立自訂 dashboard、實作 SLO dashboard 或監控基礎設施的時候。
+description: 建立並管理可上 production 的 Grafana dashboard，用於即時視覺化系統與應用程式的指標。適用於建構監控 dashboard、視覺化指標，或建立營運 observability 介面的時候。
 ---
 
 # Grafana Dashboard

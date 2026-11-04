@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-testing-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 pytest、fixture、mock 和 TDD 建立完整的 Python 測試策略">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-testing-patterns</h1>
+<p class="meta">wshobson ｜ 測試與驗證 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-testing-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 pytest、fixture、mock 和 TDD 建立完整的 Python 測試策略</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-testing-patterns
+description: 用 pytest、fixture、mock 和測試驅動開發來落實完整的測試策略。在撰寫 Python 測試、建立測試套件或實作測試最佳實務時使用。
+---
+
+# Python Testing Patterns
+
+一份完整指南，教你用 pytest、fixture、mock、參數化和測試驅動開發，在 Python 裡建立穩固的測試策略。
+
+## When to Use This Skill
+
+- 為 Python 程式碼寫 unit test
+- 建立測試套件和測試基礎設施
+- 實作測試驅動開發（TDD）
+- 為 API 和服務建立整合測試
+- Mock 外部依賴和服務
+- 測試 async 程式碼和並行操作
+- 在 CI/CD 設定持續測試
+- 實作 property-based testing
+- 測試資料庫操作
+- 除錯失敗的測試
+
+## Core Concepts
+
+### 1. Test Types
+
+- **Unit Tests**：單獨測試個別函式/class
+- **Integration Tests**：測試元件之間的互動
+- **Functional Tests**：端對端測試完整功能
+- **Performance Tests**：量測速度和資源使用
+
+### 2. Test Structure (AAA Pattern)
+
+- **Arrange**：準備測試資料和前置條件
+- **Act**：執行被測試的程式碼
+- **Assert**：驗證結果
+
+### 3. Test Coverage
+
+- 量測哪些程式碼有被測試跑到
+- 找出沒被測試的程式碼路徑
+- 目標是有意義的覆蓋率，不是只追高百分比
+
+### 4. Test Isolation
+
+- 測試之間要互相獨立
+- 測試之間不共用狀態
+- 每個測試跑完要自己清理
+
+## Quick Start
+
+```python
+# test_example.py
+def add(a, b):
+    return a + b
+
+def test_add():
+    &quot;&quot;&quot;Basic test example.&quot;&quot;&quot;
+    result = add(2, 3)
+    assert result == 5
+
+def test_add_negative():
+    &quot;&quot;&quot;Test with negative numbers.&quot;&quot;&quot;
+    assert add(-1, 1) == 0
+
+# Run with: pytest test_example.py
+```
+
+## Detailed patterns and worked examples
+
+詳細的 pattern 文件放在 `references/details.md`。上面這層導覽不夠用的時候，再去讀那個檔案。
+
+## Testing Best Practices
+
+### Test Organization
+
+```python
+# tests/
+#   __init__.py
+#   conftest.py           # Shared fixtures
+#   test_unit/            # Unit tests
+#     test_models.py
+#     test_utils.py
+#   test_integration/     # Integration tests
+#     test_api.py
+#     test_database.py
+#   test_e2e/            # End-to-end tests
+#     test_workflows.py
+```
+
+### Test Naming Convention
+
+常見的模式是 `test_&lt;unit&gt;_&lt;scenario&gt;_&lt;expected_outcome&gt;`。依你團隊的偏好調整。
+
+```python
+# Pattern: test_&lt;unit&gt;_&lt;scenario&gt;_&lt;expected&gt;
+def test_create_user_with_valid_data_returns_user():
+    ...
+
+def test_create_user_with_duplicate_email_raises_conflict():
+    ...
+
+def test_get_user_with_unknown_id_returns_none():
+    ...
+
+# Good test names - clear and descriptive
+def test_user_creation_with_valid_data():
+    &quot;&quot;&quot;Clear name describes what is being tested.&quot;&quot;&quot;
+    pass
+
+def test_login_fails_with_invalid_password():
+    &quot;&quot;&quot;Name describes expected behavior.&quot;&quot;&quot;
+    pass
+
+def test_api_returns_404_for_missing_resource():
+    &quot;&quot;&quot;Specific about inputs and expected outcomes.&quot;&quot;&quot;
+    pass
+
+# Bad test names - avoid these
+def test_1():  # Not descriptive
+    pass
+
+def test_user():  # Too vague
+    pass
+
+def test_function():  # Doesn&#x27;t explain what&#x27;s tested
+    pass
+```
+
+### Testing Retry Behavior
+
+用 mock 的 side effect 來驗證重試邏輯運作正常。
+
+```python
+from unittest.mock import Mock
+
+def test_retries_on_transient_error():
+    &quot;&quot;&quot;Test that service retries on transient failures.&quot;&quot;&quot;
+    client = Mock()
+    # Fail twice, then succeed
+    client.request.side_effect = [
+        ConnectionError(&quot;Failed&quot;),
+        ConnectionError(&quot;Failed&quot;),
+        {&quot;status&quot;: &quot;ok&quot;},
+    ]
+
+    service = ServiceWithRetry(client, max_retries=3)
+    result = service.fetch()
+
+    assert result == {&quot;status&quot;: &quot;ok&quot;}
+    assert client.request.call_count == 3
+
+def test_gives_up_after_max_retries():
+    &quot;&quot;&quot;Test that service stops retrying after max attempts.&quot;&quot;&quot;
+    client = Mock()
+    client.request.side_effect = ConnectionError(&quot;Failed&quot;)
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ConnectionError):
+        service.fetch()
+
+    assert client.request.call_count == 3
+
+def test_does_not_retry_on_permanent_error():
+    &quot;&quot;&quot;Test that permanent errors are not retried.&quot;&quot;&quot;
+    client = Mock()
+    client.request.side_effect = ValueError(&quot;Invalid input&quot;)
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ValueError):
+        service.fetch()
+
+    # Only called once - no retry for ValueError
+    assert client.request.call_count == 1
+```
+
+### Mocking Time with Freezegun
+
+用 freezegun 在測試裡控制時間，讓跟時間有關的行為可以預測。
+
+```python
+from freezegun import freeze_time
+from datetime import datetime, timedelta
+
+@freeze_time(&quot;2026-01-15 10:00:00&quot;)
+def test_token_expiry():
+    &quot;&quot;&quot;Test token expires at correct time.&quot;&quot;&quot;
+    token = create_token(expires_in_seconds=3600)
+    assert token.expires_at == datetime(2026, 1, 15, 11, 0, 0)
+
+@freeze_time(&quot;2026-01-15 10:00:00&quot;)
+def test_is_expired_returns_false_before_expiry():
+    &quot;&quot;&quot;Test token is not expired when within validity period.&quot;&quot;&quot;
+    token = create_token(expires_in_seconds=3600)
+    assert not token.is_expired()
+
+@freeze_time(&quot;2026-01-15 12:00:00&quot;)
+def test_is_expired_returns_true_after_expiry():
+    &quot;&quot;&quot;Test token is expired after validity period.&quot;&quot;&quot;
+    token = Token(expires_at=datetime(2026, 1, 15, 11, 30, 0))
+    assert token.is_expired()
+
+def test_with_time_travel():
+    &quot;&quot;&quot;Test behavior across time using freeze_time context.&quot;&quot;&quot;
+    with freeze_time(&quot;2026-01-01&quot;) as frozen_time:
+        item = create_item()
+        assert item.created_at == datetime(2026, 1, 1)
+
+        # Move forward in time
+        frozen_time.move_to(&quot;2026-01-15&quot;)
+        assert item.age_days == 14
+```
+
+### Test Markers
+
+```python
+# test_markers.py
+import pytest
+
+@pytest.mark.slow
+def test_slow_operation():
+    &quot;&quot;&quot;Mark slow tests.&quot;&quot;&quot;
+    import time
+    time.sleep(2)
+
+
+@pytest.mark.integration
+def test_database_integration():
+    &quot;&quot;&quot;Mark integration tests.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.skip(reason=&quot;Feature not implemented yet&quot;)
+def test_future_feature():
+    &quot;&quot;&quot;Skip tests temporarily.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.skipif(os.name == &quot;nt&quot;, reason=&quot;Unix only test&quot;)
+def test_unix_specific():
+    &quot;&quot;&quot;Conditional skip.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.xfail(reason=&quot;Known bug #123&quot;)
+def test_known_bug():
+    &quot;&quot;&quot;Mark expected failures.&quot;&quot;&quot;
+    assert False
+
+
+# Run with:
+# pytest -m slow          # Run only slow tests
+# pytest -m &quot;not slow&quot;    # Skip slow tests
+# pytest -m integration   # Run integration tests
+```
+
+### Coverage Reporting
+
+```bash
+# Install coverage
+pip install pytest-cov
+
+# Run tests with coverage
+pytest --cov=myapp tests/
+
+# Generate HTML report
+pytest --cov=myapp --cov-report=html tests/
+
+# Fail if coverage below threshold
+pytest --cov=myapp --cov-fail-under=80 tests/
+
+# Show missing lines
+pytest --cov=myapp --cov-report=term-missing tests/
+```
+
+進階 pattern（async 測試、monkeypatch、property-based testing、資料庫測試、CI/CD 整合和設定）請看 [references/advanced-patterns.md](references/advanced-patterns.md)</pre></section><section><h2>英文原文</h2><pre>---
+name: python-testing-patterns
+description: Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites, or implementing testing best practices.
+---
+
+# Python Testing Patterns
+
+Comprehensive guide to implementing robust testing strategies in Python using pytest, fixtures, mocking, parameterization, and test-driven development practices.
+
+## When to Use This Skill
+
+- Writing unit tests for Python code
+- Setting up test suites and test infrastructure
+- Implementing test-driven development (TDD)
+- Creating integration tests for APIs and services
+- Mocking external dependencies and services
+- Testing async code and concurrent operations
+- Setting up continuous testing in CI/CD
+- Implementing property-based testing
+- Testing database operations
+- Debugging failing tests
+
+## Core Concepts
+
+### 1. Test Types
+
+- **Unit Tests**: Test individual functions/classes in isolation
+- **Integration Tests**: Test interaction between components
+- **Functional Tests**: Test complete features end-to-end
+- **Performance Tests**: Measure speed and resource usage
+
+### 2. Test Structure (AAA Pattern)
+
+- **Arrange**: Set up test data and preconditions
+- **Act**: Execute the code under test
+- **Assert**: Verify the results
+
+### 3. Test Coverage
+
+- Measure what code is exercised by tests
+- Identify untested code paths
+- Aim for meaningful coverage, not just high percentages
+
+### 4. Test Isolation
+
+- Tests should be independent
+- No shared state between tests
+- Each test should clean up after itself
+
+## Quick Start
+
+```python
+# test_example.py
+def add(a, b):
+    return a + b
+
+def test_add():
+    &quot;&quot;&quot;Basic test example.&quot;&quot;&quot;
+    result = add(2, 3)
+    assert result == 5
+
+def test_add_negative():
+    &quot;&quot;&quot;Test with negative numbers.&quot;&quot;&quot;
+    assert add(-1, 1) == 0
+
+# Run with: pytest test_example.py
+```
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Testing Best Practices
+
+### Test Organization
+
+```python
+# tests/
+#   __init__.py
+#   conftest.py           # Shared fixtures
+#   test_unit/            # Unit tests
+#     test_models.py
+#     test_utils.py
+#   test_integration/     # Integration tests
+#     test_api.py
+#     test_database.py
+#   test_e2e/            # End-to-end tests
+#     test_workflows.py
+```
+
+### Test Naming Convention
+
+A common pattern: `test_&lt;unit&gt;_&lt;scenario&gt;_&lt;expected_outcome&gt;`. Adapt to your team&#x27;s preferences.
+
+```python
+# Pattern: test_&lt;unit&gt;_&lt;scenario&gt;_&lt;expected&gt;
+def test_create_user_with_valid_data_returns_user():
+    ...
+
+def test_create_user_with_duplicate_email_raises_conflict():
+    ...
+
+def test_get_user_with_unknown_id_returns_none():
+    ...
+
+# Good test names - clear and descriptive
+def test_user_creation_with_valid_data():
+    &quot;&quot;&quot;Clear name describes what is being tested.&quot;&quot;&quot;
+    pass
+
+def test_login_fails_with_invalid_password():
+    &quot;&quot;&quot;Name describes expected behavior.&quot;&quot;&quot;
+    pass
+
+def test_api_returns_404_for_missing_resource():
+    &quot;&quot;&quot;Specific about inputs and expected outcomes.&quot;&quot;&quot;
+    pass
+
+# Bad test names - avoid these
+def test_1():  # Not descriptive
+    pass
+
+def test_user():  # Too vague
+    pass
+
+def test_function():  # Doesn&#x27;t explain what&#x27;s tested
+    pass
+```
+
+### Testing Retry Behavior
+
+Verify that retry logic works correctly using mock side effects.
+
+```python
+from unittest.mock import Mock
+
+def test_retries_on_transient_error():
+    &quot;&quot;&quot;Test that service retries on transient failures.&quot;&quot;&quot;
+    client = Mock()
+    # Fail twice, then succeed
+    client.request.side_effect = [
+        ConnectionError(&quot;Failed&quot;),
+        ConnectionError(&quot;Failed&quot;),
+        {&quot;status&quot;: &quot;ok&quot;},
+    ]
+
+    service = ServiceWithRetry(client, max_retries=3)
+    result = service.fetch()
+
+    assert result == {&quot;status&quot;: &quot;ok&quot;}
+    assert client.request.call_count == 3
+
+def test_gives_up_after_max_retries():
+    &quot;&quot;&quot;Test that service stops retrying after max attempts.&quot;&quot;&quot;
+    client = Mock()
+    client.request.side_effect = ConnectionError(&quot;Failed&quot;)
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ConnectionError):
+        service.fetch()
+
+    assert client.request.call_count == 3
+
+def test_does_not_retry_on_permanent_error():
+    &quot;&quot;&quot;Test that permanent errors are not retried.&quot;&quot;&quot;
+    client = Mock()
+    client.request.side_effect = ValueError(&quot;Invalid input&quot;)
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ValueError):
+        service.fetch()
+
+    # Only called once - no retry for ValueError
+    assert client.request.call_count == 1
+```
+
+### Mocking Time with Freezegun
+
+Use freezegun to control time in tests for predictable time-dependent behavior.
+
+```python
+from freezegun import freeze_time
+from datetime import datetime, timedelta
+
+@freeze_time(&quot;2026-01-15 10:00:00&quot;)
+def test_token_expiry():
+    &quot;&quot;&quot;Test token expires at correct time.&quot;&quot;&quot;
+    token = create_token(expires_in_seconds=3600)
+    assert token.expires_at == datetime(2026, 1, 15, 11, 0, 0)
+
+@freeze_time(&quot;2026-01-15 10:00:00&quot;)
+def test_is_expired_returns_false_before_expiry():
+    &quot;&quot;&quot;Test token is not expired when within validity period.&quot;&quot;&quot;
+    token = create_token(expires_in_seconds=3600)
+    assert not token.is_expired()
+
+@freeze_time(&quot;2026-01-15 12:00:00&quot;)
+def test_is_expired_returns_true_after_expiry():
+    &quot;&quot;&quot;Test token is expired after validity period.&quot;&quot;&quot;
+    token = Token(expires_at=datetime(2026, 1, 15, 11, 30, 0))
+    assert token.is_expired()
+
+def test_with_time_travel():
+    &quot;&quot;&quot;Test behavior across time using freeze_time context.&quot;&quot;&quot;
+    with freeze_time(&quot;2026-01-01&quot;) as frozen_time:
+        item = create_item()
+        assert item.created_at == datetime(2026, 1, 1)
+
+        # Move forward in time
+        frozen_time.move_to(&quot;2026-01-15&quot;)
+        assert item.age_days == 14
+```
+
+### Test Markers
+
+```python
+# test_markers.py
+import pytest
+
+@pytest.mark.slow
+def test_slow_operation():
+    &quot;&quot;&quot;Mark slow tests.&quot;&quot;&quot;
+    import time
+    time.sleep(2)
+
+
+@pytest.mark.integration
+def test_database_integration():
+    &quot;&quot;&quot;Mark integration tests.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.skip(reason=&quot;Feature not implemented yet&quot;)
+def test_future_feature():
+    &quot;&quot;&quot;Skip tests temporarily.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.skipif(os.name == &quot;nt&quot;, reason=&quot;Unix only test&quot;)
+def test_unix_specific():
+    &quot;&quot;&quot;Conditional skip.&quot;&quot;&quot;
+    pass
+
+
+@pytest.mark.xfail(reason=&quot;Known bug #123&quot;)
+def test_known_bug():
+    &quot;&quot;&quot;Mark expected failures.&quot;&quot;&quot;
+    assert False
+
+
+# Run with:
+# pytest -m slow          # Run only slow tests
+# pytest -m &quot;not slow&quot;    # Skip slow tests
+# pytest -m integration   # Run integration tests
+```
+
+### Coverage Reporting
+
+```bash
+# Install coverage
+pip install pytest-cov
+
+# Run tests with coverage
+pytest --cov=myapp tests/
+
+# Generate HTML report
+pytest --cov=myapp --cov-report=html tests/
+
+# Fail if coverage below threshold
+pytest --cov=myapp --cov-fail-under=80 tests/
+
+# Show missing lines
+pytest --cov=myapp --cov-report=term-missing tests/
+```
+
+For advanced patterns (async testing, monkeypatching, property-based testing, database testing, CI/CD integration, and configuration), see [references/advanced-patterns.md](references/advanced-patterns.md)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

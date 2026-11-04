@@ -1,6 +1,6 @@
 ---
 name: git-advanced-workflows
-description: 精通進階 Git 工作流程，包含互動式 rebase、cherry-pick、bisect、worktree 和 reflog，用來維持乾淨的歷史、有效協作，以及從各種狀況中還原。適用於整理 commit 歷史、找出引入 bug 的 commit，或從 Git 失誤中救回來的時候。
+description: 精通進階 Git 工作流程，包含 rebase、cherry-pick、bisect、worktree 與 reflog，用來維持乾淨的歷史並從任何狀況中還原。適用於管理複雜的 Git 歷史、在功能 branch 上協作，或排查 repository 問題的時候。
 ---
 
 # Git 進階工作流程

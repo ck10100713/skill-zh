@@ -7,36 +7,29 @@ description: 適用於維護由 agent 從來源編譯而成的持久 Markdown �
 
 Grounded vault 是一個三層的 Markdown 儲存庫，其中每一項編譯出來的主張都能追溯回不可變的來源，而且每個頁面只要一個 `git diff` 就能檢查是否過期。
 它只需要一個 git repository，不需要其他東西。這個慣例來自 `llm-wiki-loop` 專案，該專案是參考實作，不是相依套件；這個 skill 教的是這套模式，所以用純檔案和 session 裡的任何 agent 都能運作。
-It needs a git repository and nothing else. The convention comes from the `llm-wiki-loop`
-project, which is a reference implementation rather than a dependency; this skill teaches the
-pattern so it works with plain files and whatever agent is in the session.
 
-## When to Use
+## 什麼時候用
 
-- An agent compiles notes, papers, transcripts, logs, or code into wiki pages that later sessions rely on.
-- A page cites numbers, dates, or quotes, and a reader must be able to verify each one against its source.
-- Pages describe code, and rereading the codebase every session to check whether they still hold is too expensive.
-- Knowledge must be corrected without losing history: superseded pages are archived, never deleted.
+- Agent 把筆記、論文、逐字稿、log 或程式碼編譯成 wiki 頁面，之後的 session 會依賴這些頁面。
+- 頁面引用了數字、日期或引文，讀者必須能對照來源驗證每一項。
+- 頁面描述的是程式碼，而每個 session 都重讀整個 codebase 來確認它們是否仍然成立，成本太高。
+- 知識必須能修正，又不丟失歷史：被取代的頁面會被封存，絕不刪除。
 
-Session state, task queues, and conversation continuity are a different problem; use the
-context-management or conductor plugins for those. This skill is about provenance and drift on a
-durable knowledge store.
+Session 狀態、任務佇列和對話的連續性是另一個問題，那些請用 context-management 或 conductor plugin。這個 skill 談的是持久知識庫的來源追溯與 drift。
 
-## The three layers
+## 三層結構
 
-| Layer | Contents | Who writes it | Rule |
+| 層 | 內容 | 誰來寫 | 規則 |
 |---|---|---|---|
-| `raw/` | source material: notes, papers, transcripts, logs, exported data | people and ingestion only | immutable once added; agents never edit a raw file |
-| `wiki/` | compiled pages built from `raw/` and from code | agents and people | every number, date, and quote links to its source |
-| `archive/` | pages that drifted or were superseded | agents, during garbage collection | moved, never deleted; the header says why |
+| `raw/` | 來源資料：筆記、論文、逐字稿、log、匯出的資料 | 只有人和資料匯入流程 | 加入之後就不可變；agent 絕對不編輯 raw 檔案 |
+| `wiki/` | 從 `raw/` 和程式碼編譯出來的頁面 | agent 和人 | 每個數字、日期和引文都連到它的來源 |
+| `archive/` | 已經 drift 或被取代的頁面 | agent，在垃圾回收時 | 只移動，絕不刪除；header 會寫明原因 |
 
-Two files sit at the vault root. `index.md` is the map of every current page. `log.md` is an
-append-only record of what changed and why. Both change in the same commit as the page they
-describe.
+Vault 根目錄有兩個檔案。`index.md` 是每個現行頁面的地圖。`log.md` 是只能附加的紀錄，記錄什麼改了、為什麼改。兩者都跟它們所描述的頁面在同一個 commit 中變更。
 
-## Page header contract
+## 頁面 Header 規範
 
-Every `wiki/` page opens with a header block:
+每個 `wiki/` 頁面都以一個 header 區塊開頭：
 
 ```markdown
 # Authentication architecture
@@ -47,58 +40,49 @@ Every `wiki/` page opens with a header block:
 > Status: Current
 ```
 
-- `Raw:` lists every source the page was compiled from. Inline claims link to their specific source as well: `Tokens expire after 15 minutes ([raw/adr/0007-jwt.md](../raw/adr/0007-jwt.md)).`
-- `Fingerprint:` is the short commit hash the page was compiled against.
-- `Monitored:` lists the code paths the page describes. A change to any of them after the fingerprint means the page may be stale.
-- `Status:` is `Current`, `Outdated` (monitored code moved on), or `Disputed` (a newer source contradicts the page).
+- `Raw:` 列出這個頁面是由哪些來源編譯而成的。行內的主張也要連到它各自特定的來源：`Tokens expire after 15 minutes ([raw/adr/0007-jwt.md](../raw/adr/0007-jwt.md)).`
+- `Fingerprint:` 是這個頁面編譯時所對應的 commit 短 hash。
+- `Monitored:` 列出這個頁面所描述的程式碼路徑。fingerprint 之後只要其中任何一個有變動，就代表這個頁面可能過期了。
+- `Status:` 是 `Current`、`Outdated`（被監控的程式碼已經往前走了）或 `Disputed`（比較新的來源與這個頁面矛盾）。
 
-## Grounding rule
+## 依據規則（Grounding rule）
 
-A compiled page states only what a source supports, and every number, date, or quotation
-appears verbatim in the linked source. A synthesis says it is one and links its inputs. A gap
-in the sources is written into the page as a gap rather than filled by guessing.
+編譯出來的頁面只陳述來源所支持的內容，而且每個數字、日期或引文都要逐字出現在連結的來源中。綜合性的內容要自己說明它是綜合，並連到它的輸入。來源中的空缺要在頁面裡寫成空缺，不能靠猜測來補。
 
-Check it mechanically: for each linked claim, search the linked raw file for the exact figure
-or quoted phrase. A miss is a grounding error and blocks the commit. The script in
-`references/details.md` does this for a whole vault.
+用機械的方式檢查：對每個有連結的主張，在連結的 raw 檔案裡搜尋那個確切的數字或引用的片語。找不到就是 grounding 錯誤，會擋住 commit。`references/details.md` 裡的腳本可以對整個 vault 做這件事。
 
-## Drift detection
+## Drift 偵測
 
-Compare the fingerprint with the current tree instead of rereading monitored code:
+拿 fingerprint 跟目前的樹比較，不要重讀被監控的程式碼：
 
 ```bash
 git diff --stat 5b237fa..HEAD -- src/auth/jwt.ts src/auth/session.ts package.json
 ```
 
-Empty output means the page still describes the code it was compiled against. Any output means
-recompile: reread only the changed files, update the page, and stamp the new fingerprint. The
-check runs in milliseconds and spends no model tokens.
+輸出是空的，代表這個頁面仍然描述著它編譯時所對應的程式碼。有任何輸出，就要重新編譯：只重讀有變動的檔案、更新頁面，並蓋上新的 fingerprint。這個檢查在毫秒內完成，不花任何模型 token。
 
-## Workflow
+## 工作流程
 
-1. **Ingest.** Put new material in `raw/` under a dated or sourced filename. Never rewrite an existing raw file; add a new one beside it.
-2. **Compile.** Write or update the `wiki/` page with the header block, a source link on every claim, and the fingerprint of the commit the code was read at.
-3. **Check.** Run the grounding check and the drift check before committing. Fix misses at the source; do not weaken a claim to make the check pass.
-4. **Garbage collect.** When drift or a contradicting source appears and the page is not recompiled now, change its status, move it to `archive/`, and record the reason:
+1. **匯入（Ingest）。** 把新的資料放進 `raw/`，檔名要有日期或來源。絕對不要重寫既有的 raw 檔案；在旁邊新增一個。
+2. **編譯（Compile）。** 寫入或更新 `wiki/` 頁面，要有 header 區塊、每項主張都附來源連結，以及讀取程式碼時所在 commit 的 fingerprint。
+3. **檢查（Check）。** commit 之前先跑 grounding 檢查和 drift 檢查。錯誤要從來源修正；不要為了讓檢查通過而削弱主張。
+4. **垃圾回收（Garbage collect）。** 出現 drift 或矛盾的來源，而這個頁面又沒有立刻重新編譯時，就改它的 status、把它移到 `archive/`，並記錄原因：
 
    ```markdown
    > Status: Outdated
    > Reason: src/auth/session.ts changed after git:5b237fa; see log.md 2026-09-01
    ```
 
-5. **Update the map.** Every add, move, or archive updates `index.md` and appends one line to `log.md` in the same commit.
+5. **更新地圖。** 每次新增、移動或封存，都要在同一個 commit 中更新 `index.md`，並在 `log.md` 附加一行。
 
-## Commit gate
+## Commit 關卡
 
-Run both checks from a pre-commit hook or a CI step so a page cannot land with an unverifiable
-number or a stale fingerprint:
+從 pre-commit hook 或 CI 步驟執行這兩個檢查，這樣頁面就不可能帶著無法驗證的數字或過期的 fingerprint 進來：
 
 ```bash
-python3 scripts/check_vault.py --strict   # exits 1 on any grounding miss or drifted page
+python3 scripts/check_vault.py --strict   # 只要有任何 grounding 缺漏或 drift 的頁面就 exit 1
 ```
 
-## Going deeper
+## 進一步內容
 
-`references/details.md` covers: the vault check script, batching the drift check across pages,
-templates for `index.md` and `log.md`, renamed or deleted monitored files, sources that are
-binary or live at external URLs, and the reference implementation.
+`references/details.md` 涵蓋：vault 檢查腳本、跨頁面批次執行 drift 檢查、`index.md` 和 `log.md` 的範本、被重新命名或刪除的被監控檔案、二進位或位於外部 URL 的來源，以及參考實作。

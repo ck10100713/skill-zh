@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>postgresql-table-design｜Skill 寫法圖鑑</title>
+<meta name="description" content="設計 PostgreSQL schema 的型別、索引、約束與分區">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>postgresql-table-design</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/database-design/skills/postgresql-table-design/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">設計 PostgreSQL schema 的型別、索引、約束與分區</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: postgresql-table-design
+description: 在設計或審查 PostgreSQL 專用的 schema 時使用這個 skill。涵蓋最佳實務、資料型別、索引、約束、效能模式與進階功能
+---
+
+# PostgreSQL Table Design
+
+## When to Use
+
+- 設計新的 PostgreSQL schema，或在上線前審查 schema。
+- 專門針對 PostgreSQL 選擇欄位型別、key、約束或索引。
+- 決定大型資料表是否要分區、怎麼分區，或怎麼儲存半結構化資料。
+- 規劃在線上資料庫做 schema 變更，而且不能停機。
+
+這是 PostgreSQL schema 的規則與決策點。完整的資料型別目錄、workload
+模式（大量更新、大量寫入、upsert、schema 演進）、擴充套件、JSONB 索引，
+以及完整的 DDL 範例都在 `references/details.md`；下面哪個段落指向那裡，就去打開它。
+
+## Core Rules
+
+- 為參考資料表（users、orders 等）定義 **PRIMARY KEY**。時間序列/事件/log 資料不一定需要。需要時優先用 `BIGINT GENERATED ALWAYS AS IDENTITY`；只有需要全域唯一或不透明的 ID 時才用 `UUID`。
+- **先正規化（到 3NF）** 來消除資料冗餘與更新異常；**只有**在讀取效益高、且已證實 join 效能有問題時才反正規化。
+- 凡是語意上必須有值的欄位都加 **NOT NULL**；常見的值用 **DEFAULT**。
+- **為你實際會查詢的存取路徑建立索引**：PK/unique（自動）、**FK 欄位（要手動！）**、常用的過濾/排序，以及 join 的 key。
+- 事件時間優先用 **TIMESTAMPTZ**；金額用 **NUMERIC**；字串用 **TEXT**；整數用 **BIGINT**；浮點數用 **DOUBLE PRECISION**（要精確的小數運算則用 `NUMERIC`）。
+
+## PostgreSQL Gotchas
+
+- **識別字**：沒加引號的會轉成小寫。避免加引號或大小寫混合的名稱；用 `snake_case`。
+- **Unique + NULL**：UNIQUE 允許多個 NULL。用 `UNIQUE NULLS NOT DISTINCT (...)`（PG15+）限制只能有一個 NULL。
+- **FK 索引**：PostgreSQL **不會**自動替 FK 欄位建索引。要自己加。
+- **沒有靜默的型別轉換**：長度/精度溢位會報錯（不會截斷）。對 `NUMERIC(2,0)` 插入 999 會失敗，跟會靜默截斷或四捨五入的資料庫不一樣。
+- **Sequence/identity 會有空號**（正常；不要去「修」）。Rollback、當機和並行交易都會留下空號（1、2、5、6...）。
+- **Heap 儲存**：預設沒有 clustered PK；`CLUSTER` 只是一次性的重新整理，之後插入的資料不會維持。
+- **MVCC**：更新/刪除會留下 dead tuple；由 vacuum 處理，設計時要避免熱點寬資料列的頻繁變動。
+
+## Data Types
+
+- **ID**：`BIGINT GENERATED ALWAYS AS IDENTITY`；分散式或不透明的 ID 用 `UUID`，以 `uuidv7()`（PG18+）或 `gen_random_uuid()` 產生。
+- **數字**：除非儲存空間很關鍵，否則用 `BIGINT`；`DOUBLE PRECISION` 優先於 `REAL`；金額和精確小數用 `NUMERIC(p,s)`。
+- **字串**：用 `TEXT`，需要長度上限時加上 `CHECK (LENGTH(col) &lt;= n)`；二進位用 `BYTEA`。不分大小寫的查詢：對 `LOWER(col)` 建 expression index，或當約束本身必須不分大小寫時用 `CITEXT`。
+- **時間**：`TIMESTAMPTZ`、`DATE`、`INTERVAL`。`now()` 是交易開始的時間；`clock_timestamp()` 是實際的時鐘時間。
+- **布林**：`BOOLEAN NOT NULL`，除非需要三態。
+- **Enum**：`CREATE TYPE ... AS ENUM` 只用在小型、穩定的集合；會演進的業務值用 `TEXT` + `CHECK` 或查找表。
+- **JSONB** 優先於 JSON，用 GIN 建索引，只用在可選的/半結構化的屬性。
+- 陣列、range、網路、幾何、全文檢索、domain、composite 與 vector 型別，以及 TOAST 儲存和 collation 控制：見 `references/details.md`。
+
+### Types to avoid
+
+| Avoid | Use instead |
+|---|---|
+| `timestamp` (without time zone) | `timestamptz` |
+| `char(n)`, `varchar(n)` | `text` (+ `CHECK` on length if needed) |
+| `money` | `numeric` |
+| `timetz` | `timestamptz` |
+| `timestamptz(0)` or any precision | `timestamptz` |
+| `serial` | `generated always as identity` |
+
+## Constraints
+
+- **PK**：隱含 UNIQUE + NOT NULL；會建立 B-tree 索引。
+- **FK**：指定 `ON DELETE/UPDATE`（`CASCADE`、`RESTRICT`、`SET NULL`、`SET DEFAULT`）。為參照的欄位建索引。對在 commit 時才檢查的循環相依，用 `DEFERRABLE INITIALLY DEFERRED`。
+- **UNIQUE**：會建立 B-tree 索引；除非用 `NULLS NOT DISTINCT`（PG15+），否則允許多個 NULL。除非你要允許重複的 NULL，否則優先用 `NULLS NOT DISTINCT`。
+- **CHECK**：只看單一資料列；NULL 會通過（三值邏輯）。要搭配 `NOT NULL`：`price NUMERIC NOT NULL CHECK (price &gt; 0)`。
+- **EXCLUDE**：用運算子防止重疊，例如 `EXCLUDE USING gist (room_id WITH =, booking_period WITH &amp;&amp;)` 可以防止重複訂房。需要支援 GiST 的型別。
+
+## Indexing
+
+- **B-tree**：等值/範圍查詢的預設（`=`、`&lt;`、`&gt;`、`BETWEEN`、`ORDER BY`）。
+- **Composite**：最左前綴規則（`WHERE a = ? AND b &gt; ?` 會用到 `(a,b)`；`WHERE b = ?` 則不會）。選擇性最高的欄位放最前面。
+- **Covering**：`CREATE INDEX ON tbl (id) INCLUDE (name, email)`，用於 index-only scan。
+- **Partial**：熱門的子集，`CREATE INDEX ON tbl (user_id) WHERE status = &#x27;active&#x27;`。
+- **Expression**：`CREATE INDEX ON tbl (LOWER(email))`；查詢必須使用相同的表達式。
+- **GIN**：JSONB 的包含/存在、陣列、全文檢索。**GiST**：range、幾何、exclusion constraint。
+- **BRIN**：大型、天然有序的資料（時間序列），儲存成本極低；當磁碟順序和索引欄位相關時有效。
+
+## Partitioning
+
+- 用於大型資料表（超過 1 億筆），且查詢一律以分區 key 過濾，或維護作業（清除、整批替換）是依 key 進行的情況。
+- 時間序列用 **RANGE**（`PARTITION BY RANGE (created_at)`；**TimescaleDB** 會自動處理，並附帶保留與壓縮），離散值用 **LIST**，沒有自然 key 但要均勻分布時用 **HASH**。
+- **Constraint exclusion**：planner 會透過分區的 `CHECK` 約束來剪枝；宣告式分區（PG10+）會替你建立這些約束。
+- 優先使用宣告式分區或 hypertable。不要使用 table inheritance。
+- **限制**：沒有全域的 UNIQUE 約束，要把分區 key 包含在 PK/UNIQUE 裡。從分區資料表出發的 FK 需要 PG11+，參照分區資料表的 FK 需要 PG12+；舊版本請用 trigger。
+
+## Examples
+
+```sql
+CREATE TABLE users (
+  user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE UNIQUE INDEX ON users (LOWER(email));
+CREATE INDEX ON users (created_at);
+```
+
+```sql
+CREATE TABLE orders (
+  order_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(user_id),
+  status TEXT NOT NULL DEFAULT &#x27;PENDING&#x27; CHECK (status IN (&#x27;PENDING&#x27;,&#x27;PAID&#x27;,&#x27;CANCELED&#x27;)),
+  total NUMERIC(10,2) NOT NULL CHECK (total &gt; 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON orders (user_id);
+CREATE INDEX ON orders (created_at);
+```
+
+```sql
+-- JSONB attributes with a generated, indexable scalar
+CREATE TABLE profiles (
+  user_id BIGINT PRIMARY KEY REFERENCES users(user_id),
+  attrs JSONB NOT NULL DEFAULT &#x27;{}&#x27;,
+  theme TEXT GENERATED ALWAYS AS (attrs-&gt;&gt;&#x27;theme&#x27;) STORED
+);
+CREATE INDEX profiles_attrs_gin ON profiles USING GIN (attrs);
+```
+
+## Going deeper
+
+`references/details.md` 收錄這個檔案只點到名稱的內容：
+
+- 完整的資料型別目錄：TOAST 儲存、collation、陣列、range、網路、幾何、全文檢索、domain、composite、vector。
+- 資料表類型（`TEMPORARY`、`UNLOGGED`）與 row-level security。
+- 約束與索引的備註，以及 RANGE、LIST 和 HASH 的分區 DDL。
+- Workload 模式：大量更新、大量寫入、upsert 設計、安全的 schema 演進。
+- Generated column 與擴充套件（`pg_trgm`、`citext`、`timescaledb`、`postgis`、`pgvector` 等）。
+- JSONB 索引策略，包括 `jsonb_path_ops` 和抽出來的 B-tree 欄位。</pre></section><section><h2>英文原文</h2><pre>---
+name: postgresql-table-design
+description: Use this skill when designing or reviewing a PostgreSQL-specific schema. Covers best-practices, data types, indexing, constraints, performance patterns, and advanced features
+---
+
+# PostgreSQL Table Design
+
+## When to Use
+
+- Designing a new PostgreSQL schema, or reviewing one before it ships.
+- Choosing column types, keys, constraints, or indexes for PostgreSQL specifically.
+- Deciding whether and how to partition a large table, or how to store semi-structured data.
+- Planning a schema change on a live database without downtime.
+
+The rules and decision points for a PostgreSQL schema. The full data-type catalog, workload
+patterns (update-heavy, insert-heavy, upsert, schema evolution), extensions, JSONB indexing,
+and worked DDL examples are in `references/details.md`; open it when a section below points there.
+
+## Core Rules
+
+- Define a **PRIMARY KEY** for reference tables (users, orders, etc.). Not always needed for time-series/event/log data. When used, prefer `BIGINT GENERATED ALWAYS AS IDENTITY`; use `UUID` only when global uniqueness/opacity is needed.
+- **Normalize first (to 3NF)** to eliminate data redundancy and update anomalies; denormalize **only** for measured, high-ROI reads where join performance is proven problematic.
+- Add **NOT NULL** everywhere it is semantically required; use **DEFAULT**s for common values.
+- Create **indexes for access paths you actually query**: PK/unique (auto), **FK columns (manual!)**, frequent filters/sorts, and join keys.
+- Prefer **TIMESTAMPTZ** for event time; **NUMERIC** for money; **TEXT** for strings; **BIGINT** for integers; **DOUBLE PRECISION** for floats (or `NUMERIC` for exact decimal arithmetic).
+
+## PostgreSQL Gotchas
+
+- **Identifiers**: unquoted → lowercased. Avoid quoted/mixed-case names; use `snake_case`.
+- **Unique + NULLs**: UNIQUE allows multiple NULLs. Use `UNIQUE NULLS NOT DISTINCT (...)` (PG15+) to restrict to one NULL.
+- **FK indexes**: PostgreSQL **does not** auto-index FK columns. Add them.
+- **No silent coercions**: length/precision overflows error out (no truncation). Inserting 999 into `NUMERIC(2,0)` fails, unlike databases that silently truncate or round.
+- **Sequences/identity have gaps** (normal; don&#x27;t &quot;fix&quot;). Rollbacks, crashes, and concurrent transactions leave gaps (1, 2, 5, 6...).
+- **Heap storage**: no clustered PK by default; `CLUSTER` is a one-off reorganization, not maintained on later inserts.
+- **MVCC**: updates/deletes leave dead tuples; vacuum handles them—design to avoid hot wide-row churn.
+
+## Data Types
+
+- **IDs**: `BIGINT GENERATED ALWAYS AS IDENTITY`; `UUID` for distributed or opaque IDs, generated with `uuidv7()` (PG18+) or `gen_random_uuid()`.
+- **Numbers**: `BIGINT` unless storage is critical; `DOUBLE PRECISION` over `REAL`; `NUMERIC(p,s)` for money and exact decimals.
+- **Strings**: `TEXT`, with `CHECK (LENGTH(col) &lt;= n)` when a limit is needed; `BYTEA` for binary. Case-insensitive lookups: expression index on `LOWER(col)`, or `CITEXT` when a constraint must be case-insensitive.
+- **Time**: `TIMESTAMPTZ`, `DATE`, `INTERVAL`. `now()` is transaction start; `clock_timestamp()` is wall clock.
+- **Booleans**: `BOOLEAN NOT NULL` unless tri-state is required.
+- **Enums**: `CREATE TYPE ... AS ENUM` only for small, stable sets; evolving business values get `TEXT` + `CHECK` or a lookup table.
+- **JSONB** over JSON, indexed with GIN, for optional/semi-structured attributes only.
+- Arrays, ranges, network, geometric, full-text, domain, composite, and vector types, plus TOAST storage and collation control: see `references/details.md`.
+
+### Types to avoid
+
+| Avoid | Use instead |
+|---|---|
+| `timestamp` (without time zone) | `timestamptz` |
+| `char(n)`, `varchar(n)` | `text` (+ `CHECK` on length if needed) |
+| `money` | `numeric` |
+| `timetz` | `timestamptz` |
+| `timestamptz(0)` or any precision | `timestamptz` |
+| `serial` | `generated always as identity` |
+
+## Constraints
+
+- **PK**: implicit UNIQUE + NOT NULL; creates a B-tree index.
+- **FK**: specify `ON DELETE/UPDATE` (`CASCADE`, `RESTRICT`, `SET NULL`, `SET DEFAULT`). Index the referencing column. Use `DEFERRABLE INITIALLY DEFERRED` for circular dependencies checked at commit.
+- **UNIQUE**: creates a B-tree index; allows multiple NULLs unless `NULLS NOT DISTINCT` (PG15+). Prefer `NULLS NOT DISTINCT` unless duplicate NULLs are wanted.
+- **CHECK**: row-local; NULL passes (three-valued logic). Combine with `NOT NULL`: `price NUMERIC NOT NULL CHECK (price &gt; 0)`.
+- **EXCLUDE**: prevents overlaps with operators, e.g. `EXCLUDE USING gist (room_id WITH =, booking_period WITH &amp;&amp;)` stops double-booking. Needs a GiST-capable type.
+
+## Indexing
+
+- **B-tree**: default for equality/range (`=`, `&lt;`, `&gt;`, `BETWEEN`, `ORDER BY`).
+- **Composite**: leftmost-prefix rule (`WHERE a = ? AND b &gt; ?` uses `(a,b)`; `WHERE b = ?` does not). Most selective columns first.
+- **Covering**: `CREATE INDEX ON tbl (id) INCLUDE (name, email)` for index-only scans.
+- **Partial**: hot subsets, `CREATE INDEX ON tbl (user_id) WHERE status = &#x27;active&#x27;`.
+- **Expression**: `CREATE INDEX ON tbl (LOWER(email))`; the query must use the same expression.
+- **GIN**: JSONB containment/existence, arrays, full-text search. **GiST**: ranges, geometry, exclusion constraints.
+- **BRIN**: large, naturally ordered data (time-series) at minimal storage cost; effective when disk order correlates with the indexed column.
+
+## Partitioning
+
+- Use for large tables (&gt;100M rows) whose queries consistently filter on the partition key, or where maintenance (pruning, bulk replacement) follows a key.
+- **RANGE** for time-series (`PARTITION BY RANGE (created_at)`; **TimescaleDB** automates it with retention and compression), **LIST** for discrete values, **HASH** for even distribution without a natural key.
+- **Constraint exclusion**: the planner prunes partitions through their `CHECK` constraints; declarative partitioning (PG10+) creates them for you.
+- Prefer declarative partitioning or hypertables. Do NOT use table inheritance.
+- **Limitations**: no global UNIQUE constraints—include the partition key in PK/UNIQUE. FKs from partitioned tables need PG11+, FKs referencing a partitioned table need PG12+; on older versions, use triggers.
+
+## Examples
+
+```sql
+CREATE TABLE users (
+  user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE UNIQUE INDEX ON users (LOWER(email));
+CREATE INDEX ON users (created_at);
+```
+
+```sql
+CREATE TABLE orders (
+  order_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(user_id),
+  status TEXT NOT NULL DEFAULT &#x27;PENDING&#x27; CHECK (status IN (&#x27;PENDING&#x27;,&#x27;PAID&#x27;,&#x27;CANCELED&#x27;)),
+  total NUMERIC(10,2) NOT NULL CHECK (total &gt; 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX ON orders (user_id);
+CREATE INDEX ON orders (created_at);
+```
+
+```sql
+-- JSONB attributes with a generated, indexable scalar
+CREATE TABLE profiles (
+  user_id BIGINT PRIMARY KEY REFERENCES users(user_id),
+  attrs JSONB NOT NULL DEFAULT &#x27;{}&#x27;,
+  theme TEXT GENERATED ALWAYS AS (attrs-&gt;&gt;&#x27;theme&#x27;) STORED
+);
+CREATE INDEX profiles_attrs_gin ON profiles USING GIN (attrs);
+```
+
+## Going deeper
+
+`references/details.md` holds the material this file only names:
+
+- The full data-type catalog: TOAST storage, collations, arrays, ranges, network, geometric, text search, domains, composites, vectors.
+- Table types (`TEMPORARY`, `UNLOGGED`) and row-level security.
+- Constraint and index notes, and partitioning DDL for RANGE, LIST, and HASH.
+- Workload patterns: update-heavy, insert-heavy, upsert design, safe schema evolution.
+- Generated columns and extensions (`pg_trgm`, `citext`, `timescaledb`, `postgis`, `pgvector`, and more).
+- JSONB indexing strategies, including `jsonb_path_ops` and extracted B-tree columns.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

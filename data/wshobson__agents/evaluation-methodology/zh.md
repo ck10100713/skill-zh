@@ -1,6 +1,6 @@
 ---
 name: evaluation-methodology
-description: "PluginEval quality methodology, covering dimensions, rubrics, and scoring formulas. Use this skill when understanding how plugin quality is measured, when interpreting a low score on a specific dimension, when deciding how to improve a skill's triggering accuracy or orchestration fitness, when setting score thresholds for your marketplace, or when explaining quality badges to external partners like Neon."
+description: "PluginEval 的品質方法論，涵蓋維度、rubric 與計分公式。適用於理解 plugin 品質如何被衡量、解讀某個維度的低分、決定如何提升 skill 的 triggering accuracy 或 orchestration fitness、為你的 marketplace 設定分數門檻，或向 Neon 這類外部夥伴說明品質徽章的時候。"
 ---
 
 # 評估方法論

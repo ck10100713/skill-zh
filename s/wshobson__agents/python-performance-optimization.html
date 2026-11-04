@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-performance-optimization｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 cProfile 和記憶體 profiler 找出 Python 效能瓶頸並優化">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-performance-optimization</h1>
+<p class="meta">wshobson ｜ 除錯與調查 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-performance-optimization/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 cProfile 和記憶體 profiler 找出 Python 效能瓶頸並優化</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-performance-optimization
+description: 用 cProfile、記憶體 profiler 和效能最佳實務來分析並優化 Python 程式碼。在除錯執行很慢的 Python 程式、優化瓶頸或提升應用程式效能時使用。
+---
+
+# Python Performance Optimization
+
+一份完整指南，教你怎麼 profile、分析並優化 Python 程式碼來提升效能，包含 CPU profiling、記憶體優化和實作上的最佳實務。
+
+## When to Use This Skill
+
+- 找出 Python 應用程式的效能瓶頸
+- 降低應用程式的延遲和回應時間
+- 優化吃 CPU 的運算
+- 降低記憶體用量和記憶體洩漏
+- 提升資料庫查詢效能
+- 優化 I/O 操作
+- 加速資料處理 pipeline
+- 實作高效能演算法
+- 對正式環境的應用程式做 profiling
+
+## Core Concepts
+
+### 1. Profiling Types
+
+- **CPU Profiling**：找出耗時的函式
+- **Memory Profiling**：追蹤記憶體配置和洩漏
+- **Line Profiling**：以逐行的粒度做 profiling
+- **Call Graph**：把函式之間的呼叫關係視覺化
+
+### 2. Performance Metrics
+
+- **Execution Time**：操作花多久
+- **Memory Usage**：記憶體用量的峰值和平均值
+- **CPU Utilization**：處理器的使用模式
+- **I/O Wait**：花在 I/O 操作上的時間
+
+### 3. Optimization Strategies
+
+- **Algorithmic**：更好的演算法和資料結構
+- **Implementation**：更有效率的寫法
+- **Parallelization**：多執行緒/多行程
+- **Caching**：避免重複計算
+- **Native Extensions**：關鍵路徑改用 C/Rust
+
+## Quick Start
+
+### Basic Timing
+
+```python
+import time
+
+def measure_time():
+    &quot;&quot;&quot;Simple timing measurement.&quot;&quot;&quot;
+    start = time.time()
+
+    # Your code here
+    result = sum(range(1000000))
+
+    elapsed = time.time() - start
+    print(f&quot;Execution time: {elapsed:.4f} seconds&quot;)
+    return result
+
+# Better: use timeit for accurate measurements
+import timeit
+
+execution_time = timeit.timeit(
+    &quot;sum(range(1000000))&quot;,
+    number=100
+)
+print(f&quot;Average time: {execution_time/100:.6f} seconds&quot;)
+```
+
+## Detailed patterns and worked examples
+
+詳細的 pattern 文件放在 `references/details.md`。上面這層導覽不夠用的時候，再去讀那個檔案。
+
+## Best Practices
+
+1. **先 profile 再優化** - 先量測才找得到真正的瓶頸
+2. **盯著 hot path** - 優化最常被執行的程式碼
+3. **選對資料結構** - 查詢用 dict，判斷是否存在用 set
+4. **避免過早優化** - 先求清楚，再來優化
+5. **用內建函式** - 它們是用 C 實作的
+6. **快取昂貴的運算** - 用 lru_cache
+7. **批次處理 I/O** - 減少 system call
+8. **大型資料集用 generator**
+9. **數值運算考慮 NumPy**
+10. **對正式環境的程式碼做 profile** - 線上系統用 py-spy
+
+## Common Pitfalls
+
+- 沒 profile 就開始優化
+- 不必要地使用全域變數
+- 沒用適當的資料結構
+- 不必要地複製資料
+- 資料庫沒用 connection pooling
+- 忽略演算法複雜度
+- 過度優化很少跑到的路徑
+- 沒考慮記憶體用量</pre></section><section><h2>英文原文</h2><pre>---
+name: python-performance-optimization
+description: Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance.
+---
+
+# Python Performance Optimization
+
+Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, including CPU profiling, memory optimization, and implementation best practices.
+
+## When to Use This Skill
+
+- Identifying performance bottlenecks in Python applications
+- Reducing application latency and response times
+- Optimizing CPU-intensive operations
+- Reducing memory consumption and memory leaks
+- Improving database query performance
+- Optimizing I/O operations
+- Speeding up data processing pipelines
+- Implementing high-performance algorithms
+- Profiling production applications
+
+## Core Concepts
+
+### 1. Profiling Types
+
+- **CPU Profiling**: Identify time-consuming functions
+- **Memory Profiling**: Track memory allocation and leaks
+- **Line Profiling**: Profile at line-by-line granularity
+- **Call Graph**: Visualize function call relationships
+
+### 2. Performance Metrics
+
+- **Execution Time**: How long operations take
+- **Memory Usage**: Peak and average memory consumption
+- **CPU Utilization**: Processor usage patterns
+- **I/O Wait**: Time spent on I/O operations
+
+### 3. Optimization Strategies
+
+- **Algorithmic**: Better algorithms and data structures
+- **Implementation**: More efficient code patterns
+- **Parallelization**: Multi-threading/processing
+- **Caching**: Avoid redundant computation
+- **Native Extensions**: C/Rust for critical paths
+
+## Quick Start
+
+### Basic Timing
+
+```python
+import time
+
+def measure_time():
+    &quot;&quot;&quot;Simple timing measurement.&quot;&quot;&quot;
+    start = time.time()
+
+    # Your code here
+    result = sum(range(1000000))
+
+    elapsed = time.time() - start
+    print(f&quot;Execution time: {elapsed:.4f} seconds&quot;)
+    return result
+
+# Better: use timeit for accurate measurements
+import timeit
+
+execution_time = timeit.timeit(
+    &quot;sum(range(1000000))&quot;,
+    number=100
+)
+print(f&quot;Average time: {execution_time/100:.6f} seconds&quot;)
+```
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices
+
+1. **Profile before optimizing** - Measure to find real bottlenecks
+2. **Focus on hot paths** - Optimize code that runs most frequently
+3. **Use appropriate data structures** - Dict for lookups, set for membership
+4. **Avoid premature optimization** - Clarity first, then optimize
+5. **Use built-in functions** - They&#x27;re implemented in C
+6. **Cache expensive computations** - Use lru_cache
+7. **Batch I/O operations** - Reduce system calls
+8. **Use generators** for large datasets
+9. **Consider NumPy** for numerical operations
+10. **Profile production code** - Use py-spy for live systems
+
+## Common Pitfalls
+
+- Optimizing without profiling
+- Using global variables unnecessarily
+- Not using appropriate data structures
+- Creating unnecessary copies of data
+- Not using connection pooling for databases
+- Ignoring algorithmic complexity
+- Over-optimizing rare code paths
+- Not considering memory usage</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-resource-management｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 context manager 管理連線、檔案和 streaming 資源，確保一定釋放">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-resource-management</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-resource-management/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 context manager 管理連線、檔案和 streaming 資源，確保一定釋放</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-resource-management
+description: 用 context manager、cleanup 模式和 streaming 來做 Python 資源管理。在管理連線、檔案 handle、實作清理邏輯，或建構帶累積狀態的 streaming 回應時使用。
+---
+
+# Python Resource Management
+
+用 context manager 以確定的方式管理資源。資料庫連線、檔案 handle、網路 socket 這類資源，就算發生 exception 也要可靠地釋放。
+
+## When to Use This Skill
+
+- 管理資料庫連線和 connection pool
+- 處理檔案 handle 和 I/O
+- 實作自訂的 context manager
+- 建構帶狀態的 streaming 回應
+- 處理巢狀資源的清理
+- 建立 async context manager
+
+## Core Concepts
+
+### 1. Context Managers
+
+`with` 陳述式能確保資源自動釋放，就算發生 exception 也一樣。
+
+### 2. Protocol Methods
+
+同步資源管理用 `__enter__`/`__exit__`，非同步用 `__aenter__`/`__aexit__`。
+
+### 3. Unconditional Cleanup
+
+不管有沒有發生 exception，`__exit__` 一定會執行。
+
+### 4. Exception Handling
+
+`__exit__` 回傳 `True` 會吞掉 exception，回傳 `False` 則讓它繼續往外傳。
+
+## Quick Start
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource():
+    resource = acquire_resource()
+    try:
+        yield resource
+    finally:
+        resource.cleanup()
+
+with managed_resource() as r:
+    r.do_work()
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Class-Based Context Manager
+
+複雜的資源，就實作 context manager protocol。
+
+```python
+class DatabaseConnection:
+    &quot;&quot;&quot;Database connection with automatic cleanup.&quot;&quot;&quot;
+
+    def __init__(self, dsn: str) -&gt; None:
+        self._dsn = dsn
+        self._conn: Connection | None = None
+
+    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Establish database connection.&quot;&quot;&quot;
+        self._conn = psycopg.connect(self._dsn)
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Close connection if open.&quot;&quot;&quot;
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
+
+    def __enter__(self) -&gt; &quot;DatabaseConnection&quot;:
+        &quot;&quot;&quot;Enter context: connect and return self.&quot;&quot;&quot;
+        self.connect()
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Exit context: always close connection.&quot;&quot;&quot;
+        self.close()
+
+# Usage with context manager (preferred)
+with DatabaseConnection(dsn) as db:
+    result = db.execute(query)
+
+# Manual management when needed
+db = DatabaseConnection(dsn)
+db.connect()
+try:
+    result = db.execute(query)
+finally:
+    db.close()
+```
+
+### Pattern 2: Async Context Manager
+
+非同步資源，實作 async protocol。
+
+```python
+class AsyncDatabasePool:
+    &quot;&quot;&quot;Async database connection pool.&quot;&quot;&quot;
+
+    def __init__(self, dsn: str, min_size: int = 1, max_size: int = 10) -&gt; None:
+        self._dsn = dsn
+        self._min_size = min_size
+        self._max_size = max_size
+        self._pool: asyncpg.Pool | None = None
+
+    async def __aenter__(self) -&gt; &quot;AsyncDatabasePool&quot;:
+        &quot;&quot;&quot;Create connection pool.&quot;&quot;&quot;
+        self._pool = await asyncpg.create_pool(
+            self._dsn,
+            min_size=self._min_size,
+            max_size=self._max_size,
+        )
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Close all connections in pool.&quot;&quot;&quot;
+        if self._pool is not None:
+            await self._pool.close()
+
+    async def execute(self, query: str, *args) -&gt; list[dict]:
+        &quot;&quot;&quot;Execute query using pooled connection.&quot;&quot;&quot;
+        async with self._pool.acquire() as conn:
+            return await conn.fetch(query, *args)
+
+# Usage
+async with AsyncDatabasePool(dsn) as pool:
+    users = await pool.execute(&quot;SELECT * FROM users WHERE active = $1&quot;, True)
+```
+
+### Pattern 3: Using @contextmanager Decorator
+
+簡單的情況，用 decorator 來簡化 context manager。
+
+```python
+from contextlib import contextmanager, asynccontextmanager
+import time
+import structlog
+
+logger = structlog.get_logger()
+
+@contextmanager
+def timed_block(name: str):
+    &quot;&quot;&quot;Time a block of code.&quot;&quot;&quot;
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        elapsed = time.perf_counter() - start
+        logger.info(f&quot;{name} completed&quot;, duration_seconds=round(elapsed, 3))
+
+# Usage
+with timed_block(&quot;data_processing&quot;):
+    process_large_dataset()
+
+@asynccontextmanager
+async def database_transaction(conn: AsyncConnection):
+    &quot;&quot;&quot;Manage database transaction.&quot;&quot;&quot;
+    await conn.execute(&quot;BEGIN&quot;)
+    try:
+        yield conn
+        await conn.execute(&quot;COMMIT&quot;)
+    except BaseException:  # also roll back on asyncio.CancelledError
+        await conn.execute(&quot;ROLLBACK&quot;)
+        raise
+
+# Usage
+async with database_transaction(conn) as tx:
+    await tx.execute(&quot;INSERT INTO users ...&quot;)
+    await tx.execute(&quot;INSERT INTO audit_log ...&quot;)
+```
+
+### Pattern 4: Unconditional Resource Release
+
+資源一律在 `__exit__` 裡清理，不管有沒有 exception。
+
+```python
+class FileProcessor:
+    &quot;&quot;&quot;Process file with guaranteed cleanup.&quot;&quot;&quot;
+
+    def __init__(self, path: str) -&gt; None:
+        self._path = path
+        self._file: IO | None = None
+        self._temp_files: list[Path] = []
+
+    def __enter__(self) -&gt; &quot;FileProcessor&quot;:
+        self._file = open(self._path, &quot;r&quot;)
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Clean up all resources unconditionally.&quot;&quot;&quot;
+        # Close main file
+        if self._file is not None:
+            self._file.close()
+
+        # Clean up any temporary files
+        for temp_file in self._temp_files:
+            try:
+                temp_file.unlink()
+            except OSError:
+                pass  # Best effort cleanup
+
+        # Return None/False to propagate any exception
+```
+
+## Detailed worked examples and patterns
+
+詳細的章節（從 `## Advanced Patterns` 開始）放在 `references/details.md`。上面的導覽摘要不夠用的時候，再去讀那個檔案。
+
+## Best Practices Summary
+
+1. **一律用 context manager** - 任何需要清理的資源都用
+2. **無條件清理** - 就算發生 exception，`__exit__` 還是會跑
+3. **不要意外吞掉 exception** - 除非是刻意要吞，否則回傳 `False`
+4. **用 @contextmanager** - 處理簡單的資源模式
+5. **兩種 protocol 都實作** - 同時支援 `with` 和手動管理
+6. **用 ExitStack** - 處理數量不固定的資源
+7. **有效率地累積** - 用 list + join，不要用字串串接
+8. **追蹤指標** - 對 streaming 來說，time-to-first-byte 很重要
+9. **把行為寫進文件** - 特別是 exception 被吞掉的行為
+10. **測試清理路徑** - 確認出錯時資源有被釋放</pre></section><section><h2>英文原文</h2><pre>---
+name: python-resource-management
+description: Python resource management with context managers, cleanup patterns, and streaming. Use when managing connections, file handles, implementing cleanup logic, or building streaming responses with accumulated state.
+---
+
+# Python Resource Management
+
+Manage resources deterministically using context managers. Resources like database connections, file handles, and network sockets should be released reliably, even when exceptions occur.
+
+## When to Use This Skill
+
+- Managing database connections and connection pools
+- Working with file handles and I/O
+- Implementing custom context managers
+- Building streaming responses with state
+- Handling nested resource cleanup
+- Creating async context managers
+
+## Core Concepts
+
+### 1. Context Managers
+
+The `with` statement ensures resources are released automatically, even on exceptions.
+
+### 2. Protocol Methods
+
+`__enter__`/`__exit__` for sync, `__aenter__`/`__aexit__` for async resource management.
+
+### 3. Unconditional Cleanup
+
+`__exit__` always runs, regardless of whether an exception occurred.
+
+### 4. Exception Handling
+
+Return `True` from `__exit__` to suppress exceptions, `False` to propagate them.
+
+## Quick Start
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource():
+    resource = acquire_resource()
+    try:
+        yield resource
+    finally:
+        resource.cleanup()
+
+with managed_resource() as r:
+    r.do_work()
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Class-Based Context Manager
+
+Implement the context manager protocol for complex resources.
+
+```python
+class DatabaseConnection:
+    &quot;&quot;&quot;Database connection with automatic cleanup.&quot;&quot;&quot;
+
+    def __init__(self, dsn: str) -&gt; None:
+        self._dsn = dsn
+        self._conn: Connection | None = None
+
+    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Establish database connection.&quot;&quot;&quot;
+        self._conn = psycopg.connect(self._dsn)
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Close connection if open.&quot;&quot;&quot;
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
+
+    def __enter__(self) -&gt; &quot;DatabaseConnection&quot;:
+        &quot;&quot;&quot;Enter context: connect and return self.&quot;&quot;&quot;
+        self.connect()
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Exit context: always close connection.&quot;&quot;&quot;
+        self.close()
+
+# Usage with context manager (preferred)
+with DatabaseConnection(dsn) as db:
+    result = db.execute(query)
+
+# Manual management when needed
+db = DatabaseConnection(dsn)
+db.connect()
+try:
+    result = db.execute(query)
+finally:
+    db.close()
+```
+
+### Pattern 2: Async Context Manager
+
+For async resources, implement the async protocol.
+
+```python
+class AsyncDatabasePool:
+    &quot;&quot;&quot;Async database connection pool.&quot;&quot;&quot;
+
+    def __init__(self, dsn: str, min_size: int = 1, max_size: int = 10) -&gt; None:
+        self._dsn = dsn
+        self._min_size = min_size
+        self._max_size = max_size
+        self._pool: asyncpg.Pool | None = None
+
+    async def __aenter__(self) -&gt; &quot;AsyncDatabasePool&quot;:
+        &quot;&quot;&quot;Create connection pool.&quot;&quot;&quot;
+        self._pool = await asyncpg.create_pool(
+            self._dsn,
+            min_size=self._min_size,
+            max_size=self._max_size,
+        )
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Close all connections in pool.&quot;&quot;&quot;
+        if self._pool is not None:
+            await self._pool.close()
+
+    async def execute(self, query: str, *args) -&gt; list[dict]:
+        &quot;&quot;&quot;Execute query using pooled connection.&quot;&quot;&quot;
+        async with self._pool.acquire() as conn:
+            return await conn.fetch(query, *args)
+
+# Usage
+async with AsyncDatabasePool(dsn) as pool:
+    users = await pool.execute(&quot;SELECT * FROM users WHERE active = $1&quot;, True)
+```
+
+### Pattern 3: Using @contextmanager Decorator
+
+Simplify context managers with the decorator for straightforward cases.
+
+```python
+from contextlib import contextmanager, asynccontextmanager
+import time
+import structlog
+
+logger = structlog.get_logger()
+
+@contextmanager
+def timed_block(name: str):
+    &quot;&quot;&quot;Time a block of code.&quot;&quot;&quot;
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        elapsed = time.perf_counter() - start
+        logger.info(f&quot;{name} completed&quot;, duration_seconds=round(elapsed, 3))
+
+# Usage
+with timed_block(&quot;data_processing&quot;):
+    process_large_dataset()
+
+@asynccontextmanager
+async def database_transaction(conn: AsyncConnection):
+    &quot;&quot;&quot;Manage database transaction.&quot;&quot;&quot;
+    await conn.execute(&quot;BEGIN&quot;)
+    try:
+        yield conn
+        await conn.execute(&quot;COMMIT&quot;)
+    except BaseException:  # also roll back on asyncio.CancelledError
+        await conn.execute(&quot;ROLLBACK&quot;)
+        raise
+
+# Usage
+async with database_transaction(conn) as tx:
+    await tx.execute(&quot;INSERT INTO users ...&quot;)
+    await tx.execute(&quot;INSERT INTO audit_log ...&quot;)
+```
+
+### Pattern 4: Unconditional Resource Release
+
+Always clean up resources in `__exit__`, regardless of exceptions.
+
+```python
+class FileProcessor:
+    &quot;&quot;&quot;Process file with guaranteed cleanup.&quot;&quot;&quot;
+
+    def __init__(self, path: str) -&gt; None:
+        self._path = path
+        self._file: IO | None = None
+        self._temp_files: list[Path] = []
+
+    def __enter__(self) -&gt; &quot;FileProcessor&quot;:
+        self._file = open(self._path, &quot;r&quot;)
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -&gt; None:
+        &quot;&quot;&quot;Clean up all resources unconditionally.&quot;&quot;&quot;
+        # Close main file
+        if self._file is not None:
+            self._file.close()
+
+        # Clean up any temporary files
+        for temp_file in self._temp_files:
+            try:
+                temp_file.unlink()
+            except OSError:
+                pass  # Best effort cleanup
+
+        # Return None/False to propagate any exception
+```
+
+## Detailed worked examples and patterns
+
+Detailed sections (starting with `## Advanced Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
+
+## Best Practices Summary
+
+1. **Always use context managers** - For any resource that needs cleanup
+2. **Clean up unconditionally** - `__exit__` runs even on exception
+3. **Don&#x27;t suppress unexpectedly** - Return `False` unless suppression is intentional
+4. **Use @contextmanager** - For simple resource patterns
+5. **Implement both protocols** - Support `with` and manual management
+6. **Use ExitStack** - For dynamic numbers of resources
+7. **Accumulate efficiently** - List + join, not string concatenation
+8. **Track metrics** - Time-to-first-byte matters for streaming
+9. **Document behavior** - Especially exception suppression
+10. **Test cleanup paths** - Verify resources are released on errors</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

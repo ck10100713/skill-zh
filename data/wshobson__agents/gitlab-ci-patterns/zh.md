@@ -1,6 +1,6 @@
 ---
 name: gitlab-ci-patterns
-description: 完整的 GitLab CI/CD pipeline 模式，用於自動化測試、建置與 deploy。適用於建立 GitLab CI pipeline、設定多階段流程、多環境 deploy 或快取策略的時候。
+description: 建構具備多階段流程、快取與分散式 runner 的 GitLab CI/CD pipeline，用於可擴充的自動化。適用於實作 GitLab CI/CD、最佳化 pipeline 效能，或設定自動化測試與 deploy 的時候。
 ---
 
 # GitLab CI 模式

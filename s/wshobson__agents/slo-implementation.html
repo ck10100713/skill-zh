@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>slo-implementation｜Skill 寫法圖鑑</title>
+<meta name="description" content="定義 SLI、SLO 和 error budget，並設定 burn rate 警報">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>slo-implementation</h1>
+<p class="meta">wshobson ｜ 雲端與基礎設施 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/observability-monitoring/skills/slo-implementation/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">定義 SLI、SLO 和 error budget，並設定 burn rate 警報</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: slo-implementation
+description: 定義並實作 Service Level Indicator（SLI）和 Service Level Objective（SLO），包含 error budget 和警報。在建立可靠性目標、實踐 SRE，或衡量服務效能時使用。
+---
+
+# SLO Implementation
+
+用來定義並實作 Service Level Indicator（SLI）、Service Level Objective（SLO）和 error budget 的框架。
+
+## Purpose
+
+用 SLI、SLO 和 error budget 實作可衡量的可靠性目標，在可靠性和創新速度之間取得平衡。
+
+## When to Use
+
+- 定義服務的可靠性目標
+- 衡量使用者感受到的可靠性
+- 實作 error budget
+- 建立以 SLO 為基礎的警報
+- 追蹤可靠性目標
+
+## SLI/SLO/SLA Hierarchy
+
+```
+SLA (Service Level Agreement)
+  ↓ Contract with customers
+SLO (Service Level Objective)
+  ↓ Internal reliability target
+SLI (Service Level Indicator)
+  ↓ Actual measurement
+```
+
+## Defining SLIs
+
+### Common SLI Types
+
+#### 1. Availability SLI
+
+```promql
+# Successful requests / Total requests
+sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+/
+sum(rate(http_requests_total[28d]))
+```
+
+#### 2. Latency SLI
+
+```promql
+# Requests below latency threshold / Total requests
+sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+/
+sum(rate(http_request_duration_seconds_count[28d]))
+```
+
+#### 3. Durability SLI
+
+```
+# Successful writes / Total writes
+sum(storage_writes_successful_total)
+/
+sum(storage_writes_total)
+```
+
+## Setting SLO Targets
+
+### Availability SLO Examples
+
+| SLO %  | Downtime/Month | Downtime/Year |
+| ------ | -------------- | ------------- |
+| 99%    | 7.2 hours      | 3.65 days     |
+| 99.9%  | 43.2 minutes   | 8.76 hours    |
+| 99.95% | 21.6 minutes   | 4.38 hours    |
+| 99.99% | 4.32 minutes   | 52.56 minutes |
+
+### Choose Appropriate SLOs
+
+**要考慮：**
+
+- 使用者的期待
+- 商業需求
+- 目前的效能
+- 可靠性的成本
+- 競爭對手的基準
+
+**SLO 範例：**
+
+```yaml
+slos:
+  - name: api_availability
+    target: 99.9
+    window: 28d
+    sli: |
+      sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+      /
+      sum(rate(http_requests_total[28d]))
+
+  - name: api_latency_p95
+    target: 99
+    window: 28d
+    sli: |
+      sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+      /
+      sum(rate(http_request_duration_seconds_count[28d]))
+```
+
+## Error Budget Calculation
+
+### Error Budget Formula
+
+```
+Error Budget = 1 - SLO Target
+```
+
+**範例：**
+
+- SLO：99.9% 可用性
+- Error Budget：0.1% = 每月 43.2 分鐘
+- 目前的錯誤：0.05% = 每月 21.6 分鐘
+- 剩餘的 budget：50%
+
+### Error Budget Policy
+
+```yaml
+error_budget_policy:
+  - remaining_budget: 100%
+    action: Normal development velocity
+  - remaining_budget: 50%
+    action: Consider postponing risky changes
+  - remaining_budget: 10%
+    action: Freeze non-critical changes
+  - remaining_budget: 0%
+    action: Feature freeze, focus on reliability
+```
+
+## SLO Implementation
+
+### Prometheus Recording Rules
+
+```yaml
+# SLI Recording Rules
+groups:
+  - name: sli_rules
+    interval: 30s
+    rules:
+      # Availability SLI
+      - record: sli:http_availability:ratio
+        expr: |
+          sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+          /
+          sum(rate(http_requests_total[28d]))
+
+      # Latency SLI (requests &lt; 500ms)
+      - record: sli:http_latency:ratio
+        expr: |
+          sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+          /
+          sum(rate(http_request_duration_seconds_count[28d]))
+
+  - name: slo_rules
+    interval: 5m
+    rules:
+      # SLO compliance (1 = meeting SLO, 0 = violating)
+      - record: slo:http_availability:compliance
+        expr: sli:http_availability:ratio &gt;= bool 0.999
+
+      - record: slo:http_latency:compliance
+        expr: sli:http_latency:ratio &gt;= bool 0.99
+
+      # Error budget remaining (percentage)
+      - record: slo:http_availability:error_budget_remaining
+        expr: |
+          (sli:http_availability:ratio - 0.999) / (1 - 0.999) * 100
+
+      # Error budget burn rate
+      - record: slo:http_availability:burn_rate_5m
+        expr: |
+          (1 - (
+            sum(rate(http_requests_total{status!~&quot;5..&quot;}[5m]))
+            /
+            sum(rate(http_requests_total[5m]))
+          )) / (1 - 0.999)
+```
+
+### SLO Alerting Rules
+
+```yaml
+groups:
+  - name: slo_alerts
+    interval: 1m
+    rules:
+      # Fast burn: 14.4x rate, 1 hour window
+      # Consumes 2% error budget in 1 hour
+      - alert: SLOErrorBudgetBurnFast
+        expr: |
+          slo:http_availability:burn_rate_1h &gt; 14.4
+          and
+          slo:http_availability:burn_rate_5m &gt; 14.4
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;Fast error budget burn detected&quot;
+          description: &quot;Error budget burning at {{ $value }}x rate&quot;
+
+      # Slow burn: 6x rate, 6 hour window
+      # Consumes 5% error budget in 6 hours
+      - alert: SLOErrorBudgetBurnSlow
+        expr: |
+          slo:http_availability:burn_rate_6h &gt; 6
+          and
+          slo:http_availability:burn_rate_30m &gt; 6
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: &quot;Slow error budget burn detected&quot;
+          description: &quot;Error budget burning at {{ $value }}x rate&quot;
+
+      # Error budget exhausted
+      - alert: SLOErrorBudgetExhausted
+        expr: slo:http_availability:error_budget_remaining &lt; 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;SLO error budget exhausted&quot;
+          description: &quot;Error budget remaining: {{ $value }}%&quot;
+```
+
+## SLO Dashboard
+
+**Grafana Dashboard Structure:**
+
+```
+┌────────────────────────────────────┐
+│ SLO Compliance (Current)           │
+│ ✓ 99.95% (Target: 99.9%)          │
+├────────────────────────────────────┤
+│ Error Budget Remaining: 65%        │
+│ ████████░░ 65%                     │
+├────────────────────────────────────┤
+│ SLI Trend (28 days)                │
+│ [Time series graph]                │
+├────────────────────────────────────┤
+│ Burn Rate Analysis                 │
+│ [Burn rate by time window]         │
+└────────────────────────────────────┘
+```
+
+**Example Queries:**
+
+```promql
+# Current SLO compliance
+sli:http_availability:ratio * 100
+
+# Error budget remaining
+slo:http_availability:error_budget_remaining
+
+# Days until error budget exhausted (at current burn rate)
+(slo:http_availability:error_budget_remaining / 100)
+*
+28
+/
+(1 - sli:http_availability:ratio) * (1 - 0.999)
+```
+
+## Additional patterns and templates
+
+更多詳細的範本和實作範例放在 `references/details.md`。要看完整的 pattern 清單，就讀那個檔案。</pre></section><section><h2>英文原文</h2><pre>---
+name: slo-implementation
+description: Define and implement Service Level Indicators (SLIs) and Service Level Objectives (SLOs) with error budgets and alerting. Use when establishing reliability targets, implementing SRE practices, or measuring service performance.
+---
+
+# SLO Implementation
+
+Framework for defining and implementing Service Level Indicators (SLIs), Service Level Objectives (SLOs), and error budgets.
+
+## Purpose
+
+Implement measurable reliability targets using SLIs, SLOs, and error budgets to balance reliability with innovation velocity.
+
+## When to Use
+
+- Define service reliability targets
+- Measure user-perceived reliability
+- Implement error budgets
+- Create SLO-based alerts
+- Track reliability goals
+
+## SLI/SLO/SLA Hierarchy
+
+```
+SLA (Service Level Agreement)
+  ↓ Contract with customers
+SLO (Service Level Objective)
+  ↓ Internal reliability target
+SLI (Service Level Indicator)
+  ↓ Actual measurement
+```
+
+## Defining SLIs
+
+### Common SLI Types
+
+#### 1. Availability SLI
+
+```promql
+# Successful requests / Total requests
+sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+/
+sum(rate(http_requests_total[28d]))
+```
+
+#### 2. Latency SLI
+
+```promql
+# Requests below latency threshold / Total requests
+sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+/
+sum(rate(http_request_duration_seconds_count[28d]))
+```
+
+#### 3. Durability SLI
+
+```
+# Successful writes / Total writes
+sum(storage_writes_successful_total)
+/
+sum(storage_writes_total)
+```
+
+## Setting SLO Targets
+
+### Availability SLO Examples
+
+| SLO %  | Downtime/Month | Downtime/Year |
+| ------ | -------------- | ------------- |
+| 99%    | 7.2 hours      | 3.65 days     |
+| 99.9%  | 43.2 minutes   | 8.76 hours    |
+| 99.95% | 21.6 minutes   | 4.38 hours    |
+| 99.99% | 4.32 minutes   | 52.56 minutes |
+
+### Choose Appropriate SLOs
+
+**Consider:**
+
+- User expectations
+- Business requirements
+- Current performance
+- Cost of reliability
+- Competitor benchmarks
+
+**Example SLOs:**
+
+```yaml
+slos:
+  - name: api_availability
+    target: 99.9
+    window: 28d
+    sli: |
+      sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+      /
+      sum(rate(http_requests_total[28d]))
+
+  - name: api_latency_p95
+    target: 99
+    window: 28d
+    sli: |
+      sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+      /
+      sum(rate(http_request_duration_seconds_count[28d]))
+```
+
+## Error Budget Calculation
+
+### Error Budget Formula
+
+```
+Error Budget = 1 - SLO Target
+```
+
+**Example:**
+
+- SLO: 99.9% availability
+- Error Budget: 0.1% = 43.2 minutes/month
+- Current Error: 0.05% = 21.6 minutes/month
+- Remaining Budget: 50%
+
+### Error Budget Policy
+
+```yaml
+error_budget_policy:
+  - remaining_budget: 100%
+    action: Normal development velocity
+  - remaining_budget: 50%
+    action: Consider postponing risky changes
+  - remaining_budget: 10%
+    action: Freeze non-critical changes
+  - remaining_budget: 0%
+    action: Feature freeze, focus on reliability
+```
+
+## SLO Implementation
+
+### Prometheus Recording Rules
+
+```yaml
+# SLI Recording Rules
+groups:
+  - name: sli_rules
+    interval: 30s
+    rules:
+      # Availability SLI
+      - record: sli:http_availability:ratio
+        expr: |
+          sum(rate(http_requests_total{status!~&quot;5..&quot;}[28d]))
+          /
+          sum(rate(http_requests_total[28d]))
+
+      # Latency SLI (requests &lt; 500ms)
+      - record: sli:http_latency:ratio
+        expr: |
+          sum(rate(http_request_duration_seconds_bucket{le=&quot;0.5&quot;}[28d]))
+          /
+          sum(rate(http_request_duration_seconds_count[28d]))
+
+  - name: slo_rules
+    interval: 5m
+    rules:
+      # SLO compliance (1 = meeting SLO, 0 = violating)
+      - record: slo:http_availability:compliance
+        expr: sli:http_availability:ratio &gt;= bool 0.999
+
+      - record: slo:http_latency:compliance
+        expr: sli:http_latency:ratio &gt;= bool 0.99
+
+      # Error budget remaining (percentage)
+      - record: slo:http_availability:error_budget_remaining
+        expr: |
+          (sli:http_availability:ratio - 0.999) / (1 - 0.999) * 100
+
+      # Error budget burn rate
+      - record: slo:http_availability:burn_rate_5m
+        expr: |
+          (1 - (
+            sum(rate(http_requests_total{status!~&quot;5..&quot;}[5m]))
+            /
+            sum(rate(http_requests_total[5m]))
+          )) / (1 - 0.999)
+```
+
+### SLO Alerting Rules
+
+```yaml
+groups:
+  - name: slo_alerts
+    interval: 1m
+    rules:
+      # Fast burn: 14.4x rate, 1 hour window
+      # Consumes 2% error budget in 1 hour
+      - alert: SLOErrorBudgetBurnFast
+        expr: |
+          slo:http_availability:burn_rate_1h &gt; 14.4
+          and
+          slo:http_availability:burn_rate_5m &gt; 14.4
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;Fast error budget burn detected&quot;
+          description: &quot;Error budget burning at {{ $value }}x rate&quot;
+
+      # Slow burn: 6x rate, 6 hour window
+      # Consumes 5% error budget in 6 hours
+      - alert: SLOErrorBudgetBurnSlow
+        expr: |
+          slo:http_availability:burn_rate_6h &gt; 6
+          and
+          slo:http_availability:burn_rate_30m &gt; 6
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: &quot;Slow error budget burn detected&quot;
+          description: &quot;Error budget burning at {{ $value }}x rate&quot;
+
+      # Error budget exhausted
+      - alert: SLOErrorBudgetExhausted
+        expr: slo:http_availability:error_budget_remaining &lt; 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;SLO error budget exhausted&quot;
+          description: &quot;Error budget remaining: {{ $value }}%&quot;
+```
+
+## SLO Dashboard
+
+**Grafana Dashboard Structure:**
+
+```
+┌────────────────────────────────────┐
+│ SLO Compliance (Current)           │
+│ ✓ 99.95% (Target: 99.9%)          │
+├────────────────────────────────────┤
+│ Error Budget Remaining: 65%        │
+│ ████████░░ 65%                     │
+├────────────────────────────────────┤
+│ SLI Trend (28 days)                │
+│ [Time series graph]                │
+├────────────────────────────────────┤
+│ Burn Rate Analysis                 │
+│ [Burn rate by time window]         │
+└────────────────────────────────────┘
+```
+
+**Example Queries:**
+
+```promql
+# Current SLO compliance
+sli:http_availability:ratio * 100
+
+# Error budget remaining
+slo:http_availability:error_budget_remaining
+
+# Days until error budget exhausted (at current burn rate)
+(slo:http_availability:error_budget_remaining / 100)
+*
+28
+/
+(1 - sli:http_availability:ratio) * (1 - 0.999)
+```
+
+## Additional patterns and templates
+
+More detailed templates and worked examples live in `references/details.md`. Read that file for the full pattern library.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

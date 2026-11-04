@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>workflow-orchestration-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Temporal 設計 durable workflow、saga 與決定性限制">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>workflow-orchestration-patterns</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/backend-development/skills/workflow-orchestration-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Temporal 設計 durable workflow、saga 與決定性限制</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: workflow-orchestration-patterns
+description: 用 Temporal 為分散式系統設計 durable workflow。涵蓋 workflow 與 activity 的分離、saga 模式、狀態管理和決定性（determinism）限制。建立長時間執行的流程、分散式交易，或微服務編排時使用。
+---
+
+# Workflow Orchestration Patterns
+
+精通用 Temporal 做 workflow 編排的架構，涵蓋基本設計決策、韌性模式，以及打造可靠分散式系統的最佳實務。
+
+## When to Use Workflow Orchestration
+
+### Ideal Use Cases (Source: docs.temporal.io)
+
+- 橫跨機器/服務/資料庫的**多步驟流程**
+- 需要全有或全無（all-or-nothing）語意的**分散式交易**
+- 有自動狀態持久化、可長時間執行（數小時到數年）的 **workflow**
+- 必須從上一個成功步驟接續的**失敗復原**
+- **商業流程**：訂位、訂單、行銷活動、簽核
+- **實體生命週期管理**：庫存追蹤、帳號管理、購物車流程
+- **基礎設施自動化**：CI/CD 流水線、資源配置、部署
+- 需要逾時和升級處理的 **human-in-the-loop** 系統
+
+### When NOT to Use
+
+- 簡單的 CRUD 操作（直接呼叫 API）
+- 純資料處理流水線（用 Airflow、批次處理）
+- 無狀態的 request/response（用一般 API）
+- 即時串流（用 Kafka、事件處理器）
+
+## Detailed patterns and worked examples
+
+詳細的模式說明放在 `references/details.md`。上面的導覽層不夠用的時候，再去讀那個檔案。
+
+## Best Practices
+
+### Workflow Design
+
+1. **Keep workflows focused** - 每個 workflow 只負責單一職責
+2. **Small workflows** - 為了可擴展性，使用 child workflow
+3. **Clear boundaries** - Workflow 負責編排，activity 負責執行
+4. **Test locally** - 使用時間跳躍的測試環境
+
+### Activity Design
+
+1. **Idempotent operations** - 可以安全地重試
+2. **Short-lived** - 幾秒到幾分鐘，不要到幾小時
+3. **Timeout configuration** - 一定要設逾時
+4. **Heartbeat for long tasks** - 回報進度
+5. **Error handling** - 區分可重試與不可重試的錯誤
+
+### Common Pitfalls
+
+**Workflow 違規**：
+
+- 用 `datetime.now()` 而不是 `workflow.now()`
+- 在 workflow 程式碼裡用 threading 或 async 操作
+- 直接從 workflow 呼叫外部 API
+- Workflow 中有非決定性的邏輯
+
+**Activity 常見錯誤**：
+
+- 非 idempotent 的操作（無法處理重試）
+- 缺少逾時（activity 會永遠跑下去）
+- 沒有做錯誤分類（連驗證錯誤也重試）
+- 忽略 payload 上限（每個參數 2MB）
+
+### Operational Considerations
+
+**Monitoring**：
+
+- Workflow 執行時間
+- Activity 失敗率
+- 重試次數與 backoff
+- 待處理的 workflow 數量
+
+**Scalability**：
+
+- 靠 worker 做水平擴展
+- Task queue 分區
+- 拆解成 child workflow
+- 適當時對 activity 做批次處理
+
+## Additional Resources
+
+**官方文件**：
+
+- Temporal Core Concepts: docs.temporal.io/workflows
+- Workflow Patterns: docs.temporal.io/evaluate/use-cases-design-patterns
+- Best Practices: docs.temporal.io/develop/best-practices
+- Saga Pattern: temporal.io/blog/saga-pattern-made-easy
+
+**關鍵原則**：
+
+1. Workflow = 編排，Activity = 外部呼叫
+2. Workflow 的決定性沒有商量的餘地
+3. Activity 的 idempotency 至關重要
+4. 狀態保存是自動的
+5. 針對失敗和復原來設計</pre></section><section><h2>英文原文</h2><pre>---
+name: workflow-orchestration-patterns
+description: Design durable workflows with Temporal for distributed systems. Covers workflow vs activity separation, saga patterns, state management, and determinism constraints. Use when building long-running processes, distributed transactions, or microservice orchestration.
+---
+
+# Workflow Orchestration Patterns
+
+Master workflow orchestration architecture with Temporal, covering fundamental design decisions, resilience patterns, and best practices for building reliable distributed systems.
+
+## When to Use Workflow Orchestration
+
+### Ideal Use Cases (Source: docs.temporal.io)
+
+- **Multi-step processes** spanning machines/services/databases
+- **Distributed transactions** requiring all-or-nothing semantics
+- **Long-running workflows** (hours to years) with automatic state persistence
+- **Failure recovery** that must resume from last successful step
+- **Business processes**: bookings, orders, campaigns, approvals
+- **Entity lifecycle management**: inventory tracking, account management, cart workflows
+- **Infrastructure automation**: CI/CD pipelines, provisioning, deployments
+- **Human-in-the-loop** systems requiring timeouts and escalations
+
+### When NOT to Use
+
+- Simple CRUD operations (use direct API calls)
+- Pure data processing pipelines (use Airflow, batch processing)
+- Stateless request/response (use standard APIs)
+- Real-time streaming (use Kafka, event processors)
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices
+
+### Workflow Design
+
+1. **Keep workflows focused** - Single responsibility per workflow
+2. **Small workflows** - Use child workflows for scalability
+3. **Clear boundaries** - Workflow orchestrates, activities execute
+4. **Test locally** - Use time-skipping test environment
+
+### Activity Design
+
+1. **Idempotent operations** - Safe to retry
+2. **Short-lived** - Seconds to minutes, not hours
+3. **Timeout configuration** - Always set timeouts
+4. **Heartbeat for long tasks** - Report progress
+5. **Error handling** - Distinguish retryable vs non-retryable
+
+### Common Pitfalls
+
+**Workflow Violations**:
+
+- Using `datetime.now()` instead of `workflow.now()`
+- Threading or async operations in workflow code
+- Calling external APIs directly from workflow
+- Non-deterministic logic in workflows
+
+**Activity Mistakes**:
+
+- Non-idempotent operations (can&#x27;t handle retries)
+- Missing timeouts (activities run forever)
+- No error classification (retry validation errors)
+- Ignoring payload limits (2MB per argument)
+
+### Operational Considerations
+
+**Monitoring**:
+
+- Workflow execution duration
+- Activity failure rates
+- Retry attempts and backoff
+- Pending workflow counts
+
+**Scalability**:
+
+- Horizontal scaling with workers
+- Task queue partitioning
+- Child workflow decomposition
+- Activity batching when appropriate
+
+## Additional Resources
+
+**Official Documentation**:
+
+- Temporal Core Concepts: docs.temporal.io/workflows
+- Workflow Patterns: docs.temporal.io/evaluate/use-cases-design-patterns
+- Best Practices: docs.temporal.io/develop/best-practices
+- Saga Pattern: temporal.io/blog/saga-pattern-made-easy
+
+**Key Principles**:
+
+1. Workflows = orchestration, Activities = external calls
+2. Determinism is non-negotiable for workflows
+3. Idempotency is critical for activities
+4. State preservation is automatic
+5. Design for failure and recovery</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

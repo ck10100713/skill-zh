@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>memory-forensics｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Volatility 做記憶體取得、行程分析與惡意程式 artifact 擷取">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>memory-forensics</h1>
+<p class="meta">wshobson ｜ 安全護欄 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/reverse-engineering/skills/memory-forensics/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Volatility 做記憶體取得、行程分析與惡意程式 artifact 擷取</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: memory-forensics
+description: 精通記憶體鑑識技術，包含用 Volatility 與相關工具做記憶體取得、行程分析與 artifact 擷取。在分析記憶體傾印、調查資安事件，或從 RAM 擷取檔做惡意程式分析時使用。
+---
+
+# Memory Forensics
+
+取得、分析記憶體傾印並從中擷取 artifact 的完整技術，用於事件應變與惡意程式分析。
+
+## When to Use This Skill
+
+- 在事件應變或入侵調查期間做記憶體分析
+- 從 RAM 擷取檔中抽出惡意程式 artifact（行程、被注入的程式碼、網路連線）
+- 在關機前，從運作中的 Windows/Linux/macOS 系統取得揮發性記憶體
+- 用 Volatility 3 / Rekall 對記憶體傾印做初步分類
+- 從行程記憶體中還原憑證、瀏覽器 session 或開啟中的檔案
+
+## Memory Acquisition
+
+### Live Acquisition Tools
+
+#### Windows
+
+```powershell
+# WinPmem (Recommended)
+winpmem_mini_x64.exe memory.raw
+
+# DumpIt
+DumpIt.exe
+
+# Belkasoft RAM Capturer
+# GUI-based, outputs raw format
+
+# Magnet RAM Capture
+# GUI-based, outputs raw format
+```
+
+#### Linux
+
+```bash
+# LiME (Linux Memory Extractor)
+sudo insmod lime.ko &quot;path=/tmp/memory.lime format=lime&quot;
+
+# /dev/mem (limited, requires permissions)
+sudo dd if=/dev/mem of=memory.raw bs=1M
+
+# /proc/kcore (ELF format)
+sudo cp /proc/kcore memory.elf
+```
+
+#### macOS
+
+```bash
+# osxpmem
+sudo ./osxpmem -o memory.raw
+
+# MacQuisition (commercial)
+```
+
+### Virtual Machine Memory
+
+```bash
+# VMware: .vmem file is raw memory
+cp vm.vmem memory.raw
+
+# VirtualBox: Use debug console
+vboxmanage debugvm &quot;VMName&quot; dumpvmcore --filename memory.elf
+
+# QEMU
+virsh dump &lt;domain&gt; memory.raw --memory-only
+
+# Hyper-V
+# Checkpoint contains memory state
+```
+
+## Detailed section: Volatility 3 Framework
+
+這段原本是這份 SKILL.md 裡一段 2680 bytes 的內容，為了符合 Codex 對 skill 本文 8 KB 的上限，已搬到 `references/details.md`。
+
+## Analysis Workflows
+
+### Malware Analysis Workflow
+
+```bash
+# 1. Initial process survey
+vol -f memory.raw windows.pstree &gt; processes.txt
+vol -f memory.raw windows.pslist &gt; pslist.txt
+
+# 2. Network connections
+vol -f memory.raw windows.netscan &gt; network.txt
+
+# 3. Detect injection
+vol -f memory.raw windows.malfind &gt; malfind.txt
+
+# 4. Analyze suspicious processes
+vol -f memory.raw windows.dlllist --pid &lt;PID&gt;
+vol -f memory.raw windows.handles --pid &lt;PID&gt;
+
+# 5. Dump suspicious executables
+vol -f memory.raw windows.pslist --pid &lt;PID&gt; --dump
+
+# 6. Extract strings from dumps
+strings -a pid.&lt;PID&gt;.exe &gt; strings.txt
+
+# 7. YARA scanning
+vol -f memory.raw windows.yarascan --yara-rules malware.yar
+```
+
+### Incident Response Workflow
+
+```bash
+# 1. Timeline of events
+vol -f memory.raw windows.timeliner &gt; timeline.csv
+
+# 2. User activity
+vol -f memory.raw windows.cmdline
+vol -f memory.raw windows.consoles
+
+# 3. Persistence mechanisms
+vol -f memory.raw windows.registry.printkey \
+    --key &quot;Software\Microsoft\Windows\CurrentVersion\Run&quot;
+
+# 4. Services
+vol -f memory.raw windows.svcscan
+
+# 5. Scheduled tasks
+vol -f memory.raw windows.scheduled_tasks
+
+# 6. Recent files
+vol -f memory.raw windows.filescan | grep -i &quot;recent&quot;
+```
+
+## Data Structures
+
+### Windows Process Structures
+
+```c
+// EPROCESS (Executive Process)
+typedef struct _EPROCESS {
+    KPROCESS Pcb;                    // Kernel process block
+    EX_PUSH_LOCK ProcessLock;
+    LARGE_INTEGER CreateTime;
+    LARGE_INTEGER ExitTime;
+    // ...
+    LIST_ENTRY ActiveProcessLinks;   // Doubly-linked list
+    ULONG_PTR UniqueProcessId;       // PID
+    // ...
+    PEB* Peb;                        // Process Environment Block
+    // ...
+} EPROCESS;
+
+// PEB (Process Environment Block)
+typedef struct _PEB {
+    BOOLEAN InheritedAddressSpace;
+    BOOLEAN ReadImageFileExecOptions;
+    BOOLEAN BeingDebugged;           // Anti-debug check
+    // ...
+    PVOID ImageBaseAddress;          // Base address of executable
+    PPEB_LDR_DATA Ldr;              // Loader data (DLL list)
+    PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
+    // ...
+} PEB;
+```
+
+### VAD (Virtual Address Descriptor)
+
+```c
+typedef struct _MMVAD {
+    MMVAD_SHORT Core;
+    union {
+        ULONG LongFlags;
+        MMVAD_FLAGS VadFlags;
+    } u;
+    // ...
+    PVOID FirstPrototypePte;
+    PVOID LastContiguousPte;
+    // ...
+    PFILE_OBJECT FileObject;
+} MMVAD;
+
+// Memory protection flags
+#define PAGE_EXECUTE           0x10
+#define PAGE_EXECUTE_READ      0x20
+#define PAGE_EXECUTE_READWRITE 0x40
+#define PAGE_EXECUTE_WRITECOPY 0x80
+```
+
+## Detection Patterns
+
+### Process Injection Indicators
+
+```python
+# Malfind indicators
+# - PAGE_EXECUTE_READWRITE protection (suspicious)
+# - MZ header in non-image VAD region
+# - Shellcode patterns at allocation start
+
+# Common injection techniques
+# 1. Classic DLL Injection
+#    - VirtualAllocEx + WriteProcessMemory + CreateRemoteThread
+
+# 2. Process Hollowing
+#    - CreateProcess (SUSPENDED) + NtUnmapViewOfSection + WriteProcessMemory
+
+# 3. APC Injection
+#    - QueueUserAPC targeting alertable threads
+
+# 4. Thread Execution Hijacking
+#    - SuspendThread + SetThreadContext + ResumeThread
+```
+
+### Rootkit Detection
+
+```bash
+# Compare process lists
+vol -f memory.raw windows.pslist &gt; pslist.txt
+vol -f memory.raw windows.psscan &gt; psscan.txt
+diff pslist.txt psscan.txt  # Hidden processes
+
+# Check for DKOM (Direct Kernel Object Manipulation)
+vol -f memory.raw windows.callbacks
+
+# Detect hooked functions
+vol -f memory.raw windows.ssdt  # System Service Descriptor Table
+
+# Driver analysis
+vol -f memory.raw windows.driverscan
+vol -f memory.raw windows.driverirp
+```
+
+### Credential Extraction
+
+```bash
+# Dump hashes (requires hivelist first)
+vol -f memory.raw windows.hashdump
+
+# LSA secrets
+vol -f memory.raw windows.lsadump
+
+# Cached domain credentials
+vol -f memory.raw windows.cachedump
+
+# Mimikatz-style extraction
+# Requires specific plugins/tools
+```
+
+## YARA Integration
+
+### Writing Memory YARA Rules
+
+```yara
+rule Suspicious_Injection
+{
+    meta:
+        description = &quot;Detects common injection shellcode&quot;
+
+    strings:
+        // Common shellcode patterns
+        $mz = { 4D 5A }
+        $shellcode1 = { 55 8B EC 83 EC }  // Function prologue
+        $api_hash = { 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? E8 }  // Push hash, call
+
+    condition:
+        $mz at 0 or any of ($shellcode*)
+}
+
+rule Cobalt_Strike_Beacon
+{
+    meta:
+        description = &quot;Detects Cobalt Strike beacon in memory&quot;
+
+    strings:
+        $config = { 00 01 00 01 00 02 }
+        $sleep = &quot;sleeptime&quot;
+        $beacon = &quot;%s (admin)&quot; wide
+
+    condition:
+        2 of them
+}
+```
+
+### Scanning Memory
+
+```bash
+# Scan all process memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar
+
+# Scan specific process
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --pid 1234
+
+# Scan kernel memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --kernel
+```
+
+## String Analysis
+
+### Extracting Strings
+
+```bash
+# Basic string extraction
+strings -a memory.raw &gt; all_strings.txt
+
+# Unicode strings
+strings -el memory.raw &gt;&gt; all_strings.txt
+
+# Targeted extraction from process dump
+vol -f memory.raw windows.memmap --pid 1234 --dump
+strings -a pid.1234.dmp &gt; process_strings.txt
+
+# Pattern matching
+grep -E &quot;(https?://|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})&quot; all_strings.txt
+```
+
+### FLOSS for Obfuscated Strings
+
+```bash
+# FLOSS extracts obfuscated strings
+floss malware.exe &gt; floss_output.txt
+
+# From memory dump
+floss pid.1234.dmp
+```
+
+## Best Practices
+
+### Acquisition Best Practices
+
+1. **降到最小足跡**：使用輕量的取得工具
+2. **記錄所有事情**：記下擷取的時間、工具與 hash
+3. **驗證完整性**：擷取完立刻對記憶體傾印做 hash
+4. **保管鏈**：維持正確的鑑識處理程序
+
+### Analysis Best Practices
+
+1. **先看全貌**：先有整體概況，再深入細節
+2. **交叉比對**：同一份資料用多個 plugin 查
+3. **時間軸關聯**：把記憶體的發現和磁碟/網路的紀錄對照
+4. **記錄發現**：留下詳細的筆記和截圖
+5. **驗證結果**：用多種方法確認發現
+
+### Common Pitfalls
+
+- **資料過期**：記憶體是揮發性的，要盡快分析
+- **傾印不完整**：確認傾印大小符合預期的 RAM 容量
+- **符號問題**：確保使用對應該 OS 版本的符號檔
+- **Smear**：取得過程中記憶體可能已經變動
+- **加密**：有些資料在記憶體中可能是加密的</pre></section><section><h2>英文原文</h2><pre>---
+name: memory-forensics
+description: Master memory forensics techniques including memory acquisition, process analysis, and artifact extraction using Volatility and related tools. Use when analyzing memory dumps, investigating incidents, or performing malware analysis from RAM captures.
+---
+
+# Memory Forensics
+
+Comprehensive techniques for acquiring, analyzing, and extracting artifacts from memory dumps for incident response and malware analysis.
+
+## When to Use This Skill
+
+- Performing memory analysis during incident response or breach investigation
+- Extracting malware artifacts (processes, injected code, network connections) from a RAM capture
+- Acquiring volatile memory from a live Windows/Linux/macOS system before shutdown
+- Using Volatility 3 / Rekall to triage memory dumps
+- Recovering credentials, browser sessions, or open files from process memory
+
+## Memory Acquisition
+
+### Live Acquisition Tools
+
+#### Windows
+
+```powershell
+# WinPmem (Recommended)
+winpmem_mini_x64.exe memory.raw
+
+# DumpIt
+DumpIt.exe
+
+# Belkasoft RAM Capturer
+# GUI-based, outputs raw format
+
+# Magnet RAM Capture
+# GUI-based, outputs raw format
+```
+
+#### Linux
+
+```bash
+# LiME (Linux Memory Extractor)
+sudo insmod lime.ko &quot;path=/tmp/memory.lime format=lime&quot;
+
+# /dev/mem (limited, requires permissions)
+sudo dd if=/dev/mem of=memory.raw bs=1M
+
+# /proc/kcore (ELF format)
+sudo cp /proc/kcore memory.elf
+```
+
+#### macOS
+
+```bash
+# osxpmem
+sudo ./osxpmem -o memory.raw
+
+# MacQuisition (commercial)
+```
+
+### Virtual Machine Memory
+
+```bash
+# VMware: .vmem file is raw memory
+cp vm.vmem memory.raw
+
+# VirtualBox: Use debug console
+vboxmanage debugvm &quot;VMName&quot; dumpvmcore --filename memory.elf
+
+# QEMU
+virsh dump &lt;domain&gt; memory.raw --memory-only
+
+# Hyper-V
+# Checkpoint contains memory state
+```
+
+## Detailed section: Volatility 3 Framework
+
+Originally a 2680-byte section in this SKILL.md. Moved to `references/details.md` to fit Codex&#x27;s 8 KB skill body cap.
+
+## Analysis Workflows
+
+### Malware Analysis Workflow
+
+```bash
+# 1. Initial process survey
+vol -f memory.raw windows.pstree &gt; processes.txt
+vol -f memory.raw windows.pslist &gt; pslist.txt
+
+# 2. Network connections
+vol -f memory.raw windows.netscan &gt; network.txt
+
+# 3. Detect injection
+vol -f memory.raw windows.malfind &gt; malfind.txt
+
+# 4. Analyze suspicious processes
+vol -f memory.raw windows.dlllist --pid &lt;PID&gt;
+vol -f memory.raw windows.handles --pid &lt;PID&gt;
+
+# 5. Dump suspicious executables
+vol -f memory.raw windows.pslist --pid &lt;PID&gt; --dump
+
+# 6. Extract strings from dumps
+strings -a pid.&lt;PID&gt;.exe &gt; strings.txt
+
+# 7. YARA scanning
+vol -f memory.raw windows.yarascan --yara-rules malware.yar
+```
+
+### Incident Response Workflow
+
+```bash
+# 1. Timeline of events
+vol -f memory.raw windows.timeliner &gt; timeline.csv
+
+# 2. User activity
+vol -f memory.raw windows.cmdline
+vol -f memory.raw windows.consoles
+
+# 3. Persistence mechanisms
+vol -f memory.raw windows.registry.printkey \
+    --key &quot;Software\Microsoft\Windows\CurrentVersion\Run&quot;
+
+# 4. Services
+vol -f memory.raw windows.svcscan
+
+# 5. Scheduled tasks
+vol -f memory.raw windows.scheduled_tasks
+
+# 6. Recent files
+vol -f memory.raw windows.filescan | grep -i &quot;recent&quot;
+```
+
+## Data Structures
+
+### Windows Process Structures
+
+```c
+// EPROCESS (Executive Process)
+typedef struct _EPROCESS {
+    KPROCESS Pcb;                    // Kernel process block
+    EX_PUSH_LOCK ProcessLock;
+    LARGE_INTEGER CreateTime;
+    LARGE_INTEGER ExitTime;
+    // ...
+    LIST_ENTRY ActiveProcessLinks;   // Doubly-linked list
+    ULONG_PTR UniqueProcessId;       // PID
+    // ...
+    PEB* Peb;                        // Process Environment Block
+    // ...
+} EPROCESS;
+
+// PEB (Process Environment Block)
+typedef struct _PEB {
+    BOOLEAN InheritedAddressSpace;
+    BOOLEAN ReadImageFileExecOptions;
+    BOOLEAN BeingDebugged;           // Anti-debug check
+    // ...
+    PVOID ImageBaseAddress;          // Base address of executable
+    PPEB_LDR_DATA Ldr;              // Loader data (DLL list)
+    PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
+    // ...
+} PEB;
+```
+
+### VAD (Virtual Address Descriptor)
+
+```c
+typedef struct _MMVAD {
+    MMVAD_SHORT Core;
+    union {
+        ULONG LongFlags;
+        MMVAD_FLAGS VadFlags;
+    } u;
+    // ...
+    PVOID FirstPrototypePte;
+    PVOID LastContiguousPte;
+    // ...
+    PFILE_OBJECT FileObject;
+} MMVAD;
+
+// Memory protection flags
+#define PAGE_EXECUTE           0x10
+#define PAGE_EXECUTE_READ      0x20
+#define PAGE_EXECUTE_READWRITE 0x40
+#define PAGE_EXECUTE_WRITECOPY 0x80
+```
+
+## Detection Patterns
+
+### Process Injection Indicators
+
+```python
+# Malfind indicators
+# - PAGE_EXECUTE_READWRITE protection (suspicious)
+# - MZ header in non-image VAD region
+# - Shellcode patterns at allocation start
+
+# Common injection techniques
+# 1. Classic DLL Injection
+#    - VirtualAllocEx + WriteProcessMemory + CreateRemoteThread
+
+# 2. Process Hollowing
+#    - CreateProcess (SUSPENDED) + NtUnmapViewOfSection + WriteProcessMemory
+
+# 3. APC Injection
+#    - QueueUserAPC targeting alertable threads
+
+# 4. Thread Execution Hijacking
+#    - SuspendThread + SetThreadContext + ResumeThread
+```
+
+### Rootkit Detection
+
+```bash
+# Compare process lists
+vol -f memory.raw windows.pslist &gt; pslist.txt
+vol -f memory.raw windows.psscan &gt; psscan.txt
+diff pslist.txt psscan.txt  # Hidden processes
+
+# Check for DKOM (Direct Kernel Object Manipulation)
+vol -f memory.raw windows.callbacks
+
+# Detect hooked functions
+vol -f memory.raw windows.ssdt  # System Service Descriptor Table
+
+# Driver analysis
+vol -f memory.raw windows.driverscan
+vol -f memory.raw windows.driverirp
+```
+
+### Credential Extraction
+
+```bash
+# Dump hashes (requires hivelist first)
+vol -f memory.raw windows.hashdump
+
+# LSA secrets
+vol -f memory.raw windows.lsadump
+
+# Cached domain credentials
+vol -f memory.raw windows.cachedump
+
+# Mimikatz-style extraction
+# Requires specific plugins/tools
+```
+
+## YARA Integration
+
+### Writing Memory YARA Rules
+
+```yara
+rule Suspicious_Injection
+{
+    meta:
+        description = &quot;Detects common injection shellcode&quot;
+
+    strings:
+        // Common shellcode patterns
+        $mz = { 4D 5A }
+        $shellcode1 = { 55 8B EC 83 EC }  // Function prologue
+        $api_hash = { 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? E8 }  // Push hash, call
+
+    condition:
+        $mz at 0 or any of ($shellcode*)
+}
+
+rule Cobalt_Strike_Beacon
+{
+    meta:
+        description = &quot;Detects Cobalt Strike beacon in memory&quot;
+
+    strings:
+        $config = { 00 01 00 01 00 02 }
+        $sleep = &quot;sleeptime&quot;
+        $beacon = &quot;%s (admin)&quot; wide
+
+    condition:
+        2 of them
+}
+```
+
+### Scanning Memory
+
+```bash
+# Scan all process memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar
+
+# Scan specific process
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --pid 1234
+
+# Scan kernel memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --kernel
+```
+
+## String Analysis
+
+### Extracting Strings
+
+```bash
+# Basic string extraction
+strings -a memory.raw &gt; all_strings.txt
+
+# Unicode strings
+strings -el memory.raw &gt;&gt; all_strings.txt
+
+# Targeted extraction from process dump
+vol -f memory.raw windows.memmap --pid 1234 --dump
+strings -a pid.1234.dmp &gt; process_strings.txt
+
+# Pattern matching
+grep -E &quot;(https?://|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})&quot; all_strings.txt
+```
+
+### FLOSS for Obfuscated Strings
+
+```bash
+# FLOSS extracts obfuscated strings
+floss malware.exe &gt; floss_output.txt
+
+# From memory dump
+floss pid.1234.dmp
+```
+
+## Best Practices
+
+### Acquisition Best Practices
+
+1. **Minimize footprint**: Use lightweight acquisition tools
+2. **Document everything**: Record time, tool, and hash of capture
+3. **Verify integrity**: Hash memory dump immediately after capture
+4. **Chain of custody**: Maintain proper forensic handling
+
+### Analysis Best Practices
+
+1. **Start broad**: Get overview before deep diving
+2. **Cross-reference**: Use multiple plugins for same data
+3. **Timeline correlation**: Correlate memory findings with disk/network
+4. **Document findings**: Keep detailed notes and screenshots
+5. **Validate results**: Verify findings through multiple methods
+
+### Common Pitfalls
+
+- **Stale data**: Memory is volatile, analyze promptly
+- **Incomplete dumps**: Verify dump size matches expected RAM
+- **Symbol issues**: Ensure correct symbol files for OS version
+- **Smear**: Memory may change during acquisition
+- **Encryption**: Some data may be encrypted in memory</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>saga-orchestration｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 saga 模式處理跨服務分散式交易和補償動作">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>saga-orchestration</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/backend-development/skills/saga-orchestration/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 saga 模式處理跨服務分散式交易和補償動作</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: saga-orchestration
+description: 為分散式交易和跨 aggregate 的工作流程實作 saga 模式。在 2PC 用不了的 microservice 之間實作分散式交易、替橫跨庫存/付款/出貨服務的失敗訂單流程設計補償動作、為必須原子性地回滾飯店/航班/租車預訂的旅遊訂位系統建構事件驅動的 saga coordinator，或除錯正式環境中補償步驟永遠沒完成而卡住的 saga 狀態時使用。
+---
+
+# Saga Orchestration
+
+不靠兩階段提交（two-phase commit），來管理分散式交易和長時間執行的商業流程的模式。
+
+## Inputs and Outputs
+
+**你要提供：**
+- 服務邊界和歸屬（哪個服務負責哪個步驟）
+- 交易需求（哪些步驟必須是原子性的，哪些可以最終一致）
+- 每個步驟的失敗模式（暫時性 vs. 永久性、重試策略）
+- 每個步驟的 SLA 需求（用來決定 timeout 設定）
+- 現有的事件/訊息基礎設施（Kafka、RabbitMQ、SQS 等）
+
+**這個 skill 會產出：**
+- Saga 定義，包含有順序的步驟、動作指令和補償指令
+- 針對你選的模式實作的 orchestrator 或 choreography
+- 每個參與服務的補償邏輯（idempotent、一定會成功）
+- 每個步驟都有各自期限的 timeout 設定
+- 監控設定：狀態機指標、卡住的 saga 偵測、DLQ 復原
+
+---
+
+## When to Use This Skill
+
+- 不用分散式鎖來協調跨多個服務的交易
+- 為部分失敗實作補償交易
+- 管理長時間執行的商業工作流程（幾分鐘到幾小時）
+- 處理需要原子性的分散式系統中的失敗
+- 建構訂單履行、審批或訂位流程
+- 用非同步補償取代脆弱的兩階段提交
+
+---
+
+## Detailed section: Core Concepts
+
+已搬到 `references/details.md`。
+
+## Detailed section: Templates
+
+已搬到 `references/details.md`。
+
+## Best Practices
+
+### Do&#x27;s
+
+- **讓每個步驟都 idempotent** — broker 重連時，指令可能被重播
+- **仔細設計補償動作** — 它們是最關鍵的程式碼路徑
+- **用 correlation ID** — `saga_id` 必須流經每個事件和 log
+- **實作每個步驟自己的 timeout** — 絕對不要無限期等待參與者回覆
+- **記錄狀態轉換** — 每次變動都要記錄 `saga_id`、`step_name`、`old_state → new_state`
+- **明確測試補償路徑** — 在整合測試裡，於每個步驟索引都注入失敗
+
+### Don&#x27;ts
+
+- **不要假設會立刻完成** — Saga 是非同步的，可能要好幾分鐘
+- **不要跳過補償的測試** — 回滾路徑是最難做對的
+- **不要把服務直接耦合在一起** — 用非同步訊息，saga 步驟裡絕對不要有同步呼叫
+- **不要忽略部分失敗** — 只執行了一部分的步驟，仍然需要補償
+- **不要用全域 timeout** — 每個步驟的延遲特性都不一樣
+
+---
+
+## Troubleshooting
+
+### Saga stuck in COMPENSATING state
+
+Saga 進入補償階段，卻一直到不了 FAILED。這代表某個補償 handler 丟出了沒處理的 exception，從來沒發布 `SagaCompensationCompleted`。要在補償的 consumer 加上 dead-letter queue（DLQ）處理，並確保每個補償動作都會發布結果事件，就算底層操作已經被回滾過了也一樣。
+
+```python
+async def handle_release_reservation(self, command: Dict):
+    try:
+        await self.release_reservation(command[&quot;original_result&quot;][&quot;reservation_id&quot;])
+    except ReservationNotFoundError:
+        pass  # Already released — treat as success
+    # Always publish completion, regardless of outcome
+    await self.event_publisher.publish(&quot;SagaCompensationCompleted&quot;, {
+        &quot;saga_id&quot;: command[&quot;saga_id&quot;],
+        &quot;step_name&quot;: &quot;reserve_inventory&quot;
+    })
+```
+
+### Duplicate saga executions on restart
+
+如果你的 orchestrator 服務在 saga 進行到一半時重啟，它可能會重播事件，並重新執行已經完成的步驟。每個步驟的動作都要用 idempotency key 把關，見上面的 **Template 3**。
+
+### Choreography saga losing events
+
+在以 choreography 為基礎的 saga 裡，下游服務如果在事件發布時離線，可能會漏掉那個事件。要用持久化的 message broker（有複寫的 Kafka、有持久化的 RabbitMQ），並把目前的 saga 狀態存進專用的 `saga_log` 資料表，這樣才能從最後一個已知正常的步驟重播。
+
+### Timeout firing before a slow-but-valid step completes
+
+像 `create_shipment` 這種步驟，在尖峰時可能要花到 15 分鐘，但你的全域 timeout 是 5 分鐘，結果造成不該發生的補償。要讓 timeout 可以依步驟類型個別設定，`TimeoutSagaOrchestrator` 的實作和 `STEP_TIMEOUTS` dict 的寫法，請看 `references/advanced-patterns.md`。
+
+### Compensation order not matching execution order
+
+兩個步驟都已完成、之後才偵測到失敗時，補償必須嚴格按照相反的順序執行，否則資料會留在不一致的狀態。確認 `_compensate()` 是從 `current_step - 1` 往下迭代到 `0`，並加一個整合測試，刻意在每個步驟索引製造失敗，確認回滾的順序正確。
+
+---
+
+## Advanced Patterns
+
+`references/` 目錄裡有正式環境等級的實作，大多數 saga 用不到：
+
+- **`references/advanced-patterns.md`** — 完整的 `SagaOrchestrator` 抽象 base class、有各步驟期限的 `TimeoutSagaOrchestrator`、詳細的銀行轉帳補償交易鏈、Prometheus instrumentation、卡住 saga 的 PromQL 警報，以及 DLQ 復原 worker。
+
+---
+
+## Related Skills
+
+- `cqrs-implementation` — 把 saga 跟 CQRS 搭配，在每個步驟完成後更新 read model
+- `event-store-design` — 把 saga 事件存進 event store，取得完整的稽核軌跡和重播能力
+- `workflow-orchestration-patterns` — 建立在 saga 概念之上的更高階 workflow 引擎（Temporal、Conductor）</pre></section><section><h2>英文原文</h2><pre>---
+name: saga-orchestration
+description: Implement saga patterns for distributed transactions and cross-aggregate workflows. Use this skill when implementing distributed transactions across microservices where 2PC is unavailable, designing compensating actions for failed order workflows that span inventory, payment, and shipping services, building event-driven saga coordinators for travel booking systems that must roll back hotel, flight, and car rental reservations atomically, or debugging stuck saga states in production where compensation steps never complete.
+---
+
+# Saga Orchestration
+
+Patterns for managing distributed transactions and long-running business processes without two-phase commit.
+
+## Inputs and Outputs
+
+**What you provide:**
+- Service boundaries and ownership (which service owns which step)
+- Transaction requirements (which steps must be atomic, which can be eventual)
+- Failure modes for each step (transient vs. permanent, retry policy)
+- SLA requirements per step (informs timeout configuration)
+- Existing event/messaging infrastructure (Kafka, RabbitMQ, SQS, etc.)
+
+**What this skill produces:**
+- Saga definition with ordered steps, action commands, and compensation commands
+- Orchestrator or choreography implementation for your chosen pattern
+- Compensation logic for each participant service (idempotent, always-succeeds)
+- Step timeout configuration with per-step deadlines
+- Monitoring setup: state machine metrics, stuck saga detection, DLQ recovery
+
+---
+
+## When to Use This Skill
+
+- Coordinating multi-service transactions without distributed locks
+- Implementing compensating transactions for partial failures
+- Managing long-running business workflows (minutes to hours)
+- Handling failures in distributed systems where atomicity is required
+- Building order fulfillment, approval, or booking processes
+- Replacing fragile two-phase commit with async compensation
+
+---
+
+## Detailed section: Core Concepts
+
+Moved to `references/details.md`.
+
+## Detailed section: Templates
+
+Moved to `references/details.md`.
+
+## Best Practices
+
+### Do&#x27;s
+
+- **Make every step idempotent** — Commands may be replayed on broker reconnect
+- **Design compensations carefully** — They are the most critical code path
+- **Use correlation IDs** — The `saga_id` must flow through every event and log
+- **Implement per-step timeouts** — Never wait indefinitely for a participant reply
+- **Log state transitions** — `saga_id`, `step_name`, `old_state → new_state` on every change
+- **Test compensation paths explicitly** — Inject failures at each step index in integration tests
+
+### Don&#x27;ts
+
+- **Don&#x27;t assume instant completion** — Sagas are async and may take minutes
+- **Don&#x27;t skip compensation testing** — The rollback path is the hardest to get right
+- **Don&#x27;t couple services directly** — Use async messaging, never synchronous calls inside a saga step
+- **Don&#x27;t ignore partial failures** — A step that partially executed still needs compensation
+- **Don&#x27;t use a global timeout** — Each step has different latency characteristics
+
+---
+
+## Troubleshooting
+
+### Saga stuck in COMPENSATING state
+
+A saga enters compensation but never reaches FAILED. This means a compensation handler is throwing an unhandled exception and never publishing `SagaCompensationCompleted`. Add dead-letter queue (DLQ) handling to compensation consumers and ensure every compensation action publishes a result event even when the underlying operation was already rolled back.
+
+```python
+async def handle_release_reservation(self, command: Dict):
+    try:
+        await self.release_reservation(command[&quot;original_result&quot;][&quot;reservation_id&quot;])
+    except ReservationNotFoundError:
+        pass  # Already released — treat as success
+    # Always publish completion, regardless of outcome
+    await self.event_publisher.publish(&quot;SagaCompensationCompleted&quot;, {
+        &quot;saga_id&quot;: command[&quot;saga_id&quot;],
+        &quot;step_name&quot;: &quot;reserve_inventory&quot;
+    })
+```
+
+### Duplicate saga executions on restart
+
+If your orchestrator service restarts mid-saga, it may replay events and re-execute already-completed steps. Guard every step action with an idempotency key — see **Template 3** above.
+
+### Choreography saga losing events
+
+In a choreography-based saga, a downstream service may miss an event if it was offline when published. Use a durable message broker (Kafka with replication, RabbitMQ with persistence) and store the current saga state in a dedicated `saga_log` table so you can replay from the last known good step.
+
+### Timeout firing before a slow-but-valid step completes
+
+A step like `create_shipment` might take up to 15 minutes during peak load but your global timeout is 5 minutes, causing spurious compensation. Make step timeouts configurable per step type — see `references/advanced-patterns.md` for the `TimeoutSagaOrchestrator` implementation and the `STEP_TIMEOUTS` dict pattern.
+
+### Compensation order not matching execution order
+
+When two steps both complete before a failure is detected, compensation must run in strict reverse order or you leave data in an inconsistent state. Verify that `_compensate()` iterates from `current_step - 1` down to `0`, and add an integration test that deliberately fails at each step index to confirm correct rollback order.
+
+---
+
+## Advanced Patterns
+
+The `references/` directory contains production-grade implementations not needed for most sagas:
+
+- **`references/advanced-patterns.md`** — Full `SagaOrchestrator` abstract base class, `TimeoutSagaOrchestrator` with per-step deadlines, detailed bank transfer compensating transaction chain, Prometheus instrumentation, stuck saga PromQL alerts, and DLQ recovery worker.
+
+---
+
+## Related Skills
+
+- `cqrs-implementation` — Pair sagas with CQRS for read-model updates after each step completes
+- `event-store-design` — Store saga events in an event store for full audit trail and replay capability
+- `workflow-orchestration-patterns` — Higher-level workflow engines (Temporal, Conductor) that build on saga concepts</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

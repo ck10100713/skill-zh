@@ -1,6 +1,6 @@
 ---
 name: gitops-workflow
-description: 用 ArgoCD 和 Flux 實作 GitOps 工作流程，自動化 Kubernetes deploy 的完整指南。適用於為 Kubernetes cluster 設定 GitOps、從 Git 自動 deploy 應用程式、實作漸進式交付，或管理多 cluster deploy 的時候。
+description: 用 ArgoCD 和 Flux 實作 GitOps 工作流程，達成自動化、宣告式、持續調和的 Kubernetes deploy。適用於實作 GitOps 實務、自動化 Kubernetes deploy，或設定宣告式的基礎設施管理的時候。
 ---
 
 # GitOps 工作流程

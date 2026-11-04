@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spark-environment-setup｜Skill 寫法圖鑑</title>
+<meta name="description" content="在 DGX Spark 上建立 PyTorch/Unsloth 訓練環境，處理 CUDA 13 的 ABI 問題">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>spark-environment-setup</h1>
+<p class="meta">wshobson ｜ 雲端與基礎設施 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/dgx-spark-ops/skills/spark-environment-setup/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">在 DGX Spark 上建立 PyTorch/Unsloth 訓練環境，處理 CUDA 13 的 ABI 問題</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: spark-environment-setup
+description: 在 NVIDIA DGX Spark（GB10、aarch64、CUDA 13）上建立可用的 ML 訓練/推論環境。在 DGX Spark 上安裝 PyTorch/Unsloth/TRL/vLLM、在 aarch64 上遇到 libcudart 或 wheel ABI 錯誤，或在 NGC container 和直接用 pip 安裝之間做選擇時使用。
+---
+
+# Spark Environment Setup
+
+DGX Spark 搭載 GB10 Grace Blackwell 晶片：aarch64 CPU、SM121 GPU、128GB 統一記憶體、CUDA 13。這個平台比一般 x86 CUDA 12 的機器更窄也更新，所以套件的選擇和 ABI 的匹配比平常更重要，aarch64 + CUDA 13 的 wheel 生態系還在逐步補齊中。
+
+## When to Use This Skill
+
+- 為訓練或推論設定一台全新的 Spark 機器。
+- 遇到提到 `libcudart`、缺少 symbol，或是「裝得好好的，但載入不了」的 wheel 的 import 錯誤。
+- 框架安裝（PyTorch、Unsloth、TRL、vLLM、xformers）失敗、卡住，或悄悄退回用 CPU。
+- 決定要用 NGC container 還是直接用 pip。
+- 在 OS 重灌或 base image 更新之後，要從頭重新驗證，恢復可用的環境。
+
+這些情況的解法大致相同：讓 container/wheel 的組合對應 CUDA 13 和 SM121，不要跟 ABI 對著幹。
+
+## Container-First Rule
+
+先講快速決策，再看下面的細節：
+
+- 標準的訓練/推論工作 → NGC PyTorch container。
+- 以 Unsloth 為中心的微調 → Unsloth container（它已經附上針對這條路徑驗證過、釘好版本的 Triton/xformers/transformers 組合）。
+- 兩者都不適合（自訂的系統套件、本機 IDE 的直譯器）→ 直接用 pip，照下面的確切順序進行。
+
+預設用 container。一般工作用 `nvcr.io/nvidia/pytorch:25.09-py3` 當 base，這是確認在這個硬體上能用的最新 tag；如果本機有更新的、被認可的 tag，就拉那個，不要卡死在 `25.11-py3`。NGC 的 tag 是有日期的，所以直接跑是沒問題的：
+
+```bash
+docker run --runtime=nvidia --gpus all -it --rm \
+  nvcr.io/nvidia/pytorch:25.09-py3
+```
+
+相對地，`unsloth/unsloth:dgxspark-latest` 是會變動的 tag，要做任何需要可重現的事之前，先解析並釘住它的 digest；光用 tag 只是探索的步驟，不是預設的呼叫方式。完整的 pull、檢查、釘住的流程，以及 `finetuning/` 執行目錄的 flag 理由和 volume mount，請看 `references/container-workflow.md`。直接用 pip 是例外。
+
+偏好 container 的原因是為了釘住版本，不是為了方便。Triton、xformers 和 transformers 的版本跟 GB10 的 SM121 目標和 CUDA 13 之間有很窄的互動關係；container 會把它們鎖在一起，對應到已在這個硬體上驗證過的組合。直接用 pip，這個解析工作就留給你自己做，一個壞掉的 import 接著一個。
+
+確實需要直接用 pip 時，要原封不動、依序照 NVIDIA playbook 的安裝順序：
+
+```bash
+pip install &quot;transformers==5.13.1&quot; &quot;peft==0.19.1&quot; &quot;hf_transfer==0.1.9&quot; &quot;datasets==4.3.0&quot; &quot;trl==1.8.0&quot;
+pip install --no-deps &quot;unsloth==2026.7.2&quot; &quot;unsloth_zoo==2026.7.2&quot; &quot;bitsandbytes==0.49.2&quot;
+pip install -U &quot;torchao==0.17.0&quot;
+```
+
+第二個指令的 `--no-deps` 旗標不能省，在 aarch64 上讓 pip 重新解析 Unsloth 的依賴樹，是很常見會拉進不相容的 torch 或 triton 版本的原因。第三行也不能省：NGC base image 內建的 `torchao` 對目前的 `peft` 的 LoRA 掛載路徑來說太舊了（`ImportError: ... torchao ... only versions above 0.16.0 are supported`），這是硬性阻礙，不是警告。上面每一個 `==` 的版本釘選都是關鍵，取自 `references/stack-matrix.md` 裡標有日期、已知可用的版本矩陣（以它的 `Last verified` 日期判斷是否過期）。沒釘版本的安裝，會解析出目前 PyPI 上的版本，遠遠超出這個 Unsloth release 所支援的範圍。
+
+有新的、被認可的 release 公布時，就拉新的 tag。只有在專案需要額外疊加一個系統套件時，才從這兩個 base 之一在本機重建，不要為了「升級」image 已經釘好版本的元件而重建。兩條路徑的細節請看 `references/container-workflow.md`。
+
+還有一個前置檢查：官方的 DGX Spark playbook 以前就出過壞掉的情況。在照著某個做法一字不改地跑一次長時間的任務之前，先到 `github.com/NVIDIA/dgx-spark-playbooks`（以及 `references/stack-matrix.md` 裡的其他資源）檢查最近的 issue。
+
+## The ABI Rule
+
+在 Spark 上最常見的單一失敗原因，是 CUDA 12/13 的 ABI 不匹配：一個針對 `libcudart.so.12` 建出來的 wheel，被載入到只有 `libcudart.so.13` 的系統上。安裝通常會成功；失敗是後來才以缺少 symbol 的錯誤，或是不明顯指向 CUDA 的 segfault 浮現。
+
+解法：從 `download.pytorch.org/whl/cu130`（有 cu130 標籤的 aarch64 build）拉 wheel，或使用上面那些 container 之一，它們已經帶有匹配的 build。在追查一個提到 CUDA symbol 的 stack trace 之前，先檢查已安裝的 wheel 是針對哪個 CUDA 標籤建出來的：
+
+```bash
+python3 -c &quot;import torch; print(torch.version.cuda)&quot;
+```
+
+如果輸出不是以 `13` 開頭，那麼要先修的就是 ABI 不匹配。NGC container 的 build（例如 `nvcr.io/nvidia/pytorch:25.09-py3`）是在內部針對 CUDA 13 建 torch 的，沒有 `+cu130` 的 wheel 標籤，在那裡 `pip show torch` 不會顯示 `cu130`，光是沒有這個，不算失敗。
+
+典型的症狀：
+
+- `ImportError: undefined symbol`，指向某個 CUDA runtime 函式。
+- 第一次呼叫 `.cuda()` 就 segfault，沒有有用的 traceback。
+- Wheel 乾淨地安裝完成，卻在 import 時失敗，因為 pip 的解析器只檢查版本限制，不檢查 CUDA ABI。
+- 兩個「一模一樣」的環境行為不同，通常是其中一個有 cu130 的 wheel，另一個留著 cu121/cu124 的舊東西。
+
+不管是哪種症狀，解法都一樣：讓 wheel 的 CUDA 標籤對應系統，或是使用已經對應好的 container。
+
+## Component Quick Table
+
+最可能碰到的幾個元件的精簡狀態。包含 wheel URL、build 旗標、sm_121 vs sm_121a 的差別，以及標有日期、已知可用的版本矩陣的完整表格，請看 `references/stack-matrix.md`。
+
+| Component | Status |
+|---|---|
+| PyTorch | ✅ official cu130 aarch64 wheels |
+| bitsandbytes | ✅ works out of the box |
+| Triton | ✅ needs the `TRITON_PTXAS_PATH` parameter set |
+| flash-attn | ❌ skip pip build; NGC bundles a working one — see `spark-training-gotchas` G2 |
+| xformers | source build only (`TORCH_CUDA_ARCH_LIST=12.1`) |
+| vLLM | nightly wheels only |
+| TransformerEngine / NVFP4 train | container-only |
+
+其他的一切，包含 Unsloth、Axolotl、TRL、PEFT，都能透過上面 container 優先的路徑乾淨地安裝。LLaMA-Factory 和 NeMo 在 Spark 上很脆弱，先去查上游的 issue。
+
+## Verification Commands
+
+在跑任何昂貴的東西之前，先確認環境真的看得到 GPU：
+
+```python
+import torch
+print(torch.cuda.is_available(), torch.version.cuda)
+```
+
+這個呼叫會回傳兩個值，確切的輸出格式是一行 `&lt;bool&gt; &lt;cuda-version&gt;`：
+
+```text
+True 13.0
+```
+
+如果它印出的是 `False`，不要直接就去重裝 wheel，ABI 不匹配只是幾個可能原因之一：
+
+| Hypothesis | Quick check |
+|---|---|
+| Runtime/flags | `nvidia-smi` fails in-container too |
+| Device visibility | `echo $CUDA_VISIBLE_DEVICES` |
+| Permissions | `ls -l /dev/nvidia*` |
+| CUDA init state | wedged process; retry fresh shell/container |
+| ABI mismatch (usual culprit) | `torch.version.cuda` not `13.x` |
+
+先檢查 `nvidia-smi`，如果它沒有顯示 GPU，那就是前三個之一，不是 ABI。確認是 ABI 之後，才重裝 wheel。每個假設的細節請看 `references/stack-matrix.md`。在 container 啟動之後、安裝專案專屬的套件之前，馬上執行這個檢查。
+
+再一個檢查：如果訓練開始後 Triton kernel 編譯失敗，就設定 `TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas` 再重試，完整的 workaround 清單請看 `references/stack-matrix.md`。
+
+## Next Steps
+
+驗證過的環境只是起點。另外請看：`spark-training-gotchas`，用於訓練執行前的失敗前置檢查；以及 `spark-memory-thermal-ops`，用於長時間執行時的統一記憶體 OOM 和散熱降頻。</pre></section><section><h2>英文原文</h2><pre>---
+name: spark-environment-setup
+description: Set up a working ML training/inference environment on NVIDIA DGX Spark (GB10, aarch64, CUDA 13). Use when installing PyTorch/Unsloth/TRL/vLLM on DGX Spark, hitting libcudart or wheel-ABI errors on aarch64, or choosing between NGC containers and bare pip installs.
+---
+
+# Spark Environment Setup
+
+DGX Spark ships a GB10 Grace Blackwell chip: aarch64 CPU, SM121
+GPU, 128GB unified memory, CUDA 13. This is a narrower and
+younger platform than a standard x86 CUDA 12 box, so package
+selection and ABI matching matter more than usual — the wheel
+ecosystem for aarch64 + CUDA 13 is still filling in.
+
+## When to Use This Skill
+
+- Setting up a fresh Spark box for training or inference.
+- Hitting an import error mentioning `libcudart`, a missing
+  symbol, or a wheel that &quot;installed fine but won&#x27;t load.&quot;
+- A framework install (PyTorch, Unsloth, TRL, vLLM, xformers)
+  fails, hangs, or silently falls back to CPU.
+- Deciding whether to use an NGC container or bare pip.
+- Restoring a working setup after an OS reinstall or a
+  base-image update, needing to re-verify from scratch.
+
+Each of these accepts the same general fix: match the
+container/wheel combination to CUDA 13 and SM121, don&#x27;t fight
+the ABI.
+
+## Container-First Rule
+
+Quick decision, before the detail below:
+
+- Standard training/inference work → NGC PyTorch container.
+- Unsloth-centric fine-tuning → Unsloth container (it ships
+  the pinned Triton/xformers/transformers combination already
+  validated for that path).
+- Neither fits (custom system package, local IDE interpreter)
+  → bare pip, following the exact sequence further down.
+
+Default to a container. Use `nvcr.io/nvidia/pytorch:25.09-py3`
+as the base for general work — the newest tag confirmed working
+on this hardware; pull a newer blessed tag if locally available
+rather than hard-blocking on `25.11-py3`. NGC&#x27;s tag is dated, so
+running it directly is fine:
+
+```bash
+docker run --runtime=nvidia --gpus all -it --rm \
+  nvcr.io/nvidia/pytorch:25.09-py3
+```
+
+`unsloth/unsloth:dgxspark-latest` is a *moving* tag by
+contrast — resolve and pin its digest before running it for
+anything reproducible; the bare tag is a discovery step only,
+not the default invocation. Full pull-inspect-pin sequence and
+flag rationale/volume mounts for `finetuning/` run dirs:
+`references/container-workflow.md`. Treat bare pip as the exception.
+
+The reason for the container-first stance is pinning, not
+convenience. Triton, xformers, and transformers versions
+interact narrowly with GB10&#x27;s SM121 target and CUDA 13; a
+container locks all of them together against a combination
+already validated on this hardware. Bare pip leaves that
+resolution to you, one broken import at a time.
+
+When bare pip is warranted, follow the NVIDIA playbook&#x27;s
+install sequence verbatim and in order:
+
+```bash
+pip install &quot;transformers==5.13.1&quot; &quot;peft==0.19.1&quot; &quot;hf_transfer==0.1.9&quot; &quot;datasets==4.3.0&quot; &quot;trl==1.8.0&quot;
+pip install --no-deps &quot;unsloth==2026.7.2&quot; &quot;unsloth_zoo==2026.7.2&quot; &quot;bitsandbytes==0.49.2&quot;
+pip install -U &quot;torchao==0.17.0&quot;
+```
+
+The second command&#x27;s `--no-deps` flag is not optional —
+letting pip re-resolve Unsloth&#x27;s dependency tree on aarch64 is
+a common way to pull in an incompatible torch or triton build.
+The third line is not optional either: the NGC base image&#x27;s
+bundled `torchao` is too old for current `peft`&#x27;s LoRA-attach
+path (`ImportError: ... torchao ... only versions above 0.16.0
+are supported`) — a hard blocker, not a warning. Every `==` pin
+above is load-bearing, taken from the dated known-good version
+matrix in `references/stack-matrix.md` (its `Last verified` date
+governs staleness) — an unpinned install resolves current PyPI
+versions well outside what this Unsloth release supports.
+
+Pull a fresh tag when a new blessed release is announced.
+Rebuild locally from one of the two bases only when a project
+needs an extra system package layered in — not to &quot;upgrade&quot; a
+component the image already pins. Details on both paths:
+`references/container-workflow.md`.
+
+One more preflight: official DGX Spark playbooks have shipped
+broken before. Check recent issues on
+`github.com/NVIDIA/dgx-spark-playbooks` (and the other
+resources in `references/stack-matrix.md`) before trusting a
+recipe verbatim for a long run.
+
+## The ABI Rule
+
+The single most common failure on Spark is a CUDA 12/13 ABI
+mismatch: a wheel built against `libcudart.so.12` loaded on a
+system that only has `libcudart.so.13`. The install usually
+succeeds; the failure surfaces later as a missing-symbol error
+or a segfault that doesn&#x27;t obviously point at CUDA.
+
+Fix: pull wheels from `download.pytorch.org/whl/cu130` (the
+cu130-tagged aarch64 builds), or use one of the containers
+above, which already carry a matched build. Before chasing a
+stack trace that mentions a CUDA symbol, check which CUDA tag
+the installed wheel was built against:
+
+```bash
+python3 -c &quot;import torch; print(torch.version.cuda)&quot;
+```
+
+If that output doesn&#x27;t start with `13`, the ABI mismatch is the
+first thing to fix. NGC container builds (e.g.
+`nvcr.io/nvidia/pytorch:25.09-py3`) build torch internally
+against CUDA 13 with no `+cu130` wheel tag — `pip show torch`
+won&#x27;t say `cu130` there, and that absence alone is not a failure.
+
+Typical symptoms:
+
+- `ImportError: undefined symbol` referencing a CUDA runtime
+  function.
+- A segfault on the first `.cuda()` call, no useful traceback.
+- A wheel that installs cleanly, then fails at import time —
+  pip&#x27;s resolver doesn&#x27;t check CUDA ABI, only version constraints.
+- Two &quot;identical&quot; environments behaving differently — usually one
+  has a cu130 wheel, the other a cu121/cu124 leftover.
+
+The fix is the same regardless of symptom: match the wheel&#x27;s
+CUDA tag to the system, or use a container that already does.
+
+## Component Quick Table
+
+Condensed status for the components most likely to come up.
+Full table with wheel URLs, build flags, the sm_121 vs sm_121a
+distinction, and the dated known-good version matrix:
+`references/stack-matrix.md`.
+
+| Component | Status |
+|---|---|
+| PyTorch | ✅ official cu130 aarch64 wheels |
+| bitsandbytes | ✅ works out of the box |
+| Triton | ✅ needs the `TRITON_PTXAS_PATH` parameter set |
+| flash-attn | ❌ skip pip build; NGC bundles a working one — see `spark-training-gotchas` G2 |
+| xformers | source build only (`TORCH_CUDA_ARCH_LIST=12.1`) |
+| vLLM | nightly wheels only |
+| TransformerEngine / NVFP4 train | container-only |
+
+Everything else — Unsloth, Axolotl, TRL, PEFT — installs
+cleanly through the container-first path above. LLaMA-Factory
+and NeMo are fragile on Spark; check upstream issues first.
+
+## Verification Commands
+
+Confirm the environment can actually see the GPU before
+running anything expensive:
+
+```python
+import torch
+print(torch.cuda.is_available(), torch.version.cuda)
+```
+
+This call returns two values; the exact output format is one
+line, `&lt;bool&gt; &lt;cuda-version&gt;`:
+
+```text
+True 13.0
+```
+
+If it prints `False` instead, don&#x27;t jump straight to a wheel
+reinstall — ABI mismatch is one cause among several:
+
+| Hypothesis | Quick check |
+|---|---|
+| Runtime/flags | `nvidia-smi` fails in-container too |
+| Device visibility | `echo $CUDA_VISIBLE_DEVICES` |
+| Permissions | `ls -l /dev/nvidia*` |
+| CUDA init state | wedged process; retry fresh shell/container |
+| ABI mismatch (usual culprit) | `torch.version.cuda` not `13.x` |
+
+Check `nvidia-smi` first — if it doesn&#x27;t show the GPU, it&#x27;s one
+of the first three, not ABI. Reinstall a wheel only once ABI is
+confirmed. Per-hypothesis detail: `references/stack-matrix.md`.
+Run right after the container starts, before installing
+project-specific packages.
+
+One more check: if Triton kernel compilation fails once
+training starts, set
+`TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas` and retry — see
+`references/stack-matrix.md` for the full workaround list.
+
+## Next Steps
+
+A verified environment is only the starting point. See also:
+`spark-training-gotchas` for failure preflights before a
+training run, and `spark-memory-thermal-ops` for unified-memory
+OOMs and thermal throttling during long ones.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

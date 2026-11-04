@@ -1,6 +1,6 @@
 ---
 name: embedding-strategies
-description: 為向量搜尋應用挑選並最佳化 embedding 模型的指南。適用於為 RAG 選 embedding 模型、最佳化 chunking 策略、針對特定領域 fine-tune embedding 的時候。
+description: 為語意搜尋和 RAG 應用挑選並最佳化 embedding 模型。適用於選擇 embedding 模型、實作 chunking 策略，或針對特定領域最佳化 embedding 品質的時候。
 ---
 
 # Embedding 策略

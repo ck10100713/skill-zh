@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-resilience｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 tenacity 做重試、backoff、jitter 和 timeout，扛住暫時性失敗">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-resilience</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-resilience/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 tenacity 做重試、backoff、jitter 和 timeout，扛住暫時性失敗</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-resilience
+description: Python 的韌性模式，包含自動重試、exponential backoff、timeout 和容錯 decorator。在加入重試邏輯、實作 timeout、建構容錯服務或處理暫時性失敗時使用。
+---
+
+# Python Resilience Patterns
+
+打造容錯的 Python 應用程式，讓它能從容處理暫時性失敗、網路問題和服務中斷。依賴的服務不穩定時，這些韌性模式能讓系統繼續跑。
+
+## When to Use This Skill
+
+- 為外部服務呼叫加入重試邏輯
+- 為網路操作實作 timeout
+- 建構容錯的 microservice
+- 處理 rate limiting 和 backpressure
+- 建立基礎設施用的 decorator
+- 設計 circuit breaker
+
+## Core Concepts
+
+### 1. Transient vs Permanent Failures
+
+暫時性錯誤（網路 timeout、服務暫時出問題）要重試。永久性錯誤（憑證無效、錯誤的請求）不要重試。
+
+### 2. Exponential Backoff
+
+重試之間的等待時間逐步拉長，避免把正在恢復的服務打爆。
+
+### 3. Jitter
+
+在 backoff 加入隨機性，避免大量 client 同時重試造成 thundering herd。
+
+### 4. Bounded Retries
+
+重試次數和總時長都要設上限，避免無限重試的迴圈。
+
+## Quick Start
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def call_external_service(request: dict) -&gt; dict:
+    return httpx.post(&quot;https://api.example.com&quot;, json=request).json()
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Basic Retry with Tenacity
+
+正式環境等級的重試邏輯，用 `tenacity` 函式庫。比較簡單的情況，可以考慮用內建的重試功能，或自己寫個輕量的實作。
+
+```python
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    stop_after_delay,
+    wait_exponential_jitter,
+    retry_if_exception_type,
+)
+
+TRANSIENT_ERRORS = (ConnectionError, TimeoutError, OSError)
+
+@retry(
+    retry=retry_if_exception_type(TRANSIENT_ERRORS),
+    stop=stop_after_attempt(5) | stop_after_delay(60),
+    wait=wait_exponential_jitter(initial=1, max=30),
+)
+def fetch_data(url: str) -&gt; dict:
+    &quot;&quot;&quot;Fetch data with automatic retry on transient failures.&quot;&quot;&quot;
+    response = httpx.get(url, timeout=30)
+    response.raise_for_status()
+    return response.json()
+```
+
+### Pattern 2: Retry Only Appropriate Errors
+
+只對明確列出的暫時性 exception 做重試（白名單）。以下這些絕對不要重試：
+
+- `ValueError`、`TypeError` - 這些是 bug，不是暫時性問題
+- `AuthenticationError` - 無效的憑證不會自己變有效
+- HTTP 4xx 錯誤（429 除外）- client 端錯誤是永久性的
+
+```python
+from tenacity import retry, retry_if_exception_type
+import httpx
+
+# Define what&#x27;s retryable
+RETRYABLE_EXCEPTIONS = (
+    ConnectionError,
+    TimeoutError,
+    httpx.ConnectTimeout,
+    httpx.ReadTimeout,
+)
+
+@retry(
+    retry=retry_if_exception_type(RETRYABLE_EXCEPTIONS),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def resilient_api_call(endpoint: str) -&gt; dict:
+    &quot;&quot;&quot;Make API call with retry on network issues.&quot;&quot;&quot;
+    return httpx.get(endpoint, timeout=10).json()
+```
+
+### Pattern 3: HTTP Status Code Retries
+
+針對代表暫時性問題的特定 HTTP status code 做重試。
+
+```python
+from tenacity import retry, retry_if_result, stop_after_attempt
+import httpx
+
+RETRY_STATUS_CODES = {429, 502, 503, 504}
+
+def should_retry_response(response: httpx.Response) -&gt; bool:
+    &quot;&quot;&quot;Check if response indicates a retryable error.&quot;&quot;&quot;
+    return response.status_code in RETRY_STATUS_CODES
+
+@retry(
+    retry=retry_if_result(should_retry_response),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def http_request(method: str, url: str, **kwargs) -&gt; httpx.Response:
+    &quot;&quot;&quot;Make HTTP request with retry on transient status codes.&quot;&quot;&quot;
+    return httpx.request(method, url, timeout=30, **kwargs)
+```
+
+### Pattern 4: Combined Exception and Status Retry
+
+網路 exception 和 HTTP status code 兩種都處理。
+
+```python
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    retry_if_result,
+    stop_after_attempt,
+    wait_exponential_jitter,
+    before_sleep_log,
+)
+import logging
+import httpx
+
+logger = logging.getLogger(__name__)
+
+TRANSIENT_EXCEPTIONS = (
+    ConnectionError,
+    TimeoutError,
+    httpx.ConnectError,
+    httpx.ReadTimeout,
+)
+RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
+
+def is_retryable_response(response: httpx.Response) -&gt; bool:
+    return response.status_code in RETRY_STATUS_CODES
+
+@retry(
+    retry=(
+        retry_if_exception_type(TRANSIENT_EXCEPTIONS) |
+        retry_if_result(is_retryable_response)
+    ),
+    stop=stop_after_attempt(5),
+    wait=wait_exponential_jitter(initial=1, max=30),
+    before_sleep=before_sleep_log(logger, logging.WARNING),
+)
+def robust_http_call(
+    method: str,
+    url: str,
+    **kwargs,
+) -&gt; httpx.Response:
+    &quot;&quot;&quot;HTTP call with comprehensive retry handling.&quot;&quot;&quot;
+    return httpx.request(method, url, timeout=30, **kwargs)
+```
+
+## Detailed worked examples and patterns
+
+詳細的章節（從 `## Advanced Patterns` 開始）放在 `references/details.md`。上面的導覽摘要不夠用的時候，再去讀那個檔案。
+
+## Best Practices Summary
+
+1. **只重試暫時性錯誤** - bug 和認證失敗不要重試
+2. **用 exponential backoff** - 給服務時間恢復
+3. **加 jitter** - 避免同步重試造成 thundering herd
+4. **限制總時長** - `stop_after_attempt(5) | stop_after_delay(60)`
+5. **每次重試都要記 log** - 悄悄重試會掩蓋系統性問題
+6. **用 decorator** - 讓重試邏輯跟商業邏輯分開
+7. **注入依賴** - 讓基礎設施程式碼可測試
+8. **到處都設 timeout** - 每個網路呼叫都需要 timeout
+9. **優雅降級** - 非關鍵路徑回傳快取值或預設值
+10. **監控重試率** - 重試率偏高代表底層有問題</pre></section><section><h2>英文原文</h2><pre>---
+name: python-resilience
+description: Python resilience patterns including automatic retries, exponential backoff, timeouts, and fault-tolerant decorators. Use when adding retry logic, implementing timeouts, building fault-tolerant services, or handling transient failures.
+---
+
+# Python Resilience Patterns
+
+Build fault-tolerant Python applications that gracefully handle transient failures, network issues, and service outages. Resilience patterns keep systems running when dependencies are unreliable.
+
+## When to Use This Skill
+
+- Adding retry logic to external service calls
+- Implementing timeouts for network operations
+- Building fault-tolerant microservices
+- Handling rate limiting and backpressure
+- Creating infrastructure decorators
+- Designing circuit breakers
+
+## Core Concepts
+
+### 1. Transient vs Permanent Failures
+
+Retry transient errors (network timeouts, temporary service issues). Don&#x27;t retry permanent errors (invalid credentials, bad requests).
+
+### 2. Exponential Backoff
+
+Increase wait time between retries to avoid overwhelming recovering services.
+
+### 3. Jitter
+
+Add randomness to backoff to prevent thundering herd when many clients retry simultaneously.
+
+### 4. Bounded Retries
+
+Cap both attempt count and total duration to prevent infinite retry loops.
+
+## Quick Start
+
+```python
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def call_external_service(request: dict) -&gt; dict:
+    return httpx.post(&quot;https://api.example.com&quot;, json=request).json()
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Basic Retry with Tenacity
+
+Use the `tenacity` library for production-grade retry logic. For simpler cases, consider built-in retry functionality or a lightweight custom implementation.
+
+```python
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    stop_after_delay,
+    wait_exponential_jitter,
+    retry_if_exception_type,
+)
+
+TRANSIENT_ERRORS = (ConnectionError, TimeoutError, OSError)
+
+@retry(
+    retry=retry_if_exception_type(TRANSIENT_ERRORS),
+    stop=stop_after_attempt(5) | stop_after_delay(60),
+    wait=wait_exponential_jitter(initial=1, max=30),
+)
+def fetch_data(url: str) -&gt; dict:
+    &quot;&quot;&quot;Fetch data with automatic retry on transient failures.&quot;&quot;&quot;
+    response = httpx.get(url, timeout=30)
+    response.raise_for_status()
+    return response.json()
+```
+
+### Pattern 2: Retry Only Appropriate Errors
+
+Whitelist specific transient exceptions. Never retry:
+
+- `ValueError`, `TypeError` - These are bugs, not transient issues
+- `AuthenticationError` - Invalid credentials won&#x27;t become valid
+- HTTP 4xx errors (except 429) - Client errors are permanent
+
+```python
+from tenacity import retry, retry_if_exception_type
+import httpx
+
+# Define what&#x27;s retryable
+RETRYABLE_EXCEPTIONS = (
+    ConnectionError,
+    TimeoutError,
+    httpx.ConnectTimeout,
+    httpx.ReadTimeout,
+)
+
+@retry(
+    retry=retry_if_exception_type(RETRYABLE_EXCEPTIONS),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def resilient_api_call(endpoint: str) -&gt; dict:
+    &quot;&quot;&quot;Make API call with retry on network issues.&quot;&quot;&quot;
+    return httpx.get(endpoint, timeout=10).json()
+```
+
+### Pattern 3: HTTP Status Code Retries
+
+Retry specific HTTP status codes that indicate transient issues.
+
+```python
+from tenacity import retry, retry_if_result, stop_after_attempt
+import httpx
+
+RETRY_STATUS_CODES = {429, 502, 503, 504}
+
+def should_retry_response(response: httpx.Response) -&gt; bool:
+    &quot;&quot;&quot;Check if response indicates a retryable error.&quot;&quot;&quot;
+    return response.status_code in RETRY_STATUS_CODES
+
+@retry(
+    retry=retry_if_result(should_retry_response),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential_jitter(initial=1, max=10),
+)
+def http_request(method: str, url: str, **kwargs) -&gt; httpx.Response:
+    &quot;&quot;&quot;Make HTTP request with retry on transient status codes.&quot;&quot;&quot;
+    return httpx.request(method, url, timeout=30, **kwargs)
+```
+
+### Pattern 4: Combined Exception and Status Retry
+
+Handle both network exceptions and HTTP status codes.
+
+```python
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    retry_if_result,
+    stop_after_attempt,
+    wait_exponential_jitter,
+    before_sleep_log,
+)
+import logging
+import httpx
+
+logger = logging.getLogger(__name__)
+
+TRANSIENT_EXCEPTIONS = (
+    ConnectionError,
+    TimeoutError,
+    httpx.ConnectError,
+    httpx.ReadTimeout,
+)
+RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
+
+def is_retryable_response(response: httpx.Response) -&gt; bool:
+    return response.status_code in RETRY_STATUS_CODES
+
+@retry(
+    retry=(
+        retry_if_exception_type(TRANSIENT_EXCEPTIONS) |
+        retry_if_result(is_retryable_response)
+    ),
+    stop=stop_after_attempt(5),
+    wait=wait_exponential_jitter(initial=1, max=30),
+    before_sleep=before_sleep_log(logger, logging.WARNING),
+)
+def robust_http_call(
+    method: str,
+    url: str,
+    **kwargs,
+) -&gt; httpx.Response:
+    &quot;&quot;&quot;HTTP call with comprehensive retry handling.&quot;&quot;&quot;
+    return httpx.request(method, url, timeout=30, **kwargs)
+```
+
+## Detailed worked examples and patterns
+
+Detailed sections (starting with `## Advanced Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
+
+## Best Practices Summary
+
+1. **Retry only transient errors** - Don&#x27;t retry bugs or authentication failures
+2. **Use exponential backoff** - Give services time to recover
+3. **Add jitter** - Prevent thundering herd from synchronized retries
+4. **Cap total duration** - `stop_after_attempt(5) | stop_after_delay(60)`
+5. **Log every retry** - Silent retries hide systemic problems
+6. **Use decorators** - Keep retry logic separate from business logic
+7. **Inject dependencies** - Make infrastructure testable
+8. **Set timeouts everywhere** - Every network call needs a timeout
+9. **Fail gracefully** - Return cached/default values for non-critical paths
+10. **Monitor retry rates** - High retry rates indicate underlying issues</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

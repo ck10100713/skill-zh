@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rag-implementation｜Skill 寫法圖鑑</title>
+<meta name="description" content="用向量資料庫、embedding 和 rerank 建構 RAG 問答系統">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>rag-implementation</h1>
+<p class="meta">wshobson ｜ Agent 與工作流 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/llm-application-dev/skills/rag-implementation/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用向量資料庫、embedding 和 rerank 建構 RAG 問答系統</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: rag-implementation
+description: 用向量資料庫和語意搜尋，為 LLM 應用建構 Retrieval-Augmented Generation（RAG）系統。在實作有知識依據的 AI、建構文件問答系統，或把 LLM 接上外部知識庫時使用。
+---
+
+# RAG Implementation
+
+精通 Retrieval-Augmented Generation（RAG），打造能利用外部知識來源、給出準確且有依據回答的 LLM 應用。
+
+## When to Use This Skill
+
+- 針對私有文件建構問答系統
+- 建立能提供最新、事實性資訊的聊天機器人
+- 用自然語言查詢實作語意搜尋
+- 用有依據的回答減少幻覺
+- 讓 LLM 能存取特定領域的知識
+- 建構文件助理
+- 建立附帶來源引用的研究工具
+
+## Core Components
+
+### 1. Vector Databases
+
+**用途**：有效率地儲存和檢索文件 embedding
+
+**選項：**
+
+- **Pinecone**：託管式、可擴展、serverless
+- **Weaviate**：開源、混合搜尋、GraphQL
+- **Milvus**：高效能、可地端部署
+- **Chroma**：輕量、好上手、適合本機開發
+- **Qdrant**：快速、支援過濾搜尋、用 Rust 寫的
+- **pgvector**：PostgreSQL 擴充套件，可跟 SQL 整合
+
+### 2. Embeddings
+
+**用途**：把文字轉成數值向量，用來做相似度搜尋
+
+**模型（2026）：**
+| Model | Dimensions | Best For |
+|-------|------------|----------|
+| **voyage-3-large** | 1024 | Claude 應用（Anthropic 推薦） |
+| **voyage-code-3** | 1024 | 程式碼搜尋 |
+| **text-embedding-3-large** | 3072 | OpenAI 應用、高準確度 |
+| **text-embedding-3-small** | 1536 | OpenAI 應用、高性價比 |
+| **bge-large-en-v1.5** | 1024 | 開源、本機部署 |
+| **multilingual-e5-large** | 1024 | 多語言支援 |
+
+### 3. Retrieval Strategies
+
+**做法：**
+
+- **Dense Retrieval**：用 embedding 做語意相似度
+- **Sparse Retrieval**：關鍵字比對（BM25、TF-IDF）
+- **Hybrid Search**：用加權融合結合 dense + sparse
+- **Multi-Query**：產生多種查詢變體
+- **HyDE**：產生假設性文件來提升檢索效果
+
+### 4. Reranking
+
+**用途**：重新排序結果來提升檢索品質
+
+**方法：**
+
+- **Cross-Encoders**：以 BERT 為基礎的 rerank（ms-marco-MiniLM）
+- **Cohere Rerank**：以 API 提供的 rerank
+- **Maximal Marginal Relevance (MMR)**：兼顧多樣性和相關性
+- **LLM-based**：用 LLM 為相關性打分
+
+## Quick Start with LangGraph
+
+```python
+from langgraph.graph import StateGraph, START, END
+from langchain_anthropic import ChatAnthropic
+from langchain_voyageai import VoyageAIEmbeddings
+from langchain_pinecone import PineconeVectorStore
+from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from typing import TypedDict, Annotated
+
+class RAGState(TypedDict):
+    question: str
+    context: list[Document]
+    answer: str
+
+# Initialize components
+llm = ChatAnthropic(model=&quot;claude-sonnet-5&quot;)
+embeddings = VoyageAIEmbeddings(model=&quot;voyage-3-large&quot;)
+vectorstore = PineconeVectorStore(index_name=&quot;docs&quot;, embedding=embeddings)
+retriever = vectorstore.as_retriever(search_kwargs={&quot;k&quot;: 4})
+
+# RAG prompt
+rag_prompt = ChatPromptTemplate.from_template(
+    &quot;&quot;&quot;Answer based on the context below. If you cannot answer, say so.
+
+    Context:
+    {context}
+
+    Question: {question}
+
+    Answer:&quot;&quot;&quot;
+)
+
+async def retrieve(state: RAGState) -&gt; RAGState:
+    &quot;&quot;&quot;Retrieve relevant documents.&quot;&quot;&quot;
+    docs = await retriever.ainvoke(state[&quot;question&quot;])
+    return {&quot;context&quot;: docs}
+
+async def generate(state: RAGState) -&gt; RAGState:
+    &quot;&quot;&quot;Generate answer from context.&quot;&quot;&quot;
+    context_text = &quot;\n\n&quot;.join(doc.page_content for doc in state[&quot;context&quot;])
+    messages = rag_prompt.format_messages(
+        context=context_text,
+        question=state[&quot;question&quot;]
+    )
+    response = await llm.ainvoke(messages)
+    return {&quot;answer&quot;: response.content}
+
+# Build RAG graph
+builder = StateGraph(RAGState)
+builder.add_node(&quot;retrieve&quot;, retrieve)
+builder.add_node(&quot;generate&quot;, generate)
+builder.add_edge(START, &quot;retrieve&quot;)
+builder.add_edge(&quot;retrieve&quot;, &quot;generate&quot;)
+builder.add_edge(&quot;generate&quot;, END)
+
+rag_chain = builder.compile()
+
+# Use
+result = await rag_chain.ainvoke({&quot;question&quot;: &quot;What are the main features?&quot;})
+print(result[&quot;answer&quot;])
+```
+
+## Detailed patterns and worked examples
+
+詳細的 pattern 文件放在 `references/details.md`。上面這層導覽不夠用的時候，再去讀那個檔案。</pre></section><section><h2>英文原文</h2><pre>---
+name: rag-implementation
+description: Build Retrieval-Augmented Generation (RAG) systems for LLM applications with vector databases and semantic search. Use when implementing knowledge-grounded AI, building document Q&amp;A systems, or integrating LLMs with external knowledge bases.
+---
+
+# RAG Implementation
+
+Master Retrieval-Augmented Generation (RAG) to build LLM applications that provide accurate, grounded responses using external knowledge sources.
+
+## When to Use This Skill
+
+- Building Q&amp;A systems over proprietary documents
+- Creating chatbots with current, factual information
+- Implementing semantic search with natural language queries
+- Reducing hallucinations with grounded responses
+- Enabling LLMs to access domain-specific knowledge
+- Building documentation assistants
+- Creating research tools with source citation
+
+## Core Components
+
+### 1. Vector Databases
+
+**Purpose**: Store and retrieve document embeddings efficiently
+
+**Options:**
+
+- **Pinecone**: Managed, scalable, serverless
+- **Weaviate**: Open-source, hybrid search, GraphQL
+- **Milvus**: High performance, on-premise
+- **Chroma**: Lightweight, easy to use, local development
+- **Qdrant**: Fast, filtered search, Rust-based
+- **pgvector**: PostgreSQL extension, SQL integration
+
+### 2. Embeddings
+
+**Purpose**: Convert text to numerical vectors for similarity search
+
+**Models (2026):**
+| Model | Dimensions | Best For |
+|-------|------------|----------|
+| **voyage-3-large** | 1024 | Claude apps (Anthropic recommended) |
+| **voyage-code-3** | 1024 | Code search |
+| **text-embedding-3-large** | 3072 | OpenAI apps, high accuracy |
+| **text-embedding-3-small** | 1536 | OpenAI apps, cost-effective |
+| **bge-large-en-v1.5** | 1024 | Open source, local deployment |
+| **multilingual-e5-large** | 1024 | Multi-language support |
+
+### 3. Retrieval Strategies
+
+**Approaches:**
+
+- **Dense Retrieval**: Semantic similarity via embeddings
+- **Sparse Retrieval**: Keyword matching (BM25, TF-IDF)
+- **Hybrid Search**: Combine dense + sparse with weighted fusion
+- **Multi-Query**: Generate multiple query variations
+- **HyDE**: Generate hypothetical documents for better retrieval
+
+### 4. Reranking
+
+**Purpose**: Improve retrieval quality by reordering results
+
+**Methods:**
+
+- **Cross-Encoders**: BERT-based reranking (ms-marco-MiniLM)
+- **Cohere Rerank**: API-based reranking
+- **Maximal Marginal Relevance (MMR)**: Diversity + relevance
+- **LLM-based**: Use LLM to score relevance
+
+## Quick Start with LangGraph
+
+```python
+from langgraph.graph import StateGraph, START, END
+from langchain_anthropic import ChatAnthropic
+from langchain_voyageai import VoyageAIEmbeddings
+from langchain_pinecone import PineconeVectorStore
+from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from typing import TypedDict, Annotated
+
+class RAGState(TypedDict):
+    question: str
+    context: list[Document]
+    answer: str
+
+# Initialize components
+llm = ChatAnthropic(model=&quot;claude-sonnet-5&quot;)
+embeddings = VoyageAIEmbeddings(model=&quot;voyage-3-large&quot;)
+vectorstore = PineconeVectorStore(index_name=&quot;docs&quot;, embedding=embeddings)
+retriever = vectorstore.as_retriever(search_kwargs={&quot;k&quot;: 4})
+
+# RAG prompt
+rag_prompt = ChatPromptTemplate.from_template(
+    &quot;&quot;&quot;Answer based on the context below. If you cannot answer, say so.
+
+    Context:
+    {context}
+
+    Question: {question}
+
+    Answer:&quot;&quot;&quot;
+)
+
+async def retrieve(state: RAGState) -&gt; RAGState:
+    &quot;&quot;&quot;Retrieve relevant documents.&quot;&quot;&quot;
+    docs = await retriever.ainvoke(state[&quot;question&quot;])
+    return {&quot;context&quot;: docs}
+
+async def generate(state: RAGState) -&gt; RAGState:
+    &quot;&quot;&quot;Generate answer from context.&quot;&quot;&quot;
+    context_text = &quot;\n\n&quot;.join(doc.page_content for doc in state[&quot;context&quot;])
+    messages = rag_prompt.format_messages(
+        context=context_text,
+        question=state[&quot;question&quot;]
+    )
+    response = await llm.ainvoke(messages)
+    return {&quot;answer&quot;: response.content}
+
+# Build RAG graph
+builder = StateGraph(RAGState)
+builder.add_node(&quot;retrieve&quot;, retrieve)
+builder.add_node(&quot;generate&quot;, generate)
+builder.add_edge(START, &quot;retrieve&quot;)
+builder.add_edge(&quot;retrieve&quot;, &quot;generate&quot;)
+builder.add_edge(&quot;generate&quot;, END)
+
+rag_chain = builder.compile()
+
+# Use
+result = await rag_chain.ainvoke({&quot;question&quot;: &quot;What are the main features?&quot;})
+print(result[&quot;answer&quot;])
+```
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
 name: event-store-design
-description: 設計 event sourcing 應用所需的 event store 完整指南。適用於設計 event sourcing 基礎設施、在不同 event store 技術之間做選擇，或實作自訂 event store 的時候。
+description: 為 event-sourced 系統設計並實作 event store。適用於建構 event sourcing 基礎設施、選擇 event store 技術，或實作事件持久化模式的時候。
 ---
 
 # Event Store 設計

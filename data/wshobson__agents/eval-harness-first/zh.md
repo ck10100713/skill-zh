@@ -1,6 +1,6 @@
 ---
 name: eval-harness-first
-description: 在任何 fine-tuning 之前，先建好 eval harness：用 golden、一個 bucket 一個 grader、drift suite 和 base-model baseline 當作 Phase 0 的關卡。適用於還沒有 eval 就要開始訓練的時候。
+description: 建立能擋在每次 fine-tuning 之前的評估 harness，包含 golden 集、針對各失敗模式的 grader、judge 校準與 base-model baseline。適用於開始 fine-tuning 工作、把 trace 轉成 eval 集，或拿人工標註校準 judge 的時候。
 ---
 
 # Eval Harness First

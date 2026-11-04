@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spark-training-gotchas｜Skill 寫法圖鑑</title>
+<meta name="description" content="DGX Spark 上訓練的十種已知失敗模式，開跑前先預檢和診斷">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>spark-training-gotchas</h1>
+<p class="meta">wshobson ｜ 雲端與基礎設施 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/dgx-spark-ops/skills/spark-training-gotchas/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">DGX Spark 上訓練的十種已知失敗模式，開跑前先預檢和診斷</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: spark-training-gotchas
+description: 預先檢查並診斷在 NVIDIA DGX Spark 上做 ML 訓練時已知的十種失敗模式。在 DGX Spark 上的訓練執行啟動失敗、在低於 128GB 上限時就 OOM、執行到一半變慢，或是在 GB10 上開跑任何數小時的訓練任務之前使用。
+---
+
+# Spark Training Gotchas
+
+DGX Spark 的 GB10 晶片（Grace Blackwell、SM121、128GB 統一記憶體、aarch64）在啟動、記憶體、散熱、頻寬和精度方面，有十種反覆出現的失敗模式。每一種都命名為 G1–G10，方便用編號來檢查，這個編號是關鍵，因為執行這些檢查的工具都依賴它。要在長時間執行之前讀這個，不要等到第六個小時之後才讀。
+
+## When to Use This Skill
+
+- 訓練執行啟動失敗，出現 import 錯誤或 segfault，卻沒有指向真正的原因。
+- 執行 OOM，但 `nvidia-smi` 還顯示有餘裕。
+- 一開始跑得好好的執行，在中途吞吐量下降。
+- 在 GB10 上開跑任何數小時或多個 epoch 的任務之前。
+- 把兩台 Spark 串在一起，要在選定平行化策略之前。
+- 為 Spark 上的執行在 FP8 和 NVFP4 之間做選擇。
+
+## Common Issues Quick Reference
+
+| # | Symptom | Fix |
+|---|---|---|
+| G1 | undefined symbol / segfault | cu130 wheel or container |
+| G2 | flash-attn wrong backend used | skip pip build; monkeypatch on NGC |
+| G3 | OOM despite headroom | drop page cache |
+| G4 | throughput drop / reboot | expect ~100W sustained cap |
+| G5 | memory-bound step slow | budget 180–192 GB/s |
+| G6 | cache evicted mid-run | one GPU server at a time |
+| G7 | NVFP4 slower than FP8 | stay FP8 unless `sm_121a` |
+| G8 | playbook fails outright | check upstream issues |
+| G9 | env breaks after install | use a container |
+| G10 | 2-Spark TP hangs | DDP/FSDP only, never TP |
+
+## The Ten Gotchas
+
+### G1: CUDA 12/13 ABI Mismatch
+
+- **SYMPTOM：** `ImportError: undefined symbol`，指出某個 CUDA 函式，或在第一次呼叫 `.cuda()` 時 segfault。
+- **CAUSE：** 大多數 PyPI wheel 連結的是 `libcudart.so.12`；Spark 搭載的是 CUDA 13。pip 從不檢查 CUDA ABI，所以只有在 import 或第一次啟動 kernel 時才會浮現。
+- **CHECK：** `references/gotcha-checks.md` G1，也就是 wheel 的 CUDA build 標籤。
+- **FIX：** 從 `download.pytorch.org/whl/cu130` 重新安裝，或使用匹配的 container。
+
+### G2: flash-attn — Skip the pip Build, Watch Unsloth&#x27;s Auto-Detect
+
+- **SYMPTOM：** `pip install flash-attn` 仍然失敗/卡住。Unsloth 也可能在你明確要求 SDPA 的情況下，悄悄改用 flash-attn 來訓練。
+- **CAUSE：** 直接用 pip 沒有 aarch64/sm_121 的 wheel，不過 NGC container 附有能用的 SM121 flash-attn，而且 Unsloth 會自動優先選它，把 `attn_implementation=&quot;sdpa&quot;` 丟掉。
+- **CHECK：** `references/gotcha-checks.md` G2，也就是 flash-attn 是否已存在而且能用。
+- **FIX：** 直接用 pip：跳過 flash-attn，用 SDPA（不變）。在 NGC 上：唯一可靠的覆寫方式，是 `references/gotcha-checks.md` G2 裡的 monkeypatch。
+
+### G3: UMA OOM Below 128GB
+
+- **SYMPTOM：** 在模型載入/訓練期間 OOM，而 `nvidia-smi` 仍然回報低於 128GB 上限的可用記憶體，或是在某些環境下，直接回報 `[N/A]` 而不是數字。
+- **CAUSE：** 載入 safetensors 時，mmap 和 CUDA allocator 會重複計算頁面；QLoRA 可能比 bf16 *更早* OOM，因為反量化會增加暫時性的配置。
+- **CHECK：** `references/gotcha-checks.md` G3，讀取 `free -g` 和 `/proc/meminfo`，不要讀 `nvidia-smi`。
+- **FIX：** 用 `sync; echo 3 &gt; /proc/sys/vm/drop_caches` 清掉 page cache。需要 root，這是兩次執行之間的重置，不是訓練中途的步驟。
+
+### G4: Thermal Throttling
+
+- **SYMPTOM：** 數小時的執行中途吞吐量下降，或是機器在持續負載下自己重新開機。
+- **CAUSE：** 持續功耗的上限大約是 100W，相對於額定的 240W；長時間執行會頂到這個天花板，然後降頻，有時甚至重新開機。
+- **CHECK：** `references/gotcha-checks.md` G4，取樣 `nvidia-smi --query-gpu=temperature.gpu,power.draw`。
+- **FIX：** 如果功耗在 240W 以下停滯、溫度卻持續攀升，就把降頻視為原因；改善散熱，或限制執行的長度。
+
+### G5: Bandwidth Ceiling
+
+- **SYMPTOM：** 受記憶體頻寬限制的工作負載，尤其是以 decode 為主的 RL 迴圈，停在遠低於預期的吞吐量。
+- **CAUSE：** 273 GB/s 是規格上的天花板，不是持續的值；實測的頻寬落在 180–192 GB/s。
+- **CHECK：** `references/gotcha-checks.md` G5，觀察到的 step 時間對照實測範圍，不要對照規格。
+- **FIX：** 以 180–192 GB/s 來估算吞吐量預算；修訂建立在 273 GB/s 這個數字上的計畫。
+
+### G6: Global UMA Resource Contention
+
+- **SYMPTOM：** 某個行程的 KV cache/權重在執行中途被悄悄驅逐，它自己的 log 裡沒有 OOM。
+- **CAUSE：** 統一記憶體是一個全域的記憶體池；沒有上限或接近滿載的行程，會跟其他任何東西競爭，並可能把對方驅逐。小型、有界限的工作負載就不會，一個 &lt;4GB 的 LoRA，可以跟 `gpu-memory-utilization&lt;=0.5` 的 vLLM 並存。
+- **CHECK：** `references/gotcha-checks.md` G6，其他佔用 GPU 的行程，以及它們有沒有設上限。
+- **FIX：** 「一次只跑一個重量級任務」的規則，適用於**沒有上限或接近滿載**的工作負載，先限制上限或停掉不相關的伺服器。小型、有設上限的工作負載不需要停。
+
+### G7: NVFP4 Slower Than FP8 on SM121
+
+- **SYMPTOM：** 在 Spark 上把推論工作負載從 FP8 換成 NVFP4，反而變慢，不是變快。
+- **CAUSE：** 除非 kernel 以 `sm_121a` 為目標，否則 SM121 缺少 `cvt.e2m1x2`；沒有它，NVFP4 會慢大約 32%。
+- **CHECK：** `references/gotcha-checks.md` G7，capability 回報 `(12, 1)`；build 是否以 `sm_121a` 為目標？
+- **FIX：** 除非 build 以 `sm_121a` 為目標，否則留在 FP8。
+
+### G8: Stale Official Playbooks
+
+- **SYMPTOM：** 照著官方的 DGX Spark playbook 做，仍然失敗，本地也沒有任何設定錯誤能解釋。
+- **CAUSE：** 官方的 playbook 以前就出過壞掉的情況；整個 stack 的變動速度比文件快。
+- **CHECK：** `references/gotcha-checks.md` G8，playbook repo 最近的 issue。
+- **FIX：** 在為昂貴的執行相信某個做法之前，先檢查 `github.com/NVIDIA/dgx-spark-playbooks` 的 issue。
+
+### G9: Container-First, Not Bare Pip
+
+- **SYMPTOM：** 昨天還能用的直接 pip 環境，在一次不相關的 `pip install` 之後壞掉，或是兩個「一模一樣」的環境行為不同。
+- **CAUSE：** 直接用 pip，會讓 Triton、xformers 和 transformers 各自獨立漂移；沒有任何東西把它們釘在 GB10 的 SM121 目標上。
+- **CHECK：** `references/gotcha-checks.md` G9，是 container 還是直接用 pip？
+- **FIX：** 偏好 NGC container（tag 的指引請看 `spark-environment-setup`）或 Unsloth 的 container。如果無法避免直接用 pip，就照 NVIDIA 的安裝順序，包含對 Unsloth 使用 `--no-deps`。
+
+### G10: Dual-Spark Is DDP/FSDP Only
+
+- **SYMPTOM：** 跨兩台 Spark 的 tensor-parallel 啟動卡住、比單台 Spark 慢很多，或直接報錯。
+- **CAUSE：** ConnectX-7 的速度足以應付梯度/參數同步（DDP、FSDP），但對 TP 細粒度的流量來說太窄了。
+- **CHECK：** `references/gotcha-checks.md` G10，設定的平行化策略。
+- **FIX：** 在兩台 Spark 的環境，選 DDP 或 FSDP，絕對不要用 tensor parallelism，在這裡 TP 只能用於單節點。
+
+## Fast Triage
+
+在做其他任何事之前，最便宜的檢查：
+
+```bash
+python3 -c &quot;import torch; print(torch.version.cuda)&quot;  # expect 13.x (G1); NGC builds have no +cu130 tag — that&#x27;s not a failure
+```
+
+```python
+import torch; print(torch.cuda.get_device_capability())  # expect (12, 1) (G7)
+```
+
+```bash
+{ [ -f /.dockerenv -o -f /run/.containerenv ] || grep -qE &#x27;docker|containerd&#x27; /proc/1/cgroup; } 2&gt;/dev/null &amp;&amp; echo container || echo unknown  # G9
+```
+
+`assets/preflight.sh` 會執行 G1、G3、G4、G7、G9，並且每個 gotcha 輸出一行固定格式的結果：G 編號在最前面，接著是可自動化時的 PASS/FAIL/WARN、無法取得時的 SKIP，或是原始讀數時的 `INFO:`（G3、G4）。完整指令請看 `references/gotcha-checks.md`。另外請看 `spark-environment-setup`，了解這裡假設已經能用的環境。</pre></section><section><h2>英文原文</h2><pre>---
+name: spark-training-gotchas
+description: Preflight and diagnose the ten known failure modes for ML training on NVIDIA DGX Spark. Use when a training run on DGX Spark fails to start, OOMs below the 128GB limit, slows down mid-run, or before any multi-hour training job on GB10.
+---
+
+# Spark Training Gotchas
+
+DGX Spark&#x27;s GB10 chip (Grace Blackwell, SM121, 128GB unified
+memory, aarch64) has ten recurring failure modes across
+launch, memory, thermals, bandwidth, and precision. Each is
+named G1–G10 so it can be checked by number — the numbering
+is load-bearing for tooling that runs these checks. Read this
+before a long run, not after hour six.
+
+## When to Use This Skill
+
+- A training run fails to start, with an import error or a
+  segfault that doesn&#x27;t point at the real cause.
+- A run OOMs while `nvidia-smi` still shows headroom.
+- Throughput degrades partway through a run that started fine.
+- Before any multi-hour or multi-epoch job on GB10.
+- Wiring two Sparks together, before picking a parallelism
+  strategy.
+- Choosing between FP8 and NVFP4 for a Spark-hosted run.
+
+## Common Issues Quick Reference
+
+| # | Symptom | Fix |
+|---|---|---|
+| G1 | undefined symbol / segfault | cu130 wheel or container |
+| G2 | flash-attn wrong backend used | skip pip build; monkeypatch on NGC |
+| G3 | OOM despite headroom | drop page cache |
+| G4 | throughput drop / reboot | expect ~100W sustained cap |
+| G5 | memory-bound step slow | budget 180–192 GB/s |
+| G6 | cache evicted mid-run | one GPU server at a time |
+| G7 | NVFP4 slower than FP8 | stay FP8 unless `sm_121a` |
+| G8 | playbook fails outright | check upstream issues |
+| G9 | env breaks after install | use a container |
+| G10 | 2-Spark TP hangs | DDP/FSDP only, never TP |
+
+## The Ten Gotchas
+
+### G1: CUDA 12/13 ABI Mismatch
+
+- **SYMPTOM:** `ImportError: undefined symbol` naming a CUDA
+  function, or a segfault on the first `.cuda()` call.
+- **CAUSE:** most PyPI wheels link `libcudart.so.12`; Spark
+  ships CUDA 13. pip never checks CUDA ABI, so it surfaces
+  only at import or first kernel launch.
+- **CHECK:** `references/gotcha-checks.md` G1 — the wheel&#x27;s
+  CUDA build tag.
+- **FIX:** reinstall from `download.pytorch.org/whl/cu130` or
+  use a matched container.
+
+### G2: flash-attn — Skip the pip Build, Watch Unsloth&#x27;s Auto-Detect
+
+- **SYMPTOM:** `pip install flash-attn` still fails/hangs.
+  Unsloth may also silently train flash-attn over an
+  explicitly requested SDPA.
+- **CAUSE:** no aarch64/sm_121 wheel for bare pip — but NGC
+  containers ship a working SM121 flash-attn, and Unsloth
+  auto-prefers it, dropping `attn_implementation=&quot;sdpa&quot;`.
+- **CHECK:** `references/gotcha-checks.md` G2 — is flash-attn
+  already present and working.
+- **FIX:** bare pip — skip flash-attn, use SDPA (unchanged). On
+  NGC — the only reliable override is the monkeypatch in
+  `references/gotcha-checks.md` G2.
+
+### G3: UMA OOM Below 128GB
+
+- **SYMPTOM:** OOM during model load/training while
+  `nvidia-smi` still reports free memory under the 128GB cap
+  — or, on some setups, `[N/A]` outright instead of a number.
+- **CAUSE:** mmap and the CUDA allocator double-count pages
+  during safetensors load; QLoRA can OOM *earlier* than bf16
+  since dequantization adds transient allocs.
+- **CHECK:** `references/gotcha-checks.md` G3 — read `free -g`
+  and `/proc/meminfo`, not `nvidia-smi`.
+- **FIX:** drop the page cache with
+  `sync; echo 3 &gt; /proc/sys/vm/drop_caches` — needs root, a
+  between-run reset, not a mid-training step.
+
+### G4: Thermal Throttling
+
+- **SYMPTOM:** throughput drops partway through a multi-hour
+  run, or the box spontaneously reboots under sustained load.
+- **CAUSE:** sustained power draw caps around 100W versus the
+  240W rated figure; long runs push into that ceiling and
+  throttle or, sometimes, reboot.
+- **CHECK:** `references/gotcha-checks.md` G4 — sample
+  `nvidia-smi --query-gpu=temperature.gpu,power.draw`.
+- **FIX:** if power plateaus under 240W while temperature
+  climbs, treat throttling as the cause; improve cooling or
+  cap run length.
+
+### G5: Bandwidth Ceiling
+
+- **SYMPTOM:** memory-bound workloads, decode-heavy RL loops
+  especially, plateau well below expected throughput.
+- **CAUSE:** 273 GB/s is a spec ceiling, not sustained;
+  measured bandwidth runs 180–192 GB/s.
+- **CHECK:** `references/gotcha-checks.md` G5 — observed step
+  time vs. the measured range, not spec.
+- **FIX:** budget throughput from 180–192 GB/s; revise a plan
+  built on the 273 GB/s figure.
+
+### G6: Global UMA Resource Contention
+
+- **SYMPTOM:** a process&#x27;s KV cache/weights get evicted
+  mid-run silently, no OOM in its own logs.
+- **CAUSE:** unified memory is
+  one global pool; an uncapped
+  or near-capacity process
+  competes with anything else
+  and can evict it. A small,
+  bounded workload doesn&#x27;t — a
+  &lt;4GB LoRA coexists fine
+  alongside vLLM capped at
+  `gpu-memory-utilization&lt;=0.5`.
+- **CHECK:** `references/gotcha-checks.md`
+  G6 — other GPU-resident
+  processes and whether
+  capped.
+- **FIX:** the one-heavy-job
+  rule applies to **uncapped or
+  near-capacity** workloads —
+  cap or stop unrelated servers
+  first. A small, capped
+  workload need not
+  stop.
+
+### G7: NVFP4 Slower Than FP8 on SM121
+
+- **SYMPTOM:** switching an inference workload from FP8 to
+  NVFP4 on Spark makes it slower, not faster.
+- **CAUSE:** SM121 lacks `cvt.e2m1x2` unless kernels target
+  `sm_121a`; NVFP4 runs ~32% slower without it.
+- **CHECK:** `references/gotcha-checks.md` G7 — capability
+  reports `(12, 1)`; does the build target `sm_121a`?
+- **FIX:** stay on FP8 unless the build targets `sm_121a`.
+
+### G8: Stale Official Playbooks
+
+- **SYMPTOM:** following an official DGX Spark playbook still
+  fails, with no local misconfiguration explaining it.
+- **CAUSE:** official playbooks have shipped broken before;
+  the stack moves faster than the docs.
+- **CHECK:** `references/gotcha-checks.md` G8 — the playbook
+  repo&#x27;s recent issues.
+- **FIX:** check `github.com/NVIDIA/dgx-spark-playbooks` issues
+  before trusting a recipe for an expensive run.
+
+### G9: Container-First, Not Bare Pip
+
+- **SYMPTOM:** a bare-pip environment that worked yesterday
+  breaks after an unrelated `pip install`, or two &quot;identical&quot;
+  environments behave differently.
+- **CAUSE:** bare pip lets Triton, xformers, and transformers
+  drift independently; nothing pins them to GB10&#x27;s SM121
+  target.
+- **CHECK:** `references/gotcha-checks.md`
+  G9 — container or bare pip?
+- **FIX:** prefer an NGC container (see `spark-environment-setup`
+  for tag guidance) or Unsloth&#x27;s container. If bare pip is
+  unavoidable, follow the NVIDIA install order, including
+  `--no-deps` on Unsloth.
+
+### G10: Dual-Spark Is DDP/FSDP Only
+
+- **SYMPTOM:** a tensor-parallel launch across two Sparks
+  hangs, runs far slower than single-Spark, or errors out.
+- **CAUSE:** ConnectX-7 is fast enough for gradient/parameter
+  sync (DDP, FSDP) but too thin for TP&#x27;s fine-grained traffic.
+- **CHECK:** `references/gotcha-checks.md` G10 — the
+  configured parallelism strategy.
+- **FIX:** on a two-Spark setup, choose DDP or FSDP, never
+  tensor parallelism — TP is single-node only here.
+
+## Fast Triage
+
+The cheapest checks to run before anything else:
+
+```bash
+python3 -c &quot;import torch; print(torch.version.cuda)&quot;  # expect 13.x (G1); NGC builds have no +cu130 tag — that&#x27;s not a failure
+```
+
+```python
+import torch; print(torch.cuda.get_device_capability())  # expect (12, 1) (G7)
+```
+
+```bash
+{ [ -f /.dockerenv -o -f /run/.containerenv ] || grep -qE &#x27;docker|containerd&#x27; /proc/1/cgroup; } 2&gt;/dev/null &amp;&amp; echo container || echo unknown  # G9
+```
+
+`assets/preflight.sh` runs G1, G3, G4, G7, G9 and produces one
+output line per gotcha in a fixed format: G-number first, then
+PASS/FAIL/WARN where automatable, SKIP when unavailable, or
+`INFO:` for a raw reading (G3, G4). Full commands:
+`references/gotcha-checks.md`. See also
+`spark-environment-setup` for the environment assumed working.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

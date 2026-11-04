@@ -1,6 +1,6 @@
 ---
 name: employment-contract-templates
-description: 建立合法有效的雇用文件的範本與模式，包含合約、offer letter 與 HR 政策。適用於草擬雇用合約、建立 offer letter、撰寫員工手冊的時候。
+description: 依照法律最佳實務，建立雇用合約、offer letter 與 HR 政策文件。適用於草擬雇用協議、制定 HR 政策，或讓雇用文件標準化的時候。
 ---
 
 # 雇用合約範本

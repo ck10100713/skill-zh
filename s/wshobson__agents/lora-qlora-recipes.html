@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lora-qlora-recipes｜Skill 寫法圖鑑</title>
+<meta name="description" content="用最佳實務超參數設定 LoRA 與 QLoRA 監督式微調">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>lora-qlora-recipes</h1>
+<p class="meta">wshobson ｜ 資料與分析 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/llm-finetuning/skills/lora-qlora-recipes/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用最佳實務超參數設定 LoRA 與 QLoRA 監督式微調</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: lora-qlora-recipes
+description: 用目前最佳實務的超參數設定 LoRA 與 QLoRA 監督式微調。在撰寫或審查 LoRA/QLoRA 訓練設定、選擇 rank/alpha/target modules，或在 LoRA、QLoRA 與全參數微調之間做決定時使用。
+---
+
+# LoRA &amp; QLoRA Recipes
+
+這個 skill 假設路由決策已經做完了：
+`finetuning-method-selection` 應該已經把你導到這裡，
+因為資料的形態是示範資料（SFT），
+不是偏好配對，也不是可驗證的 reward 訊號。
+接下來講的是設定 adapter 本身的
+目前最佳實務配方：要鎖定哪些 module、
+rank 和 alpha 怎麼定大小、learning rate 用多少，
+以及 QLoRA 什麼時候真的能多出餘裕、
+什麼時候只是多了風險。
+資料集準備和品質檢查是另一回事，見
+`dataset-curation`。
+
+**輸入：** 一個路由決策（用 LoRA/
+QLoRA 做 SFT）加上目標模型大小等級。
+**輸出格式：** 一份驗證過的 adapter 設定，
+也就是下面那些 kwarg 的值，不是自由發揮的建議，
+`llm-finetuning-training-engineer` 在產生
+可執行腳本時會直接使用它。
+
+## The Reference Recipe
+
+參考配方是「LoRA Without Regret」
+（Thinking Machines/Schulman，2025-09），
+現在已是 LoRA/QLoRA SFT 公認的慣例。
+
+### Target Modules
+
+要鎖定 **all-linear** 的 module，
+不是只鎖 attention：
+
+```python
+target_modules = [
+    &quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,   # attention
+    &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;,      # MLP — matters most
+]
+```
+
+MLP 層（`gate_proj`、`up_proj`、
+`down_proj`）影響最大，只鎖 attention 是
+比較舊、效果也較差的慣例。為了省記憶體而
+少鎖 module，是下面的 Failure
+Mode，不是正當的最佳化。
+
+### Alpha and Learning Rate
+
+- **`lora_alpha = 2 * r`** 是公認的
+  慣例（NeurIPS 2025「intruder dimensions」
+  的結果）。不要脫離 rank 單獨手動調 alpha，
+  每次都從 rank 推出來。
+- **LoRA 的 learning rate ≈ 對應全參數微調 LR 的
+  10 倍。** 以 QLoRA 來說，
+  **2e-4** 是標準的起點。完整的
+  超參數表和範例：
+  `references/hyperparameters.md`。
+
+### Rank by Task
+
+Rank 要看任務決定，沒有單一的全域預設值：
+
+| Task | Rank |
+|---|---|
+| RL (GRPO/RLVR adapters) | 1–32 |
+| General default | 16–32 |
+| SFT at scale | up to ~256 |
+
+Rank 越高不代表越好，它提高泛化能力的同時，
+也一樣提高死背的能力。從符合任務的那一列開始，
+只有在較低的 rank 在 held-out eval 上
+明顯欠擬合時才往上一列，不要把它當成預設的保險。
+
+### Effective Batch Size
+
+**Effective batch size 要維持在 32 以下。**
+這個配方是在那個規模下驗證的，
+把 effective batch 拉更高是沒驗證過的外推，
+不是白賺的吞吐量。
+
+## Unsloth Defaults
+
+Unsloth 是這個 plugin 預設的快速路徑參考實作，
+但有一個例外：messages 形態的對話式 SFT 搭配
+`assistant_only_loss=True` 時，Unsloth
+2026.7.x 編譯過的 trainer 根本沒有 messages 形態
+的路徑，這個組合預設要走
+純 TRL 的逃生口（`references/unsloth-trl-mapping.md`），
+而不是罕見退化時才用的備案。
+它的開箱即用預設值，以及每一個為什麼這樣設：
+
+- **`lora_dropout=0`**：最佳化過的 kernel
+  路徑假設 dropout 是零，設成非零
+  就會失去 fused kernel 的加速。
+- **`bias=&quot;none&quot;`**：在這個 rank 範圍內，
+  bias 項只會增加 adapter 參數，
+  品質提升微乎其微。
+- **`use_gradient_checkpointing=&quot;unsloth&quot;`**：
+  Unsloth 版本的 checkpointing，不是原版 HF
+  的 checkpointing，比完全不用 checkpointing
+  大約省 **30% VRAM**。
+- **`optim=&quot;adamw_8bit&quot;`**：8-bit AdamW 能降低
+  optimizer state 的記憶體，在 LoRA/QLoRA
+  adapter 的規模下對品質影響可忽略。
+- **`random_state`** 固定：把 LoRA 的初始化
+  釘死，讓不同次執行可以重現，
+  要當成一般的 seed 看待，不是可以調的參數。
+
+這些會一起出現在 `get_peft_model`
+的呼叫裡：
+
+```python
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=32,
+    target_modules=target_modules,
+    lora_alpha=64,               # 2 * r
+    lora_dropout=0,
+    bias=&quot;none&quot;,
+    use_gradient_checkpointing=&quot;unsloth&quot;,
+    random_state=3407,
+)
+```
+
+確切的 kwarg 名稱和它們在純 TRL/PEFT 的對應寫法，
+以及包含 `SFTConfig` 的完整範例設定：
+`references/unsloth-trl-mapping.md`
+和 `references/hyperparameters.md`。
+
+## LoRA vs QLoRA vs Full FT
+
+| Situation | Default choice |
+|---|---|
+| Adapting behavior on demonstrations | LoRA |
+| Base model doesn&#x27;t fit in bf16 at target rank | QLoRA |
+| Injecting dense new domain knowledge | Full FT (see `finetuning-method-selection`) |
+| Unsure which one | LoRA — upgrade to QLoRA only if memory forces it |
+
+- **QLoRA** = NF4 量化的凍結 base 權重 +
+  BF16 adapter。這讓 65B 等級的
+  模型能在 48GB 上訓練，省記憶體的是
+  量化過的 base，不是 adapter 本身。
+- **全參數微調不是預設。** 只留給大量灌入新知識的情況，
+  也就是目標是在權重層級改變模型知道什麼，
+  不是調整某種行為。
+  在這個 skill 的範圍內，其他所有情況都以
+  LoRA 或 QLoRA 為起始假設。
+- **在 DGX Spark 上，QLoRA 可能比
+  同等的 bf16 LoRA 更早 OOM**，即使
+  QLoRA 穩態的記憶體用量比較小，
+  因為 bitsandbytes 的反量化 buffer 是
+  CUDA 端的暫時性配置，會在載入時暴衝。
+  QLoRA OOM 不代表模型放不下，
+  `dgx-spark-ops` plugin 的
+  `spark-memory-thermal-ops` skill 涵蓋完整的
+  OOM 處理階梯（下一步該試的是 bf16 LoRA，
+  不是把 QLoRA 再縮小）。
+
+## Failure Modes
+
+- **在不支援 BF16 的 GPU 上 fp16 發散。**
+  在沒有穩定 BF16 支援的硬體上用 fp16 訓練，
+  是 loss 暴衝和無聲發散的已知來源。
+  只要硬體支援，就強制用 `bf16=True`，
+  不要把 fp16 當成等價的退路。
+  選 dtype 前先確認硬體支援：
+
+  ```bash
+  python -c &quot;import torch; print(torch.cuda.is_bf16_supported())&quot;
+  ```
+
+- **小資料集用太高的 rank 會 overfit。**
+  為「大規模 SFT」挑的 rank（最高約 256），
+  用在沒有那種規模的資料集上，
+  只會死背不會泛化。要依上面的 Rank by Task
+  表挑 rank，不要挑最大的數字。
+- **為了省記憶體拿掉 target modules，
+  省不了多少卻傷害品質。**
+  `gate_proj`/`up_proj`/`down_proj` 上的 adapter
+  參數只占模型總大小的一小部分，
+  砍掉它們幾乎不會改變記憶體用量，卻會明顯傷害品質。
+  如果記憶體吃緊，先改用 QLoRA，
+  或降低 rank/batch/pack 長度，再考慮縮減
+  target modules。
+
+這三個 failure mode 有個共通點：
+它們看起來像訓練迴圈的 bug（loss 暴衝、
+卡住不動、死背），其實是和上面參考配方
+相牴觸的設定選擇。在直接除錯訓練迴圈之前，
+先拿設定對照這個 skill。
+
+## References
+
+- `references/hyperparameters.md`：依任務類型整理的
+  完整 rank/alpha/LR 表、rsLoRA 備註、
+  batch/packing 的交互影響，
+  以及一份完整的 Unsloth 範例設定。
+- `references/unsloth-trl-mapping.md`：每個
+  Unsloth kwarg 對應到 TRL/PEFT 的
+  寫法、目前 TRL API 的備註，
+  以及何時該退回純 TRL 的逃生口規則。
+
+相關 skill：`finetuning-method-selection`
+會導向這裡；`dataset-curation` 涵蓋
+這個 skill 沒講的資料面；`llm-finetuning-training-engineer`
+是這個 skill 產出的設定的下游使用者。</pre></section><section><h2>英文原文</h2><pre>---
+name: lora-qlora-recipes
+description: Configure LoRA and QLoRA supervised fine-tuning with current best-practice hyperparameters. Use when writing or reviewing a LoRA/QLoRA training configuration, choosing rank/alpha/target modules, or deciding between LoRA, QLoRA, and full fine-tuning.
+---
+
+# LoRA &amp; QLoRA Recipes
+
+This skill assumes the routing decision already
+happened — `finetuning-method-selection` should
+have already pointed here because the data shape
+is demonstrations (SFT), not preference pairs or
+a verifiable reward signal. What follows is the
+current best-practice recipe for configuring the
+adapter itself: which modules to target, how to
+size rank and alpha, what learning rate to use,
+and when QLoRA buys real headroom versus when it
+just adds risk. Dataset preparation and quality
+checks are a separate concern — see
+`dataset-curation`.
+
+**Input:** a routing decision (SFT via LoRA/
+QLoRA) plus a target size class.
+**Output format:** a validated adapter config —
+the kwarg values below, not free-form advice —
+that `llm-finetuning-training-engineer` consumes
+directly when it generates a runnable script.
+
+## The Reference Recipe
+
+The reference recipe is &quot;LoRA Without Regret&quot;
+(Thinking Machines/Schulman, 2025-09), now the
+settled convention for LoRA/QLoRA SFT.
+
+### Target Modules
+
+Target **all-linear** modules, not just
+attention:
+
+```python
+target_modules = [
+    &quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,   # attention
+    &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;,      # MLP — matters most
+]
+```
+
+The MLP layers (`gate_proj`, `up_proj`,
+`down_proj`) matter most — attention-only
+targeting was the older, weaker convention.
+Dropping modules to save memory is a Failure
+Mode below, not a valid optimization.
+
+### Alpha and Learning Rate
+
+- **`lora_alpha = 2 * r`** is the settled
+  convention (NeurIPS 2025 &quot;intruder dimensions&quot;
+  result). Don&#x27;t hand-tune alpha independently of
+  rank — derive it from rank every time.
+- **LoRA learning rate ≈ 10x the equivalent
+  full-fine-tune LR.** For QLoRA specifically,
+  **2e-4** is the standard starting point. Full
+  hyperparameter tables and worked examples:
+  `references/hyperparameters.md`.
+
+### Rank by Task
+
+Rank is task-shaped, not a single global default:
+
+| Task | Rank |
+|---|---|
+| RL (GRPO/RLVR adapters) | 1–32 |
+| General default | 16–32 |
+| SFT at scale | up to ~256 |
+
+Higher rank isn&#x27;t automatically better — it
+raises capacity to memorize as fast as it raises
+capacity to generalize. Start at the row matching
+the task, and only move up a row if the lower
+rank measurably underfits on held-out eval, not
+as a default hedge.
+
+### Effective Batch Size
+
+Keep **effective batch size under 32**. This
+recipe was validated at that scale — pushing
+effective batch higher is an untested
+extrapolation, not a free throughput win.
+
+## Unsloth Defaults
+
+Unsloth is the reference implementation this
+plugin assumes as the default fast path — except
+for messages-shaped conversational SFT with
+`assistant_only_loss=True`, where Unsloth
+2026.7.x&#x27;s compiled trainer has no messages-shaped
+path at all and the plain-TRL escape hatch
+(`references/unsloth-trl-mapping.md`) is the
+default for that combination, not a rare-regression
+fallback. Its out-of-the-box defaults, and why
+each one is set that way:
+
+- **`lora_dropout=0`** — the optimized kernel
+  path assumes zero dropout; setting a nonzero
+  value forfeits the fused-kernel speedup.
+- **`bias=&quot;none&quot;`** — bias terms add adapter
+  parameters for negligible quality gain at this
+  rank range.
+- **`use_gradient_checkpointing=&quot;unsloth&quot;`** —
+  Unsloth&#x27;s checkpointing variant, not vanilla HF
+  checkpointing; saves roughly **30% VRAM** over
+  no checkpointing.
+- **`optim=&quot;adamw_8bit&quot;`** — 8-bit AdamW cuts
+  optimizer-state memory with negligible quality
+  impact at LoRA/QLoRA adapter scale.
+- **`random_state`** fixed — pins LoRA
+  initialization for reproducibility across runs;
+  treat it like any other seed, not a tunable.
+
+These show up together on the `get_peft_model`
+call:
+
+```python
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=32,
+    target_modules=target_modules,
+    lora_alpha=64,               # 2 * r
+    lora_dropout=0,
+    bias=&quot;none&quot;,
+    use_gradient_checkpointing=&quot;unsloth&quot;,
+    random_state=3407,
+)
+```
+
+Exact kwarg names and their plain-TRL/PEFT
+equivalents, plus a full worked config including
+`SFTConfig`: `references/unsloth-trl-mapping.md`
+and `references/hyperparameters.md`.
+
+## LoRA vs QLoRA vs Full FT
+
+| Situation | Default choice |
+|---|---|
+| Adapting behavior on demonstrations | LoRA |
+| Base model doesn&#x27;t fit in bf16 at target rank | QLoRA |
+| Injecting dense new domain knowledge | Full FT (see `finetuning-method-selection`) |
+| Unsure which one | LoRA — upgrade to QLoRA only if memory forces it |
+
+- **QLoRA** = NF4-quantized frozen base weights +
+  BF16 adapters. This is what makes a 65B-class
+  model trainable on 48GB — the quantized base
+  is the memory win, not the adapter itself.
+- **Full fine-tuning is not a default.** Reserve
+  it for dense knowledge injection where the goal
+  is changing what the model knows at the weight
+  level, not adapting a behavior. For everything
+  else in this skill&#x27;s scope, LoRA or QLoRA is
+  the starting assumption.
+- **On DGX Spark, QLoRA can OOM before an
+  equivalent bf16 LoRA run would**, even though
+  QLoRA&#x27;s steady-state footprint is smaller —
+  bitsandbytes dequantization buffers are
+  transient CUDA-side allocations that spike
+  during load. A QLoRA OOM is not proof the model
+  doesn&#x27;t fit; the `dgx-spark-ops` plugin&#x27;s
+  `spark-memory-thermal-ops` skill covers the
+  full OOM remediation ladder (bf16 LoRA is the
+  next thing to try, not a further QLoRA
+  shrink).
+
+## Failure Modes
+
+- **fp16 divergence on non-BF16 GPUs.** Training
+  in fp16 on hardware that doesn&#x27;t have solid
+  BF16 support is a known source of loss spikes
+  and silent divergence. Force `bf16=True`
+  wherever the hardware supports it; don&#x27;t fall
+  back to fp16 as if it were equivalent. Check
+  hardware support before picking a dtype:
+
+  ```bash
+  python -c &quot;import torch; print(torch.cuda.is_bf16_supported())&quot;
+  ```
+
+- **Rank too high on a small dataset overfits.**
+  A rank picked for &quot;SFT at scale&quot; (up to ~256)
+  on a dataset that doesn&#x27;t have scale behind it
+  memorizes rather than generalizes. Match rank
+  to the Rank by Task table above, not to the
+  largest number available.
+- **Removing target modules to save memory costs
+  quality for negligible savings.** The adapter
+  parameters on `gate_proj`/`up_proj`/`down_proj`
+  are a small fraction of total model size — cutting
+  them barely moves memory but measurably hurts
+  quality. If memory is tight, move to QLoRA or
+  reduce rank/batch/pack length before trimming
+  target modules.
+
+All three failure modes share a pattern: they
+look like a training-loop bug (loss spikes,
+plateaus, memorization) but are actually a
+config choice that contradicts the reference
+recipe above. Check configuration against this
+skill before debugging the training loop itself.
+
+## References
+
+- `references/hyperparameters.md` — full rank/
+  alpha/LR tables by task type, rsLoRA notes,
+  batch/packing interactions, and a complete
+  worked Unsloth config block.
+- `references/unsloth-trl-mapping.md` — every
+  Unsloth kwarg mapped to its TRL/PEFT
+  equivalent, current TRL API notes, and the
+  escape-hatch rule for when to drop back to
+  plain TRL.
+
+Related skills: `finetuning-method-selection`
+routes here; `dataset-curation` covers the data
+side this skill doesn&#x27;t; `llm-finetuning-training-engineer`
+is the downstream consumer of the config this
+skill produces.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

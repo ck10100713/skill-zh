@@ -1,6 +1,6 @@
 ---
 name: fastapi-templates
-description: 可上 production 的 FastAPI 專案結構，包含 async 模式、dependency injection、middleware，以及打造高效能 API 的最佳實務。
+description: 建立可上 production 的 FastAPI 專案，具備 async 模式、dependency injection 與完整的錯誤處理。適用於建構新的 FastAPI 應用或設定後端 API 專案的時候。
 ---
 
 # FastAPI 專案範本

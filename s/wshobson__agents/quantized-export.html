@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>quantized-export｜Skill 寫法圖鑑</title>
+<meta name="description" content="把晉升後的微調模型匯出成 FP8、AWQ 或 GGUF，並做 smoke test">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>quantized-export</h1>
+<p class="meta">wshobson ｜ 部署與發布 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/llm-finetuning/skills/quantized-export/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把晉升後的微調模型匯出成 FP8、AWQ 或 GGUF，並做 smoke test</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: quantized-export
+description: 把通過晉升的微調模型匯出成正確的部署格式：merged safetensors、僅 LoRA、帶 imatrix 的 GGUF 或 FP8。在 checkpoint 通過晉升之後、替目標裝置挑選量化格式，或匯出的模型 smoke test 失敗時使用。
+---
+
+# Quantized Export
+
+這是 `checkpoint-promotion` 交出 `PROMOTE` 判定之後的最後一站：一個通過四階段關卡的 checkpoint，在匯出成目標 runtime 適用的格式、並證明匯出後仍然正常運作之前，都還算不上部署完成。`REJECT` 判定絕對到不了這個 skill，匯出只會從已晉升的 checkpoint 開始。
+
+**Input：** 一個已晉升的 checkpoint（或 LoRA adapter），加上目標部署環境：GPU 等級、serving stack，以及長 context/程式碼/數學類工作負載是否在範圍內。
+**Output format：** 一個選定格式的匯出產物，加上一份 smoke test 差異報告，比對 3–5 筆 golden 輸出在匯出前和匯出後的結果。
+
+## Format Map
+
+依硬體和部署型態選格式，不要憑習慣選。選錯的話，不是浪費吞吐量的空間，就是在特定工作負載上悄悄壞掉（見 Workload Overrides）。
+
+- **Hopper 等級以上的 GPU，預設用 FP8。** 它能保持接近 bf16 的品質，記憶體大約減半。只要目標 GPU 支援，又沒有邊緣裝置的限制，這就是安全的首選。
+- **AWQ INT4 是給比較舊的 GPU 用的**，也就是 FP8 硬體支援出現之前的那幾代。**GPTQ 在新部署裡已經被取代**，全新的匯出不要用它；同樣的位元寬度下，AWQ 的精度保留得更好，目前的工具支援也更廣。
+- **帶 imatrix 建出來的 GGUF（Q4_K_M 量化），是邊緣/llama.cpp 用的格式。** 適合本機或接近 CPU 的部署，不適合追求 GPU serving 吞吐量。它優化的是體積，不是資料中心 GPU 上的 tokens/sec。
+- **NVFP4 只給大規模的 Blackwell 部署用，而且明確不要用在 GB10 上。** 在 SM121（GB10）上，NVFP4 跑起來比 FP8 **慢大約 32%**，因為硬體缺少原生的 `cvt.e2m1x2` 路徑，除非 kernel 用 `sm_121a` 編譯。在 GB10 目標上選 NVFP4 是退步，不是升級，那裡請改選 FP8。
+- **Merged 還是 LoRA-only，跟量化格式是不同的軸。** Merged 匯出會把 adapter 合併進 base weights：產物比較大，但 serve 時不需要依賴 base model。LoRA-only 把 adapter 分開放：產物小很多，但 serving stack 必須同時載入完全相同的 base model，base 錯了或 revision 不對，輸出會悄悄改變。產物可攜性比儲存空間重要時，選 merged；磁碟空間或多 adapter serving 比較重要時，選 LoRA-only。
+
+### Worked Picks
+
+格式選擇的核心取捨，整理成常見情境的查表：
+
+| Target | Workload | Format |
+|---|---|---|
+| Datacenter GPU | generic chat | FP8 |
+| Datacenter GPU | long-context/code/math | FP8 or W8A8 — never INT4 |
+| Older GPU generation | generic | AWQ INT4 |
+| Edge device / laptop | llama.cpp serving | GGUF Q4_K_M + imatrix |
+| GB10 | any workload | FP8 via vLLM nightly, or GGUF via llama.cpp locally — skip NVFP4 |
+
+```yaml
+# quick decision snippet — see the table above for the full map
+hopper_or_newer: fp8
+older_gpu: awq-int4
+edge_llama_cpp: gguf-q4_k_m+imatrix
+gb10_any_workload: fp8-vllm-nightly   # never nvfp4 on GB10
+```
+
+## Workload Overrides
+
+上面的 Format Map 只是預設值，不是每種工作負載都適用的規則。**長 context、程式碼和數學的工作負載，在 INT4 下會壞掉**：量化誤差會在長序列和精確的 token 層級推理中不斷累積，這在短的一般 prompt 上看不出來。這三類工作負載，就算目標硬體因為成本考量原本適合用 INT4，也**要留在 FP8 或 W8A8**。
+
+- 不要用 MMLU 或類似的廣泛知識 benchmark 來驗證這個 override，它們測不到這種失效模式。**要用實際的任務評測來量**，也就是 `eval-harness-first` 的 golden 和 grader，拿匯出的產物去跑。因為 INT4 在長 context、程式碼或數學上的退化，會先以任務層級的失敗出現（context 掉了、語法壞了、算術錯了），遠早於知識 benchmark 的分數下降。
+- 如果這三類工作負載之一在 INT4 匯出後，任務評測退步了，解法是換格式，不是重新調量化配方。同樣位元寬度的 AWQ 和 GPTQ 變體，在這些工作負載上有同樣的累積誤差失效模式。
+
+## The Smoke Test
+
+匯出的 bug 在檔案層級是無聲的。格式有問題的匯出一樣能產生可載入的產物，所以檢查檔案是否存在什麼都證明不了。**每一次匯出都一定要做 smoke test，就算是「應該沒問題」的格式也沒有例外：**
+
+1. **在實際的目標 runtime 裡載入匯出的產物**：FP8/AWQ 用 vLLM，GGUF 用 llama.cpp。不要在跟正式 serving 不同的框架裡隨便載入看看。
+2. **跑 3–5 筆 golden prompt**：從 `eval-harness-first` 維護的同一份 `eval/goldens.jsonl` 取，不要臨時另外挑一組。
+3. **把每筆輸出跟匯出前同一個 prompt 的生成結果比對**，用同樣的確定性取樣設定：greedy decoding（temperature 0）加固定的 seed，而且要存下來，在匯出前和匯出後的兩次執行中重複使用，不能只是名義上設定一樣。**無損匯出的關卡是逐 byte 一致，任何差異都是 bug。** **有損**（量化）匯出就不可能逐 byte 一致；關卡改成任務 grader 的判定結果要一致，見 `references/export-commands.md` 的 Smoke-Test Script Skeleton。
+
+這要當成關卡來跑，不是手動檢查：
+
+```bash
+python smoke_test.py &quot;$EXPORT_PATH&quot; \
+    eval/goldens.jsonl pre-export-outputs.jsonl
+# non-zero exit on any pre/post mismatch
+```
+
+### Failure Signatures
+
+匯出 bug 實際長什麼樣子，不是一個乾淨的通過/失敗旗標：
+
+- **Template 不一致**會表現成亂碼或一路接下去沒斷句的輸出：匯出時內建的 chat template，跟 checkpoint 訓練和評測時用的不一樣，所以輪次邊界或特殊 token 落在錯的位置。
+- **`lm_head` 套錯量化**會表現成不符合 template 或語意上無意義，但讀起來仍然流暢的輸出：就算網路其他部分量化得很乾淨，輸出層還是損失了它需要的精度。
+
+跳過這一步的匯出絕對不能出貨。checkpoint 的 `PROMOTE` 判定只說明「還沒匯出的 checkpoint」是好的，對匯出流程完全沒有保證。每次量化方法或 runtime 版本升級都要重跑，不是只有第一次匯出後才跑。每種格式可以直接跑的指令序列，以及 smoke test 腳本骨架，都在 `references/export-commands.md`。
+
+## Related Skills
+
+- `checkpoint-promotion` - 這個 skill 唯一合法的上游來源。沒有 `PROMOTE` 判定的 checkpoint 到不了匯出這一步。
+- `eval-harness-first` - 擁有 `eval/goldens.jsonl`，這個 skill 的 smoke test 就是從這裡取 3–5 筆 prompt；也擁有 Workload Overrides 一節要求用來驗證長 context/程式碼/數學的任務評測。
+- `finetuning-method-selection` - 它的 `references/model-catalog.md` 是用來確認硬體等級假設的地方（某個 base model 針對哪幾代 GPU），要在照上面 Format Map 選格式之前先查。
+
+**Spark 使用者：** 在 GB10 上，GGUF 搭配 llama.cpp 很適合本機 serving，用 vLLM nightly build 做 FP8 serving 是另一條驗證過的路徑，NVFP4 則是唯一要避開的格式（見上面 Format Map 的例外）。裝好 `dgx-spark-ops` plugin 之後，Spark 專屬的 serving 和散熱問題就交給它的 skill，不要在這裡重新推導。</pre></section><section><h2>英文原文</h2><pre>---
+name: quantized-export
+description: Export a promoted fine-tuned model in the right deployment format — merged safetensors, LoRA-only, GGUF with imatrix, or FP8. Use after a checkpoint passes promotion, when choosing a quantization format for a target device, or when an exported model fails its smoke test.
+---
+
+# Quantized Export
+
+The last stop after `checkpoint-promotion`
+hands off a `PROMOTE` verdict: a checkpoint
+that cleared the four-stage gate still isn&#x27;t
+deployed until it&#x27;s exported in the right
+format for its target runtime and proven to
+still work post-export. A `REJECT` verdict
+never reaches this skill — export starts only
+from a promoted checkpoint.
+
+**Input:** a promoted checkpoint (or LoRA
+adapter) plus the target deployment surface —
+GPU class, serving stack, and whether
+long-context/code/math workloads are in
+scope.
+**Output format:** an exported artifact in
+the chosen format plus a smoke-test diff
+report comparing 3–5 golden outputs
+pre-export and post-export.
+
+## Format Map
+
+Pick format by hardware and deployment shape,
+not by habit — the wrong pick either wastes
+throughput headroom or breaks silently on
+specific workloads (see Workload Overrides).
+
+- **FP8 is the default on Hopper-class GPUs
+  and newer.** It preserves near-bf16 quality
+  at roughly half the memory, and it&#x27;s the
+  safe first choice whenever the target GPU
+  supports it and no edge-device constraint
+  applies.
+- **AWQ INT4 targets older GPUs** that predate
+  FP8 hardware support. **GPTQ is superseded
+  for new deployments** — don&#x27;t reach for it
+  on a fresh export; AWQ has better accuracy
+  retention at the same bit width and wider
+  current tooling support.
+- **GGUF with Q4_K_M quantization, built from
+  an imatrix, is the edge/llama.cpp format.**
+  Use it for local or CPU-adjacent
+  deployment, not for GPU-serving
+  throughput — it optimizes for footprint,
+  not tokens/sec on a datacenter GPU.
+- **NVFP4 is for Blackwell-at-scale
+  deployments only — and explicitly NOT on
+  GB10.** NVFP4 on SM121 (GB10) runs **~32%
+  slower than FP8** because the hardware
+  lacks a native `cvt.e2m1x2` path unless the
+  kernel is compiled `sm_121a`. Choosing
+  NVFP4 on a GB10 target is a regression, not
+  an upgrade — pick FP8 there instead.
+- **Merged vs. LoRA-only is a separate axis
+  from quant format.** A merged export folds
+  the adapter into the base weights: larger
+  artifact, no base-model dependency at serve
+  time. LoRA-only keeps the adapter separate:
+  much smaller artifact, but the serving stack
+  must load the exact same base model
+  alongside it — a mismatched or
+  wrong-revision base silently changes
+  outputs. Pick merged when artifact
+  portability matters more than storage; pick
+  LoRA-only when disk footprint or multi-adapter
+  serving matters more.
+
+### Worked Picks
+
+The core format-selection tradeoff, read as a
+lookup table for common scenarios:
+
+| Target | Workload | Format |
+|---|---|---|
+| Datacenter GPU | generic chat | FP8 |
+| Datacenter GPU | long-context/code/math | FP8 or W8A8 — never INT4 |
+| Older GPU generation | generic | AWQ INT4 |
+| Edge device / laptop | llama.cpp serving | GGUF Q4_K_M + imatrix |
+| GB10 | any workload | FP8 via vLLM nightly, or GGUF via llama.cpp locally — skip NVFP4 |
+
+```yaml
+# quick decision snippet — see the table above for the full map
+hopper_or_newer: fp8
+older_gpu: awq-int4
+edge_llama_cpp: gguf-q4_k_m+imatrix
+gb10_any_workload: fp8-vllm-nightly   # never nvfp4 on GB10
+```
+
+## Workload Overrides
+
+The Format Map above is a default, not a rule
+that survives every workload. **Long-context,
+code, and math workloads break at INT4** —
+quantization error compounds across long
+sequences and precise token-level reasoning in
+ways that don&#x27;t show up on short, generic
+prompts. For any of these three workload
+classes, **stay on FP8 or W8A8** even if the
+target hardware would otherwise justify INT4
+on cost grounds.
+
+- Don&#x27;t validate this override with MMLU or
+  similar broad-knowledge benchmarks — they
+  don&#x27;t stress the failure mode. **Measure
+  with the actual task evals** — the goldens
+  and graders from `eval-harness-first`, run
+  through the exported artifact — because
+  INT4 degradation on long-context, code, or
+  math shows up as task-specific failures
+  (dropped context, broken syntax, arithmetic
+  errors) well before it moves a knowledge
+  benchmark.
+- If a task eval regresses after an INT4
+  export on one of these three workload
+  classes, the fix is switching format, not
+  re-tuning the quantization recipe — AWQ
+  and GPTQ variants at the same bit width
+  share the same compounding-error failure
+  mode on these workloads.
+
+## The Smoke Test
+
+Export bugs are silent at the file level — a
+malformed export still produces a
+loadable artifact, so file-existence checks
+prove nothing. **The smoke test is
+mandatory for every export, with no
+exception for a format that &quot;should just
+work&quot;:**
+
+1. **Load the exported artifact in its actual
+   target runtime** — vLLM for FP8/AWQ,
+   llama.cpp for GGUF, not a quick
+   sanity load in a different framework than
+   the one that will serve it in production.
+2. **Run 3–5 golden prompts through it** —
+   pull these from the same `eval/goldens.jsonl`
+   `eval-harness-first` maintains, not a fresh
+   ad hoc set.
+3. **Compare each output against the
+   pre-export generation** for the same
+   prompt, same deterministic sampling
+   settings — greedy decoding (temperature 0)
+   and a fixed seed, persisted and reused
+   between the pre- and post-export runs, not
+   just nominally identical config. **For a
+   lossless export, byte match is the gate —
+   any diff is a bug.** For a **lossy**
+   (quantized) export, byte match is expected
+   to fail; the gate is task-grader verdict
+   agreement instead — see
+   `references/export-commands.md`&#x27;s
+   Smoke-Test Script Skeleton.
+
+Run this as a gate, not a manual check:
+
+```bash
+python smoke_test.py &quot;$EXPORT_PATH&quot; \
+    eval/goldens.jsonl pre-export-outputs.jsonl
+# non-zero exit on any pre/post mismatch
+```
+
+### Failure Signatures
+
+What export bugs actually look like, not a
+clean pass/fail flag:
+
+- **Template mismatch** presents as garbled or
+  run-on output — the chat template baked
+  into the export doesn&#x27;t match the one the
+  checkpoint was trained and evaluated
+  against, so turn boundaries or special
+  tokens land in the wrong place.
+- **Wrong quantization applied to `lm_head`**
+  presents as off-template or semantically
+  nonsensical output that still looks
+  fluent — the output head lost precision it
+  needed even though the rest of the network
+  quantized cleanly.
+
+Never ship an export that skipped this step —
+a checkpoint&#x27;s `PROMOTE` verdict says the
+un-exported checkpoint is good; it says
+nothing about the export pipeline. Re-run on
+any quant-method or runtime version bump, not
+only after the first export. Runnable command
+sequences for every format plus the
+smoke-test script skeleton:
+`references/export-commands.md`.
+
+## Related Skills
+
+- `checkpoint-promotion` — the only valid
+  upstream source for this skill. A checkpoint
+  without a `PROMOTE` verdict doesn&#x27;t reach
+  export.
+- `eval-harness-first` — owns the
+  `eval/goldens.jsonl` this skill&#x27;s smoke test
+  draws its 3–5 prompts from, and the task
+  evals the Workload Overrides section
+  requires for long-context/code/math
+  validation.
+- `finetuning-method-selection` — its
+  `references/model-catalog.md` is the place
+  to check hardware-class assumptions (which
+  GPU generations a base model targets) before
+  picking a format off the Format Map above.
+
+**Spark users:** on GB10, GGUF via llama.cpp
+works well for local serving, and FP8 serving
+via vLLM nightly builds is the other proven
+path — NVFP4 is the one format to avoid there
+(see the Format Map exception above). Once the
+`dgx-spark-ops` plugin is installed, defer
+Spark-specific serving and thermal questions to
+its skills rather than re-deriving them here.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

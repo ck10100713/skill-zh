@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-type-safety｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 type hint、generic、protocol 和 mypy/pyright 做 Python 型別安全">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>89</span></a></li><li><a href="../../c/1.html">架構與重構<span>105</span></a></li><li><a href="../../c/2.html">測試與驗證<span>73</span></a></li><li><a href="../../c/3.html">除錯與調查<span>36</span></a></li><li><a href="../../c/4.html">Code Review<span>21</span></a></li><li><a href="../../c/5.html">設計與前端<span>107</span></a></li><li><a href="../../c/6.html">寫作與文件<span>88</span></a></li><li><a href="../../c/7.html">部署與發布<span>45</span></a></li><li><a href="../../c/8.html">安全護欄<span>54</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>17</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>186</span></a></li><li><a href="../../c/13.html">資料與分析<span>107</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>137</span></a></li><li><a href="../../c/15.html">商業與營運<span>273</span></a></li><li><a href="../../c/16.html">金融與投資<span>117</span></a></li><li><a href="../../c/17.html">遊戲開發<span>58</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>128</span></a></li><li><a href="../../c/20.html">設定與維護<span>49</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>211</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>185</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/zz41354899__open-slidex.html">zz41354899/open-slidex<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/santifer__career-ops.html">santifer/career-ops<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-type-safety</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-type-safety/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 type hint、generic、protocol 和 mypy/pyright 做 Python 型別安全</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-type-safety
+description: 用 type hint、generic、protocol 和嚴格型別檢查來做 Python 型別安全。在加入型別註解、實作 generic class、定義結構化介面或設定 mypy/pyright 時使用。
+---
+
+# Python Type Safety
+
+善用 Python 的型別系統，在靜態分析階段就抓出錯誤。型別註解就像是會被強制執行的文件，工具會自動幫你驗證。
+
+## When to Use This Skill
+
+- 為既有程式碼加上 type hint
+- 建立可重複使用的 generic class
+- 用 protocol 定義結構化介面
+- 設定 mypy 或 pyright 做嚴格檢查
+- 理解型別窄化（type narrowing）和 guard
+- 建構型別安全的 API 和函式庫
+
+## Core Concepts
+
+### 1. Type Annotations
+
+為函式參數、回傳值和變數宣告預期的型別。
+
+### 2. Generics
+
+寫出可重複使用的程式碼，同時在不同型別之間保留型別資訊。
+
+### 3. Protocols
+
+不靠繼承來定義結構化介面（有型別安全的 duck typing）。
+
+### 4. Type Narrowing
+
+用 guard 和條件判斷，在程式碼區塊內把型別縮小。
+
+## Quick Start
+
+```python
+def get_user(user_id: str) -&gt; User | None:
+    &quot;&quot;&quot;Return type makes &#x27;might not exist&#x27; explicit.&quot;&quot;&quot;
+    ...
+
+# Type checker enforces handling None case
+user = get_user(&quot;123&quot;)
+if user is None:
+    raise UserNotFoundError(&quot;123&quot;)
+print(user.name)  # Type checker knows user is User here
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Annotate All Public Signatures
+
+每個公開的函式、method 和 class 都要有型別註解。
+
+```python
+def get_user(user_id: str) -&gt; User:
+    &quot;&quot;&quot;Retrieve user by ID.&quot;&quot;&quot;
+    ...
+
+def process_batch(
+    items: list[Item],
+    max_workers: int = 4,
+) -&gt; BatchResult[ProcessedItem]:
+    &quot;&quot;&quot;Process items concurrently.&quot;&quot;&quot;
+    ...
+
+class UserRepository:
+    def __init__(self, db: Database) -&gt; None:
+        self._db = db
+
+    async def find_by_id(self, user_id: str) -&gt; User | None:
+        &quot;&quot;&quot;Return User if found, None otherwise.&quot;&quot;&quot;
+        ...
+
+    async def find_by_email(self, email: str) -&gt; User | None:
+        ...
+
+    async def save(self, user: User) -&gt; User:
+        &quot;&quot;&quot;Save and return user with generated ID.&quot;&quot;&quot;
+        ...
+```
+
+在 CI 裡用 `mypy --strict` 或 `pyright`，及早抓出型別錯誤。既有專案可以用逐模組的 override，一步步開啟 strict mode。
+
+### Pattern 2: Use Modern Union Syntax
+
+Python 3.10+ 提供了更乾淨的 union 語法。
+
+```python
+# Preferred (3.10+)
+def find_user(user_id: str) -&gt; User | None:
+    ...
+
+def parse_value(v: str) -&gt; int | float | str:
+    ...
+
+# Older style (still valid, needed for 3.9)
+from typing import Optional, Union
+
+def find_user(user_id: str) -&gt; Optional[User]:
+    ...
+```
+
+### Pattern 3: Type Narrowing with Guards
+
+用條件判斷幫型別檢查器縮小型別。
+
+```python
+def process_user(user_id: str) -&gt; UserData:
+    user = find_user(user_id)
+
+    if user is None:
+        raise UserNotFoundError(f&quot;User {user_id} not found&quot;)
+
+    # Type checker knows user is User here, not User | None
+    return UserData(
+        name=user.name,
+        email=user.email,
+    )
+
+def process_items(items: list[Item | None]) -&gt; list[ProcessedItem]:
+    # Filter and narrow types
+    valid_items = [item for item in items if item is not None]
+    # valid_items is now list[Item]
+    return [process(item) for item in valid_items]
+```
+
+### Pattern 4: Generic Classes
+
+建立型別安全、可重複使用的容器。
+
+```python
+from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;)
+E = TypeVar(&quot;E&quot;, bound=Exception)
+
+class Result(Generic[T, E]):
+    &quot;&quot;&quot;Represents either a success value or an error.&quot;&quot;&quot;
+
+    def __init__(
+        self,
+        value: T | None = None,
+        error: E | None = None,
+    ) -&gt; None:
+        if (value is None) == (error is None):
+            raise ValueError(&quot;Exactly one of value or error must be set&quot;)
+        self._value = value
+        self._error = error
+
+    @property
+    def is_success(self) -&gt; bool:
+        return self._error is None
+
+    @property
+    def is_failure(self) -&gt; bool:
+        return self._error is not None
+
+    def unwrap(self) -&gt; T:
+        &quot;&quot;&quot;Get value or raise the error.&quot;&quot;&quot;
+        if self._error is not None:
+            raise self._error
+        return self._value  # type: ignore[return-value]
+
+    def unwrap_or(self, default: T) -&gt; T:
+        &quot;&quot;&quot;Get value or return default.&quot;&quot;&quot;
+        if self._error is not None:
+            return default
+        return self._value  # type: ignore[return-value]
+
+# Usage preserves types
+def parse_config(path: str) -&gt; Result[Config, ConfigError]:
+    try:
+        return Result(value=Config.from_file(path))
+    except ConfigError as e:
+        return Result(error=e)
+
+result = parse_config(&quot;config.yaml&quot;)
+if result.is_success:
+    config = result.unwrap()  # Type: Config
+```
+
+## Detailed worked examples and patterns
+
+詳細的章節（從 `## Advanced Patterns` 開始）放在 `references/details.md`。上面的導覽摘要不夠用的時候，再去讀那個檔案。
+
+## Best Practices Summary
+
+1. **所有公開 API 都加註解** - 函式、method、class 屬性
+2. **用 `T | None`** - 用現代的 union 語法，不用 `Optional[T]`
+3. **跑嚴格型別檢查** - 在 CI 裡跑 `mypy --strict`
+4. **用 generic** - 在可重複使用的程式碼裡保留型別資訊
+5. **定義 protocol** - 介面用結構化型別
+6. **窄化型別** - 用 guard 幫型別檢查器一把
+7. **限定型別變數的範圍（bound）** - 把 generic 限制在有意義的型別
+8. **建立 type alias** - 給複雜型別一個有意義的名字
+9. **盡量少用 `Any`** - 用具體型別或 generic。真正動態的資料，或是跟沒有型別的第三方程式碼介接時，用 `Any` 是可以的
+10. **用型別當文件** - 型別是可以被強制執行的文件</pre></section><section><h2>英文原文</h2><pre>---
+name: python-type-safety
+description: Python type safety with type hints, generics, protocols, and strict type checking. Use when adding type annotations, implementing generic classes, defining structural interfaces, or configuring mypy/pyright.
+---
+
+# Python Type Safety
+
+Leverage Python&#x27;s type system to catch errors at static analysis time. Type annotations serve as enforced documentation that tooling validates automatically.
+
+## When to Use This Skill
+
+- Adding type hints to existing code
+- Creating generic, reusable classes
+- Defining structural interfaces with protocols
+- Configuring mypy or pyright for strict checking
+- Understanding type narrowing and guards
+- Building type-safe APIs and libraries
+
+## Core Concepts
+
+### 1. Type Annotations
+
+Declare expected types for function parameters, return values, and variables.
+
+### 2. Generics
+
+Write reusable code that preserves type information across different types.
+
+### 3. Protocols
+
+Define structural interfaces without inheritance (duck typing with type safety).
+
+### 4. Type Narrowing
+
+Use guards and conditionals to narrow types within code blocks.
+
+## Quick Start
+
+```python
+def get_user(user_id: str) -&gt; User | None:
+    &quot;&quot;&quot;Return type makes &#x27;might not exist&#x27; explicit.&quot;&quot;&quot;
+    ...
+
+# Type checker enforces handling None case
+user = get_user(&quot;123&quot;)
+if user is None:
+    raise UserNotFoundError(&quot;123&quot;)
+print(user.name)  # Type checker knows user is User here
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Annotate All Public Signatures
+
+Every public function, method, and class should have type annotations.
+
+```python
+def get_user(user_id: str) -&gt; User:
+    &quot;&quot;&quot;Retrieve user by ID.&quot;&quot;&quot;
+    ...
+
+def process_batch(
+    items: list[Item],
+    max_workers: int = 4,
+) -&gt; BatchResult[ProcessedItem]:
+    &quot;&quot;&quot;Process items concurrently.&quot;&quot;&quot;
+    ...
+
+class UserRepository:
+    def __init__(self, db: Database) -&gt; None:
+        self._db = db
+
+    async def find_by_id(self, user_id: str) -&gt; User | None:
+        &quot;&quot;&quot;Return User if found, None otherwise.&quot;&quot;&quot;
+        ...
+
+    async def find_by_email(self, email: str) -&gt; User | None:
+        ...
+
+    async def save(self, user: User) -&gt; User:
+        &quot;&quot;&quot;Save and return user with generated ID.&quot;&quot;&quot;
+        ...
+```
+
+Use `mypy --strict` or `pyright` in CI to catch type errors early. For existing projects, enable strict mode incrementally using per-module overrides.
+
+### Pattern 2: Use Modern Union Syntax
+
+Python 3.10+ provides cleaner union syntax.
+
+```python
+# Preferred (3.10+)
+def find_user(user_id: str) -&gt; User | None:
+    ...
+
+def parse_value(v: str) -&gt; int | float | str:
+    ...
+
+# Older style (still valid, needed for 3.9)
+from typing import Optional, Union
+
+def find_user(user_id: str) -&gt; Optional[User]:
+    ...
+```
+
+### Pattern 3: Type Narrowing with Guards
+
+Use conditionals to narrow types for the type checker.
+
+```python
+def process_user(user_id: str) -&gt; UserData:
+    user = find_user(user_id)
+
+    if user is None:
+        raise UserNotFoundError(f&quot;User {user_id} not found&quot;)
+
+    # Type checker knows user is User here, not User | None
+    return UserData(
+        name=user.name,
+        email=user.email,
+    )
+
+def process_items(items: list[Item | None]) -&gt; list[ProcessedItem]:
+    # Filter and narrow types
+    valid_items = [item for item in items if item is not None]
+    # valid_items is now list[Item]
+    return [process(item) for item in valid_items]
+```
+
+### Pattern 4: Generic Classes
+
+Create type-safe reusable containers.
+
+```python
+from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;)
+E = TypeVar(&quot;E&quot;, bound=Exception)
+
+class Result(Generic[T, E]):
+    &quot;&quot;&quot;Represents either a success value or an error.&quot;&quot;&quot;
+
+    def __init__(
+        self,
+        value: T | None = None,
+        error: E | None = None,
+    ) -&gt; None:
+        if (value is None) == (error is None):
+            raise ValueError(&quot;Exactly one of value or error must be set&quot;)
+        self._value = value
+        self._error = error
+
+    @property
+    def is_success(self) -&gt; bool:
+        return self._error is None
+
+    @property
+    def is_failure(self) -&gt; bool:
+        return self._error is not None
+
+    def unwrap(self) -&gt; T:
+        &quot;&quot;&quot;Get value or raise the error.&quot;&quot;&quot;
+        if self._error is not None:
+            raise self._error
+        return self._value  # type: ignore[return-value]
+
+    def unwrap_or(self, default: T) -&gt; T:
+        &quot;&quot;&quot;Get value or return default.&quot;&quot;&quot;
+        if self._error is not None:
+            return default
+        return self._value  # type: ignore[return-value]
+
+# Usage preserves types
+def parse_config(path: str) -&gt; Result[Config, ConfigError]:
+    try:
+        return Result(value=Config.from_file(path))
+    except ConfigError as e:
+        return Result(error=e)
+
+result = parse_config(&quot;config.yaml&quot;)
+if result.is_success:
+    config = result.unwrap()  # Type: Config
+```
+
+## Detailed worked examples and patterns
+
+Detailed sections (starting with `## Advanced Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
+
+## Best Practices Summary
+
+1. **Annotate all public APIs** - Functions, methods, class attributes
+2. **Use `T | None`** - Modern union syntax over `Optional[T]`
+3. **Run strict type checking** - `mypy --strict` in CI
+4. **Use generics** - Preserve type info in reusable code
+5. **Define protocols** - Structural typing for interfaces
+6. **Narrow types** - Use guards to help the type checker
+7. **Bound type vars** - Restrict generics to meaningful types
+8. **Create type aliases** - Meaningful names for complex types
+9. **Minimize `Any`** - Use specific types or generics. `Any` is acceptable for truly dynamic data or when interfacing with untyped third-party code
+10. **Document with types** - Types are enforceable documentation</pre></section></div>
+  </main>
+</div>
+</body>
+</html>
