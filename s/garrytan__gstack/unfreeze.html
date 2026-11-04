@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>unfreeze｜Skill 寫法圖鑑</title>
+<meta name="description" content="清除 /freeze 設的凍結邊界，讓所有目錄都能再編輯">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>17</span></a></li><li><a href="../../c/1.html">架構與重構<span>3</span></a></li><li><a href="../../c/2.html">測試與驗證<span>10</span></a></li><li><a href="../../c/3.html">除錯與調查<span>3</span></a></li><li><a href="../../c/4.html">Code Review<span>3</span></a></li><li><a href="../../c/5.html">設計與前端<span>13</span></a></li><li><a href="../../c/6.html">寫作與文件<span>11</span></a></li><li><a href="../../c/7.html">部署與發布<span>5</span></a></li><li><a href="../../c/8.html">安全護欄<span>6</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="../../c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>unfreeze</h1>
+<p class="meta">Garry Tan ｜ 安全護欄 ｜ <a href="https://github.com/garrytan/gstack/blob/main/unfreeze/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">清除 /freeze 設的凍結邊界，讓所有目錄都能再編輯</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: unfreeze
+version: 0.1.0
+description: 清除 /freeze 設定的凍結邊界，讓所有目錄都可以再編輯。(gstack)
+triggers:
+  - unfreeze edits
+  - unlock all directories
+  - remove edit restrictions
+allowed-tools:
+  - Bash
+  - Read
+---
+&lt;!-- 由 SKILL.md.tmpl 自動產生，請勿直接編輯 --&gt;
+&lt;!-- 重新產生：bun run gen:skill-docs --&gt;
+
+# /unfreeze — 清除凍結邊界
+
+移除 `/freeze` 設定的編輯限制，讓所有目錄都可以編輯。
+
+```bash
+GSTACK_STATE_ROOT=$(~/.claude/skills/gstack/bin/gstack-paths --get GSTACK_STATE_ROOT); : &quot;${GSTACK_STATE_ROOT:?gstack-paths failed; reinstall with ./setup or /gstack-upgrade}&quot;
+mkdir -p &quot;$GSTACK_STATE_ROOT&quot;/analytics
+echo &#x27;{&quot;skill&quot;:&quot;unfreeze&quot;,&quot;ts&quot;:&quot;&#x27;$(date -u +%Y-%m-%dT%H:%M:%SZ)&#x27;&quot;,&quot;repo&quot;:&quot;&#x27;$(basename &quot;$(git rev-parse --show-toplevel 2&gt;/dev/null)&quot; 2&gt;/dev/null || echo &quot;unknown&quot;)&#x27;&quot;}&#x27;  &gt;&gt; &quot;$GSTACK_STATE_ROOT&quot;/analytics/skill-usage.jsonl 2&gt;/dev/null || true
+```
+
+## 清除邊界
+
+```bash
+bash &quot;$HOME/.claude/skills/gstack/freeze/bin/freeze-state.sh&quot; clear
+```
+
+這是使用者明確要求的移除，不是調查後的清理。共用的 writer 會把它跟取得、替換和有檢查 owner 的釋放動作序列化。遇到 `FREEZE_BUSY` 或非預期的狀態，一律原封不動、回報怎麼復原；絕對不准直接刪除狀態檔，也不准直接刪除可能還在使用中的 mutation lock。
+
+把結果告訴使用者。注意 `/freeze` 的 hook 在這個 session 裡還是註冊著的，
+只是因為沒有狀態檔，所以會放行所有操作。要重新凍結，
+再跑一次 `/freeze`。</pre></section><section><h2>英文原文</h2><pre>---
+name: unfreeze
+version: 0.1.0
+description: Clear the freeze boundary set by /freeze, allowing edits to all directories again. (gstack)
+triggers:
+  - unfreeze edits
+  - unlock all directories
+  - remove edit restrictions
+allowed-tools:
+  - Bash
+  - Read
+---
+&lt;!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly --&gt;
+&lt;!-- Regenerate: bun run gen:skill-docs --&gt;
+
+# /unfreeze — Clear Freeze Boundary
+
+Remove the edit restriction set by `/freeze`, allowing edits to all directories.
+
+```bash
+GSTACK_STATE_ROOT=$(~/.claude/skills/gstack/bin/gstack-paths --get GSTACK_STATE_ROOT); : &quot;${GSTACK_STATE_ROOT:?gstack-paths failed; reinstall with ./setup or /gstack-upgrade}&quot;
+mkdir -p &quot;$GSTACK_STATE_ROOT&quot;/analytics
+echo &#x27;{&quot;skill&quot;:&quot;unfreeze&quot;,&quot;ts&quot;:&quot;&#x27;$(date -u +%Y-%m-%dT%H:%M:%SZ)&#x27;&quot;,&quot;repo&quot;:&quot;&#x27;$(basename &quot;$(git rev-parse --show-toplevel 2&gt;/dev/null)&quot; 2&gt;/dev/null || echo &quot;unknown&quot;)&#x27;&quot;}&#x27;  &gt;&gt; &quot;$GSTACK_STATE_ROOT&quot;/analytics/skill-usage.jsonl 2&gt;/dev/null || true
+```
+
+## Clear the boundary
+
+```bash
+bash &quot;$HOME/.claude/skills/gstack/freeze/bin/freeze-state.sh&quot; clear
+```
+
+This is explicit user-requested removal, not investigation cleanup. The shared writer serializes it with acquisition, replacement and owner-checked release. On `FREEZE_BUSY` or unexpected state, leave everything untouched and report recovery; never delete state or a possibly active mutation lock directly.
+
+Tell the user the result. Note that `/freeze` hooks are still registered for the
+session — they will just allow everything since no state file exists. To re-freeze,
+run `/freeze` again.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

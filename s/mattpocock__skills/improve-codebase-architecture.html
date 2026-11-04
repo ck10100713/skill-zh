@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>improve-codebase-architecture｜Skill 寫法圖鑑</title>
+<meta name="description" content="掃出可加深的模組，用 HTML 報告呈現再拷問">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>17</span></a></li><li><a href="../../c/1.html">架構與重構<span>3</span></a></li><li><a href="../../c/2.html">測試與驗證<span>10</span></a></li><li><a href="../../c/3.html">除錯與調查<span>3</span></a></li><li><a href="../../c/4.html">Code Review<span>3</span></a></li><li><a href="../../c/5.html">設計與前端<span>13</span></a></li><li><a href="../../c/6.html">寫作與文件<span>11</span></a></li><li><a href="../../c/7.html">部署與發布<span>5</span></a></li><li><a href="../../c/8.html">安全護欄<span>6</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="../../c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>improve-codebase-architecture</h1>
+<p class="meta">Matt Pocock ｜ 架構與重構 ｜ <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">掃出可加深的模組，用 HTML 報告呈現再拷問</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: improve-codebase-architecture
+description: 掃描 codebase 找出可以加深的機會，用視覺化的 HTML 報告呈現，再針對你選的那一項進行 grilling。
+disable-model-invocation: true
+---
+
+# 改善 Codebase 架構
+
+找出架構上的摩擦，並提出**加深的機會（deepening opportunities）**：把淺模組變成深模組的重構。目標是好測試、好讓 AI 導覽。
+
+這個指令會參考專案的領域模型，並建立在共用的設計詞彙之上：
+
+- 用 Skill 工具呼叫 &quot;codebase-design&quot; 取得架構詞彙（**module**、**interface**、**depth**、**seam**、**adapter**、**leverage**、**locality**）和它的原則（刪除測試、「介面就是測試表面」、「一個 adapter = 假設性的 seam，兩個才是真的」）。每一條建議都要照原意使用這些術語，不要滑到「component」「service」「API」或「boundary」。
+- `GLOSSARY.md` 裡的領域語言會幫好的 seam 命名；`docs/adr/` 裡的 ADR 記錄了這個指令不該重新爭論的決策。
+
+## 流程
+
+### 1. 探索
+
+**掃描之前先界定範圍：YAGNI。** 加深一個 module 的回報，是讓之後對它的改動更容易，所以要把比較多的注意力放在 codebase 近期有改動的部分。看之前先決定*要看哪裡*：
+
+- 如果使用者指了方向（某個 module、某個子系統、某個痛點），就照做，跳過下面的推論。
+- 否則，往回翻一大段 commit 歷史（`git log --oneline`）找 codebase 的熱點，也就是一直出現的檔案和區域，讓這些路徑先吸引你的注意。如果改動很分散、沒有明顯的熱點，就把網撒大一點。
+
+先讀專案的領域詞彙表（`GLOSSARY.md`）和你要動的那一區的任何 ADR。
+
+然後啟動一個有全新 context window 的 sub-agent 去走過 codebase。不要照僵硬的啟發法；自然地探索，並記下你在哪裡感到摩擦：
+
+- 哪裡要理解一個概念，得在很多小 module 之間跳來跳去？
+- 哪裡的 module 很**淺**，介面幾乎跟實作一樣複雜？
+- 哪裡為了好測試而抽出了純函式，但真正的 bug 藏在它們怎麼被呼叫（沒有 **locality**）？
+- 哪裡緊耦合的 module 越過了它們的 seam 而外洩？
+- codebase 的哪些部分沒有測試，或是透過現在的介面很難測試？
+
+對任何你懷疑很淺的東西套用**刪除測試**：刪掉它會讓複雜度集中，還是只是搬家？「會，集中了」就是你要的訊號。
+
+### 2. 用 HTML 報告呈現候選項
+
+把一個獨立（self-contained）的 HTML 檔寫到作業系統的暫存目錄，這樣 repo 裡不會多出東西。從 `$TMPDIR` 解析暫存目錄，沒有就退回 `/tmp`（Windows 是 `%TEMP%`），寫到 `&lt;tmpdir&gt;/architecture-review-&lt;timestamp&gt;.html`，讓每次執行都是新檔。幫使用者打開它（Linux 用 `xdg-open &lt;path&gt;`，macOS 用 `open &lt;path&gt;`，Windows 用 `start &lt;path&gt;`），並告訴他絕對路徑。
+
+報告用 **Tailwind（透過 CDN）** 做版面和樣式，用 **Mermaid（透過 CDN）** 畫圖，適用在圖形/流程/時序能可靠傳達結構的地方。Mermaid 要跟手工做的 CSS/SVG 視覺搭配：關係是圖形狀的時候（呼叫圖、依賴、時序）用 Mermaid，想要更有編輯感的東西時（質量圖、剖面圖、塌縮動畫）就用手工的 div/SVG。每個候選項都要有**前後對照的視覺化**。要視覺化。
+
+每個候選項都渲染成一張卡片，包含：
+
+- **Files**：涉及哪些檔案/module
+- **Problem**：為什麼現在的架構造成摩擦
+- **Solution**：用白話描述會改什麼
+- **Benefits**：用 locality 和 leverage 來解釋，並說明測試會怎麼改善
+- **Before / After diagram**：並排、自己手繪，說明淺的狀況和加深的結果
+- **Recommendation strength**：`Strong`、`Worth exploring`、`Speculative` 三選一，用徽章呈現
+
+報告最後加一節 **Top recommendation**：你會先處理哪個候選項，以及為什麼。
+
+**領域用 GLOSSARY.md 的詞彙，架構用 `/codebase-design` 的詞彙。** 如果 `GLOSSARY.md` 定義了「Order」，就說「Order intake module」，不要說「FooBarHandler」，也不要說「Order service」。
+
+**ADR 衝突**：如果候選項跟既有的 ADR 矛盾，只有在摩擦嚴重到值得重新檢討那份 ADR 時才拿出來。在卡片上清楚標示（例如用警告 callout：_「contradicts ADR-0007, but worth reopening because…」_）。不要把 ADR 禁止的每一個理論上的重構都列出來。
+
+完整的 HTML 骨架、圖表模式和樣式指引見 [HTML-REPORT.md](HTML-REPORT.md)。
+
+現在**不要**提議介面。檔案寫好之後，問使用者：「Which of these would you like to explore?」
+
+### 3. Grilling 迴圈
+
+使用者選好候選項之後，用 Skill 工具呼叫 &quot;grilling&quot;，跟他一起走過決策樹：限制、依賴、加深後 module 的形狀、seam 後面放什麼、哪些測試可以留下來。
+
+決策一成形，副作用就當場發生；用 Skill 工具呼叫 &quot;domain-modeling&quot;，隨時讓領域模型保持最新：
+
+- **用 `GLOSSARY.md` 裡沒有的概念幫加深後的 module 命名？** 把這個術語加進 `GLOSSARY.md`。檔案不存在就延遲建立。
+- **對話中磨利了一個模糊的術語？** 當場更新 `GLOSSARY.md`。
+- **使用者用有承重作用的理由否決了候選項？** 提議寫 ADR，話術是：_「Want me to record this as an ADR so future architecture reviews don&#x27;t re-suggest it?」_ 只有當未來的探索者真的需要這個理由來避免重複建議同一件事時才提；暫時性的理由（「現在不值得」）和不言自明的理由就跳過。
+- **想探索加深後 module 的替代介面？** 用 Skill 工具呼叫 &quot;codebase-design&quot;，並使用它的 design-it-twice 平行 sub-agent 模式。</pre></section><section><h2>英文原文</h2><pre>---
+name: improve-codebase-architecture
+description: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
+disable-model-invocation: true
+---
+
+# Improve Codebase Architecture
+
+Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
+
+This command is _informed_ by the project&#x27;s domain model and built on a shared design vocabulary:
+
+- Call the Skill tool with &quot;codebase-design&quot; for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, &quot;the interface is the test surface&quot;, &quot;one adapter = hypothetical seam, two = real&quot;). Use these terms exactly in every suggestion, and don&#x27;t drift into &quot;component,&quot; &quot;service,&quot; &quot;API,&quot; or &quot;boundary.&quot;
+- The domain language in `GLOSSARY.md` gives names to good seams; ADRs in `docs/adr/` record decisions this command should not re-litigate.
+
+## Process
+
+### 1. Explore
+
+**Scope before you scan: YAGNI.** Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed. Decide *where* to look before you look:
+
+- If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
+- Otherwise, walk back a good stretch of the commit history (`git log --oneline`) to find the codebase&#x27;s hot spots, the files and areas that keep coming up, and let those paths pull your attention first. If the changes are scattered with no clear hot spot, widen the net.
+
+Read the project&#x27;s domain glossary (`GLOSSARY.md`) and any ADRs in the area you&#x27;re touching first.
+
+Then spawn a sub-agent with a fresh context window to walk the codebase. Don&#x27;t follow rigid heuristics; explore organically and note where you experience friction:
+
+- Where does understanding one concept require bouncing between many small modules?
+- Where are modules **shallow**, with an interface nearly as complex as the implementation?
+- Where have pure functions been extracted just for testability, but the real bugs hide in how they&#x27;re called (no **locality**)?
+- Where do tightly-coupled modules leak across their seams?
+- Which parts of the codebase are untested, or hard to test through their current interface?
+
+Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A &quot;yes, concentrates&quot; is the signal you want.
+
+### 2. Present candidates as an HTML report
+
+Write a self-contained HTML file to the OS temp directory so nothing lands in the repo. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (or `%TEMP%` on Windows), and write to `&lt;tmpdir&gt;/architecture-review-&lt;timestamp&gt;.html` so each run gets a fresh file. Open it for the user (`xdg-open &lt;path&gt;` on Linux, `open &lt;path&gt;` on macOS, `start &lt;path&gt;` on Windows) and tell them the absolute path.
+
+The report uses **Tailwind via CDN** for layout and styling, and **Mermaid via CDN** for diagrams where a graph/flow/sequence reliably communicates the structure. Mix Mermaid with hand-crafted CSS/SVG visuals: use Mermaid when relationships are graph-shaped (call graphs, dependencies, sequences), and hand-built divs/SVG when you want something more editorial (mass diagrams, cross-sections, collapse animations). Each candidate gets a **before/after visualisation**. Be visual.
+
+For each candidate, render a card with:
+
+- **Files**: which files/modules are involved
+- **Problem**: why the current architecture is causing friction
+- **Solution**: plain English description of what would change
+- **Benefits**: explained in terms of locality and leverage, and how tests would improve
+- **Before / After diagram**: side-by-side, custom-drawn, illustrating the shallowness and the deepening
+- **Recommendation strength**: one of `Strong`, `Worth exploring`, `Speculative`, rendered as a badge
+
+End the report with a **Top recommendation** section: which candidate you&#x27;d tackle first and why.
+
+**Use GLOSSARY.md vocabulary for the domain, and the `/codebase-design` vocabulary for the architecture.** If `GLOSSARY.md` defines &quot;Order,&quot; talk about &quot;the Order intake module,&quot; not &quot;the FooBarHandler,&quot; and not &quot;the Order service.&quot;
+
+**ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly in the card (e.g. a warning callout: _&quot;contradicts ADR-0007, but worth reopening because…&quot;_). Don&#x27;t list every theoretical refactor an ADR forbids.
+
+See [HTML-REPORT.md](HTML-REPORT.md) for the full HTML scaffold, diagram patterns, and styling guidance.
+
+Do NOT propose interfaces yet. After the file is written, ask the user: &quot;Which of these would you like to explore?&quot;
+
+### 3. Grilling loop
+
+Once the user picks a candidate, call the Skill tool with &quot;grilling&quot; to walk the decision tree with them: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+
+Side effects happen inline as decisions crystallize; call the Skill tool with &quot;domain-modeling&quot; to keep the domain model current as you go:
+
+- **Naming a deepened module after a concept not in `GLOSSARY.md`?** Add the term to `GLOSSARY.md`. Create the file lazily if it doesn&#x27;t exist.
+- **Sharpening a fuzzy term during the conversation?** Update `GLOSSARY.md` right there.
+- **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _&quot;Want me to record this as an ADR so future architecture reviews don&#x27;t re-suggest it?&quot;_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons (&quot;not worth it right now&quot;) and self-evident ones.
+- **Want to explore alternative interfaces for the deepened module?** Call the Skill tool with &quot;codebase-design&quot; and use its design-it-twice parallel sub-agent pattern.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

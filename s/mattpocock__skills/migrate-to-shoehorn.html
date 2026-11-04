@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>migrate-to-shoehorn｜Skill 寫法圖鑑</title>
+<meta name="description" content="把測試裡的 as 斷言換成 shoehorn">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>17</span></a></li><li><a href="../../c/1.html">架構與重構<span>3</span></a></li><li><a href="../../c/2.html">測試與驗證<span>10</span></a></li><li><a href="../../c/3.html">除錯與調查<span>3</span></a></li><li><a href="../../c/4.html">Code Review<span>3</span></a></li><li><a href="../../c/5.html">設計與前端<span>13</span></a></li><li><a href="../../c/6.html">寫作與文件<span>11</span></a></li><li><a href="../../c/7.html">部署與發布<span>5</span></a></li><li><a href="../../c/8.html">安全護欄<span>6</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="../../c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>migrate-to-shoehorn</h1>
+<p class="meta">Matt Pocock ｜ 測試與驗證 ｜ <a href="https://github.com/mattpocock/skills/blob/main/skills/misc/migrate-to-shoehorn/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把測試裡的 as 斷言換成 shoehorn</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: migrate-to-shoehorn
+description: 把測試檔從 `as` 型別斷言遷移到 @total-typescript/shoehorn。當使用者提到 shoehorn、想取代測試裡的 `as`，或需要部分的測試資料時使用。
+---
+
+# 遷移到 Shoehorn
+
+## 為什麼用 shoehorn？
+
+`shoehorn` 讓你在測試裡傳入部分資料，同時讓 TypeScript 滿意。它用型別安全的替代方案取代 `as` 斷言。
+
+**只用在測試程式碼。** 絕對不要在 production 程式碼裡用 shoehorn。
+
+測試裡用 `as` 的問題：
+
+- 我們被訓練成不要用它
+- 必須手動指定目標型別
+- 故意傳錯誤資料時要用雙重 as（`as unknown as Type`）
+
+## 安裝
+
+```bash
+npm i @total-typescript/shoehorn
+```
+
+## 遷移模式
+
+### 大型物件，只需要少數屬性
+
+Before：
+
+```ts
+type Request = {
+  body: { id: string };
+  headers: Record&lt;string, string&gt;;
+  cookies: Record&lt;string, string&gt;;
+  // ...20 more properties
+};
+
+it(&quot;gets user by id&quot;, () =&gt; {
+  // Only care about body.id but must fake entire Request
+  getUser({
+    body: { id: &quot;123&quot; },
+    headers: {},
+    cookies: {},
+    // ...fake all 20 properties
+  });
+});
+```
+
+After：
+
+```ts
+import { fromPartial } from &quot;@total-typescript/shoehorn&quot;;
+
+it(&quot;gets user by id&quot;, () =&gt; {
+  getUser(
+    fromPartial({
+      body: { id: &quot;123&quot; },
+    }),
+  );
+});
+```
+
+### `as Type` → `fromPartial()`
+
+Before：
+
+```ts
+getUser({ body: { id: &quot;123&quot; } } as Request);
+```
+
+After：
+
+```ts
+import { fromPartial } from &quot;@total-typescript/shoehorn&quot;;
+
+getUser(fromPartial({ body: { id: &quot;123&quot; } }));
+```
+
+### `as unknown as Type` → `fromAny()`
+
+Before：
+
+```ts
+getUser({ body: { id: 123 } } as unknown as Request); // wrong type on purpose
+```
+
+After：
+
+```ts
+import { fromAny } from &quot;@total-typescript/shoehorn&quot;;
+
+getUser(fromAny({ body: { id: 123 } }));
+```
+
+## 各自什麼時候用
+
+| 函式            | 使用情境                                           |
+| --------------- | -------------------------------------------------- |
+| `fromPartial()` | 傳入部分資料，而且仍然能通過型別檢查               |
+| `fromAny()`     | 傳入刻意錯誤的資料（保留自動完成）                 |
+| `fromExact()`   | 強制要完整物件（之後可以換成 fromPartial）         |
+
+## 工作流程
+
+1. **收集需求** - 問使用者：
+   - 哪些測試檔有 `as` 斷言造成問題？
+   - 他們是不是在處理大型物件，而且只有部分屬性重要？
+   - 他們是不是需要為了測試錯誤情況而傳入刻意錯誤的資料？
+
+2. **安裝並遷移**：
+   - [ ] 安裝：`npm i @total-typescript/shoehorn`
+   - [ ] 找出有 `as` 斷言的測試檔：`grep -r &quot; as [A-Z]&quot; --include=&quot;*.test.ts&quot; --include=&quot;*.spec.ts&quot;`
+   - [ ] 把 `as Type` 換成 `fromPartial()`
+   - [ ] 把 `as unknown as Type` 換成 `fromAny()`
+   - [ ] 從 `@total-typescript/shoehorn` 加上 import
+   - [ ] 跑型別檢查來驗證</pre></section><section><h2>英文原文</h2><pre>---
+name: migrate-to-shoehorn
+description: Migrate test files from `as` type assertions to @total-typescript/shoehorn. Use when user mentions shoehorn, wants to replace `as` in tests, or needs partial test data.
+---
+
+# Migrate to Shoehorn
+
+## Why shoehorn?
+
+`shoehorn` lets you pass partial data in tests while keeping TypeScript happy. It replaces `as` assertions with type-safe alternatives.
+
+**Test code only.** Never use shoehorn in production code.
+
+Problems with `as` in tests:
+
+- Trained not to use it
+- Must manually specify target type
+- Double-as (`as unknown as Type`) for intentionally wrong data
+
+## Install
+
+```bash
+npm i @total-typescript/shoehorn
+```
+
+## Migration patterns
+
+### Large objects with few needed properties
+
+Before:
+
+```ts
+type Request = {
+  body: { id: string };
+  headers: Record&lt;string, string&gt;;
+  cookies: Record&lt;string, string&gt;;
+  // ...20 more properties
+};
+
+it(&quot;gets user by id&quot;, () =&gt; {
+  // Only care about body.id but must fake entire Request
+  getUser({
+    body: { id: &quot;123&quot; },
+    headers: {},
+    cookies: {},
+    // ...fake all 20 properties
+  });
+});
+```
+
+After:
+
+```ts
+import { fromPartial } from &quot;@total-typescript/shoehorn&quot;;
+
+it(&quot;gets user by id&quot;, () =&gt; {
+  getUser(
+    fromPartial({
+      body: { id: &quot;123&quot; },
+    }),
+  );
+});
+```
+
+### `as Type` → `fromPartial()`
+
+Before:
+
+```ts
+getUser({ body: { id: &quot;123&quot; } } as Request);
+```
+
+After:
+
+```ts
+import { fromPartial } from &quot;@total-typescript/shoehorn&quot;;
+
+getUser(fromPartial({ body: { id: &quot;123&quot; } }));
+```
+
+### `as unknown as Type` → `fromAny()`
+
+Before:
+
+```ts
+getUser({ body: { id: 123 } } as unknown as Request); // wrong type on purpose
+```
+
+After:
+
+```ts
+import { fromAny } from &quot;@total-typescript/shoehorn&quot;;
+
+getUser(fromAny({ body: { id: 123 } }));
+```
+
+## When to use each
+
+| Function        | Use case                                           |
+| --------------- | -------------------------------------------------- |
+| `fromPartial()` | Pass partial data that still type-checks           |
+| `fromAny()`     | Pass intentionally wrong data (keeps autocomplete) |
+| `fromExact()`   | Force full object (swap with fromPartial later)    |
+
+## Workflow
+
+1. **Gather requirements** - ask user:
+   - What test files have `as` assertions causing problems?
+   - Are they dealing with large objects where only some properties matter?
+   - Do they need to pass intentionally wrong data for error testing?
+
+2. **Install and migrate**:
+   - [ ] Install: `npm i @total-typescript/shoehorn`
+   - [ ] Find test files with `as` assertions: `grep -r &quot; as [A-Z]&quot; --include=&quot;*.test.ts&quot; --include=&quot;*.spec.ts&quot;`
+   - [ ] Replace `as Type` with `fromPartial()`
+   - [ ] Replace `as unknown as Type` with `fromAny()`
+   - [ ] Add imports from `@total-typescript/shoehorn`
+   - [ ] Run type check to verify</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

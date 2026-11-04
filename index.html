@@ -1,38 +1,43 @@
----
-layout: default
----
-<h1>{{ site.title }}</h1>
-<p class="summary">{{ site.description }}。</p>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill 寫法圖鑑</title>
+<meta name="description" content="收集各家 Claude Code skill，中文翻譯和英文原文並排對照">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="c/0.html">規劃與釐清<span>17</span></a></li><li><a href="c/1.html">架構與重構<span>3</span></a></li><li><a href="c/2.html">測試與驗證<span>10</span></a></li><li><a href="c/3.html">除錯與調查<span>3</span></a></li><li><a href="c/4.html">Code Review<span>3</span></a></li><li><a href="c/5.html">設計與前端<span>13</span></a></li><li><a href="c/6.html">寫作與文件<span>11</span></a></li><li><a href="c/7.html">部署與發布<span>5</span></a></li><li><a href="c/8.html">安全護欄<span>6</span></a></li><li><a href="c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>Skill 寫法圖鑑</h1>
+<p class="summary">收集各家 Claude Code skill，中文翻譯和英文原文並排對照，目前收錄 103 份。</p>
 <input id="q" class="search" type="search" placeholder="搜尋 skill、作者或用途" autocomplete="off">
-{% assign skills = site.pages | where_exp: "p", "p.category" %}
-{% for cat in site.skill_categories %}
-{% assign items = skills | where: "category", cat | sort: "skill" %}
-{% if items.size > 0 %}
-<section class="group">
-<h2 class="cat">{{ cat }}</h2>
-<div class="cards">
-  {% for p in items %}
-  <a href="{{ p.url | relative_url }}"><strong>{{ p.skill }}</strong><small>{{ p.author }}</small><p>{{ p.summary }}</p></a>
-  {% endfor %}
-</div>
-</section>
-{% endif %}
-{% endfor %}
-<p id="none" class="summary" hidden>找不到符合的 skill。</p>
+<div id="results"></div>
+<div id="browse"><h2 class="cat">分類</h2><div class="cards compact"><a href="c/0.html"><strong>規劃與釐清</strong><small>17 份</small></a><a href="c/1.html"><strong>架構與重構</strong><small>3 份</small></a><a href="c/2.html"><strong>測試與驗證</strong><small>10 份</small></a><a href="c/3.html"><strong>除錯與調查</strong><small>3 份</small></a><a href="c/4.html"><strong>Code Review</strong><small>3 份</small></a><a href="c/5.html"><strong>設計與前端</strong><small>13 份</small></a><a href="c/6.html"><strong>寫作與文件</strong><small>11 份</small></a><a href="c/7.html"><strong>部署與發布</strong><small>5 份</small></a><a href="c/8.html"><strong>安全護欄</strong><small>6 份</small></a><a href="c/9.html"><strong>瀏覽器自動化</strong><small>5 份</small></a><a href="c/10.html"><strong>Office 與 PDF</strong><small>1 份</small></a><a href="c/11.html"><strong>Cloudflare 平台</strong><small>11 份</small></a><a href="c/19.html"><strong>Agent 與工作流</strong><small>5 份</small></a><a href="c/20.html"><strong>設定與維護</strong><small>10 份</small></a></div></div>
 <script>
-// ponytail: 純文字比對，上千筆再考慮索引
-const q = document.getElementById('q');
-q.addEventListener('input', () => {
+// ponytail: 全部載入後純文字比對，幾千筆內夠快
+let data = null;
+const q = document.getElementById('q'), out = document.getElementById('results'), browse = document.getElementById('browse');
+const esc = t => t.replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[ch]);
+q.addEventListener('focus', async () => { data ??= await (await fetch('search.json')).json(); }, { once: true });
+q.addEventListener('input', async () => {
+  data ??= await (await fetch('search.json')).json();
   const t = q.value.trim().toLowerCase();
-  let any = false;
-  document.querySelectorAll('.group').forEach(g => {
-    let n = 0;
-    g.querySelectorAll('.cards a').forEach(a => {
-      const hit = !t || a.textContent.toLowerCase().includes(t);
-      a.hidden = !hit; if (hit) n++;
-    });
-    g.hidden = n === 0; if (n) any = true;
-  });
-  document.getElementById('none').hidden = any;
+  browse.hidden = !!t;
+  if (!t) { out.innerHTML = ''; return; }
+  const hits = data.filter(s => (s.n + ' ' + s.a + ' ' + s.d + ' ' + s.c).toLowerCase().includes(t));
+  out.innerHTML = `<p class="summary">${hits.length} 筆</p><div class="cards">` + hits.slice(0, 200).map(s =>
+    `<a href="${s.u}"><strong>${esc(s.n)}</strong><small>${esc(s.a)} ｜ ${esc(s.c)}</small><p>${esc(s.d)}</p></a>`).join('') + '</div>';
 });
 </script>
+  </main>
+</div>
+</body>
+</html>

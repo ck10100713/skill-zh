@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>domain-modeling｜Skill 寫法圖鑑</title>
+<meta name="description" content="主動磨利領域術語，維護詞彙表和 ADR">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>17</span></a></li><li><a href="../../c/1.html">架構與重構<span>3</span></a></li><li><a href="../../c/2.html">測試與驗證<span>10</span></a></li><li><a href="../../c/3.html">除錯與調查<span>3</span></a></li><li><a href="../../c/4.html">Code Review<span>3</span></a></li><li><a href="../../c/5.html">設計與前端<span>13</span></a></li><li><a href="../../c/6.html">寫作與文件<span>11</span></a></li><li><a href="../../c/7.html">部署與發布<span>5</span></a></li><li><a href="../../c/8.html">安全護欄<span>6</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="../../c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>domain-modeling</h1>
+<p class="meta">Matt Pocock ｜ 規劃與釐清 ｜ <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">主動磨利領域術語，維護詞彙表和 ADR</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: domain-modeling
+description: 建立並磨利專案的領域模型。當討論 codebase 的術語、撰寫或編輯 GLOSSARY.md，或記錄或編輯 ADR 時使用。
+---
+
+# 領域建模
+
+設計的同時，主動建立並磨利專案的領域模型。這是*主動*的紀律：挑戰用語、發明邊界情境，並且在詞彙和決策一成形時就寫下來。（只是*讀* `GLOSSARY.md` 來取得詞彙不算這個 skill：那是任何 skill 都能做的一行習慣。這個 skill 是用在你要改動模型的時候，不是單純拿來用而已。）
+
+## 檔案結構
+
+大部分的 repo 只有單一 context：
+
+```
+/
+├── GLOSSARY.md
+├── docs/
+│   └── adr/
+│       ├── 0001-event-sourced-orders.md
+│       └── 0002-postgres-for-write-model.md
+└── src/
+```
+
+如果根目錄有 `GLOSSARY-MAP.md`，代表這個 repo 有多個 context。這份 map 會指出每一個 context 放在哪：
+
+```
+/
+├── GLOSSARY-MAP.md
+├── docs/
+│   └── adr/                          ← 全系統的決策
+├── src/
+│   ├── ordering/
+│   │   ├── GLOSSARY.md
+│   │   └── docs/adr/                 ← 特定 context 的決策
+│   └── billing/
+│       ├── GLOSSARY.md
+│       └── docs/adr/
+```
+
+檔案要延遲建立：有東西可寫才建。如果沒有 `GLOSSARY.md`，等第一個術語釐清時再建。如果沒有 `docs/adr/`，等第一份 ADR 需要時再建。
+
+## session 進行中
+
+### 對照詞彙表挑戰用語
+
+當使用者用的術語跟 `GLOSSARY.md` 裡既有的語言衝突，馬上指出來。「你的詞彙表把『cancellation』定義成 X，但你好像是指 Y。到底是哪個？」
+
+### 磨利模糊的語言
+
+當使用者用了模糊或一詞多義的術語，就提出一個精確的標準用語。「你說的『account』：是指 Customer 還是 User？這兩個是不同的東西。」
+
+### 討論具體情境
+
+討論領域關係時，用具體情境去壓力測試。發明能戳到邊界情況的情境，逼使用者把概念之間的界線講精確。
+
+### 跟程式碼對照
+
+當使用者講某個東西怎麼運作，檢查程式碼是否同意。如果發現矛盾，就拿出來講：「你的程式碼會取消整張 Order，但你剛剛說可以部分取消。哪個才對？」
+
+### 當場更新 GLOSSARY.md
+
+術語一釐清，就在當下更新 `GLOSSARY.md`。不要攢著批次處理：發生時就記。格式照 [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md)。
+
+`GLOSSARY.md` 要完全沒有實作細節。不要把 `GLOSSARY.md` 當成 spec、草稿紙，或實作決策的存放處。它就是詞彙表，沒有別的。
+
+### 少提 ADR
+
+只有在以下三點都成立時，才提議建立 ADR：
+
+1. **難以回頭**：之後改變主意的成本很可觀
+2. **沒有 context 會覺得意外**：未來的讀者會想「他們當初為什麼這樣做？」
+3. **是真正取捨的結果**：確實有其他選項，而你是基於特定理由選了其中一個
+
+三點缺任何一點，就跳過 ADR。格式照 [ADR-FORMAT.md](./ADR-FORMAT.md)。</pre></section><section><h2>英文原文</h2><pre>---
+name: domain-modeling
+description: Build and sharpen a project&#x27;s domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, or recording or editing an ADR.
+---
+
+# Domain Modeling
+
+Actively build and sharpen the project&#x27;s domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `GLOSSARY.md` for vocabulary is not this skill: that&#x27;s a one-line habit any skill can do. This skill is for when you&#x27;re changing the model, not just consuming it.)
+
+## File structure
+
+Most repos have a single context:
+
+```
+/
+├── GLOSSARY.md
+├── docs/
+│   └── adr/
+│       ├── 0001-event-sourced-orders.md
+│       └── 0002-postgres-for-write-model.md
+└── src/
+```
+
+If a `GLOSSARY-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
+
+```
+/
+├── GLOSSARY-MAP.md
+├── docs/
+│   └── adr/                          ← system-wide decisions
+├── src/
+│   ├── ordering/
+│   │   ├── GLOSSARY.md
+│   │   └── docs/adr/                 ← context-specific decisions
+│   └── billing/
+│       ├── GLOSSARY.md
+│       └── docs/adr/
+```
+
+Create files lazily: only when you have something to write. If no `GLOSSARY.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
+
+## During the session
+
+### Challenge against the glossary
+
+When the user uses a term that conflicts with the existing language in `GLOSSARY.md`, call it out immediately. &quot;Your glossary defines &#x27;cancellation&#x27; as X, but you seem to mean Y. Which is it?&quot;
+
+### Sharpen fuzzy language
+
+When the user uses vague or overloaded terms, propose a precise canonical term. &quot;You&#x27;re saying &#x27;account&#x27;: do you mean the Customer or the User? Those are different things.&quot;
+
+### Discuss concrete scenarios
+
+When domain relationships are being discussed, stress-test them with specific scenarios. Invent scenarios that probe edge cases and force the user to be precise about the boundaries between concepts.
+
+### Cross-reference with code
+
+When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: &quot;Your code cancels entire Orders, but you just said partial cancellation is possible. Which is right?&quot;
+
+### Update GLOSSARY.md inline
+
+When a term is resolved, update `GLOSSARY.md` right there. Don&#x27;t batch these up: capture them as they happen. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+
+`GLOSSARY.md` should be totally devoid of implementation details. Do not treat `GLOSSARY.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+
+### Offer ADRs sparingly
+
+Only offer to create an ADR when all three are true:
+
+1. **Hard to reverse**: the cost of changing your mind later is meaningful
+2. **Surprising without context**: a future reader will wonder &quot;why did they do it this way?&quot;
+3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
+
+If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

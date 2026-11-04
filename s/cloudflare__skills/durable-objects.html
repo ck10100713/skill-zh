@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>durable-objects｜Skill 寫法圖鑑</title>
+<meta name="description" content="建置與審查 Durable Objects 的狀態與協調程式碼">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>17</span></a></li><li><a href="../../c/1.html">架構與重構<span>3</span></a></li><li><a href="../../c/2.html">測試與驗證<span>10</span></a></li><li><a href="../../c/3.html">除錯與調查<span>3</span></a></li><li><a href="../../c/4.html">Code Review<span>3</span></a></li><li><a href="../../c/5.html">設計與前端<span>13</span></a></li><li><a href="../../c/6.html">寫作與文件<span>11</span></a></li><li><a href="../../c/7.html">部署與發布<span>5</span></a></li><li><a href="../../c/8.html">安全護欄<span>6</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>5</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>1</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>5</span></a></li><li><a href="../../c/20.html">設定與維護<span>10</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>durable-objects</h1>
+<p class="meta">Cloudflare ｜ Cloudflare 平台 ｜ <a href="https://github.com/cloudflare/skills/blob/main/skills/durable-objects/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">建置與審查 Durable Objects 的狀態與協調程式碼</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: durable-objects
+description: 建置、除錯或審查用於持久狀態與協調的 Cloudflare Durable Objects 程式碼。
+---
+
+# Durable Objects
+
+用 Durable Objects 在 Cloudflare 的 edge 上建置有狀態、需要協調的應用程式。
+
+## Retrieval Sources
+
+你對 Durable Objects API 和設定的知識可能已經過時。任何 Durable Objects 的任務，都要**優先用檢索，不要靠預訓練記憶**。
+
+| 資源 | URL |
+|----------|-----|
+| Docs | https://developers.cloudflare.com/durable-objects/index.md |
+| API Reference | https://developers.cloudflare.com/durable-objects/api/index.md |
+| Best Practices | https://developers.cloudflare.com/durable-objects/best-practices/index.md |
+| Examples | https://developers.cloudflare.com/durable-objects/examples/index.md |
+| Roles and permissions | https://developers.cloudflare.com/workers/authorization/durable-objects/index.md |
+
+實作功能時，去抓對應的文件頁面。
+
+## When to Use
+
+- 建立新的 Durable Object class，用於有狀態的協調
+- 實作 RPC method、alarm 或 WebSocket handler
+- 審查既有的 DO 程式碼是否符合最佳實務
+- 為 DO binding 和 migration 設定 wrangler.jsonc/toml
+- 用 Cloudflare 的 Vitest 整合撰寫測試
+- 設計 sharding 策略和父子關係
+
+## Reference Documentation
+
+- `./references/rules.md` - 核心規則、儲存、並行、RPC、alarm
+- [Testing reference](./references/testing.md) - 目前的 Vitest 文件、遷移選項和測試選擇
+- [Workers reference](./references/workers.md) - Workers handler、型別、設定、tracing 和本機除錯
+
+搜尋關鍵字：`blockConcurrencyWhile`、`idFromName`、`getByName`、`setAlarm`、`sql.exec`
+
+## Core Principles
+
+### Use Durable Objects For
+
+| 需求 | 範例 |
+|------|---------|
+| 協調 | 聊天室、多人遊戲、協作文件 |
+| 強一致性 | 庫存、預約系統、回合制遊戲 |
+| 每個實體各自的儲存 | 多租戶 SaaS、每個使用者的資料 |
+| 持久連線 | WebSocket、即時通知 |
+| 每個實體各自的排程工作 | 訂閱續約、遊戲逾時 |
+
+### Do NOT Use For
+
+- 無狀態的 request 處理（用一般的 Workers）
+- 需要最大程度全球分散的情況
+- 大量彼此獨立的 fan-out request
+
+## Quick Reference
+
+### Wrangler Configuration
+
+```jsonc
+// wrangler.jsonc
+{
+  &quot;durable_objects&quot;: {
+    &quot;bindings&quot;: [{ &quot;name&quot;: &quot;MY_DO&quot;, &quot;class_name&quot;: &quot;MyDurableObject&quot; }]
+  },
+  &quot;migrations&quot;: [{ &quot;tag&quot;: &quot;v1&quot;, &quot;new_sqlite_classes&quot;: [&quot;MyDurableObject&quot;] }]
+}
+```
+
+### Basic Durable Object Pattern
+
+```typescript
+import { DurableObject } from &quot;cloudflare:workers&quot;;
+
+export interface Env {
+  MY_DO: DurableObjectNamespace&lt;MyDurableObject&gt;;
+}
+
+export class MyDurableObject extends DurableObject&lt;Env&gt; {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    ctx.blockConcurrencyWhile(async () =&gt; {
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS items (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          data TEXT NOT NULL
+        )
+      `);
+    });
+  }
+
+  async addItem(data: string): Promise&lt;number&gt; {
+    const result = this.ctx.storage.sql.exec&lt;{ id: number }&gt;(
+      &quot;INSERT INTO items (data) VALUES (?) RETURNING id&quot;,
+      data
+    );
+    return result.one().id;
+  }
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise&lt;Response&gt; {
+    const stub = env.MY_DO.getByName(&quot;my-instance&quot;);
+    const id = await stub.addItem(&quot;hello&quot;);
+    return Response.json({ id });
+  },
+};
+```
+
+## Critical Rules
+
+1. **圍繞協調單元（coordination atom）建模** - 每個聊天室／遊戲／使用者各一個 DO，不要只有一個全域 DO
+2. **用 `getByName()` 做確定性的 routing** - 輸入相同 = 同一個 DO instance
+3. **用 SQLite 儲存** - 在 migration 裡設定 `new_sqlite_classes`
+4. **在 constructor 裡初始化** - `blockConcurrencyWhile()` 只用在 schema 設定
+5. **用 RPC method** - 不要用 fetch() handler（compatibility date &gt;= 2024-04-03）
+6. **先持久化，再快取** - 更新記憶體中的狀態之前，一定要先寫進 storage
+7. **每個 DO 只有一個 alarm** - `setAlarm()` 會取代既有的 alarm
+
+## Authorization
+
+Durable Objects 沒有獨立的角色或權限；存取權限跟著實作它們的 Worker 走。授予 observability 或 Data Studio 存取之前，先檢索目前的 [Durable Objects authorization 指引](https://developers.cloudflare.com/workers/authorization/durable-objects/index.md)，並把 Workers 角色的範圍限定在預定的 Worker 或 Workers 產品。
+
+## Anti-Patterns (NEVER)
+
+- 單一全域 DO 處理所有 request（瓶頸）
+- 每個 request 都用 `blockConcurrencyWhile()`（拖垮吞吐量）
+- 只把關鍵狀態存在記憶體裡（被驅逐或當機就消失）
+- 在相關的 storage 寫入之間用 `await`（破壞原子性）
+- 讓 `blockConcurrencyWhile()` 橫跨 `fetch()` 或外部 I/O
+
+## Stub Creation
+
+```typescript
+// 確定性的，大部分情況優先用這個
+const stub = env.MY_DO.getByName(&quot;room-123&quot;);
+
+// 從既有的 ID 字串
+const id = env.MY_DO.idFromString(storedIdString);
+const stub = env.MY_DO.get(id);
+
+// 新的唯一 ID，對應關係要存在外部
+const id = env.MY_DO.newUniqueId();
+const stub = env.MY_DO.get(id);
+```
+
+## Storage Operations
+
+```typescript
+// SQL（同步，建議使用）
+this.ctx.storage.sql.exec(&quot;INSERT INTO t (c) VALUES (?)&quot;, value);
+const rows = this.ctx.storage.sql.exec&lt;Row&gt;(&quot;SELECT * FROM t&quot;).toArray();
+
+// KV（非同步）
+await this.ctx.storage.put(&quot;key&quot;, value);
+const val = await this.ctx.storage.get&lt;Type&gt;(&quot;key&quot;);
+```
+
+## Alarms
+
+```typescript
+// 排程（會取代既有的）
+await this.ctx.storage.setAlarm(Date.now() + 60_000);
+
+// Handler
+async alarm(): Promise&lt;void&gt; {
+  // 處理排程的工作
+  // 也可以重新排程：await this.ctx.storage.setAlarm(...)
+}
+
+// 取消
+await this.ctx.storage.deleteAlarm();
+```
+
+## Testing
+
+設定測試套件或撰寫 Durable Object 測試之前，先讀 [testing reference](./references/testing.md)。它會帶你到目前的設定、API 和範例，並指出該涵蓋哪些行為。
+
+## Skill feedback
+
+如果使用者反映這個 skill 給了錯誤或過時的指引，或是缺了資訊，就去讀 [references/skill-feedback.md](references/skill-feedback.md)。</pre></section><section><h2>英文原文</h2><pre>---
+name: durable-objects
+description: Build, debug, or review Cloudflare Durable Objects code for persistent state and coordination.
+---
+
+# Durable Objects
+
+Build stateful, coordinated applications on Cloudflare&#x27;s edge using Durable Objects.
+
+## Retrieval Sources
+
+Your knowledge of Durable Objects APIs and configuration may be outdated. **Prefer retrieval over pre-training** for any Durable Objects task.
+
+| Resource | URL |
+|----------|-----|
+| Docs | https://developers.cloudflare.com/durable-objects/index.md |
+| API Reference | https://developers.cloudflare.com/durable-objects/api/index.md |
+| Best Practices | https://developers.cloudflare.com/durable-objects/best-practices/index.md |
+| Examples | https://developers.cloudflare.com/durable-objects/examples/index.md |
+| Roles and permissions | https://developers.cloudflare.com/workers/authorization/durable-objects/index.md |
+
+Fetch the relevant doc page when implementing features.
+
+## When to Use
+
+- Creating new Durable Object classes for stateful coordination
+- Implementing RPC methods, alarms, or WebSocket handlers
+- Reviewing existing DO code for best practices
+- Configuring wrangler.jsonc/toml for DO bindings and migrations
+- Writing tests with Cloudflare’s Vitest integration
+- Designing sharding strategies and parent-child relationships
+
+## Reference Documentation
+
+- `./references/rules.md` - Core rules, storage, concurrency, RPC, alarms
+- [Testing reference](./references/testing.md) - Current Vitest documentation, migration choices, and test selection
+- [Workers reference](./references/workers.md) - Workers handlers, types, configuration, tracing, and local debugging
+
+Search: `blockConcurrencyWhile`, `idFromName`, `getByName`, `setAlarm`, `sql.exec`
+
+## Core Principles
+
+### Use Durable Objects For
+
+| Need | Example |
+|------|---------|
+| Coordination | Chat rooms, multiplayer games, collaborative docs |
+| Strong consistency | Inventory, booking systems, turn-based games |
+| Per-entity storage | Multi-tenant SaaS, per-user data |
+| Persistent connections | WebSockets, real-time notifications |
+| Scheduled work per entity | Subscription renewals, game timeouts |
+
+### Do NOT Use For
+
+- Stateless request handling (use plain Workers)
+- Maximum global distribution needs
+- High fan-out independent requests
+
+## Quick Reference
+
+### Wrangler Configuration
+
+```jsonc
+// wrangler.jsonc
+{
+  &quot;durable_objects&quot;: {
+    &quot;bindings&quot;: [{ &quot;name&quot;: &quot;MY_DO&quot;, &quot;class_name&quot;: &quot;MyDurableObject&quot; }]
+  },
+  &quot;migrations&quot;: [{ &quot;tag&quot;: &quot;v1&quot;, &quot;new_sqlite_classes&quot;: [&quot;MyDurableObject&quot;] }]
+}
+```
+
+### Basic Durable Object Pattern
+
+```typescript
+import { DurableObject } from &quot;cloudflare:workers&quot;;
+
+export interface Env {
+  MY_DO: DurableObjectNamespace&lt;MyDurableObject&gt;;
+}
+
+export class MyDurableObject extends DurableObject&lt;Env&gt; {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    ctx.blockConcurrencyWhile(async () =&gt; {
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS items (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          data TEXT NOT NULL
+        )
+      `);
+    });
+  }
+
+  async addItem(data: string): Promise&lt;number&gt; {
+    const result = this.ctx.storage.sql.exec&lt;{ id: number }&gt;(
+      &quot;INSERT INTO items (data) VALUES (?) RETURNING id&quot;,
+      data
+    );
+    return result.one().id;
+  }
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise&lt;Response&gt; {
+    const stub = env.MY_DO.getByName(&quot;my-instance&quot;);
+    const id = await stub.addItem(&quot;hello&quot;);
+    return Response.json({ id });
+  },
+};
+```
+
+## Critical Rules
+
+1. **Model around coordination atoms** - One DO per chat room/game/user, not one global DO
+2. **Use `getByName()` for deterministic routing** - Same input = same DO instance
+3. **Use SQLite storage** - Configure `new_sqlite_classes` in migrations
+4. **Initialize in constructor** - Use `blockConcurrencyWhile()` for schema setup only
+5. **Use RPC methods** - Not fetch() handler (compatibility date &gt;= 2024-04-03)
+6. **Persist first, cache second** - Always write to storage before updating in-memory state
+7. **One alarm per DO** - `setAlarm()` replaces any existing alarm
+
+## Authorization
+
+Durable Objects do not have separate roles or permissions; access follows the Worker that implements them. Retrieve the current [Durable Objects authorization guidance](https://developers.cloudflare.com/workers/authorization/durable-objects/index.md) before granting observability or Data Studio access, and scope the Workers role to the intended Worker or Workers product.
+
+## Anti-Patterns (NEVER)
+
+- Single global DO handling all requests (bottleneck)
+- Using `blockConcurrencyWhile()` on every request (kills throughput)
+- Storing critical state only in memory (lost on eviction/crash)
+- Using `await` between related storage writes (breaks atomicity)
+- Holding `blockConcurrencyWhile()` across `fetch()` or external I/O
+
+## Stub Creation
+
+```typescript
+// Deterministic - preferred for most cases
+const stub = env.MY_DO.getByName(&quot;room-123&quot;);
+
+// From existing ID string
+const id = env.MY_DO.idFromString(storedIdString);
+const stub = env.MY_DO.get(id);
+
+// New unique ID - store mapping externally
+const id = env.MY_DO.newUniqueId();
+const stub = env.MY_DO.get(id);
+```
+
+## Storage Operations
+
+```typescript
+// SQL (synchronous, recommended)
+this.ctx.storage.sql.exec(&quot;INSERT INTO t (c) VALUES (?)&quot;, value);
+const rows = this.ctx.storage.sql.exec&lt;Row&gt;(&quot;SELECT * FROM t&quot;).toArray();
+
+// KV (async)
+await this.ctx.storage.put(&quot;key&quot;, value);
+const val = await this.ctx.storage.get&lt;Type&gt;(&quot;key&quot;);
+```
+
+## Alarms
+
+```typescript
+// Schedule (replaces existing)
+await this.ctx.storage.setAlarm(Date.now() + 60_000);
+
+// Handler
+async alarm(): Promise&lt;void&gt; {
+  // Process scheduled work
+  // Optionally reschedule: await this.ctx.storage.setAlarm(...)
+}
+
+// Cancel
+await this.ctx.storage.deleteAlarm();
+```
+
+## Testing
+
+Read the [testing reference](./references/testing.md) before configuring a suite or writing Durable Object tests. It routes to current setup, APIs, and examples and identifies the behavior to cover.
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [references/skill-feedback.md](references/skill-feedback.md).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>
