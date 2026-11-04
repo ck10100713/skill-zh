@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-stocktake｜Skill 寫法圖鑑</title>
+<meta name="description" content="稽核所有 skill 和指令的品質，分 Quick Scan 與完整盤點">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>skill-stocktake</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/skill-stocktake/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">稽核所有 skill 和指令的品質，分 Quick Scan 與完整盤點</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: skill-stocktake
+description: &quot;稽核 Claude skill 和指令的品質時使用。支援 Quick Scan（只看有變動的 skill）和 Full Stocktake 兩種模式，以依序執行的 subagent 分批評估。&quot;
+metadata:
+  origin: ECC
+---
+
+# skill-stocktake
+
+Slash command（`/skill-stocktake`），用品質檢查清單加上 AI 的整體判斷，稽核所有 Claude skill 和指令。支援兩種模式：針對最近有變動的 skill 做 Quick Scan，以及做完整檢視的 Full Stocktake。
+
+## 範圍
+
+這個指令的目標路徑**相對於執行它的目錄**：
+
+| 路徑 | 說明 |
+|------|-------------|
+| `~/.claude/skills/` | 全域 skill（所有專案） |
+| `{cwd}/.claude/skills/` | 專案層級 skill（目錄存在的話） |
+
+**階段 1 一開始，指令會明確列出找到並掃描了哪些路徑。**
+
+名為 `.trash` 的目錄在兩種掃描模式中都會被排除：已封存的 skill 不算現行清單的一部分。如果較舊的 `results.json` 裡有 `.trash` 項目，先用下面的快取初始化方式開始新的 Full Stocktake，再恢復 Quick Scan。一般的儲存只會合併項目，不會移除已封存的紀錄。
+
+### 指定特定專案
+
+要納入專案層級的 skill，從該專案的根目錄執行：
+
+```bash
+cd ~/path/to/my-project
+/skill-stocktake
+```
+
+如果專案沒有 `.claude/skills/` 目錄，就只會評估全域的 skill 和指令。
+
+## 模式
+
+| 模式 | 觸發方式 | 耗時 |
+|------|---------|---------|
+| Quick Scan | `results.json` 存在（預設） | 5–10 分鐘 |
+| Full Stocktake | `results.json` 不存在，或 `/skill-stocktake full` | 20–30 分鐘 |
+
+這些 shell script 需要 `PATH` 上有 Bash、Node.js 和 `jq`。
+
+**結果快取：** `~/.claude/skills/skill-stocktake/results.json`
+
+## Quick Scan 流程
+
+只重新評估上次執行後有變動的 skill（5–10 分鐘）。
+
+1. 讀取 `~/.claude/skills/skill-stocktake/results.json`
+2. 執行：`bash ~/.claude/skills/skill-stocktake/scripts/quick-diff.sh \
+         ~/.claude/skills/skill-stocktake/results.json`
+   （專案目錄會從 `$PWD/.claude/skills` 自動偵測；只有需要時才明確傳入）
+3. 如果輸出是 `[]`：回報「No changes since last run.」然後停止
+4. 只對那些有變動的檔案，用同樣的階段 2 準則重新評估
+5. 沒有變動的 skill，沿用先前的結果
+6. 只輸出差異
+7. 執行：`bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+         ~/.claude/skills/skill-stocktake/results.json &lt;&lt;&lt; &quot;$EVAL_RESULTS&quot;`
+
+## Full Stocktake 流程
+
+### 階段 1：盤點
+
+把這整個區塊放在**同一次 Bash 呼叫**中執行。它會印出給 agent 看的盤點結果，而且只有在沒有未完成的執行可以恢復時，才會初始化新的完整執行：
+
+```bash
+(
+  set -euo pipefail
+  SCAN_JSON=$(bash ~/.claude/skills/skill-stocktake/scripts/scan.sh)
+  printf &#x27;%s\n&#x27; &quot;$SCAN_JSON&quot;
+  RESULTS_JSON=~/.claude/skills/skill-stocktake/results.json
+
+  CACHE_STATUS=&quot;&quot;
+  if [[ -f &quot;$RESULTS_JSON&quot; ]]; then
+    CACHE_STATUS=$(jq -r &#x27;.batch_progress.status // &quot;&quot;&#x27; &quot;$RESULTS_JSON&quot;)
+  fi
+  if [[ &quot;$CACHE_STATUS&quot; == &quot;in_progress&quot; ]]; then
+    RESUMED_RESULTS=$(jq --slurpfile saved &quot;$RESULTS_JSON&quot; &#x27;
+      . as $inventory | $saved[0]
+      | .skills = (.skills | to_entries
+        | map(.key = (.value.path // .key))
+        | map(select(. as $entry
+          | $entry.value.mtime != null
+            and any($inventory.skills[];
+              .path == $entry.key and .mtime == $entry.value.mtime)))
+        | from_entries)
+      | .mode = &quot;full&quot;
+      | .batch_progress = {
+          total: ($inventory.skills | length),
+          evaluated: (.skills | length), status: &quot;in_progress&quot;
+        }
+    &#x27; &lt;&lt;&lt; &quot;$SCAN_JSON&quot;)
+    bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+      &quot;$RESULTS_JSON&quot; --replace &lt;&lt;&lt; &quot;$RESUMED_RESULTS&quot;
+  else
+    INITIAL_RESULTS=$(printf &#x27;%s\n&#x27; &quot;$SCAN_JSON&quot; | jq &#x27;{
+      mode: &quot;full&quot;, skills: {},
+      batch_progress: {total: (.skills | length), evaluated: 0, status: &quot;in_progress&quot;}
+    }&#x27;)
+    bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+      &quot;$RESULTS_JSON&quot; --replace &lt;&lt;&lt; &quot;$INITIAL_RESULTS&quot;
+  fi
+)
+```
+
+這支 script 會列舉 skill 檔案、擷取 frontmatter，並收集 UTC 的 mtime。專案目錄會從 `$PWD/.claude/skills` 自動偵測；只有需要時才明確傳入。把 script 輸出的掃描摘要和盤點表呈現出來：
+
+```
+Scanning:
+  ✓ ~/.claude/skills/         (17 files)
+  ✗ {cwd}/.claude/skills/    (not found — global skills only)
+```
+
+| Skill | 7d use | 30d use | Description |
+|-------|--------|---------|-------------|
+
+使用次數來自選用的 `~/.claude/observations.jsonl` 檔案（可用 `SKILL_STOCKTAKE_OBSERVATIONS` 覆寫），Claude Code 預設不會建立它。檔案不存在時，`use_7d` 和 `use_30d` 是 JSON `null`；在盤點表和摘要表中要顯示成 **unmeasured**。數值 `0` 表示檔案存在，但那段期間內沒有符合的 Read 觀測紀錄。缺少使用資料絕對不能當作淘汰 skill 的證據。
+
+`--replace` 會寫入完整的快取快照。新的執行從空的評估開始；恢復的執行則只在某個路徑仍然有效、而且儲存的非 null mtime 跟最新盤點相符時，才保留儲存的評估。有變動的 skill 和沒有 mtime 的項目需要重新評估。它會移除已封存/已刪除的項目，而且即使沒有新的批次要跑，也會刷新進度計數。既有以名稱為 key 的項目，會依儲存的 `path` 正規化。恢復時絕對不要使用空的初始化 payload。後續的分段、完成更新和 Quick Scan 都必須省略 `--replace`，這樣才會合併進目前的執行，不會丟掉先前的結果。
+
+### 階段 2：品質評估
+
+啟動一個 Agent 工具的 subagent（**general-purpose agent**），把階段 1 實際輸出的 JSON 和下面的檢查清單交給它。要把盤點的值直接複製進 prompt 裡；shell 變數不會帶進 Agent 呼叫。要附上完整的盤點內容供重疊檢查用，並明確指出目前這一批要評估的路徑。不要送出字面上的盤點或檢查清單 placeholder。
+
+Subagent 會讀取每個分配到的 skill、套用檢查清單，並回傳一個 JSON 物件，其中的 `skills` map 以盤點的路徑為 key。每個項目包含它的 `path`、掃描到的 `mtime`、`verdict` 和獨立完整的 `reason`。所有批次都要使用相同的路徑 key，這樣合併結果時才不會讓同名的不同 skill 互相覆蓋。
+
+**分段建議：** 每次 subagent 呼叫處理約 20 個 skill，讓 context 維持在可管理的範圍。每個分段完成後，用 `mode: &quot;full&quot;` 和 `batch_progress: {total, evaluated, status: &quot;in_progress&quot;}` 把它回傳的 `skills` map 包起來。`total` 設為盤點的總數，`evaluated` 設為累計已評估的不重複路徑數，包含已儲存的批次。把這個 JSON 指派給 `CHUNK_RESULTS`，並在**與該指派相同的 Bash 呼叫**中執行下面的指令：
+
+```bash
+bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+  ~/.claude/skills/skill-stocktake/results.json &lt;&lt;&lt; &quot;$CHUNK_RESULTS&quot;
+```
+
+所有 skill 都評估完之後，進入階段 3 之前，先把完成狀態存下來：
+
+```bash
+(
+  set -euo pipefail
+  RESULTS_JSON=~/.claude/skills/skill-stocktake/results.json
+  COMPLETED_RESULTS=$(jq -e &#x27;
+    if (.skills | length) == .batch_progress.total then
+      {skills: {}, mode: &quot;full&quot;, batch_progress: (.batch_progress + {
+        evaluated: (.skills | length), status: &quot;completed&quot;
+      })}
+    else error(&quot;Inventory still has unevaluated skills&quot;) end
+  &#x27; &quot;$RESULTS_JSON&quot;)
+  bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+    &quot;$RESULTS_JSON&quot; &lt;&lt;&lt; &quot;$COMPLETED_RESULTS&quot;
+)
+```
+
+**恢復偵測：** 如果啟動時發現 `status: &quot;in_progress&quot;`，先執行階段 1，把儲存的結果跟最新盤點對帳，再只評估那些不在對帳後 `skills` map 裡的路徑。如果一個都不剩，就立刻存下完成狀態。已完成的評估只會保留給仍然存在、而且 mtime 相符且非 null 的路徑；新的或有變動的 skill，以及沒有 mtime 的項目，都需要評估。
+
+每個 skill 都依這份檢查清單評估：
+
+```
+- [ ] Content overlap with other skills checked
+- [ ] Overlap with MEMORY.md / CLAUDE.md checked
+- [ ] Freshness of technical references verified (use WebSearch if tool names / CLI flags / APIs are present)
+- [ ] Usage frequency considered when measured; missing observations marked unmeasured, not treated as zero
+```
+
+判定準則：
+
+| Verdict | 意義 |
+|---------|---------|
+| Keep | 有用而且是最新的 |
+| Improve | 值得保留，但需要具體的改進 |
+| Update | 引用的技術已經過時（用 WebSearch 驗證） |
+| Retire | 品質低、過時，或成本不對等 |
+| Merge into [X] | 跟另一個 skill 有大量重疊；要指出合併的目標 |
+
+評估是**整體的 AI 判斷**，不是數字評分表。指引的面向：
+- **可執行性**：有程式碼範例、指令或步驟，讓你能立刻動手
+- **範圍適配**：名稱、觸發條件和內容一致，不會太廣或太窄
+- **獨特性**：價值無法被 MEMORY.md / CLAUDE.md / 另一個 skill 取代
+- **時效性**：引用的技術在目前環境能用
+
+**Reason 品質要求**：`reason` 欄位必須獨立完整，而且足以支撐決策：
+- 絕對不要只寫「unchanged」，一定要重述核心證據
+- 對於 **Retire**：說明（1）發現了什麼具體缺陷、（2）有什麼東西涵蓋了同樣的需求
+  - 不好：`&quot;Superseded&quot;`
+  - 好：`&quot;disable-model-invocation: true already set; superseded by continuous-learning-v2 which covers all the same patterns plus confidence scoring. No unique content remains.&quot;`
+- 對於 **Merge**：指出目標，並描述要整合哪些內容
+  - 不好：`&quot;Overlaps with X&quot;`
+  - 好：`&quot;42-line thin content; Step 4 of chatlog-to-article already covers the same workflow. Integrate the &#x27;article angle&#x27; tip as a note in that skill.&quot;`
+- 對於 **Improve**：描述需要的具體變更（哪個段落、什麼動作、有需要的話寫目標大小）
+  - 不好：`&quot;Too long&quot;`
+  - 好：`&quot;276 lines; Section &#x27;Framework Comparison&#x27; (L80–140) duplicates ai-era-architecture-principles; delete it to reach ~150 lines.&quot;`
+- 對於 **Keep**（Quick Scan 中只有 mtime 變動）：重述原本判定的理由，不要寫「unchanged」
+  - 不好：`&quot;Unchanged&quot;`
+  - 好：`&quot;mtime updated but content unchanged. Unique Python reference explicitly imported by rules/python/; no overlap found.&quot;`
+
+### 階段 3：摘要表
+
+| Skill | 7d use | Verdict | Reason |
+|-------|--------|---------|--------|
+
+### 階段 4：整併
+
+1. **Retire / Merge**：向使用者確認之前，針對每個檔案提出詳細的理由：
+   - 發現了什麼具體問題（重疊、過時、參照損壞等）
+   - 有什麼替代方案涵蓋同樣的功能（Retire：哪個現有的 skill/規則；Merge：目標檔案和要整合的內容）
+   - 移除的影響（有哪些相依的 skill、MEMORY.md 參照或工作流程會受影響）
+2. **Improve**：提出具體的改進建議並附上理由：
+   - 要改什麼、為什麼（例如「從 430 行精簡到 200 行，因為 X/Y 段落跟 python-patterns 重複」）
+   - 由使用者決定要不要動手
+3. **Update**：呈現更新後的內容，並附上查證過的來源
+4. 檢查 MEMORY.md 的行數；超過 100 行就提出壓縮建議
+
+## 結果檔 Schema
+
+`~/.claude/skills/skill-stocktake/results.json`：
+
+**`evaluated_at`**：必須設為評估完成當下的實際 UTC 時間。用 Bash 取得：`date -u +%Y-%m-%dT%H:%M:%SZ`。絕對不要用 `T00:00:00Z` 這種只有日期的近似值。
+
+```json
+{
+  &quot;evaluated_at&quot;: &quot;2026-02-21T10:00:00Z&quot;,
+  &quot;mode&quot;: &quot;full&quot;,
+  &quot;batch_progress&quot;: {
+    &quot;total&quot;: 80,
+    &quot;evaluated&quot;: 80,
+    &quot;status&quot;: &quot;completed&quot;
+  },
+  &quot;skills&quot;: {
+    &quot;~/.claude/skills/skill-name/SKILL.md&quot;: {
+      &quot;path&quot;: &quot;~/.claude/skills/skill-name/SKILL.md&quot;,
+      &quot;verdict&quot;: &quot;Keep&quot;,
+      &quot;reason&quot;: &quot;Concrete, actionable, unique value for X workflow&quot;,
+      &quot;mtime&quot;: &quot;2026-01-15T08:30:00Z&quot;
+    }
+  }
+}
+```
+
+## 備註
+
+- 評估是盲測的：不論來源（ECC、自己寫的、自動擷取的），所有 skill 都套用同一份檢查清單
+- 封存/刪除的操作一律需要使用者明確確認
+- 不依 skill 的來源分流判定</pre></section><section><h2>英文原文</h2><pre>---
+name: skill-stocktake
+description: &quot;Use when auditing Claude skills and commands for quality. Supports Quick Scan (changed skills only) and Full Stocktake modes with sequential subagent batch evaluation.&quot;
+metadata:
+  origin: ECC
+---
+
+# skill-stocktake
+
+Slash command (`/skill-stocktake`) that audits all Claude skills and commands using a quality checklist + AI holistic judgment. Supports two modes: Quick Scan for recently changed skills, and Full Stocktake for a complete review.
+
+## Scope
+
+The command targets the following paths **relative to the directory where it is invoked**:
+
+| Path | Description |
+|------|-------------|
+| `~/.claude/skills/` | Global skills (all projects) |
+| `{cwd}/.claude/skills/` | Project-level skills (if the directory exists) |
+
+**At the start of Phase 1, the command explicitly lists which paths were found and scanned.**
+
+Directories named `.trash` are excluded from both scan modes: archived skills are not part of the live inventory. If an older `results.json` contains `.trash` entries, start a new Full Stocktake using the cache initialization below before resuming Quick Scan. An ordinary save merges entries and does not remove archived records.
+
+### Targeting a specific project
+
+To include project-level skills, run from that project&#x27;s root directory:
+
+```bash
+cd ~/path/to/my-project
+/skill-stocktake
+```
+
+If the project has no `.claude/skills/` directory, only global skills and commands are evaluated.
+
+## Modes
+
+| Mode | Trigger | Duration |
+|------|---------|---------|
+| Quick Scan | `results.json` exists (default) | 5–10 min |
+| Full Stocktake | `results.json` absent, or `/skill-stocktake full` | 20–30 min |
+
+The shell scripts require Bash, Node.js, and `jq` on `PATH`.
+
+**Results cache:** `~/.claude/skills/skill-stocktake/results.json`
+
+## Quick Scan Flow
+
+Re-evaluate only skills that have changed since the last run (5–10 min).
+
+1. Read `~/.claude/skills/skill-stocktake/results.json`
+2. Run: `bash ~/.claude/skills/skill-stocktake/scripts/quick-diff.sh \
+         ~/.claude/skills/skill-stocktake/results.json`
+   (Project dir is auto-detected from `$PWD/.claude/skills`; pass it explicitly only if needed)
+3. If output is `[]`: report &quot;No changes since last run.&quot; and stop
+4. Re-evaluate only those changed files using the same Phase 2 criteria
+5. Carry forward unchanged skills from previous results
+6. Output only the diff
+7. Run: `bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+         ~/.claude/skills/skill-stocktake/results.json &lt;&lt;&lt; &quot;$EVAL_RESULTS&quot;`
+
+## Full Stocktake Flow
+
+### Phase 1 — Inventory
+
+Run this entire block in **one Bash invocation**. It prints the inventory for the agent and initializes a new full run only when there is no unfinished run to resume:
+
+```bash
+(
+  set -euo pipefail
+  SCAN_JSON=$(bash ~/.claude/skills/skill-stocktake/scripts/scan.sh)
+  printf &#x27;%s\n&#x27; &quot;$SCAN_JSON&quot;
+  RESULTS_JSON=~/.claude/skills/skill-stocktake/results.json
+
+  CACHE_STATUS=&quot;&quot;
+  if [[ -f &quot;$RESULTS_JSON&quot; ]]; then
+    CACHE_STATUS=$(jq -r &#x27;.batch_progress.status // &quot;&quot;&#x27; &quot;$RESULTS_JSON&quot;)
+  fi
+  if [[ &quot;$CACHE_STATUS&quot; == &quot;in_progress&quot; ]]; then
+    RESUMED_RESULTS=$(jq --slurpfile saved &quot;$RESULTS_JSON&quot; &#x27;
+      . as $inventory | $saved[0]
+      | .skills = (.skills | to_entries
+        | map(.key = (.value.path // .key))
+        | map(select(. as $entry
+          | $entry.value.mtime != null
+            and any($inventory.skills[];
+              .path == $entry.key and .mtime == $entry.value.mtime)))
+        | from_entries)
+      | .mode = &quot;full&quot;
+      | .batch_progress = {
+          total: ($inventory.skills | length),
+          evaluated: (.skills | length), status: &quot;in_progress&quot;
+        }
+    &#x27; &lt;&lt;&lt; &quot;$SCAN_JSON&quot;)
+    bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+      &quot;$RESULTS_JSON&quot; --replace &lt;&lt;&lt; &quot;$RESUMED_RESULTS&quot;
+  else
+    INITIAL_RESULTS=$(printf &#x27;%s\n&#x27; &quot;$SCAN_JSON&quot; | jq &#x27;{
+      mode: &quot;full&quot;, skills: {},
+      batch_progress: {total: (.skills | length), evaluated: 0, status: &quot;in_progress&quot;}
+    }&#x27;)
+    bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+      &quot;$RESULTS_JSON&quot; --replace &lt;&lt;&lt; &quot;$INITIAL_RESULTS&quot;
+  fi
+)
+```
+
+The script enumerates skill files, extracts frontmatter, and collects UTC mtimes.
+Project dir is auto-detected from `$PWD/.claude/skills`; pass it explicitly only if needed.
+Present the scan summary and inventory table from the script output:
+
+```
+Scanning:
+  ✓ ~/.claude/skills/         (17 files)
+  ✗ {cwd}/.claude/skills/    (not found — global skills only)
+```
+
+| Skill | 7d use | 30d use | Description |
+|-------|--------|---------|-------------|
+
+Usage counts come from the optional `~/.claude/observations.jsonl` file (overridable with `SKILL_STOCKTAKE_OBSERVATIONS`), which Claude Code does not create by default. When the file is absent, `use_7d` and `use_30d` are JSON `null`; display them as **unmeasured** in inventory and summary tables. A numeric `0` means the file exists but contains no matching Read observations in that window. Missing usage data is never evidence for retiring a skill.
+
+`--replace` writes a complete cache snapshot. A new run starts with an empty evaluation; a resumed run instead keeps a saved evaluation only when its path is still live and its saved, non-null mtime matches the fresh inventory. Changed skills and entries without an mtime require re-evaluation. It removes archived/deleted entries and refreshes the progress counts even when no new batch remains. Existing name-keyed entries are normalized using their saved `path`. Never use the empty initialization payload for a resume. Later chunks, completion updates, and Quick Scans must omit `--replace` so they merge into the current run instead of losing earlier results.
+
+### Phase 2 — Quality Evaluation
+
+Launch an Agent tool subagent (**general-purpose agent**) with the actual JSON emitted by Phase 1 and the checklist below. Copy the inventory values into the prompt itself; shell variables do not carry over into Agent calls. Include the full inventory for overlap checks and explicitly identify the paths in the current batch to evaluate. Do not send literal inventory or checklist placeholders.
+
+The subagent reads each assigned skill, applies the checklist, and returns a JSON object with a `skills` map keyed by the inventory path. Each entry includes its `path`, scanned `mtime`, `verdict`, and self-contained `reason`. Use the same path keys across all batches so merging results cannot overwrite a different skill with the same name.
+
+**Chunk guidance:** Process ~20 skills per subagent invocation to keep context manageable. After each chunk, wrap its returned `skills` map with `mode: &quot;full&quot;` and `batch_progress: {total, evaluated, status: &quot;in_progress&quot;}`. Set `total` to the inventory size and `evaluated` to the cumulative number of distinct evaluated paths, including saved batches. Assign this JSON to `CHUNK_RESULTS` and run the following command in the **same Bash invocation as that assignment**:
+
+```bash
+bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+  ~/.claude/skills/skill-stocktake/results.json &lt;&lt;&lt; &quot;$CHUNK_RESULTS&quot;
+```
+
+After all skills are evaluated, persist completion before proceeding to Phase 3:
+
+```bash
+(
+  set -euo pipefail
+  RESULTS_JSON=~/.claude/skills/skill-stocktake/results.json
+  COMPLETED_RESULTS=$(jq -e &#x27;
+    if (.skills | length) == .batch_progress.total then
+      {skills: {}, mode: &quot;full&quot;, batch_progress: (.batch_progress + {
+        evaluated: (.skills | length), status: &quot;completed&quot;
+      })}
+    else error(&quot;Inventory still has unevaluated skills&quot;) end
+  &#x27; &quot;$RESULTS_JSON&quot;)
+  bash ~/.claude/skills/skill-stocktake/scripts/save-results.sh \
+    &quot;$RESULTS_JSON&quot; &lt;&lt;&lt; &quot;$COMPLETED_RESULTS&quot;
+)
+```
+
+**Resume detection:** If `status: &quot;in_progress&quot;` is found on startup, run Phase 1 to reconcile the saved results with the fresh inventory, then evaluate only paths absent from the reconciled `skills` map. If none remain, persist completion immediately. Completed evaluations are preserved only for surviving paths with matching, non-null mtimes; new or changed skills and entries without an mtime require evaluation.
+
+Each skill is evaluated against this checklist:
+
+```
+- [ ] Content overlap with other skills checked
+- [ ] Overlap with MEMORY.md / CLAUDE.md checked
+- [ ] Freshness of technical references verified (use WebSearch if tool names / CLI flags / APIs are present)
+- [ ] Usage frequency considered when measured; missing observations marked unmeasured, not treated as zero
+```
+
+Verdict criteria:
+
+| Verdict | Meaning |
+|---------|---------|
+| Keep | Useful and current |
+| Improve | Worth keeping, but specific improvements needed |
+| Update | Referenced technology is outdated (verify with WebSearch) |
+| Retire | Low quality, stale, or cost-asymmetric |
+| Merge into [X] | Substantial overlap with another skill; name the merge target |
+
+Evaluation is **holistic AI judgment** — not a numeric rubric. Guiding dimensions:
+- **Actionability**: code examples, commands, or steps that let you act immediately
+- **Scope fit**: name, trigger, and content are aligned; not too broad or narrow
+- **Uniqueness**: value not replaceable by MEMORY.md / CLAUDE.md / another skill
+- **Currency**: technical references work in the current environment
+
+**Reason quality requirements** — the `reason` field must be self-contained and decision-enabling:
+- Do NOT write &quot;unchanged&quot; alone — always restate the core evidence
+- For **Retire**: state (1) what specific defect was found, (2) what covers the same need instead
+  - Bad: `&quot;Superseded&quot;`
+  - Good: `&quot;disable-model-invocation: true already set; superseded by continuous-learning-v2 which covers all the same patterns plus confidence scoring. No unique content remains.&quot;`
+- For **Merge**: name the target and describe what content to integrate
+  - Bad: `&quot;Overlaps with X&quot;`
+  - Good: `&quot;42-line thin content; Step 4 of chatlog-to-article already covers the same workflow. Integrate the &#x27;article angle&#x27; tip as a note in that skill.&quot;`
+- For **Improve**: describe the specific change needed (what section, what action, target size if relevant)
+  - Bad: `&quot;Too long&quot;`
+  - Good: `&quot;276 lines; Section &#x27;Framework Comparison&#x27; (L80–140) duplicates ai-era-architecture-principles; delete it to reach ~150 lines.&quot;`
+- For **Keep** (mtime-only change in Quick Scan): restate the original verdict rationale, do not write &quot;unchanged&quot;
+  - Bad: `&quot;Unchanged&quot;`
+  - Good: `&quot;mtime updated but content unchanged. Unique Python reference explicitly imported by rules/python/; no overlap found.&quot;`
+
+### Phase 3 — Summary Table
+
+| Skill | 7d use | Verdict | Reason |
+|-------|--------|---------|--------|
+
+### Phase 4 — Consolidation
+
+1. **Retire / Merge**: present detailed justification per file before confirming with user:
+   - What specific problem was found (overlap, staleness, broken references, etc.)
+   - What alternative covers the same functionality (for Retire: which existing skill/rule; for Merge: the target file and what content to integrate)
+   - Impact of removal (any dependent skills, MEMORY.md references, or workflows affected)
+2. **Improve**: present specific improvement suggestions with rationale:
+   - What to change and why (e.g., &quot;trim 430→200 lines because sections X/Y duplicate python-patterns&quot;)
+   - User decides whether to act
+3. **Update**: present updated content with sources checked
+4. Check MEMORY.md line count; propose compression if &gt;100 lines
+
+## Results File Schema
+
+`~/.claude/skills/skill-stocktake/results.json`:
+
+**`evaluated_at`**: Must be set to the actual UTC time of evaluation completion.
+Obtain via Bash: `date -u +%Y-%m-%dT%H:%M:%SZ`. Never use a date-only approximation like `T00:00:00Z`.
+
+```json
+{
+  &quot;evaluated_at&quot;: &quot;2026-02-21T10:00:00Z&quot;,
+  &quot;mode&quot;: &quot;full&quot;,
+  &quot;batch_progress&quot;: {
+    &quot;total&quot;: 80,
+    &quot;evaluated&quot;: 80,
+    &quot;status&quot;: &quot;completed&quot;
+  },
+  &quot;skills&quot;: {
+    &quot;~/.claude/skills/skill-name/SKILL.md&quot;: {
+      &quot;path&quot;: &quot;~/.claude/skills/skill-name/SKILL.md&quot;,
+      &quot;verdict&quot;: &quot;Keep&quot;,
+      &quot;reason&quot;: &quot;Concrete, actionable, unique value for X workflow&quot;,
+      &quot;mtime&quot;: &quot;2026-01-15T08:30:00Z&quot;
+    }
+  }
+}
+```
+
+## Notes
+
+- Evaluation is blind: the same checklist applies to all skills regardless of origin (ECC, self-authored, auto-extracted)
+- Archive / delete operations always require explicit user confirmation
+- No verdict branching by skill origin</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

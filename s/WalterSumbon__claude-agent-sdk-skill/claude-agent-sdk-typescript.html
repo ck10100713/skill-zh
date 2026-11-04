@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude-agent-sdk-typescript｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 TypeScript 搭配 Claude Agent SDK 建構 AI agent 的指南">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>claude-agent-sdk-typescript</h1>
+<p class="meta">WalterSumbon ｜ Agent 與工作流 ｜ <a href="https://github.com/WalterSumbon/claude-agent-sdk-skill/blob/main/skills/claude-agent-sdk-typescript/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用 TypeScript 搭配 Claude Agent SDK 建構 AI agent 的指南</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: claude-agent-sdk-typescript
+description: &gt;
+  用 TypeScript/JavaScript 搭配 Claude Agent SDK 建構 AI agent 的專家指引。
+  當使用者用 TypeScript 或 JavaScript 寫 SDK 程式碼、從
+  &quot;@anthropic-ai/claude-agent-sdk&quot; import、使用 query()、allowedTools、permissionMode、用
+  createSdkMcpServer 建立自訂工具、設定 hook、整合 MCP server、管理
+  session，或是在 TypeScript/Node.js 裡除錯 SDK 問題時使用。
+  也會在這些字串出現時觸發：&quot;@anthropic-ai/claude-agent-sdk&quot;、&quot;allowedTools&quot;、&quot;permissionMode&quot;、
+  &quot;npm install&quot;、&quot;for await&quot;、&quot;AgentDefinition&quot;，或是 &quot;settingSources&quot;。
+---
+
+# Claude Agent SDK — TypeScript Guide
+
+用 TypeScript 搭配 Claude Agent SDK 建構 AI agent 的 production 級指引。
+
+&gt; **命名**：Claude Code SDK 已改名為 Claude Agent SDK（v0.1.0+）。
+&gt; 套件：`npm install @anthropic-ai/claude-agent-sdk` · Import：`import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;`
+
+## Quick Reference — Two Interaction Modes
+
+### 1. `query()` — Stateless, One-Shot
+
+最適合：獨立任務、自動化 script、CI pipeline。
+
+```typescript
+import { query, type ClaudeAgentOptions } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const options: ClaudeAgentOptions = {
+  allowedTools: [&quot;Read&quot;, &quot;Edit&quot;, &quot;Glob&quot;],
+  permissionMode: &quot;acceptEdits&quot;,
+};
+
+for await (const message of query({
+  prompt: &quot;Review utils.ts for bugs. Fix any issues you find.&quot;,
+  options,
+})) {
+  if (message.type === &quot;assistant&quot;) {
+    for (const block of message.message.content) {
+      if (&quot;text&quot; in block) console.log(block.text);
+      else if (&quot;name&quot; in block) console.log(`Tool: ${block.name}`);
+    }
+  }
+  if (message.type === &quot;result&quot;) {
+    console.log(`Done: ${message.subtype}`);
+  }
+}
+```
+
+### 2. `ClaudeSDKClient` — Stateful, Multi-Turn
+
+最適合：對話、追問、互動式應用。
+
+```typescript
+import { ClaudeSDKClient } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const client = new ClaudeSDKClient({
+  options: {
+    allowedTools: [&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+    permissionMode: &quot;acceptEdits&quot;,
+  },
+});
+
+try {
+  await client.query(&quot;Analyze the codebase structure&quot;);
+  for await (const msg of client.receiveMessages()) {
+    console.log(msg);
+  }
+  // 保留 context 繼續對話
+  await client.query(&quot;Now refactor the largest file you found&quot;);
+  for await (const msg of client.receiveMessages()) {
+    console.log(msg);
+  }
+} finally {
+  await client.close();
+}
+```
+
+## ClaudeAgentOptions — Complete Configuration
+
+所有選項都是選填。主要欄位（全部是 camelCase）：
+
+| 欄位 | 型別 | 說明 |
+|-------|------|-------------|
+| `allowedTools` | `string[]` | Claude 可以使用的工具。見下方 Built-in Tools。 |
+| `disallowedTools` | `string[]` | 明確封鎖特定工具。 |
+| `permissionMode` | `string` | `&quot;default&quot;`、`&quot;acceptEdits&quot;` 或 `&quot;bypassPermissions&quot;`。 |
+| `systemPrompt` | `string \| object` | 自訂指示。要用 CC 預設的話，用 `{ type: &quot;preset&quot;, preset: &quot;claude_code&quot; }`。 |
+| `model` | `string` | 例如 `&quot;sonnet&quot;`、`&quot;opus&quot;`、`&quot;haiku&quot;`，或完整的 model 字串。 |
+| `cwd` | `string` | agent 的工作目錄。 |
+| `maxTurns` | `number` | agentic 迴圈的最大迭代次數。 |
+| `settingSources` | `string[]` | 用 `[&quot;user&quot;, &quot;project&quot;]` 從檔案系統載入 Skills/CLAUDE.md。 |
+| `mcpServers` | `Record&lt;string, McpServerConfig&gt;` | MCP server 設定。 |
+| `agents` | `Record&lt;string, AgentDefinition&gt;` | 具名的 subagent 定義。 |
+| `hooks` | `object` | 生命週期 hook 的 callback。 |
+
+### Built-in Tools
+
+給 `allowedTools` 用的工具名稱：
+
+- **檔案操作**：`Read`、`Write`、`Edit`、`MultiEdit`
+- **搜尋**：`Glob`、`Grep`
+- **執行**：`Bash`
+- **網路**：`WebSearch`、`WebFetch`
+- **委派**：`Task`（subagent 必要）
+- **Skills**：`Skill`（需要 `settingSources`）
+
+## Custom Tools via SDK MCP Server
+
+不需要另外的 MCP server 行程，就能定義行程內（in-process）的工具：
+
+```typescript
+import { query, tool, createSdkMcpServer } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const searchOrders = tool(
+  &quot;search_orders&quot;,
+  &quot;Search orders by customer ID&quot;,
+  { customer_id: &quot;string&quot;, status: &quot;string&quot; },
+  async (args) =&gt; {
+    const results = await db.queryOrders(args.customer_id, args.status);
+    return { content: [{ type: &quot;text&quot;, text: JSON.stringify(results) }] };
+  }
+);
+
+const sendEmail = tool(
+  &quot;send_email&quot;,
+  &quot;Send an email notification&quot;,
+  { to: &quot;string&quot;, subject: &quot;string&quot;, body: &quot;string&quot; },
+  async (args) =&gt; {
+    await emailService.send(args.to, args.subject, args.body);
+    return { content: [{ type: &quot;text&quot;, text: `Email sent to ${args.to}` }] };
+  }
+);
+
+const server = createSdkMcpServer({
+  name: &quot;business-tools&quot;,
+  tools: [searchOrders, sendEmail],
+});
+
+for await (const msg of query({
+  prompt: &quot;Find recent orders for customer C-123&quot;,
+  options: {
+    mcpServers: { biz: server },
+    allowedTools: [&quot;mcp__biz__search_orders&quot;, &quot;mcp__biz__send_email&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+**工具命名慣例**：MCP 工具的存取名稱是 `mcp__&lt;server-name&gt;__&lt;tool-name&gt;`。
+
+## Subagents
+
+把專門的任務委派給隔離的 agent，它們有自己的 context 和工具權限：
+
+```typescript
+import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+for await (const message of query({
+  prompt: &quot;Review auth module for security issues, then write tests&quot;,
+  options: {
+    allowedTools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;, &quot;Task&quot;], // Task 是必要的
+    agents: {
+      &quot;security-reviewer&quot;: {
+        description: &quot;Security specialist. Use for vulnerability analysis.&quot;,
+        prompt: &quot;You are a security expert. Analyze code for OWASP Top 10...&quot;,
+        tools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+        model: &quot;opus&quot;,
+      },
+      &quot;test-writer&quot;: {
+        description: &quot;Test specialist. Use to generate test suites.&quot;,
+        prompt: &quot;You are a testing expert. Write comprehensive unit tests...&quot;,
+        tools: [&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+        model: &quot;sonnet&quot;,
+      },
+    },
+  },
+})) {
+  if (message.type === &quot;result&quot;) console.log(message.result);
+}
+```
+
+動態產生 agent 的 **Factory 模式**：
+
+```typescript
+import type { AgentDefinition } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+function createReviewer(language: string): AgentDefinition {
+  return {
+    description: `${language} code review specialist`,
+    prompt: `You are an expert ${language} developer...`,
+    tools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+    model: [&quot;rust&quot;, &quot;c++&quot;].includes(language) ? &quot;opus&quot; : &quot;sonnet&quot;,
+  };
+}
+```
+
+## Hooks — Lifecycle Callbacks
+
+可用的事件：`PreToolUse`、`PostToolUse`、`Stop`、`SessionStart`、`SessionEnd`、`UserPromptSubmit`。
+
+```typescript
+import { query, type HookCallback } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+import { appendFileSync } from &quot;node:fs&quot;;
+
+const blockDangerousCommands: HookCallback = async (input) =&gt; {
+  if (input.tool_name === &quot;Bash&quot;) {
+    const cmd = input.tool_input?.command ?? &quot;&quot;;
+    const dangers = [&quot;rm -rf /&quot;, &quot;DROP TABLE&quot;, &quot;mkfs&quot;];
+    if (dangers.some((d) =&gt; cmd.includes(d))) {
+      return {
+        hookSpecificOutput: {
+          hookEventName: &quot;PreToolUse&quot;,
+          permissionDecision: &quot;deny&quot;,
+          permissionDecisionReason: `Blocked dangerous command: ${cmd}`,
+        },
+      };
+    }
+  }
+  return {};
+};
+
+const auditLog: HookCallback = async (input) =&gt; {
+  appendFileSync(
+    &quot;audit.log&quot;,
+    `${new Date().toISOString()}: ${input.tool_name}: ${JSON.stringify(input.tool_input)}\n`
+  );
+  return {};
+};
+
+for await (const msg of query({
+  prompt: &quot;Refactor utils.ts&quot;,
+  options: {
+    permissionMode: &quot;acceptEdits&quot;,
+    hooks: {
+      PreToolUse: [
+        { matcher: &quot;Bash&quot;, hooks: [blockDangerousCommands] },
+        { matcher: &quot;.*&quot;, hooks: [auditLog] },
+      ],
+    },
+  },
+})) {
+  if (message.type === &quot;result&quot;) console.log(msg.result);
+}
+```
+
+## MCP Integration (External Servers)
+
+```typescript
+for await (const msg of query({
+  prompt: &quot;List open issues in the repo&quot;,
+  options: {
+    mcpServers: {
+      github: {
+        type: &quot;stdio&quot;,
+        command: &quot;npx&quot;,
+        args: [&quot;-y&quot;, &quot;@modelcontextprotocol/server-github&quot;],
+        env: { GITHUB_TOKEN: process.env.GITHUB_TOKEN! },
+      },
+      postgres: {
+        type: &quot;stdio&quot;,
+        command: &quot;docker&quot;,
+        args: [&quot;run&quot;, &quot;mcp-postgres-server&quot;],
+        env: { DATABASE_URL: process.env.DATABASE_URL! },
+      },
+    },
+    allowedTools: [&quot;mcp__github&quot;, &quot;mcp__postgres&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+同一份設定裡可以混用 SDK MCP server（行程內）和外部 MCP server。
+
+## Using Skills in the SDK
+
+Skills 是以檔案系統為基礎，必須明確啟用：
+
+```typescript
+for await (const msg of query({
+  prompt: &quot;Help me process this PDF&quot;,
+  options: {
+    cwd: &quot;/path/to/project&quot;,
+    settingSources: [&quot;user&quot;, &quot;project&quot;], // 必要：從檔案系統載入 Skills
+    allowedTools: [&quot;Skill&quot;, &quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+**常見錯誤**：忘了 `settingSources`。沒有它，就算 `allowedTools` 裡有 `&quot;Skill&quot;`，Skills 也不會被發現。
+
+Skill 的位置：
+- **Project**：`.claude/skills/*/SKILL.md`（透過 git 共用）
+- **User**：`~/.claude/skills/*/SKILL.md`（個人的，跨專案）
+
+注意：SKILL.md frontmatter 裡的 `allowed-tools` 欄位**只在 Claude Code CLI 有效**，在 SDK 裡無效。要控制工具存取，請用 options 裡的 `allowedTools`。
+
+## Sessions and Conversation Management
+
+```typescript
+import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+let sessionId: string | undefined;
+
+// 第一次互動：抓取 sessionId
+for await (const msg of query({
+  prompt: &quot;Review this codebase and identify the top 3 issues&quot;,
+  options: { allowedTools: [&quot;Read&quot;, &quot;Glob&quot;, &quot;Grep&quot;] },
+})) {
+  if (msg.type === &quot;system&quot; &amp;&amp; &quot;session_id&quot; in msg) {
+    sessionId = msg.session_id;
+  }
+  console.log(msg);
+}
+
+// 帶著 context 接續
+for await (const msg of query({
+  prompt: &quot;Now fix issue #1 that you found&quot;,
+  options: {
+    sessionId,
+    allowedTools: [&quot;Read&quot;, &quot;Edit&quot;, &quot;Bash&quot;],
+    permissionMode: &quot;acceptEdits&quot;,
+  },
+})) {
+  console.log(msg);
+}
+```
+
+## System Prompt Configuration
+
+```typescript
+// 1. 自訂 system prompt（v0.1.0+ 的預設：精簡 prompt）
+const options = { systemPrompt: &quot;You are a senior TypeScript engineer...&quot; };
+
+// 2. Claude Code 完整的 system prompt（需要主動選用）
+const options = {
+  systemPrompt: { type: &quot;preset&quot;, preset: &quot;claude_code&quot; },
+};
+
+// 3. 沒有 system prompt：SDK 預設（精簡）
+const options = {}; // 使用內建的精簡 prompt
+```
+
+**v0.1.0 的破壞性變更**：SDK 預設不再載入 Claude Code 的 system prompt。如果你需要舊的行為，要明確設定 `preset: &quot;claude_code&quot;`。
+
+## Authentication
+
+```bash
+# Direct API (default)
+export ANTHROPIC_API_KEY=your-api-key
+
+# Amazon Bedrock
+export CLAUDE_CODE_USE_BEDROCK=1
+# + configure AWS credentials
+
+# Google Vertex AI
+export CLAUDE_CODE_USE_VERTEX=1
+# + configure GCP credentials
+
+# Microsoft Azure AI Foundry
+export CLAUDE_CODE_USE_FOUNDRY=1
+# + configure Azure credentials
+```
+
+## Common Patterns
+
+### Batch Processing (Parallel Agents)
+
+```typescript
+async function processFile(filepath: string): Promise&lt;string | undefined&gt; {
+  for await (const msg of query({
+    prompt: `Review ${filepath} for security issues`,
+    options: {
+      allowedTools: [&quot;Read&quot;, &quot;Grep&quot;],
+      maxTurns: 50,
+    },
+  })) {
+    if (msg.type === &quot;result&quot;) return msg.result;
+  }
+}
+
+const results = await Promise.all([
+  processFile(&quot;auth.ts&quot;),
+  processFile(&quot;payments.ts&quot;),
+  processFile(&quot;users.ts&quot;),
+]);
+```
+
+### Structured Output Collection
+
+```typescript
+const messages: Message[] = [];
+for await (const msg of query({ prompt: &quot;Analyze this codebase&quot;, options })) {
+  messages.push(msg);
+}
+
+// 擷取最終結果
+const result = messages.findLast((m) =&gt; &quot;result&quot; in m)?.result;
+```
+
+### Error Handling
+
+```typescript
+import { CLINotFoundError, CLIConnectionError } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+try {
+  for await (const msg of query({ prompt: &quot;...&quot;, options })) {
+    console.log(msg);
+  }
+} catch (error) {
+  if (error instanceof CLINotFoundError) {
+    console.error(&quot;Claude Code CLI not found. Install: curl -fsSL https://claude.ai/install.sh | bash&quot;);
+  } else if (error instanceof CLIConnectionError) {
+    console.error(`Connection error: ${error.message}`);
+  } else {
+    throw error;
+  }
+}
+```
+
+## Migration from Claude Code SDK (&lt; v0.1.0)
+
+主要變更：
+1. `@anthropic-ai/claude-code` → `@anthropic-ai/claude-agent-sdk`
+2. `ClaudeCodeOptions` → `ClaudeAgentOptions`（型別名稱）
+3. System prompt 預設不再載入 Claude Code 的 prompt
+4. `settingSources` 必須明確設定（以前是自動載入）
+
+## Best Practices
+
+1. **最小權限原則**：只給 agent 真正需要的工具。
+2. **自動化用 `permissionMode: &quot;acceptEdits&quot;`**，互動使用用 `&quot;default&quot;`。
+3. **自訂工具優先用 SDK MCP server**，不要用外部的：開銷較小，也比較好除錯。
+4. **專門的任務用 subagent**：隔離 context，並依任務套用合適的 model。
+5. **加 hook 來確保安全**：在 production 封鎖危險指令並稽核工具使用。
+6. **設定 `maxTurns`**，防止 agent 在 production 環境失控。
+7. **用 `cwd`** 把 agent 限定在特定目錄。
+8. **從 system 訊息抓取 `sessionId`**，如果你需要對話的連續性。
+
+&gt; 常見問題的排解，見 `references/troubleshooting.md`。
+
+## Official Resources
+
+- Overview: https://platform.claude.com/docs/en/agent-sdk/overview
+- Quickstart: https://platform.claude.com/docs/en/agent-sdk/quickstart
+- TypeScript reference: https://platform.claude.com/docs/en/agent-sdk/typescript
+- Migration guide: https://platform.claude.com/docs/en/agent-sdk/migration-guide
+- TypeScript SDK repo: https://github.com/anthropics/claude-agent-sdk-typescript
+- Demo agents: https://github.com/anthropics/claude-agent-sdk-demos
+- Cookbook: https://platform.claude.com/cookbook</pre></section><section><h2>英文原文</h2><pre>---
+name: claude-agent-sdk-typescript
+description: &gt;
+  Expert guidance for building AI agents with the Claude Agent SDK in TypeScript/JavaScript.
+  Use when the user writes TypeScript or JavaScript code with the SDK, imports from
+  &quot;@anthropic-ai/claude-agent-sdk&quot;, uses query(), allowedTools, permissionMode, creates
+  custom tools with createSdkMcpServer, sets up hooks, integrates MCP servers, manages
+  sessions, or debugs SDK issues in TypeScript/Node.js.
+  Also triggers on: &quot;@anthropic-ai/claude-agent-sdk&quot;, &quot;allowedTools&quot;, &quot;permissionMode&quot;,
+  &quot;npm install&quot;, &quot;for await&quot;, &quot;AgentDefinition&quot;, or &quot;settingSources&quot;.
+---
+
+# Claude Agent SDK — TypeScript Guide
+
+Production guidance for building AI agents with the Claude Agent SDK in TypeScript.
+
+&gt; **Naming**: The Claude Code SDK was renamed to the Claude Agent SDK (v0.1.0+).
+&gt; Package: `npm install @anthropic-ai/claude-agent-sdk` · Import: `import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;`
+
+## Quick Reference — Two Interaction Modes
+
+### 1. `query()` — Stateless, One-Shot
+
+Best for: independent tasks, automation scripts, CI pipelines.
+
+```typescript
+import { query, type ClaudeAgentOptions } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const options: ClaudeAgentOptions = {
+  allowedTools: [&quot;Read&quot;, &quot;Edit&quot;, &quot;Glob&quot;],
+  permissionMode: &quot;acceptEdits&quot;,
+};
+
+for await (const message of query({
+  prompt: &quot;Review utils.ts for bugs. Fix any issues you find.&quot;,
+  options,
+})) {
+  if (message.type === &quot;assistant&quot;) {
+    for (const block of message.message.content) {
+      if (&quot;text&quot; in block) console.log(block.text);
+      else if (&quot;name&quot; in block) console.log(`Tool: ${block.name}`);
+    }
+  }
+  if (message.type === &quot;result&quot;) {
+    console.log(`Done: ${message.subtype}`);
+  }
+}
+```
+
+### 2. `ClaudeSDKClient` — Stateful, Multi-Turn
+
+Best for: conversations, follow-up questions, interactive apps.
+
+```typescript
+import { ClaudeSDKClient } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const client = new ClaudeSDKClient({
+  options: {
+    allowedTools: [&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+    permissionMode: &quot;acceptEdits&quot;,
+  },
+});
+
+try {
+  await client.query(&quot;Analyze the codebase structure&quot;);
+  for await (const msg of client.receiveMessages()) {
+    console.log(msg);
+  }
+  // Continue the conversation with context preserved
+  await client.query(&quot;Now refactor the largest file you found&quot;);
+  for await (const msg of client.receiveMessages()) {
+    console.log(msg);
+  }
+} finally {
+  await client.close();
+}
+```
+
+## ClaudeAgentOptions — Complete Configuration
+
+All options are optional. Key fields (all camelCase):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `allowedTools` | `string[]` | Tools Claude can use. See Built-in Tools below. |
+| `disallowedTools` | `string[]` | Explicitly block specific tools. |
+| `permissionMode` | `string` | `&quot;default&quot;`, `&quot;acceptEdits&quot;`, or `&quot;bypassPermissions&quot;`. |
+| `systemPrompt` | `string \| object` | Custom instructions. Use `{ type: &quot;preset&quot;, preset: &quot;claude_code&quot; }` for CC default. |
+| `model` | `string` | e.g. `&quot;sonnet&quot;`, `&quot;opus&quot;`, `&quot;haiku&quot;`, or full model string. |
+| `cwd` | `string` | Working directory for the agent. |
+| `maxTurns` | `number` | Maximum agentic loop iterations. |
+| `settingSources` | `string[]` | `[&quot;user&quot;, &quot;project&quot;]` to load Skills/CLAUDE.md from filesystem. |
+| `mcpServers` | `Record&lt;string, McpServerConfig&gt;` | MCP server configurations. |
+| `agents` | `Record&lt;string, AgentDefinition&gt;` | Named subagent definitions. |
+| `hooks` | `object` | Lifecycle hook callbacks. |
+
+### Built-in Tools
+
+Tool names for `allowedTools`:
+
+- **File ops**: `Read`, `Write`, `Edit`, `MultiEdit`
+- **Search**: `Glob`, `Grep`
+- **Execution**: `Bash`
+- **Web**: `WebSearch`, `WebFetch`
+- **Delegation**: `Task` (required for subagents)
+- **Skills**: `Skill` (requires `settingSources`)
+
+## Custom Tools via SDK MCP Server
+
+Define in-process tools without a separate MCP server process:
+
+```typescript
+import { query, tool, createSdkMcpServer } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+const searchOrders = tool(
+  &quot;search_orders&quot;,
+  &quot;Search orders by customer ID&quot;,
+  { customer_id: &quot;string&quot;, status: &quot;string&quot; },
+  async (args) =&gt; {
+    const results = await db.queryOrders(args.customer_id, args.status);
+    return { content: [{ type: &quot;text&quot;, text: JSON.stringify(results) }] };
+  }
+);
+
+const sendEmail = tool(
+  &quot;send_email&quot;,
+  &quot;Send an email notification&quot;,
+  { to: &quot;string&quot;, subject: &quot;string&quot;, body: &quot;string&quot; },
+  async (args) =&gt; {
+    await emailService.send(args.to, args.subject, args.body);
+    return { content: [{ type: &quot;text&quot;, text: `Email sent to ${args.to}` }] };
+  }
+);
+
+const server = createSdkMcpServer({
+  name: &quot;business-tools&quot;,
+  tools: [searchOrders, sendEmail],
+});
+
+for await (const msg of query({
+  prompt: &quot;Find recent orders for customer C-123&quot;,
+  options: {
+    mcpServers: { biz: server },
+    allowedTools: [&quot;mcp__biz__search_orders&quot;, &quot;mcp__biz__send_email&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+**Tool naming convention**: MCP tools are accessed as `mcp__&lt;server-name&gt;__&lt;tool-name&gt;`.
+
+## Subagents
+
+Delegate specialized tasks to isolated agents with their own context and tool permissions:
+
+```typescript
+import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+for await (const message of query({
+  prompt: &quot;Review auth module for security issues, then write tests&quot;,
+  options: {
+    allowedTools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;, &quot;Task&quot;], // Task is required
+    agents: {
+      &quot;security-reviewer&quot;: {
+        description: &quot;Security specialist. Use for vulnerability analysis.&quot;,
+        prompt: &quot;You are a security expert. Analyze code for OWASP Top 10...&quot;,
+        tools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+        model: &quot;opus&quot;,
+      },
+      &quot;test-writer&quot;: {
+        description: &quot;Test specialist. Use to generate test suites.&quot;,
+        prompt: &quot;You are a testing expert. Write comprehensive unit tests...&quot;,
+        tools: [&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+        model: &quot;sonnet&quot;,
+      },
+    },
+  },
+})) {
+  if (message.type === &quot;result&quot;) console.log(message.result);
+}
+```
+
+**Factory pattern** for dynamic agents:
+
+```typescript
+import type { AgentDefinition } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+function createReviewer(language: string): AgentDefinition {
+  return {
+    description: `${language} code review specialist`,
+    prompt: `You are an expert ${language} developer...`,
+    tools: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+    model: [&quot;rust&quot;, &quot;c++&quot;].includes(language) ? &quot;opus&quot; : &quot;sonnet&quot;,
+  };
+}
+```
+
+## Hooks — Lifecycle Callbacks
+
+Available events: `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`, `SessionEnd`, `UserPromptSubmit`.
+
+```typescript
+import { query, type HookCallback } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+import { appendFileSync } from &quot;node:fs&quot;;
+
+const blockDangerousCommands: HookCallback = async (input) =&gt; {
+  if (input.tool_name === &quot;Bash&quot;) {
+    const cmd = input.tool_input?.command ?? &quot;&quot;;
+    const dangers = [&quot;rm -rf /&quot;, &quot;DROP TABLE&quot;, &quot;mkfs&quot;];
+    if (dangers.some((d) =&gt; cmd.includes(d))) {
+      return {
+        hookSpecificOutput: {
+          hookEventName: &quot;PreToolUse&quot;,
+          permissionDecision: &quot;deny&quot;,
+          permissionDecisionReason: `Blocked dangerous command: ${cmd}`,
+        },
+      };
+    }
+  }
+  return {};
+};
+
+const auditLog: HookCallback = async (input) =&gt; {
+  appendFileSync(
+    &quot;audit.log&quot;,
+    `${new Date().toISOString()}: ${input.tool_name}: ${JSON.stringify(input.tool_input)}\n`
+  );
+  return {};
+};
+
+for await (const msg of query({
+  prompt: &quot;Refactor utils.ts&quot;,
+  options: {
+    permissionMode: &quot;acceptEdits&quot;,
+    hooks: {
+      PreToolUse: [
+        { matcher: &quot;Bash&quot;, hooks: [blockDangerousCommands] },
+        { matcher: &quot;.*&quot;, hooks: [auditLog] },
+      ],
+    },
+  },
+})) {
+  if (message.type === &quot;result&quot;) console.log(msg.result);
+}
+```
+
+## MCP Integration (External Servers)
+
+```typescript
+for await (const msg of query({
+  prompt: &quot;List open issues in the repo&quot;,
+  options: {
+    mcpServers: {
+      github: {
+        type: &quot;stdio&quot;,
+        command: &quot;npx&quot;,
+        args: [&quot;-y&quot;, &quot;@modelcontextprotocol/server-github&quot;],
+        env: { GITHUB_TOKEN: process.env.GITHUB_TOKEN! },
+      },
+      postgres: {
+        type: &quot;stdio&quot;,
+        command: &quot;docker&quot;,
+        args: [&quot;run&quot;, &quot;mcp-postgres-server&quot;],
+        env: { DATABASE_URL: process.env.DATABASE_URL! },
+      },
+    },
+    allowedTools: [&quot;mcp__github&quot;, &quot;mcp__postgres&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+You can mix SDK MCP servers (in-process) and external MCP servers in the same config.
+
+## Using Skills in the SDK
+
+Skills are filesystem-based and must be explicitly enabled:
+
+```typescript
+for await (const msg of query({
+  prompt: &quot;Help me process this PDF&quot;,
+  options: {
+    cwd: &quot;/path/to/project&quot;,
+    settingSources: [&quot;user&quot;, &quot;project&quot;], // REQUIRED — loads Skills from filesystem
+    allowedTools: [&quot;Skill&quot;, &quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+  },
+})) {
+  console.log(msg);
+}
+```
+
+**Common mistake**: forgetting `settingSources`. Without it, Skills won&#x27;t be discovered even if `&quot;Skill&quot;` is in `allowedTools`.
+
+Skill locations:
+- **Project**: `.claude/skills/*/SKILL.md` (shared via git)
+- **User**: `~/.claude/skills/*/SKILL.md` (personal, cross-project)
+
+Note: The `allowed-tools` field in SKILL.md frontmatter **only works in Claude Code CLI**, not in the SDK. Use `allowedTools` in options to control tool access.
+
+## Sessions and Conversation Management
+
+```typescript
+import { query } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+let sessionId: string | undefined;
+
+// First interaction — capture sessionId
+for await (const msg of query({
+  prompt: &quot;Review this codebase and identify the top 3 issues&quot;,
+  options: { allowedTools: [&quot;Read&quot;, &quot;Glob&quot;, &quot;Grep&quot;] },
+})) {
+  if (msg.type === &quot;system&quot; &amp;&amp; &quot;session_id&quot; in msg) {
+    sessionId = msg.session_id;
+  }
+  console.log(msg);
+}
+
+// Resume with context
+for await (const msg of query({
+  prompt: &quot;Now fix issue #1 that you found&quot;,
+  options: {
+    sessionId,
+    allowedTools: [&quot;Read&quot;, &quot;Edit&quot;, &quot;Bash&quot;],
+    permissionMode: &quot;acceptEdits&quot;,
+  },
+})) {
+  console.log(msg);
+}
+```
+
+## System Prompt Configuration
+
+```typescript
+// 1. Custom system prompt (v0.1.0+ default: minimal prompt)
+const options = { systemPrompt: &quot;You are a senior TypeScript engineer...&quot; };
+
+// 2. Claude Code&#x27;s full system prompt (opt-in)
+const options = {
+  systemPrompt: { type: &quot;preset&quot;, preset: &quot;claude_code&quot; },
+};
+
+// 3. No system prompt — SDK default (minimal)
+const options = {}; // uses minimal built-in prompt
+```
+
+**Breaking change in v0.1.0**: The SDK no longer loads Claude Code&#x27;s system prompt by default. If you need the old behavior, explicitly set `preset: &quot;claude_code&quot;`.
+
+## Authentication
+
+```bash
+# Direct API (default)
+export ANTHROPIC_API_KEY=your-api-key
+
+# Amazon Bedrock
+export CLAUDE_CODE_USE_BEDROCK=1
+# + configure AWS credentials
+
+# Google Vertex AI
+export CLAUDE_CODE_USE_VERTEX=1
+# + configure GCP credentials
+
+# Microsoft Azure AI Foundry
+export CLAUDE_CODE_USE_FOUNDRY=1
+# + configure Azure credentials
+```
+
+## Common Patterns
+
+### Batch Processing (Parallel Agents)
+
+```typescript
+async function processFile(filepath: string): Promise&lt;string | undefined&gt; {
+  for await (const msg of query({
+    prompt: `Review ${filepath} for security issues`,
+    options: {
+      allowedTools: [&quot;Read&quot;, &quot;Grep&quot;],
+      maxTurns: 50,
+    },
+  })) {
+    if (msg.type === &quot;result&quot;) return msg.result;
+  }
+}
+
+const results = await Promise.all([
+  processFile(&quot;auth.ts&quot;),
+  processFile(&quot;payments.ts&quot;),
+  processFile(&quot;users.ts&quot;),
+]);
+```
+
+### Structured Output Collection
+
+```typescript
+const messages: Message[] = [];
+for await (const msg of query({ prompt: &quot;Analyze this codebase&quot;, options })) {
+  messages.push(msg);
+}
+
+// Extract final result
+const result = messages.findLast((m) =&gt; &quot;result&quot; in m)?.result;
+```
+
+### Error Handling
+
+```typescript
+import { CLINotFoundError, CLIConnectionError } from &quot;@anthropic-ai/claude-agent-sdk&quot;;
+
+try {
+  for await (const msg of query({ prompt: &quot;...&quot;, options })) {
+    console.log(msg);
+  }
+} catch (error) {
+  if (error instanceof CLINotFoundError) {
+    console.error(&quot;Claude Code CLI not found. Install: curl -fsSL https://claude.ai/install.sh | bash&quot;);
+  } else if (error instanceof CLIConnectionError) {
+    console.error(`Connection error: ${error.message}`);
+  } else {
+    throw error;
+  }
+}
+```
+
+## Migration from Claude Code SDK (&lt; v0.1.0)
+
+Key changes:
+1. `@anthropic-ai/claude-code` → `@anthropic-ai/claude-agent-sdk`
+2. `ClaudeCodeOptions` → `ClaudeAgentOptions` (type name)
+3. System prompt no longer loads Claude Code&#x27;s prompt by default
+4. `settingSources` must be explicitly set (was auto-loaded before)
+
+## Best Practices
+
+1. **Principle of least privilege**: Only grant tools the agent actually needs.
+2. **Use `permissionMode: &quot;acceptEdits&quot;` for automation**, `&quot;default&quot;` for interactive use.
+3. **Prefer SDK MCP servers** over external ones for custom tools — less overhead, easier debugging.
+4. **Use subagents for specialized tasks** — isolate context and apply the right model per task.
+5. **Add hooks for safety** — block dangerous commands and audit tool usage in production.
+6. **Set `maxTurns`** to prevent runaway agents in production environments.
+7. **Use `cwd`** to scope the agent to a specific directory.
+8. **Capture `sessionId`** from system messages if you need conversation continuity.
+
+&gt; For troubleshooting common issues, see `references/troubleshooting.md`.
+
+## Official Resources
+
+- Overview: https://platform.claude.com/docs/en/agent-sdk/overview
+- Quickstart: https://platform.claude.com/docs/en/agent-sdk/quickstart
+- TypeScript reference: https://platform.claude.com/docs/en/agent-sdk/typescript
+- Migration guide: https://platform.claude.com/docs/en/agent-sdk/migration-guide
+- TypeScript SDK repo: https://github.com/anthropics/claude-agent-sdk-typescript
+- Demo agents: https://github.com/anthropics/claude-agent-sdk-demos
+- Cookbook: https://platform.claude.com/cookbook</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>verify｜Skill 寫法圖鑑</title>
+<meta name="description" content="用隔離的假 HOME 實跑 Microsoft 365 安裝工具來驗證變更">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>verify</h1>
+<p class="meta">Anthropic ｜ 測試與驗證 ｜ <a href="https://github.com/anthropics/financial-services/blob/main/claude-for-msft-365-install/.claude/skills/verify/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用隔離的假 HOME 實跑 Microsoft 365 安裝工具來驗證變更</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: verify
+description: 針對隔離的假 $HOME 實際執行 claude-for-msft-365-install 的管理員 script 和指令，驗證對它們所做的變更。
+---
+
+# 驗證 claude-for-msft-365-install
+
+這個 plugin 是**管理員用的 CLI 工具**，不是 app。沒有東西要 build，也沒有 server 要啟動。操作介面就是終端機：macOS 上是 `scripts/*.sh`，Windows 上是 `scripts/*.ps1`。
+
+## Lint 關卡
+
+```bash
+python3 scripts/check.py           # from the REPO ROOT, not the plugin dir
+bash -n claude-for-msft-365-install/scripts/&lt;script&gt;.sh
+```
+
+`check.py` 會 lint 每一個 manifest，並自行安裝 pre-commit hook，用來對 `.claude-plugin/plugin.json` 做 patch 版本號遞增。commit 之前要先跑。
+
+## 針對假 $HOME 執行 script
+
+每個 macOS script 都從 `$HOME` 解析 Office 路徑，所以覆寫它就能得到一個用完即丟的沙盒，可以放心測試會造成破壞的 `--apply` 路徑，不會動到真實的 Office 資料。
+
+```bash
+S=&lt;scratchpad&gt;/sandbox
+for app in Excel Word Powerpoint; do
+  mkdir -p &quot;$S/Library/Containers/com.microsoft.$app/Data/Documents/wef&quot;
+done
+printf &#x27;&lt;x/&gt;&#x27; &gt; &quot;$S/Library/Containers/com.microsoft.Excel/Data/Documents/wef/aaaaaaaa-1111-1111-1111-111111111111.manifest-a.xml&quot;
+
+HOME=$S ./scripts/clear-addin-cache.sh                      # list
+HOME=$S ./scripts/clear-addin-cache.sh --id &lt;GUID&gt;          # dry-run
+HOME=$S ./scripts/clear-addin-cache.sh --id &lt;GUID&gt; --apply  # destructive
+```
+
+至少放**兩個 ID，分布在兩個 app**，而且**大小寫混用**。這兩個特性都抓到過真正的 bug：跨 app 的影響範圍，還有一個區分大小寫的 glob 回報 &quot;already clear&quot;，結果讓管理員跑去整個資料夾清空。
+
+## 證明儲存空間有被保留
+
+這個 plugin 最關鍵的承諾是：清除 manifest 絕對不會動到使用者的聊天紀錄。驗證方法是在操作前後，對兩棵目錄樹做快照比對，而且要針對**真實的** `$HOME`：
+
+```bash
+snap() {
+  for app in Excel Word Powerpoint; do
+    find &quot;$HOME/Library/Containers/com.microsoft.$app/Data/Library/WebKit/WebsiteData&quot; \
+         -type f -exec stat -f &#x27;%N %z %m&#x27; {} \; 2&gt;/dev/null
+    find &quot;$HOME/Library/Containers/com.microsoft.$app/Data/Documents/wef&quot; \
+         -type f -exec stat -f &#x27;WEF %N %z&#x27; {} \; 2&gt;/dev/null
+  done | sort
+}
+snap &gt; before.txt;  &lt;run the script&gt;;  snap &gt; after.txt;  diff before.txt after.txt
+```
+
+Manifest 放在 `Data/Documents/wef`，儲存空間放在 `Data/Library/WebKit/WebsiteData`。這是不同的子樹，diff 應該只顯示你移除的那個 manifest。**把任何你放進去的檔案還原，再 diff 一次，確認你把機器留得跟你找到時一樣。**
+
+## 注意事項
+
+- **Bash 工具跑的是 zsh。** Script 是 `#!/usr/bin/env bash`，要測試 bash 專屬的行為（`shopt`、glob 語意），請在 `bash &lt;&lt;&#x27;EOF&#x27; … EOF` 裡面測，不要直接在行內測。
+- **`PRAGMA integrity_check` 和 `SELECT count(*)` 在匯出的 IndexedDB 檔案上會失敗**，錯誤是 `no such collation sequence: IDBKEY`。這是 WebKit 的自訂排序規則，不是檔案損毀，連來源檔案也會失敗。要驗證完整性，請在兩邊都跑 `SELECT sum(length(value)) FROM Records;`。
+- **沒有在 Windows 上實際跑過，就絕對不要宣稱 `.ps1` script 能用。** macOS 沒有 PowerShell，所以只在這裡驗證過的 `.ps1` 變更，等於沒驗證。要在真正的 Windows 主機上、用 Windows PowerShell 5.1 執行，而且在行為測試之前，一定要先做**語法解析檢查**：
+
+  ```powershell
+  $e = $null
+  [System.Management.Automation.PSParser]::Tokenize(
+    (Get-Content -Raw .\clear-addin-cache.ps1), [ref]$e) | Out-Null
+  if ($e.Count) { $e | ForEach-Object { $_.Message } } else { &#x27;parse ok&#x27; }
+  ```
+
+  一個檔案在 macOS 上可能完全沒問題，到了 Windows 上卻完全無法解析（見下方的 ASCII 說明），所以要先確認能解析。
+
+- **`.ps1` 檔案必須是純 ASCII**（由 `scripts/check.py` 強制檢查）。Windows PowerShell 5.1 會把沒有 BOM 的 `.ps1` 當成 ANSI 讀取，所以破折號（em dash）會被解碼成包含 `&quot;` 的亂碼，把字串截斷並破壞解析。`clear-addin-cache.ps1` 就是這樣壞掉才發布出去的，而且沒有任何 macOS 檢查抓得到。
+- 測試參數解析器。`--flag` 當最後一個參數時，會讓 `shift 2` 在 `set -e` 下失敗，並以 exit 1 結束且**沒有任何輸出**；每個 flag 都需要 `[ $# -ge 2 ]` 的防護。</pre></section><section><h2>英文原文</h2><pre>---
+name: verify
+description: Verify changes to the claude-for-msft-365-install admin scripts and commands by driving them against an isolated fake $HOME.
+---
+
+# Verifying claude-for-msft-365-install
+
+This plugin is **admin CLI tooling**, not an app. There is nothing to build and
+no server to boot. The surface is the terminal: `scripts/*.sh` on macOS,
+`scripts/*.ps1` on Windows.
+
+## Lint gate
+
+```bash
+python3 scripts/check.py           # from the REPO ROOT, not the plugin dir
+bash -n claude-for-msft-365-install/scripts/&lt;script&gt;.sh
+```
+
+`check.py` lints every manifest and self-installs the pre-commit hook that
+patch-bumps `.claude-plugin/plugin.json`. Run it before committing.
+
+## Drive the scripts against a fake $HOME
+
+Every macOS script resolves Office paths from `$HOME`, so overriding it gives a
+throwaway sandbox — you can exercise the destructive `--apply` paths without
+touching real Office data.
+
+```bash
+S=&lt;scratchpad&gt;/sandbox
+for app in Excel Word Powerpoint; do
+  mkdir -p &quot;$S/Library/Containers/com.microsoft.$app/Data/Documents/wef&quot;
+done
+printf &#x27;&lt;x/&gt;&#x27; &gt; &quot;$S/Library/Containers/com.microsoft.Excel/Data/Documents/wef/aaaaaaaa-1111-1111-1111-111111111111.manifest-a.xml&quot;
+
+HOME=$S ./scripts/clear-addin-cache.sh                      # list
+HOME=$S ./scripts/clear-addin-cache.sh --id &lt;GUID&gt;          # dry-run
+HOME=$S ./scripts/clear-addin-cache.sh --id &lt;GUID&gt; --apply  # destructive
+```
+
+Seed at least **two IDs across two apps**, with **mixed upper/lowercase**. Both
+properties have caught real bugs: cross-app blast radius, and a case-sensitive
+glob that reported &quot;already clear&quot; and sent admins to a folder-wide wipe.
+
+## Prove storage is retained
+
+The load-bearing claim of this plugin is that clearing a manifest never touches
+the user&#x27;s chat history. Verify it by snapshot-diffing both trees around the
+operation, against the **real** `$HOME`:
+
+```bash
+snap() {
+  for app in Excel Word Powerpoint; do
+    find &quot;$HOME/Library/Containers/com.microsoft.$app/Data/Library/WebKit/WebsiteData&quot; \
+         -type f -exec stat -f &#x27;%N %z %m&#x27; {} \; 2&gt;/dev/null
+    find &quot;$HOME/Library/Containers/com.microsoft.$app/Data/Documents/wef&quot; \
+         -type f -exec stat -f &#x27;WEF %N %z&#x27; {} \; 2&gt;/dev/null
+  done | sort
+}
+snap &gt; before.txt;  &lt;run the script&gt;;  snap &gt; after.txt;  diff before.txt after.txt
+```
+
+Manifests live in `Data/Documents/wef`; storage lives in
+`Data/Library/WebKit/WebsiteData`. Different subtrees — the diff should show
+only the manifest you removed. **Restore any planted files and re-diff to
+confirm you left the machine as you found it.**
+
+## Gotchas
+
+- **The Bash tool runs zsh.** Scripts are `#!/usr/bin/env bash`; test bash-only
+  behaviour (`shopt`, glob semantics) inside `bash &lt;&lt;&#x27;EOF&#x27; … EOF`, not inline.
+- **`PRAGMA integrity_check` and `SELECT count(*)` fail on exported IndexedDB
+  files** with `no such collation sequence: IDBKEY`. That is WebKit&#x27;s custom
+  collation, not corruption — it fails on the source file too. Verify
+  completeness with `SELECT sum(length(value)) FROM Records;` on both sides.
+- **Never claim the `.ps1` scripts work without running them on Windows.**
+  macOS has no PowerShell, so a `.ps1` change verified only here is unverified.
+  Run it on a real Windows host against Windows PowerShell 5.1, and always
+  include a **parse check** before the behavioural ones:
+
+  ```powershell
+  $e = $null
+  [System.Management.Automation.PSParser]::Tokenize(
+    (Get-Content -Raw .\clear-addin-cache.ps1), [ref]$e) | Out-Null
+  if ($e.Count) { $e | ForEach-Object { $_.Message } } else { &#x27;parse ok&#x27; }
+  ```
+
+  A file can be perfectly fine on macOS and fail to parse outright on Windows
+  (see the ASCII note below), so parsing is the first thing to establish.
+
+- **`.ps1` files must be pure ASCII** (enforced by `scripts/check.py`).
+  Windows PowerShell 5.1 reads a BOM-less `.ps1` as ANSI, so an em dash decodes
+  to mojibake containing `&quot;`, which terminates a string and breaks the parse.
+  `clear-addin-cache.ps1` shipped broken this way and no macOS check caught it.
+- Probe the arg parser. `--flag` as the final argument makes `shift 2` fail
+  under `set -e` and exits 1 with **no output**; each flag needs a
+  `[ $# -ge 2 ]` guard.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cash-flow-snapshot｜Skill 寫法圖鑑</title>
+<meta name="description" content="讀帳務與收款資料，產出 30/60/90 天現金流預測和風險標記">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>cash-flow-snapshot</h1>
+<p class="meta">Anthropic ｜ 金融與投資 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/small-business/skills/cash-flow-snapshot/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">讀帳務與收款資料，產出 30/60/90 天現金流預測和風險標記</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: cash-flow-snapshot
+description: &gt;
+  從帳務系統（MYOB、NetSuite、QuickBooks、Xero 或 Zoho Books）、PayPal、Square、Stripe，或上傳的 CSV
+  讀取應收/應付帳款、歷史收款時間和已知的固定成本，產出 30/60/90 天的現金流預測，
+  附上以百分比變異表示的信心區間和點名的風險標記。交付聊天摘要和可下載的 XLSX。
+  當使用者問「forecast my cash flow」「will I make payroll」，提到「runway」或說「cash crunch」時使用。
+  沒有可用的 connector 時，退回 CSV 上傳。
+compatibility: &quot;Requires one or more of: a ledger MCP (MYOB, NetSuite, QuickBooks, Xero, Zoho Books), PayPal MCP, Shopify MCP, Square MCP, Stripe MCP, file upload (CSV fallback). Output uses xlsx skill.&quot;
+allowed-tools: Read, WebFetch
+---
+
+# Cash Flow Snapshot
+
+產出 30/60/90 天的現金流預測，附上以百分比變異表示的信心區間和點名的風險標記。
+交付兩部分的輸出：精簡的聊天摘要，和可下載的 XLSX 活頁簿。
+
+**快速開始**
+
+&gt; 「Will I make payroll next month?」
+
+Claude 從已連線的來源拉出目前的銀行餘額、應收/應付帳款和固定成本，
+計算 30、60 和 90 天各個區間的預期流入與流出，依每個客戶的付款變異套用信心區間，
+並用名字標出具體的風險。
+
+---
+
+## 工作流程
+
+### Step 1 — 確認可用的資料來源
+
+檢查哪些 connector 有連線。有連線的每一個都要拉，一批送出：
+
+1. 帳務系統：MYOB、NetSuite、QuickBooks、Xero 或 Zoho Books，連了哪個就用哪個，用來取得 AR aging、AP、固定成本和現金餘額。帳務系統之間是平等的（`../../shared/connector-neutrality.md`）；如果連了兩個，就問哪一個是記錄來源，總額只取那一個的
+2. PayPal：交易紀錄和撥款時間
+3. Square：銷售和撥款紀錄
+4. Stripe：收款和撥款紀錄
+5. Shopify：用訂單（`list-orders`）當作流入，再加上撥款時間。單靠 Shopify 就足以執行：對電商業者來說它通常是最大的流入。撥款讀取可能會失敗，因為 connector 的權限範圍不包含 Shopify Payments；這時就向老闆要他們的撥款時程，並依此建模，絕對不要自己推測延遲天數（`reference/v2_sources.md`）
+6. CSV 上傳：沒有任何 connector 連線時
+
+如果沒有 connector 連線，也沒有附檔案，就請使用者連接一個來源，或上傳 CSV（收入/支出表格資料，任何合理的格式都可以）。
+在輸出裡註明用了哪些來源，這會影響信心區間的寬度。
+
+**一定要確立起始的現金餘額**：「will I make payroll」問的是餘額，不是淨額。
+在 Step 2 拉出來，或問：「公司帳戶現在有多少錢？是哪一天的數字？」**絕對不要自己假設一個。**
+如果沒人知道，就把輸出的標題寫成「no opening balance — net change only」，並把手上現金從風險標記裡拿掉。
+
+### Step 2 — 拉資料
+
+**從帳務系統：**
+- 資產負債表：銀行和現金餘額，附上截止日期，這就是起始餘額
+  （MYOB 完全沒有；見 `reference/v2_sources.md`）
+- AR aging 報表：客戶名稱、發票金額、發票日期、到期日、逾期天數
+- AP：廠商名稱、應付金額、到期日
+- 週期性固定成本：房租、薪資、訂閱（找週期性交易）
+
+**從 Gusto（有連線時）：**
+- 下次發薪的日期和預期金額，以及固定的發薪週期，
+  這是最大一筆固定成本的真實數字，不用再從週期性交易推測薪資。
+  當 Gusto 和帳務系統在薪資上不一致時，時間和金額以 Gusto 為準，並在輸出裡說明
+
+**從 PayPal / Stripe / Square：**
+- 撥款紀錄：交易日期、金額、撥款日期
+- 用撥款延遲（交易日期 → 撥款日期）計算每個來源的平均和變異付款延遲
+
+**從 CSV 上傳：**
+- 當作收入/支出的表格資料解析
+- 必要欄位（名稱可彈性）：date、amount、type（income 或 expense）、description
+- 如果欄位有歧義，就顯示標題列，請使用者確認對應
+
+### Step 3 — 計算歷史付款時間
+
+對每個 AR 客戶（或 CSV 裡的每個收入來源），計算：
+- **平均付款延遲** — 從發票/交易日期到收款的平均天數
+- **付款變異** — 最近 6 到 12 筆付款的付款延遲標準差
+- 用變異來設定信心區間的寬度（見 Step 4）
+
+如果某個客戶的付款少於 3 筆，就用整體平均作為點估計，並套用 ±30% 的變異區間作為預設。
+當用 CSV 資料執行、而且歷史足夠（每個來源 ≥3 筆付款）時，要用實際的付款變異來計算區間，不要假設 ±30%。
+
+### Step 4 — 建立 30/60/90 天預測
+
+產出三個時間區間：0–30 天、31–60 天、61–90 天。
+
+每個區間都要計算：
+
+| 項目 | 方法 |
+|---|---|
+| 預期流入 | 在該區間到期的 AR，依平均付款延遲調整 |
+| 預期流出 | 在該區間到期的 AP + 落在該區間的固定成本 |
+| 淨現金部位 | 流入 − 流出 |
+| 信心區間 | ± 加權平均付款變異，以預期流入的百分比表示 |
+
+信心區間公式：
+```
+band_pct = weighted_avg_stddev_days / avg_payment_lag_days
+low  = net_cash × (1 − band_pct)
+high = net_cash × (1 + band_pct)
+```
+
+把 band_pct 四捨五入到小數點後一位。上限 ±50%：變異再高，代表資料太少、沒辦法建模，要改成標記出來（見 Step 5）。
+
+### Step 5 — 標出點名的風險
+
+掃描會讓低區間估計變成負數，或造成資金周轉壓力的狀況。每找到一個風險，就產出一行標記：
+
+- **客戶遲付風險：**「客戶 X 歷來都晚 18 天付款；這會把他們 USD 8,400 的發票從 30 天區間推到第 48 天。」
+- **發薪壓力：**「薪資（USD 22,000）在 4 月 15 日發放。4 月 1 日的起始餘額 USD 31,000，
+  加上流入、減去流出，4 月 14 日的低區間手上現金是 USD 19,200。缺口風險：USD 2,800。」需要有來源的餘額。
+- **資料太少警告：**「客戶 Y 只有 2 筆付款紀錄，信心區間設成預設的 ±30%。」
+- **沒有 connector 的警告：**「只用 CSV 資料執行，沒有即時的 AP 或週期性成本資料。信心區間比平常寬。」
+
+依嚴重程度只留前 5 個風險（金額影響最大的優先）。
+
+### Step 6 — 交付輸出
+
+**聊天摘要**（一定要有）。預測用 markdown 表格，不要用 fenced code block，
+聊天介面會渲染 markdown 表格；fenced block 會顯示成原始的等寬文字。格式：
+
+- 標題行：Cash Flow Snapshot — &lt;日期範圍&gt;
+- 來源：&lt;用到的 connector&gt;
+- 起始餘額：AUD X,XXX（截至 &lt;日期&gt;）（或：none on file — net change only）
+
+接著把預測做成 markdown 表格，金額要帶公司的幣別代碼
+（`../../shared/currency-and-locale.md`），絕對不要只用符號：
+
+| Window | Expected | Low | High |
+|---|---|---|---|
+| 30-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+| 60-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+| 90-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+
+然後把風險列成簡短的項目清單，放在「⚠ Risks flagged: &lt;數量&gt;」底下。
+
+**XLSX 活頁簿**（一定要有）：先讀 `xlsx/SKILL.md`，然後產出三個工作表：
+
+1. **Summary** — 30/60/90 預測表，附信心區間。在每個區間那一列的下面，展開內嵌的子列，
+   顯示組成它流入（綠色）和流出（紅色）的各筆交易。這樣不用離開 Summary 工作表，就能稽核估算。
+
+2. **Detail** — 所有交易依區間分組，每組內依日期排序。包含一個累計淨額欄（該區間內累計的流入減流出），
+   以及每個區間底部的小計列，顯示總流入、總流出和淨額。過去的交易用灰色顯示，放在底部另開一個區塊供參考。
+   確保三個區間都有列，就算其中一個是空的，也要顯示一列「No transactions in this window」佔位列。
+
+3. **Risks** — 被標記的風險，附上金額影響和受影響的區間。
+
+存成 `cash-flow-snapshot-[YYYY-MM-DD].xlsx`。
+
+**預測頁面**（一定要有，跟聊天摘要並行，絕對不是取代它），
+依老闆存下來的輸出偏好交付，絕對不要預設用 markdown 檔。
+檢查 `## Business context` 區塊的 `Output preference`（共用的風格指南規則，`../../shared/artifact-style.md`）：
+
+- **視覺化 artifact（預設）：** 用 house style 把完整預測渲染成 HTML 頁面。
+  30/60/90 天的淨額做成數字卡，信心範圍放在每張卡的輔助說明行；
+  交易明細是表格，金額靠右對齊並用 tabular-nums；
+  每個風險標記帶一個狀態標籤：預計出現缺口的用 critical，客戶遲付和資料太少的標記用 warn；
+  來源和起始餘額放在一個小的標頭面板。
+- **docx / md / notion / canva 偏好：** 用該形式交付同樣的內容，
+  可以是 DOCX 或 markdown 檔、透過 connector 建立的 Notion 頁面（要有指名的位置，絕對不覆蓋）、
+  或透過 Canva connector 建立的 Canva Doc（每次執行都建新的設計，以日期命名；表格改成清單）；
+  如果 Notion 或 Canva 沒連線，就退回視覺化 artifact，並說明是因為這個原因。XLSX 仍然一併交付。
+- **Best for skill：** 用視覺化 artifact，因為預測是一眼掃過、而且會常常重跑。
+
+---
+
+## 執行之後
+
+用一行說明剛剛發生了什麼：預測建好了，風險也點名了。
+然後給一個最相關的下一步，加上最多兩個相近的：
+
+- 如果標出了發薪壓力：「can I make payroll」會執行 `/plan-payroll`。
+- 「Who owes me money?」會執行 `invoice-chase`，把收款提前。
+- 「Close the month」會執行 `/close-month`，讓下一次預測用乾淨的帳來跑。
+
+最多三個提議，這個 session 裡老闆拒絕過的提議絕對不要重複。
+
+## 核准關卡
+
+這個 skill 是唯讀的，產生預測之前不需要核准關卡。
+
+交付之後要提醒使用者：
+&gt; 「這份預測是依據 [列出的來源]。它不能取代會計建議，在做任何融資決定之前，請先跟你的記帳人員確認。」
+
+---
+
+## 更多來源，以及排程
+
+完整的對照請讀 `reference/v2_sources.md`：
+
+- **Shopify** — 付款流入的時間，對電商業者來說通常是最大的單一流入，而且撥款有延遲，值得建模
+- **NetSuite** — 記錄用的帳務系統，常見於這個族群中規模較大的一端：透過報表和 SuiteQL 取得 AR、AP、固定成本和現金餘額
+- **Xero** — 記錄用的帳務系統：應收帳款帳齡、帳單、銀行餘額，以及組織的幣別和會計年度
+- **Ramp** — 還沒入帳的刷卡消費，這是預測默默偏樂觀最常見的原因
+- **Ramp balances** — 真實的企業和資金帳戶餘額與歷史。當老闆在 Ramp 開戶時，這就是一個有來源的起始餘額，不用靠他們自己記
+- **MYOB** — 給 MYOB 店家的 AR 和 AP 這兩段。唯讀，而且它**完全沒有銀行或現金餘額**，絕對不要從它取得起始餘額
+
+預測的邏輯完全不變。這些只是進入同一個模型的額外來源。
+
+### 排程執行
+
+這個 skill 可以排程。每月的預設是月底前的現金預警。
+
+在老闆覺得有用的預測之後，提議一次：
+
+```
+想要每個月、在月底前幾天自動跑嗎？那時候最有用，
+而且跟你剛剛拿到的是同一份預測。
+```
+
+排程是這個 skill 的屬性。沒有另外的指令。
+
+**QuickBooks 的 summary 欄位會騙人。** 引用 QuickBooks summary 物件裡的任何總額之前，先讀 `../../shared/quickbooks-report-traps.md`：AP aging summary 會把廠商信用額度沖進各個區間，可能顯示出負的逾期金額，而 P&amp;L summary 可能在有真實資料列的情況下把費用回報成零。要自己加總資料列，或使用明細呼叫。
+
+## 參考檔案
+
+| 檔案 | 何時載入 |
+|---|---|
+| `reference/gotchas.md` | connector 回傳非預期資料，或變異極端時 |
+| `reference/examples/worked-example.md` | 為新的資料形態設計輸出格式時 |
+
+## 使用沒列出的工具
+
+這個 skill 裡提到的 connector 是測試過的路徑，不是一道牆。如果老闆想讓這個流程用某個沒連線或沒列出的工具，就提議 `build-connector`，它會先查 connector 目錄，沒有的話再透過 Zapier 連接，絕對不手工對著原始 API 硬幹。連線建好之後，這個工具就像其他任何可選的 connector 一樣加入這個 skill，受同樣的核准關卡約束。</pre></section><section><h2>英文原文</h2><pre>---
+name: cash-flow-snapshot
+description: &gt;
+  Reads AR/AP, historical cash timing, and known fixed costs from the ledger
+  (MYOB, NetSuite, QuickBooks, Xero, or Zoho Books) or from PayPal, Square, or Stripe — or
+  a CSV upload — and produces a 30/60/90-day cash flow forecast with
+  percentage-variance confidence bands and named risk flags. Delivers a chat
+  summary and a downloadable XLSX. Use when the user asks &quot;forecast my cash
+  flow,&quot; &quot;will I make payroll,&quot; mentions &quot;runway,&quot; or says &quot;cash crunch.&quot;
+  Falls back to CSV upload when no connector is live.
+compatibility: &quot;Requires one or more of: a ledger MCP (MYOB, NetSuite, QuickBooks, Xero, Zoho Books), PayPal MCP, Shopify MCP, Square MCP, Stripe MCP, file upload (CSV fallback). Output uses xlsx skill.&quot;
+allowed-tools: Read, WebFetch
+---
+
+# Cash Flow Snapshot
+
+Produces a 30/60/90-day cash flow forecast with percentage-variance confidence
+bands and named risk flags. Delivers a two-part output: a concise chat summary
+and a downloadable XLSX workbook.
+
+**Quick start**
+
+&gt; &quot;Will I make payroll next month?&quot;
+
+Claude pulls the current bank balance, AR/AP, and fixed costs from connected
+sources, calculates expected inflows and outflows across 30, 60, and 90-day
+windows, applies confidence bands from each customer&#x27;s payment variance, and
+flags specific risks by name.
+
+---
+
+## Workflow
+
+### Step 1 — Identify available data sources
+
+Check which connectors are live. Pull from every one that is, in one batch:
+
+1. The ledger — MYOB, NetSuite, QuickBooks, Xero, or Zoho Books, whichever is connected — for AR aging, AP, fixed costs, and the cash balance. Ledgers are peers (`../../shared/connector-neutrality.md`); if two are connected, ask which is the source of record and take totals from that one only
+2. PayPal — transaction history and settlement timing
+3. Square — sales and payout history
+4. Stripe — charge and payout history
+5. Shopify — orders (`list-orders`) as the inflow, plus payout timing. Shopify on its own is enough to run: for a commerce business it is often the largest inflow. The payout read may fail because the connector&#x27;s scopes exclude Shopify Payments — then ask the owner for their payout schedule and model from that; never infer a lag (`reference/v2_sources.md`)
+6. CSV upload — when no connector is connected
+
+If no connector is live and no file is attached, ask the user to either connect
+a source or upload a CSV (income/expense tabular data, any reasonable format).
+Note which sources were used in the output — this affects confidence band width.
+
+**Always establish the starting cash balance** — &quot;will I make payroll&quot; is a
+question about the balance, not the net. Pull it in Step 2, or ask: &quot;What&#x27;s in
+the business account right now, and as of what date?&quot; **Never assume one.** If
+nobody knows, head the output &quot;no opening balance — net change only&quot; and drop
+cash-on-hand from the risk flags.
+
+### Step 2 — Pull the data
+
+**From the ledger:**
+- Balance sheet: bank and cash balances with the as-of date — the opening balance
+  (MYOB holds none; see `reference/v2_sources.md`)
+- AR aging report: customer name, invoice amount, invoice date, due date, days outstanding
+- AP: vendor name, amount due, due date
+- Recurring fixed costs: rent, payroll, subscriptions (look for recurring transactions)
+
+**From Gusto, when connected:**
+- The next payroll run&#x27;s date and expected amount, and the regular pay-schedule
+  cadence — the real numbers for the biggest fixed cost, instead of inferring
+  payroll from recurring transactions. When Gusto and the ledger disagree on
+  payroll, trust Gusto for timing and amount and say so in the output
+
+**From PayPal / Stripe / Square:**
+- Settlement history: transaction date, amount, settlement date
+- Use settlement lag (transaction date → payout date) to compute each source&#x27;s
+  average and variance payment delay
+
+**From CSV upload:**
+- Parse as income/expense tabular data
+- Required columns (flexible naming): date, amount, type (income or expense), description
+- If columns are ambiguous, show the header row and ask the user to confirm mapping
+
+### Step 3 — Compute historical payment timing
+
+For each AR customer (or income source from CSV), calculate:
+- **Mean payment lag** — average days from invoice/transaction date to receipt
+- **Payment variance** — standard deviation of payment lag across last 6–12 payments
+- Use variance to set confidence band width (see Step 4)
+
+If fewer than 3 payments exist for a customer, use the population mean as the
+point estimate and apply a ±30% variance band as the default. When running on
+CSV data with sufficient history (≥3 payments per source), compute the band
+from the actual payment variance — do not assume ±30%.
+
+### Step 4 — Build the 30/60/90-day forecast
+
+Produce three time windows: 0–30 days, 31–60 days, 61–90 days.
+
+For each window, compute:
+
+| Line | Method |
+|---|---|
+| Expected inflows | AR due in window, adjusted for mean payment lag |
+| Expected outflows | AP due in window + fixed costs falling in window |
+| Net cash position | Inflows − Outflows |
+| Confidence band | ± weighted average payment variance as a % of expected inflows |
+
+Confidence band formula:
+```
+band_pct = weighted_avg_stddev_days / avg_payment_lag_days
+low  = net_cash × (1 − band_pct)
+high = net_cash × (1 + band_pct)
+```
+
+Round band_pct to one decimal place. Cap at ±50% — higher variance means the
+data is too thin to model; flag it instead (see Step 5).
+
+### Step 5 — Flag named risks
+
+Scan for conditions that push the low-band estimate negative or create a
+liquidity crunch. For each risk found, produce a one-line flag:
+
+- **Late-payer risk:** &quot;Customer X historically pays 18 days late; that shifts
+  their USD 8,400 invoice out of the 30-day window into day 48.&quot;
+- **Payroll crunch:** &quot;Payroll (USD 22,000) hits April 15. Opening balance USD 31,000
+  on April 1, plus inflows, minus outflows, puts low-band cash on hand April 14
+  at USD 19,200. Shortfall risk: USD 2,800.&quot; Needs a sourced balance.
+- **Thin data warning:** &quot;Only 2 payments on record for Customer Y — confidence
+  band set to default ±30%.&quot;
+- **No-connector warning:** &quot;Running on CSV data only — no real-time AP or
+  recurring cost data. Confidence bands are wider than normal.&quot;
+
+Limit to the top 5 risks by severity (largest dollar impact first).
+
+### Step 6 — Deliver outputs
+
+**Chat summary** (always). Use a markdown table for the forecast, not a fenced
+code block — the chat surface renders markdown tables; a fenced block shows up
+as raw monospace text. Shape:
+
+- Title line: Cash Flow Snapshot — &lt;date range&gt;
+- Source(s): &lt;connectors used&gt;
+- Opening balance: AUD X,XXX as of &lt;date&gt; (or: none on file — net change only)
+
+Then the forecast as a markdown table, amounts carrying the business&#x27;s currency
+code (`../../shared/currency-and-locale.md`), never a bare symbol:
+
+| Window | Expected | Low | High |
+|---|---|---|---|
+| 30-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+| 60-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+| 90-day net | AUD X,XXX | AUD X,XXX | AUD X,XXX |
+
+Then risks as a short bulleted list under &quot;⚠ Risks flagged: &lt;count&gt;&quot;.
+
+**XLSX workbook** (always): read `xlsx/SKILL.md` first, then produce three sheets:
+
+1. **Summary** — the 30/60/90 forecast table with confidence bands. Beneath
+   each window row, expand inline sub-rows showing the individual transactions
+   that make up its inflows (green) and outflows (red). This makes the estimates
+   auditable without leaving the Summary sheet.
+
+2. **Detail** — all transactions grouped by window, sorted by date within each
+   group. Include a running net column (cumulative inflows minus outflows within
+   the window) and a subtotal row at the bottom of each window showing total
+   inflows, total outflows, and net. Grey out past transactions in a separate
+   section at the bottom for reference. Ensure all three windows have rows even
+   if one is empty — show a &quot;No transactions in this window&quot; placeholder row.
+
+3. **Risks** — the flagged risks with dollar impact and affected window.
+
+Save as `cash-flow-snapshot-[YYYY-MM-DD].xlsx`.
+
+**The forecast page** (always, alongside the chat summary — never instead of
+it), delivered per the owner&#x27;s stored output preference — never default to a
+markdown file. Check the `## Business context` block&#x27;s `Output preference`
+(shared style guide rule, `../../shared/artifact-style.md`):
+
+- **Visual artifact (the default):** render the full forecast as an HTML page
+  in the house style. The 30/60/90-day nets are stat tiles with the confidence
+  range as each tile&#x27;s context line; the transaction detail is a table with
+  right-aligned tabular-nums amounts; each risk flag carries a status pill —
+  critical for a projected shortfall, warn for late-payer and thin-data flags;
+  sources and opening balance sit in a small header panel.
+- **docx / md / notion / canva preference:** deliver the same content in that
+  form — a DOCX or markdown file, a Notion page created via the connector
+  (named destination, never overwriting), or a Canva Doc created via the Canva
+  connector (a new design each run, named with the date; tables become
+  lists); fall back to the visual artifact if Notion or Canva is not
+  connected — and say that is why. The XLSX still ships alongside.
+- **Best for skill:** use the visual artifact — a forecast is read at a glance
+  and re-run often.
+
+---
+
+## After the run
+
+One line on what just happened: the forecast is built and the risks are named.
+Then offer the single most relevant next step, plus at most two others nearby:
+
+- If a payroll crunch was flagged: &quot;can I make payroll&quot; runs `/plan-payroll`.
+- &quot;Who owes me money?&quot; runs `invoice-chase` to pull collections forward.
+- &quot;Close the month&quot; runs `/close-month` so next forecast runs on clean books.
+
+Max three offers, and never repeat an offer the owner declined this session.
+
+## Approval gates
+
+This skill is read-only — no approval gate before generating the forecast.
+
+Remind the user after delivery:
+&gt; &quot;This forecast is based on [sources listed]. It is not a substitute for
+&gt; accounting advice — verify with your bookkeeper before making financing decisions.&quot;
+
+---
+
+## More sources, and a schedule
+
+Read `reference/v2_sources.md` for the full mapping:
+
+- **Shopify** — payments inflow timing, which is often the largest single inflow for a commerce business and settles on a delay worth modeling
+- **NetSuite** — a ledger of record, common at the larger end of the segment: AR, AP, fixed costs, and the cash balance via reports and SuiteQL
+- **Xero** — a ledger of record: aged receivables, bills, bank balances, and the organisation&#x27;s currency and financial year
+- **Ramp** — card spend that hasn&#x27;t hit the books yet, which is the most common reason a forecast is quietly optimistic
+- **Ramp balances** — real business and treasury account balances with history. When the owner banks with Ramp this is a sourced opening balance rather than a number they had to remember
+- **MYOB** — AR and AP legs for MYOB shops. Read-only, and it holds **no bank or cash balances at all** — never source an opening balance from it
+
+Nothing about the forecast logic changes. These are additional legs into the same model.
+
+### Running on a schedule
+
+This skill is schedulable. The monthly preset is a cash heads-up before the month turns.
+
+Offer it once, after a forecast the owner found useful:
+
+```
+Want this monthly, a few days before month end? That&#x27;s when it&#x27;s most useful,
+and it&#x27;s the same forecast you just got.
+```
+
+Scheduling is a property of this skill. There is no separate command for it.
+
+**QuickBooks summary fields lie.** Read `../../shared/quickbooks-report-traps.md` before quoting any total from a QuickBooks summary object: the AP aging summary nets vendor credits into its buckets and can show a negative overdue figure, and the P&amp;L summary can report expenses as zero against real rows. Total the rows, or use the detail call.
+
+## Reference files
+
+| File | Load when |
+|---|---|
+| `reference/gotchas.md` | When a connector returns unexpected data or variance is extreme |
+| `reference/examples/worked-example.md` | When modeling the output format for a new data shape |
+
+## Using a tool that isn&#x27;t listed
+
+The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn&#x27;t connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

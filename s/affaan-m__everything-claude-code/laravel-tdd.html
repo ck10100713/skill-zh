@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laravel-tdd｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 PHPUnit 與 Pest 以 TDD 方式測試 Laravel，含 factory、mock 與覆蓋率">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>laravel-tdd</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/laravel-tdd/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 PHPUnit 與 Pest 以 TDD 方式測試 Laravel，含 factory、mock 與覆蓋率</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: laravel-tdd
+description: 用 PHPUnit、Pest、model factory、HTTP 測試、Sanctum 驗證測試、mock 與覆蓋率的 Laravel 測試策略。在用 PHPUnit 或 Pest 寫 Laravel 測試，或用測試先行的方式開發 Laravel 功能時使用。
+metadata:
+  origin: ECC
+---
+
+# Laravel Testing with TDD
+
+用 PHPUnit、Pest、Laravel factory 與測試輔助工具，為 Laravel 應用程式做測試驅動開發。
+
+## 何時啟用
+
+- 撰寫新的 Laravel 應用程式或功能
+- 實作使用 Sanctum 或 Passport 驗證的 API endpoint
+- 測試 Eloquent model、關聯、scope 與 accessor
+- 為 Laravel 專案建立測試基礎設施
+- 為 HTTP controller 與 form request 寫 feature test
+- Mock 外部服務（queue、mail、notification、HTTP）
+
+## Laravel 的 TDD 工作流程
+
+### Red-Green-Refactor 循環
+
+```php
+// Step 1: RED — Write a failing test
+public function test_a_product_can_be_created(): void
+{
+    $product = Product::factory()-&gt;create([&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+    $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+}
+
+// Step 2: GREEN — Write the migration, model, and factory
+// Step 3: REFACTOR — Improve while keeping tests green
+```
+
+## 設定
+
+### PHPUnit 設定
+
+```xml
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;phpunit xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:noNamespaceSchemaLocation=&quot;vendor/phpunit/phpunit/phpunit.xsd&quot;
+         bootstrap=&quot;vendor/autoload.php&quot;
+         colors=&quot;true&quot;&gt;
+    &lt;testsuites&gt;
+        &lt;testsuite name=&quot;Unit&quot;&gt;
+            &lt;directory suffix=&quot;Test.php&quot;&gt;tests/Unit&lt;/directory&gt;
+        &lt;/testsuite&gt;
+        &lt;testsuite name=&quot;Feature&quot;&gt;
+            &lt;directory suffix=&quot;Test.php&quot;&gt;tests/Feature&lt;/directory&gt;
+        &lt;/testsuite&gt;
+    &lt;/testsuites&gt;
+    &lt;php&gt;
+        &lt;env name=&quot;APP_ENV&quot; value=&quot;testing&quot;/&gt;
+        &lt;env name=&quot;BCRYPT_ROUNDS&quot; value=&quot;4&quot;/&gt;
+        &lt;env name=&quot;CACHE_STORE&quot; value=&quot;array&quot;/&gt;
+        &lt;env name=&quot;DB_CONNECTION&quot; value=&quot;sqlite&quot;/&gt;
+        &lt;env name=&quot;DB_DATABASE&quot; value=&quot;:memory:&quot;/&gt;
+        &lt;env name=&quot;MAIL_MAILER&quot; value=&quot;array&quot;/&gt;
+        &lt;env name=&quot;QUEUE_CONNECTION&quot; value=&quot;sync&quot;/&gt;
+        &lt;env name=&quot;SESSION_DRIVER&quot; value=&quot;array&quot;/&gt;
+    &lt;/php&gt;
+&lt;/phpunit&gt;
+```
+
+### 基底 TestCase 設定
+
+```php
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Call $this-&gt;withoutExceptionHandling() only in tests that
+        // test non-HTTP exceptions; it suppresses assertStatus() etc.
+    }
+
+    // Helper: Authenticate and return user
+    protected function actingAsUser(): mixed
+    {
+        $user = \App\Models\User::factory()-&gt;create();
+        $this-&gt;actingAs($user);
+        return $user;
+    }
+
+    protected function actingAsAdmin(): mixed
+    {
+        $admin = \App\Models\User::factory()-&gt;admin()-&gt;create();
+        $this-&gt;actingAs($admin);
+        return $admin;
+    }
+}
+```
+
+## Model Factory
+
+```php
+// database/factories/UserFactory.php
+class UserFactory extends Factory
+{
+    protected static ?string $password = null;
+
+    public function definition(): array
+    {
+        return [
+            &#x27;name&#x27; =&gt; fake()-&gt;name(),
+            &#x27;email&#x27; =&gt; fake()-&gt;unique()-&gt;safeEmail(),
+            &#x27;email_verified_at&#x27; =&gt; now(),
+            &#x27;password&#x27; =&gt; static::$password ??= Hash::make(&#x27;password&#x27;),
+            &#x27;remember_token&#x27; =&gt; Str::random(10),
+            &#x27;role&#x27; =&gt; &#x27;user&#x27;,
+        ];
+    }
+
+    public function admin(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;role&#x27; =&gt; &#x27;admin&#x27;]);
+    }
+
+    public function unverified(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;email_verified_at&#x27; =&gt; null]);
+    }
+}
+
+// database/factories/ProductFactory.php
+class ProductFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            &#x27;name&#x27; =&gt; fake()-&gt;unique()-&gt;words(3, true),
+            &#x27;slug&#x27; =&gt; fn (array $attrs) =&gt; Str::slug($attrs[&#x27;name&#x27;]),
+            &#x27;description&#x27; =&gt; fake()-&gt;paragraph(),
+            &#x27;price&#x27; =&gt; fake()-&gt;numberBetween(100, 100000),
+            &#x27;stock&#x27; =&gt; fake()-&gt;numberBetween(0, 100),
+            &#x27;is_active&#x27; =&gt; true,
+            &#x27;user_id&#x27; =&gt; UserFactory::new(),
+        ];
+    }
+
+    public function outOfStock(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;stock&#x27; =&gt; 0]);
+    }
+}
+```
+
+### 使用 Factory
+
+```php
+$user = User::factory()-&gt;create();
+$admin = User::factory()-&gt;admin()-&gt;create();
+$product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+$products = Product::factory()-&gt;count(10)-&gt;create();
+$draft = Product::factory()-&gt;make(); // Not persisted
+
+// With relationships
+$user = User::factory()-&gt;has(Product::factory()-&gt;count(3))-&gt;create();
+
+// Sequences
+User::factory()-&gt;count(3)-&gt;sequence(
+    [&#x27;role&#x27; =&gt; &#x27;admin&#x27;], [&#x27;role&#x27; =&gt; &#x27;editor&#x27;], [&#x27;role&#x27; =&gt; &#x27;user&#x27;],
+)-&gt;create();
+```
+
+## Model 測試
+
+```php
+namespace Tests\Unit\Models;
+
+use App\Models\User;
+use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class UserTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_it_hides_sensitive_attributes(): void
+    {
+        $user = User::factory()-&gt;create();
+        $this-&gt;assertArrayNotHasKey(&#x27;password&#x27;, $user-&gt;toArray());
+    }
+
+    public function test_admin_scope_returns_only_admins(): void
+    {
+        User::factory()-&gt;admin()-&gt;create();
+        User::factory()-&gt;count(3)-&gt;create();
+
+        $this-&gt;assertCount(1, User::admin()-&gt;get());
+    }
+}
+
+class ProductTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_active_scope_filters_correctly(): void
+    {
+        Product::factory()-&gt;count(3)-&gt;create([&#x27;is_active&#x27; =&gt; true]);
+        Product::factory()-&gt;count(2)-&gt;create([&#x27;is_active&#x27; =&gt; false]);
+
+        $this-&gt;assertCount(3, Product::active()-&gt;get());
+    }
+
+    public function test_it_belongs_to_a_user(): void
+    {
+        $user = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+        $this-&gt;assertTrue($product-&gt;user-&gt;is($user));
+    }
+}
+```
+
+## Feature / HTTP 測試
+
+```php
+namespace Tests\Feature\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProductControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_guests_are_redirected_to_login(): void
+    {
+        $this-&gt;get(route(&#x27;products.create&#x27;))-&gt;assertRedirect(route(&#x27;login&#x27;));
+    }
+
+    public function test_it_stores_a_new_product(): void
+    {
+        $user = User::factory()-&gt;create();
+        $this-&gt;actingAs($user);
+
+        $response = $this-&gt;post(route(&#x27;products.store&#x27;), [
+            &#x27;name&#x27; =&gt; &#x27;New Product&#x27;,
+            &#x27;description&#x27; =&gt; &#x27;Description&#x27;,
+            &#x27;price&#x27; =&gt; 2999,
+            &#x27;stock&#x27; =&gt; 10,
+        ]);
+
+        $response-&gt;assertRedirect(route(&#x27;products.index&#x27;));
+        $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;New Product&#x27;,
+            &#x27;user_id&#x27; =&gt; $user-&gt;id,
+        ]);
+    }
+
+    public function test_it_validates_required_fields(): void
+    {
+        $this-&gt;actingAs(User::factory()-&gt;create());
+        $this-&gt;post(route(&#x27;products.store&#x27;), [])
+            -&gt;assertSessionHasErrors([&#x27;name&#x27;, &#x27;price&#x27;]);
+    }
+
+    public function test_users_cannot_modify_others_products(): void
+    {
+        $owner = User::factory()-&gt;create();
+        $attacker = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $owner-&gt;id]);
+
+        $this-&gt;actingAs($attacker)
+            -&gt;delete(route(&#x27;products.destroy&#x27;, $product))
+            -&gt;assertForbidden();
+    }
+}
+```
+
+## JSON API 測試
+
+```php
+namespace Tests\Feature\Http\Controllers\Api;
+
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProductApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_unauthenticated_requests_are_rejected(): void
+    {
+        $this-&gt;getJson(&#x27;/api/products&#x27;)-&gt;assertUnauthorized();
+    }
+
+    public function test_it_lists_paginated_products(): void
+    {
+        $user = User::factory()-&gt;create();
+        Product::factory()-&gt;count(5)-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+        $response = $this-&gt;actingAs($user)-&gt;getJson(&#x27;/api/products&#x27;);
+
+        $response-&gt;assertOk();
+        $response-&gt;assertJsonCount(5, &#x27;data&#x27;);
+        $response-&gt;assertJsonStructure([
+            &#x27;data&#x27; =&gt; [[&#x27;id&#x27;, &#x27;name&#x27;, &#x27;price&#x27;]],
+            &#x27;meta&#x27; =&gt; [&#x27;current_page&#x27;, &#x27;last_page&#x27;, &#x27;total&#x27;],
+        ]);
+    }
+
+    public function test_it_creates_a_product(): void
+    {
+        $user = User::factory()-&gt;create();
+
+        $response = $this-&gt;actingAs($user)-&gt;postJson(&#x27;/api/products&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;API Product&#x27;,
+            &#x27;price&#x27; =&gt; 4999,
+        ]);
+
+        $response-&gt;assertCreated();
+        $response-&gt;assertJsonPath(&#x27;data.name&#x27;, &#x27;API Product&#x27;);
+    }
+
+    public function test_users_cannot_delete_others_products(): void
+    {
+        $owner = User::factory()-&gt;create();
+        $attacker = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $owner-&gt;id]);
+
+        $this-&gt;actingAs($attacker)
+            -&gt;deleteJson(&quot;/api/products/{$product-&gt;id}&quot;)
+            -&gt;assertForbidden();
+    }
+}
+```
+
+## Sanctum API 驗證測試
+
+```php
+namespace Tests\Feature\Http\Controllers\Api;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
+
+class AuthControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_users_can_register(): void
+    {
+        $response = $this-&gt;postJson(&#x27;/api/register&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;Test User&#x27;,
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;Password123!&#x27;,
+            &#x27;password_confirmation&#x27; =&gt; &#x27;Password123!&#x27;,
+        ]);
+
+        $response-&gt;assertCreated();
+        $response-&gt;assertJsonStructure([&#x27;data&#x27; =&gt; [&#x27;user&#x27;, &#x27;token&#x27;]]);
+    }
+
+    public function test_users_can_login(): void
+    {
+        User::factory()-&gt;create([
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; Hash::make(&#x27;Password123!&#x27;),
+        ]);
+
+        $response = $this-&gt;postJson(&#x27;/api/login&#x27;, [
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;Password123!&#x27;,
+        ]);
+
+        $response-&gt;assertOk();
+        $response-&gt;assertJsonStructure([&#x27;data&#x27; =&gt; [&#x27;token&#x27;]]);
+    }
+
+    public function test_users_cannot_login_with_wrong_password(): void
+    {
+        User::factory()-&gt;create([&#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;]);
+
+        $this-&gt;postJson(&#x27;/api/login&#x27;, [
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;wrong&#x27;,
+        ])-&gt;assertUnprocessable();
+    }
+
+    public function test_token_bearer_authenticates_requests(): void
+    {
+        $user = User::factory()-&gt;create();
+        $token = $user-&gt;createToken(&#x27;test&#x27;)-&gt;plainTextToken;
+
+        $this-&gt;withToken($token)
+            -&gt;getJson(&#x27;/api/user&#x27;)
+            -&gt;assertOk()
+            -&gt;assertJsonPath(&#x27;data.email&#x27;, $user-&gt;email);
+    }
+}
+```
+
+## Mock 與 Fake
+
+### HTTP Fake
+
+```php
+use Illuminate\Support\Facades\Http;
+
+public function test_it_handles_successful_payment(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::response([&#x27;id&#x27; =&gt; &#x27;pi_123&#x27;, &#x27;status&#x27; =&gt; &#x27;succeeded&#x27;], 200),
+    ]);
+
+    $result = (new PaymentService())-&gt;charge(2999);
+    $this-&gt;assertTrue($result-&gt;success);
+}
+
+public function test_it_handles_gateway_failure(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::response([&#x27;error&#x27; =&gt; &#x27;card_declined&#x27;], 402),
+    ]);
+
+    $this-&gt;expectException(PaymentFailedException::class);
+    (new PaymentService())-&gt;charge(2999);
+}
+
+public function test_it_retries_on_timeout(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::sequence()
+            -&gt;pushStatus(408)
+            -&gt;pushStatus(200),
+    ]);
+
+    $this-&gt;assertTrue((new PaymentService())-&gt;charge(2999)-&gt;success);
+}
+```
+
+### Mail Fake
+
+```php
+Mail::fake();
+
+$order-&gt;sendConfirmation();
+
+Mail::assertSent(OrderConfirmation::class, function ($mail) use ($order) {
+    return $mail-&gt;hasTo($order-&gt;user-&gt;email);
+});
+```
+
+### Notification Fake
+
+```php
+Notification::fake();
+
+$user-&gt;notify(new WelcomeUser());
+
+Notification::assertSentTo($user, WelcomeUser::class);
+```
+
+### Queue Fake
+
+```php
+Queue::fake();
+
+ProcessImage::dispatch($product);
+
+Queue::assertPushed(ProcessImage::class, function ($job) use ($product) {
+    return $job-&gt;product-&gt;id === $product-&gt;id;
+});
+```
+
+### Storage Fake
+
+```php
+Storage::fake(&#x27;public&#x27;);
+
+$file = UploadedFile::fake()-&gt;image(&#x27;photo.jpg&#x27;, 200, 200);
+
+$response = $this-&gt;actingAs($user)-&gt;post(&#x27;/avatar&#x27;, [
+    &#x27;avatar&#x27; =&gt; $file,
+]);
+
+$response-&gt;assertSessionHasNoErrors();
+Storage::disk(&#x27;public&#x27;)-&gt;assertExists(&#x27;avatars/&#x27; . $file-&gt;hashName());
+```
+
+### Event Fake
+
+```php
+Event::fake();
+
+$order-&gt;markAsShipped();
+
+Event::assertDispatched(OrderShipped::class, function ($event) use ($order) {
+    return $event-&gt;order-&gt;id === $order-&gt;id;
+});
+```
+
+## Artisan 指令測試
+
+```php
+public function test_it_sends_newsletters(): void
+{
+    Mail::fake();
+    User::factory()-&gt;count(5)-&gt;create([&#x27;subscribed&#x27; =&gt; true]);
+
+    $this-&gt;artisan(&#x27;newsletter:send&#x27;)
+        -&gt;expectsOutput(&#x27;Sending newsletter to 5 subscribers...&#x27;)
+        -&gt;assertExitCode(0);
+
+    Mail::assertSent(NewsletterMail::class, 5);
+}
+
+public function test_it_handles_no_subscribers(): void
+{
+    $this-&gt;artisan(&#x27;newsletter:send&#x27;)
+        -&gt;expectsOutput(&#x27;No subscribers found.&#x27;)
+        -&gt;assertExitCode(0);
+}
+```
+
+## 授權測試
+
+```php
+public function test_users_can_update_own_posts(): void
+{
+    $user = User::factory()-&gt;create();
+    $post = Post::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+    $this-&gt;actingAs($user)
+        -&gt;put(route(&#x27;posts.update&#x27;, $post), [&#x27;title&#x27; =&gt; &#x27;Updated&#x27;])
+        -&gt;assertRedirect();
+}
+
+public function test_users_cannot_update_others_posts(): void
+{
+    $post = Post::factory()-&gt;create();
+    $this-&gt;actingAs(User::factory()-&gt;create())
+        -&gt;put(route(&#x27;posts.update&#x27;, $post), [&#x27;title&#x27; =&gt; &#x27;Hacked&#x27;])
+        -&gt;assertForbidden();
+}
+
+public function test_gate_before_grants_super_admin_full_access(): void
+{
+    $super = User::factory()-&gt;create([&#x27;role&#x27; =&gt; &#x27;super-admin&#x27;]);
+    $post = Post::factory()-&gt;create();
+
+    $this-&gt;actingAs($super)
+        -&gt;delete(route(&#x27;posts.destroy&#x27;, $post))
+        -&gt;assertRedirect();
+
+    $this-&gt;assertSoftDeleted($post);
+}
+```
+
+## Pest Feature 測試
+
+```php
+&lt;?php
+
+use App\Models\Product;
+use App\Models\User;
+
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    $this-&gt;user = User::factory()-&gt;create();
+    $this-&gt;actingAs($this-&gt;user);
+});
+
+it(&#x27;lists products&#x27;, function () {
+    Product::factory()-&gt;count(3)-&gt;create([&#x27;user_id&#x27; =&gt; $this-&gt;user-&gt;id]);
+
+    $this-&gt;get(route(&#x27;products.index&#x27;))
+        -&gt;assertOk()
+        -&gt;assertViewHas(&#x27;products&#x27;);
+});
+
+it(&#x27;creates a product with valid data&#x27;, function () {
+    $this-&gt;post(route(&#x27;products.store&#x27;), [
+        &#x27;name&#x27; =&gt; &#x27;Test Product&#x27;, &#x27;price&#x27; =&gt; 1999,
+    ])-&gt;assertRedirect();
+
+    $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+});
+
+it(&#x27;fails validation without required fields&#x27;, function () {
+    $this-&gt;post(route(&#x27;products.store&#x27;), [])
+        -&gt;assertSessionHasErrors([&#x27;name&#x27;, &#x27;price&#x27;]);
+});
+
+it(&#x27;authorizes updates&#x27;, function () {
+    $other = User::factory()-&gt;create();
+    $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $other-&gt;id]);
+
+    $this-&gt;put(route(&#x27;products.update&#x27;, $product), [&#x27;name&#x27; =&gt; &#x27;Hacked&#x27;])
+        -&gt;assertForbidden();
+});
+```
+
+## 覆蓋率
+
+```bash
+# PHPUnit (use clover output for CI threshold checks)
+vendor/bin/phpunit --coverage-html coverage --coverage-clover clover.xml
+
+# Pest (built-in threshold support)
+vendor/bin/pest --coverage --min=80
+```
+
+### 覆蓋率目標
+
+| 元件 | 目標 |
+|-----------|--------|
+| Model | 95%+ |
+| Action/Service | 90%+ |
+| Form Request | 90%+ |
+| Controller | 85%+ |
+| Policy | 95%+ |
+| 整體 | 80%+ |
+
+## 測試最佳實務
+
+### 要做
+
+- 用 factory，不要手動呼叫 `create()`
+- 每個測試一個邏輯斷言
+- 描述性的命名：`test_guests_cannot_create_products`
+- 測邊界情況與授權邊界
+- 用 `Http::fake()`、`Mail::fake()` mock 外部服務
+- 用 `RefreshDatabase` 保持乾淨狀態
+
+### 不要做
+
+- 不要測 Laravel 內部實作（相信框架）
+- 不要讓測試彼此依賴
+- 不要 mock 過頭，只 mock service 的邊界
+- 不要測 private method，透過 public 介面來測
+- 不要讓測試綁死 HTML 結構
+
+## 速查
+
+| 模式 | 用途 |
+|---------|-------|
+| `RefreshDatabase` | 在測試之間重設資料庫 |
+| `$this-&gt;actingAs($user)` | 以某個使用者身分驗證 |
+| `$this-&gt;withToken($token)` | API 的 Bearer token 驗證 |
+| `Model::factory()-&gt;create()` | 用 factory 建立 model |
+| `Model::factory()-&gt;count(5)-&gt;create()` | 建立多筆資料 |
+| `Http::fake([...])` | Mock HTTP 呼叫 |
+| `Mail::fake()` | 攔截寄出的 mail |
+| `Notification::fake()` | 攔截送出的 notification |
+| `Queue::fake()` | 攔截 queue 的 job |
+| `Event::fake()` | 攔截派發的 event |
+| `Storage::fake(&#x27;public&#x27;)` | 攔截檔案操作 |
+| `assertDatabaseHas` | 斷言資料庫有該資料列 |
+| `assertSoftDeleted` | 斷言已 soft delete |
+| `assertSessionHasErrors` | 斷言有驗證錯誤 |
+| `assertForbidden` | 斷言 403 status |
+
+## 相關 Skill
+
+- `laravel-patterns`：Laravel 架構、Eloquent、路由與 API 模式
+- `laravel-security`：Laravel 驗證、授權與安全寫法
+- `tdd-workflow`：整個 repo 通用的 RED -&gt; GREEN -&gt; REFACTOR 循環
+- `backend-patterns`：通用的後端 API 與資料庫模式</pre></section><section><h2>英文原文</h2><pre>---
+name: laravel-tdd
+description: Laravel testing strategies with PHPUnit, Pest, model factories, HTTP tests, Sanctum authentication testing, mocking, and coverage. Use when writing Laravel tests with PHPUnit or Pest, or driving a Laravel feature test-first.
+metadata:
+  origin: ECC
+---
+
+# Laravel Testing with TDD
+
+Test-driven development for Laravel applications using PHPUnit, Pest, Laravel factories, and testing helpers.
+
+## When to Activate
+
+- Writing new Laravel applications or features
+- Implementing API endpoints with Sanctum or Passport authentication
+- Testing Eloquent models, relationships, scopes, and accessors
+- Setting up testing infrastructure for Laravel projects
+- Writing feature tests for HTTP controllers and form requests
+- Mocking external services (queues, mail, notifications, HTTP)
+
+## TDD Workflow for Laravel
+
+### Red-Green-Refactor Cycle
+
+```php
+// Step 1: RED — Write a failing test
+public function test_a_product_can_be_created(): void
+{
+    $product = Product::factory()-&gt;create([&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+    $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+}
+
+// Step 2: GREEN — Write the migration, model, and factory
+// Step 3: REFACTOR — Improve while keeping tests green
+```
+
+## Setup
+
+### PHPUnit Configuration
+
+```xml
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;phpunit xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:noNamespaceSchemaLocation=&quot;vendor/phpunit/phpunit/phpunit.xsd&quot;
+         bootstrap=&quot;vendor/autoload.php&quot;
+         colors=&quot;true&quot;&gt;
+    &lt;testsuites&gt;
+        &lt;testsuite name=&quot;Unit&quot;&gt;
+            &lt;directory suffix=&quot;Test.php&quot;&gt;tests/Unit&lt;/directory&gt;
+        &lt;/testsuite&gt;
+        &lt;testsuite name=&quot;Feature&quot;&gt;
+            &lt;directory suffix=&quot;Test.php&quot;&gt;tests/Feature&lt;/directory&gt;
+        &lt;/testsuite&gt;
+    &lt;/testsuites&gt;
+    &lt;php&gt;
+        &lt;env name=&quot;APP_ENV&quot; value=&quot;testing&quot;/&gt;
+        &lt;env name=&quot;BCRYPT_ROUNDS&quot; value=&quot;4&quot;/&gt;
+        &lt;env name=&quot;CACHE_STORE&quot; value=&quot;array&quot;/&gt;
+        &lt;env name=&quot;DB_CONNECTION&quot; value=&quot;sqlite&quot;/&gt;
+        &lt;env name=&quot;DB_DATABASE&quot; value=&quot;:memory:&quot;/&gt;
+        &lt;env name=&quot;MAIL_MAILER&quot; value=&quot;array&quot;/&gt;
+        &lt;env name=&quot;QUEUE_CONNECTION&quot; value=&quot;sync&quot;/&gt;
+        &lt;env name=&quot;SESSION_DRIVER&quot; value=&quot;array&quot;/&gt;
+    &lt;/php&gt;
+&lt;/phpunit&gt;
+```
+
+### Base TestCase Setup
+
+```php
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Call $this-&gt;withoutExceptionHandling() only in tests that
+        // test non-HTTP exceptions; it suppresses assertStatus() etc.
+    }
+
+    // Helper: Authenticate and return user
+    protected function actingAsUser(): mixed
+    {
+        $user = \App\Models\User::factory()-&gt;create();
+        $this-&gt;actingAs($user);
+        return $user;
+    }
+
+    protected function actingAsAdmin(): mixed
+    {
+        $admin = \App\Models\User::factory()-&gt;admin()-&gt;create();
+        $this-&gt;actingAs($admin);
+        return $admin;
+    }
+}
+```
+
+## Model Factories
+
+```php
+// database/factories/UserFactory.php
+class UserFactory extends Factory
+{
+    protected static ?string $password = null;
+
+    public function definition(): array
+    {
+        return [
+            &#x27;name&#x27; =&gt; fake()-&gt;name(),
+            &#x27;email&#x27; =&gt; fake()-&gt;unique()-&gt;safeEmail(),
+            &#x27;email_verified_at&#x27; =&gt; now(),
+            &#x27;password&#x27; =&gt; static::$password ??= Hash::make(&#x27;password&#x27;),
+            &#x27;remember_token&#x27; =&gt; Str::random(10),
+            &#x27;role&#x27; =&gt; &#x27;user&#x27;,
+        ];
+    }
+
+    public function admin(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;role&#x27; =&gt; &#x27;admin&#x27;]);
+    }
+
+    public function unverified(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;email_verified_at&#x27; =&gt; null]);
+    }
+}
+
+// database/factories/ProductFactory.php
+class ProductFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            &#x27;name&#x27; =&gt; fake()-&gt;unique()-&gt;words(3, true),
+            &#x27;slug&#x27; =&gt; fn (array $attrs) =&gt; Str::slug($attrs[&#x27;name&#x27;]),
+            &#x27;description&#x27; =&gt; fake()-&gt;paragraph(),
+            &#x27;price&#x27; =&gt; fake()-&gt;numberBetween(100, 100000),
+            &#x27;stock&#x27; =&gt; fake()-&gt;numberBetween(0, 100),
+            &#x27;is_active&#x27; =&gt; true,
+            &#x27;user_id&#x27; =&gt; UserFactory::new(),
+        ];
+    }
+
+    public function outOfStock(): static
+    {
+        return $this-&gt;state(fn (array $attributes) =&gt; [&#x27;stock&#x27; =&gt; 0]);
+    }
+}
+```
+
+### Using Factories
+
+```php
+$user = User::factory()-&gt;create();
+$admin = User::factory()-&gt;admin()-&gt;create();
+$product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+$products = Product::factory()-&gt;count(10)-&gt;create();
+$draft = Product::factory()-&gt;make(); // Not persisted
+
+// With relationships
+$user = User::factory()-&gt;has(Product::factory()-&gt;count(3))-&gt;create();
+
+// Sequences
+User::factory()-&gt;count(3)-&gt;sequence(
+    [&#x27;role&#x27; =&gt; &#x27;admin&#x27;], [&#x27;role&#x27; =&gt; &#x27;editor&#x27;], [&#x27;role&#x27; =&gt; &#x27;user&#x27;],
+)-&gt;create();
+```
+
+## Model Testing
+
+```php
+namespace Tests\Unit\Models;
+
+use App\Models\User;
+use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class UserTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_it_hides_sensitive_attributes(): void
+    {
+        $user = User::factory()-&gt;create();
+        $this-&gt;assertArrayNotHasKey(&#x27;password&#x27;, $user-&gt;toArray());
+    }
+
+    public function test_admin_scope_returns_only_admins(): void
+    {
+        User::factory()-&gt;admin()-&gt;create();
+        User::factory()-&gt;count(3)-&gt;create();
+
+        $this-&gt;assertCount(1, User::admin()-&gt;get());
+    }
+}
+
+class ProductTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_active_scope_filters_correctly(): void
+    {
+        Product::factory()-&gt;count(3)-&gt;create([&#x27;is_active&#x27; =&gt; true]);
+        Product::factory()-&gt;count(2)-&gt;create([&#x27;is_active&#x27; =&gt; false]);
+
+        $this-&gt;assertCount(3, Product::active()-&gt;get());
+    }
+
+    public function test_it_belongs_to_a_user(): void
+    {
+        $user = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+        $this-&gt;assertTrue($product-&gt;user-&gt;is($user));
+    }
+}
+```
+
+## Feature / HTTP Testing
+
+```php
+namespace Tests\Feature\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProductControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_guests_are_redirected_to_login(): void
+    {
+        $this-&gt;get(route(&#x27;products.create&#x27;))-&gt;assertRedirect(route(&#x27;login&#x27;));
+    }
+
+    public function test_it_stores_a_new_product(): void
+    {
+        $user = User::factory()-&gt;create();
+        $this-&gt;actingAs($user);
+
+        $response = $this-&gt;post(route(&#x27;products.store&#x27;), [
+            &#x27;name&#x27; =&gt; &#x27;New Product&#x27;,
+            &#x27;description&#x27; =&gt; &#x27;Description&#x27;,
+            &#x27;price&#x27; =&gt; 2999,
+            &#x27;stock&#x27; =&gt; 10,
+        ]);
+
+        $response-&gt;assertRedirect(route(&#x27;products.index&#x27;));
+        $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;New Product&#x27;,
+            &#x27;user_id&#x27; =&gt; $user-&gt;id,
+        ]);
+    }
+
+    public function test_it_validates_required_fields(): void
+    {
+        $this-&gt;actingAs(User::factory()-&gt;create());
+        $this-&gt;post(route(&#x27;products.store&#x27;), [])
+            -&gt;assertSessionHasErrors([&#x27;name&#x27;, &#x27;price&#x27;]);
+    }
+
+    public function test_users_cannot_modify_others_products(): void
+    {
+        $owner = User::factory()-&gt;create();
+        $attacker = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $owner-&gt;id]);
+
+        $this-&gt;actingAs($attacker)
+            -&gt;delete(route(&#x27;products.destroy&#x27;, $product))
+            -&gt;assertForbidden();
+    }
+}
+```
+
+## JSON API Testing
+
+```php
+namespace Tests\Feature\Http\Controllers\Api;
+
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ProductApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_unauthenticated_requests_are_rejected(): void
+    {
+        $this-&gt;getJson(&#x27;/api/products&#x27;)-&gt;assertUnauthorized();
+    }
+
+    public function test_it_lists_paginated_products(): void
+    {
+        $user = User::factory()-&gt;create();
+        Product::factory()-&gt;count(5)-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+        $response = $this-&gt;actingAs($user)-&gt;getJson(&#x27;/api/products&#x27;);
+
+        $response-&gt;assertOk();
+        $response-&gt;assertJsonCount(5, &#x27;data&#x27;);
+        $response-&gt;assertJsonStructure([
+            &#x27;data&#x27; =&gt; [[&#x27;id&#x27;, &#x27;name&#x27;, &#x27;price&#x27;]],
+            &#x27;meta&#x27; =&gt; [&#x27;current_page&#x27;, &#x27;last_page&#x27;, &#x27;total&#x27;],
+        ]);
+    }
+
+    public function test_it_creates_a_product(): void
+    {
+        $user = User::factory()-&gt;create();
+
+        $response = $this-&gt;actingAs($user)-&gt;postJson(&#x27;/api/products&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;API Product&#x27;,
+            &#x27;price&#x27; =&gt; 4999,
+        ]);
+
+        $response-&gt;assertCreated();
+        $response-&gt;assertJsonPath(&#x27;data.name&#x27;, &#x27;API Product&#x27;);
+    }
+
+    public function test_users_cannot_delete_others_products(): void
+    {
+        $owner = User::factory()-&gt;create();
+        $attacker = User::factory()-&gt;create();
+        $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $owner-&gt;id]);
+
+        $this-&gt;actingAs($attacker)
+            -&gt;deleteJson(&quot;/api/products/{$product-&gt;id}&quot;)
+            -&gt;assertForbidden();
+    }
+}
+```
+
+## Sanctum API Auth Testing
+
+```php
+namespace Tests\Feature\Http\Controllers\Api;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
+
+class AuthControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_users_can_register(): void
+    {
+        $response = $this-&gt;postJson(&#x27;/api/register&#x27;, [
+            &#x27;name&#x27; =&gt; &#x27;Test User&#x27;,
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;Password123!&#x27;,
+            &#x27;password_confirmation&#x27; =&gt; &#x27;Password123!&#x27;,
+        ]);
+
+        $response-&gt;assertCreated();
+        $response-&gt;assertJsonStructure([&#x27;data&#x27; =&gt; [&#x27;user&#x27;, &#x27;token&#x27;]]);
+    }
+
+    public function test_users_can_login(): void
+    {
+        User::factory()-&gt;create([
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; Hash::make(&#x27;Password123!&#x27;),
+        ]);
+
+        $response = $this-&gt;postJson(&#x27;/api/login&#x27;, [
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;Password123!&#x27;,
+        ]);
+
+        $response-&gt;assertOk();
+        $response-&gt;assertJsonStructure([&#x27;data&#x27; =&gt; [&#x27;token&#x27;]]);
+    }
+
+    public function test_users_cannot_login_with_wrong_password(): void
+    {
+        User::factory()-&gt;create([&#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;]);
+
+        $this-&gt;postJson(&#x27;/api/login&#x27;, [
+            &#x27;email&#x27; =&gt; &#x27;test@example.com&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;wrong&#x27;,
+        ])-&gt;assertUnprocessable();
+    }
+
+    public function test_token_bearer_authenticates_requests(): void
+    {
+        $user = User::factory()-&gt;create();
+        $token = $user-&gt;createToken(&#x27;test&#x27;)-&gt;plainTextToken;
+
+        $this-&gt;withToken($token)
+            -&gt;getJson(&#x27;/api/user&#x27;)
+            -&gt;assertOk()
+            -&gt;assertJsonPath(&#x27;data.email&#x27;, $user-&gt;email);
+    }
+}
+```
+
+## Mocking and Fakes
+
+### HTTP Fake
+
+```php
+use Illuminate\Support\Facades\Http;
+
+public function test_it_handles_successful_payment(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::response([&#x27;id&#x27; =&gt; &#x27;pi_123&#x27;, &#x27;status&#x27; =&gt; &#x27;succeeded&#x27;], 200),
+    ]);
+
+    $result = (new PaymentService())-&gt;charge(2999);
+    $this-&gt;assertTrue($result-&gt;success);
+}
+
+public function test_it_handles_gateway_failure(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::response([&#x27;error&#x27; =&gt; &#x27;card_declined&#x27;], 402),
+    ]);
+
+    $this-&gt;expectException(PaymentFailedException::class);
+    (new PaymentService())-&gt;charge(2999);
+}
+
+public function test_it_retries_on_timeout(): void
+{
+    Http::fake([
+        &#x27;api.stripe.com/*&#x27; =&gt; Http::sequence()
+            -&gt;pushStatus(408)
+            -&gt;pushStatus(200),
+    ]);
+
+    $this-&gt;assertTrue((new PaymentService())-&gt;charge(2999)-&gt;success);
+}
+```
+
+### Mail Fake
+
+```php
+Mail::fake();
+
+$order-&gt;sendConfirmation();
+
+Mail::assertSent(OrderConfirmation::class, function ($mail) use ($order) {
+    return $mail-&gt;hasTo($order-&gt;user-&gt;email);
+});
+```
+
+### Notification Fake
+
+```php
+Notification::fake();
+
+$user-&gt;notify(new WelcomeUser());
+
+Notification::assertSentTo($user, WelcomeUser::class);
+```
+
+### Queue Fake
+
+```php
+Queue::fake();
+
+ProcessImage::dispatch($product);
+
+Queue::assertPushed(ProcessImage::class, function ($job) use ($product) {
+    return $job-&gt;product-&gt;id === $product-&gt;id;
+});
+```
+
+### Storage Fake
+
+```php
+Storage::fake(&#x27;public&#x27;);
+
+$file = UploadedFile::fake()-&gt;image(&#x27;photo.jpg&#x27;, 200, 200);
+
+$response = $this-&gt;actingAs($user)-&gt;post(&#x27;/avatar&#x27;, [
+    &#x27;avatar&#x27; =&gt; $file,
+]);
+
+$response-&gt;assertSessionHasNoErrors();
+Storage::disk(&#x27;public&#x27;)-&gt;assertExists(&#x27;avatars/&#x27; . $file-&gt;hashName());
+```
+
+### Event Fake
+
+```php
+Event::fake();
+
+$order-&gt;markAsShipped();
+
+Event::assertDispatched(OrderShipped::class, function ($event) use ($order) {
+    return $event-&gt;order-&gt;id === $order-&gt;id;
+});
+```
+
+## Artisan Command Tests
+
+```php
+public function test_it_sends_newsletters(): void
+{
+    Mail::fake();
+    User::factory()-&gt;count(5)-&gt;create([&#x27;subscribed&#x27; =&gt; true]);
+
+    $this-&gt;artisan(&#x27;newsletter:send&#x27;)
+        -&gt;expectsOutput(&#x27;Sending newsletter to 5 subscribers...&#x27;)
+        -&gt;assertExitCode(0);
+
+    Mail::assertSent(NewsletterMail::class, 5);
+}
+
+public function test_it_handles_no_subscribers(): void
+{
+    $this-&gt;artisan(&#x27;newsletter:send&#x27;)
+        -&gt;expectsOutput(&#x27;No subscribers found.&#x27;)
+        -&gt;assertExitCode(0);
+}
+```
+
+## Authorization Tests
+
+```php
+public function test_users_can_update_own_posts(): void
+{
+    $user = User::factory()-&gt;create();
+    $post = Post::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id]);
+
+    $this-&gt;actingAs($user)
+        -&gt;put(route(&#x27;posts.update&#x27;, $post), [&#x27;title&#x27; =&gt; &#x27;Updated&#x27;])
+        -&gt;assertRedirect();
+}
+
+public function test_users_cannot_update_others_posts(): void
+{
+    $post = Post::factory()-&gt;create();
+    $this-&gt;actingAs(User::factory()-&gt;create())
+        -&gt;put(route(&#x27;posts.update&#x27;, $post), [&#x27;title&#x27; =&gt; &#x27;Hacked&#x27;])
+        -&gt;assertForbidden();
+}
+
+public function test_gate_before_grants_super_admin_full_access(): void
+{
+    $super = User::factory()-&gt;create([&#x27;role&#x27; =&gt; &#x27;super-admin&#x27;]);
+    $post = Post::factory()-&gt;create();
+
+    $this-&gt;actingAs($super)
+        -&gt;delete(route(&#x27;posts.destroy&#x27;, $post))
+        -&gt;assertRedirect();
+
+    $this-&gt;assertSoftDeleted($post);
+}
+```
+
+## Pest Feature Tests
+
+```php
+&lt;?php
+
+use App\Models\Product;
+use App\Models\User;
+
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    $this-&gt;user = User::factory()-&gt;create();
+    $this-&gt;actingAs($this-&gt;user);
+});
+
+it(&#x27;lists products&#x27;, function () {
+    Product::factory()-&gt;count(3)-&gt;create([&#x27;user_id&#x27; =&gt; $this-&gt;user-&gt;id]);
+
+    $this-&gt;get(route(&#x27;products.index&#x27;))
+        -&gt;assertOk()
+        -&gt;assertViewHas(&#x27;products&#x27;);
+});
+
+it(&#x27;creates a product with valid data&#x27;, function () {
+    $this-&gt;post(route(&#x27;products.store&#x27;), [
+        &#x27;name&#x27; =&gt; &#x27;Test Product&#x27;, &#x27;price&#x27; =&gt; 1999,
+    ])-&gt;assertRedirect();
+
+    $this-&gt;assertDatabaseHas(&#x27;products&#x27;, [&#x27;name&#x27; =&gt; &#x27;Test Product&#x27;]);
+});
+
+it(&#x27;fails validation without required fields&#x27;, function () {
+    $this-&gt;post(route(&#x27;products.store&#x27;), [])
+        -&gt;assertSessionHasErrors([&#x27;name&#x27;, &#x27;price&#x27;]);
+});
+
+it(&#x27;authorizes updates&#x27;, function () {
+    $other = User::factory()-&gt;create();
+    $product = Product::factory()-&gt;create([&#x27;user_id&#x27; =&gt; $other-&gt;id]);
+
+    $this-&gt;put(route(&#x27;products.update&#x27;, $product), [&#x27;name&#x27; =&gt; &#x27;Hacked&#x27;])
+        -&gt;assertForbidden();
+});
+```
+
+## Coverage
+
+```bash
+# PHPUnit (use clover output for CI threshold checks)
+vendor/bin/phpunit --coverage-html coverage --coverage-clover clover.xml
+
+# Pest (built-in threshold support)
+vendor/bin/pest --coverage --min=80
+```
+
+### Coverage Goals
+
+| Component | Target |
+|-----------|--------|
+| Models | 95%+ |
+| Actions/Services | 90%+ |
+| Form Requests | 90%+ |
+| Controllers | 85%+ |
+| Policies | 95%+ |
+| Overall | 80%+ |
+
+## Testing Best Practices
+
+### DO
+
+- Use factories over manual `create()` calls
+- One logical assertion per test
+- Descriptive names: `test_guests_cannot_create_products`
+- Test edge cases and authorization boundaries
+- Mock external services with `Http::fake()`, `Mail::fake()`
+- Use `RefreshDatabase` for clean state
+
+### DON&#x27;T
+
+- Don&#x27;t test Laravel internals (trust the framework)
+- Don&#x27;t make tests dependent on each other
+- Don&#x27;t over-mock — mock only service boundaries
+- Don&#x27;t test private methods — test through the public interface
+- Don&#x27;t couple tests to HTML structure
+
+## Quick Reference
+
+| Pattern | Usage |
+|---------|-------|
+| `RefreshDatabase` | Reset database between tests |
+| `$this-&gt;actingAs($user)` | Authenticate as user |
+| `$this-&gt;withToken($token)` | Bearer token auth for APIs |
+| `Model::factory()-&gt;create()` | Create model with factory |
+| `Model::factory()-&gt;count(5)-&gt;create()` | Create multiple records |
+| `Http::fake([...])` | Mock HTTP calls |
+| `Mail::fake()` | Trap sent mail |
+| `Notification::fake()` | Trap sent notifications |
+| `Queue::fake()` | Trap queued jobs |
+| `Event::fake()` | Trap dispatched events |
+| `Storage::fake(&#x27;public&#x27;)` | Trap file operations |
+| `assertDatabaseHas` | Assert DB row exists |
+| `assertSoftDeleted` | Assert soft-delete |
+| `assertSessionHasErrors` | Assert validation errors |
+| `assertForbidden` | Assert 403 status |
+
+## Related Skills
+
+- `laravel-patterns` — Laravel architecture, Eloquent, routing, and API patterns
+- `laravel-security` — Laravel authentication, authorization, and secure coding
+- `tdd-workflow` — The repo-wide RED -&gt; GREEN -&gt; REFACTOR loop
+- `backend-patterns` — General backend API and database patterns</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

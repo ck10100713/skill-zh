@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>configure-ecc｜Skill 寫法圖鑑</title>
+<meta name="description" content="用對話式精靈安裝、更新或重新設定 ECC 與 hook 模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>configure-ecc</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/configure-ecc/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用對話式精靈安裝、更新或重新設定 ECC 與 hook 模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: configure-ecc
+description: &quot;在目前的 harness 裡執行對話式的 ECC 設定精靈：盤點安裝狀況，在 Claude Code 裡收集範圍（user/project/local）和 hook 模式（off/minimal/standard/strict），在 Codex 用它原生的 plugin 生命週期，或把專案層級的內容安裝到 ./.kimi-code 底下，然後預覽、套用並驗證。適用於安裝、更新、重新設定或修復 ECC 安裝、變更 hook 設定檔，或在不同安裝範圍之間搬移 ECC。&quot;
+metadata:
+  origin: ECC
+---
+
+# Configure ECC
+
+在目前的 harness 裡執行一個對話式的精靈。先盤點，只收集
+支援的選項，預覽，確認一次，以非互動方式套用，驗證，
+成功之後才顯示歡迎畫面。絕對不要把 ECC clone 到暫存
+目錄，也不要手動複製 plugin 元件。
+
+在人手操作的終端機裡，正式的進入點是 `ecc setup` 和
+`npx ecc-universal setup`。在 harness 裡面，改用下面明確的非互動
+指令。
+
+## Route by the current harness
+
+- 在 Claude Code 裡，用下面完整的範圍加 hook 精靈。
+- 在 Codex 裡，用 Codex 原生的 plugin 生命週期。不要提供 Claude 的範圍，
+  也不要把 ECC 的四種 Claude hook 設定檔對應到 Codex。
+- 在 Kimi 裡，把專案層級的內容安裝到 `./.kimi-code`。Kimi 沒有
+  提供 ECC 的 Claude 生命週期 hook 設定檔。
+- 如果不確定是哪個 harness，說明偵測到的證據，並在執行任何會變更資料的指令之前，
+  先問要設定哪個 harness。
+
+這個 skill 是安裝後的重新設定路徑。它無法攔截或
+取代供應商內建的首次安裝 UI。
+
+## Claude Code: run the full conversational wizard
+
+### 1. Inventory without changing anything
+
+兩個指令都要執行，並摘要已安裝的 ECC 範圍、啟用狀態和
+marketplace 來源：
+
+```bash
+claude plugin list --json
+claude plugin marketplace list --json
+```
+
+只有一個既有的 `ecc@ecc` 安裝時，視為重新設定。不要把 Claude 供應商自己提供的「Open home page」按鈕
+當成已安裝的證據。遇到多個 ECC
+範圍、舊版/手動安裝、格式錯誤的設定，或 marketplace 衝突時，停下來並回報 setup 回傳的復原方式；
+絕對不要猜該刪哪個狀態。
+
+### 2. Collect exactly two choices
+
+只問一個範圍的問題，而且要求給一個值：
+
+- `user | project | local`
+- `user` 是這位使用者的全域設定。
+- `project` 透過 repository 設定共享。
+- `local` 只屬於目前專案，是私人的。
+
+只有被選中的範圍，才在視覺上標示成已選取或安裝中。如果使用者
+從單一既有安裝選了不同的範圍，就把它描述成範圍遷移，並在下面的指令加上 `--move-scope`。
+
+只問一個 hook 模式的問題，而且要求給一個值：
+
+- `off | minimal | standard | strict`
+- `off` 保留 skill 和指令，但停用 ECC 的 hook 自動化。
+- `minimal` 啟用最輕量的生命週期和安全自動化。
+- `standard` 在品質和安全自動化之間取得平衡。
+- `strict` 啟用最強的檢查和提醒。
+
+Hook 偏好是個人的 Claude plugin 設定，它不會跟著
+選擇的安裝範圍走。
+
+### 3. Preview and confirm once
+
+優先用 plugin 內附的 setup script。代入選好的兩個值，
+只有在範圍遷移時才加上 `--move-scope`：
+
+```bash
+node &quot;$CLAUDE_PLUGIN_ROOT/scripts/setup.js&quot; --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --dry-run --json
+```
+
+如果沒有 `$CLAUDE_PLUGIN_ROOT`，就用已發布的 npm 套件：
+
+```bash
+npx --yes --package ecc-universal ecc setup --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --dry-run --json
+```
+
+只顯示一份確認摘要，內容包含規劃的動作、一個範圍、
+一個 hook 模式、marketplace 動作，以及任何來源到目的地的遷移。
+問一個是/否的問題。不要透過 harness 的 shell 工具執行單純的互動式 `ecc setup`，
+因為那個 shell 通常不是 TTY。
+
+### 4. Apply the explicit choices
+
+確認之後，用同樣的路徑再跑一次，但不要加 `--dry-run`。每個選項都要
+明確指定，並要求 JSON 輸出，這樣才能確定性地檢查成功與否：
+
+```bash
+node &quot;$CLAUDE_PLUGIN_ROOT/scripts/setup.js&quot; --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --yes --json
+```
+
+備用方案：
+
+```bash
+npx --yes --package ecc-universal ecc setup --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --yes --json
+```
+
+### 5. Verify, then render the welcome
+
+要求 exit status 為零，而且 setup 結果裡的 `scope` 和 `hooks` 等於
+選擇的值。然後獨立執行：
+
+```bash
+claude plugin list --json
+```
+
+只有在選定的範圍裡剛好有一個啟用的 `ecc@ecc` 項目時才繼續。當
+`$CLAUDE_PLUGIN_ROOT` 可用時，把成功的 setup 的
+`action`（`installed`、`updated`、`migrated`、`resumed` 或
+`already-migrated`）傳給內附的 renderer：
+
+呼叫它之前，要求供應商回報的版本符合
+`scripts/lib/terminal-welcome.js` 裡的 `ECC_VERSION_PATTERN`。遇到非預期的
+版本文字就拒絕，不要把它插進 shell 指令裡。
+
+```bash
+node -e &#x27;const { renderTerminalWelcome } = require(process.env.CLAUDE_PLUGIN_ROOT + &quot;/scripts/lib/terminal-welcome&quot;); process.stdout.write(renderTerminalWelcome({ action: process.argv[1], version: process.argv[2], color: process.stdout.isTTY }));&#x27; &quot;&lt;action&gt;&quot; &quot;&lt;installed-version&gt;&quot;
+```
+
+歡迎畫面只顯示一次。遇到失敗、dry-run、取消、範圍或
+hook 不符，或無法驗證的狀態時，不要顯示；改為回報錯誤和
+復原方式。驗證過變更之後，告訴使用者執行
+`/reload-plugins` 或重新啟動 Claude Code。
+
+## Codex: use the native plugin lifecycle
+
+用 `codex plugin marketplace list --json` 和
+`codex plugin list --available --json` 盤點。Codex 原生的 plugin 指令沒有
+Claude 風格的 `user | project | local` 選擇器。Codex 原生 plugin 確實支援
+供應商專屬的 hook，但 Codex 需要明確的信任。讓 Codex
+顯示那個信任決定；不要問 Claude 的四種設定檔 hook 問題，
+也不要宣稱那些設定檔可以對應到 Codex。
+
+如果 ECC marketplace 不存在，就加進去。否則更新它的快照：
+
+```bash
+codex plugin marketplace add affaan-m/ECC
+codex plugin marketplace upgrade ecc --json
+```
+
+要求一次確認，然後安裝，或以冪等的方式更新已安裝的
+快取，並驗證：
+
+```bash
+codex plugin add ecc@ecc --json
+codex plugin list --json
+```
+
+只有在 JSON 回報 ECC 已安裝，而且提供它的
+`installedPath` 時才繼續。然後顯示已驗證 bundle 的歡迎畫面：
+
+只能使用 Codex JSON 回傳的那個完整絕對 `installedPath`。拒絕
+控制字元，並要求已安裝的版本符合
+`ECC_VERSION_PATTERN`。直接用這個參數陣列呼叫 `node`；這是
+工具 API 的呼叫，不是 shell 指令：
+
+```text
+[&quot;&lt;installedPath&gt;/scripts/welcome.js&quot;, &quot;--action&quot;, &quot;configured&quot;, &quot;--version&quot;, &quot;&lt;installed-version&gt;&quot;]
+```
+
+如果目前的 harness 無法用獨立的參數陣列呼叫可執行檔，就跳過歡迎畫面。
+絕對不要用 Codex JSON 的值去組出 shell 指令。
+
+絕對不要宣稱 Claude 的 `off | minimal | standard | strict` 設定檔
+已經套用到 Codex。
+
+## Kimi: install the project surface
+
+確認之前，先說明能力摘要：目的地
+`./.kimi-code`；ECC 生命週期 hook 是 `hooks=unsupported`。不要問
+Claude 的範圍或 hook 模式問題。先預覽：
+
+```bash
+npx --yes --package ecc-universal ecc install --profile core --target kimi --dry-run
+```
+
+針對那個專案目的地顯示一次確認，然後套用同一個
+指令，但不加 `--dry-run`。用這個驗證：
+
+```bash
+npx --yes --package ecc-universal ecc doctor --target kimi
+```
+
+只有在 doctor 成功，而且已安裝的指示和 skill 都還留在
+`./.kimi-code` 裡面時，才顯示：
+
+```bash
+npx --yes --package ecc-universal ecc welcome --action configured
+```
+
+不要宣稱 Kimi 已安裝或設定了 ECC 的生命週期 hook。</pre></section><section><h2>英文原文</h2><pre>---
+name: configure-ecc
+description: &quot;Run the conversational ECC setup wizard inside the current harness: inventory the install, collect scope (user/project/local) and hook mode (off/minimal/standard/strict) in Claude Code, use Codex&#x27;s native plugin lifecycle, or install the project surface under ./.kimi-code, then preview, apply, and verify. Use when installing, updating, reconfiguring, or repairing an ECC installation, changing hook profiles, or moving ECC between install scopes.&quot;
+metadata:
+  origin: ECC
+---
+
+# Configure ECC
+
+Run a conversational wizard inside the current harness. Inventory first, collect
+only supported choices, preview, confirm once, apply non-interactively, verify,
+and show the welcome only after success. Never clone ECC into a temporary
+directory or copy plugin components by hand.
+
+For a human-operated terminal, the canonical entry points are `ecc setup` and
+`npx ecc-universal setup`. Inside a harness, use the explicit non-interactive
+commands below instead.
+
+## Route by the current harness
+
+- In Claude Code, use the full scope-and-hook wizard below.
+- In Codex, use Codex&#x27;s native plugin lifecycle. Do not offer Claude scopes or
+  map ECC&#x27;s four Claude hook profiles onto Codex.
+- In Kimi, install the project surface under `./.kimi-code`. Kimi does not
+  provide ECC&#x27;s Claude lifecycle-hook profiles.
+- If the harness is uncertain, state the detected evidence and ask which
+  harness to configure before running a mutating command.
+
+This skill is a post-install reconfiguration path. It cannot intercept or
+replace a provider&#x27;s built-in first-install UI.
+
+## Claude Code: run the full conversational wizard
+
+### 1. Inventory without changing anything
+
+Run both commands and summarize the installed ECC scope, enabled state, and
+marketplace source:
+
+```bash
+claude plugin list --json
+claude plugin marketplace list --json
+```
+
+Treat a single existing `ecc@ecc` installation as a reconfiguration. Do not
+interpret Claude&#x27;s provider-owned &quot;Open home page&quot; control as installation
+evidence. Stop and report the recovery returned by setup for multiple ECC
+scopes, a legacy/manual install, malformed settings, or a marketplace collision;
+never guess which state to delete.
+
+### 2. Collect exactly two choices
+
+Ask exactly one scope question and require one value:
+
+- `user | project | local`
+- `user` is global for this user.
+- `project` is shared through repository settings.
+- `local` is private to the current project.
+
+Visually mark only the selected scope as selected or installing. If the user
+chooses a different scope from a single existing install, describe it as a
+scope migration and include `--move-scope` in the commands below.
+
+Ask exactly one hook-mode question and require one value:
+
+- `off | minimal | standard | strict`
+- `off` keeps skills and commands but disables ECC hook automation.
+- `minimal` enables the lightest lifecycle and safety automation.
+- `standard` balances quality and safety automation.
+- `strict` enables the strongest checks and reminders.
+
+Hook preference is personal Claude plugin configuration; it does not follow
+the selected install scope.
+
+### 3. Preview and confirm once
+
+Prefer the plugin-bundled setup script. Substitute the two selected values and
+include `--move-scope` only for a scope migration:
+
+```bash
+node &quot;$CLAUDE_PLUGIN_ROOT/scripts/setup.js&quot; --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --dry-run --json
+```
+
+If `$CLAUDE_PLUGIN_ROOT` is unavailable, use the published npm package:
+
+```bash
+npx --yes --package ecc-universal ecc setup --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --dry-run --json
+```
+
+Show exactly one confirmation summary containing the planned action, one scope,
+one hook mode, marketplace action, and any source-to-destination migration.
+Ask one yes/no question. Do not run a bare interactive `ecc setup` through a
+harness shell tool because that shell is commonly non-TTY.
+
+### 4. Apply the explicit choices
+
+After confirmation, rerun the same route without `--dry-run`. Keep every choice
+explicit and request JSON so success can be checked deterministically:
+
+```bash
+node &quot;$CLAUDE_PLUGIN_ROOT/scripts/setup.js&quot; --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --yes --json
+```
+
+Fallback:
+
+```bash
+npx --yes --package ecc-universal ecc setup --mode claude-plugin \
+  --scope &lt;scope&gt; --hooks &lt;hooks&gt; [--move-scope] --yes --json
+```
+
+### 5. Verify, then render the welcome
+
+Require a zero exit status and a setup result whose `scope` and `hooks` equal
+the selected values. Then independently run:
+
+```bash
+claude plugin list --json
+```
+
+Continue only when exactly one enabled `ecc@ecc` entry exists at the selected
+scope. When `$CLAUDE_PLUGIN_ROOT` is available, pass the successful setup
+`action` (`installed`, `updated`, `migrated`, `resumed`, or
+`already-migrated`) to the bundled renderer:
+
+Before invoking it, require the provider-reported version to match
+`ECC_VERSION_PATTERN` from `scripts/lib/terminal-welcome.js`. Reject unexpected
+version text instead of interpolating it into a shell command.
+
+```bash
+node -e &#x27;const { renderTerminalWelcome } = require(process.env.CLAUDE_PLUGIN_ROOT + &quot;/scripts/lib/terminal-welcome&quot;); process.stdout.write(renderTerminalWelcome({ action: process.argv[1], version: process.argv[2], color: process.stdout.isTTY }));&#x27; &quot;&lt;action&gt;&quot; &quot;&lt;installed-version&gt;&quot;
+```
+
+Render the welcome exactly once. On failure, dry-run, cancellation, a scope or
+hook mismatch, or unverifiable state, do not render it; report the error and
+recovery instead. After verified changes, tell the user to run
+`/reload-plugins` or restart Claude Code.
+
+## Codex: use the native plugin lifecycle
+
+Inventory with `codex plugin marketplace list --json` and
+`codex plugin list --available --json`. Codex&#x27;s native plugin command has no
+Claude-style `user | project | local` selector. Codex native plugins do support
+provider-specific hooks, but Codex requires explicit trust for them. Let Codex
+show that trust decision; do not ask the Claude four-profile hook question or
+claim those profiles map to Codex.
+
+If the ECC marketplace is missing, add it. Otherwise refresh its snapshot:
+
+```bash
+codex plugin marketplace add affaan-m/ECC
+codex plugin marketplace upgrade ecc --json
+```
+
+Ask for one confirmation, then install or idempotently refresh the installed
+cache and verify it:
+
+```bash
+codex plugin add ecc@ecc --json
+codex plugin list --json
+```
+
+Continue only when the JSON reports ECC installed and provides its
+`installedPath`. Then render the verified bundle&#x27;s welcome:
+
+Use only the exact absolute `installedPath` returned by Codex JSON. Reject
+control characters and require the installed version to match
+`ECC_VERSION_PATTERN`. Invoke `node` directly with this argument array; this is
+a tool API invocation, not a shell command:
+
+```text
+[&quot;&lt;installedPath&gt;/scripts/welcome.js&quot;, &quot;--action&quot;, &quot;configured&quot;, &quot;--version&quot;, &quot;&lt;installed-version&gt;&quot;]
+```
+
+If the current harness cannot invoke an executable with a separate argument
+array, skip the welcome. Never construct a shell command from Codex JSON values.
+
+Never claim that Claude&#x27;s `off | minimal | standard | strict` profiles were
+applied to Codex.
+
+## Kimi: install the project surface
+
+State the capability summary before confirmation: destination
+`./.kimi-code`; `hooks=unsupported` for ECC lifecycle hooks. Do not ask the
+Claude scope or hook-mode questions. Preview first:
+
+```bash
+npx --yes --package ecc-universal ecc install --profile core --target kimi --dry-run
+```
+
+Show one confirmation for that project destination, then apply the identical
+command without `--dry-run`. Verify with:
+
+```bash
+npx --yes --package ecc-universal ecc doctor --target kimi
+```
+
+Only after doctor succeeds and the installed instructions and skills remain
+inside `./.kimi-code`, render:
+
+```bash
+npx --yes --package ecc-universal ecc welcome --action configured
+```
+
+Do not claim that Kimi installed or configured ECC lifecycle hooks.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

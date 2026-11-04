@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gateguard｜Skill 寫法圖鑑</title>
+<meta name="description" content="PreToolUse 關卡，第一次改檔前強迫 agent 先調查並出示事實">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>gateguard</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/gateguard/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">PreToolUse 關卡，第一次改檔前強迫 agent 先調查並出示事實</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: gateguard
+description: &quot;PreToolUse 的「強制出示事實」關卡：第一次 Edit/Write/Bash（包含 MultiEdit 和 NotebookEdit）嘗試會被拒絕，直到 agent 拿出具體事實（import 它的檔案、資料 schema、使用者指令的原話），才允許重試；A/B 測試的品質提升了 2.25 分。啟用或設定 GateGuard hook、用環境變數豁免路徑，或處理第一次碰檔案被拒絕的情況時使用。&quot;
+metadata:
+  origin: community
+---
+
+# GateGuard — Fact-Forcing Pre-Action Gate
+
+一個 PreToolUse hook，強迫 Claude 在編輯之前先做調查。它不問自我評估的問題（「你確定嗎？」），而是要求拿出具體事實。調查這個動作本身會帶來覺察，這是自我評估從來做不到的。
+
+## When to Activate
+
+- 處理任何一個「改檔案會影響多個模組」的程式碼庫
+- 專案裡有資料檔，而且有特定的 schema 或日期格式
+- 團隊要求 AI 產生的程式碼必須符合既有的寫法
+- 任何 Claude 傾向用猜的、而不是去調查的工作流程
+
+## Core Concept
+
+LLM 的自我評估沒用。問它「你有沒有違反任何政策？」，答案永遠是「沒有」。這已經被實驗驗證過了。
+
+但是問「列出每一個 import 這個模組的檔案」，就會強迫 LLM 去跑 Grep 和 Read。調查本身會產生 context，改變輸出的結果。
+
+**三階段關卡：**
+
+```
+1. DENY  — block the first Edit/Write/Bash attempt
+2. FORCE — tell the model exactly which facts to gather
+3. ALLOW — permit retry after facts are presented
+```
+
+沒有任何競爭對手三個都做。大多數只做到拒絕這一步。
+
+## Evidence
+
+兩個獨立的 A/B 測試，相同的 agent、相同的任務：
+
+| Task | Gated | Ungated | Gap |
+| --- | --- | --- | --- |
+| Analytics module | 8.0/10 | 6.5/10 | +1.5 |
+| Webhook validator | 10.0/10 | 7.0/10 | +3.0 |
+| **Average** | **9.0** | **6.75** | **+2.25** |
+
+兩個 agent 產出的程式碼都能跑、都能過測試。差別在設計的深度。
+
+## Gate Types
+
+### Edit / MultiEdit Gate (first edit per file)
+
+MultiEdit 的處理方式完全一樣：批次裡的每個檔案都會各自被擋；沒有自己的 `file_path` 的項目，視同這次呼叫的 `file_path` 來擋。NotebookEdit 被當成對它的 `notebook_path` 做 Edit 來擋：同樣的類別、同樣的檢查 key、同樣的 credit 與上限規則、同樣的完整問題（cell 的變更不會被讀取），而且絕不會走「只改註解」的放行。
+
+問題取決於目標的類別（見[依目標類別的問題](#questions-by-target-class)）。對 **code** 目標，Edit 關卡會問：
+
+```
+Before editing {file_path}, present these facts:
+
+1. List ALL files that import/require this file (search the tree — Glob/Grep, or find/grep via Bash)
+2. List the public functions/classes affected by this change
+3. If this file reads/writes data files, show field names, structure,
+   and date format (use redacted or synthetic values, not raw production data)
+4. Quote the user&#x27;s current instruction verbatim
+```
+
+這四題是完整的集合，只要沒辦法有把握地讀懂這次變更，就會全部問。能讀懂的時候（見[問題要配合變更](#questions-fit-the-change)），如果編輯沒有動到任何公開宣告，就改問檔案或其模組裡有哪些呼叫點依賴被改動的行為，而且變更不處理資料時會拿掉第 3 題。
+
+### Write Gate (first new file creation)
+
+對 **code** 目標，Write 關卡會問：
+
+```
+Before creating {file_path}, present these facts:
+
+1. Name the file(s) and line(s) that will call this new file
+2. Confirm no existing file serves the same purpose (search the tree — Glob/Grep, or find/grep via Bash)
+3. If this file reads/writes data files, show field names, structure,
+   and date format (use redacted or synthetic values, not raw production data)
+4. Quote the user&#x27;s current instruction verbatim
+```
+
+新內容不處理資料時，會拿掉第 3 題。
+
+### Questions fit the change
+
+對 **code** 目標，關卡會讀取它即將放行的變更（Edit 的 `old_string`/`new_string`、這個檔案的每一筆 MultiEdit 項目、Write 的 `content`），並決定三件事：
+
+- **公開介面（Public surface）：** 任一邊有一行宣告或對外暴露了公開名稱。JS/TS：`export`、`exports`、`public`、`declare`（`.d.ts` 檔一律算）；Python：不以 `_` 開頭的 `def`/`class`、dunder、`__all__`、模組層級的公開賦值（例如 `BASE_URL = ...`）（`__init__.py` 一律算）；Go：首字母大寫的 `func`/`type`/`var`/`const` 名稱、`package`、以大寫開頭的行；Rust：`pub`、`impl`、`trait`、`extern`、`#[macro_export]`、`#[derive]`、`#[repr]`、`#[no_mangle]`；shell：function 定義、`export`、`declare -x`；PowerShell：`function`、`filter`、`param`、`Export-ModuleMember`、`[CmdletBinding`。已匯出的容器的成員也算，要從檔案判斷：已匯出的 interface、enum、type、物件或 export 清單裡面的行、已匯出的 class 的成員宣告、`__all__` 的項目、公開的 class 屬性和 dataclass 欄位，以及 `pub` 的 enum、struct、trait 或 `use` 清單的成員。Java、Kotlin、C#、C、C++ 和 batch 檔，以及所有的 Write，一律視為有動到公開介面。有動到就保留第 1 和第 2 題；否則兩題都換成「列出這個檔案或其模組裡，依賴被改動行為的呼叫點」。
+- **資料（Data）：** 任何一邊出現跟檔案 I/O、格式（`json`、`csv`、`yaml` 等）、序列化、編碼、schema、SQL、資料儲存、瀏覽器儲存、日期和讀取時鐘有關的字詞；在 shell script 裡，還包括重導向到檔案、`curl`、`wget`、`jq`，以及 PowerShell 的檔案和網路 cmdlet。沒有這些字詞，就拿掉資料那一題。開啟 `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` 後，保留資料問題的變更還會多問一題：repo 之外有什麼東西決定了它的格式或語意。
+- **瑣碎（Trivial）：** 見[只改註解和空白的編輯](#comment-and-whitespace-only-edits)。
+
+支援的副檔名：`.js .mjs .cjs .jsx .ts .tsx .mts .cts .py .pyi .go .rs .java .kt .kts .cs .c .h .cc .cpp .cxx .hpp .hh .hxx .sh .bash .zsh .ps1 .psm1 .bat .cmd`。其他任何副檔名、缺少欄位或欄位不是字串、MultiEdit 項目超過 64 筆、單邊超過 64 KiB、或總共超過 256 KiB，都代表要問完整的問題，一字不差：原本的四題（importer、公開 API、資料 schema、使用者的指令），開啟 `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` 時是五題。敏感目標、hard link 的目標和 NotebookEdit 呼叫，一律問完整的問題。其他類別則保留各自類別的問題。每個問題都有穩定的 id（`importers`、`public-api`、`local-callers`、`callers`、`no-duplicate`、`data-schema`、選用時才有的 `external-contract`、`quote-instruction`，以及每個類別問題各一個），列在 `docs/gateguard/change-profile.md`。
+
+### Questions by target class
+
+程式碼相關的問題，對 `SKILL.md`、README、測試或 YAML 檔來說毫無意義，所以第一次碰檔案的關卡會先替目標分類。
+
+分類用的是目標相對於專案根目錄的路徑（先看 `CLAUDE_PROJECT_DIR`，再看 payload 的 `cwd`，最後是 process 目錄），所以放在例如 `~/work/tests/` 底下的專案，不會讓每個檔案都被當成測試。開頭的 `.claude/worktrees/&lt;name&gt;/` 會被去掉，因為 worktree 是專案的鏡像，但只有在 `&lt;root&gt;/.claude/worktrees/&lt;name&gt;/.git` 存在時才去；否則路徑維持在 `.claude` 底下。對 Windows 風格的路徑（以及任何含 `::$` 的片段），會先去掉結尾的點和空白，以及 `:stream` 後綴，所以 `CLAUDE.md.` 和 `CLAUDE.md::$DATA` 都分類成 `CLAUDE.md`。根目錄之外的目標，用絕對路徑來分類。路徑會轉成小寫、以 `/` 分隔，第一個符合的規則勝出：
+
+1. **instruction**：basename 是 `CLAUDE.md`、`AGENTS.md`、`AGENT.md`、`GEMINI.md`、`SKILL.md`、`copilot-instructions.md`、`.cursorrules` 或 `.windsurfrules`；任何 `.mdc` 檔；位於 `.claude`、`agents`、`commands`、`skills`、`rules`、`hooks`、`.cursor`、`.codex` 或 `.opencode` 目錄底下的 `.md`/`.mdx`/`.txt` 檔；或是 `.github/` 底下的 `*instructions*.md` 檔
+2. **test**：`*.test.*`、`*.spec.*`、`test_*.py`、`*_test.py`、`*_test.go`，或任何在 `tests`、`test` 或 `__tests__` 目錄底下的東西
+3. **prose**：`.md`、`.mdx`、`.txt`、`.rst`、`.adoc`
+4. **config**：`.json`、`.jsonc`、`.yaml`、`.yml`、`.toml`、`.ini`，或是不以程式碼副檔名結尾的 `.env` / `.env.*` 檔（`.env.local` 是 config；`.env.example.ts` 和 `.envrc` 是 code）
+5. **code**：其他全部（`hooks/` 或 `skills/` 底下的 `.js` 算 code）
+
+每個類別最後都會問「逐字引用使用者目前的指令」，保留批次同伴警告，而且除非另有註明，Edit、MultiEdit 和 Write 用同一組問題。標了 *(search)* 的項目，會帶上後綴「(search the tree — Glob/Grep, or find/grep via Bash)」。
+
+| Class | Questions |
+|---|---|
+| instruction | 說出讀取這個檔案的 harness/loader（Claude Code、Codex、Cursor、OpenCode 等）以及它什麼時候載入 · 描述 agent 的行為會因此有什麼改變 · 確認沒有既有的指令、skill 或 agent 檔已經涵蓋這件事 *(search)* |
+| test | 說出被測試的行為是什麼，以及它跑的是哪個模組/函式 · 說出涵蓋這個模組的既有測試檔，或確認沒有 *(search)* |
+| prose (Write) | 說出這份文件取代或重複了哪份既有的文件 *(search)* · 說明它會從哪裡被連結或引用 · 解釋為什麼要建新檔，而不是編輯既有的檔案 |
+| prose (Edit) | 列出引用到被改動段落的其他文件或程式碼 *(search)* · 說明這次變更修正或新增了什麼 |
+| config | 說出哪個 process/工具會讀這個檔案、什麼時候讀 · 描述這次變更的效果 · 確認沒有把 secret 或憑證以明文寫進去 |
+
+簡化版的拒絕訊息（在 `GATEGUARD_FACT_FORCE_FULL_DENIALS` 之後）會對同一個類別附上一行提示。對 code 目標，這行提示會點出跟完整拒絕訊息相同的問題，每題用一個簡短的片語；外部契約問題關閉時，變更讀不懂的 Edit 會保留固定的提示（importer/呼叫者、受影響的 API、如果有的話資料 schema）。選擇開啟的話，會多加外部契約的片語。除了訊息文字之外，類別只決定[同輩合併](#same-turn-sibling-creation-collapse)：哪些檔案可以合併，以及同輩必須跟第一個檔案屬於同一類別。
+
+### Destructive Bash Gate (every destructive command)
+
+觸發條件：`rm -rf`、`git reset --hard`、`git push --force`、`drop table` 等等。
+
+```
+1. List all files/data this command will modify or delete
+2. Write a one-line rollback procedure
+3. Quote the user&#x27;s current instruction verbatim
+```
+
+### Routine Bash Gate (once per session)
+
+```
+1. The current user request in one sentence
+2. What this specific command verifies or produces
+```
+
+唯讀的探查不會消耗這個關卡：在它觸發之前，只要指令的每個以 `;`、`|`、`&amp;&amp;` 或 `||` 分隔的片段，都是 `ls`、`pwd`、`cat`、`head`、`tail`、`wc`、`grep`、`rg`、`find`、`fd`、`tree`，或帶唯讀選項的 `git status`/`log`/`diff`/`show`/`ls-files`/`rev-parse`/`branch`（PowerShell 則是：`Get-ChildItem`、`Get-Content`、`Select-String`、`Get-Location`、它們的別名、`rg`、`git`），就會放行，並計入 `routine_readonly_passes`。第一個不是這類的指令仍然會被擋。任何重導向、`tee`、替換、反引號、變數、環境變數賦值、包裝指令（`env`、`sudo`、`xargs`、`sh -c`）、不認識的指令、`find -exec`/`-delete`、`fd -x`、`rg --pre`/`-z`、`tree -o`、`git` 的全域選項或寫入/執行選項，或是 PowerShell 的 `$`、`@`、`(`、`{` 或 `--%`，都會讓指令變成一般指令。破壞性指令的偵測先執行，而且不受影響。
+
+用 session id 或 transcript 路徑當 key 的 session 狀態，閒置 8 小時後過期；退回用專案目錄當 key 時，閒置 30 分鐘後過期。
+
+## Parallel Batches and Partial Application
+
+第一次碰檔案的關卡會獨立評估每一次工具呼叫。當對一個還沒碰過的檔案的好幾個編輯，被放在同一個平行批次送出時，第一個呼叫會被拒絕，而這次拒絕會把該檔案標記為已檢查，所以批次裡的同伴編輯會被套用。沒有任何東西會被回滾：檔案最後可能只有同伴編輯，沒有被拒絕的那個。
+
+拒絕訊息會點名檔案，並警告批次同伴可能已經被套用。要照字面意思看待：
+
+- 對還沒碰過的檔案，相依的編輯要依序送，不要放在平行批次。定義和它的第一次使用、或 import 和它的呼叫點，不可以放在同一個批次。
+- 第一次碰檔案被拒絕後，要提出事實、重試被拒絕的編輯，並且在繼續做批次裡其他任何事之前，先重新讀一次檔案。
+
+不可能做整個批次的鎖：hook 一次只看到一個工具呼叫，所以關卡無法知道哪些呼叫是一起送來的。
+
+## What Counts as Already Done
+
+第一次碰檔案被拒絕，目的是強迫調查。如果 transcript 顯示調查已經發生過，或是答案會跟上一次的拒絕一字不差地重複，關卡會附上一則說明直接放行，不拒絕。底下每一條規則，只要有任何模糊的地方，都會退回一般的拒絕。
+
+### Order of checks
+
+對每個 Edit/Write/NotebookEdit 目標（以及每一筆 MultiEdit 項目），關卡依下列順序決定；第一條適用的規則勝出：
+
+1. **豁免**（`GATEGUARD_EXEMPT_GLOBS`、Claude 的設定檔）：放行。操作者的豁免是最高權威：它凌駕後面所有規則，包括敏感目標和 hard-link 規則，所以只要某個 glob 涵蓋了 `src/auth/**` 或某個 hard link 檔案，就等於關掉它的檢查。只豁免那些不經檢查也可以編輯的路徑。
+2. **Subagent** 呼叫：放行（父 session 已經被擋過了），但[敏感](#sensitive-targets)或 [hard-link](#hard-linked-targets) 目標除外：除非父 session 已經擋過，否則每條路徑拒絕一次。subagent 的重試不會替父 session 解鎖這條路徑。
+3. 這個 session 中**已經檢查過**：放行。
+4. **敏感或 hard-link 目標？** 如果是，直接跳到拒絕（第 9 步）。
+5. **先前搜尋的 credit**：附帶說明放行。
+6. **只改註解或空白的 Edit**：附帶說明放行，不標記為已檢查。
+7. **同輩合併**：附帶說明放行。
+8. **拒絕上限**（`GATEGUARD_FACT_FORCE_MAX_DENIALS`，選用）：一旦這個 session 的拒絕次數達到上限，就放行。
+9. **拒絕**：計入 `fact_force_denials`。
+
+credit、瑣碎和同輩放行，永遠不會消耗拒絕上限。
+
+### Sensitive targets
+
+有些檔案不經完整檢查就改，代價太高，所以先前搜尋的 credit、只改註解或空白的放行、變更輪廓（change profile）、同輩合併和拒絕上限，對它們一律不適用：它們在第一次碰的時候照樣被拒絕，就跟沒有這些規則時一樣，而且拒絕照常計次。拒絕訊息會多帶一行：「Sensitive target: prior-search credit, sibling collapse, and the denial cap do not apply.」目標是否敏感，是用跟它的類別相同的小寫、專案相對路徑，**以及**它真實（解開 symlink 後）的位置來判斷，只要其中一個符合就算：
+
+- 它的檔名是 `.env`、`.netrc` 或 `.pgpass`，以 `.env.` 開頭，以 `.pem`、`.key`、`.p12` 或 `.pfx` 結尾，或以 `id_rsa`、`id_ed25519`、`id_ecdsa`、`id_dsa`、`credentials` 或 `secrets.` 開頭；
+- 任何一個路徑片段剛好是 `auth`、`authn`、`authz`、`security`、`secrets`、`payment`、`payments`、`billing` 或 `migrations`（只比對完整片段：`src/author.py`、`docs/authoring.md` 和 `lib/paymentutils.py` 都是一般檔案）；
+- 或是位於 `.github/workflows/` 底下。
+
+真實位置是檔案本身的 realpath（存在的話），否則是它最近的既有目錄的 realpath 加上路徑的其餘部分，並且相對於專案根目錄的 realpath 來判斷，所以 `src/tools -&gt; ../auth` 會讓 `src/tools/login.py` 變成敏感。專案之外的真實位置，用它的絕對路徑來判斷。判斷過程中的任何錯誤（懸空的 symlink、本該是目錄的地方是個檔案、權限錯誤）都視為敏感。破壞性和一般的 shell 關卡不受影響。
+
+### Hard-linked targets
+
+有超過一個 hard link 的檔案（`nlink &gt; 1`，或是指向這種檔案的 symlink），也能用另一個名字存取，那個名字可能是敏感的，或屬於別的類別，所以被編輯的路徑本身說明不了什麼會被改動。它得到跟敏感目標一樣的待遇：沒有先前搜尋的 credit、變更輪廓、只改註解的放行、同輩合併、拒絕上限或 subagent 繞過，而且它的拒絕訊息帶的是「Hard-linked target: prior-search credit, sibling collapse, and the denial cap do not apply.」，不是敏感那一行（兩者都是的目標，會說「Sensitive target」）。除了「檔案不存在」之外的 stat 錯誤，視為 hard-linked；還不存在的新檔案則不算。
+
+### Prior-search credit
+
+當**目前這一輪人類回合**裡，已經有一個合格的搜尋涵蓋了該檔案時，Edit、Write、NotebookEdit 或 MultiEdit 項目會被放行，並帶一則點名該搜尋的 `additionalContext` 說明：
+
+- **合格的工具：** `Glob`、`Grep`、`LS`，以及以 `rg`、`grep`、`egrep`、`fgrep`、`git grep`、`git ls-files`、`find`、`fd`、`ls`、`tree`、`Get-ChildItem`、`gci`、`Select-String` 或 `sls` 開頭的 Bash/PowerShell 指令片段。**`Read` 絕對不算**：Claude Code 本來就要求編輯前要先 Read，所以它沒有多證明任何事。
+- **目前這一輪人類回合：** 回合從最新一則真實的使用者訊息開始，或從一次 compaction（compact-summary 紀錄或 `compact_boundary` 標記）開始，所以 compaction 之前的搜尋永遠不算。工具結果、meta 和 sidechain 紀錄不會開啟一個回合。只讀 transcript 的尾端（最後 256 KiB / 2000 行）；如果回合在那個視窗之前就開始了，只要視窗內每個 `promptId` 都一致，整個視窗就當作目前的回合。視窗裡有兩個以上的 `promptId`，代表有一個回合是透過掃描不認得的紀錄開始的，所以那個視窗不給 credit。完全沒有回合起點的 transcript，也不給 credit。
+- **完成且明確的結果：** 搜尋需要在該回合裡有一個不是錯誤的 `tool_result`（`is_error` 為 `true` 或 `&quot;true&quot;`，或內容以 `&lt;tool_use_error&gt;` 開頭就算錯誤）。出現超過一次的 tool-use id，一律不算。
+- **不是同一個批次：** 在被擋的呼叫自己的 assistant 訊息裡送出的搜尋，一律不算，因為決定編輯的時候還沒看到它們的結果。如果 payload 的 `tool_use_id` 遺失，或不在 transcript 裡，就改為排除該回合最新的 assistant 訊息。沒有訊息 id 的搜尋，一律不算。
+- **詞幹比對（Stem match）：** 目標的詞幹（basename 去掉最後一個副檔名、小寫、至少 4 個字元）必須以完整單字的形式出現，也就是前後以非英數字元或文字的兩端為界，出現在 Glob pattern、Grep 的 pattern 或 glob，或 shell 片段裡。`payment.py` 會被搜 `payment` 或 `payment_service` 的搜尋給予 credit，但搜 `payments` 的不行。排除項永遠不是詞幹的來源。泛用的詞幹（`index`、`main`、`init`、`__init__`、`utils`、`util`、`types`、`readme`、`test`、`tests`、`config`、`mod`、`lib`、`setup`、`app`、`spec`、`helpers`、`common`）永遠不比對。對測試目標，會先去掉一個測試詞綴（`.test`、`.spec`，以及 Python 和 Go 的 `test_` 或 `_test`），所以 `rg tokenizer src tests` 會給 `tests/tokenizer.test.js` credit；`index.test.js` 仍然會化約成泛用的 `index`。
+- **排除項永遠不給 credit：** Grep 的 `glob` 會在最上層的逗號處切開；以 `!` 開頭的項目是排除項。在 shell 片段裡，以 `!` 開頭的 `rg -g`/`--glob`/`--iglob` 值、`grep --exclude`/`--exclude-dir`、`fd -E`/`--exclude`、`ls -I`/`--ignore`/`--hide`、`tree -I`、`git ls-files -x`、git 的 `:!x`/`:^x`/`:(exclude)x` pathspec、在 `-not` 或 `!` 底下、或後面接 `-prune` 的 `find -name`/`-path`/…，以及 PowerShell 的 `-Exclude`，都是排除項。如果某個排除項涵蓋了目標（它的 glob 符合檔名或路徑上的任何目錄，或是它點名了詞幹），那個搜尋就完全無法替目標給 credit：`rg -g &#x27;!widget.py&#x27; TODO .` 永遠不給 `widget.py` credit，而 `rg -g &#x27;!*.md&#x27; widget .` 仍然會給。`--exclude-from`、`--ignore-file` 和 `git ls-files -X` 會隱藏 hook 看不到的名稱，所以這種片段永遠不給 credit。限制搜尋範圍的檔名 glob（Grep 的 `glob: &#x27;*.py&#x27;`、`rg -g &#x27;*.py&#x27;`、`grep --include`、`find -name`、`tree -P`、`-Include`/`-Filter`），必須符合目標的檔名，詞幹才算數。檔案類型的過濾也是一樣：`rg -t`/`--type` 和 Grep 的 `type` 會納入該類型的 glob，`rg -T`/`--type-not` 會排除它們，`fd -e`/`--extension` 會納入 `*.&lt;ext&gt;`，所以 `rg -t py tokenizer src` 永遠不給 `tokenizer.js` credit。不認識的類型名稱、`--type-add` 或 `--type-clear`，會讓該片段永遠不給 credit。
+- **查找不算搜尋：** 範圍只限於目標自己檔名的搜尋（每個 include glob、Glob pattern 或每個路徑 pattern，都以那個確切的檔名結尾，例如 `Glob **/tokenizer.js`、`find -name tokenizer.js`、`rg -g tokenizer.js`、Grep `glob: &#x27;tokenizer.js&#x27;`），只可能找到目標本身，所以永遠不給它 credit。`Glob **/tokenizer.*` 仍然會給。
+- **範圍（Scope）：** `Glob`、`Grep` 和 `LS` 只對嚴格位於它們搜尋過的目錄之內的目標給 credit（它們的 `path`，否則是工具的 `cwd`，再加上 Glob pattern 字面上的開頭目錄）。Glob pattern 同時也是個過濾器：它必須符合目標的路徑，詞幹才算數，所以 `Glob **/tokenizer.py` 永遠不給 `tokenizer.js` credit。沒有萬用字元的 Glob 是單一檔案的查找：它沒有指定任何目錄，只對直接位於它目錄裡的檔案給 credit，絕不給被查找的檔案本身。路徑就是目標本身的搜尋，不是搜尋。
+- **Shell 片段：** 沒有路徑運算元的片段，只有在它是遞迴的（預設是 `rg`、`git grep`、`git ls-files`、`find`、`fd` 和 `tree`；`grep -r`/`-R`/`--recursive`、`ls -R`、`Get-ChildItem -Recurse`），而且不是由 pipe 餵入時才算；否則它讀的是 stdin，不是目錄樹。路徑運算元全部都解析到目標的片段，只讀了目標，不算（`ls src/a.py` 永遠不給 `src/a.py` credit）。包含 `$( )`、反引號、`&lt;( )`、`&gt;( )` 或 heredoc 的指令，或長度超過 8192 個字元的指令，一律不給 credit。
+- **Shell 範圍：** shell 片段只對等於或位於它某個路徑運算元之內的目標給 credit（相對於工具的 `cwd` 解析；glob 運算元必須符合目標或它上層的目錄，而預設 git pathspec 的 `*` 也會符合 `/`），沒有運算元時則對位於 `cwd` 之內的目標給 credit：`rg payment docs` 或 `grep -rn payment /usr/share/doc` 永遠不給 `src/payment.py` credit。在任何運算元之前的輸入重導向（`rg payment &lt; file`），或字詞裡面的 `&lt;`，讀的是 stdin，永遠不算。在同一個指令裡 `cd &lt;dir&gt;` 之後，相對運算元相對於那個目錄解析；在任何其他目錄變更之後，或是在該回合的另一次呼叫裡變更之後，只有絕對運算元算數。
+- **目錄比對（只限新檔案）：** **建立一個還不存在的檔案的 Write**，在搜尋剛好點名了目標所在的目錄時，也可以比對成功：Glob 的 `path` 加上 pattern 的字面前綴（以萬用字元開頭、又沒有 `path` 的 pattern，不指定任何目錄）、Grep 或 LS 的 `path`，或 shell 的路徑運算元。對 shell 運算元，grep 類工具的 pattern 參數會被跳過（除非 pattern 是由 `-e`/`-f`/`--regexp`/`--file`/`-Pattern` 提供的），有值的旗標（`-g`、`--include`、`-name`、`-Filter` 等）的值會被跳過，結尾的 `/`、`/*` 和 `/**` 會被去掉，`.`、`~`/`$` 路徑和 glob 不指定任何目錄，而且運算元在檢查當下必須是一個存在的目錄。如果該回合中有任何 Bash/PowerShell 呼叫改變了目錄（`cd`、`pushd`、`popd`、`chdir`、`Set-Location`、`sl`、`Push-Location`、`Pop-Location`），整個回合的 shell 目錄比對就會關閉；詞幹比對仍然適用。**Edit、MultiEdit，以及覆寫既有檔案的 Write，只用詞幹比對。**
+- **路徑：** 相對的目標和搜尋路徑，會先相對於工具的 `cwd` 解析，再用 `CLAUDE_PROJECT_DIR`，最後是 process 目錄。只有 Windows 路徑的比較不分大小寫。shell 指令是用 bash 的引號規則來讀的，所以在 Windows 上，運算元寫成 `C:/x/src` 時才給 credit；反斜線寫法（`C:\x\src`，有沒有加引號都一樣）和 MSYS 寫法（`/c/x/src`）都不給 credit，寫入會照常被拒絕。
+- **說明，不是拒絕：** 被給予 credit 的檔案會被標記為已檢查，`fact_force_credited` 加一；拒絕次數和序號不受影響。MultiEdit 逐項給 credit，並像先前一樣拒絕第一個沒有 credit 的項目。
+- **退回拒絕：** transcript 遺失、無法讀取或不是檔案、紀錄是亂碼，或有任何內部錯誤，都表示不給 credit。
+- **拒絕訊息中最接近的失誤：** 當一個普通的（不是敏感或 hard-link 的）第一次碰檔案被拒絕，而且該回合中有一個呼叫提到了該檔案卻沒有給它 credit 時，拒絕訊息會多加一行「Closest search this turn did not count (`&lt;tool&gt;` `&lt;detail&gt;`): `&lt;why&gt;`.」，點名最接近的那個呼叫以及它失敗的原因：在同一個批次送出、它的過濾條件排除了該檔案、它的搜尋路徑不包含該檔案、它搜尋的是 pipe 進來的輸入、它是 `Read` 或其他指令而不是搜尋，或是檔名太泛用而無法比對。detail 會經過清理並截斷成 60 個字元；不會顯示 transcript 的其他文字。
+
+### Comment and whitespace-only edits
+
+舊文字和新文字只差在註解和空白的 Edit，不會改變任何行為，所以第一次碰檔案的問題沒有任何意義。對一個不敏感的 `code`、`test` 或 `prose` 目標做這種 Edit（或是該檔案的所有項目都是這種變更的 MultiEdit），會附上說明「Comment or whitespace-only change to `&lt;file&gt;`」放行。這個檔案**不會**被標記為已檢查：下一次對它做會改變程式碼的變更時，會遇到正常的第一次碰檔案關卡。這次放行計入 `trivial_allows`，而且完全不影響拒絕次數。
+
+它只適用於[問題要配合變更](#questions-fit-the-change)裡列出的副檔名，而且只有在每個項目都能乾淨地讀懂時才適用：
+
+- 註解是 `//` 和 `/* */`（C 家族）、`#`（Python）、字詞開頭的 `#`（shell）、`#` 和 `&lt;# #&gt;`（PowerShell），或 `REM` 行（batch）；C 的前置處理器行和 batch 的 `::` 標籤是程式碼；指令性質的註解也是程式碼（shebang、編碼 cookie、`# type:`、`# noqa`、`# nosec`、`// @ts-...`、`eslint-...`、`//go:build`、`// +build`、`//go:embed`、Rust 的文件註解、`#Requires`、`shellcheck`、`NOLINT`、`NOSONAR`、fallthrough 標記和類似的東西）；字串裡面的空白、程式碼之間的換行、以及 token 之間有沒有空白，都是程式碼（`a+b` → `a + b` 不算瑣碎）；
+- Python 程式碼行的縮排是程式碼；
+- 永遠不算瑣碎：Write；任何多行或 raw 的字串形式（反引號、三引號、`r&quot;`、`R&quot;`、`@&quot;`、`$&quot;`、f-string、Kotlin 的 `$`）、延伸到行尾的字串、以 `\`、`??/` 結尾的行註解或程式碼行、巢狀或沒有結束的區塊註解；在 JS/TS 裡，任何在註解之外的 `/`（regex 和除法分不出來）、類 JSX 的標籤，以及 `--&gt;`；在 shell script 裡，heredoc、反引號、雙引號內的 `$(`、`$&#x27;...&#x27;`、續行和 here-string（完整的清單見設計筆記）；
+- config、instruction、敏感和 hard-link 的目標，以及 NotebookEdit 呼叫，永遠不能這樣放行。
+
+這個編輯還會對照目前的檔案做檢查（檔案必須是最多 1 MiB 的一般檔案，由 hook 讀取，從不儲存）：`old_string` 必須能依照 Edit 工具套用的方式找到，變更前後的行必須如上所述比對相等，而且它們前面的文字必須結束在一般的程式碼中，不能在 template literal、docstring、raw string、heredoc 或 here-string 裡面，也不能接在續行之後。檔案遺失、無法讀取或更大，或是 Go 檔案 import 了 `&quot;C&quot;`，都永遠不能這樣放行。
+
+### Same-turn sibling creation collapse
+
+同一個目錄裡一次建了好幾個新檔案時，每個檔案的答案都會一模一樣，所以只拒絕第一個：
+
+- 適用於**對還不存在的檔案做 Write**，而且它的類別是 `code`、`test` 或 `prose`。永遠不合併的有：`config` 和 `instruction` 檔，以及任何路徑片段以 `.` 開頭（dotfile 和每一個以點開頭的目錄：`.claude`、`.github`、`.git`、`.husky`、`.devcontainer`、`.githooks`、`.idea`、`.vscode` 等）或是 8.3 短檔名（`CLAUDE~1`）的路徑，用跟類別相同的專案相對路徑來檢查。
+- 目錄也會被解析成它的**真實位置**（跟隨 symlink；不存在的目錄從最近的既有上層解析）。如果它跟寫出來的路徑不同，真實路徑必須在專案之內、屬於同一個類別，而且通過同樣的篩選，所以像 `src/tools -&gt; .claude/hooks` 這樣的 symlink 永遠不會合併。關卡是以真實目錄當 key。任何檔案系統錯誤都表示不合併。
+- 這樣的 Write 被拒絕之後，之後在**同一個目錄、同一個類別**對新檔案的第一次 Write，會附上說明「Sibling of `&lt;first&gt;` (gated earlier at denial #`&lt;n&gt;` this session)」放行。code 的拒絕絕不會讓測試、README 或 config 檔通過。
+- 視窗是**同一個人類回合**。回合 id 是回合起點紀錄本身的 `promptId`，沒有的話是它的 `uuid`，再沒有的話是那筆紀錄的雜湊。當回合在 transcript 尾端之前就開始時，id 是視窗內每一筆 user 紀錄都一致同意的 `promptId`（Claude Code 會把它蓋在 prompt 和該回合每一個工具結果上）；如果它們不一致，就沒有回合 id。只有在**完全沒有 transcript 路徑可用**時，沒有回合 id 所記錄的關卡才會比對 **120 秒**；transcript 遺失、無法讀取或得不到回合 id，都表示不合併。有回合範圍的關卡永遠不會比對沒有回合 id 的呼叫，反之亦然；蓋了未來時間戳的關卡會被忽略。
+- 先檢查先前搜尋的 credit。**Edit 和 MultiEdit 永遠不合併**，既有的檔案也永遠不會被當成同輩。
+
+### Canonical path keys
+
+已檢查的狀態是以標準化的路徑當 key：相對的 `file_path` 會先相對於工具的 `cwd`（工具執行的地方）解析，再用 `CLAUDE_PROJECT_DIR`，最後是 process 目錄，用 `/` 當分隔符號，只有在 Windows 上才轉小寫。`a.py`、`./a.py` 和絕對路徑共用同一次第一次碰檔案。較早版本寫下的狀態檔（原始 key）仍然有效。`GATEGUARD_EXEMPT_GLOBS` 保留它專案相對的比對方式（見下）。
+
+### In-session counters
+
+每個 session 的狀態檔（在 `GATEGUARD_STATE_DIR` 底下）會記錄這些欄位。它們只記錄類別名稱，絕不記錄路徑（除了 `dir_gates`，它存的是每個目錄經過清理的第一個檔案）：
+
+| Field | Meaning |
+|---|---|
+| `fact_force_credited` | 因先前搜尋 credit 而放行的第一次碰檔案次數 |
+| `denials_by_class` | 每個目標類別（`code`、`prose`、`test` 等）的拒絕次數 |
+| `credited_by_class` | 每個目標類別的 credit 次數 |
+| `sibling_allows` | 因同輩合併而放行的 Write 次數 |
+| `dir_gates` | 每個類別和目錄下，開啟同輩視窗的那次拒絕（回合、時間、第一個檔案、序號）；上限 50 筆 |
+| `cap_allows` | 因拒絕上限（`GATEGUARD_FACT_FORCE_MAX_DENIALS`）而放行的第一次碰檔案次數；這些永遠不算拒絕 |
+| `trivial_allows` | 沒經過第一次碰檔案檢查就放行的只改註解或空白的編輯次數；這些永遠不會把檔案標記為已檢查 |
+| `routine_readonly_passes` | 一般 shell 關卡觸發之前放行的唯讀 shell 指令次數；這些永遠不會把它標記為已檢查 |
+
+遺失或格式錯誤的欄位會載入成空值或零，所以舊的狀態檔仍然可以繼續運作。
+
+### Compatibility and limits
+
+- **兩個新的、選用的環境變數：** `GATEGUARD_FACT_FORCE_MAX_DENIALS`（不設定表示沒有上限）和 `GATEGUARD_METRICS`（不設定表示沒有指標）。既有的控制項沒有改變。
+- **先前允許的東西，現在沒有任何一個會被拒絕**，除了 subagent 第一次碰敏感或 hard-link 的目標，以及每個 notebook 第一次的 NotebookEdit（以前 NotebookEdit 沒有被擋）。其他規則只會移除拒絕，而且從不回傳 `permissionDecision: &quot;allow&quot;`，所以其他 hook 和權限規則仍然適用。
+- **信任限制：** 先前搜尋的 credit 讀的是本機的 transcript 檔，原則上 agent 有可能寫入它。這個 credit 驗證的是觀察到的行為（搜尋跑過而且有回傳），不是意圖，也不是結果被讀得多仔細。
+
+## Quick Start
+
+### Option A: Use the ECC hook (zero install)
+
+`scripts/hooks/gateguard-fact-force.js` 這個 hook 已經包含在這個 plugin 裡。透過 hooks.json 啟用它。
+
+如果 GateGuard 擋住了設定或修復的工作，就用 `ECC_GATEGUARD=off` 啟動 session。要做 hook 層級的控制，繼續用 `ECC_DISABLED_HOOKS` 搭配 GateGuard 的 hook ID。
+
+在長 session 裡，只有前 `GATEGUARD_FACT_FORCE_FULL_DENIALS` 次（預設 3 次）的 fact-force 拒絕會送出完整的事實區塊；之後的拒絕會被壓縮成一行，帶著拒絕的序號，所以幾乎一樣的區塊不會在 context window 裡累積，也不會放大模型的重複迴圈（#2142）。提出事實之後重試同一個檔案或指令，絕對不會再次觸發關卡。那是一個訊息預算；想在若干次拒絕之後就不再拒絕新檔案，請設定選用的拒絕預算 `GATEGUARD_FACT_FORCE_MAX_DENIALS`（見下）。
+
+#### Graduated controls
+
+`ECC_GATEGUARD=off`（或 `GATEGUARD_DISABLED=1`）會把關卡整個關掉。這張表裡的變數**不會**：每個只縮小一種行為，而最關鍵的破壞性 Bash 檢查仍會持續運行：
+
+| Variable | Default | Effect |
+|---|---|---|
+| `GATEGUARD_BASH_ROUTINE_DISABLED` | 不設定（關卡開啟） | 只停用**一般 Bash** 關卡。破壞性 Bash 關卡（`rm -rf`、`git reset --hard`、`drop table`、`dd if=` 等）不受影響。 |
+| `GATEGUARD_EXEMPT_GLOBS` | 不設定（沒有豁免） | 以逗號分隔的 glob；符合的 Edit/Write/MultiEdit/NotebookEdit 目標會跳過第一次碰檔案的 fact-forcing，即使它是敏感或 hard-link 的也一樣。適用於 import 價值低的目錄樹（測試、產生出來的產物、暫存目錄），在那裡「誰 import 這個 / 什麼 schema」沒有意義。 |
+| `GATEGUARD_FACT_FORCE_FULL_DENIALS` | `3` | 有多少次拒絕會送出完整的事實區塊，之後的才壓縮成一行。`0` 表示從第一次拒絕就開始壓縮。 |
+| `GATEGUARD_FACT_FORCE_MAX_DENIALS` | 不設定（沒有上限） | 一個**拒絕預算**：限制一個 session 最多會吃到多少次第一次碰檔案的 Edit/Write/MultiEdit/NotebookEdit 拒絕。一旦發出了這麼多次拒絕，後續的新路徑就直接放行，不再拒絕（計入 `cap_allows`，不算拒絕）；`0` 表示從第一次就放行。先前搜尋的 credit 和同輩合併會先執行，而且永遠不會用掉它，[敏感](#sensitive-targets)和 [hard-link](#hard-linked-targets) 的目標則永遠會被拒絕。破壞性和一般的 Bash 仍然被擋。hook 並行執行時，這個上限是盡力而為：遺失一次計數更新可能多出一次拒絕，但絕不會讓新路徑提早通過。選用：不設定，或任何不是非負整數的值（允許前後有空白），會維持「每個新路徑都拒絕」的行為；格式錯誤的值會在 stderr 報告一次（`ignoring malformed GATEGUARD_FACT_FORCE_MAX_DENIALS=…; the denial cap is not active.`）。不像 `GATEGUARD_FACT_FORCE_FULL_DENIALS` 是只改變拒絕訊息文字多寡的**訊息預算**，這個變數改變的是操作會不會被擋下。簡化版的拒絕訊息會點出這個變數。 |
+| `GATEGUARD_BASH_EXTRA_DESTRUCTIVE` | 不設定 | 額外的破壞性指令 pattern，以 regex 原始碼表示，加到內建的集合上。格式錯誤的 regex 視為沒設定（內建的仍然適用），並在 stderr 記錄一次。 |
+| `GATEGUARD_STATE_DIR` | `~/.gateguard` | 每個 session 的關卡狀態存放的位置。如果狀態無法持久化，關卡會直接放行操作，不陷入迴圈，並在警告中點出這個變數。 |
+| `GATEGUARD_METRICS` | 不設定（關閉） | 每一次 Edit/Write/MultiEdit/NotebookEdit/Bash/PowerShell 的決定，都在 `&lt;GATEGUARD_STATE_DIR&gt;/metrics.jsonl` 記一行（見[Decision metrics](#decision-metrics)）。絕不改變任何決定。 |
+| `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` | 不設定（關閉） | 在資料 schema 問題之後加一題 code 問題：說出 repo 之外有什麼決定了格式、單位、時區或協定語意。實驗性：在隱藏意圖的試驗裡，它沒有改變結果（`docs/gateguard/question-effectiveness.md`）。絕不改變任何決定。 |
+
+`GATEGUARD_BASH_ROUTINE_DISABLED`、`GATEGUARD_METRICS` 和 `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` 接受 `1`、`true`、`on`、`enabled`、`enable` 或 `yes`（不分大小寫和空白）；任何其他值都會讓一般關卡維持開啟、指標維持關閉、而且那一題不會被問。
+
+#### Decision metrics
+
+設了 `GATEGUARD_METRICS=1` 之後，每個關卡決定都會在狀態目錄的 `metrics.jsonl` 附加一行 JSON（一次 MultiEdit 呼叫，會為它決定的每個檔案各寫一行）：
+
+```json
+{&quot;v&quot;:1,&quot;ts&quot;:&quot;2026-09-01T10:02:00.000Z&quot;,&quot;session&quot;:&quot;3f9c0a1b2d4e&quot;,&quot;tool&quot;:&quot;Edit&quot;,&quot;class&quot;:&quot;code&quot;,&quot;decision&quot;:&quot;deny&quot;,&quot;reason&quot;:&quot;near-miss:out-of-scope&quot;,&quot;questions&quot;:[&quot;local-callers&quot;,&quot;quote-instruction&quot;],&quot;sensitive&quot;:false,&quot;profile&quot;:{&quot;known&quot;:true,&quot;language&quot;:&quot;js&quot;,&quot;touchesPublicSurface&quot;:false,&quot;touchesData&quot;:false,&quot;trivial&quot;:false}}
+```
+
+| Field | Meaning |
+|---|---|
+| `v` | schema 版本（`1`） |
+| `session` | session key 的 sha256 的前 12 個十六進位字元 |
+| `tool` | `Edit`、`Write`、`MultiEdit`、`NotebookEdit`、`Bash` 或 `PowerShell` |
+| `class` | 目標類別，shell 指令則是 `null` |
+| `decision` | `deny`、`credit`、`sibling`、`cap`、`trivial`、`pass-checked`、`pass-exempt`、`pass-subagent`、`routine-deny`、`routine-readonly`、`destructive-deny` 或 `pass` |
+| `reason` | 簡短代碼：`first-touch`、`sensitive`、`hard-linked`、`near-miss:&lt;code&gt;`、`subagent-sensitive`、`subagent-hard-linked`、`prior-search`、`comment-whitespace`、`same-turn-dir`、`max-denials`、`checked`、`exempt-glob`、`claude-settings`、`no-path`、`subagent`、`readonly-git`、`readonly`、`first-command`、`routine-checked`、`routine-disabled`、`destructive`、`destructive-retry`、`state-error` |
+| `questions` | 第一次碰檔案被拒絕時的問題 id；其他情況是 `null` |
+| `sensitive` | 目標是不是[敏感目標](#sensitive-targets) |
+| `profile` | 算過變更輪廓時的輪廓旗標；其他情況是 `null` |
+
+**隱私：** 這些行絕不包含路徑、指令、檔案內容、transcript 文字，或 session id 本身；每個文字欄位都必須是簡短的小寫代碼，否則寫成 `null`。指標的錯誤會被忽略。超過 1 MiB 後，檔案會被改名成 `metrics.jsonl.1`，取代前一個。
+
+用下面的指令彙整指標：
+
+```bash
+node scripts/gateguard-report.js            # GATEGUARD_STATE_DIR or ~/.gateguard
+node scripts/gateguard-report.js --dir /path/to/state --json
+```
+
+它會先讀 `metrics.jsonl.1`，再讀 `metrics.jsonl`，跳過格式錯誤的行，並依每個 session 和整體印出：各類型的決定數、依類別和原因的拒絕數、跟在 near-miss 搜尋之後的第一次碰檔案拒絕所占的比例、第一次碰檔案之中拒絕、credit、同輩合併、上限和瑣碎編輯的比率、一般唯讀放行數，以及被問最多次的問題 id。
+
+#### Turning the gate off completely
+
+| Variable | Effect |
+|---|---|
+| `ECC_GATEGUARD=off` | 在這個 session 停用 GateGuard。接受 `0`、`false`、`off`、`disabled` 或 `disable`。 |
+| `GATEGUARD_DISABLED=1` | 效果相同。只認 `1`：上面那些寫法在這裡**不**適用。 |
+
+要做 hook 層級的控制，繼續用 `ECC_DISABLED_HOOKS` 搭配 GateGuard 的 hook ID。
+
+#### Glob semantics for `GATEGUARD_EXEMPT_GLOBS`
+
+Pattern 會比對整個專案相對的目標路徑。專案根目錄是 `CLAUDE_PROJECT_DIR`，沒有的話退回 hook payload 的 `cwd`，再退回 hook process 的工作目錄。相對的 glob 永遠不會豁免那個根目錄之外的目標。明確的絕對 glob 會比對整個絕對目標路徑，可以刻意豁免專案之外的路徑。
+
+pattern 和路徑都用 `/` 當分隔符號，並用小寫比對。`*` 在單一片段內比對，`**` 跨片段比對，`?` 比對一個非分隔符號的字元。`**/` 包含零層目錄，所以 `**/tests/**` 也會比對到 `tests/foo.js`。格式錯誤的 pattern 會被丟棄，不會給出任何豁免。豁免在所有其他規則之前套用，包括敏感和 hard-link 規則（見 [Order of checks](#order-of-checks)）。
+
+從 2.2.1 開始，`services/**` 只涵蓋專案根目錄的 services 目錄樹，`*.md` 只涵蓋它根目錄的 Markdown 檔。要涵蓋專案內所有的 Markdown 檔，請用 `**/*.md`。既有的、沒有錨定的豁免可能需要調整：
+
+```json
+{
+  &quot;env&quot;: {
+    &quot;GATEGUARD_BASH_ROUTINE_DISABLED&quot;: &quot;1&quot;,
+    &quot;GATEGUARD_EXEMPT_GLOBS&quot;: &quot;**/tests/**,tests/**,**/*.test.*,**/docs/**,**/dist/**&quot;
+  }
+}
+```
+
+### Option B: Full package with config
+
+```bash
+pip install gateguard-ai
+gateguard init
+```
+
+這會加上 `.gateguard.yml`，用來做每個專案的設定（自訂訊息、忽略的路徑、關卡的開關）。
+
+## Anti-Patterns
+
+- **不要改用自我評估。** 問「你確定嗎？」永遠得到「確定」。這已經被實驗驗證過。
+- **不要跳過資料 schema 檢查。** 兩個 A/B 測試的 agent 都假設日期是 ISO-8601，但真實資料用的是 `%Y/%m/%d %H:%M`。檢查資料結構（用遮蔽過的值）可以避免這整類 bug。
+- **不要擋每一個 Bash 指令。** 一般的 bash 每個 session 只擋一次。破壞性的 bash 則每次都擋。這樣的平衡能避免拖慢速度，同時攔下真正的風險。
+
+## Best Practices
+
+- 讓關卡自然地觸發。不要試圖預先回答關卡的問題，調查本身才是提升品質的關鍵。編輯之前針對目標做一次真正的搜尋就是調查，而且會得到 credit（見 [What Counts as Already Done](#what-counts-as-already-done)）。
+- 針對你的領域客製關卡訊息。如果你的專案有特定的慣例，就把它們加進關卡的 prompt。
+- 用 `.gateguard.yml` 忽略 `.venv/`、`node_modules/`、`.git/` 這類路徑。
+
+## Related Skills
+
+- `safety-guard`：執行期的安全檢查（互補，不重疊）
+- `code-reviewer`：編輯之後的 review（GateGuard 是編輯之前的調查）</pre></section><section><h2>英文原文</h2><pre>---
+name: gateguard
+description: &quot;PreToolUse fact-forcing gate that denies the first Edit/Write/Bash (including MultiEdit and NotebookEdit) attempt until the agent presents concrete facts (importers, data schemas, verbatim user instruction), then allows retry; A/B-tested at +2.25 quality points. Use when enabling or configuring the GateGuard hook, exempting paths via env vars, or handling first-touch denials.&quot;
+metadata:
+  origin: community
+---
+
+# GateGuard — Fact-Forcing Pre-Action Gate
+
+A PreToolUse hook that forces Claude to investigate before editing. Instead of self-evaluation (&quot;are you sure?&quot;), it demands concrete facts. The act of investigation creates awareness that self-evaluation never did.
+
+## When to Activate
+
+- Working on any codebase where file edits affect multiple modules
+- Projects with data files that have specific schemas or date formats
+- Teams where AI-generated code must match existing patterns
+- Any workflow where Claude tends to guess instead of investigating
+
+## Core Concept
+
+LLM self-evaluation doesn&#x27;t work. Ask &quot;did you violate any policies?&quot; and the answer is always &quot;no.&quot; This is verified experimentally.
+
+But asking &quot;list every file that imports this module&quot; forces the LLM to run Grep and Read. The investigation itself creates context that changes the output.
+
+**Three-stage gate:**
+
+```
+1. DENY  — block the first Edit/Write/Bash attempt
+2. FORCE — tell the model exactly which facts to gather
+3. ALLOW — permit retry after facts are presented
+```
+
+No competitor does all three. Most stop at deny.
+
+## Evidence
+
+Two independent A/B tests, identical agents, same task:
+
+| Task | Gated | Ungated | Gap |
+| --- | --- | --- | --- |
+| Analytics module | 8.0/10 | 6.5/10 | +1.5 |
+| Webhook validator | 10.0/10 | 7.0/10 | +3.0 |
+| **Average** | **9.0** | **6.75** | **+2.25** |
+
+Both agents produce code that runs and passes tests. The difference is design depth.
+
+## Gate Types
+
+### Edit / MultiEdit Gate (first edit per file)
+
+MultiEdit is handled identically — each file in the batch is gated individually;
+entries without their own `file_path` are gated as the call&#x27;s `file_path`.
+NotebookEdit is gated as an Edit of its `notebook_path`: same class, checked
+key, credit and cap rules, the full questions (the cell change is not read),
+and never a comment-only pass.
+
+The questions depend on the target&#x27;s class (see
+[Questions by target class](#questions-by-target-class)). For **code**
+targets the Edit gate asks:
+
+```
+Before editing {file_path}, present these facts:
+
+1. List ALL files that import/require this file (search the tree — Glob/Grep, or find/grep via Bash)
+2. List the public functions/classes affected by this change
+3. If this file reads/writes data files, show field names, structure,
+   and date format (use redacted or synthetic values, not raw production data)
+4. Quote the user&#x27;s current instruction verbatim
+```
+
+These four are the full set, asked whenever the change cannot be read with
+confidence. When it can (see [Questions fit the change](#questions-fit-the-change)),
+an edit that touches no public declaration asks instead for the call sites in
+the file or its module that rely on the changed behaviour, and item 3 is
+dropped when the change handles no data.
+
+### Write Gate (first new file creation)
+
+For **code** targets the Write gate asks:
+
+```
+Before creating {file_path}, present these facts:
+
+1. Name the file(s) and line(s) that will call this new file
+2. Confirm no existing file serves the same purpose (search the tree — Glob/Grep, or find/grep via Bash)
+3. If this file reads/writes data files, show field names, structure,
+   and date format (use redacted or synthetic values, not raw production data)
+4. Quote the user&#x27;s current instruction verbatim
+```
+
+Item 3 is dropped when the new content handles no data.
+
+### Questions fit the change
+
+For **code** targets the gate reads the change it is about to allow (Edit
+`old_string`/`new_string`, every MultiEdit entry for the file, Write
+`content`) and decides three things:
+
+- **Public surface:** a line on either side declares or exposes a public name.
+  JS/TS: `export`, `exports`, `public`, `declare` (`.d.ts` files always); Python:
+  `def`/`class` not starting with `_`, dunders, `__all__`, a module-level public
+  assignment such as `BASE_URL = ...` (`__init__.py` always); Go: capitalised
+  `func`/`type`/`var`/`const` names, `package`, lines starting with a capital;
+  Rust: `pub`, `impl`, `trait`, `extern`, `#[macro_export]`, `#[derive]`,
+  `#[repr]`, `#[no_mangle]`; shell: function definitions,
+  `export`, `declare -x`; PowerShell: `function`, `filter`, `param`,
+  `Export-ModuleMember`, `[CmdletBinding`. A member of an exported container
+  counts too, judged from the file: lines inside an exported interface, enum,
+  type, object or export list, member declarations of an exported class,
+  `__all__` entries, public class attributes and dataclass fields, and members
+  of a `pub` enum, struct, trait or `use` list. Java, Kotlin, C#, C, C++ and batch
+  files, and every Write, always count as touching it. Touching it keeps questions 1 and 2; otherwise both are
+  replaced by &quot;List the call sites in this file or its module that rely on the
+  changed behaviour&quot;.
+- **Data:** words for file I/O, formats (`json`, `csv`, `yaml`, …),
+  serialisation, encodings, schemas, SQL, data stores, browser storage, dates
+  and clock reads on either side; in shell scripts also
+  redirection to a file, `curl`, `wget`, `jq` and PowerShell file and web
+  cmdlets. Without them the data
+  question is dropped. With `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` on, a
+  change that keeps the data question is also asked what outside the
+  repository decides its format or semantics.
+- **Trivial:** see [Comment and whitespace-only edits](#comment-and-whitespace-only-edits).
+
+Supported extensions: `.js .mjs .cjs .jsx .ts .tsx .mts .cts .py .pyi .go .rs
+.java .kt .kts .cs .c .h .cc .cpp .cxx .hpp .hh .hxx .sh .bash .zsh .ps1 .psm1
+.bat .cmd`. Any other extension, a
+missing or non-string field, more than 64 MultiEdit entries, a side over
+64 KiB, or 256 KiB in total means the full questions, word for word: the
+original four (importers, public API, data schemas, the user&#x27;s instruction),
+or five with `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` on. Sensitive
+and hard-linked targets and NotebookEdit calls always get the full questions. Other classes keep their class
+questions. Each question has a stable id (`importers`, `public-api`,
+`local-callers`, `callers`, `no-duplicate`, `data-schema`,
+`external-contract` when opted in, `quote-instruction`, and one per class
+question), listed in `docs/gateguard/change-profile.md`.
+
+### Questions by target class
+
+The code questions carry no signal for a `SKILL.md`, a README, a test, or a
+YAML file, so the first-touch gate classifies the target first.
+
+Classification uses the target&#x27;s path relative to the project root
+(`CLAUDE_PROJECT_DIR`, then the payload `cwd`, then the process directory),
+so a project that lives under, say, `~/work/tests/` does not turn every file
+into a test. A leading `.claude/worktrees/&lt;name&gt;/` is stripped, since a
+worktree mirrors the project, but only when
+`&lt;root&gt;/.claude/worktrees/&lt;name&gt;/.git` exists; otherwise the path stays under
+`.claude`. On Windows-style paths (and any segment containing `::$`), trailing
+dots/spaces and a `:stream` suffix are dropped first, so `CLAUDE.md.` and
+`CLAUDE.md::$DATA` classify as `CLAUDE.md`. Targets outside the root are
+classified by their absolute path. The path is lowercased and `/`-separated,
+and the first match wins:
+
+1. **instruction** — basename `CLAUDE.md`, `AGENTS.md`, `AGENT.md`,
+   `GEMINI.md`, `SKILL.md`, `copilot-instructions.md`, `.cursorrules`, or
+   `.windsurfrules`; any `.mdc` file; a `.md`/`.mdx`/`.txt` file under a
+   `.claude`, `agents`, `commands`, `skills`, `rules`, `hooks`, `.cursor`,
+   `.codex`, or `.opencode` directory; or a `*instructions*.md` file under
+   `.github/`
+2. **test** — `*.test.*`, `*.spec.*`, `test_*.py`, `*_test.py`, `*_test.go`,
+   or anything under a `tests`, `test`, or `__tests__` directory
+3. **prose** — `.md`, `.mdx`, `.txt`, `.rst`, `.adoc`
+4. **config** — `.json`, `.jsonc`, `.yaml`, `.yml`, `.toml`, `.ini`, or a
+   `.env` / `.env.*` file that does not end in a code extension (`.env.local`
+   is config; `.env.example.ts` and `.envrc` are code)
+5. **code** — everything else (a `.js` under `hooks/` or `skills/` is code)
+
+Every class ends with &quot;Quote the user&#x27;s current instruction verbatim&quot;, keeps
+the batch-sibling warning, and uses the same questions for Edit, MultiEdit,
+and Write unless noted. Items marked *(search)* carry the suffix
+&quot;(search the tree — Glob/Grep, or find/grep via Bash)&quot;.
+
+| Class | Questions |
+|---|---|
+| instruction | Name the harness/loader that reads this file (Claude Code, Codex, Cursor, OpenCode, …) and when it loads it · Describe what agent behaviour changes as a result · Confirm no existing instruction, skill, or agent file already covers this *(search)* |
+| test | Name what behaviour is under test and which module/function it exercises · Name the existing test file(s) covering this module, or confirm none exist *(search)* |
+| prose (Write) | Name any existing doc this supersedes or duplicates *(search)* · State where it will be linked or referenced from · Explain why a new file rather than editing an existing one |
+| prose (Edit) | List other docs or code that reference the section being changed *(search)* · State what the change corrects or adds |
+| config | Name which process/tool reads this file and when · Describe the effect of the change · Confirm no secrets or credentials are being written in plain text |
+
+Condensed denials (after `GATEGUARD_FACT_FORCE_FULL_DENIALS`) carry a
+one-line hint for the same class. For code targets the hint names the same
+questions as the full denial, one short phrase each; an Edit whose change
+cannot be read keeps the fixed hint (importers/callers, affected API, data
+schemas if any) when the external-contract question is off. Opting in adds
+its external-contract phrase. Besides the message text, the class only
+decides [sibling collapse](#same-turn-sibling-creation-collapse): which files
+may collapse, and that a sibling must share the first file&#x27;s class.
+
+### Destructive Bash Gate (every destructive command)
+
+Triggers on: `rm -rf`, `git reset --hard`, `git push --force`, `drop table`, etc.
+
+```
+1. List all files/data this command will modify or delete
+2. Write a one-line rollback procedure
+3. Quote the user&#x27;s current instruction verbatim
+```
+
+### Routine Bash Gate (once per session)
+
+```
+1. The current user request in one sentence
+2. What this specific command verifies or produces
+```
+
+Read-only introspection does not use this gate up: until it fires, a command
+whose every `;`, `|`, `&amp;&amp;` or `||` segment is `ls`, `pwd`, `cat`, `head`,
+`tail`, `wc`, `grep`, `rg`, `find`, `fd`, `tree`, or `git status`/`log`/
+`diff`/`show`/`ls-files`/`rev-parse`/`branch` with read-only options (in
+PowerShell: `Get-ChildItem`, `Get-Content`, `Select-String`, `Get-Location`,
+their aliases, `rg`, `git`) passes and is counted in
+`routine_readonly_passes`. The first other command is still gated. Any
+redirection, `tee`, substitution, backtick, variable, environment
+assignment, wrapper (`env`, `sudo`, `xargs`, `sh -c`), unknown command,
+`find -exec`/`-delete`, `fd -x`, `rg --pre`/`-z`, `tree -o`, `git` global option or
+write/execute option, or PowerShell `$`, `@`, `(`, `{` or `--%` makes the
+command ordinary. Destructive detection runs first, unchanged.
+
+Session state expires after 8 idle hours when it is keyed by a session id or
+transcript path, and after 30 idle minutes when it falls back to the project
+directory.
+
+## Parallel Batches and Partial Application
+
+The first-touch gate evaluates each tool call independently. When several
+edits to a file that has not been touched yet are sent in one parallel
+batch, the first call is denied and the denial marks the file as checked,
+so the sibling edits in that batch are applied. Nothing is rolled back:
+the file can end up holding the sibling edits without the denied one.
+
+The denial message names the file and warns that batch siblings may
+already have been applied. Treat it literally:
+
+- Send dependent edits to a not-yet-touched file sequentially, not in a
+  parallel batch. A definition and its first use, or an import and its
+  call site, must not ride in the same batch.
+- After a first-touch denial, present the facts, retry the denied edit,
+  and re-read the file before building on anything else from the batch.
+
+A batch-wide lock is not possible: hooks see tool calls one at a time, so
+the gate cannot know which calls arrived together.
+
+## What Counts as Already Done
+
+A first-touch denial is meant to force investigation. When the transcript
+shows the investigation already happened, or the answers would repeat the
+previous denial word for word, the gate lets the call through with a note
+instead of a denial. Each rule below falls back to the normal denial when
+anything is ambiguous.
+
+### Order of checks
+
+For each Edit/Write/NotebookEdit target (and each MultiEdit entry) the gate
+decides in this order; the first rule that applies wins:
+
+1. **Exempt** (`GATEGUARD_EXEMPT_GLOBS`, Claude settings files) — allowed.
+   Operator exemptions are authoritative: they win over every later rule,
+   including the sensitive and hard-link rules, so a glob that covers
+   `src/auth/**` or a hard-linked file turns its check off. Exempt only
+   paths that may be edited without the check.
+2. **Subagent** call — allowed (the parent session was already gated),
+   except a [sensitive](#sensitive-targets) or
+   [hard-linked](#hard-linked-targets) target: denied once per path
+   unless the parent already gated it. A subagent&#x27;s retry does not unlock
+   the path for the parent.
+3. **Already checked** this session — allowed.
+4. **Sensitive or hard-linked target?** — if so, skip straight to the
+   denial (step 9).
+5. **Prior-search credit** — allowed with a note.
+6. **Comment or whitespace-only Edit** — allowed with a note, not marked
+   checked.
+7. **Sibling collapse** — allowed with a note.
+8. **Denial cap** (`GATEGUARD_FACT_FORCE_MAX_DENIALS`, opt-in) — passes
+   through once the session&#x27;s denials have reached the cap.
+9. **Deny** — counted in `fact_force_denials`.
+
+Credit, trivial and sibling allows never consume the denial cap.
+
+### Sensitive targets
+
+Some files are too costly to change without the full check, so prior-search
+credit, the comment or whitespace-only pass, the change profile, sibling
+collapse, and the denial cap never apply to them: they are
+denied on first touch exactly as without these rules, and the denial counts
+as usual. The denial carries one extra line: &quot;Sensitive target: prior-search
+credit, sibling collapse, and the denial cap do not apply.&quot; A target is
+sensitive, judged on the same lowercased project-relative path as its class
+**and** on its real (symlink-resolved) location, when either matches:
+
+- its file name is `.env`, `.netrc`, or `.pgpass`, starts with `.env.`, ends
+  in `.pem`, `.key`, `.p12`, or `.pfx`, or starts with `id_rsa`, `id_ed25519`,
+  `id_ecdsa`, `id_dsa`, `credentials`, or `secrets.`;
+- any path segment is exactly `auth`, `authn`, `authz`, `security`,
+  `secrets`, `payment`, `payments`, `billing`, or `migrations` (whole
+  segments only: `src/author.py`, `docs/authoring.md`, and
+  `lib/paymentutils.py` are ordinary);
+- or it lies under `.github/workflows/`.
+
+The real location is the file&#x27;s own realpath when it exists, else the
+realpath of its nearest existing directory plus the rest of the path, judged
+relative to the realpath of the project root, so `src/tools -&gt; ../auth` makes
+`src/tools/login.py` sensitive. A real location outside the project is judged
+on its absolute path. Any error while deciding (a dangling symlink, a file
+where a directory should be, a permission error) counts as sensitive.
+Destructive and routine shell gates are unaffected.
+
+### Hard-linked targets
+
+A file with more than one hard link (`nlink &gt; 1`, or a symlink to such a file)
+is also reachable under another name, which may be sensitive or in another
+class, so the path being edited says little about what changes. It gets the
+same treatment as a sensitive target — no prior-search credit, change profile,
+comment-only pass, sibling collapse, denial cap, or subagent bypass — and its
+denial carries &quot;Hard-linked target: prior-search credit, sibling collapse, and
+the denial cap do not apply.&quot; instead of the sensitive line (a target that is
+both says &quot;Sensitive target&quot;). A stat error other than a missing file counts as
+hard-linked; a new file that does not exist yet is not.
+
+### Prior-search credit
+
+An Edit, Write, NotebookEdit, or MultiEdit entry is allowed, with an
+`additionalContext` note naming the search, when a qualifying search in the
+**current human turn** already covered the file:
+
+- **Qualifying tools:** `Glob`, `Grep`, `LS`, and Bash/PowerShell command
+  segments led by `rg`, `grep`, `egrep`, `fgrep`, `git grep`,
+  `git ls-files`, `find`, `fd`, `ls`, `tree`, `Get-ChildItem`, `gci`,
+  `Select-String`, or `sls`. **`Read` never counts** — Claude Code already
+  requires a Read before an Edit, so it proves nothing extra.
+- **Current human turn:** the turn starts at the latest real user message or
+  at a compaction (a compact-summary record or a `compact_boundary` marker),
+  so searches from before a compaction never count. Tool results, meta, and
+  sidechain records do not start a turn. Only the transcript tail is read
+  (last 256 KiB / 2000 lines); when the turn started before that window, the
+  whole window is the current turn, provided every `promptId` in it agrees.
+  Two or more `promptId`s there mean a turn started through a record the scan
+  does not recognise, so that window gives no credit. A transcript with no
+  turn start at all gives no credit.
+- **Completed, unambiguous result:** the search needs a `tool_result` in the
+  turn that is not an error (`is_error` of `true` or `&quot;true&quot;`, or content
+  starting with `&lt;tool_use_error&gt;`). A tool-use id that appears more than once
+  never counts.
+- **Not the same batch:** searches sent in the gated call&#x27;s own assistant
+  message never count, since their results were not seen when the edit was
+  decided. If the payload&#x27;s `tool_use_id` is missing or not in the
+  transcript, the newest assistant message in the turn is excluded instead. A
+  search without a message id never counts.
+- **Stem match:** the target&#x27;s stem (basename minus its last extension,
+  lowercased, at least 4 characters) must appear as a whole word — bounded by
+  non-alphanumeric characters or the ends of the text — in the Glob pattern,
+  the Grep pattern or glob, or the shell segment. `payment.py` is credited by
+  a search for `payment` or `payment_service`, but not by one for
+  `payments`. Exclusions are never a stem source. Generic stems (`index`, `main`, `init`, `__init__`,
+  `utils`, `util`, `types`, `readme`, `test`, `tests`, `config`, `mod`,
+  `lib`, `setup`, `app`, `spec`, `helpers`, `common`) never match. For a test
+  target, one test affix is stripped first (`.test`, `.spec`, and for Python
+  and Go `test_` or `_test`), so `rg tokenizer src tests` credits
+  `tests/tokenizer.test.js`; `index.test.js` still reduces to the generic
+  `index`.
+- **Exclusions never credit:** a Grep `glob` is split on top-level commas;
+  entries starting with `!` are exclusions. In shell segments, `rg -g`/
+  `--glob`/`--iglob` values starting with `!`, `grep --exclude`/
+  `--exclude-dir`, `fd -E`/`--exclude`, `ls -I`/`--ignore`/`--hide`,
+  `tree -I`, `git ls-files -x`, git `:!x`/`:^x`/`:(exclude)x` pathspecs,
+  `find -name`/`-path`/… under `-not` or `!` or followed by `-prune`, and
+  PowerShell `-Exclude` are exclusions. If an exclusion covers the target
+  (its glob matches the file name or any directory on its path, or it names
+  the stem), that search cannot credit the target at all: `rg -g &#x27;!widget.py&#x27;
+  TODO .` never credits `widget.py`, while `rg -g &#x27;!*.md&#x27; widget .` still
+  does. `--exclude-from`, `--ignore-file`, and `git ls-files -X` hide names
+  the hook cannot see, so such a segment never credits. File-name globs that
+  restrict a search (Grep `glob: &#x27;*.py&#x27;`, `rg -g &#x27;*.py&#x27;`, `grep --include`,
+  `find -name`, `tree -P`, `-Include`/`-Filter`) must match the target&#x27;s file
+  name for its stem to count. File types filter the same way: `rg -t`/
+  `--type` and the Grep `type` include the type&#x27;s globs, `rg -T`/`--type-not`
+  exclude them, and `fd -e`/`--extension` includes `*.&lt;ext&gt;`, so
+  `rg -t py tokenizer src` never credits `tokenizer.js`. An unknown type name,
+  `--type-add`, or `--type-clear` makes the segment never credit.
+- **Lookups are not searches:** a search confined to the target&#x27;s own file
+  name — every include glob, the Glob pattern, or every path pattern ends in
+  that exact name (`Glob **/tokenizer.js`, `find -name tokenizer.js`,
+  `rg -g tokenizer.js`, Grep `glob: &#x27;tokenizer.js&#x27;`) — could only find the
+  target, so it never credits it. `Glob **/tokenizer.*` still does.
+- **Scope:** `Glob`, `Grep`, and `LS` only credit a target strictly inside the
+  directory they searched (their `path`, else the tool `cwd`, plus a Glob
+  pattern&#x27;s literal leading directories). A Glob pattern is a filter too: it
+  must match the target&#x27;s path for the stem to count, so `Glob **/tokenizer.py`
+  never credits `tokenizer.js`. A Glob without glob characters is a
+  one-file lookup: it names no directory and credits only files directly in
+  its directory, never the looked-up file itself. A search whose path is the target is not a search.
+- **Shell segments:** a segment without a path operand counts only when it is
+  recursive (`rg`, `git grep`, `git ls-files`, `find`, `fd`, and `tree` by
+  default; `grep -r`/`-R`/`--recursive`, `ls -R`, `Get-ChildItem -Recurse`)
+  and not fed by a pipe; otherwise it reads stdin, not the tree. A segment
+  whose path operands all resolve to the target only reads the target and
+  does not count (`ls src/a.py` never credits `src/a.py`). Commands containing
+  `$( )`, backticks, `&lt;( )`, `&gt;( )`, or heredocs, or longer than 8192
+  characters, never credit.
+- **Shell scope:** a shell segment only credits a target equal to or inside
+  one of its path operands (resolved against the tool `cwd`; a glob operand
+  must match the target or a directory above it, and a default git pathspec&#x27;s
+  `*` also matches `/`), or inside the `cwd` when it has none:
+  `rg payment docs` or `grep -rn payment /usr/share/doc` never credit
+  `src/payment.py`. An input redirection before any operand
+  (`rg payment &lt; file`) or a `&lt;` inside a word reads stdin and never counts.
+  After `cd &lt;dir&gt;` in the same command, relative operands resolve against that
+  directory; after any other directory change, or one in another call of the
+  turn, only absolute operands count.
+- **Directory match (new files only):** a **Write that creates a file that
+  does not exist yet** may also match when the search named exactly the
+  target&#x27;s directory: a Glob `path` plus the pattern&#x27;s literal prefix (a
+  pattern that starts with a glob character and has no `path` names no
+  directory), a Grep or LS `path`, or a shell path operand. For shell
+  operands, the pattern argument of grep-style tools is skipped (unless
+  `-e`/`-f`/`--regexp`/`--file`/`-Pattern` supplied the pattern), values of
+  value-taking flags (`-g`, `--include`, `-name`, `-Filter`, …) are skipped,
+  trailing `/`, `/*`, and `/**` are dropped, `.`, `~`/`$` paths, and globs
+  name no directory, and the operand must be an existing directory at the
+  time of the check. If any Bash/PowerShell call in the turn changes directory
+  (`cd`, `pushd`, `popd`, `chdir`, `Set-Location`, `sl`, `Push-Location`,
+  `Pop-Location`), shell directory matching is off for the whole turn; stem
+  matching still applies. **Edit, MultiEdit, and a Write that overwrites an
+  existing file match by stem only.**
+- **Paths:** relative targets and search paths resolve against the tool&#x27;s
+  `cwd`, then `CLAUDE_PROJECT_DIR`, then the process directory. Comparison is
+  case-insensitive for Windows paths only. Shell commands are read with bash
+  quoting rules, so on Windows an operand credits when spelled `C:/x/src`;
+  backslash spellings (`C:\x\src`, quoted or not) and MSYS spellings
+  (`/c/x/src`) do not credit and the write is denied as usual.
+- **Note, not denial:** the credited file is marked checked and
+  `fact_force_credited` is incremented; the denial count and ordinal are not
+  touched. MultiEdit credits per entry and denies the first uncredited entry
+  as before.
+- **Falls back to deny:** a missing, unreadable, or non-file transcript,
+  garbage records, or any internal error mean no credit.
+- **Closest miss in the denial:** when an ordinary (not sensitive or
+  hard-linked) first touch is denied
+  and a call in the turn mentioned the file without crediting it, the denial
+  adds one line, &quot;Closest search this turn did not count (`&lt;tool&gt;`
+  `&lt;detail&gt;`): `&lt;why&gt;`.&quot;, naming the closest such call and why it failed: sent
+  in the same batch, its filters exclude the file, its search path does not
+  contain it, it searched piped input, it was a `Read` or another command
+  rather than a search, or the file name is too generic to match. The detail
+  is sanitized and cut to 60 characters; no other transcript text is shown.
+
+### Comment and whitespace-only edits
+
+An Edit whose old and new text differ only in comments and whitespace changes
+no behaviour, so the first-touch questions carry no signal. Such an Edit (or a
+MultiEdit whose entries for that file are all such changes) of a `code`,
+`test`, or `prose` target that is not sensitive passes with the note &quot;Comment
+or whitespace-only change to `&lt;file&gt;`&quot;. The file is **not** marked checked:
+the next change to it that alters code meets the normal first-touch gate. The
+pass is counted in `trivial_allows` and never touches the denial count.
+
+It applies only to the extensions listed in
+[Questions fit the change](#questions-fit-the-change), and only when every
+entry reads cleanly:
+
+- comments are `//` and `/* */` (C family), `#` (Python), `#` at the start of
+  a word (shell), `#` and `&lt;# #&gt;` (PowerShell), or `REM` lines (batch);
+  C preprocessor lines and batch `::` labels are code; directive comments are
+  code too (shebangs, encoding cookies, `# type:`, `# noqa`, `# nosec`,
+  `// @ts-...`, `eslint-...`, `//go:build`, `// +build`, `//go:embed`, Rust
+  doc comments, `#Requires`, `shellcheck`, `NOLINT`, `NOSONAR`, fallthrough
+  markers and similar); whitespace inside strings, line breaks between code, and
+  the presence of whitespace between tokens are code (`a+b` → `a + b` is not
+  trivial);
+- Python indentation of code lines is code;
+- never trivial: a Write; any multi-line or raw string form (backticks, triple
+  quotes, `r&quot;`, `R&quot;`, `@&quot;`, `$&quot;`, f-strings, Kotlin `$`), a string running to
+  the end of a line, a line comment or code line ending in `\`, `??/`, a
+  nested or unterminated block comment; in JS/TS any `/` outside a comment (regex versus
+  division), JSX-like tags, and `--&gt;`; in shell scripts heredocs, backticks,
+  `$(` inside double quotes, `$&#x27;...&#x27;`, line continuations and here-strings
+  (see the design notes for the full list);
+- config, instruction, sensitive and hard-linked targets, and NotebookEdit
+  calls never pass this way.
+
+The edit is also checked against the current file (a regular file of at
+most 1 MiB, read by the hook and never stored): `old_string` must be found as
+the Edit tool would apply it, the lines around the change must compare equal
+as above, and the text before them must end in plain code, not inside a
+template literal, docstring, raw string, heredoc or here-string and not after
+a line continuation. A missing, unreadable or larger file, or a Go file that
+imports `&quot;C&quot;`, never passes this way.
+
+### Same-turn sibling creation collapse
+
+When several new files are created in one directory, the answers for each
+would be identical, so only the first is denied:
+
+- Applies to a **Write of a file that does not exist yet** whose class is
+  `code`, `test`, or `prose`. Never collapsed: `config` and `instruction`
+  files, and any path with a segment starting with `.` (dotfiles and every
+  dot-directory: `.claude`, `.github`, `.git`, `.husky`, `.devcontainer`,
+  `.githooks`, `.idea`, `.vscode`, …) or an 8.3 short name (`CLAUDE~1`),
+  checked on the same project-relative path as the class.
+- The directory is also resolved to its **real location** (symlinks
+  followed; missing directories are resolved from the nearest existing
+  parent). If that differs from the path as written, the real path must be
+  inside the project, keep the same class, and pass the same screen, so a
+  symlink such as `src/tools -&gt; .claude/hooks` never collapses. Gates are
+  keyed by the real directory. Any filesystem error means no collapse.
+- After such a Write is denied, later first-touch Writes of new files **of the
+  same class in the same directory** are allowed with the note &quot;Sibling of
+  `&lt;first&gt;` (gated earlier at denial #`&lt;n&gt;` this session)&quot;. A code denial never
+  lets a test, README, or config file through.
+- The window is the **same human turn**. The turn id is the turn-start
+  record&#x27;s own `promptId`, else its `uuid`, else a hash of that record. When
+  the turn started before the transcript tail, the id is the `promptId` that
+  every user record in the window agrees on (Claude Code stamps it on the
+  prompt and on every tool result of the turn); if they disagree there is no
+  turn id. Only when **no transcript path is available at all** does a gate
+  recorded without a turn id match for **120 seconds**; a transcript that is
+  missing, unreadable, or yields no turn id means no collapse. A turn-scoped
+  gate never matches a call without a turn id, and vice versa; a gate stamped
+  in the future is ignored.
+- Prior-search credit is checked first. **Edits and MultiEdits are never
+  collapsed**, and an existing file is never treated as a sibling.
+
+### Canonical path keys
+
+Checked state is keyed on the canonical path: a relative `file_path` resolves
+against the tool&#x27;s `cwd` (where the tool runs), then `CLAUDE_PROJECT_DIR`,
+then the process directory, with `/` separators, lowercased on Windows only.
+`a.py`, `./a.py`, and the absolute path share one first-touch. State files
+written by earlier versions (raw keys) are still honoured.
+`GATEGUARD_EXEMPT_GLOBS` keeps its project-relative matching (below).
+
+### In-session counters
+
+The per-session state file (under `GATEGUARD_STATE_DIR`) records these fields.
+They record class names only, never paths (except `dir_gates`, which stores
+the sanitized first file per directory):
+
+| Field | Meaning |
+|---|---|
+| `fact_force_credited` | Number of first touches allowed by prior-search credit |
+| `denials_by_class` | Denials per target class (`code`, `prose`, `test`, …) |
+| `credited_by_class` | Credits per target class |
+| `sibling_allows` | Number of Writes allowed by sibling collapse |
+| `dir_gates` | Per class and directory, the denial that opened a sibling window (turn, time, first file, ordinal); capped at 50 entries |
+| `cap_allows` | Number of first touches passed through by the denial cap (`GATEGUARD_FACT_FORCE_MAX_DENIALS`); these never count as denials |
+| `trivial_allows` | Number of comment or whitespace-only edits passed without the first-touch check; these never mark the file checked |
+| `routine_readonly_passes` | Number of read-only shell commands passed before the routine shell gate fired; these never mark it checked |
+
+Missing or malformed fields load as empty or zero, so older state files keep
+working.
+
+### Compatibility and limits
+
+- **Two new, opt-in environment variables:**
+  `GATEGUARD_FACT_FORCE_MAX_DENIALS` (unset means no cap) and
+  `GATEGUARD_METRICS` (unset means no metrics). The existing controls are
+  unchanged.
+- **Nothing previously allowed is now denied**, except a subagent&#x27;s first
+  touch of a sensitive or hard-linked target, and the first NotebookEdit of
+  each notebook (NotebookEdit was not gated before). The other rules only
+  remove denials, and never return `permissionDecision: &quot;allow&quot;`, so other hooks
+  and permission rules still apply.
+- **Trust limit:** prior-search credit reads the local transcript file,
+  which the agent could in principle write to. The credit verifies observed
+  behaviour (a search ran and returned), not intent or how carefully the
+  result was read.
+
+## Quick Start
+
+### Option A: Use the ECC hook (zero install)
+
+The hook at `scripts/hooks/gateguard-fact-force.js` is included in this plugin. Enable it via hooks.json.
+
+If GateGuard blocks setup or repair work, start the session with
+`ECC_GATEGUARD=off`. For hook-level control, keep using
+`ECC_DISABLED_HOOKS` with the GateGuard hook ID.
+
+In long sessions, only the first `GATEGUARD_FACT_FORCE_FULL_DENIALS`
+fact-force denials (default 3) emit the full fact block; later
+denials are condensed to a single line carrying the denial ordinal, so
+near-identical blocks cannot accumulate in the context window and
+amplify model repetition loops (#2142). Retrying the same file or
+command after presenting facts never re-triggers the gate. That is a
+message budget; to stop denying new files after a number of denials, set
+the opt-in denial budget `GATEGUARD_FACT_FORCE_MAX_DENIALS` (below).
+
+#### Graduated controls
+
+`ECC_GATEGUARD=off` (or `GATEGUARD_DISABLED=1`) turns the gate off entirely.
+The variables in this table do **not** — each narrows one behaviour while the
+load-bearing destructive-Bash checks keep running:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `GATEGUARD_BASH_ROUTINE_DISABLED` | unset (gate on) | Disables the **routine-Bash** gate only. The destructive-Bash gate (`rm -rf`, `git reset --hard`, `drop table`, `dd if=`, …) is unaffected. |
+| `GATEGUARD_EXEMPT_GLOBS` | unset (no exemptions) | Comma-separated globs; a matching Edit/Write/MultiEdit/NotebookEdit target skips first-touch fact-forcing, even when it is sensitive or hard-linked. Intended for low-import-value trees (tests, generated artifacts, scratch dirs) where &quot;who imports this / what schema&quot; carries no signal. |
+| `GATEGUARD_FACT_FORCE_FULL_DENIALS` | `3` | How many denials emit the full fact block before later ones condense to a single line. `0` condenses from the very first denial. |
+| `GATEGUARD_FACT_FORCE_MAX_DENIALS` | unset (no cap) | A **denial budget**: caps how many first-touch Edit/Write/MultiEdit/NotebookEdit denials a session draws. Once that many denials have been issued, further new paths pass through instead of being denied (counted in `cap_allows`, not as denials); `0` passes from the first. Prior-search credit and sibling collapse run first and never use it up, and [sensitive](#sensitive-targets) and [hard-linked](#hard-linked-targets) targets are always denied. Destructive and routine Bash stay gated. The cap is best effort when hooks run concurrently: a lost count update can add a denial, but never lets a new path through early. Opt-in: unset, or any value that is not a whole non-negative integer (surrounding spaces allowed), keeps the deny-every-new-path behaviour; a malformed value is reported once on stderr (`ignoring malformed GATEGUARD_FACT_FORCE_MAX_DENIALS=…; the denial cap is not active.`). Unlike `GATEGUARD_FACT_FORCE_FULL_DENIALS`, a **message budget** that only changes how much text a denial carries, this changes whether the operation is blocked. Condensed denials name this variable. |
+| `GATEGUARD_BASH_EXTRA_DESTRUCTIVE` | unset | Extra destructive-command patterns, as regex source, added to the built-in set. A malformed regex is treated as unset (built-ins still apply) and logged once to stderr. |
+| `GATEGUARD_STATE_DIR` | `~/.gateguard` | Where per-session gate state is kept. If state cannot be persisted the gate allows the operation rather than looping, and names this variable in the warning. |
+| `GATEGUARD_METRICS` | unset (off) | Records one line per Edit/Write/MultiEdit/NotebookEdit/Bash/PowerShell decision in `&lt;GATEGUARD_STATE_DIR&gt;/metrics.jsonl` (see [Decision metrics](#decision-metrics)). Never changes a decision. |
+| `GATEGUARD_EXTERNAL_CONTRACT_QUESTION` | unset (off) | Adds a code question after the data-schema question: name what outside the repository decides the format, units, timezone or protocol semantics. Experimental: in hidden-intent trials it did not change outcomes (`docs/gateguard/question-effectiveness.md`). Never changes a decision. |
+
+`GATEGUARD_BASH_ROUTINE_DISABLED`, `GATEGUARD_METRICS` and
+`GATEGUARD_EXTERNAL_CONTRACT_QUESTION` accept `1`, `true`, `on`, `enabled`,
+`enable`, or `yes` (case- and whitespace-insensitive); any other value leaves
+the routine gate on, metrics off, and the question unasked.
+
+#### Decision metrics
+
+With `GATEGUARD_METRICS=1`, each gate decision appends one JSON line to
+`metrics.jsonl` in the state directory (a MultiEdit call writes one line per
+file it decided):
+
+```json
+{&quot;v&quot;:1,&quot;ts&quot;:&quot;2026-09-01T10:02:00.000Z&quot;,&quot;session&quot;:&quot;3f9c0a1b2d4e&quot;,&quot;tool&quot;:&quot;Edit&quot;,&quot;class&quot;:&quot;code&quot;,&quot;decision&quot;:&quot;deny&quot;,&quot;reason&quot;:&quot;near-miss:out-of-scope&quot;,&quot;questions&quot;:[&quot;local-callers&quot;,&quot;quote-instruction&quot;],&quot;sensitive&quot;:false,&quot;profile&quot;:{&quot;known&quot;:true,&quot;language&quot;:&quot;js&quot;,&quot;touchesPublicSurface&quot;:false,&quot;touchesData&quot;:false,&quot;trivial&quot;:false}}
+```
+
+| Field | Meaning |
+|---|---|
+| `v` | Schema version (`1`) |
+| `session` | First 12 hex characters of the sha256 of the session key |
+| `tool` | `Edit`, `Write`, `MultiEdit`, `NotebookEdit`, `Bash` or `PowerShell` |
+| `class` | Target class, or `null` for shell commands |
+| `decision` | `deny`, `credit`, `sibling`, `cap`, `trivial`, `pass-checked`, `pass-exempt`, `pass-subagent`, `routine-deny`, `routine-readonly`, `destructive-deny` or `pass` |
+| `reason` | Short code: `first-touch`, `sensitive`, `hard-linked`, `near-miss:&lt;code&gt;`, `subagent-sensitive`, `subagent-hard-linked`, `prior-search`, `comment-whitespace`, `same-turn-dir`, `max-denials`, `checked`, `exempt-glob`, `claude-settings`, `no-path`, `subagent`, `readonly-git`, `readonly`, `first-command`, `routine-checked`, `routine-disabled`, `destructive`, `destructive-retry`, `state-error` |
+| `questions` | Question ids of a first-touch denial; `null` otherwise |
+| `sensitive` | Whether the target is a [sensitive target](#sensitive-targets) |
+| `profile` | Change-profile flags when the profile was computed; `null` otherwise |
+
+**Privacy:** lines never contain paths, commands, file content, transcript
+text or the session id itself; every text field must be a short lowercase
+code or is written as `null`. Metrics errors are ignored. Past 1 MiB the file
+is renamed to `metrics.jsonl.1`, replacing the previous one.
+
+Summarise the metrics with:
+
+```bash
+node scripts/gateguard-report.js            # GATEGUARD_STATE_DIR or ~/.gateguard
+node scripts/gateguard-report.js --dir /path/to/state --json
+```
+
+It reads `metrics.jsonl.1` then `metrics.jsonl`, skips malformed lines, and
+prints, per session and in total: decisions by type, denials by class and
+reason, the share of first-touch denials that followed a near-miss search,
+the rates of denial, credit, sibling collapse, cap and trivial edits among
+first touches, routine read-only passes, and the most-asked question ids.
+
+#### Turning the gate off completely
+
+| Variable | Effect |
+|---|---|
+| `ECC_GATEGUARD=off` | Disables GateGuard for the session. Accepts `0`, `false`, `off`, `disabled`, or `disable`. |
+| `GATEGUARD_DISABLED=1` | Same effect. Recognises `1` only — the spellings above do **not** apply here. |
+
+For hook-level control, keep using `ECC_DISABLED_HOOKS` with the GateGuard hook ID.
+
+#### Glob semantics for `GATEGUARD_EXEMPT_GLOBS`
+
+Patterns match the entire project-relative target path. The project root is
+`CLAUDE_PROJECT_DIR`, falling back to the hook payload&#x27;s `cwd`, then the hook
+process working directory. Relative globs never exempt targets outside that
+root. Explicit absolute globs match the entire absolute target path and may
+deliberately exempt paths outside the project.
+
+Both patterns and paths use `/` separators and lowercase matching. `*` matches
+within a segment, `**` across segments, and `?` one non-separator character.
+`**/` includes zero directories, so `**/tests/**` also matches `tests/foo.js`.
+Malformed patterns are dropped without granting an exemption.
+An exemption applies before every other rule, including the sensitive and
+hard-link rules (see [Order of checks](#order-of-checks)).
+
+Since 2.2.1, `services/**` only covers the project&#x27;s root services tree, and
+`*.md` only covers its root Markdown files. Use `**/*.md` for all Markdown
+files within the project. Existing unanchored exemptions may need adjustment:
+
+```json
+{
+  &quot;env&quot;: {
+    &quot;GATEGUARD_BASH_ROUTINE_DISABLED&quot;: &quot;1&quot;,
+    &quot;GATEGUARD_EXEMPT_GLOBS&quot;: &quot;**/tests/**,tests/**,**/*.test.*,**/docs/**,**/dist/**&quot;
+  }
+}
+```
+
+### Option B: Full package with config
+
+```bash
+pip install gateguard-ai
+gateguard init
+```
+
+This adds `.gateguard.yml` for per-project configuration (custom messages, ignore paths, gate toggles).
+
+## Anti-Patterns
+
+- **Don&#x27;t use self-evaluation instead.** &quot;Are you sure?&quot; always gets &quot;yes.&quot; This is experimentally verified.
+- **Don&#x27;t skip the data schema check.** Both A/B test agents assumed ISO-8601 dates when real data used `%Y/%m/%d %H:%M`. Checking data structure (with redacted values) prevents this entire class of bugs.
+- **Don&#x27;t gate every single Bash command.** Routine bash gates once per session. Destructive bash gates every time. This balance avoids slowdown while catching real risks.
+
+## Best Practices
+
+- Let the gate fire naturally. Don&#x27;t try to pre-answer the gate questions — the investigation itself is what improves quality. A real search for the target before editing is investigation, and is credited (see [What Counts as Already Done](#what-counts-as-already-done)).
+- Customize gate messages for your domain. If your project has specific conventions, add them to the gate prompts.
+- Use `.gateguard.yml` to ignore paths like `.venv/`, `node_modules/`, `.git/`.
+
+## Related Skills
+
+- `safety-guard` — Runtime safety checks (complementary, not overlapping)
+- `code-reviewer` — Post-edit review (GateGuard is pre-edit investigation)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build-agent｜Skill 寫法圖鑑</title>
+<meta name="description" content="把老闆手動重複做的事變成可命名、可排程的 skill">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>build-agent</h1>
+<p class="meta">Anthropic ｜ Agent 與工作流 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/small-business/skills/build-agent/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">把老闆手動重複做的事變成可命名、可排程的 skill</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: build-agent
+description: &gt;
+  把老闆一直在手動做的工作，變成一個有名字、可重複使用的 skill，可以用名稱觸發或排程執行。
+  看他們做一次，或聽他們描述一遍，找出哪些會變、哪些固定，在對的位置放上需要核准的檢查點來寫成 skill，
+  註冊到 router，並分享給團隊。這就是一間公司取得「沒有人替他們做好的工作流程」的方式。
+  只要老闆描述某件重複的事、希望它能自動化，就使用這個 skill，
+  包括「我每週都要做這個」「你能記住怎麼做這件事嗎」「把這個變成我可以直接叫你做的事」
+  「幫我建一個 agent」「幫我把這個自動化」「把這個變成工作流程」「我想要每週一自動發生」這類說法。
+  就算他們只是描述一個例行工作、沒有要求自動化，也可以主動用它。
+allowed-tools: Read, WebFetch
+---
+
+# Build Agent
+
+把老闆每週都在做的事，變成他們可以直接喊名字就能叫出來的東西。
+
+這樣 plugin 才不必替每個產業都出貨一套工作流程。沒有任何目錄能涵蓋化糞池承包商的許可流程，或保險代理公司的承保公司佣金對帳。這些老闆自己就能建。
+
+## Step 1 — 看它發生，或聽它被描述
+
+兩個起點，第一個好很多。
+
+**最好：他們剛剛就在這個對話裡做過了。** 如果老闆已經帶你走過一遍這個工作，包括拉檔案、做決定、糾正你兩次，那份對話記錄就是規格。直接從裡面萃取，不要再訪談一遍。他們做的那些糾正是最有價值的部分，因為裡面編碼了老闆自己都想不到要講出來的判斷。
+
+**不然：由他們描述。** 請他們具體地回顧上一次是怎麼做的。真實的細節永遠勝過抽象的描述：「上週二我拉了承保公司的檔案，跟我們已經入帳的對過，然後追了六筆對不上的」比「我在對佣金」告訴你的多得多。
+
+怎麼不用審問就拿到完整的圖像，請讀 `reference/capture.md`。
+
+## Step 2 — 分開「會變的」和「固定的」
+
+這一步的全部功夫就在這裡。把上週二的細節寫死的 skill，只有上週二能用。
+
+針對工作的每個部分，判斷它屬於：
+
+- **固定** — 順序、來源、輸出格式、規則
+- **會變** — 日期、名字、金額、哪個檔案、哪個客戶
+- **判斷** — 由老闆決定的部分，這些會變成核准關卡
+
+老闆在帶你走一遍時做的糾正，通常就標出了判斷點。當有人說「不對，不是那個，低於 50 美元的我們都跳過」，那是規則。當他們說「嗯，要看情況」，那是核准關卡。
+
+## Step 3 — 找出核准關卡
+
+每個會寄送、花錢、發布或刪除的步驟都需要關卡。老闆猶豫過的步驟也一樣。
+
+不要每一步都設關卡，一個要問九次許可的 skill 比手動做還糟。只在影響重大和模稜兩可的地方設關卡，其他讓它直接跑。
+
+關卡該放在哪、怎麼措辭，請讀 `reference/skill_authoring.md`。
+
+## Step 4 — 寫出來
+
+產出一個真正的 skill，形式跟這個 plugin 裡其他的一樣：一份帶 frontmatter 和編號步驟的 `SKILL.md`，細節夠多的話再加一個 `reference/` 資料夾。
+
+它必須符合的要求，跟所有已出貨的 skill 相同：
+
+- 名稱和資料夾名稱一致，小寫加連字號
+- description 要說明它做什麼**以及**何時觸發，用第三人稱
+- connector 缺少時有真正可用的備案
+- 任何影響重大的動作都要有核准關卡
+- 絕對不捏造數字；缺少的資料就回報為缺少
+
+**用老闆的說法來寫，不要用籠統的商業用語。** 如果他們叫它「承保公司檔案」，skill 就寫承保公司檔案。一個滿是陌生詞彙的 skill，他們是不會放心讓它無人看管地跑的。
+
+## Step 5 — 在他們依賴它之前，先用真實案例測試
+
+拿老闆已經知道答案的案例來跑新 skill，最好就是他們帶你走過的那一個。把輸出跟他們手動得到的結果並排給他們看。
+
+這一步決定這個 skill 會不會被使用。看過它重現已知正確結果的老闆，會願意排程。沒看過的人會手動跑、每次都檢查，這樣就什麼都沒省到。
+
+如果不吻合，就修 skill 再跑一次。不要要求老闆接受「差不多」。
+
+## Step 6 — 註冊並設定頻率
+
+把它加到 `smb-router`，讓白話的請求能找到它，並記下老闆實際會用的觸發說法。
+
+如果是週期性的工作，主動提議排程。排程才能把「我可以跑的 skill」變成「不用我動手就會發生的事」，那才是他們想要的結果。
+
+## Step 7 — 分享，要取得同意
+
+主動提議分享給團隊。說清楚分享代表什麼：誰會拿到、它能碰到哪些資料、無人看管時能做什麼。
+
+**當 skill 會寄送、花錢或寫入時，要具體講風險。** 一個會寄信給客戶的 skill，如果由不是它建造者、也不知道它假設的人來跑，是真正的隱患。凡是會寄送任何東西的共享 skill，建議只產生草稿。
+
+## 不要做的事
+
+- **剛帶你走過一遍的工作，不要再訪談一次。** 對話記錄就是規格。
+- **不要把範例寫死。** 名字、日期和金額會變，順序不會。
+- **不要每一步都設關卡。** 九次核准比手動做還糟。
+- **不要跳過測試執行。** 沒測過的 skill 會被永遠手動檢查，什麼都沒省到。
+- **不要用籠統的商業用語寫。** 要用他們的話，不然他們不會信任它。
+- **不要建出會寄送或花錢卻沒有核准關卡的東西。** 不管老闆要求什麼，都不行。
+
+## 建完之後
+
+老闆現在有一個有名字、可以觸發或排程的 skill。如果這個新 skill 碰到沒連線的工具，「連到我的 ERP」（`build-connector`）是自然的下一步，它會把缺少的系統變成可用的來源。附近還有：「brief me」把新的輸出納入每日全貌，以及如果這個 skill 要餵給每週簡報，就用「Monday brief」。最多提議三個，這個 session 裡老闆已經拒絕過的就跳過。
+
+## 參考檔案
+
+- `reference/capture.md` — 不用審問就取得工作的完整圖像
+- `reference/skill_authoring.md` — 結構、frontmatter，以及核准關卡該放哪裡
+- `reference/gotchas.md` — 會做出沒人用的 skill 的失敗模式</pre></section><section><h2>英文原文</h2><pre>---
+name: build-agent
+description: &gt;
+  Turns a task the owner keeps doing by hand into a named, reusable skill they
+  can trigger by name or put on a schedule. Watches them do it once or listens
+  to them describe it, works out what varies and what stays fixed, writes the
+  skill with approval checkpoints in the right places, registers it with the
+  router, and shares it with the team. This is how a business gets a workflow
+  nobody shipped for them. Use this whenever the owner describes something
+  repetitive they wish were automatic — including phrasings like &quot;I do this
+  every week,&quot; &quot;can you remember how to do this,&quot; &quot;make this a thing I can just
+  ask for,&quot; &quot;build me an agent,&quot; &quot;automate this for me,&quot; &quot;turn this into a
+  workflow,&quot; or &quot;I want this to happen every Monday.&quot; Reach for it when they
+  describe a routine, even without asking for automation.
+allowed-tools: Read, WebFetch
+---
+
+# Build Agent
+
+Turn something the owner does every week into something they ask for by name.
+
+This is what keeps the plugin from having to ship every industry&#x27;s workflow. No catalog can cover a septic contractor&#x27;s permit routine or an insurance agency&#x27;s carrier commission reconciliation. Those owners can build them.
+
+## Step 1 — Watch it happen, or hear it described
+
+Two starting points, and the first is much better.
+
+**Best: they just did it in this conversation.** If the owner has walked through the task with you — pulled the files, made the decisions, corrected you twice — that transcript is the specification. Extract it rather than re-interviewing them. The corrections they made are the most valuable part, because they encode judgment the owner would never have thought to state.
+
+**Otherwise: they describe it.** Ask them to walk through the last time they did it, concretely. Real specifics beat an abstract description every time — &quot;last Tuesday I pulled the carrier file, matched it against what we&#x27;d booked, and chased six discrepancies&quot; tells you more than &quot;I reconcile commissions.&quot;
+
+Read `reference/capture.md` for how to get a complete picture without an interrogation.
+
+## Step 2 — Separate what varies from what stays fixed
+
+This is the whole craft of the step. A skill that hardcodes last Tuesday&#x27;s specifics only works on last Tuesday.
+
+For each part of the task, decide:
+
+- **Fixed** — the sequence, the sources, the output format, the rules
+- **Varies** — dates, names, amounts, which file, which customer
+- **Judgment** — the parts where the owner decides, which become approval gates
+
+The corrections the owner made while walking through it usually mark the judgment points. When someone says &quot;no, not that one — we skip anything under USD 50,&quot; that is a rule. When they say &quot;hmm, depends,&quot; that is an approval gate.
+
+## Step 3 — Find the approval gates
+
+Every step that sends, spends, publishes, or deletes needs a gate. So does every step where the owner hesitated.
+
+Do not gate everything — a skill that asks permission nine times is worse than doing it by hand. Gate the consequential and the ambiguous, and let the rest run.
+
+Read `reference/skill_authoring.md` for where gates belong and how to phrase them.
+
+## Step 4 — Write it
+
+Produce a real skill in the same shape as everything else in this plugin: a `SKILL.md` with frontmatter and numbered steps, plus a `reference/` folder if the detail warrants it.
+
+Requirements it must meet, same as every shipped skill:
+
+- Name and folder match, lowercase with hyphens
+- Description says what it does **and** when to trigger, in third person
+- A real fallback for when a connector is missing
+- Approval gates on anything consequential
+- Never invents a number; missing data is reported as missing
+
+**Write it in the owner&#x27;s terms, not in generic business language.** If they call it &quot;the carrier file,&quot; the skill says carrier file. A skill full of unfamiliar vocabulary is one they will not trust to run unattended.
+
+## Step 5 — Test it on a real case, before they rely on it
+
+Run the new skill against a case the owner already knows the answer to — ideally the exact one they walked through. Show the output next to what they got by hand.
+
+This is the step that determines whether the skill gets used. An owner who has seen it reproduce a known-good result will schedule it. One who hasn&#x27;t will run it manually and check it every time, which saves nothing.
+
+If it doesn&#x27;t match, fix the skill and run it again. Do not ask the owner to accept a near-miss.
+
+## Step 6 — Register and set the cadence
+
+Add it to `smb-router` so plain-English requests reach it, and record the trigger phrases the owner actually uses.
+
+If it is a recurring task, offer to schedule it. Scheduling is what converts &quot;a skill I could run&quot; into &quot;something that happens without me,&quot; which is the outcome they wanted.
+
+## Step 7 — Share it, with approval
+
+Offer to share with the team. Say what sharing means: who gets it, what data it can reach, and what it can do unattended.
+
+**Be specific about the risk when a skill sends, spends, or writes.** A skill that emails customers, running for someone who did not build it and does not know its assumptions, is a real hazard. Recommend draft-only for shared skills that send anything.
+
+## What not to do
+
+- **Do not re-interview about a task they just walked through.** The transcript is the spec.
+- **Do not hardcode the example.** Names, dates, and amounts vary; the sequence does not.
+- **Do not gate every step.** Nine approvals is worse than doing it by hand.
+- **Do not skip the test run.** An untested skill gets checked manually forever, which saves nothing.
+- **Do not write it in generic business language.** Their words, or they won&#x27;t trust it.
+- **Do not build something that sends or spends without approval gates.** Ever, regardless of what the owner asks for.
+
+## After the build
+
+The owner now has a named skill they can trigger or schedule. If the new skill hit a tool that isn&#x27;t connected, &quot;connect to my ERP&quot; (`build-connector`) is the natural next step — it turns the missing system into a working source. Also nearby: &quot;brief me&quot; to fold the new output into the daily picture, and &quot;Monday brief&quot; if the skill should feed the weekly one. Offer at most three, and skip any offer the owner already declined this session.
+
+## Reference files
+
+- `reference/capture.md` — getting a complete picture of the task without an interrogation
+- `reference/skill_authoring.md` — the structure, frontmatter, and where approval gates belong
+- `reference/gotchas.md` — the failure modes that produce a skill nobody uses</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

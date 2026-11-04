@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>latency-critical-systems｜Skill 寫法圖鑑</title>
+<meta name="description" content="優化並驗證低延遲系統，追蹤 p95、資料新鮮度與 queue 深度">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>latency-critical-systems</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/latency-critical-systems/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">優化並驗證低延遲系統，追蹤 p95、資料新鮮度與 queue 深度</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: latency-critical-systems
+description: 優化並驗證對延遲敏感的系統（即時 dashboard、市場資料 feed、streaming agent、執行 gateway、queue 與快取），做法是追蹤 p50/p95/p99 延遲、資料新鮮度（freshness age）與 queue 深度，盤點熱路徑，並做線上實測回讀。在 p95 延遲、吞吐量或資料新鮮度很重要時使用。
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# 低延遲關鍵系統
+
+當使用者在意即時行為、熱路徑、streaming 新鮮度或執行速度時使用這個 skill。
+這也包含類 HFT 的基礎設施，但這個 skill 聚焦在工程面，
+不授權實際交易，也不提供
+財務建議。
+
+## 把指標拆開
+
+不要把一切都混成「很快」。要追蹤：
+
+- p50、p95 與 p99 延遲；
+- 吞吐量；
+- 資料新鮮度（freshness age）；
+- queue 深度；
+- 快取命中率；
+- provider/API 回應時間；
+- 瀏覽器 render 時間；
+- 負載下的正確性；
+- 失敗與 retry 行為。
+
+## 畫出熱路徑
+
+把從使用者/事件到最終可見狀態的路徑寫出來：
+
+```text
+source event -&gt; provider API -&gt; ingest worker -&gt; queue -&gt; cache -&gt; edge route
+-&gt; client stream -&gt; browser render -&gt; user-visible state
+```
+
+然後把每一段分開量測。
+
+## 優化順序
+
+1. 移除不必要的 round trip。
+2. 對穩定的讀取加上快取，並附帶新鮮度 metadata。
+3. 把小量的呼叫與寫入合併成 batch。
+4. 把運算移到更靠近資料或使用者的地方。
+5. 把熱路徑與冷路徑分開。
+6. 在 queue 無限成長之前先施加 backpressure。
+7. 只有在能改善新鮮度或使用者體驗時才用 streaming。
+8. 為過期資料、降級的 provider 與壞掉的快取狀態加 canary。
+
+## 驗證
+
+已部署的介面存在時，用線上回讀（live readback）驗證：
+
+- HTTP 計時與 response header；
+- provider 的新鮮度時間戳；
+- queue 或 job 狀態；
+- edge/快取狀態；
+- 用瀏覽器驗證實際 UI 的新鮮度；
+- retry 與降級模式前後的 log。
+
+對市場資料或接近執行端的路徑，在宣告這條路徑
+就緒之前，還要驗證 orderbook 的時間年齡、VWAP
+假設、provider 狀態與 kill-switch 行為。
+
+## 護欄
+
+- 不要靠捨棄必要的驗證來優化延遲。
+- 不要把過期資料藏在快速的快取命中後面。
+- 沒有量測，就不要拿 client 標籤宣稱毫秒等級的表現。
+- 沒有明確的核准關卡，
+  不要送出實際訂單、做破壞性 migration，或做會影響客戶的 deploy。
+- 不要讓 secret 與私密 payload 出現在 log 與 benchmark 產物裡。</pre></section><section><h2>英文原文</h2><pre>---
+name: latency-critical-systems
+description: Optimize and verify latency-sensitive systems — realtime dashboards, market data feeds, streaming agents, execution gateways, queues, and caches — by tracking p50/p95/p99 latency, freshness age, and queue depth, mapping hot paths, and running live readbacks. Use when p95 latency, throughput, or data freshness matters.
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Latency Critical Systems
+
+Use this skill when the user cares about realtime behavior, hot paths, streaming
+freshness, or execution speed. This includes HFT-like infrastructure, but the
+skill is engineering-focused. It does not authorize live trading or financial
+advice.
+
+## Split The Metrics
+
+Do not collapse everything into &quot;fast.&quot; Track:
+
+- p50, p95, and p99 latency;
+- throughput;
+- freshness age;
+- queue depth;
+- cache hit rate;
+- provider/API response time;
+- browser render time;
+- correctness under load;
+- failure and retry behavior.
+
+## Map The Hot Path
+
+Write the path from user/event to final visible state:
+
+```text
+source event -&gt; provider API -&gt; ingest worker -&gt; queue -&gt; cache -&gt; edge route
+-&gt; client stream -&gt; browser render -&gt; user-visible state
+```
+
+Then measure each segment separately.
+
+## Optimization Order
+
+1. Remove unnecessary round trips.
+2. Cache stable reads with freshness metadata.
+3. Batch small calls and writes.
+4. Move compute closer to the data or the user.
+5. Split hot and cold paths.
+6. Apply backpressure before queues grow unbounded.
+7. Use streaming only when it improves freshness or user experience.
+8. Add canaries for stale data, degraded providers, and bad cache state.
+
+## Verification
+
+Use live readbacks when a deployed surface exists:
+
+- HTTP timing and response headers;
+- provider freshness timestamp;
+- queue or job state;
+- edge/cache state;
+- browser verification for actual UI freshness;
+- logs around retries and degraded mode.
+
+For market-data or execution-adjacent paths, also verify orderbook age, VWAP
+assumptions, provider status, and kill-switch behavior before calling the path
+ready.
+
+## Guardrails
+
+- Do not optimize latency by dropping required validation.
+- Do not hide stale data behind fast cache hits.
+- Do not claim millisecond behavior from client labels without measurement.
+- Do not run live orders, destructive migrations, or customer-impacting deploys
+  without an explicit approval gate.
+- Keep secrets and private payloads out of logs and benchmark artifacts.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

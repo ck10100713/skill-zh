@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>prompt-caching-strategy｜Skill 寫法圖鑑</title>
+<meta name="description" content="調整 prompt 結構提高快取命中率，並用實際用量算出省多少">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>prompt-caching-strategy</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/prompt-caching-strategy/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">調整 prompt 結構提高快取命中率，並用實際用量算出省多少</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: prompt-caching-strategy
+description: &gt;-
+  最佳化 LLM 的 prompt caching 命中率，降低 API 成本並改善延遲。
+  分析 prompt 結構，找出可快取與不可快取的內容，
+  並建議如何重新調整結構，讓快取重複使用的程度最大化。
+  TRIGGER when: 使用者說「prompt cache」、「cache hit rate」、「reduce LLM cost」、
+  「optimize token usage」、「cheaper LLM calls」，或詢問 OpenAI/Anthropic/其他服務商的
+  prompt caching 策略。
+  DO NOT TRIGGER when: 使用者只是想最佳化單一 prompt 的品質
+  （改用 prompt-optimizer），或詢問一般的快取基礎設施。
+metadata:
+  origin: community
+  author: cyberspace-cs
+  version: &quot;1.0.0&quot;
+---
+
+# Prompt Caching Strategy
+
+把可重複使用的 prompt 內容安排好，提高快取的重複使用率，然後量測輸入成本和延遲。能省多少，取決於模型、平台、快取資格、寫入、保留時間、重複使用次數和輸出量。這個 skill 在 runtime 的快取命中和節省**沒有被量測過**；下面的範例只驗證算術，沒有呼叫任何服務商。
+
+## 何時啟用
+
+用在重複的 API 請求，這些請求共用經過授權的指示、工具或參考資料。要先確認確切的服務商 endpoint、模型、服務層級和快取模式。在選定費率、最短前綴長度或保留時間之前，先查閱它目前的文件。快取不會減少 context window 的使用量。
+
+## 運作方式
+
+### 保持穩定的前綴
+
+讓可重複使用的指示、工具 schema 和範例保持穩定；在 API 允許的情況下，把會變動的問題、時間戳記和檢索結果放在這些內容後面。要遵守服務商的序列化順序：Claude 是 tools、system，然後是 messages。要讓前綴相符，內容必須完全相同，包括工具 schema 和相關的請求設定。前綴一改變，從那個點之後就可能無法重複使用。動態的後綴如果之後原封不動地被重複使用，本身也可能被快取。
+
+```text
+Reusable prefix: approved tools, instructions, stable examples/reference
+Changing suffix: current question, fresh retrieval results, request metadata
+```
+
+只選相關的 context。為了達到資格門檻而硬塞 prompt，或擴大存取範圍，需要另外提出成本和品質上的理由。
+
+### 保持使用者與工作區的界線
+
+在快取查詢或重複使用之前，先授權內容的存取。應用程式管理的快取 handle 和計費 key，要限定在核准的使用者、工作區、服務商帳號、模型和內容版本範圍內。只分享明確核准用在該範圍的素材。快取 key 是路由/計費的提示，不是授權的關卡，也不是 sandbox。服務商的快取隔離不能取代應用程式的存取檢查。權限或內容變更時，要讓應用程式的參照失效；並遵守服務商的保留/刪除控制。避免把私有的 prompt 內容寫進 log。Context 的選擇、能力、sandbox 的強制執行和證據，都與快取最佳化各自獨立。
+
+## 服務商的要求與使用量證據
+
+連結的文件才是權威；不同的 endpoint 和 SDK 版本，可能會有不同的使用量欄位名稱。要把那個版本和計數器一起記錄下來。
+
+| 服務商 | 要驗證的要求 | 要記錄的計數器 |
+| --- | --- | --- |
+| OpenAI | 各模型專屬的自動/明確模式、最短長度、保留時間，以及寫入/讀取的價格；較早和較新的模型不一樣 | Responses 的 `usage.input_tokens_details.cached_tokens`，以及有的話的 `cache_write_tokens`；輸入和輸出的總量。Chat Completions 用 `prompt_tokens_details.cached_tokens` |
+| Claude | 支援的平台、模型的最小值、`cache_control` 的支援和 TTL；快取寫入的成本可能比一般輸入高 | `input_tokens`、`cache_creation_input_tokens`、`cache_read_input_tokens`、`output_tokens`；費率不同時，依 TTL 拆開寫入 |
+| Gemini | 模型的最小值和 API：Interactions 支援 implicit caching；明確的 cache 物件需要 GenerateContent | Interactions 的 `usage.total_cached_tokens`；GenerateContent 的 `usage_metadata` 快取/輸入/輸出計數器，加上明確快取的 token 數量和保留時間 |
+
+針對選定的模型，使用 [OpenAI 的 prompt caching 指南](https://developers.openai.com/api/docs/guides/prompt-caching)和[價格](https://developers.openai.com/api/docs/pricing/)。如果是 Chat Completions，要查[使用量 schema](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)。一般輸入要用總量減去快取讀取，以及另外回報的寫入量來推算；不要把同一批 token 算兩次。
+
+使用 [Claude 的 prompt caching 指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)，了解目前的模型/平台限制和 TTL 費率。它的 `input_tokens` 把一般輸入和快取的讀取、寫入分開計算。即使標記了要快取，過短的前綴也可能讓所有快取計數器都是零。不要假設每個 Claude 模型或託管平台的最小值或讀取價格都一樣。
+
+使用 [Gemini 的快取指南](https://ai.google.dev/gemini-api/docs/caching)、[GenerateContent 快取指南](https://ai.google.dev/gemini-api/docs/generate-content/caching)和[價格](https://ai.google.dev/gemini-api/docs/pricing)。明確快取的儲存，是依 token 數量和保留時間計費，跟讀取、一般輸入和輸出分開。Implicit 命中不保證。要驗證所選 endpoint 的計費類別，不要照抄別家服務商的費率。
+
+## 成本比較計算器
+
+把實際的使用量正規化成不重疊的類別，並用相同幣別、每百萬 token 的價格。當 TTL、模態、服務層級或模型的價格不同時，要把寫入類別拆開。儲存用的是百萬 token 小時；其他適用的費用，例如工具和 grounding，要各自列一行。量測期間內，要包含所有的 warmup、miss、過期、刷新和重試請求。
+
+```text
+baseline = (ordinary + written + read) * ordinary_input_rate / 1e6
+           + output * output_rate / 1e6
+actual   = ordinary * ordinary_input_rate / 1e6
+           + written * cache_write_rate / 1e6
+           + read * cache_read_rate / 1e6
+           + output * output_rate / 1e6
+           + storage_token_hours * storage_rate / 1e6
+savings  = baseline - actual
+```
+
+這個反事實推算把 prompt 和輸出的量固定住。明確快取建立時，要把另外計費的建立輸入，算進寫入類別；使用該 endpoint 文件記載的費率。不存在的類別設為零。如果 warmup 請求或輸出不同，要另外比較實際前後的帳單。絕對不要把快取折扣套用在總帳單，或輸出 token 上。
+
+可執行的計算器吃的是正規化後的計數器，不是服務商的原始回應：
+
+```javascript
+function compareCacheCost(usage, rates) {
+  const counts = [&#x27;uncached&#x27;, &#x27;written&#x27;, &#x27;read&#x27;, &#x27;output&#x27;, &#x27;storageTokenHours&#x27;];
+  const prices = [&#x27;input&#x27;, &#x27;write&#x27;, &#x27;read&#x27;, &#x27;output&#x27;, &#x27;storage&#x27;];
+  for (const [values, keys] of [[usage, counts], [rates, prices]]) {
+    for (const key of keys) {
+      if (!Number.isFinite(values[key]) || values[key] &lt; 0) {
+        throw new Error(`${key} must be a finite nonnegative number`);
+      }
+    }
+  }
+  const outputCost = usage.output * rates.output / 1e6;
+  const storageCost = usage.storageTokenHours * rates.storage / 1e6;
+  const baseline = (usage.uncached + usage.written + usage.read)
+    * rates.input / 1e6 + outputCost;
+  const actual = (usage.uncached * rates.input + usage.written * rates.write
+    + usage.read * rates.read) / 1e6 + outputCost + storageCost;
+  return { baseline, actual, savings: baseline - actual, outputCost, storageCost };
+}
+```
+
+## 範例
+
+這些是假設的價格和數量，不是服務商的報價，也不是實測的命中。十次呼叫，每次都包含 10,000 token 的穩定前綴、2,000 token 的變動後綴，以及 2,000 個輸出 token。假設有一次前綴寫入和九次完整的前綴讀取。
+
+| 類別 | Token 數 | 範例費率（每百萬） | 成本 |
+| --- | ---: | ---: | ---: |
+| 一般輸入 | 20,000 | $3.00 | $0.0600 |
+| 快取寫入 | 10,000 | $3.75 | $0.0375 |
+| 快取讀取 | 90,000 | $0.30 | $0.0270 |
+| 輸出 | 20,000 | $15.00 | $0.3000 |
+| 儲存 | 0 token-hours | $0.00 | $0.0000 |
+
+基準線：120,000 個輸入 token，以 $3 計價，加上同樣的輸出 = **$0.6600**。
+有快取：**$0.4245**，節省 **$0.2355**。寫入的溢價已經算進去了；$0.3000 的輸出帳單維持不變。在這些假設下，輸出量大的工作負載，輸入端節省的絕對金額相同，只是占總成本的比例較小。
+
+如果明確快取把 10,000 個 token 保留兩小時，以假設的每百萬 token 小時 $1 計算，要加上 **$0.0200** 的儲存費。實際成本變成 **$0.4445**。要做真正的估算，請用所選 Gemini endpoint 的價格。
+
+對只呼叫一次的情況，那次前綴寫入花的是 $0.0375，而不是一般輸入的 $0.0300：**多花 $0.0075**，而且沒有讀取的節省。對低於所選模型文件記載最小值的 500 token 前綴，要把請求視為沒有快取；在沒有計數器的情況下宣稱未來會命中，會高估節省。重複過期或前綴一直在變，也可能讓預期的節省變成更高的成本。
+
+## 驗證流程
+
+1. 從目前的文件，擷取符合資格的前綴大小和模型/平台的要求。
+2. 在 ECC repo 裡，用 `node tests/skills/prompt-caching-strategy.test.js` 執行離線的範例和邊界情況。
+3. 如果服務商的流量已獲授權，就比較配對的請求，並依核准的使用者/工作區，彙總實際的快取 token 數、所有輸入類別、輸出、儲存、延遲和實際成本。也要記錄 miss 和重寫。
+4. 把快取讀取除以總輸入 token，回報成 token 命中率；請求命中率另外回報。分母和取樣期間要寫清楚。
+5. 如果沒有量測任何流量，就把命中率、延遲改善和實際節省標記為未量測。離線算術無法證明任何 runtime 的快取行為。
+
+## 與其他 Skill 的關係
+
+- **prompt-optimizer** 在最佳化重複使用之前，先改善 prompt 的品質。
+- **context-budget** 找出不必要的 context；快取仍然會消耗它。
+- **cost-aware-llm-pipeline** 把快取跟路由、重試和其他成本做比較。</pre></section><section><h2>英文原文</h2><pre>---
+name: prompt-caching-strategy
+description: &gt;-
+  Optimize LLM prompt caching hit rate to reduce API costs and improve latency.
+  Analyzes prompt structure, identifies cacheable vs non-cacheable content,
+  and recommends restructuring to maximize cache reuse.
+  TRIGGER when: user says &quot;prompt cache&quot;, &quot;cache hit rate&quot;, &quot;reduce LLM cost&quot;,
+  &quot;optimize token usage&quot;, &quot;cheaper LLM calls&quot;, or asks about prompt caching
+  strategies for OpenAI/Anthropic/other providers.
+  DO NOT TRIGGER when: user just wants to optimize a single prompt&#x27;s quality
+  (use prompt-optimizer instead), or asks about general caching infrastructure.
+metadata:
+  origin: community
+  author: cyberspace-cs
+  version: &quot;1.0.0&quot;
+---
+
+# Prompt Caching Strategy
+
+Arrange reusable prompt content to improve cache reuse, then measure input cost
+and latency. Savings depend on model, platform, cache eligibility, writes,
+retention, reuse and output volume. Runtime cache hits and savings for this skill
+are **unmeasured**; the examples below validate arithmetic without provider calls.
+
+## When to Activate
+
+Use for repeated API requests that share authorized instructions, tools or
+reference material. First identify the exact provider endpoint, model, service
+tier and caching mode. Consult its current documentation before selecting rates,
+minimum prefix length or retention. Caching does not reduce context-window use.
+
+## How It Works
+
+### Preserve a stable prefix
+
+Keep reusable instructions, tool schemas and examples stable; place changing
+questions, timestamps and retrieved results after that content where the API
+allows. Respect the provider&#x27;s serialization order: Claude uses tools, system,
+then messages. Matching prefixes need identical content, including tool schemas
+and relevant request settings. A changed prefix can prevent reuse from that
+point. A dynamic suffix may itself be cached later if reused unchanged.
+
+```text
+Reusable prefix: approved tools, instructions, stable examples/reference
+Changing suffix: current question, fresh retrieval results, request metadata
+```
+
+Choose only relevant context. Padding prompts or broadening access just to meet
+an eligibility threshold needs its own cost and quality justification.
+
+### Preserve user and workspace boundaries
+
+Authorize content access before cache lookup or reuse. Scope application-managed
+cache handles and accounting keys to the approved user, workspace, provider
+account, model and content revision. Share only material explicitly approved for
+that scope. A cache key is a routing/accounting hint, not an authorization gate
+or a sandbox. Provider cache isolation does not replace application access checks.
+Invalidate application references when permissions or content change; follow
+provider retention/deletion controls. Avoid logging private prompt contents.
+Context selection, capabilities, sandbox enforcement and evidence remain
+independent of cache optimization.
+
+## Provider Requirements and Usage Evidence
+
+The linked documentation is authoritative; endpoint and SDK versions can expose
+different usage field names. Record that version alongside counters.
+
+| Provider | Requirements to verify | Counters to record |
+| --- | --- | --- |
+| OpenAI | Model-specific automatic/explicit modes, minimum length, retention and write/read prices; earlier and newer models differ | Responses `usage.input_tokens_details.cached_tokens` and, when present, `cache_write_tokens`; input and output totals. Chat Completions uses `prompt_tokens_details.cached_tokens` |
+| Claude | Supported platform, model minimum, `cache_control` support and TTL; cache writes may cost more than ordinary input | `input_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens`; split writes by TTL when rates differ |
+| Gemini | Model minimum and API: Interactions supports implicit caching; explicit cache objects require GenerateContent | Interactions `usage.total_cached_tokens`; GenerateContent `usage_metadata` cache/input/output counters plus explicit-cache token count and retained duration |
+
+Use [OpenAI&#x27;s prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching)
+and [pricing](https://developers.openai.com/api/docs/pricing/) for the selected
+model. For Chat Completions, check the [usage schema](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create).
+Derive ordinary input from the total minus cached reads and any separately
+reported writes; do not count the same tokens twice.
+
+Use [Claude&#x27;s prompt caching guide](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
+for current model/platform limits and TTL rates. Its `input_tokens` counts
+ordinary input separately from cache reads and writes. A short prefix can produce
+zero cache counters even when marked for caching. Do not assume every Claude
+model or hosted platform uses the same minimum or read price.
+
+Use [Gemini&#x27;s caching guide](https://ai.google.dev/gemini-api/docs/caching),
+[GenerateContent caching guide](https://ai.google.dev/gemini-api/docs/generate-content/caching)
+and [pricing](https://ai.google.dev/gemini-api/docs/pricing). Explicit-cache
+storage is charged by token count and retained duration, separately from reads,
+ordinary input and output. Implicit hits are not guaranteed. Verify billing
+categories for the chosen endpoint rather than copying another provider&#x27;s rates.
+
+## Cost Comparison Calculator
+
+Normalize actual usage into nonoverlapping categories and use prices in the same
+currency per million tokens. Split write categories when TTL, modality, tier or
+model prices differ. Storage uses million-token-hours; other applicable charges
+such as tools and grounding need their own lines. Include all warmup, miss,
+expiration, refresh and retry requests in the measured period.
+
+```text
+baseline = (ordinary + written + read) * ordinary_input_rate / 1e6
+           + output * output_rate / 1e6
+actual   = ordinary * ordinary_input_rate / 1e6
+           + written * cache_write_rate / 1e6
+           + read * cache_read_rate / 1e6
+           + output * output_rate / 1e6
+           + storage_token_hours * storage_rate / 1e6
+savings  = baseline - actual
+```
+
+This counterfactual holds prompt and output volumes fixed. For explicit-cache
+creation, include any separately billed creation input in the write category;
+use the endpoint&#x27;s documented rate. Set nonexistent categories to zero. Compare
+actual before/after invoices separately if warmup requests or output differ.
+Never apply a cache discount to the total bill or to output tokens.
+
+The executable calculator takes normalized counters, not raw provider responses:
+
+```javascript
+function compareCacheCost(usage, rates) {
+  const counts = [&#x27;uncached&#x27;, &#x27;written&#x27;, &#x27;read&#x27;, &#x27;output&#x27;, &#x27;storageTokenHours&#x27;];
+  const prices = [&#x27;input&#x27;, &#x27;write&#x27;, &#x27;read&#x27;, &#x27;output&#x27;, &#x27;storage&#x27;];
+  for (const [values, keys] of [[usage, counts], [rates, prices]]) {
+    for (const key of keys) {
+      if (!Number.isFinite(values[key]) || values[key] &lt; 0) {
+        throw new Error(`${key} must be a finite nonnegative number`);
+      }
+    }
+  }
+  const outputCost = usage.output * rates.output / 1e6;
+  const storageCost = usage.storageTokenHours * rates.storage / 1e6;
+  const baseline = (usage.uncached + usage.written + usage.read)
+    * rates.input / 1e6 + outputCost;
+  const actual = (usage.uncached * rates.input + usage.written * rates.write
+    + usage.read * rates.read) / 1e6 + outputCost + storageCost;
+  return { baseline, actual, savings: baseline - actual, outputCost, storageCost };
+}
+```
+
+## Examples
+
+These are hypothetical prices and counts, not provider quotes or measured hits.
+Ten calls each contain a 10,000-token stable prefix, 2,000-token changing suffix
+and 2,000 output tokens. Assume one prefix write and nine full prefix reads.
+
+| Category | Tokens | Example rate per million | Cost |
+| --- | ---: | ---: | ---: |
+| Ordinary input | 20,000 | $3.00 | $0.0600 |
+| Cache write | 10,000 | $3.75 | $0.0375 |
+| Cache read | 90,000 | $0.30 | $0.0270 |
+| Output | 20,000 | $15.00 | $0.3000 |
+| Storage | 0 token-hours | $0.00 | $0.0000 |
+
+Baseline: 120,000 input tokens at $3 plus the same output = **$0.6600**.
+With caching: **$0.4245**, savings **$0.2355**. The write premium is included;
+the $0.3000 output bill remains unchanged. An output-heavy workload has the same
+absolute input savings under these assumptions, a smaller fraction of total cost.
+
+If an explicit cache retains 10,000 tokens for two hours at a hypothetical
+$1 per million-token-hour, add **$0.0200** storage. Actual cost becomes
+**$0.4445**. Use the selected Gemini endpoint&#x27;s prices for a real estimate.
+
+For a one-off call, that prefix write costs $0.0375 rather than $0.0300 ordinary
+input: **$0.0075 more**, with no read savings. For a 500-token prefix below a
+selected model&#x27;s documented minimum, treat the request as uncached; claiming
+future hits without counters would overstate savings. Repeated expiry or changing
+prefixes can also turn expected savings into higher cost.
+
+## Verification Workflow
+
+1. Capture eligible prefix size and model/platform requirements from current docs.
+2. Run the offline example and edge cases with
+   `node tests/skills/prompt-caching-strategy.test.js` in the ECC repository.
+3. If provider traffic is authorized, compare matched requests and aggregate
+   actual cached-token counts, all input categories, output, storage, latency and
+   realized cost by approved user/workspace. Record misses and rewrites too.
+4. Report cached reads divided by total input tokens as a token hit rate; report
+   request hit rate separately. Keep denominators and sampling period explicit.
+5. If no traffic was measured, label hit rate, latency improvement and realized
+   savings unmeasured. Offline arithmetic establishes no runtime cache behavior.
+
+## Relationship to Other Skills
+
+- **prompt-optimizer** improves prompt quality before optimizing reuse.
+- **context-budget** identifies unnecessary context; caching still consumes it.
+- **cost-aware-llm-pipeline** compares caching with routing, retries and other costs.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hexagonal-architecture｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Ports &amp; Adapters 設計與重構，讓領域邏輯跟框架 I/O 分開">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>hexagonal-architecture</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/hexagonal-architecture/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Ports &amp; Adapters 設計與重構，讓領域邏輯跟框架 I/O 分開</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: hexagonal-architecture
+description: 設計、實作與重構 Ports &amp; Adapters 系統，讓領域邊界清楚、依賴反轉、use case 編排好測試，適用於 TypeScript、Java、Kotlin 與 Go 服務。要導入 Ports and Adapters、或往這個方向重構，或是領域邏輯已經跟 I/O 纏在一起時使用。
+metadata:
+  origin: ECC
+---
+
+# Hexagonal Architecture
+
+Hexagonal architecture（Ports and Adapters）讓商業邏輯獨立於框架、傳輸層和持久化的細節。核心應用只依賴抽象的 port，由邊界上的 adapter 去實作這些 port。
+
+## When to Use
+
+- 開發新功能，而且長期可維護性和可測試性很重要。
+- 重構分層架構或重度依賴框架的程式碼，這類程式的領域邏輯常跟 I/O 混在一起。
+- 同一個 use case 要支援多種介面（HTTP、CLI、queue worker、cron job）。
+- 要換掉基礎設施（資料庫、外部 API、message bus），但不想重寫商業規則。
+
+只要需求涉及邊界、以領域為中心的設計、重構緊耦合的服務，或把應用邏輯從特定函式庫解耦，就用這個 skill。
+
+## Core Concepts
+
+- **Domain model**：商業規則與 entity / value object。不 import 任何框架。
+- **Use cases（application layer）**：編排領域行為和流程步驟。
+- **Inbound ports**：描述應用「能做什麼」的契約（command / query / use-case 介面）。
+- **Outbound ports**：應用需要的依賴所對應的契約（repository、gateway、event publisher、clock、UUID 等）。
+- **Adapters**：port 的基礎設施與對外介面實作（HTTP controller、DB repository、queue consumer、SDK wrapper）。
+- **Composition root**：唯一的組裝點，在這裡把具體的 adapter 綁到 use case 上。
+
+Outbound port 介面通常放在 application layer（只有抽象真的屬於領域層級時才放 domain），基礎設施 adapter 則負責實作它們。
+
+依賴方向永遠朝內：
+
+- Adapters -&gt; application/domain
+- Application -&gt; port 介面（inbound/outbound 契約）
+- Domain -&gt; 只依賴 domain 內的抽象（不依賴框架或基礎設施）
+- Domain -&gt; 不依賴任何外部東西
+
+## How It Works
+
+### Step 1: Model a use case boundary
+
+定義單一 use case，有明確的輸入和輸出 DTO。傳輸層的細節（Express 的 `req`、GraphQL 的 `context`、job payload 的包裝）要留在這個邊界外面。
+
+### Step 2: Define outbound ports first
+
+把每個 side effect 都當成一個 port：
+
+- 持久化（`UserRepositoryPort`）
+- 外部呼叫（`BillingGatewayPort`）
+- 橫切關注點（`LoggerPort`、`ClockPort`）
+
+Port 要描述「能力」，不要描述「技術」。
+
+### Step 3: Implement the use case with pure orchestration
+
+Use case 的 class / function 透過 constructor 或參數接收 port。它驗證應用層級的 invariant、協調領域規則，然後回傳單純的資料結構。
+
+### Step 4: Build adapters at the edge
+
+- Inbound adapter 把協定的輸入轉成 use-case 的輸入。
+- Outbound adapter 把應用的契約對應到具體的 API / ORM / query builder。
+- 對應（mapping）留在 adapter 裡，不要放進 use case。
+
+### Step 5: Wire everything in a composition root
+
+先建立 adapter，再注入到 use case。把這段組裝集中管理，避免出現隱藏的 service-locator 行為。
+
+### Step 6: Test per boundary
+
+- 用 fake port 對 use case 做 unit test。
+- 用真實的基礎設施依賴對 adapter 做 integration test。
+- 透過 inbound adapter 對使用者面對的流程做 E2E test。
+
+## Architecture Diagram
+
+```mermaid
+flowchart LR
+  Client[&quot;Client (HTTP/CLI/Worker)&quot;] --&gt; InboundAdapter[&quot;Inbound Adapter&quot;]
+  InboundAdapter --&gt;|&quot;calls&quot;| UseCase[&quot;UseCase (Application Layer)&quot;]
+  UseCase --&gt;|&quot;uses&quot;| OutboundPort[&quot;OutboundPort (Interface)&quot;]
+  OutboundAdapter[&quot;Outbound Adapter&quot;] --&gt;|&quot;implements&quot;| OutboundPort
+  OutboundAdapter --&gt; ExternalSystem[&quot;DB/API/Queue&quot;]
+  UseCase --&gt; DomainModel[&quot;DomainModel&quot;]
+```
+
+## Suggested Module Layout
+
+用 feature-first 的方式組織，邊界要明確：
+
+```text
+src/
+  features/
+    orders/
+      domain/
+        Order.ts
+        OrderPolicy.ts
+      application/
+        ports/
+          inbound/
+            CreateOrder.ts
+          outbound/
+            OrderRepositoryPort.ts
+            PaymentGatewayPort.ts
+        use-cases/
+          CreateOrderUseCase.ts
+      adapters/
+        inbound/
+          http/
+            createOrderRoute.ts
+        outbound/
+          postgres/
+            PostgresOrderRepository.ts
+          stripe/
+            StripePaymentGateway.ts
+      composition/
+        ordersContainer.ts
+```
+
+## TypeScript Example
+
+### Port definitions
+
+```typescript
+export interface OrderRepositoryPort {
+  save(order: Order): Promise&lt;void&gt;;
+  findById(orderId: string): Promise&lt;Order | null&gt;;
+}
+
+export interface PaymentGatewayPort {
+  authorize(input: { orderId: string; amountCents: number }): Promise&lt;{ authorizationId: string }&gt;;
+}
+```
+
+### Use case
+
+```typescript
+type CreateOrderInput = {
+  orderId: string;
+  amountCents: number;
+};
+
+type CreateOrderOutput = {
+  orderId: string;
+  authorizationId: string;
+};
+
+export class CreateOrderUseCase {
+  constructor(
+    private readonly orderRepository: OrderRepositoryPort,
+    private readonly paymentGateway: PaymentGatewayPort
+  ) {}
+
+  async execute(input: CreateOrderInput): Promise&lt;CreateOrderOutput&gt; {
+    const order = Order.create({ id: input.orderId, amountCents: input.amountCents });
+
+    const auth = await this.paymentGateway.authorize({
+      orderId: order.id,
+      amountCents: order.amountCents,
+    });
+
+    // markAuthorized 會回傳新的 Order instance，不會原地修改。
+    const authorizedOrder = order.markAuthorized(auth.authorizationId);
+    await this.orderRepository.save(authorizedOrder);
+
+    return {
+      orderId: order.id,
+      authorizationId: auth.authorizationId,
+    };
+  }
+}
+```
+
+### Outbound adapter
+
+```typescript
+export class PostgresOrderRepository implements OrderRepositoryPort {
+  constructor(private readonly db: SqlClient) {}
+
+  async save(order: Order): Promise&lt;void&gt; {
+    await this.db.query(
+      &quot;insert into orders (id, amount_cents, status, authorization_id) values ($1, $2, $3, $4)&quot;,
+      [order.id, order.amountCents, order.status, order.authorizationId]
+    );
+  }
+
+  async findById(orderId: string): Promise&lt;Order | null&gt; {
+    const row = await this.db.oneOrNone(&quot;select * from orders where id = $1&quot;, [orderId]);
+    return row ? Order.rehydrate(row) : null;
+  }
+}
+```
+
+### Composition root
+
+```typescript
+export const buildCreateOrderUseCase = (deps: { db: SqlClient; stripe: StripeClient }) =&gt; {
+  const orderRepository = new PostgresOrderRepository(deps.db);
+  const paymentGateway = new StripePaymentGateway(deps.stripe);
+
+  return new CreateOrderUseCase(orderRepository, paymentGateway);
+};
+```
+
+## Multi-Language Mapping
+
+各個生態系都用同一套邊界規則，只有語法和組裝風格不同。
+
+- **TypeScript/JavaScript**
+  - Ports：`application/ports/*`，用 interface / type。
+  - Use cases：用 constructor 或參數注入的 class / function。
+  - Adapters：`adapters/inbound/*`、`adapters/outbound/*`。
+  - Composition：明確的 factory / container 模組（不要有隱藏的全域變數）。
+- **Java**
+  - Packages：`domain`、`application.port.in`、`application.port.out`、`application.usecase`、`adapter.in`、`adapter.out`。
+  - Ports：放在 `application.port.*` 的 interface。
+  - Use cases：普通的 class（Spring 的 `@Service` 可有可無，不是必要）。
+  - Composition：Spring config 或手動組裝的 class；組裝邏輯不要放進 domain / use-case class。
+- **Kotlin**
+  - Module / package 照 Java 的切法（`domain`、`application.port`、`application.usecase`、`adapter`）。
+  - Ports：Kotlin interface。
+  - Use cases：用 constructor 注入的 class（Koin / Dagger / Spring / 手動都行）。
+  - Composition：module 定義或專門的 composition function；避免 service locator 模式。
+- **Go**
+  - Packages：`internal/&lt;feature&gt;/domain`、`application`、`ports`、`adapters/inbound`、`adapters/outbound`。
+  - Ports：小型 interface，由使用它的 application package 持有。
+  - Use cases：有 interface 欄位的 struct，加上明確的 `New...` constructor。
+  - Composition：在 `cmd/&lt;app&gt;/main.go`（或專門的 wiring package）裡組裝，constructor 保持明確。
+
+## Anti-Patterns to Avoid
+
+- Domain entity import ORM model、web 框架型別或 SDK client。
+- Use case 直接讀 `req`、`res` 或 queue metadata。
+- Use case 沒經過 domain / application 的 mapping，就直接回傳資料庫的 row。
+- 讓 adapter 彼此直接呼叫，而不是透過 use-case port 流動。
+- 把依賴組裝分散在很多檔案裡，還藏著全域 singleton。
+
+## Migration Playbook
+
+1. 挑一個常常改得很痛的垂直切片（單一 endpoint / job）。
+2. 抽出一個 use-case 邊界，輸入輸出型別要明確。
+3. 在現有的基礎設施呼叫外面加上 outbound port。
+4. 把編排邏輯從 controller / service 搬進 use case。
+5. 舊的 adapter 留著，但讓它們委派給新的 use case。
+6. 在新邊界周圍補測試（unit + adapter integration）。
+7. 一個切片一個切片重複做，避免整個重寫。
+
+### Refactoring Existing Systems
+
+- **Strangler approach**：保留現有 endpoint，一次把一個 use case 導到新的 port / adapter。
+- **No big-bang rewrites**：按 feature 切片逐步遷移，並用 characterization test 保住行為。
+- **Facade first**：先把舊的 service 包在 outbound port 後面，再去換內部實作。
+- **Composition freeze**：儘早把組裝集中起來，免得新依賴漏進 domain / use-case 層。
+- **Slice selection rule**：優先處理改動頻繁、爆炸半徑小的流程。
+- **Rollback path**：每個遷移完的切片都保留一個可回復的開關或路由切換，直到正式環境的行為確認沒問題。
+
+## Testing Guidance (Same Hexagonal Boundaries)
+
+- **Domain tests**：把 entity / value object 當純商業規則來測（不用 mock，也不用架框架）。
+- **Use-case unit tests**：用 outbound port 的 fake / stub 測編排；斷言商業結果和 port 的互動。
+- **Outbound adapter contract tests**：在 port 層級定義共用的 contract suite，對每個 adapter 實作都跑一遍。
+- **Inbound adapter tests**：驗證協定對應（HTTP / CLI / queue payload 對應到 use-case 輸入，以及輸出和錯誤再對應回協定）。
+- **Adapter integration tests**：對真實基礎設施（DB / API / queue）執行，檢查序列化、schema / query 行為、重試和 timeout。
+- **End-to-end tests**：涵蓋關鍵使用者流程，從 inbound adapter -&gt; use case -&gt; outbound adapter。
+- **Refactor safety**：抽取之前先補 characterization test，等新邊界的行為穩定且等價才拿掉。
+
+## Best Practices Checklist
+
+- Domain 和 use-case 層只 import 內部型別和 port。
+- 每個外部依賴都有對應的 outbound port。
+- 驗證發生在邊界（inbound adapter + use-case invariant）。
+- 用不可變的轉換（回傳新的值 / entity，不要改共用狀態）。
+- 錯誤要跨邊界轉譯（infra error -&gt; application/domain error）。
+- Composition root 要明確，而且容易稽核。
+- Use case 只要用簡單的 in-memory fake 就能測。
+- 重構從單一垂直切片開始，並有保住行為的測試。
+- 語言和框架的特定細節留在 adapter，絕對不要進到領域規則。</pre></section><section><h2>英文原文</h2><pre>---
+name: hexagonal-architecture
+description: Design, implement, and refactor Ports &amp; Adapters systems with clear domain boundaries, dependency inversion, and testable use-case orchestration across TypeScript, Java, Kotlin, and Go services. Use when introducing or refactoring toward Ports and Adapters, or when domain logic has become entangled with I/O.
+metadata:
+  origin: ECC
+---
+
+# Hexagonal Architecture
+
+Hexagonal architecture (Ports and Adapters) keeps business logic independent from frameworks, transport, and persistence details. The core app depends on abstract ports, and adapters implement those ports at the edges.
+
+## When to Use
+
+- Building new features where long-term maintainability and testability matter.
+- Refactoring layered or framework-heavy code where domain logic is mixed with I/O concerns.
+- Supporting multiple interfaces for the same use case (HTTP, CLI, queue workers, cron jobs).
+- Replacing infrastructure (database, external APIs, message bus) without rewriting business rules.
+
+Use this skill when the request involves boundaries, domain-centric design, refactoring tightly coupled services, or decoupling application logic from specific libraries.
+
+## Core Concepts
+
+- **Domain model**: Business rules and entities/value objects. No framework imports.
+- **Use cases (application layer)**: Orchestrate domain behavior and workflow steps.
+- **Inbound ports**: Contracts describing what the application can do (commands/queries/use-case interfaces).
+- **Outbound ports**: Contracts for dependencies the application needs (repositories, gateways, event publishers, clock, UUID, etc.).
+- **Adapters**: Infrastructure and delivery implementations of ports (HTTP controllers, DB repositories, queue consumers, SDK wrappers).
+- **Composition root**: Single wiring location where concrete adapters are bound to use cases.
+
+Outbound port interfaces usually live in the application layer (or in domain only when the abstraction is truly domain-level), while infrastructure adapters implement them.
+
+Dependency direction is always inward:
+
+- Adapters -&gt; application/domain
+- Application -&gt; port interfaces (inbound/outbound contracts)
+- Domain -&gt; domain-only abstractions (no framework or infrastructure dependencies)
+- Domain -&gt; nothing external
+
+## How It Works
+
+### Step 1: Model a use case boundary
+
+Define a single use case with a clear input and output DTO. Keep transport details (Express `req`, GraphQL `context`, job payload wrappers) outside this boundary.
+
+### Step 2: Define outbound ports first
+
+Identify every side effect as a port:
+
+- persistence (`UserRepositoryPort`)
+- external calls (`BillingGatewayPort`)
+- cross-cutting (`LoggerPort`, `ClockPort`)
+
+Ports should model capabilities, not technologies.
+
+### Step 3: Implement the use case with pure orchestration
+
+Use case class/function receives ports via constructor/arguments. It validates application-level invariants, coordinates domain rules, and returns plain data structures.
+
+### Step 4: Build adapters at the edge
+
+- Inbound adapter converts protocol input to use-case input.
+- Outbound adapter maps app contracts to concrete APIs/ORM/query builders.
+- Mapping stays in adapters, not inside use cases.
+
+### Step 5: Wire everything in a composition root
+
+Instantiate adapters, then inject them into use cases. Keep this wiring centralized to avoid hidden service-locator behavior.
+
+### Step 6: Test per boundary
+
+- Unit test use cases with fake ports.
+- Integration test adapters with real infra dependencies.
+- E2E test user-facing flows through inbound adapters.
+
+## Architecture Diagram
+
+```mermaid
+flowchart LR
+  Client[&quot;Client (HTTP/CLI/Worker)&quot;] --&gt; InboundAdapter[&quot;Inbound Adapter&quot;]
+  InboundAdapter --&gt;|&quot;calls&quot;| UseCase[&quot;UseCase (Application Layer)&quot;]
+  UseCase --&gt;|&quot;uses&quot;| OutboundPort[&quot;OutboundPort (Interface)&quot;]
+  OutboundAdapter[&quot;Outbound Adapter&quot;] --&gt;|&quot;implements&quot;| OutboundPort
+  OutboundAdapter --&gt; ExternalSystem[&quot;DB/API/Queue&quot;]
+  UseCase --&gt; DomainModel[&quot;DomainModel&quot;]
+```
+
+## Suggested Module Layout
+
+Use feature-first organization with explicit boundaries:
+
+```text
+src/
+  features/
+    orders/
+      domain/
+        Order.ts
+        OrderPolicy.ts
+      application/
+        ports/
+          inbound/
+            CreateOrder.ts
+          outbound/
+            OrderRepositoryPort.ts
+            PaymentGatewayPort.ts
+        use-cases/
+          CreateOrderUseCase.ts
+      adapters/
+        inbound/
+          http/
+            createOrderRoute.ts
+        outbound/
+          postgres/
+            PostgresOrderRepository.ts
+          stripe/
+            StripePaymentGateway.ts
+      composition/
+        ordersContainer.ts
+```
+
+## TypeScript Example
+
+### Port definitions
+
+```typescript
+export interface OrderRepositoryPort {
+  save(order: Order): Promise&lt;void&gt;;
+  findById(orderId: string): Promise&lt;Order | null&gt;;
+}
+
+export interface PaymentGatewayPort {
+  authorize(input: { orderId: string; amountCents: number }): Promise&lt;{ authorizationId: string }&gt;;
+}
+```
+
+### Use case
+
+```typescript
+type CreateOrderInput = {
+  orderId: string;
+  amountCents: number;
+};
+
+type CreateOrderOutput = {
+  orderId: string;
+  authorizationId: string;
+};
+
+export class CreateOrderUseCase {
+  constructor(
+    private readonly orderRepository: OrderRepositoryPort,
+    private readonly paymentGateway: PaymentGatewayPort
+  ) {}
+
+  async execute(input: CreateOrderInput): Promise&lt;CreateOrderOutput&gt; {
+    const order = Order.create({ id: input.orderId, amountCents: input.amountCents });
+
+    const auth = await this.paymentGateway.authorize({
+      orderId: order.id,
+      amountCents: order.amountCents,
+    });
+
+    // markAuthorized returns a new Order instance; it does not mutate in place.
+    const authorizedOrder = order.markAuthorized(auth.authorizationId);
+    await this.orderRepository.save(authorizedOrder);
+
+    return {
+      orderId: order.id,
+      authorizationId: auth.authorizationId,
+    };
+  }
+}
+```
+
+### Outbound adapter
+
+```typescript
+export class PostgresOrderRepository implements OrderRepositoryPort {
+  constructor(private readonly db: SqlClient) {}
+
+  async save(order: Order): Promise&lt;void&gt; {
+    await this.db.query(
+      &quot;insert into orders (id, amount_cents, status, authorization_id) values ($1, $2, $3, $4)&quot;,
+      [order.id, order.amountCents, order.status, order.authorizationId]
+    );
+  }
+
+  async findById(orderId: string): Promise&lt;Order | null&gt; {
+    const row = await this.db.oneOrNone(&quot;select * from orders where id = $1&quot;, [orderId]);
+    return row ? Order.rehydrate(row) : null;
+  }
+}
+```
+
+### Composition root
+
+```typescript
+export const buildCreateOrderUseCase = (deps: { db: SqlClient; stripe: StripeClient }) =&gt; {
+  const orderRepository = new PostgresOrderRepository(deps.db);
+  const paymentGateway = new StripePaymentGateway(deps.stripe);
+
+  return new CreateOrderUseCase(orderRepository, paymentGateway);
+};
+```
+
+## Multi-Language Mapping
+
+Use the same boundary rules across ecosystems; only syntax and wiring style change.
+
+- **TypeScript/JavaScript**
+  - Ports: `application/ports/*` as interfaces/types.
+  - Use cases: classes/functions with constructor/argument injection.
+  - Adapters: `adapters/inbound/*`, `adapters/outbound/*`.
+  - Composition: explicit factory/container module (no hidden globals).
+- **Java**
+  - Packages: `domain`, `application.port.in`, `application.port.out`, `application.usecase`, `adapter.in`, `adapter.out`.
+  - Ports: interfaces in `application.port.*`.
+  - Use cases: plain classes (Spring `@Service` is optional, not required).
+  - Composition: Spring config or manual wiring class; keep wiring out of domain/use-case classes.
+- **Kotlin**
+  - Modules/packages mirror the Java split (`domain`, `application.port`, `application.usecase`, `adapter`).
+  - Ports: Kotlin interfaces.
+  - Use cases: classes with constructor injection (Koin/Dagger/Spring/manual).
+  - Composition: module definitions or dedicated composition functions; avoid service locator patterns.
+- **Go**
+  - Packages: `internal/&lt;feature&gt;/domain`, `application`, `ports`, `adapters/inbound`, `adapters/outbound`.
+  - Ports: small interfaces owned by the consuming application package.
+  - Use cases: structs with interface fields plus explicit `New...` constructors.
+  - Composition: wire in `cmd/&lt;app&gt;/main.go` (or dedicated wiring package), keep constructors explicit.
+
+## Anti-Patterns to Avoid
+
+- Domain entities importing ORM models, web framework types, or SDK clients.
+- Use cases reading directly from `req`, `res`, or queue metadata.
+- Returning database rows directly from use cases without domain/application mapping.
+- Letting adapters call each other directly instead of flowing through use-case ports.
+- Spreading dependency wiring across many files with hidden global singletons.
+
+## Migration Playbook
+
+1. Pick one vertical slice (single endpoint/job) with frequent change pain.
+2. Extract a use-case boundary with explicit input/output types.
+3. Introduce outbound ports around existing infrastructure calls.
+4. Move orchestration logic from controllers/services into the use case.
+5. Keep old adapters, but make them delegate to the new use case.
+6. Add tests around the new boundary (unit + adapter integration).
+7. Repeat slice-by-slice; avoid full rewrites.
+
+### Refactoring Existing Systems
+
+- **Strangler approach**: keep current endpoints, route one use case at a time through new ports/adapters.
+- **No big-bang rewrites**: migrate per feature slice and preserve behavior with characterization tests.
+- **Facade first**: wrap legacy services behind outbound ports before replacing internals.
+- **Composition freeze**: centralize wiring early so new dependencies do not leak into domain/use-case layers.
+- **Slice selection rule**: prioritize high-churn, low-blast-radius flows first.
+- **Rollback path**: keep a reversible toggle or route switch per migrated slice until production behavior is verified.
+
+## Testing Guidance (Same Hexagonal Boundaries)
+
+- **Domain tests**: test entities/value objects as pure business rules (no mocks, no framework setup).
+- **Use-case unit tests**: test orchestration with fakes/stubs for outbound ports; assert business outcomes and port interactions.
+- **Outbound adapter contract tests**: define shared contract suites at port level and run them against each adapter implementation.
+- **Inbound adapter tests**: verify protocol mapping (HTTP/CLI/queue payload to use-case input and output/error mapping back to protocol).
+- **Adapter integration tests**: run against real infrastructure (DB/API/queue) for serialization, schema/query behavior, retries, and timeouts.
+- **End-to-end tests**: cover critical user journeys through inbound adapter -&gt; use case -&gt; outbound adapter.
+- **Refactor safety**: add characterization tests before extraction; keep them until new boundary behavior is stable and equivalent.
+
+## Best Practices Checklist
+
+- Domain and use-case layers import only internal types and ports.
+- Every external dependency is represented by an outbound port.
+- Validation occurs at boundaries (inbound adapter + use-case invariants).
+- Use immutable transformations (return new values/entities instead of mutating shared state).
+- Errors are translated across boundaries (infra errors -&gt; application/domain errors).
+- Composition root is explicit and easy to audit.
+- Use cases are testable with simple in-memory fakes for ports.
+- Refactoring starts from one vertical slice with behavior-preserving tests.
+- Language/framework specifics stay in adapters, never in domain rules.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

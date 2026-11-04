@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>playtest-report｜Skill 寫法圖鑑</title>
+<meta name="description" content="產出結構化 playtest 報告，或把現有筆記整理成回饋並分流">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>playtest-report</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/playtest-report/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">產出結構化 playtest 報告，或把現有筆記整理成回饋並分流</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: playtest-report
+description: &quot;結構化的 playtest 報告範本，或把既有的 playtest 筆記整理成結構化的回饋。&quot;
+argument-hint: &quot;[new|analyze path-to-notes] [--review full|lean|solo]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys review_mode,automation`
+
+上面已經解析好了，直接用；`--review` 在這次執行會覆蓋 `review_mode`。沒有
+這個區塊的話，用 `.claude/docs/config-resolution.md` 裡的預設值。
+
+# Playtest Report
+
+
+
+## Phase 1: Parse Arguments
+
+
+完整的檢查模式見 `.claude/docs/director-gates.md`。各個 gate 的定義放在 `.claude/docs/director-gates/[gate-id].md` — 被派出的 agent 會自己讀它的 gate 檔；不要在父 session 裡讀。
+
+
+每一次 `AskUserQuestion` 呼叫都遵循 `.claude/docs/automation-modes.md`
+（collaborative 一律問 · guided 只問重大的 · autonomous 只記錄然後繼續；
+`automation_always_ask` 的類別一律要問）。
+
+判斷模式：
+
+- `new` → 產生空白的 playtest 報告範本。這個模式在
+  Phase 2A 之後結束：空白範本沒有東西可以路由、審查或儲存。
+- `analyze [path]` → 讀原始筆記，並用結構化的發現填進範本
+- 沒有參數 → 透過 `AskUserQuestion` 問：`[A] New blank template` /
+  `[B] Analyze notes — I&#x27;ll give you the path`
+
+---
+
+## Phase 2A: New Template Mode
+
+產生這份範本，並輸出給使用者：
+
+```markdown
+# Playtest Report
+
+## Session Info
+- **Date**: [Date]
+- **Build**: [Version/Commit]
+- **Duration**: [Time played]
+- **Tester**: [Name/ID]
+- **Platform**: [PC/Console/Mobile]
+- **Input Method**: [KB+M / Gamepad / Touch]
+- **Session Type**: [First time / Returning / Targeted test]
+
+## Test Focus
+[What specific features or flows were being tested]
+
+## First Impressions (First 5 minutes)
+- **Understood the goal?** [Yes/No/Partially]
+- **Understood the controls?** [Yes/No/Partially]
+- **Emotional response**: [Engaged/Confused/Bored/Frustrated/Excited]
+- **Notes**: [Observations]
+
+## Gameplay Flow
+### What worked well
+- [Observation 1]
+
+### Pain points
+- [Issue 1 -- Severity: High/Medium/Low]
+
+### Confusion points
+- [Where the player was confused and why]
+
+### Moments of delight
+- [What surprised or pleased the player]
+
+## Bugs Encountered
+| # | Description | Severity | Reproducible |
+|---|-------------|----------|-------------|
+
+## Feature-Specific Feedback
+### [Feature 1]
+- **Understood purpose?** [Yes/No]
+- **Found engaging?** [Yes/No]
+- **Suggestions**: [Tester suggestions]
+
+## Quantitative Data (if available)
+- **Deaths**: [Count and locations]
+- **Time per area**: [Breakdown]
+- **Items used**: [What and when]
+- **Features discovered vs missed**: [List]
+
+## Overall Assessment
+- **Would play again?** [Yes/No/Maybe]
+- **Difficulty**: [Too Easy / Just Right / Too Hard]
+- **Pacing**: [Too Slow / Good / Too Fast]
+- **Session length preference**: [Shorter / Good / Longer]
+
+## Top 3 Priorities from this session
+1. [Most important finding]
+2. [Second priority]
+3. [Third priority]
+```
+
+在 `new` 模式，到這裡就停下來，並給出：Verdict: **COMPLETE** — blank template output; nothing saved.
+
+---
+
+## Phase 2B: Analyze Mode
+
+讀提供路徑上的原始筆記。跟既有的設計文件交叉參照，每份都依章節讀：用 Grep 工具（pattern `^#`，content mode）找出你需要的標題，再用 offset 和 limit 讀那幾段範圍。把結構化的發現填進上面的範本。標出任何跟設計意圖衝突的 playtest 觀察。
+
+描述缺陷的觀察 — 當機、framerate 下降、softlock，
+明顯是壞掉而不是玩起來不好的東西 — 要放進 **Bugs
+Encountered** 表格，不是放在 Gameplay Flow → Pain points 底下，而且在 Phase 3 要當成
+bug 來路由。Pain points 是給「玩起來的感覺」用的。
+
+---
+
+## Phase 3: Action Routing
+
+把所有發現分成四個桶：
+
+- **Design changes needed** — 好不好玩的問題、玩家困惑、壞掉的機制、跟 GDD 預期體驗衝突的觀察
+- **Balance adjustments** — 數字感覺不對、難度起伏太大或太平
+- **Bug reports** — 明確、可重現的實作缺陷
+- **Polish items** — 不擋進度，但是之後要處理的摩擦或手感問題
+
+呈現分類好的清單，然後路由：
+
+- **Design changes：**「Run `/propagate-design-change [path]` on the affected design document to find downstream impacts before making changes.」
+- **Balance adjustments：**「Run `/balance-check [system]` to verify the full balance picture before tuning values.」
+- **Bugs：**「Use `/bug-report` to formally track these.」
+- **Polish items：**「Add to the polish backlog in `production/` when the team reaches that phase.」
+
+---
+
+## Phase 3b: Creative Director Player Experience Review
+
+**Review mode 檢查** — 在派出 CD-PLAYTEST 之前套用：
+- `solo` → 跳過。註明：「CD-PLAYTEST skipped — Solo mode.」進入 Phase 4（儲存報告）。
+- `lean` → 跳過（它不是 PHASE-GATE）。註明：「CD-PLAYTEST skipped — Lean mode.」進入 Phase 4（儲存報告）。
+- `full` → 照常派出。
+
+分類完發現之後，用 `Agent` 派出 `creative-director`，使用 gate **CD-PLAYTEST**（`.claude/docs/director-gates/cd-playtest.md`）。
+
+傳入：結構化的報告內容、遊戲 pillar 和核心幻想（來自
+`design/gdd/game-concept.md`）、正在驗證的具體假設。**如果
+`game-concept.md` 不存在** — 在 `minimal` 是預期中的，因為
+`design/game-brief.md` 取代了它 — brief 沒有 pillar：改傳它的
+一句話 pitch 和「Who it&#x27;s for / what they feel」那行，並說明
+它們是用來代替 pillar 的。如果兩份文件都不存在，就在 prompt 裡講出來：
+*「No pillars available — assess against the hypothesis alone.」* 對 pillar 保持沉默的 director gate，
+會自己發明 pillar。
+
+在儲存報告之前，先呈現 creative director 的評估。如果是 CONCERNS 或 REJECT，就在報告裡加一個 `## Creative Director Assessment` 章節，記下判定和回饋。如果是 APPROVE，就在報告裡註明核准。如果是 NOT ASSESSED（director 缺少某個輸入 — `.claude/docs/director-gates.md`），就加同樣的章節並點名缺了什麼；它不是核准。
+
+---
+
+## Phase 4: Save Report
+
+問：「May I write this playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?」
+
+使用者答應就寫檔，目錄不存在的話先建立。
+
+---
+
+## Phase 5: Next Steps
+
+Verdict: **COMPLETE** — playtest report generated.
+
+- 先處理最高優先順序的發現類別。
+- 處理完設計變更之後：對更新過的 GDD 重跑 `/design-review`。
+- 修完 bug 之後：重跑 `/bug-triage` 來更新優先順序。</pre></section><section><h2>英文原文</h2><pre>---
+name: playtest-report
+description: &quot;Structured playtest report template, or turn existing playtest notes into structured feedback.&quot;
+argument-hint: &quot;[new|analyze path-to-notes] [--review full|lean|solo]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/playtest-report/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys review_mode,automation`
+
+Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
+block → defaults in `.claude/docs/config-resolution.md`.
+
+# Playtest Report
+
+
+
+## Phase 1: Parse Arguments
+
+
+See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+
+
+Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+Determine the mode:
+
+- `new` → generate a blank playtest report template. This mode ends after
+  Phase 2A: a blank template has nothing to route, review or save.
+- `analyze [path]` → read raw notes and fill in the template with structured findings
+- No argument → ask via `AskUserQuestion`: `[A] New blank template` /
+  `[B] Analyze notes — I&#x27;ll give you the path`
+
+---
+
+## Phase 2A: New Template Mode
+
+Generate this template and output it to the user:
+
+```markdown
+# Playtest Report
+
+## Session Info
+- **Date**: [Date]
+- **Build**: [Version/Commit]
+- **Duration**: [Time played]
+- **Tester**: [Name/ID]
+- **Platform**: [PC/Console/Mobile]
+- **Input Method**: [KB+M / Gamepad / Touch]
+- **Session Type**: [First time / Returning / Targeted test]
+
+## Test Focus
+[What specific features or flows were being tested]
+
+## First Impressions (First 5 minutes)
+- **Understood the goal?** [Yes/No/Partially]
+- **Understood the controls?** [Yes/No/Partially]
+- **Emotional response**: [Engaged/Confused/Bored/Frustrated/Excited]
+- **Notes**: [Observations]
+
+## Gameplay Flow
+### What worked well
+- [Observation 1]
+
+### Pain points
+- [Issue 1 -- Severity: High/Medium/Low]
+
+### Confusion points
+- [Where the player was confused and why]
+
+### Moments of delight
+- [What surprised or pleased the player]
+
+## Bugs Encountered
+| # | Description | Severity | Reproducible |
+|---|-------------|----------|-------------|
+
+## Feature-Specific Feedback
+### [Feature 1]
+- **Understood purpose?** [Yes/No]
+- **Found engaging?** [Yes/No]
+- **Suggestions**: [Tester suggestions]
+
+## Quantitative Data (if available)
+- **Deaths**: [Count and locations]
+- **Time per area**: [Breakdown]
+- **Items used**: [What and when]
+- **Features discovered vs missed**: [List]
+
+## Overall Assessment
+- **Would play again?** [Yes/No/Maybe]
+- **Difficulty**: [Too Easy / Just Right / Too Hard]
+- **Pacing**: [Too Slow / Good / Too Fast]
+- **Session length preference**: [Shorter / Good / Longer]
+
+## Top 3 Priorities from this session
+1. [Most important finding]
+2. [Second priority]
+3. [Third priority]
+```
+
+In `new` mode, stop here with: Verdict: **COMPLETE** — blank template output; nothing saved.
+
+---
+
+## Phase 2B: Analyze Mode
+
+Read the raw notes at the provided path. Cross-reference with existing design documents, reading each by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit. Fill in the template above with structured findings. Flag any playtest observations that conflict with design intent.
+
+An observation that describes a defect — a crash, a framerate drop, a softlock,
+something that plainly breaks rather than plays badly — goes in the **Bugs
+Encountered** table, not under Gameplay Flow → Pain points, and is routed as a
+bug in Phase 3. Pain points are for how the game feels to play.
+
+---
+
+## Phase 3: Action Routing
+
+Categorize all findings into four buckets:
+
+- **Design changes needed** — fun issues, player confusion, broken mechanics, observations that conflict with the GDD&#x27;s intended experience
+- **Balance adjustments** — numbers feel wrong, difficulty too spiked or too flat
+- **Bug reports** — clear implementation defects that are reproducible
+- **Polish items** — not blocking progress, but friction or feel issues for later
+
+Present the categorized list, then route:
+
+- **Design changes:** &quot;Run `/propagate-design-change [path]` on the affected design document to find downstream impacts before making changes.&quot;
+- **Balance adjustments:** &quot;Run `/balance-check [system]` to verify the full balance picture before tuning values.&quot;
+- **Bugs:** &quot;Use `/bug-report` to formally track these.&quot;
+- **Polish items:** &quot;Add to the polish backlog in `production/` when the team reaches that phase.&quot;
+
+---
+
+## Phase 3b: Creative Director Player Experience Review
+
+**Review mode check** — apply before spawning CD-PLAYTEST:
+- `solo` → skip. Note: &quot;CD-PLAYTEST skipped — Solo mode.&quot; Proceed to Phase 4 (save the report).
+- `lean` → skip (not a PHASE-GATE). Note: &quot;CD-PLAYTEST skipped — Lean mode.&quot; Proceed to Phase 4 (save the report).
+- `full` → spawn as normal.
+
+After categorising findings, spawn `creative-director` via `Agent` using gate **CD-PLAYTEST** (`.claude/docs/director-gates/cd-playtest.md`).
+
+Pass: the structured report content, game pillars and core fantasy (from
+`design/gdd/game-concept.md`), the specific hypothesis being tested. **If
+`game-concept.md` does not exist** — expected at `minimal`, where
+`design/game-brief.md` replaces it — the brief has no pillars: pass its
+one-sentence pitch and its &quot;Who it&#x27;s for / what they feel&quot; line instead, and say
+they stand in for pillars. If neither document exists, say so in the prompt:
+*&quot;No pillars available — assess against the hypothesis alone.&quot;* A director gate
+handed silence about pillars will invent them.
+
+Present the creative director&#x27;s assessment before saving the report. If CONCERNS or REJECT, add a `## Creative Director Assessment` section to the report capturing the verdict and feedback. If APPROVE, note the approval in the report. If NOT ASSESSED (the director lacked an input — `.claude/docs/director-gates.md`), add the same section naming what was missing; it is not an approval.
+
+---
+
+## Phase 4: Save Report
+
+Ask: &quot;May I write this playtest report to `production/qa/playtests/playtest-[date]-[tester].md`?&quot;
+
+If yes, write the file, creating the directory if needed.
+
+---
+
+## Phase 5: Next Steps
+
+Verdict: **COMPLETE** — playtest report generated.
+
+- Act on the highest-priority finding category first.
+- After addressing design changes: re-run `/design-review` on the updated GDD.
+- After fixing bugs: re-run `/bug-triage` to update priorities.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>orch-build-mvp｜Skill 寫法圖鑑</title>
+<meta name="description" content="統籌從設計或規格文件起步 MVP，用垂直切片搭配 GAN 建置迴圈">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>orch-build-mvp</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/orch-build-mvp/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">統籌從設計或規格文件起步 MVP，用垂直切片搭配 GAN 建置迴圈</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: orch-build-mvp
+description: 統籌從設計或規格文件起步一個可運作的 MVP：讀入 SDD/PRD、規劃薄的垂直切片、搭出第一個端到端切片的骨架，再以 generator-evaluator 的建置迴圈推進，搭配審查和有關卡的 feat commit。設計或規格文件必須透過規劃好的垂直切片變成跑得起來的 MVP 時使用。
+metadata:
+  origin: ECC
+---
+
+# orch-build-mvp
+
+Actor · action · target：**orch · build · mvp**。包在
+[`orch-pipeline`](../orch-pipeline/SKILL.md) 共用引擎外面的薄包裝。
+
+## When to Use
+
+- 使用者有一份**設計 / 規格文件**（SDD、PRD、system_design），想從它
+  起步一個可運作的垂直切片。
+- 以文件路徑當參數，例如 `civicpulse/docs/SDD-v0.6.md`。
+
+## Operation settings
+
+- **預設的大小下限：** large，這是包含 Scaffold 的完整 pipeline。
+- **階段遮罩：** 0（讀規格）→ 1 → 2（重度）→ 3（scaffold）→ 4 → 5 → 6。
+- **第一步（階段 0 → 2）：** 讀文件；擷取範圍、已鎖定的決定
+  和功能清單；把它排成**薄的垂直切片**（先做一條端到端
+  的路徑，不是先做完所有 model 再做所有 view）。階段 3 負責立起第一個切片。
+
+## How It Works
+
+1. 用上面的設定執行 `orch-pipeline` 引擎。
+2. **重用既有的 GAN harness**，不要自己手刻迭代迴圈：
+   - 把 SDD 轉成 `gan-harness/spec.md` + `gan-harness/eval-rubric.md`
+     （這取代了 `gan-planner` 本來會產生的東西，因為你已經有規格了）。
+   - 用 `/gan-build &quot;&lt;one-line brief&gt;&quot; --skip-planner` 推動建置
+     （預設值：`--max-iterations 15`、`--pass-threshold 7.0`、
+     `--eval-mode playwright`；非 UI 的切片用 `--eval-mode code-only`）。
+   - 那個指令會跑 `gan-generator` → `gan-evaluator` 迴圈，並寫出
+     `gan-harness/feedback/feedback-NNN.md`，直到分數通過或停滯。
+3. 停在 **Gate 1**（切片計畫）和 **Gate 2**（commit 前）。把
+   骨架和每個切片分別作為獨立的 `feat:` commit。
+4. 任何碰到安全觸發條件的切片，都要加上 `security-reviewer`。
+
+## Example
+
+```
+orch-build-mvp: civicpulse/docs/SDD-v0.6.md
+→ read SDD → slice list (vertical) → scaffold slice 1  [GATE 1: approve]
+→ /gan-build --skip-planner (generator → evaluator loop) scores vs spec → review
+→ commit feat:  [GATE 2: confirm] → next slice
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: orch-build-mvp
+description: Orchestrate bootstrapping a working MVP from a design or spec document — ingest the SDD/PRD, plan thin vertical slices, scaffold the first end-to-end slice, then drive a generator-evaluator build loop with review and gated feat commits. Use when a design or spec document must become a running MVP through planned vertical slices.
+metadata:
+  origin: ECC
+---
+
+# orch-build-mvp
+
+Actor · action · target: **orch · build · mvp**. Thin wrapper over the shared
+engine in [`orch-pipeline`](../orch-pipeline/SKILL.md).
+
+## When to Use
+
+- The user has a **design / spec document** (SDD, PRD, system_design) and wants a
+  working vertical slice bootstrapped from it.
+- Takes a doc path as its argument, e.g. `civicpulse/docs/SDD-v0.6.md`.
+
+## Operation settings
+
+- **Default size floor:** large — this is the full pipeline including Scaffold.
+- **Phase mask:** 0 (read the spec) → 1 → 2 (heavy) → 3 (scaffold) → 4 → 5 → 6.
+- **First move (phase 0 → 2):** read the doc; extract scope, locked decisions,
+  and the feature list; order it into **thin vertical slices** (one end-to-end
+  path first, not all-models-then-all-views). Phase 3 stands up that first slice.
+
+## How It Works
+
+1. Run the `orch-pipeline` engine with the settings above.
+2. **Reuse the existing GAN harness** instead of hand-rolling an iterate loop:
+   - Translate the SDD into `gan-harness/spec.md` + `gan-harness/eval-rubric.md`
+     (this stands in for what `gan-planner` would generate — you already have the spec).
+   - Drive the build with `/gan-build &quot;&lt;one-line brief&gt;&quot; --skip-planner`
+     (defaults: `--max-iterations 15`, `--pass-threshold 7.0`,
+     `--eval-mode playwright`; use `--eval-mode code-only` for non-UI slices).
+   - That command runs the `gan-generator` → `gan-evaluator` loop and writes
+     `gan-harness/feedback/feedback-NNN.md` until the score passes or plateaus.
+3. Stop at **Gate 1** (slice plan) and **Gate 2** (pre-commit). Commit the
+   scaffold and each slice as separate `feat:` commits.
+4. Add `security-reviewer` for any slice touching a security trigger.
+
+## Example
+
+```
+orch-build-mvp: civicpulse/docs/SDD-v0.6.md
+→ read SDD → slice list (vertical) → scaffold slice 1  [GATE 1: approve]
+→ /gan-build --skip-planner (generator → evaluator loop) scores vs spec → review
+→ commit feat:  [GATE 2: confirm] → next slice
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

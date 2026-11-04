@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>codehealth-mcp｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 CodeScene MCP 在編輯前後檢查結構健康分數並把關 commit">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>codehealth-mcp</h1>
+<p class="meta">affaan-m ｜ Code Review ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/codehealth-mcp/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 CodeScene MCP 在編輯前後檢查結構健康分數並把關 commit</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: codehealth-mcp
+description: 透過 CodeScene MCP 取得即時的結構性 Code Health：編輯前先審查、修改後驗證分數變化，並在 commit 和 PR 時把關。適用於審查程式碼品質、重構、檢查 AI 的改動有沒有讓某個檔案變差，或 commit/PR 之前。
+metadata:
+  origin: community
+---
+
+# Code Health MCP (CodeScene)
+
+給 AI 輔助寫程式用的結構性可維護性回饋。它補足風格/lint 類的 skill（`coding-standards`、`plankton-code-quality`），提供**設計層級**的健康分數和退化關卡。
+
+**Upstream:** [codescene-oss/codescene-mcp-server](https://github.com/codescene-oss/codescene-mcp-server)
+**Package:** `@codescene/codehealth-mcp`（透過 npx 走 stdio）
+
+## Security and boundaries
+
+**Opt-in (ECC)：** `mcp-configs/mcp-servers.json` 裡的 `codescene` 區塊只是範本。ECC plugin 安裝時不會自動啟用內附的 MCP 伺服器。你想用的話，才把這個項目複製到自己的設定。安裝/同步 ECC 時，可以用 `ECC_DISABLED_MCPS=codescene,...` 排除它。
+
+**Credentials：** 沒有內附 token。請自己設定 `CS_ACCESS_TOKEN`（見 upstream repo 裡的 [getting-a-personal-access-token.md](https://github.com/codescene-oss/codescene-mcp-server/blob/main/docs/getting-a-personal-access-token.md)）。絕對不要把 token commit 進 repo。
+
+**工具會讀什麼：** 被呼叫時，工具會分析你指定的**本地 repository** 裡的檔案和 git 狀態（你傳入的路徑，加上 `analyze_change_set` 用的 branch context）。它們不會自己執行。standalone 模式請參考 upstream 的隱私文件：[codescene-mcp-server README](https://github.com/codescene-oss/codescene-mcp-server#frequently-asked-questions) 和 [CodeScene policies](https://codescene.com/policies)。不要把這個 skill 用在機密、憑證，或是你不想被分析的路徑上。
+
+**如果 MCP 無法使用（離線、token 錯誤、伺服器當掉）：** 不要編造 Code Health 分數。告訴使用者這項檢查被跳過了。要有使用者明確同意才能繼續。MCP 停擺時，優先用 lint/測試/verification-loop 來把關。伺服器連上之後，再重新啟用檢查。
+
+## When to Use
+
+- 使用者要求**審查程式碼品質**、**重構**某個檔案，或檢查 **AI 的改動有沒有讓**可維護性**變差**
+- 編輯**熱點**（hotspot）、舊模組或不熟悉的檔案之前
+- **commit** 或 **pull request** 之前，需要可維護性的防護網時
+- agent 寫了很大的 diff 之後，驗證 Code Health 沒有退化
+- 搭配 `verification-loop`、`tdd-workflow` 或 `/quality-gate` 當作結構性檢查（不能取代測試/lint）
+
+## When to Activate
+
+觸發條件跟上面的 **When to Use** 一樣，這個標題是 ECC 用來自動啟用 skill 的。
+
+## How It Works
+
+### 1. Connect the MCP server
+
+把 `mcp-configs/mcp-servers.json` 裡的 `codescene` 項目複製到你的 harness MCP 設定。
+
+**Claude Code**（`~/.claude.json` → `mcpServers`）：
+
+```json
+&quot;codescene&quot;: {
+  &quot;command&quot;: &quot;npx&quot;,
+  &quot;args&quot;: [&quot;-y&quot;, &quot;@codescene/codehealth-mcp&quot;],
+  &quot;env&quot;: {
+    &quot;CS_ACCESS_TOKEN&quot;: &quot;YOUR_CS_ACCESS_TOKEN_HERE&quot;
+  }
+}
+```
+
+**專案範圍：** 把同樣的區塊合併進 repo 根目錄的 `.mcp.json`。
+
+Token 設定寫在 upstream repo 的文件裡（上面的連結）。standalone 模式用下面列出的四個工具，不需要付費的 CodeScene 平台帳號。重啟 session，確認 `codescene` 伺服器已連上，再去依賴分數。
+
+### 2. Call standalone tools only
+
+| Tool | When to use |
+|------|-------------|
+| `code_health_review` | 修改檔案**之前**做完整的結構分析 |
+| `code_health_score` | 每次修改後快速取得數字分數（檢查變化量） |
+| `pre_commit_code_health_safeguard` | 擋下會造成 Code Health 退化的 commit |
+| `analyze_change_set` | 開 PR **之前**做 branch 層級的檢查 |
+
+**不要**呼叫只有平台版才有的工具（例如整個 repository 的技術債熱點清單）。**不要**引用 `delta_analysis`，standalone 沒有這個。
+
+### 3. Interpret scores (1–10)
+
+| Range | Meaning | Agent behavior |
+|-------|---------|----------------|
+| **9.0–10.0** | 綠色，健康 | 比較安全可以擴充；仍然優先用垂直切片 |
+| **4.0–8.9** | 黃色，有技術債 | 小心行事；不要順手重構 |
+| **1.0–3.9** | 紅色，嚴重技術債 | 只能縮小範圍 |
+
+### 4. Run the feedback loop
+
+**動檔案之前**
+
+1. 對目標路徑執行 `code_health_review`。
+2. 記下基準分數和列出的 code smell。
+3. 規劃能完成任務的最小改動。
+
+依分數決定範圍：**低於 5**：只能做最小的 diff；**5–7**：不要大範圍重構；**高於 7**：比較安全可以重構，每次編輯之後仍要驗證。
+
+**每次修改之後**
+
+1. 對同一個檔案執行 `code_health_score`。
+2. 跟 `code_health_review` 得到的基準比較。
+3. 如果分數**退步**，先修好再繼續。分數比你開始時還低，就絕對不要標記任務完成。
+
+**每次 commit 之前**：對 repository 路徑執行 `pre_commit_code_health_safeguard`。
+
+**PR 之前**：對 base branch（例如 `main`）執行 `analyze_change_set`。
+
+## Examples
+
+### Example: Flask maintainability improvement
+
+在 `pallets/flask` 上，一個只用 standalone 工具的 agent 迴圈：
+
+1. 對目標模組執行 `code_health_review`（基準 **4.82**）
+2. 針對列出的 smell 做有針對性的重構
+3. 每次編輯後執行 `code_health_score`
+4. commit 前執行 `pre_commit_code_health_safeguard`
+5. PR 前執行 `analyze_change_set`
+
+結果：Code Health **4.82 → 9.1**（只用免費的 standalone token）。
+
+### Example: AGENTS.md enforcement block
+
+貼到專案的 `AGENTS.md` 或 `CLAUDE.md`：
+
+```md
+## Code Health (CodeScene MCP)
+
+Before modifying any file: run `code_health_review`, note score and issues.
+
+- Score below 5: problematic range — scope changes narrowly.
+- Score 5–7: warning range — no broad refactors.
+
+After each change: run `code_health_score` to verify delta.
+
+- If score regressed: fix before continuing; never declare done if score dropped.
+
+Before every commit: run `pre_commit_code_health_safeguard`.
+
+Before PR: run `analyze_change_set`.
+```
+
+### Example: anti-patterns vs correct loop
+
+```markdown
+# BAD: Edit first, check later
+[large refactor without code_health_review]
+
+# BAD: Ignore score drop
+&quot;Tests pass&quot; → mark task done while Code Health decreased
+
+# BAD: Broad refactor on red-score file (below 5)
+Drive-by cleanup across the module
+
+# GOOD: review → small change → score → commit safeguard → analyze_change_set
+```
+
+## Pairing with ECC
+
+| ECC skill / flow | Code Health MCP role |
+|------------------|----------------------|
+| `coding-standards` | 風格/命名；Code Health 看結構/複雜度 |
+| `plankton-code-quality` | 寫程式當下的 lint/format；Code Health 是編輯前後的結構關卡 |
+| `verification-loop` / `/quality-gate` | 在「完成」之前，加上結構退化檢查 |
+| `security-review` | 安全性 vs 可維護性，相關時兩個都用 |
+| `tdd-workflow` | 測試通過 ≠ 設計健康，重構後要檢查分數 |
+
+**Context 小提醒：** ECC 建議把 MCP 的數量控制在少數。做實質編輯時啟用 `codescene`，不需要時就停用。
+
+## Related Skills
+
+- `coding-standards`：基礎慣例
+- `plankton-code-quality`：寫程式當下的 lint/format hook
+- `verification-loop`：build/測試/lint 關卡
+- `tdd-workflow`：測試先行的開發
+- `security-review`：安全檢查清單
+- `documentation-lookup`：透過 Context7 查函式庫文件（互不相干）</pre></section><section><h2>英文原文</h2><pre>---
+name: codehealth-mcp
+description: Real-time structural Code Health via CodeScene MCP — review before edits, verify score deltas after changes, gate commits and PRs. Use when reviewing code quality, refactoring, checking if AI changes degraded a file, or before commit/PR.
+metadata:
+  origin: community
+---
+
+# Code Health MCP (CodeScene)
+
+Structural maintainability feedback for AI-assisted coding. Complements style/lint skills (`coding-standards`, `plankton-code-quality`) with **design-level** health scores and regression gates.
+
+**Upstream:** [codescene-oss/codescene-mcp-server](https://github.com/codescene-oss/codescene-mcp-server)
+**Package:** `@codescene/codehealth-mcp` (stdio via npx)
+
+## Security and boundaries
+
+**Opt-in (ECC):** The `codescene` block in `mcp-configs/mcp-servers.json` is a template only. ECC plugin installs do not auto-enable bundled MCP servers. Copy the entry into your config only if you want it. You can exclude it during ECC install/sync with `ECC_DISABLED_MCPS=codescene,...`.
+
+**Credentials:** No bundled token. Set `CS_ACCESS_TOKEN` yourself (see [getting-a-personal-access-token.md](https://github.com/codescene-oss/codescene-mcp-server/blob/main/docs/getting-a-personal-access-token.md) in the upstream repo). Never commit tokens to the repo.
+
+**What the tools read:** When invoked, tools analyze files and git state **in the local repository** you point them at (paths you pass, plus branch context for `analyze_change_set`). They do not run by themselves. For standalone mode, follow upstream privacy docs: [codescene-mcp-server README](https://github.com/codescene-oss/codescene-mcp-server#frequently-asked-questions) and [CodeScene policies](https://codescene.com/policies). Do not use this skill for secrets, credentials, or paths you do not want analyzed.
+
+**If the MCP is unavailable (offline, bad token, server crash):** Do not invent Code Health scores. Tell the user the check was skipped. Continue only with explicit user approval. Prefer lint/tests/verification-loop for gating when MCP is down. Re-enable checks once the server connects.
+
+## When to Use
+
+- User asks to **review code quality**, **refactor** a file, or check if **AI changes degraded** maintainability
+- Before editing a **hotspot**, legacy module, or unfamiliar file
+- Before **commit** or **pull request** when you need a maintainability safeguard
+- After a large agent-written diff — verify Code Health did not regress
+- Pair with `verification-loop`, `tdd-workflow`, or `/quality-gate` as a structural check (not a replacement for tests/lint)
+
+## When to Activate
+
+Same triggers as **When to Use** above — this heading is what ECC uses for skill auto-activation.
+
+## How It Works
+
+### 1. Connect the MCP server
+
+Copy the `codescene` entry from `mcp-configs/mcp-servers.json` into your harness MCP config.
+
+**Claude Code** (`~/.claude.json` → `mcpServers`):
+
+```json
+&quot;codescene&quot;: {
+  &quot;command&quot;: &quot;npx&quot;,
+  &quot;args&quot;: [&quot;-y&quot;, &quot;@codescene/codehealth-mcp&quot;],
+  &quot;env&quot;: {
+    &quot;CS_ACCESS_TOKEN&quot;: &quot;YOUR_CS_ACCESS_TOKEN_HERE&quot;
+  }
+}
+```
+
+**Project-scoped:** merge the same block into `.mcp.json` at the repo root.
+
+Token setup is documented in the upstream repo (link above). Standalone mode does not require a paid CodeScene platform account for the four tools listed below. Restart the session and confirm the `codescene` server is connected before relying on scores.
+
+### 2. Call standalone tools only
+
+| Tool | When to use |
+|------|-------------|
+| `code_health_review` | Full structural analysis **before** modifying a file |
+| `code_health_score` | Quick numeric score after each change (delta check) |
+| `pre_commit_code_health_safeguard` | Block commits that introduce Code Health regressions |
+| `analyze_change_set` | Branch-level check **before** opening a PR |
+
+Do **not** call platform-only tools (e.g. repository-wide technical debt hotspot lists). Do **not** reference `delta_analysis` — not available on standalone.
+
+### 3. Interpret scores (1–10)
+
+| Range | Meaning | Agent behavior |
+|-------|---------|----------------|
+| **9.0–10.0** | Green — healthy | Safer to extend; still prefer vertical slices |
+| **4.0–8.9** | Yellow — debt | Tread carefully; no drive-by refactors |
+| **1.0–3.9** | Red — severe debt | Narrow scope only |
+
+### 4. Run the feedback loop
+
+**Before touching a file**
+
+1. Run `code_health_review` on the target path.
+2. Record baseline score and listed code smells.
+3. Plan the smallest change that addresses the task.
+
+Scope by score: **below 5** — minimal diff only; **5–7** — no broad refactors; **above 7** — safer to refactor, still verify after each edit.
+
+**After each change**
+
+1. Run `code_health_score` on the same file.
+2. Compare to the baseline from `code_health_review`.
+3. If the score **regressed**, fix before continuing. Never mark the task done while the score is lower than when you started.
+
+**Before every commit** — run `pre_commit_code_health_safeguard` on the repository path.
+
+**Before a PR** — run `analyze_change_set` against the base branch (e.g. `main`).
+
+## Examples
+
+### Example: Flask maintainability improvement
+
+On `pallets/flask`, an agent loop using only standalone tools:
+
+1. `code_health_review` on a target module (baseline **4.82**)
+2. Targeted refactor addressing listed smells
+3. `code_health_score` after each edit
+4. `pre_commit_code_health_safeguard` before commit
+5. `analyze_change_set` before PR
+
+Result: Code Health **4.82 → 9.1** (free standalone token only).
+
+### Example: AGENTS.md enforcement block
+
+Paste into the project `AGENTS.md` or `CLAUDE.md`:
+
+```md
+## Code Health (CodeScene MCP)
+
+Before modifying any file: run `code_health_review`, note score and issues.
+
+- Score below 5: problematic range — scope changes narrowly.
+- Score 5–7: warning range — no broad refactors.
+
+After each change: run `code_health_score` to verify delta.
+
+- If score regressed: fix before continuing; never declare done if score dropped.
+
+Before every commit: run `pre_commit_code_health_safeguard`.
+
+Before PR: run `analyze_change_set`.
+```
+
+### Example: anti-patterns vs correct loop
+
+```markdown
+# BAD: Edit first, check later
+[large refactor without code_health_review]
+
+# BAD: Ignore score drop
+&quot;Tests pass&quot; → mark task done while Code Health decreased
+
+# BAD: Broad refactor on red-score file (below 5)
+Drive-by cleanup across the module
+
+# GOOD: review → small change → score → commit safeguard → analyze_change_set
+```
+
+## Pairing with ECC
+
+| ECC skill / flow | Code Health MCP role |
+|------------------|----------------------|
+| `coding-standards` | Style/naming; Code Health = structure/complexity |
+| `plankton-code-quality` | Write-time lint/format; Code Health = pre/post edit structural gate |
+| `verification-loop` / `/quality-gate` | Add structural regression check before &quot;done&quot; |
+| `security-review` | Security vs maintainability — use both when relevant |
+| `tdd-workflow` | Tests pass ≠ healthy design — check score after refactors |
+
+**Context tip:** ECC recommends keeping MCP count low. Enable `codescene` when doing substantive edits; disable when not needed.
+
+## Related Skills
+
+- `coding-standards` — baseline conventions
+- `plankton-code-quality` — write-time lint/format hooks
+- `verification-loop` — build/test/lint gate
+- `tdd-workflow` — test-first development
+- `security-review` — security checklist
+- `documentation-lookup` — library docs via Context7 (orthogonal)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

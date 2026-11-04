@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>orch-change-feature｜Skill 寫法圖鑑</title>
+<meta name="description" content="統籌修改既有功能的行為：先改測試成新規格，再改實作到全綠">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>orch-change-feature</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/orch-change-feature/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">統籌修改既有功能的行為：先改測試成新規格，再改實作到全綠</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: orch-change-feature
+description: 統籌把既有、運作中的功能改成新的期望行為：把它的測試更新成新規格、修改實作去符合、審查，再做有關卡的 commit。行為沒壞，但應該不一樣時使用。
+metadata:
+  origin: ECC
+---
+
+# orch-change-feature
+
+Actor · action · target：**orch · change · feature**。包在
+[`orch-pipeline`](../orch-pipeline/SKILL.md) 共用引擎外面的薄包裝。
+
+## When to Use
+
+- 既有的功能**能用**，但期望的行為不同（「改」、
+  「調整」、「讓它也……」、「不要 X，改成 Y」）。
+- 和同系列的其他 skill 區分：
+  - **沒**壞，所以不是 `orch-fix-defect`（沒有 bug 要重現）。
+  - **不是**新的，所以不是 `orch-add-feature`（能力已經存在）。
+
+## Operation settings
+
+- **預設的大小下限：** small，大多數微調只涉及一兩個函式。
+- **階段遮罩：** 0 →（只有新行為需要研究時才跑 1）→ 輕量的 2 →
+  4 → 5 → 6。
+- **第一步（階段 4）：** 把*既有的*測試更新成表達新的
+  期望行為，然後修改實作，直到它們通過。先改
+  測試，才是微調和修 bug 的區別。
+
+## How It Works
+
+1. 用上面的設定執行 `orch-pipeline` 引擎。
+2. 計畫保持輕量，只有 `standard` 以上的大小才值得跑完整的 `planner`。
+3. 停在 **Gate 1**（計畫 / 修改過的測試的核准）和 **Gate 2**（commit 前）。
+4. 如果變更碰到安全觸發條件，就加上 `security-reviewer`。
+
+## Example
+
+```
+orch-change-feature: make nws-poller alert at 2 warnings instead of 3
+→ update threshold tests to new spec → change impl to green
+→ code-review → commit  [GATE 2: confirm]
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: orch-change-feature
+description: Orchestrate altering an existing, working feature to new desired behavior — update its tests to the new spec, change the implementation to match, review, and gated commit. Use when behavior is not broken but should be different.
+metadata:
+  origin: ECC
+---
+
+# orch-change-feature
+
+Actor · action · target: **orch · change · feature**. Thin wrapper over the
+shared engine in [`orch-pipeline`](../orch-pipeline/SKILL.md).
+
+## When to Use
+
+- An existing feature **works**, but the desired behavior is different (&quot;change&quot;,
+  &quot;adjust&quot;, &quot;make it also …&quot;, &quot;instead of X do Y&quot;).
+- Distinguish from siblings:
+  - **not** broken → not `orch-fix-defect` (no bug to reproduce).
+  - **not** new → not `orch-add-feature` (the capability already exists).
+
+## Operation settings
+
+- **Default size floor:** small — most tweaks are a function or two.
+- **Phase mask:** 0 → (1 only if the new behavior needs research) → light 2 →
+  4 → 5 → 6.
+- **First move (phase 4):** update the *existing* tests to express the new
+  desired behavior, then change the implementation until they pass. Changing the
+  tests first is what separates a tweak from a fix.
+
+## How It Works
+
+1. Run the `orch-pipeline` engine with the settings above.
+2. Keep the plan light — only `standard`+ size warrants the full `planner` pass.
+3. Stop at **Gate 1** (plan / changed-test approval) and **Gate 2** (pre-commit).
+4. Add `security-reviewer` if the change touches a security trigger.
+
+## Example
+
+```
+orch-change-feature: make nws-poller alert at 2 warnings instead of 3
+→ update threshold tests to new spec → change impl to green
+→ code-review → commit  [GATE 2: confirm]
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

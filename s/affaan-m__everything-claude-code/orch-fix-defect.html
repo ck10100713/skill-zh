@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>orch-fix-defect｜Skill 寫法圖鑑</title>
+<meta name="description" content="統籌修 bug：先寫失敗的回歸測試，修到全綠再審查 commit">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>orch-fix-defect</h1>
+<p class="meta">affaan-m ｜ 除錯與調查 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/orch-fix-defect/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">統籌修 bug：先寫失敗的回歸測試，修到全綠再審查 commit</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: orch-fix-defect
+description: 統籌修 bug：把它重現成一個失敗的回歸測試、修到全綠、審查，再做有關卡的 commit，每個階段都委派給對應的 ECC agent。既有的行為壞了或不對時使用。
+metadata:
+  origin: ECC
+---
+
+# orch-fix-defect
+
+Actor · action · target：**orch · fix · defect**。包在
+[`orch-pipeline`](../orch-pipeline/SKILL.md) 共用引擎外面的薄包裝。
+
+## When to Use
+
+- 有東西**壞了**：輸出錯誤、報錯、當機、退化。
+- 和同系列的其他 skill 區分：
+  - 行為是對的，只是你想要不同的行為 → `orch-change-feature`。
+  - 這個能力還不存在 → `orch-add-feature`。
+
+## Operation settings
+
+- **預設的大小下限：** small（常常是 trivial）。
+- **階段遮罩：** 0 →（只有根本原因不明顯，或是 standard 以上時才跑輕量的 2）→
+  4 → 5 → 6。通常會跳過 Research（1）。
+- **第一步（階段 4）：** 把 bug 重現成一個**新的失敗**測試
+  （回歸測試），然後修到變綠。先證明 bug 存在，
+  才是修 bug 和微調的區別。
+
+## How It Works
+
+1. 用上面的設定執行 `orch-pipeline` 引擎。
+2. 如果根本原因不清楚，在寫紅燈測試之前，先用 `code-explorer` 界定範圍；
+   建置壞掉的話，升級給 `build-error-resolver` / `/build-fix`。
+3. 停在 **Gate 1**（只有在產生了計畫時）和 **Gate 2**（commit 前）。
+4. 如果缺陷出在對安全敏感的路徑，就加上 `security-reviewer`。
+
+## Example
+
+```
+orch-fix-defect: poller crashes on empty NWS response
+→ write failing test reproducing the crash → fix to green
+→ code-review → commit  [GATE 2: confirm]   (commit: fix:)
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: orch-fix-defect
+description: Orchestrate fixing a bug — reproduce it as a failing regression test, fix to green, review, and gated commit — by delegating each phase to the matching ECC agent. Use when existing behavior is broken or wrong.
+metadata:
+  origin: ECC
+---
+
+# orch-fix-defect
+
+Actor · action · target: **orch · fix · defect**. Thin wrapper over the shared
+engine in [`orch-pipeline`](../orch-pipeline/SKILL.md).
+
+## When to Use
+
+- Something is **broken**: wrong output, an error, a crash, a regression.
+- Distinguish from siblings:
+  - behavior is correct but you want it different → `orch-change-feature`.
+  - the capability does not exist yet → `orch-add-feature`.
+
+## Operation settings
+
+- **Default size floor:** small (often trivial).
+- **Phase mask:** 0 → (light 2 only if root cause is non-obvious or standard+) →
+  4 → 5 → 6. Research (1) is usually skipped.
+- **First move (phase 4):** reproduce the bug as a **new failing** test
+  (regression test), then fix until it goes green. Proving the bug exists first
+  is what separates a fix from a tweak.
+
+## How It Works
+
+1. Run the `orch-pipeline` engine with the settings above.
+2. If the root cause is unclear, scope it with `code-explorer` before the red
+   test; escalate build breaks to `build-error-resolver` / `/build-fix`.
+3. Stop at **Gate 1** (only if a plan was produced) and **Gate 2** (pre-commit).
+4. Add `security-reviewer` if the defect sits in a security-sensitive path.
+
+## Example
+
+```
+orch-fix-defect: poller crashes on empty NWS response
+→ write failing test reproducing the crash → fix to green
+→ code-review → commit  [GATE 2: confirm]   (commit: fix:)
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

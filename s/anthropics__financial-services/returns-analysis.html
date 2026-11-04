@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>returns-analysis｜Skill 寫法圖鑑</title>
+<meta name="description" content="替 PE 交易建立 IRR/MOIC 敏感度表和情境分析">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>returns-analysis</h1>
+<p class="meta">Anthropic ｜ 金融與投資 ｜ <a href="https://github.com/anthropics/financial-services/blob/main/plugins/agent-plugins/valuation-reviewer/skills/returns-analysis/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">替 PE 交易建立 IRR/MOIC 敏感度表和情境分析</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: returns-analysis
+description: 為 PE 交易評估建立快速的 IRR/MOIC 敏感度表。針對進場倍數、槓桿、出場倍數、成長率和持有期間等情境建模報酬。適用於評估一筆交易的規模、對假設做壓力測試，或準備投資委員會（IC）的報酬附件。觸發詞：&quot;returns analysis&quot;、&quot;IRR sensitivity&quot;、&quot;MOIC table&quot;、&quot;what&#x27;s the return at&quot;、&quot;model the returns&quot;、&quot;back of the envelope&quot;。
+---
+
+# 報酬分析
+
+## 工作流程
+
+### 步驟 1：蒐集交易輸入
+
+向使用者詢問（或從先前的分析中取得）：
+
+**進場：**
+- 進場 EBITDA（LTM 或 NTM）
+- 進場倍數（EV / EBITDA）
+- 企業價值
+- 交割時的淨負債
+- 股權投入金額
+- 交易費用與支出
+
+**融資：**
+- 優先債（x EBITDA、利率、攤還）
+- 次順位債／夾層債（如有）
+- 進場時的總槓桿（x EBITDA）
+- 股權出資
+
+**營運假設：**
+- 營收成長率（年）
+- EBITDA 利潤率走勢
+- 資本支出佔營收的 %
+- 營運資金變動
+- 債務償還時程
+
+**出場：**
+- 持有期間（年）
+- 出場倍數（EV / EBITDA）
+- 出場 EBITDA（由成長假設算出）
+
+### 步驟 2：基準情境報酬
+
+計算：
+
+| 指標 | 數值 |
+|--------|-------|
+| 進場 EV | |
+| 投入股權 | |
+| 出場 EBITDA | |
+| 出場 EV | |
+| 出場時淨負債 | |
+| 出場股權價值 | |
+| **MOIC** | |
+| **IRR** | |
+| 現金回報倍數（Cash-on-cash） | |
+
+呈現報酬的拆解（waterfall）：
+- EBITDA 成長的貢獻
+- 倍數擴張／收縮的貢獻
+- 債務償還的貢獻
+- 費用／支出的拖累
+
+### 步驟 3：敏感度表
+
+建立雙向敏感度矩陣：
+
+**進場倍數 vs. 出場倍數**
+| | 出場 6x | 出場 7x | 出場 8x | 出場 9x | 出場 10x |
+|---|---------|---------|---------|---------|----------|
+| 進場 7x | | | | | |
+| 進場 8x | | | | | |
+| 進場 9x | | | | | |
+| 進場 10x | | | | | |
+
+**EBITDA 成長 vs. 出場倍數**（固定進場條件）
+
+**槓桿 vs. 出場倍數**（固定進場條件和成長率）
+
+**持有期間 vs. 出場倍數**
+
+每個儲存格同時顯示 IRR 和 MOIC（IRR / MOIC 格式）。
+
+### 步驟 4：情境分析
+
+建立 3 個情境：
+
+| | 樂觀 | 基準 | 悲觀 |
+|---|------|------|------|
+| 營收 CAGR | | | |
+| 出場 EBITDA 利潤率 | | | |
+| 出場倍數 | | | |
+| 出場 EBITDA | | | |
+| MOIC | | | |
+| IRR | | | |
+
+### 步驟 5：輸出
+
+- Excel 活頁簿，包含：
+  - 假設工作表
+  - 報酬計算
+  - 敏感度表（用條件式色彩格式化）
+  - 情境摘要
+- 適合放進 IC 簡報的一頁式報酬摘要
+
+## 關鍵公式
+
+- **MOIC** = 出場股權價值 / 投入股權
+- **IRR** = 解 r：投入股權 × (1 + r)^n = 出場股權價值（有期間現金流時要調整）
+- **報酬歸因**：
+  - 成長：(出場 EBITDA - 進場 EBITDA) × 出場倍數 / 股權
+  - 倍數：(出場倍數 - 進場倍數) × 進場 EBITDA / 股權
+  - 槓桿：持有期間的債務償還 / 股權
+
+## 重要注意事項
+
+- 適用的話，報酬一律同時呈現扣費前（gross）和扣除費用／carry 後（net）
+- 管理層再投資（rollover）和共同投資會改變股權投入金額，相關的話要問
+- 股利再融資（dividend recap）或期間分配會大幅影響 IRR，有計畫的話要納入
+- 別忘了交易成本（通常是 EV 的 2-4%），它們會降低第一天的股權價值
+- 稅務考量（資產交易 vs. 股權交易、338(h)(10) 選擇）可能實質影響稅後報酬</pre></section><section><h2>英文原文</h2><pre>---
+name: returns-analysis
+description: Build quick IRR/MOIC sensitivity tables for PE deal evaluation. Models returns across entry multiple, leverage, exit multiple, growth, and hold period scenarios. Use when sizing up a deal, stress-testing assumptions, or preparing IC returns exhibits. Triggers on &quot;returns analysis&quot;, &quot;IRR sensitivity&quot;, &quot;MOIC table&quot;, &quot;what&#x27;s the return at&quot;, &quot;model the returns&quot;, or &quot;back of the envelope&quot;.
+---
+
+# Returns Analysis
+
+## Workflow
+
+### Step 1: Gather Deal Inputs
+
+Ask for (or extract from prior analysis):
+
+**Entry:**
+- Entry EBITDA (LTM or NTM)
+- Entry multiple (EV / EBITDA)
+- Enterprise value
+- Net debt at close
+- Equity check size
+- Transaction fees &amp; expenses
+
+**Financing:**
+- Senior debt (x EBITDA, rate, amortization)
+- Subordinated debt / mezzanine (if any)
+- Total leverage at entry (x EBITDA)
+- Equity contribution
+
+**Operating Assumptions:**
+- Revenue growth rate (annual)
+- EBITDA margin trajectory
+- Capex as % of revenue
+- Working capital changes
+- Debt paydown schedule
+
+**Exit:**
+- Hold period (years)
+- Exit multiple (EV / EBITDA)
+- Exit EBITDA (calculated from growth assumptions)
+
+### Step 2: Base Case Returns
+
+Calculate:
+
+| Metric | Value |
+|--------|-------|
+| Entry EV | |
+| Equity invested | |
+| Exit EBITDA | |
+| Exit EV | |
+| Net debt at exit | |
+| Exit equity value | |
+| **MOIC** | |
+| **IRR** | |
+| Cash-on-cash | |
+
+Show the returns waterfall:
+- EBITDA growth contribution
+- Multiple expansion/contraction contribution
+- Debt paydown contribution
+- Fee/expense drag
+
+### Step 3: Sensitivity Tables
+
+Build 2-way sensitivity matrices:
+
+**Entry Multiple vs. Exit Multiple**
+| | Exit 6x | Exit 7x | Exit 8x | Exit 9x | Exit 10x |
+|---|---------|---------|---------|---------|----------|
+| Entry 7x | | | | | |
+| Entry 8x | | | | | |
+| Entry 9x | | | | | |
+| Entry 10x | | | | | |
+
+**EBITDA Growth vs. Exit Multiple** (at fixed entry)
+
+**Leverage vs. Exit Multiple** (at fixed entry and growth)
+
+**Hold Period vs. Exit Multiple**
+
+Show both IRR and MOIC in each cell (IRR / MOIC format).
+
+### Step 4: Scenario Analysis
+
+Build 3 scenarios:
+
+| | Bull | Base | Bear |
+|---|------|------|------|
+| Revenue CAGR | | | |
+| Exit EBITDA margin | | | |
+| Exit multiple | | | |
+| Exit EBITDA | | | |
+| MOIC | | | |
+| IRR | | | |
+
+### Step 5: Output
+
+- Excel workbook with:
+  - Assumptions tab
+  - Returns calculation
+  - Sensitivity tables (formatted with conditional coloring)
+  - Scenario summary
+- One-page returns summary suitable for IC deck
+
+## Key Formulas
+
+- **MOIC** = Exit Equity Value / Equity Invested
+- **IRR** = solve for r: Equity Invested × (1 + r)^n = Exit Equity Value (adjust for interim cash flows)
+- **Returns attribution**:
+  - Growth: (Exit EBITDA - Entry EBITDA) × Exit Multiple / Equity
+  - Multiple: (Exit Multiple - Entry Multiple) × Entry EBITDA / Equity
+  - Leverage: Debt paydown over hold period / Equity
+
+## Important Notes
+
+- Always show returns both gross and net of fees/carry where applicable
+- Management rollover and co-invest change the equity check — ask if relevant
+- Dividend recaps or interim distributions affect IRR significantly — include if planned
+- Don&#x27;t forget transaction costs (typically 2-4% of EV) — they reduce Day 1 equity value
+- Tax considerations (asset vs. stock deal, 338(h)(10) election) can materially affect after-tax returns</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>websockets｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Zoom WebSockets 以持久連線接收低延遲事件">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>websockets</h1>
+<p class="meta">Anthropic ｜ Agent 與工作流 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/partner-built/zoom-plugin/skills/websockets/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用 Zoom WebSockets 以持久連線接收低延遲事件</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: setup-zoom-websockets
+description: Zoom WebSockets 的參考 skill。導向低延遲事件工作流程之後，在需要持久連線、更快的事件遞送，或安全限制讓 WebSockets 比 webhook 更合適時使用。
+triggers:
+  - &quot;zoom websockets&quot;
+  - &quot;websocket event subscription&quot;
+  - &quot;persistent zoom events&quot;
+  - &quot;low latency zoom events&quot;
+  - &quot;zoom websocket connection&quot;
+---
+
+# /setup-zoom-websockets
+
+Zoom 持久事件串流的背景參考。優先用工作流程路由，當 WebSockets 很可能比 webhook 更合適時，再用這個檔案。
+
+## WebSockets vs Webhooks
+
+| 面向 | WebSockets | Webhooks |
+|--------|------------|----------|
+| **連線** | 持久、雙向 | 一次性的 HTTP POST |
+| **延遲** | 較低（沒有 HTTP 額外負擔） | 較高（每個事件都要新連線） |
+| **安全** | 直接連線，不暴露 endpoint | 需要 endpoint 驗證、IP 白名單 |
+| **模式** | Pull（你連到 Zoom） | Push（Zoom 連到你） |
+| **狀態** | 有狀態（維持連線） | 無狀態（每個事件各自獨立） |
+| **設定** | 較複雜（access token、連線） | 較簡單（只要 endpoint URL） |
+
+**這些情況選 WebSockets：**
+- 即時、低延遲的更新很關鍵
+- 安全是最優先（銀行、醫療、金融）
+- 你不想暴露公開的 endpoint
+- 你需要雙向通訊
+
+**這些情況選 Webhooks：**
+- 偏好較簡單的設定
+- 事件通知的數量不多
+- 已經有 HTTP 基礎設施
+
+## 先決條件
+
+- [Zoom Marketplace](https://marketplace.zoom.us/) 裡的 Server-to-Server OAuth app
+- Account ID、Client ID 和 Client Secret
+- 啟用了事件的 WebSocket 訂閱
+
+&gt; **需要 S2S OAuth 的協助？** 完整的驗證流程請看 **[zoom-oauth](../oauth/SKILL.md)** skill。
+
+&gt; **快速開始排查：** 深入除錯之前，先用 **[5-Minute Runbook](RUNBOOK.md)**。
+
+## Quick Start
+
+### 1. 建立 Server-to-Server OAuth App
+
+1. 前往 [Zoom Marketplace](https://marketplace.zoom.us/develop/create)
+2. 建立一個 **Server-to-Server OAuth** app
+3. 複製 Account ID、Client ID、Client Secret
+
+### 2. 啟用 WebSocket 訂閱
+
+1. 在你的 app 裡，前往 **Feature** → **Event Subscriptions**
+2. 新增一個 Event Subscription
+3. 選擇 **WebSockets** 當作方法類型
+4. 選擇要訂閱的事件（例如 `meeting.created`、`meeting.started`）
+5. 儲存：會產生一個 endpoint URL
+
+### 3. 透過 WebSocket 連線
+
+```javascript
+const WebSocket = require(&#x27;ws&#x27;);
+const axios = require(&#x27;axios&#x27;);
+
+// 步驟 1：取得 access token
+async function getAccessToken() {
+  const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString(&#x27;base64&#x27;);
+  
+  const response = await axios.post(
+    &#x27;https://zoom.us/oauth/token&#x27;,
+    new URLSearchParams({
+      grant_type: &#x27;account_credentials&#x27;,
+      account_id: ACCOUNT_ID
+    }),
+    {
+      headers: {
+        &#x27;Authorization&#x27;: `Basic ${credentials}`,
+        &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;
+      }
+    }
+  );
+  
+  return response.data.access_token;
+}
+
+// 步驟 2：連到 WebSocket
+async function connectWebSocket() {
+  const accessToken = await getAccessToken();
+  
+  // 從你的訂閱設定取得 WebSocket URL
+  const wsUrl = `wss://ws.zoom.us/ws?subscriptionId=${SUBSCRIPTION_ID}&amp;access_token=${accessToken}`;
+  
+  const ws = new WebSocket(wsUrl);
+  
+  ws.on(&#x27;open&#x27;, () =&gt; {
+    console.log(&#x27;WebSocket connection established&#x27;);
+  });
+  
+  ws.on(&#x27;message&#x27;, (data) =&gt; {
+    const event = JSON.parse(data);
+    console.log(&#x27;Event received:&#x27;, event.event);
+    
+    // 處理不同的事件類型
+    switch (event.event) {
+      case &#x27;meeting.started&#x27;:
+        console.log(`Meeting started: ${event.payload.object.topic}`);
+        break;
+      case &#x27;meeting.ended&#x27;:
+        console.log(`Meeting ended: ${event.payload.object.uuid}`);
+        break;
+      case &#x27;meeting.participant_joined&#x27;:
+        console.log(`Participant joined: ${event.payload.object.participant.user_name}`);
+        break;
+    }
+  });
+  
+  ws.on(&#x27;close&#x27;, (code, reason) =&gt; {
+    console.log(`Connection closed: ${code} - ${reason}`);
+    // 實作重新連線的邏輯
+  });
+  
+  ws.on(&#x27;error&#x27;, (error) =&gt; {
+    console.error(&#x27;WebSocket error:&#x27;, error);
+  });
+  
+  return ws;
+}
+
+connectWebSocket();
+```
+
+## 事件格式
+
+透過 WebSocket 收到的事件，格式跟 webhook 事件一樣：
+
+```json
+{
+  &quot;event&quot;: &quot;meeting.started&quot;,
+  &quot;event_ts&quot;: 1706123456789,
+  &quot;payload&quot;: {
+    &quot;account_id&quot;: &quot;abcD3ojkdbjfg&quot;,
+    &quot;object&quot;: {
+      &quot;id&quot;: 1234567890,
+      &quot;uuid&quot;: &quot;abcdefgh-1234-5678-abcd-1234567890ab&quot;,
+      &quot;host_id&quot;: &quot;xyz789&quot;,
+      &quot;topic&quot;: &quot;Team Standup&quot;,
+      &quot;type&quot;: 2,
+      &quot;start_time&quot;: &quot;2024-01-25T10:00:00Z&quot;,
+      &quot;timezone&quot;: &quot;America/Los_Angeles&quot;
+    }
+  }
+}
+```
+
+## 常見事件
+
+| 事件 | 說明 |
+|-------|-------------|
+| `meeting.created` | 會議已排程 |
+| `meeting.updated` | 會議設定已變更 |
+| `meeting.deleted` | 會議已刪除 |
+| `meeting.started` | 會議開始 |
+| `meeting.ended` | 會議結束 |
+| `meeting.participant_joined` | 參與者加入會議 |
+| `meeting.participant_left` | 參與者離開會議 |
+| `recording.completed` | 雲端錄影已就緒 |
+| `user.created` | 新增使用者 |
+| `user.updated` | 使用者資料已變更 |
+
+## 連線管理
+
+### Keep-Alive
+
+WebSocket 連線需要定期 heartbeat。Zoom 會關閉閒置的連線。
+
+```javascript
+// 每 30 秒送一次 ping
+setInterval(() =&gt; {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.ping();
+  }
+}, 30000);
+```
+
+### 重新連線
+
+實作自動重新連線以提高可靠度：
+
+```javascript
+function connectWithReconnect() {
+  const ws = connectWebSocket();
+  
+  ws.on(&#x27;close&#x27;, () =&gt; {
+    console.log(&#x27;Connection lost. Reconnecting in 5 seconds...&#x27;);
+    setTimeout(connectWithReconnect, 5000);
+  });
+  
+  return ws;
+}
+```
+
+### 單一連線限制
+
+**重要：** 每個訂閱同一時間只能開一條 WebSocket 連線。開新的連線會把既有的那條關掉。
+
+## 詳細參考
+
+- **[references/connection.md](references/connection.md)** - 連線生命週期、驗證、錯誤處理
+- **[references/events.md](references/events.md)** - 完整的事件類型參考
+
+## 疑難排解
+
+- **[troubleshooting/common-issues.md](troubleshooting/common-issues.md)** - 訂閱 URL 搞混、斷線、收不到事件的除錯
+
+## 範例 Repo
+
+### 官方 / 社群
+
+| 類型 | Repository | 說明 |
+|------|------------|-------------|
+| Node.js | [just-zoomit/zoom-websockets](https://github.com/just-zoomit/zoom-websockets) | 搭配 S2S OAuth 的 WebSocket 範例 |
+
+## WebSockets vs RTMS
+
+不要把 WebSockets 跟 RTMS（Realtime Media Streams）搞混：
+
+| 功能 | WebSockets | RTMS |
+|---------|------------|------|
+| **目的** | 事件通知 | 媒體串流 |
+| **資料** | 會議事件、使用者事件 | 音訊、影像、逐字稿 |
+| **使用情境** | 回應 Zoom 事件 | AI/ML、即時轉錄 |
+| **Skill** | 這個 skill | **rtms** |
+
+需要即時音訊/影像/逐字稿資料時，改用 **rtms** skill。
+
+## 資源
+
+- **WebSockets 文件**：https://developers.zoom.us/docs/api/websockets/
+- **Webhooks 比較**：https://www.zoom.com/en/blog/a-guide-to-webhooks-and-websockets/
+- **開發者論壇**：https://devforum.zoom.us/
+
+## 環境變數
+
+- 標準化的 `.env` key，以及每個值要去哪裡找，請看 [references/environment-variables.md](references/environment-variables.md)。</pre></section><section><h2>英文原文</h2><pre>---
+name: setup-zoom-websockets
+description: Reference skill for Zoom WebSockets. Use after routing to a low-latency event workflow when persistent connections, faster event delivery, or security constraints make WebSockets preferable to webhooks.
+triggers:
+  - &quot;zoom websockets&quot;
+  - &quot;websocket event subscription&quot;
+  - &quot;persistent zoom events&quot;
+  - &quot;low latency zoom events&quot;
+  - &quot;zoom websocket connection&quot;
+---
+
+# /setup-zoom-websockets
+
+Background reference for persistent Zoom event streams. Prefer workflow routing first, then use this file when WebSockets are plausibly better than webhooks.
+
+## WebSockets vs Webhooks
+
+| Aspect | WebSockets | Webhooks |
+|--------|------------|----------|
+| **Connection** | Persistent, bidirectional | One-time HTTP POST |
+| **Latency** | Lower (no HTTP overhead) | Higher (new connection per event) |
+| **Security** | Direct connection, no exposed endpoint | Requires endpoint validation, IP whitelisting |
+| **Model** | Pull (you connect to Zoom) | Push (Zoom connects to you) |
+| **State** | Stateful (maintains connection) | Stateless (each event independent) |
+| **Setup** | More complex (access token, connection) | Simpler (just endpoint URL) |
+
+**Choose WebSockets when:**
+- Real-time, low-latency updates are critical
+- Security is paramount (banking, healthcare, finance)
+- You don&#x27;t want to expose a public endpoint
+- You need bidirectional communication
+
+**Choose Webhooks when:**
+- Simpler setup is preferred
+- Small number of event notifications
+- Existing HTTP infrastructure
+
+## Prerequisites
+
+- Server-to-Server OAuth app in [Zoom Marketplace](https://marketplace.zoom.us/)
+- Account ID, Client ID, and Client Secret
+- WebSocket subscription with events enabled
+
+&gt; **Need help with S2S OAuth?** See the **[zoom-oauth](../oauth/SKILL.md)** skill for complete authentication flows.
+
+&gt; **Start troubleshooting fast:** Use the **[5-Minute Runbook](RUNBOOK.md)** before deep debugging.
+
+## Quick Start
+
+### 1. Create Server-to-Server OAuth App
+
+1. Go to [Zoom Marketplace](https://marketplace.zoom.us/develop/create)
+2. Create a **Server-to-Server OAuth** app
+3. Copy Account ID, Client ID, Client Secret
+
+### 2. Enable WebSocket Subscription
+
+1. In your app, go to **Feature** → **Event Subscriptions**
+2. Add an Event Subscription
+3. Select **WebSockets** as the method type
+4. Select events to subscribe to (e.g., `meeting.created`, `meeting.started`)
+5. Save - an endpoint URL will be generated
+
+### 3. Connect via WebSocket
+
+```javascript
+const WebSocket = require(&#x27;ws&#x27;);
+const axios = require(&#x27;axios&#x27;);
+
+// Step 1: Get access token
+async function getAccessToken() {
+  const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString(&#x27;base64&#x27;);
+  
+  const response = await axios.post(
+    &#x27;https://zoom.us/oauth/token&#x27;,
+    new URLSearchParams({
+      grant_type: &#x27;account_credentials&#x27;,
+      account_id: ACCOUNT_ID
+    }),
+    {
+      headers: {
+        &#x27;Authorization&#x27;: `Basic ${credentials}`,
+        &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;
+      }
+    }
+  );
+  
+  return response.data.access_token;
+}
+
+// Step 2: Connect to WebSocket
+async function connectWebSocket() {
+  const accessToken = await getAccessToken();
+  
+  // WebSocket URL from your subscription settings
+  const wsUrl = `wss://ws.zoom.us/ws?subscriptionId=${SUBSCRIPTION_ID}&amp;access_token=${accessToken}`;
+  
+  const ws = new WebSocket(wsUrl);
+  
+  ws.on(&#x27;open&#x27;, () =&gt; {
+    console.log(&#x27;WebSocket connection established&#x27;);
+  });
+  
+  ws.on(&#x27;message&#x27;, (data) =&gt; {
+    const event = JSON.parse(data);
+    console.log(&#x27;Event received:&#x27;, event.event);
+    
+    // Handle different event types
+    switch (event.event) {
+      case &#x27;meeting.started&#x27;:
+        console.log(`Meeting started: ${event.payload.object.topic}`);
+        break;
+      case &#x27;meeting.ended&#x27;:
+        console.log(`Meeting ended: ${event.payload.object.uuid}`);
+        break;
+      case &#x27;meeting.participant_joined&#x27;:
+        console.log(`Participant joined: ${event.payload.object.participant.user_name}`);
+        break;
+    }
+  });
+  
+  ws.on(&#x27;close&#x27;, (code, reason) =&gt; {
+    console.log(`Connection closed: ${code} - ${reason}`);
+    // Implement reconnection logic
+  });
+  
+  ws.on(&#x27;error&#x27;, (error) =&gt; {
+    console.error(&#x27;WebSocket error:&#x27;, error);
+  });
+  
+  return ws;
+}
+
+connectWebSocket();
+```
+
+## Event Format
+
+Events received via WebSocket have the same format as webhook events:
+
+```json
+{
+  &quot;event&quot;: &quot;meeting.started&quot;,
+  &quot;event_ts&quot;: 1706123456789,
+  &quot;payload&quot;: {
+    &quot;account_id&quot;: &quot;abcD3ojkdbjfg&quot;,
+    &quot;object&quot;: {
+      &quot;id&quot;: 1234567890,
+      &quot;uuid&quot;: &quot;abcdefgh-1234-5678-abcd-1234567890ab&quot;,
+      &quot;host_id&quot;: &quot;xyz789&quot;,
+      &quot;topic&quot;: &quot;Team Standup&quot;,
+      &quot;type&quot;: 2,
+      &quot;start_time&quot;: &quot;2024-01-25T10:00:00Z&quot;,
+      &quot;timezone&quot;: &quot;America/Los_Angeles&quot;
+    }
+  }
+}
+```
+
+## Common Events
+
+| Event | Description |
+|-------|-------------|
+| `meeting.created` | Meeting scheduled |
+| `meeting.updated` | Meeting settings changed |
+| `meeting.deleted` | Meeting deleted |
+| `meeting.started` | Meeting begins |
+| `meeting.ended` | Meeting ends |
+| `meeting.participant_joined` | Participant joins meeting |
+| `meeting.participant_left` | Participant leaves meeting |
+| `recording.completed` | Cloud recording ready |
+| `user.created` | New user added |
+| `user.updated` | User details changed |
+
+## Connection Management
+
+### Keep-Alive
+
+WebSocket connections require periodic heartbeats. Zoom will close idle connections.
+
+```javascript
+// Send ping every 30 seconds
+setInterval(() =&gt; {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.ping();
+  }
+}, 30000);
+```
+
+### Reconnection
+
+Implement automatic reconnection for reliability:
+
+```javascript
+function connectWithReconnect() {
+  const ws = connectWebSocket();
+  
+  ws.on(&#x27;close&#x27;, () =&gt; {
+    console.log(&#x27;Connection lost. Reconnecting in 5 seconds...&#x27;);
+    setTimeout(connectWithReconnect, 5000);
+  });
+  
+  return ws;
+}
+```
+
+### Single Connection Limit
+
+**Important:** Only ONE WebSocket connection can be open per subscription at a time. Opening a new connection will close the existing one.
+
+## Detailed References
+
+- **[references/connection.md](references/connection.md)** - Connection lifecycle, authentication, error handling
+- **[references/events.md](references/events.md)** - Complete event types reference
+
+## Troubleshooting
+
+- **[troubleshooting/common-issues.md](troubleshooting/common-issues.md)** - Subscription URL confusion, disconnects, no-events debugging
+
+## Sample Repositories
+
+### Official / Community
+
+| Type | Repository | Description |
+|------|------------|-------------|
+| Node.js | [just-zoomit/zoom-websockets](https://github.com/just-zoomit/zoom-websockets) | WebSocket sample with S2S OAuth |
+
+## WebSockets vs RTMS
+
+Don&#x27;t confuse WebSockets with RTMS (Realtime Media Streams):
+
+| Feature | WebSockets | RTMS |
+|---------|------------|------|
+| **Purpose** | Event notifications | Media streams |
+| **Data** | Meeting events, user events | Audio, video, transcripts |
+| **Use case** | React to Zoom events | AI/ML, live transcription |
+| **Skill** | This skill | **rtms** |
+
+For real-time audio/video/transcript data, use the **rtms** skill instead.
+
+## Resources
+
+- **WebSockets docs**: https://developers.zoom.us/docs/api/websockets/
+- **Webhooks comparison**: https://www.zoom.com/en/blog/a-guide-to-webhooks-and-websockets/
+- **Developer forum**: https://devforum.zoom.us/
+
+## Environment Variables
+
+- See [references/environment-variables.md](references/environment-variables.md) for standardized `.env` keys and where to find each value.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

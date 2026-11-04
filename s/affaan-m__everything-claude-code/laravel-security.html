@@ -1,0 +1,1924 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laravel-security｜Skill 寫法圖鑑</title>
+<meta name="description" content="Laravel 安全實務：驗證授權、Eloquent、CSRF、XSS 與部署設定">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>laravel-security</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/laravel-security/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Laravel 安全實務：驗證授權、Eloquent、CSRF、XSS 與部署設定</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: laravel-security
+description: Laravel 安全最佳實務，涵蓋驗證、授權、Eloquent 安全、CSRF、XSS 防護、API 安全與安全的部署設定。在 review Laravel 的 auth、Eloquent 安全、CSRF、XSS、API 安全或部署設定時使用。
+metadata:
+  origin: ECC
+---
+
+# Laravel Security Best Practices
+
+Laravel 應用程式防範常見漏洞的完整安全準則。
+
+## 何時啟用
+
+- 設定 Laravel 的驗證與授權（Sanctum、Passport、Jetstream、Breeze）
+- 實作使用者角色、權限與 policy
+- 設定 production 的安全設定與環境變數
+- Review Laravel 應用程式的安全漏洞
+- 把 Laravel 應用程式部署到 production
+- 撰寫安全的 Eloquent 查詢與 migration
+
+## Production 設定
+
+### 必要的 Production 設定
+
+```php
+// config/app.php
+&#x27;env&#x27; =&gt; env(&#x27;APP_ENV&#x27;, &#x27;production&#x27;),
+&#x27;debug&#x27; =&gt; (bool) env(&#x27;APP_DEBUG&#x27;, false), // CRITICAL: Never true in production
+&#x27;key&#x27; =&gt; env(&#x27;APP_KEY&#x27;), // Must be set: php artisan key:generate
+
+// config/session.php
+&#x27;secure&#x27; =&gt; env(&#x27;SESSION_SECURE_COOKIE&#x27;, true),
+&#x27;http_only&#x27; =&gt; true,
+&#x27;same_site&#x27; =&gt; &#x27;lax&#x27;,
+
+// Verify APP_KEY is set at boot
+// bootstrap/app.php or a service provider
+if (empty(config(&#x27;app.key&#x27;))) {
+    throw new RuntimeException(&#x27;APP_KEY is not set. Run: php artisan key:generate&#x27;);
+}
+```
+
+### 環境檔安全
+
+```bash
+# NEVER commit .env to version control
+# .gitignore already includes .env by default
+
+# Use .env.example with placeholders instead
+DB_PASSWORD=
+APP_KEY=
+SANCTUM_TOKEN_PREFIX=
+
+# Validate required variables at boot
+// In AppServiceProvider::boot()
+$requiredKeys = [&#x27;app.key&#x27;, &#x27;database.connections.mysql.database&#x27;, &#x27;database.connections.mysql.username&#x27;];
+foreach ($requiredKeys as $key) {
+    if (empty(config($key))) {
+        throw new RuntimeException(&quot;Missing required config key: {$key}&quot;);
+    }
+}
+```
+
+### 強制 HTTPS
+
+```php
+// AppServiceProvider::boot() or middleware
+if (app()-&gt;environment(&#x27;production&#x27;)) {
+    URL::forceScheme(&#x27;https&#x27;);
+    request()-&gt;server-&gt;set(&#x27;HTTPS&#x27;, &#x27;on&#x27;);
+}
+
+// config/app.php for trusted proxies (load balancers)
+// Use specific IP ranges — * trusts all, allowing X-Forwarded-* spoofing
+// AWS: &#x27;10.0.0.0/8&#x27;, &#x27;172.16.0.0/12&#x27;, &#x27;192.168.0.0/16&#x27;
+&#x27;trusted_proxies&#x27; =&gt; [&#x27;10.0.0.0/8&#x27;, &#x27;172.16.0.0/12&#x27;],
+
+// Force HTTPS in production via middleware
+// app/Http/Middleware/ForceHttps.php
+public function handle($request, Closure $next)
+{
+    if (!$request-&gt;secure() &amp;&amp; app()-&gt;environment(&#x27;production&#x27;)) {
+        return redirect()-&gt;secure($request-&gt;getRequestUri());
+    }
+    return $next($request);
+}
+```
+
+## 驗證
+
+### Sanctum（API Token 驗證）
+
+```php
+// config/sanctum.php
+&#x27;stateful&#x27; =&gt; explode(&#x27;,&#x27;, env(&#x27;SANCTUM_STATEFUL_DOMAINS&#x27;, sprintf(
+    &#x27;%s%s&#x27;,
+    &#x27;localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1&#x27;,
+    env(&#x27;APP_URL&#x27;) ? &#x27;,&#x27; . parse_url(env(&#x27;APP_URL&#x27;), PHP_URL_HOST) : &#x27;&#x27;
+)));
+
+&#x27;expiration&#x27; =&gt; 60 * 24, // Token expiration in minutes (null = never)
+&#x27;token_prefix&#x27; =&gt; env(&#x27;SANCTUM_TOKEN_PREFIX&#x27;, &#x27;&#x27;),
+
+// Issuing tokens with abilities
+$token = $user-&gt;createToken(&#x27;api-token&#x27;, [&#x27;read&#x27;, &#x27;write&#x27;])-&gt;plainTextToken;
+
+// Validate abilities on routes
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::get(&#x27;/orders&#x27;, function () {
+        // User must have &#x27;read&#x27; ability
+        abort_unless(Auth::user()-&gt;tokenCan(&#x27;read&#x27;), 403);
+        // ...
+    })-&gt;middleware(&#x27;abilities:read&#x27;);
+
+    Route::post(&#x27;/orders&#x27;, function () {
+        // User must have &#x27;write&#x27; ability
+        abort_unless(Auth::user()-&gt;tokenCan(&#x27;write&#x27;), 403);
+        // ...
+    })-&gt;middleware(&#x27;abilities:write&#x27;);
+});
+```
+
+### 密碼安全
+
+```php
+// config/hashing.php
+// Default is bcrypt. Argon2id is stronger.
+&#x27;bcrypt&#x27; =&gt; [
+    &#x27;rounds&#x27; =&gt; env(&#x27;BCRYPT_ROUNDS&#x27;, 12), // Increase for stronger hashing
+],
+
+&#x27;argon&#x27; =&gt; [
+    &#x27;memory&#x27; =&gt; 65536,
+    &#x27;threads&#x27; =&gt; 4,
+    &#x27;time&#x27; =&gt; 4,
+],
+
+// Password validation in RegisterRequest
+public function rules(): array
+{
+    return [
+        &#x27;password&#x27; =&gt; [
+            &#x27;required&#x27;,
+            &#x27;confirmed&#x27;,
+            Password::min(12)
+                -&gt;letters()
+                -&gt;mixedCase()
+                -&gt;numbers()
+                -&gt;symbols()
+                -&gt;uncompromised(), // Checks haveibeenpwned
+        ],
+    ];
+}
+
+// Rate limit login attempts
+// App\Http\Controllers\Auth\AuthenticatedSessionController
+protected function authenticated(Request $request, $user)
+{
+    if ($user-&gt;wasRecentlyLockedOut()) {
+        // Notify user of suspicious login
+        $user-&gt;notify(new SuspiciousLoginNotification($request-&gt;ip()));
+    }
+}
+```
+
+### Session 管理
+
+```php
+// config/session.php
+&#x27;driver&#x27; =&gt; env(&#x27;SESSION_DRIVER&#x27;, &#x27;database&#x27;), // database/redis &gt; file
+&#x27;lifetime&#x27; =&gt; env(&#x27;SESSION_LIFETIME&#x27;, 120),
+&#x27;expire_on_close&#x27; =&gt; env(&#x27;SESSION_EXPIRE_ON_CLOSE&#x27;, false),
+&#x27;encrypt&#x27; =&gt; env(&#x27;SESSION_ENCRYPT&#x27;, false),
+
+// Regenerate session on login
+// App\Http\Controllers\Auth\AuthenticatedSessionController
+public function store(LoginRequest $request): RedirectResponse
+{
+    $request-&gt;authenticate();
+    $request-&gt;session()-&gt;regenerate(); // CRITICAL: prevents session fixation
+    return redirect()-&gt;intended(RouteServiceProvider::HOME);
+}
+
+// Invalidate session on logout
+public function destroy(Request $request): RedirectResponse
+{
+    Auth::guard(&#x27;web&#x27;)-&gt;logout();
+    $request-&gt;session()-&gt;invalidate();
+    $request-&gt;session()-&gt;regenerateToken();
+    return redirect(&#x27;/&#x27;);
+}
+```
+
+## 授權
+
+### Gate
+
+```php
+// App\Providers\AuthServiceProvider
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+
+public function boot(): void
+{
+    Gate::define(&#x27;update-post&#x27;, function (User $user, Post $post): bool {
+        return $user-&gt;id === $post-&gt;user_id;
+    });
+
+    Gate::define(&#x27;publish-post&#x27;, function (User $user): bool {
+        return $user-&gt;role === &#x27;editor&#x27; || $user-&gt;role === &#x27;admin&#x27;;
+    });
+
+    // Using before() for super-admin override
+    Gate::before(function (User $user, string $ability): ?bool {
+        if ($user-&gt;role === &#x27;super-admin&#x27;) {
+            return true; // Grants all abilities
+        }
+        return null; // Fall through to normal checks
+    });
+}
+
+// Usage in controllers
+public function update(Request $request, Post $post): RedirectResponse
+{
+    Gate::authorize(&#x27;update-post&#x27;, $post);
+    // Or: $this-&gt;authorize(&#x27;update-post&#x27;, $post);
+    // Or: abort_unless(Auth::user()-&gt;can(&#x27;update-post&#x27;, $post), 403);
+    // ...
+}
+```
+
+### Policy
+
+```php
+// App\Policies\PostPolicy
+class PostPolicy
+{
+    use HandlesAuthorization;
+
+    public function viewAny(?User $user): bool
+    {
+        return true; // Public listing
+    }
+
+    public function view(?User $user, Post $post): bool
+    {
+        return $post-&gt;is_published || ($user &amp;&amp; $user-&gt;id === $post-&gt;user_id);
+    }
+
+    public function create(User $user): bool
+    {
+        return $user-&gt;hasVerifiedEmail(); // Must verify email first
+    }
+
+    public function update(User $user, Post $post): bool
+    {
+        return $user-&gt;id === $post-&gt;user_id;
+    }
+
+    public function delete(User $user, Post $post): bool
+    {
+        return $user-&gt;id === $post-&gt;user_id &amp;&amp; $post-&gt;created_at-&gt;diffInDays(now()) &lt;= 30;
+    }
+
+    public function restore(User $user, Post $post): bool
+    {
+        return $user-&gt;role === &#x27;admin&#x27;;
+    }
+
+    public function forceDelete(User $user, Post $post): bool
+    {
+        return $user-&gt;role === &#x27;super-admin&#x27;;
+    }
+}
+
+// Register in AuthServiceProvider
+protected $policies = [
+    Post::class =&gt; PostPolicy::class,
+];
+
+// Controller usage
+public function show(Post $post): View
+{
+    $this-&gt;authorize(&#x27;view&#x27;, $post);
+    return view(&#x27;posts.show&#x27;, compact(&#x27;post&#x27;));
+}
+
+// Blade usage
+@can(&#x27;update&#x27;, $post)
+    &lt;a href=&quot;{{ route(&#x27;posts.edit&#x27;, $post) }}&quot;&gt;Edit&lt;/a&gt;
+@endcan
+
+@cannot(&#x27;update&#x27;, $post)
+    &lt;span&gt;You cannot edit this post&lt;/span&gt;
+@endcannot
+```
+
+### Middleware 授權
+
+```php
+// Using middleware in routes
+Route::put(&#x27;/posts/{post}&#x27;, [PostController::class, &#x27;update&#x27;])
+    -&gt;middleware(&#x27;can:update,post&#x27;);
+
+Route::get(&#x27;/posts/create&#x27;, [PostController::class, &#x27;create&#x27;])
+    -&gt;middleware(&#x27;can:create,App\Models\Post&#x27;);
+
+// Custom authorization middleware
+// app/Http/Middleware/CheckRole.php
+class CheckRole
+{
+    public function handle(Request $request, Closure $next, string $role): mixed
+    {
+        if (!$request-&gt;user() || $request-&gt;user()-&gt;role !== $role) {
+            abort(403, &#x27;Unauthorized. This area requires role: &#x27; . $role);
+        }
+        return $next($request);
+    }
+}
+
+// Register in Kernel
+protected $routeMiddleware = [
+    &#x27;role&#x27; =&gt; \App\Http\Middleware\CheckRole::class,
+];
+
+// Route usage
+Route::middleware([&#x27;auth&#x27;, &#x27;role:admin&#x27;])-&gt;group(function () {
+    Route::get(&#x27;/admin&#x27;, [AdminController::class, &#x27;index&#x27;]);
+});
+```
+
+## Eloquent 安全
+
+### Mass Assignment 防護
+
+```php
+// BAD: $guarded = [] allows ALL columns to be mass-assigned
+// NEVER use $guarded = [] in production
+
+// GOOD: Whitelist fillable attributes
+final class User extends Authenticatable
+{
+    protected $fillable = [
+        &#x27;name&#x27;,
+        &#x27;email&#x27;,
+        &#x27;phone&#x27;,
+        &#x27;avatar&#x27;,
+    ];
+    // NEVER add &#x27;role&#x27;, &#x27;is_admin&#x27;, &#x27;is_verified&#x27; here
+}
+
+// GOOD: Explicitly control which fields can be filled in requests
+public function store(StoreUserRequest $request): RedirectResponse
+{
+    $user = User::create($request-&gt;safe()-&gt;only([
+        &#x27;name&#x27;, &#x27;email&#x27;, &#x27;phone&#x27;, &#x27;avatar&#x27;
+    ]));
+    // $request-&gt;safe() uses validated data only
+    // $request-&gt;only() is NOT safe on its own without validation rules
+}
+
+// BAD: Creating a user with request data directly
+User::create($request-&gt;all()); // VULNERABLE to mass assignment!
+
+// BETTER: Use DTOs for creation
+$user = User::create($request-&gt;validated()); // Only validated fields
+```
+
+### 防範 SQL Injection
+
+```php
+// GOOD: Eloquent automatically parameterizes queries
+User::where(&#x27;email&#x27;, $userInput)-&gt;first();
+User::whereRaw(&#x27;email = ?&#x27;, [$userInput])-&gt;first();
+
+// GOOD: Query Builder also parameterizes
+DB::table(&#x27;users&#x27;)-&gt;where(&#x27;email&#x27;, $userInput)-&gt;first();
+DB::select(&#x27;SELECT * FROM users WHERE email = ?&#x27;, [$userInput]);
+
+// BAD: Raw string interpolation
+DB::select(&quot;SELECT * FROM users WHERE email = &#x27;{$userInput}&#x27;&quot;); // VULNERABLE!
+User::whereRaw(&quot;email = &#x27;{$userInput}&#x27;&quot;)-&gt;first(); // VULNERABLE!
+
+// BAD: whereRaw/orderByRaw with unescaped input
+User::orderByRaw($userInput); // VULNERABLE!
+User::groupByRaw($userInput); // VULNERABLE!
+
+// BAD: DB::statement with concatenation
+DB::statement(&quot;INSERT INTO users (email) VALUES (&#x27;{$userInput}&#x27;)&quot;); // VULNERABLE!
+```
+
+### 屬性 Cast
+
+```php
+final class User extends Authenticatable
+{
+    protected $casts = [
+        &#x27;email_verified_at&#x27; =&gt; &#x27;datetime&#x27;,
+        &#x27;is_admin&#x27; =&gt; &#x27;boolean&#x27;, // Cast to boolean prevents string injection
+        &#x27;settings&#x27; =&gt; &#x27;array&#x27;, // Automatically json_encode/json_decode
+        &#x27;metadata&#x27; =&gt; &#x27;encrypted:array&#x27;, // Laravel 11+ encrypted casting
+        &#x27;password&#x27; =&gt; &#x27;hashed&#x27;, // Laravel 10+ auto-hashes on set
+    ];
+}
+```
+
+### Model 安全
+
+```php
+final class User extends Authenticatable
+{
+    // Hide sensitive attributes from JSON/API responses
+    protected $hidden = [
+        &#x27;password&#x27;,
+        &#x27;remember_token&#x27;,
+        &#x27;two_factor_secret&#x27;,
+        &#x27;two_factor_recovery_codes&#x27;,
+    ];
+
+    // Append only safe computed attributes
+    protected $appends = [&#x27;full_name&#x27;]; // safe
+    // NEVER append sensitive computed data
+}
+
+final class Post extends Model
+{
+    // Global scope to filter soft deleted records
+    use SoftDeletes;
+
+    // Prevent N+1 by restricting lazy loading (optional strict mode)
+    // AppServiceProvider::boot()
+    // Model::preventLazyLoading(!app()-&gt;isProduction());
+}
+```
+
+## CSRF 防護
+
+### 預設防護
+
+```php
+// Laravel CSRF is enabled by default via VerifyCsrfToken middleware
+// app/Http/Kernel.php (protected $middlewareGroups[&#x27;web&#x27;])
+
+// All POST/PUT/PATCH/DELETE forms must include @csrf
+&lt;form method=&quot;POST&quot; action=&quot;/posts&quot;&gt;
+    @csrf
+    &lt;input type=&quot;text&quot; name=&quot;title&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+&lt;/form&gt;
+```
+
+### 排除路由（要很小心）
+
+```php
+// app/Http/Middleware/VerifyCsrfToken.php
+class VerifyCsrfToken extends Middleware
+{
+    // Only exclude routes that have external CSRF protection (webhooks, etc.)
+    protected $except = [
+        &#x27;stripe/*&#x27;, // Stripe webhooks use their own signature verification
+        // Avoid blanket &#x27;api/*&#x27; — stateful Sanctum routes need CSRF.
+        // Exclude only specific stateless webhook/endpoint routes.
+    ];
+}
+```
+
+### JavaScript 搭配 CSRF
+
+```html
+&lt;meta name=&quot;csrf-token&quot; content=&quot;{{ csrf_token() }}&quot;&gt;
+
+&lt;script&gt;
+// Axios example (Laravel ships with Axios)
+axios.defaults.headers.common[&#x27;X-CSRF-TOKEN&#x27;] = document.querySelector(
+    &#x27;meta[name=&quot;csrf-token&quot;]&#x27;
+).getAttribute(&#x27;content&#x27;);
+
+// Fetch example
+fetch(&#x27;/posts&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+        &#x27;X-CSRF-TOKEN&#x27;: document.querySelector(&#x27;meta[name=&quot;csrf-token&quot;]&#x27;).getAttribute(&#x27;content&#x27;),
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+    },
+    body: JSON.stringify(data),
+});
+&lt;/script&gt;
+```
+
+## 防範 XSS
+
+### Blade 模板安全
+
+```blade
+{{-- SAFE: Auto-escaped by Blade --}}
+{{ $userInput }}
+
+{{-- DANGEROUS: Raw output — NEVER use with user input --}}
+{!! $userInput !!}
+
+{{-- SAFE: Only use {!! !!} with trusted content you control --}}
+{!! $trustedHtmlFromYourServer !!}
+
+{{-- GOOD: Use specific escaping directives --}}
+@js($data) {{-- JSON encode for JavaScript --}}
+@json($data) {{-- JSON encode in templates --}}
+
+{{-- BAD: Direct user input in raw HTML --}}
+&lt;div&gt;{!! $user-&gt;bio !!}&lt;/div&gt; {{-- VULNERABLE if user provides bio --}}
+```
+
+### 安全地處理 HTML
+
+```php
+// When you must allow some HTML, use a whitelist approach
+use HTMLPurifier; // Requires: composer require ezyang/htmlpurifier
+
+public function sanitizeHtml(string $dirty): string
+{
+    $config = \HTMLPurifier_Config::createDefault();
+    $config-&gt;set(&#x27;HTML.Allowed&#x27;, &#x27;p,b,i,a[href],ul,ol,li,br&#x27;);
+    $config-&gt;set(&#x27;URI.AllowedSchemes&#x27;, [&#x27;http&#x27;, &#x27;https&#x27;, &#x27;mailto&#x27;]);
+    $purifier = new \HTMLPurifier($config);
+    return $purifier-&gt;purify($dirty);
+}
+
+// In blade:
+&lt;div&gt;{!! $sanitizedContent !!}&lt;/div&gt; {{-- Safe after purification --}}
+```
+
+### JavaScript 情境的跳脫
+
+```blade
+{{-- SAFE: Blade @js escapes for JavaScript context --}}
+&lt;script&gt;
+    const user = @js($user); // JSON + escaped for JS context
+    const settings = @json($settings); // Direct JSON encode
+&lt;/script&gt;
+
+{{-- DANGEROUS: Manual JSON in JS context --}}
+&lt;script&gt;
+    const user = {{ json_encode($user) }}; // NOT escaped for JS!
+&lt;/script&gt;
+```
+
+### 防 XSS 的 HTTP Header
+
+```php
+// App\Http\Middleware\SecurityHeaders.php
+class SecurityHeaders
+{
+    public function handle(Request $request, Closure $next): mixed
+    {
+        $response = $next($request);
+
+        $response-&gt;headers-&gt;set(&#x27;X-Content-Type-Options&#x27;, &#x27;nosniff&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;X-Frame-Options&#x27;, &#x27;DENY&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;X-XSS-Protection&#x27;, &#x27;1; mode=block&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;Referrer-Policy&#x27;, &#x27;strict-origin-when-cross-origin&#x27;);
+        $response-&gt;headers-&gt;set(
+            &#x27;Content-Security-Policy&#x27;,
+            &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; data: https:; font-src &#x27;self&#x27;; connect-src &#x27;self&#x27;; frame-ancestors &#x27;none&#x27;&quot;
+        );
+
+        return $response;
+    }
+}
+
+// Register in kernel
+protected $middleware = [
+    \App\Http\Middleware\SecurityHeaders::class,
+];
+```
+
+## 輸入驗證
+
+### Form Request 驗證
+
+```php
+final class StorePostRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this-&gt;user()?-&gt;can(&#x27;create&#x27;, Post::class) ?? false;
+    }
+
+    public function rules(): array
+    {
+        return [
+            &#x27;title&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:255&#x27;],
+            &#x27;content&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:10000&#x27;],
+            &#x27;image&#x27; =&gt; [
+                &#x27;required&#x27;,
+                &#x27;image&#x27;,
+                &#x27;mimes:jpg,jpeg,png,gif,webp&#x27;, // Whitelist specific types
+                &#x27;max:2048&#x27;, // 2MB max
+            ],
+            &#x27;tags&#x27; =&gt; [&#x27;array&#x27;],
+            &#x27;tags.*&#x27; =&gt; [&#x27;integer&#x27;, &#x27;exists:tags,id&#x27;],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            &#x27;title.max&#x27; =&gt; &#x27;Post title must not exceed 255 characters.&#x27;,
+            &#x27;image.max&#x27; =&gt; &#x27;Image must be under 2MB.&#x27;,
+        ];
+    }
+
+    // Sanitize input after validation
+    public function validated($key = null, $default = null): mixed
+    {
+        $validated = parent::validated();
+        $validated[&#x27;title&#x27;] = strip_tags($validated[&#x27;title&#x27;]);
+        return $key ? ($validated[$key] ?? $default) : $validated;
+    }
+}
+```
+
+### 自訂驗證規則
+
+```php
+// app/Rules/StrongPassword.php
+class StrongPassword implements Rule
+{
+    public function passes($attribute, $value): bool
+    {
+        return preg_match(&#x27;/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;#^()_\-+=])[A-Za-z\d@$!%*?&amp;#^()_\-+=]{12,}$/&#x27;, $value);
+    }
+
+    public function message(): string
+    {
+        return &#x27;The :attribute must be at least 12 characters with uppercase, lowercase, number, and symbol.&#x27;;
+    }
+}
+
+// app/Rules/NotBlacklistedDomain.php
+class NotBlacklistedDomain implements Rule
+{
+    private array $blacklisted = [&#x27;mailinator.com&#x27;, &#x27;guerrillamail.com&#x27;];
+
+    public function passes($attribute, $value): bool
+    {
+        $domain = substr(strrchr($value, &#x27;@&#x27;), 1);
+        return !in_array(strtolower($domain), $this-&gt;blacklisted);
+    }
+
+    public function message(): string
+    {
+        return &#x27;Email from disposable domains is not allowed.&#x27;;
+    }
+}
+```
+
+## API 安全
+
+### Rate Limiting
+
+```php
+// App/Providers/RouteServiceProvider
+protected function configureRateLimiting(): void
+{
+    RateLimiter::for(&#x27;api&#x27;, function (Request $request) {
+        return Limit::perMinute(60)-&gt;by($request-&gt;user()?-&gt;id ?: $request-&gt;ip());
+    });
+
+    RateLimiter::for(&#x27;auth&#x27;, function (Request $request) {
+        return Limit::perMinute(5)-&gt;by($request-&gt;ip())
+            -&gt;response(function () {
+                return response()-&gt;json([
+                    &#x27;message&#x27; =&gt; &#x27;Too many login attempts. Try again in 1 minute.&#x27;,
+                ], 429);
+            });
+    });
+
+    RateLimiter::for(&#x27;uploads&#x27;, function (Request $request) {
+        return Limit::perHour(10)-&gt;by($request-&gt;user()?-&gt;id ?? $request-&gt;ip())
+            -&gt;response(function () {
+                return response()-&gt;json([
+                    &#x27;message&#x27; =&gt; &#x27;Upload limit reached. Try again later.&#x27;,
+                ], 429);
+            });
+    });
+}
+
+// Route usage
+Route::middleware([&#x27;auth:sanctum&#x27;, &#x27;throttle:api&#x27;])-&gt;group(function () {
+    Route::apiResource(&#x27;posts&#x27;, PostController::class);
+});
+
+Route::post(&#x27;/login&#x27;, [AuthController::class, &#x27;login&#x27;])
+    -&gt;middleware(&#x27;throttle:auth&#x27;);
+```
+
+### API 驗證：Sanctum 與 Passport
+
+```php
+// Sanctum (recommended for most apps — simple, first-party, SPA)
+// config/sanctum.php
+&#x27;expiration&#x27; =&gt; 60 * 24, // Tokens expire after 24 hours
+&#x27;model&#x27; =&gt; User::class,
+
+// Issuing scoped tokens
+$token = $user-&gt;createToken(&#x27;client-name&#x27;, [
+    &#x27;posts:read&#x27;,
+    &#x27;posts:write&#x27;,
+])-&gt;plainTextToken;
+
+// Middleware scoping
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::get(&#x27;/posts&#x27;, [PostController::class, &#x27;index&#x27;])
+        -&gt;middleware(&#x27;abilities:posts:read&#x27;);
+
+    Route::post(&#x27;/posts&#x27;, [PostController::class, &#x27;store&#x27;])
+        -&gt;middleware(&#x27;abilities:posts:write&#x27;);
+});
+
+// Passport (OAuth2 — for third-party clients or complex auth flows)
+// Install: composer require laravel/passport
+Passport::tokensExpireIn(now()-&gt;addDays(15));
+Passport::refreshTokensExpireIn(now()-&gt;addDays(30));
+Passport::personalAccessTokensExpireIn(now()-&gt;addMonths(6));
+```
+
+### CORS 設定
+
+```php
+// config/cors.php
+return [
+    &#x27;paths&#x27; =&gt; [&#x27;api/*&#x27;, &#x27;sanctum/csrf-cookie&#x27;],
+    &#x27;allowed_methods&#x27; =&gt; [&#x27;*&#x27;],
+    &#x27;allowed_origins&#x27; =&gt; explode(&#x27;,&#x27;, env(&#x27;CORS_ALLOWED_ORIGINS&#x27;, &#x27;&#x27;)), // Whitelist specific origins
+    &#x27;allowed_origins_patterns&#x27; =&gt; [],
+    &#x27;allowed_headers&#x27; =&gt; [&#x27;*&#x27;],
+    &#x27;exposed_headers&#x27; =&gt; [&#x27;X-Total-Count&#x27;, &#x27;X-Pagination-Page&#x27;],
+    &#x27;max_age&#x27; =&gt; 0,
+    &#x27;supports_credentials&#x27; =&gt; true, // Required for Sanctum SPA auth
+];
+
+// NEVER: Allow all origins in production unless absolutely necessary
+// &#x27;allowed_origins&#x27; =&gt; [&#x27;*&#x27;], // Only for truly public APIs
+```
+
+## 檔案上傳安全
+
+### 驗證
+
+```php
+public function rules(): array
+{
+    return [
+        &#x27;document&#x27; =&gt; [
+            &#x27;required&#x27;,
+            &#x27;file&#x27;,
+            &#x27;mimes:pdf,doc,docx,xls,xlsx&#x27;, // Whitelist specific MIME types
+            &#x27;max:10240&#x27;, // 10MB
+            &#x27;extensions:pdf,doc,docx,xls,xlsx&#x27;, // Verify extension matches MIME
+        ],
+        &#x27;avatar&#x27; =&gt; [
+            &#x27;nullable&#x27;,
+            &#x27;image&#x27;, // Ensures it&#x27;s a valid image
+            &#x27;mimes:jpg,jpeg,png,webp&#x27;,
+            &#x27;max:2048&#x27;,
+            &#x27;dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000&#x27;,
+        ],
+    ];
+}
+```
+
+### 安全儲存
+
+```php
+// Store sensitive files on the same private disk used to create temporary URLs.
+$path = $request-&gt;file(&#x27;document&#x27;)-&gt;store(&#x27;documents&#x27;, &#x27;s3&#x27;);
+// Never use the &#x27;public&#x27; disk for sensitive documents.
+
+// Use signed URLs for temporary file access
+use Illuminate\Support\Facades\Storage;
+
+public function download(Document $document)
+{
+    // Requires route-model binding for Document, a persisted $document-&gt;path,
+    // and a DocumentPolicy::download rule registered with Laravel.
+    // Authorize against the model that owns the file, never a path taken from the request
+    $this-&gt;authorize(&#x27;download&#x27;, $document);
+
+    // Generate the temporary signed URL (expires in 15 minutes) only after authorization
+    $url = Storage::disk(&#x27;s3&#x27;)-&gt;temporaryUrl($document-&gt;path, now()-&gt;addMinutes(15));
+
+    return redirect($url);
+}
+
+// Storage configuration for cloud with encryption
+// config/filesystems.php
+&#x27;s3&#x27; =&gt; [
+    &#x27;driver&#x27; =&gt; &#x27;s3&#x27;,
+    &#x27;key&#x27; =&gt; env(&#x27;AWS_ACCESS_KEY_ID&#x27;),
+    &#x27;secret&#x27; =&gt; env(&#x27;AWS_SECRET_ACCESS_KEY&#x27;),
+    &#x27;region&#x27; =&gt; env(&#x27;AWS_DEFAULT_REGION&#x27;),
+    &#x27;bucket&#x27; =&gt; env(&#x27;AWS_BUCKET&#x27;),
+    &#x27;url&#x27; =&gt; env(&#x27;AWS_URL&#x27;),
+    &#x27;endpoint&#x27; =&gt; env(&#x27;AWS_ENDPOINT&#x27;),
+    &#x27;use_path_style_endpoint&#x27; =&gt; env(&#x27;AWS_USE_PATH_STYLE_ENDPOINT&#x27;, false),
+    &#x27;throw&#x27; =&gt; false,
+    &#x27;server_side_encryption&#x27; =&gt; &#x27;AES256&#x27;, // Encrypt at rest
+],
+```
+
+## 依賴與 Secret
+
+### Composer 安全
+
+```bash
+# Always audit dependencies in CI
+composer audit
+
+# Pin major versions in composer.json
+&quot;laravel/framework&quot;: &quot;^11.0&quot;,
+&quot;spatie/laravel-permission&quot;: &quot;^6.0&quot;
+
+# Check for abandoned packages
+composer why-not
+
+# Keep lock file in version control (it pins exact versions)
+# Run `composer update` deliberately, never in CI/CD
+```
+
+### Secret 管理
+
+```bash
+# .env file (NEVER commit)
+# .gitignore includes .env by default
+
+APP_KEY=base64:abc123...
+DB_PASSWORD=secure_password
+STRIPE_KEY=sk_live_...
+SANCTUM_TOKEN_PREFIX=myapp_
+
+# For production: Use a secret manager
+# Deploy with: env $(aws secretsmanager get-secret-value --secret-id prod/db | jq ...) php artisan serve
+
+# Validate secrets at boot (AppServiceProvider::boot)
+$secrets = [&#x27;services.stripe.key&#x27;, &#x27;services.stripe.webhook_secret&#x27;];
+foreach ($secrets as $key) {
+    if (empty(config($key))) {
+        Log::critical(&quot;Missing secret: {$key}&quot;);
+    }
+}
+```
+
+## Queue 安全
+
+```php
+// Define a named rate limiter (typically in AppServiceProvider::boot())
+RateLimiter::for(&#x27;payments&#x27;, fn () =&gt; Limit::perMinute(5));
+```
+
+```php
+// Encrypt sensitive job data by implementing the interface
+final class ProcessPaymentJob implements ShouldQueue, ShouldBeEncrypted
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function __construct(
+        private readonly string $paymentIntentId, // Public IDs are fine
+        private readonly string $cardFingerprint, // Encrypted via ShouldBeEncrypted
+    ) {}
+
+    public function handle(): void
+    {
+        // Process payment
+    }
+
+    // Limit retries and delay between attempts
+    public function retryUntil(): Carbon
+    {
+        return now()-&gt;addMinutes(5);
+    }
+
+    // Rate limit how many jobs of this type can run
+    public function middleware(): array
+    {
+        return [
+            new RateLimited(&#x27;payments&#x27;),
+        ];
+    }
+}
+```
+
+## 記錄安全事件
+
+```php
+// config/logging.php
+&#x27;channels&#x27; =&gt; [
+    &#x27;security&#x27; =&gt; [
+        &#x27;driver&#x27; =&gt; &#x27;single&#x27;,
+        &#x27;path&#x27; =&gt; storage_path(&#x27;logs/security.log&#x27;),
+        &#x27;level&#x27; =&gt; &#x27;warning&#x27;,
+    ],
+],
+
+// Audit log helper
+final class SecurityLogger
+{
+    public static function log(string $event, array $context = []): void
+    {
+        Log::channel(&#x27;security&#x27;)-&gt;warning($event, array_merge([
+            &#x27;user_id&#x27; =&gt; Auth::id(),
+            &#x27;ip&#x27; =&gt; request()-&gt;ip(),
+            &#x27;user_agent&#x27; =&gt; request()-&gt;userAgent(),
+            &#x27;url&#x27; =&gt; request()-&gt;fullUrl(),
+            &#x27;timestamp&#x27; =&gt; now()-&gt;toIso8601String(),
+        ], $context));
+    }
+}
+
+// Usage
+SecurityLogger::log(&#x27;failed_login_attempt&#x27;, [&#x27;email&#x27; =&gt; $email]);
+SecurityLogger::log(&#x27;password_change&#x27;);
+SecurityLogger::log(&#x27;role_change&#x27;, [&#x27;target_user&#x27; =&gt; $targetId, &#x27;new_role&#x27; =&gt; &#x27;admin&#x27;]);
+SecurityLogger::log(&#x27;suspicious_activity&#x27;, [&#x27;reason&#x27; =&gt; &#x27;multiple_attempts_from_different_ips&#x27;]);
+```
+
+## 安全檢查速查表
+
+| 檢查項目 | 說明 |
+|-------|-------------|
+| `APP_DEBUG=false` | production 絕對不要開 debug |
+| 已設定 `APP_KEY` | 一律執行 `php artisan key:generate` |
+| 強制 HTTPS | production 透過 middleware 或 proxy 強制 HTTPS |
+| `$fillable` 採白名單 | 絕對不要用 `$guarded = []` |
+| CSRF 已啟用 | 所有會改變狀態的表單都要 `@csrf` |
+| 已設定 Sanctum/Passport | API 驗證搭配 token ability/scope |
+| 已套用 rate limiting | 對 API 與 auth endpoint 做節流 |
+| 輸入驗證 | 用 FormRequest 搭配具體規則，絕對不要用 `$request-&gt;all()` |
+| 檔案上傳限制 | 驗證 MIME type、大小、尺寸 |
+| CI 跑 `composer audit` | 檢查依賴有沒有已知漏洞 |
+| `password_hash` / `password_verify` | 用 Laravel 內建的雜湊（bcrypt/Argon2） |
+| 登入時重新產生 session | 呼叫 `$request-&gt;session()-&gt;regenerate()` |
+| 安全 header middleware | CSP、X-Frame-Options、X-Content-Type-Options |
+| 記錄安全事件 | 為驗證失敗、角色變更、可疑活動留 audit log |
+| `.env` 沒被 commit | 確認 `.gitignore` 有包含 `.env` |
+
+## 相關 Skill
+
+- `laravel-patterns`：Laravel 架構、路由、Eloquent 與 API 模式
+- `backend-patterns`：通用的後端 API 與資料庫模式
+- `laravel-tdd`：用 PHPUnit 與 Pest 做 Laravel 測試</pre></section><section><h2>英文原文</h2><pre>---
+name: laravel-security
+description: Laravel security best practices — authentication, authorization, Eloquent safety, CSRF, XSS prevention, API security, and secure deployment configurations. Use when reviewing Laravel auth, Eloquent safety, CSRF, XSS, API security, or deployment configuration.
+metadata:
+  origin: ECC
+---
+
+# Laravel Security Best Practices
+
+Comprehensive security guidelines for Laravel applications to protect against common vulnerabilities.
+
+## When to Activate
+
+- Setting up Laravel authentication and authorization (Sanctum, Passport, Jetstream, Breeze)
+- Implementing user roles, permissions, and policies
+- Configuring production security settings and environment variables
+- Reviewing Laravel applications for security vulnerabilities
+- Deploying Laravel applications to production
+- Writing secure Eloquent queries and migrations
+
+## Production Configuration
+
+### Essential Production Settings
+
+```php
+// config/app.php
+&#x27;env&#x27; =&gt; env(&#x27;APP_ENV&#x27;, &#x27;production&#x27;),
+&#x27;debug&#x27; =&gt; (bool) env(&#x27;APP_DEBUG&#x27;, false), // CRITICAL: Never true in production
+&#x27;key&#x27; =&gt; env(&#x27;APP_KEY&#x27;), // Must be set: php artisan key:generate
+
+// config/session.php
+&#x27;secure&#x27; =&gt; env(&#x27;SESSION_SECURE_COOKIE&#x27;, true),
+&#x27;http_only&#x27; =&gt; true,
+&#x27;same_site&#x27; =&gt; &#x27;lax&#x27;,
+
+// Verify APP_KEY is set at boot
+// bootstrap/app.php or a service provider
+if (empty(config(&#x27;app.key&#x27;))) {
+    throw new RuntimeException(&#x27;APP_KEY is not set. Run: php artisan key:generate&#x27;);
+}
+```
+
+### Environment File Security
+
+```bash
+# NEVER commit .env to version control
+# .gitignore already includes .env by default
+
+# Use .env.example with placeholders instead
+DB_PASSWORD=
+APP_KEY=
+SANCTUM_TOKEN_PREFIX=
+
+# Validate required variables at boot
+// In AppServiceProvider::boot()
+$requiredKeys = [&#x27;app.key&#x27;, &#x27;database.connections.mysql.database&#x27;, &#x27;database.connections.mysql.username&#x27;];
+foreach ($requiredKeys as $key) {
+    if (empty(config($key))) {
+        throw new RuntimeException(&quot;Missing required config key: {$key}&quot;);
+    }
+}
+```
+
+### HTTPS Enforcement
+
+```php
+// AppServiceProvider::boot() or middleware
+if (app()-&gt;environment(&#x27;production&#x27;)) {
+    URL::forceScheme(&#x27;https&#x27;);
+    request()-&gt;server-&gt;set(&#x27;HTTPS&#x27;, &#x27;on&#x27;);
+}
+
+// config/app.php for trusted proxies (load balancers)
+// Use specific IP ranges — * trusts all, allowing X-Forwarded-* spoofing
+// AWS: &#x27;10.0.0.0/8&#x27;, &#x27;172.16.0.0/12&#x27;, &#x27;192.168.0.0/16&#x27;
+&#x27;trusted_proxies&#x27; =&gt; [&#x27;10.0.0.0/8&#x27;, &#x27;172.16.0.0/12&#x27;],
+
+// Force HTTPS in production via middleware
+// app/Http/Middleware/ForceHttps.php
+public function handle($request, Closure $next)
+{
+    if (!$request-&gt;secure() &amp;&amp; app()-&gt;environment(&#x27;production&#x27;)) {
+        return redirect()-&gt;secure($request-&gt;getRequestUri());
+    }
+    return $next($request);
+}
+```
+
+## Authentication
+
+### Sanctum (API Token Authentication)
+
+```php
+// config/sanctum.php
+&#x27;stateful&#x27; =&gt; explode(&#x27;,&#x27;, env(&#x27;SANCTUM_STATEFUL_DOMAINS&#x27;, sprintf(
+    &#x27;%s%s&#x27;,
+    &#x27;localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1&#x27;,
+    env(&#x27;APP_URL&#x27;) ? &#x27;,&#x27; . parse_url(env(&#x27;APP_URL&#x27;), PHP_URL_HOST) : &#x27;&#x27;
+)));
+
+&#x27;expiration&#x27; =&gt; 60 * 24, // Token expiration in minutes (null = never)
+&#x27;token_prefix&#x27; =&gt; env(&#x27;SANCTUM_TOKEN_PREFIX&#x27;, &#x27;&#x27;),
+
+// Issuing tokens with abilities
+$token = $user-&gt;createToken(&#x27;api-token&#x27;, [&#x27;read&#x27;, &#x27;write&#x27;])-&gt;plainTextToken;
+
+// Validate abilities on routes
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::get(&#x27;/orders&#x27;, function () {
+        // User must have &#x27;read&#x27; ability
+        abort_unless(Auth::user()-&gt;tokenCan(&#x27;read&#x27;), 403);
+        // ...
+    })-&gt;middleware(&#x27;abilities:read&#x27;);
+
+    Route::post(&#x27;/orders&#x27;, function () {
+        // User must have &#x27;write&#x27; ability
+        abort_unless(Auth::user()-&gt;tokenCan(&#x27;write&#x27;), 403);
+        // ...
+    })-&gt;middleware(&#x27;abilities:write&#x27;);
+});
+```
+
+### Password Security
+
+```php
+// config/hashing.php
+// Default is bcrypt. Argon2id is stronger.
+&#x27;bcrypt&#x27; =&gt; [
+    &#x27;rounds&#x27; =&gt; env(&#x27;BCRYPT_ROUNDS&#x27;, 12), // Increase for stronger hashing
+],
+
+&#x27;argon&#x27; =&gt; [
+    &#x27;memory&#x27; =&gt; 65536,
+    &#x27;threads&#x27; =&gt; 4,
+    &#x27;time&#x27; =&gt; 4,
+],
+
+// Password validation in RegisterRequest
+public function rules(): array
+{
+    return [
+        &#x27;password&#x27; =&gt; [
+            &#x27;required&#x27;,
+            &#x27;confirmed&#x27;,
+            Password::min(12)
+                -&gt;letters()
+                -&gt;mixedCase()
+                -&gt;numbers()
+                -&gt;symbols()
+                -&gt;uncompromised(), // Checks haveibeenpwned
+        ],
+    ];
+}
+
+// Rate limit login attempts
+// App\Http\Controllers\Auth\AuthenticatedSessionController
+protected function authenticated(Request $request, $user)
+{
+    if ($user-&gt;wasRecentlyLockedOut()) {
+        // Notify user of suspicious login
+        $user-&gt;notify(new SuspiciousLoginNotification($request-&gt;ip()));
+    }
+}
+```
+
+### Session Management
+
+```php
+// config/session.php
+&#x27;driver&#x27; =&gt; env(&#x27;SESSION_DRIVER&#x27;, &#x27;database&#x27;), // database/redis &gt; file
+&#x27;lifetime&#x27; =&gt; env(&#x27;SESSION_LIFETIME&#x27;, 120),
+&#x27;expire_on_close&#x27; =&gt; env(&#x27;SESSION_EXPIRE_ON_CLOSE&#x27;, false),
+&#x27;encrypt&#x27; =&gt; env(&#x27;SESSION_ENCRYPT&#x27;, false),
+
+// Regenerate session on login
+// App\Http\Controllers\Auth\AuthenticatedSessionController
+public function store(LoginRequest $request): RedirectResponse
+{
+    $request-&gt;authenticate();
+    $request-&gt;session()-&gt;regenerate(); // CRITICAL: prevents session fixation
+    return redirect()-&gt;intended(RouteServiceProvider::HOME);
+}
+
+// Invalidate session on logout
+public function destroy(Request $request): RedirectResponse
+{
+    Auth::guard(&#x27;web&#x27;)-&gt;logout();
+    $request-&gt;session()-&gt;invalidate();
+    $request-&gt;session()-&gt;regenerateToken();
+    return redirect(&#x27;/&#x27;);
+}
+```
+
+## Authorization
+
+### Gates
+
+```php
+// App\Providers\AuthServiceProvider
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+
+public function boot(): void
+{
+    Gate::define(&#x27;update-post&#x27;, function (User $user, Post $post): bool {
+        return $user-&gt;id === $post-&gt;user_id;
+    });
+
+    Gate::define(&#x27;publish-post&#x27;, function (User $user): bool {
+        return $user-&gt;role === &#x27;editor&#x27; || $user-&gt;role === &#x27;admin&#x27;;
+    });
+
+    // Using before() for super-admin override
+    Gate::before(function (User $user, string $ability): ?bool {
+        if ($user-&gt;role === &#x27;super-admin&#x27;) {
+            return true; // Grants all abilities
+        }
+        return null; // Fall through to normal checks
+    });
+}
+
+// Usage in controllers
+public function update(Request $request, Post $post): RedirectResponse
+{
+    Gate::authorize(&#x27;update-post&#x27;, $post);
+    // Or: $this-&gt;authorize(&#x27;update-post&#x27;, $post);
+    // Or: abort_unless(Auth::user()-&gt;can(&#x27;update-post&#x27;, $post), 403);
+    // ...
+}
+```
+
+### Policies
+
+```php
+// App\Policies\PostPolicy
+class PostPolicy
+{
+    use HandlesAuthorization;
+
+    public function viewAny(?User $user): bool
+    {
+        return true; // Public listing
+    }
+
+    public function view(?User $user, Post $post): bool
+    {
+        return $post-&gt;is_published || ($user &amp;&amp; $user-&gt;id === $post-&gt;user_id);
+    }
+
+    public function create(User $user): bool
+    {
+        return $user-&gt;hasVerifiedEmail(); // Must verify email first
+    }
+
+    public function update(User $user, Post $post): bool
+    {
+        return $user-&gt;id === $post-&gt;user_id;
+    }
+
+    public function delete(User $user, Post $post): bool
+    {
+        return $user-&gt;id === $post-&gt;user_id &amp;&amp; $post-&gt;created_at-&gt;diffInDays(now()) &lt;= 30;
+    }
+
+    public function restore(User $user, Post $post): bool
+    {
+        return $user-&gt;role === &#x27;admin&#x27;;
+    }
+
+    public function forceDelete(User $user, Post $post): bool
+    {
+        return $user-&gt;role === &#x27;super-admin&#x27;;
+    }
+}
+
+// Register in AuthServiceProvider
+protected $policies = [
+    Post::class =&gt; PostPolicy::class,
+];
+
+// Controller usage
+public function show(Post $post): View
+{
+    $this-&gt;authorize(&#x27;view&#x27;, $post);
+    return view(&#x27;posts.show&#x27;, compact(&#x27;post&#x27;));
+}
+
+// Blade usage
+@can(&#x27;update&#x27;, $post)
+    &lt;a href=&quot;{{ route(&#x27;posts.edit&#x27;, $post) }}&quot;&gt;Edit&lt;/a&gt;
+@endcan
+
+@cannot(&#x27;update&#x27;, $post)
+    &lt;span&gt;You cannot edit this post&lt;/span&gt;
+@endcannot
+```
+
+### Middleware Authorization
+
+```php
+// Using middleware in routes
+Route::put(&#x27;/posts/{post}&#x27;, [PostController::class, &#x27;update&#x27;])
+    -&gt;middleware(&#x27;can:update,post&#x27;);
+
+Route::get(&#x27;/posts/create&#x27;, [PostController::class, &#x27;create&#x27;])
+    -&gt;middleware(&#x27;can:create,App\Models\Post&#x27;);
+
+// Custom authorization middleware
+// app/Http/Middleware/CheckRole.php
+class CheckRole
+{
+    public function handle(Request $request, Closure $next, string $role): mixed
+    {
+        if (!$request-&gt;user() || $request-&gt;user()-&gt;role !== $role) {
+            abort(403, &#x27;Unauthorized. This area requires role: &#x27; . $role);
+        }
+        return $next($request);
+    }
+}
+
+// Register in Kernel
+protected $routeMiddleware = [
+    &#x27;role&#x27; =&gt; \App\Http\Middleware\CheckRole::class,
+];
+
+// Route usage
+Route::middleware([&#x27;auth&#x27;, &#x27;role:admin&#x27;])-&gt;group(function () {
+    Route::get(&#x27;/admin&#x27;, [AdminController::class, &#x27;index&#x27;]);
+});
+```
+
+## Eloquent Security
+
+### Mass Assignment Protection
+
+```php
+// BAD: $guarded = [] allows ALL columns to be mass-assigned
+// NEVER use $guarded = [] in production
+
+// GOOD: Whitelist fillable attributes
+final class User extends Authenticatable
+{
+    protected $fillable = [
+        &#x27;name&#x27;,
+        &#x27;email&#x27;,
+        &#x27;phone&#x27;,
+        &#x27;avatar&#x27;,
+    ];
+    // NEVER add &#x27;role&#x27;, &#x27;is_admin&#x27;, &#x27;is_verified&#x27; here
+}
+
+// GOOD: Explicitly control which fields can be filled in requests
+public function store(StoreUserRequest $request): RedirectResponse
+{
+    $user = User::create($request-&gt;safe()-&gt;only([
+        &#x27;name&#x27;, &#x27;email&#x27;, &#x27;phone&#x27;, &#x27;avatar&#x27;
+    ]));
+    // $request-&gt;safe() uses validated data only
+    // $request-&gt;only() is NOT safe on its own without validation rules
+}
+
+// BAD: Creating a user with request data directly
+User::create($request-&gt;all()); // VULNERABLE to mass assignment!
+
+// BETTER: Use DTOs for creation
+$user = User::create($request-&gt;validated()); // Only validated fields
+```
+
+### SQL Injection Prevention
+
+```php
+// GOOD: Eloquent automatically parameterizes queries
+User::where(&#x27;email&#x27;, $userInput)-&gt;first();
+User::whereRaw(&#x27;email = ?&#x27;, [$userInput])-&gt;first();
+
+// GOOD: Query Builder also parameterizes
+DB::table(&#x27;users&#x27;)-&gt;where(&#x27;email&#x27;, $userInput)-&gt;first();
+DB::select(&#x27;SELECT * FROM users WHERE email = ?&#x27;, [$userInput]);
+
+// BAD: Raw string interpolation
+DB::select(&quot;SELECT * FROM users WHERE email = &#x27;{$userInput}&#x27;&quot;); // VULNERABLE!
+User::whereRaw(&quot;email = &#x27;{$userInput}&#x27;&quot;)-&gt;first(); // VULNERABLE!
+
+// BAD: whereRaw/orderByRaw with unescaped input
+User::orderByRaw($userInput); // VULNERABLE!
+User::groupByRaw($userInput); // VULNERABLE!
+
+// BAD: DB::statement with concatenation
+DB::statement(&quot;INSERT INTO users (email) VALUES (&#x27;{$userInput}&#x27;)&quot;); // VULNERABLE!
+```
+
+### Attribute Casting
+
+```php
+final class User extends Authenticatable
+{
+    protected $casts = [
+        &#x27;email_verified_at&#x27; =&gt; &#x27;datetime&#x27;,
+        &#x27;is_admin&#x27; =&gt; &#x27;boolean&#x27;, // Cast to boolean prevents string injection
+        &#x27;settings&#x27; =&gt; &#x27;array&#x27;, // Automatically json_encode/json_decode
+        &#x27;metadata&#x27; =&gt; &#x27;encrypted:array&#x27;, // Laravel 11+ encrypted casting
+        &#x27;password&#x27; =&gt; &#x27;hashed&#x27;, // Laravel 10+ auto-hashes on set
+    ];
+}
+```
+
+### Model Security
+
+```php
+final class User extends Authenticatable
+{
+    // Hide sensitive attributes from JSON/API responses
+    protected $hidden = [
+        &#x27;password&#x27;,
+        &#x27;remember_token&#x27;,
+        &#x27;two_factor_secret&#x27;,
+        &#x27;two_factor_recovery_codes&#x27;,
+    ];
+
+    // Append only safe computed attributes
+    protected $appends = [&#x27;full_name&#x27;]; // safe
+    // NEVER append sensitive computed data
+}
+
+final class Post extends Model
+{
+    // Global scope to filter soft deleted records
+    use SoftDeletes;
+
+    // Prevent N+1 by restricting lazy loading (optional strict mode)
+    // AppServiceProvider::boot()
+    // Model::preventLazyLoading(!app()-&gt;isProduction());
+}
+```
+
+## CSRF Protection
+
+### Default Protection
+
+```php
+// Laravel CSRF is enabled by default via VerifyCsrfToken middleware
+// app/Http/Kernel.php (protected $middlewareGroups[&#x27;web&#x27;])
+
+// All POST/PUT/PATCH/DELETE forms must include @csrf
+&lt;form method=&quot;POST&quot; action=&quot;/posts&quot;&gt;
+    @csrf
+    &lt;input type=&quot;text&quot; name=&quot;title&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+&lt;/form&gt;
+```
+
+### Excluding Routes (Carefully)
+
+```php
+// app/Http/Middleware/VerifyCsrfToken.php
+class VerifyCsrfToken extends Middleware
+{
+    // Only exclude routes that have external CSRF protection (webhooks, etc.)
+    protected $except = [
+        &#x27;stripe/*&#x27;, // Stripe webhooks use their own signature verification
+        // Avoid blanket &#x27;api/*&#x27; — stateful Sanctum routes need CSRF.
+        // Exclude only specific stateless webhook/endpoint routes.
+    ];
+}
+```
+
+### CSRF with JavaScript
+
+```html
+&lt;meta name=&quot;csrf-token&quot; content=&quot;{{ csrf_token() }}&quot;&gt;
+
+&lt;script&gt;
+// Axios example (Laravel ships with Axios)
+axios.defaults.headers.common[&#x27;X-CSRF-TOKEN&#x27;] = document.querySelector(
+    &#x27;meta[name=&quot;csrf-token&quot;]&#x27;
+).getAttribute(&#x27;content&#x27;);
+
+// Fetch example
+fetch(&#x27;/posts&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+        &#x27;X-CSRF-TOKEN&#x27;: document.querySelector(&#x27;meta[name=&quot;csrf-token&quot;]&#x27;).getAttribute(&#x27;content&#x27;),
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+    },
+    body: JSON.stringify(data),
+});
+&lt;/script&gt;
+```
+
+## XSS Prevention
+
+### Blade Templating Security
+
+```blade
+{{-- SAFE: Auto-escaped by Blade --}}
+{{ $userInput }}
+
+{{-- DANGEROUS: Raw output — NEVER use with user input --}}
+{!! $userInput !!}
+
+{{-- SAFE: Only use {!! !!} with trusted content you control --}}
+{!! $trustedHtmlFromYourServer !!}
+
+{{-- GOOD: Use specific escaping directives --}}
+@js($data) {{-- JSON encode for JavaScript --}}
+@json($data) {{-- JSON encode in templates --}}
+
+{{-- BAD: Direct user input in raw HTML --}}
+&lt;div&gt;{!! $user-&gt;bio !!}&lt;/div&gt; {{-- VULNERABLE if user provides bio --}}
+```
+
+### Safe HTML Handling
+
+```php
+// When you must allow some HTML, use a whitelist approach
+use HTMLPurifier; // Requires: composer require ezyang/htmlpurifier
+
+public function sanitizeHtml(string $dirty): string
+{
+    $config = \HTMLPurifier_Config::createDefault();
+    $config-&gt;set(&#x27;HTML.Allowed&#x27;, &#x27;p,b,i,a[href],ul,ol,li,br&#x27;);
+    $config-&gt;set(&#x27;URI.AllowedSchemes&#x27;, [&#x27;http&#x27;, &#x27;https&#x27;, &#x27;mailto&#x27;]);
+    $purifier = new \HTMLPurifier($config);
+    return $purifier-&gt;purify($dirty);
+}
+
+// In blade:
+&lt;div&gt;{!! $sanitizedContent !!}&lt;/div&gt; {{-- Safe after purification --}}
+```
+
+### JavaScript Context Escaping
+
+```blade
+{{-- SAFE: Blade @js escapes for JavaScript context --}}
+&lt;script&gt;
+    const user = @js($user); // JSON + escaped for JS context
+    const settings = @json($settings); // Direct JSON encode
+&lt;/script&gt;
+
+{{-- DANGEROUS: Manual JSON in JS context --}}
+&lt;script&gt;
+    const user = {{ json_encode($user) }}; // NOT escaped for JS!
+&lt;/script&gt;
+```
+
+### HTTP Headers for XSS Protection
+
+```php
+// App\Http\Middleware\SecurityHeaders.php
+class SecurityHeaders
+{
+    public function handle(Request $request, Closure $next): mixed
+    {
+        $response = $next($request);
+
+        $response-&gt;headers-&gt;set(&#x27;X-Content-Type-Options&#x27;, &#x27;nosniff&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;X-Frame-Options&#x27;, &#x27;DENY&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;X-XSS-Protection&#x27;, &#x27;1; mode=block&#x27;);
+        $response-&gt;headers-&gt;set(&#x27;Referrer-Policy&#x27;, &#x27;strict-origin-when-cross-origin&#x27;);
+        $response-&gt;headers-&gt;set(
+            &#x27;Content-Security-Policy&#x27;,
+            &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; data: https:; font-src &#x27;self&#x27;; connect-src &#x27;self&#x27;; frame-ancestors &#x27;none&#x27;&quot;
+        );
+
+        return $response;
+    }
+}
+
+// Register in kernel
+protected $middleware = [
+    \App\Http\Middleware\SecurityHeaders::class,
+];
+```
+
+## Input Validation
+
+### Form Request Validation
+
+```php
+final class StorePostRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this-&gt;user()?-&gt;can(&#x27;create&#x27;, Post::class) ?? false;
+    }
+
+    public function rules(): array
+    {
+        return [
+            &#x27;title&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:255&#x27;],
+            &#x27;content&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:10000&#x27;],
+            &#x27;image&#x27; =&gt; [
+                &#x27;required&#x27;,
+                &#x27;image&#x27;,
+                &#x27;mimes:jpg,jpeg,png,gif,webp&#x27;, // Whitelist specific types
+                &#x27;max:2048&#x27;, // 2MB max
+            ],
+            &#x27;tags&#x27; =&gt; [&#x27;array&#x27;],
+            &#x27;tags.*&#x27; =&gt; [&#x27;integer&#x27;, &#x27;exists:tags,id&#x27;],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            &#x27;title.max&#x27; =&gt; &#x27;Post title must not exceed 255 characters.&#x27;,
+            &#x27;image.max&#x27; =&gt; &#x27;Image must be under 2MB.&#x27;,
+        ];
+    }
+
+    // Sanitize input after validation
+    public function validated($key = null, $default = null): mixed
+    {
+        $validated = parent::validated();
+        $validated[&#x27;title&#x27;] = strip_tags($validated[&#x27;title&#x27;]);
+        return $key ? ($validated[$key] ?? $default) : $validated;
+    }
+}
+```
+
+### Custom Validation Rules
+
+```php
+// app/Rules/StrongPassword.php
+class StrongPassword implements Rule
+{
+    public function passes($attribute, $value): bool
+    {
+        return preg_match(&#x27;/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;#^()_\-+=])[A-Za-z\d@$!%*?&amp;#^()_\-+=]{12,}$/&#x27;, $value);
+    }
+
+    public function message(): string
+    {
+        return &#x27;The :attribute must be at least 12 characters with uppercase, lowercase, number, and symbol.&#x27;;
+    }
+}
+
+// app/Rules/NotBlacklistedDomain.php
+class NotBlacklistedDomain implements Rule
+{
+    private array $blacklisted = [&#x27;mailinator.com&#x27;, &#x27;guerrillamail.com&#x27;];
+
+    public function passes($attribute, $value): bool
+    {
+        $domain = substr(strrchr($value, &#x27;@&#x27;), 1);
+        return !in_array(strtolower($domain), $this-&gt;blacklisted);
+    }
+
+    public function message(): string
+    {
+        return &#x27;Email from disposable domains is not allowed.&#x27;;
+    }
+}
+```
+
+## API Security
+
+### Rate Limiting
+
+```php
+// App/Providers/RouteServiceProvider
+protected function configureRateLimiting(): void
+{
+    RateLimiter::for(&#x27;api&#x27;, function (Request $request) {
+        return Limit::perMinute(60)-&gt;by($request-&gt;user()?-&gt;id ?: $request-&gt;ip());
+    });
+
+    RateLimiter::for(&#x27;auth&#x27;, function (Request $request) {
+        return Limit::perMinute(5)-&gt;by($request-&gt;ip())
+            -&gt;response(function () {
+                return response()-&gt;json([
+                    &#x27;message&#x27; =&gt; &#x27;Too many login attempts. Try again in 1 minute.&#x27;,
+                ], 429);
+            });
+    });
+
+    RateLimiter::for(&#x27;uploads&#x27;, function (Request $request) {
+        return Limit::perHour(10)-&gt;by($request-&gt;user()?-&gt;id ?? $request-&gt;ip())
+            -&gt;response(function () {
+                return response()-&gt;json([
+                    &#x27;message&#x27; =&gt; &#x27;Upload limit reached. Try again later.&#x27;,
+                ], 429);
+            });
+    });
+}
+
+// Route usage
+Route::middleware([&#x27;auth:sanctum&#x27;, &#x27;throttle:api&#x27;])-&gt;group(function () {
+    Route::apiResource(&#x27;posts&#x27;, PostController::class);
+});
+
+Route::post(&#x27;/login&#x27;, [AuthController::class, &#x27;login&#x27;])
+    -&gt;middleware(&#x27;throttle:auth&#x27;);
+```
+
+### API Authentication — Sanctum vs Passport
+
+```php
+// Sanctum (recommended for most apps — simple, first-party, SPA)
+// config/sanctum.php
+&#x27;expiration&#x27; =&gt; 60 * 24, // Tokens expire after 24 hours
+&#x27;model&#x27; =&gt; User::class,
+
+// Issuing scoped tokens
+$token = $user-&gt;createToken(&#x27;client-name&#x27;, [
+    &#x27;posts:read&#x27;,
+    &#x27;posts:write&#x27;,
+])-&gt;plainTextToken;
+
+// Middleware scoping
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::get(&#x27;/posts&#x27;, [PostController::class, &#x27;index&#x27;])
+        -&gt;middleware(&#x27;abilities:posts:read&#x27;);
+
+    Route::post(&#x27;/posts&#x27;, [PostController::class, &#x27;store&#x27;])
+        -&gt;middleware(&#x27;abilities:posts:write&#x27;);
+});
+
+// Passport (OAuth2 — for third-party clients or complex auth flows)
+// Install: composer require laravel/passport
+Passport::tokensExpireIn(now()-&gt;addDays(15));
+Passport::refreshTokensExpireIn(now()-&gt;addDays(30));
+Passport::personalAccessTokensExpireIn(now()-&gt;addMonths(6));
+```
+
+### CORS Configuration
+
+```php
+// config/cors.php
+return [
+    &#x27;paths&#x27; =&gt; [&#x27;api/*&#x27;, &#x27;sanctum/csrf-cookie&#x27;],
+    &#x27;allowed_methods&#x27; =&gt; [&#x27;*&#x27;],
+    &#x27;allowed_origins&#x27; =&gt; explode(&#x27;,&#x27;, env(&#x27;CORS_ALLOWED_ORIGINS&#x27;, &#x27;&#x27;)), // Whitelist specific origins
+    &#x27;allowed_origins_patterns&#x27; =&gt; [],
+    &#x27;allowed_headers&#x27; =&gt; [&#x27;*&#x27;],
+    &#x27;exposed_headers&#x27; =&gt; [&#x27;X-Total-Count&#x27;, &#x27;X-Pagination-Page&#x27;],
+    &#x27;max_age&#x27; =&gt; 0,
+    &#x27;supports_credentials&#x27; =&gt; true, // Required for Sanctum SPA auth
+];
+
+// NEVER: Allow all origins in production unless absolutely necessary
+// &#x27;allowed_origins&#x27; =&gt; [&#x27;*&#x27;], // Only for truly public APIs
+```
+
+## File Upload Security
+
+### Validation
+
+```php
+public function rules(): array
+{
+    return [
+        &#x27;document&#x27; =&gt; [
+            &#x27;required&#x27;,
+            &#x27;file&#x27;,
+            &#x27;mimes:pdf,doc,docx,xls,xlsx&#x27;, // Whitelist specific MIME types
+            &#x27;max:10240&#x27;, // 10MB
+            &#x27;extensions:pdf,doc,docx,xls,xlsx&#x27;, // Verify extension matches MIME
+        ],
+        &#x27;avatar&#x27; =&gt; [
+            &#x27;nullable&#x27;,
+            &#x27;image&#x27;, // Ensures it&#x27;s a valid image
+            &#x27;mimes:jpg,jpeg,png,webp&#x27;,
+            &#x27;max:2048&#x27;,
+            &#x27;dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000&#x27;,
+        ],
+    ];
+}
+```
+
+### Secure Storage
+
+```php
+// Store sensitive files on the same private disk used to create temporary URLs.
+$path = $request-&gt;file(&#x27;document&#x27;)-&gt;store(&#x27;documents&#x27;, &#x27;s3&#x27;);
+// Never use the &#x27;public&#x27; disk for sensitive documents.
+
+// Use signed URLs for temporary file access
+use Illuminate\Support\Facades\Storage;
+
+public function download(Document $document)
+{
+    // Requires route-model binding for Document, a persisted $document-&gt;path,
+    // and a DocumentPolicy::download rule registered with Laravel.
+    // Authorize against the model that owns the file, never a path taken from the request
+    $this-&gt;authorize(&#x27;download&#x27;, $document);
+
+    // Generate the temporary signed URL (expires in 15 minutes) only after authorization
+    $url = Storage::disk(&#x27;s3&#x27;)-&gt;temporaryUrl($document-&gt;path, now()-&gt;addMinutes(15));
+
+    return redirect($url);
+}
+
+// Storage configuration for cloud with encryption
+// config/filesystems.php
+&#x27;s3&#x27; =&gt; [
+    &#x27;driver&#x27; =&gt; &#x27;s3&#x27;,
+    &#x27;key&#x27; =&gt; env(&#x27;AWS_ACCESS_KEY_ID&#x27;),
+    &#x27;secret&#x27; =&gt; env(&#x27;AWS_SECRET_ACCESS_KEY&#x27;),
+    &#x27;region&#x27; =&gt; env(&#x27;AWS_DEFAULT_REGION&#x27;),
+    &#x27;bucket&#x27; =&gt; env(&#x27;AWS_BUCKET&#x27;),
+    &#x27;url&#x27; =&gt; env(&#x27;AWS_URL&#x27;),
+    &#x27;endpoint&#x27; =&gt; env(&#x27;AWS_ENDPOINT&#x27;),
+    &#x27;use_path_style_endpoint&#x27; =&gt; env(&#x27;AWS_USE_PATH_STYLE_ENDPOINT&#x27;, false),
+    &#x27;throw&#x27; =&gt; false,
+    &#x27;server_side_encryption&#x27; =&gt; &#x27;AES256&#x27;, // Encrypt at rest
+],
+```
+
+## Dependencies and Secrets
+
+### Composer Security
+
+```bash
+# Always audit dependencies in CI
+composer audit
+
+# Pin major versions in composer.json
+&quot;laravel/framework&quot;: &quot;^11.0&quot;,
+&quot;spatie/laravel-permission&quot;: &quot;^6.0&quot;
+
+# Check for abandoned packages
+composer why-not
+
+# Keep lock file in version control (it pins exact versions)
+# Run `composer update` deliberately, never in CI/CD
+```
+
+### Secret Management
+
+```bash
+# .env file (NEVER commit)
+# .gitignore includes .env by default
+
+APP_KEY=base64:abc123...
+DB_PASSWORD=secure_password
+STRIPE_KEY=sk_live_...
+SANCTUM_TOKEN_PREFIX=myapp_
+
+# For production: Use a secret manager
+# Deploy with: env $(aws secretsmanager get-secret-value --secret-id prod/db | jq ...) php artisan serve
+
+# Validate secrets at boot (AppServiceProvider::boot)
+$secrets = [&#x27;services.stripe.key&#x27;, &#x27;services.stripe.webhook_secret&#x27;];
+foreach ($secrets as $key) {
+    if (empty(config($key))) {
+        Log::critical(&quot;Missing secret: {$key}&quot;);
+    }
+}
+```
+
+## Queue Security
+
+```php
+// Define a named rate limiter (typically in AppServiceProvider::boot())
+RateLimiter::for(&#x27;payments&#x27;, fn () =&gt; Limit::perMinute(5));
+```
+
+```php
+// Encrypt sensitive job data by implementing the interface
+final class ProcessPaymentJob implements ShouldQueue, ShouldBeEncrypted
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function __construct(
+        private readonly string $paymentIntentId, // Public IDs are fine
+        private readonly string $cardFingerprint, // Encrypted via ShouldBeEncrypted
+    ) {}
+
+    public function handle(): void
+    {
+        // Process payment
+    }
+
+    // Limit retries and delay between attempts
+    public function retryUntil(): Carbon
+    {
+        return now()-&gt;addMinutes(5);
+    }
+
+    // Rate limit how many jobs of this type can run
+    public function middleware(): array
+    {
+        return [
+            new RateLimited(&#x27;payments&#x27;),
+        ];
+    }
+}
+```
+
+## Logging Security Events
+
+```php
+// config/logging.php
+&#x27;channels&#x27; =&gt; [
+    &#x27;security&#x27; =&gt; [
+        &#x27;driver&#x27; =&gt; &#x27;single&#x27;,
+        &#x27;path&#x27; =&gt; storage_path(&#x27;logs/security.log&#x27;),
+        &#x27;level&#x27; =&gt; &#x27;warning&#x27;,
+    ],
+],
+
+// Audit log helper
+final class SecurityLogger
+{
+    public static function log(string $event, array $context = []): void
+    {
+        Log::channel(&#x27;security&#x27;)-&gt;warning($event, array_merge([
+            &#x27;user_id&#x27; =&gt; Auth::id(),
+            &#x27;ip&#x27; =&gt; request()-&gt;ip(),
+            &#x27;user_agent&#x27; =&gt; request()-&gt;userAgent(),
+            &#x27;url&#x27; =&gt; request()-&gt;fullUrl(),
+            &#x27;timestamp&#x27; =&gt; now()-&gt;toIso8601String(),
+        ], $context));
+    }
+}
+
+// Usage
+SecurityLogger::log(&#x27;failed_login_attempt&#x27;, [&#x27;email&#x27; =&gt; $email]);
+SecurityLogger::log(&#x27;password_change&#x27;);
+SecurityLogger::log(&#x27;role_change&#x27;, [&#x27;target_user&#x27; =&gt; $targetId, &#x27;new_role&#x27; =&gt; &#x27;admin&#x27;]);
+SecurityLogger::log(&#x27;suspicious_activity&#x27;, [&#x27;reason&#x27; =&gt; &#x27;multiple_attempts_from_different_ips&#x27;]);
+```
+
+## Quick Security Checklist
+
+| Check | Description |
+|-------|-------------|
+| `APP_DEBUG=false` | Never run with debug enabled in production |
+| `APP_KEY` set | Always run `php artisan key:generate` |
+| HTTPS enforced | Force HTTPS in production via middleware or proxy |
+| `$fillable` whitelisted | Never use `$guarded = []` |
+| CSRF active | `@csrf` on all state-changing forms |
+| Sanctum/Passport configured | API authentication with token abilities/scopes |
+| Rate limiting applied | Throttle API and auth endpoints |
+| Input validation | FormRequest with specific rules, never `$request-&gt;all()` |
+| File upload restrictions | Validate MIME types, size, dimensions |
+| `composer audit` in CI | Check dependencies for known vulnerabilities |
+| `password_hash` / `password_verify` | Use Laravel&#x27;s built-in hashing (bcrypt/Argon2) |
+| Session regeneration on login | Call `$request-&gt;session()-&gt;regenerate()` |
+| Security headers middleware | CSP, X-Frame-Options, X-Content-Type-Options |
+| Logged security events | Audit log for auth failures, role changes, suspicious activity |
+| `.env` not committed | Verify `.gitignore` includes `.env` |
+
+## Related Skills
+
+- `laravel-patterns` — Laravel architecture, routing, Eloquent, and API patterns
+- `backend-patterns` — General backend API and database patterns
+- `laravel-tdd` — Laravel testing with PHPUnit and Pest</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

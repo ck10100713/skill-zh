@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-harness-construction｜Skill 寫法圖鑑</title>
+<meta name="description" content="設計 agent 的動作空間、工具定義和觀察格式來提高完成率">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-harness-construction</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-harness-construction/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">設計 agent 的動作空間、工具定義和觀察格式來提高完成率</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-harness-construction
+description: 設計和優化 AI agent 的動作空間、工具定義和觀察結果的格式，以提高完成率。在定義或修訂 agent 的工具集、動作空間或觀察格式時使用。
+metadata:
+  origin: ECC
+---
+
+# Agent Harness Construction
+
+當你要改善 agent 怎麼規劃、呼叫工具、從錯誤中恢復，以及收斂到完成時，使用這個 skill。
+
+## Core Model
+
+Agent 輸出的品質受這些因素限制：
+1. 動作空間的品質
+2. 觀察結果的品質
+3. 恢復能力的品質
+4. Context 預算的品質
+
+## Action Space Design
+
+1. 使用穩定、明確的工具名稱。
+2. 輸入以 schema 為先，並保持狹窄。
+3. 回傳確定性的輸出形狀。
+4. 避免萬用工具，除非無法做到隔離。
+
+## Granularity Rules
+
+- 高風險操作（deploy、migration、權限）用微型工具。
+- 常見的編輯／讀取／搜尋迴圈用中型工具。
+- 只有在來回的開銷是主要成本時，才用巨型工具。
+
+## Observation Design
+
+每個工具回應都應該包含：
+- `status`: success|warning|error
+- `summary`: 一行結果
+- `next_actions`: 可以執行的後續動作
+- `artifacts`: 檔案路徑／ID
+
+## Error Recovery Contract
+
+每條錯誤路徑都要包含：
+- 根本原因的提示
+- 安全的重試指示
+- 明確的停止條件
+
+## Context Budgeting
+
+1. 讓 system prompt 保持精簡且不變。
+2. 把大量的指引移到按需載入的 skill 裡。
+3. 優先用檔案的參照，不要把長文件塞進內文。
+4. 在階段邊界壓縮，不要用任意的 token 門檻。
+
+## Architecture Pattern Guidance
+
+- ReAct：最適合路徑不確定的探索性任務。
+- Function-calling：最適合結構化的確定性流程。
+- Hybrid（建議）：ReAct 規劃 + 有型別的工具執行。
+
+## Benchmarking
+
+追蹤：
+- 完成率
+- 每個任務的重試次數
+- pass@1 和 pass@3
+- 每個成功任務的成本
+
+## Anti-Patterns
+
+- 太多語意重疊的工具。
+- 不透明的工具輸出，沒有恢復提示。
+- 只有錯誤、沒有下一步的輸出。
+- 用不相關的參照讓 context 超載。</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-harness-construction
+description: Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates. Use when defining or revising an agent&#x27;s tool set, action space, or observation format.
+metadata:
+  origin: ECC
+---
+
+# Agent Harness Construction
+
+Use this skill when you are improving how an agent plans, calls tools, recovers from errors, and converges on completion.
+
+## Core Model
+
+Agent output quality is constrained by:
+1. Action space quality
+2. Observation quality
+3. Recovery quality
+4. Context budget quality
+
+## Action Space Design
+
+1. Use stable, explicit tool names.
+2. Keep inputs schema-first and narrow.
+3. Return deterministic output shapes.
+4. Avoid catch-all tools unless isolation is impossible.
+
+## Granularity Rules
+
+- Use micro-tools for high-risk operations (deploy, migration, permissions).
+- Use medium tools for common edit/read/search loops.
+- Use macro-tools only when round-trip overhead is the dominant cost.
+
+## Observation Design
+
+Every tool response should include:
+- `status`: success|warning|error
+- `summary`: one-line result
+- `next_actions`: actionable follow-ups
+- `artifacts`: file paths / IDs
+
+## Error Recovery Contract
+
+For every error path, include:
+- root cause hint
+- safe retry instruction
+- explicit stop condition
+
+## Context Budgeting
+
+1. Keep system prompt minimal and invariant.
+2. Move large guidance into skills loaded on demand.
+3. Prefer references to files over inlining long documents.
+4. Compact at phase boundaries, not arbitrary token thresholds.
+
+## Architecture Pattern Guidance
+
+- ReAct: best for exploratory tasks with uncertain path.
+- Function-calling: best for structured deterministic flows.
+- Hybrid (recommended): ReAct planning + typed tool execution.
+
+## Benchmarking
+
+Track:
+- completion rate
+- retries per task
+- pass@1 and pass@3
+- cost per successful task
+
+## Anti-Patterns
+
+- Too many tools with overlapping semantics.
+- Opaque tool output with no recovery hints.
+- Error-only output without next steps.
+- Context overloading with irrelevant references.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

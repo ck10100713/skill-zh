@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foundation-models-on-device｜Skill 寫法圖鑑</title>
+<meta name="description" content="在 iOS 26 用 Apple FoundationModels 做裝置端 LLM、結構化輸出與 tool calling">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>foundation-models-on-device</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/foundation-models-on-device/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">在 iOS 26 用 Apple FoundationModels 做裝置端 LLM、結構化輸出與 tool calling</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: foundation-models-on-device
+description: Apple FoundationModels 框架的裝置端 LLM 用法，包含文字生成、搭配 @Generable 的引導式生成、tool calling，以及 iOS 26+ 的 snapshot streaming。要在 iOS 26+ 用 Apple FoundationModels 加入裝置端 LLM 功能時使用。
+---
+
+# FoundationModels: On-Device LLM (iOS 26)
+
+用 FoundationModels 框架把 Apple 的裝置端語言模型整合進 app 的做法。涵蓋文字生成、用 `@Generable` 產生結構化輸出、自訂 tool calling 和 snapshot streaming，全部都在裝置上執行，保護隱私也支援離線。
+
+## When to Activate
+
+- 用 Apple Intelligence 在裝置端打造 AI 功能
+- 不依賴雲端來生成或摘要文字
+- 從自然語言輸入中擷取結構化資料
+- 為特定領域的 AI 動作實作自訂 tool calling
+- 串流結構化回應，讓 UI 即時更新
+- 需要保護隱私的 AI（資料不會離開裝置）
+
+## Core Pattern — Availability Check
+
+建立 session 之前，一定要先檢查模型是否可用：
+
+```swift
+struct GenerativeView: View {
+    private var model = SystemLanguageModel.default
+
+    var body: some View {
+        switch model.availability {
+        case .available:
+            ContentView()
+        case .unavailable(.deviceNotEligible):
+            Text(&quot;Device not eligible for Apple Intelligence&quot;)
+        case .unavailable(.appleIntelligenceNotEnabled):
+            Text(&quot;Please enable Apple Intelligence in Settings&quot;)
+        case .unavailable(.modelNotReady):
+            Text(&quot;Model is downloading or not ready&quot;)
+        case .unavailable(let other):
+            Text(&quot;Model unavailable: \(other)&quot;)
+        }
+    }
+}
+```
+
+## Core Pattern — Basic Session
+
+```swift
+// 單輪：每次都建立新的 session
+let session = LanguageModelSession()
+let response = try await session.respond(to: &quot;What&#x27;s a good month to visit Paris?&quot;)
+print(response.content)
+
+// 多輪：重用 session 以保留對話脈絡
+let session = LanguageModelSession(instructions: &quot;&quot;&quot;
+    You are a cooking assistant.
+    Provide recipe suggestions based on ingredients.
+    Keep suggestions brief and practical.
+    &quot;&quot;&quot;)
+
+let first = try await session.respond(to: &quot;I have chicken and rice&quot;)
+let followUp = try await session.respond(to: &quot;What about a vegetarian option?&quot;)
+```
+
+寫 instructions 的重點：
+- 定義模型的角色（「You are a mentor」）
+- 說明要做什麼（「Help extract calendar events」）
+- 設定風格偏好（「Respond as briefly as possible」）
+- 加上安全措施（遇到危險請求就回「I can&#x27;t help with that」）
+
+## Core Pattern — Guided Generation with @Generable
+
+生成結構化的 Swift 型別，不要拿原始字串：
+
+### 1. Define a Generable Type
+
+```swift
+@Generable(description: &quot;Basic profile information about a cat&quot;)
+struct CatProfile {
+    var name: String
+
+    @Guide(description: &quot;The age of the cat&quot;, .range(0...20))
+    var age: Int
+
+    @Guide(description: &quot;A one sentence profile about the cat&#x27;s personality&quot;)
+    var profile: String
+}
+```
+
+### 2. Request Structured Output
+
+```swift
+let response = try await session.respond(
+    to: &quot;Generate a cute rescue cat&quot;,
+    generating: CatProfile.self
+)
+
+// 直接存取結構化欄位
+print(&quot;Name: \(response.content.name)&quot;)
+print(&quot;Age: \(response.content.age)&quot;)
+print(&quot;Profile: \(response.content.profile)&quot;)
+```
+
+### Supported @Guide Constraints
+
+- `.range(0...20)`：數值範圍
+- `.count(3)`：陣列元素個數
+- `description:`：給生成過程的語意引導
+
+## Core Pattern — Tool Calling
+
+讓模型呼叫自訂程式碼，處理特定領域的任務：
+
+### 1. Define a Tool
+
+```swift
+struct RecipeSearchTool: Tool {
+    let name = &quot;recipe_search&quot;
+    let description = &quot;Search for recipes matching a given term and return a list of results.&quot;
+
+    @Generable
+    struct Arguments {
+        var searchTerm: String
+        var numberOfResults: Int
+    }
+
+    func call(arguments: Arguments) async throws -&gt; ToolOutput {
+        let recipes = await searchRecipes(
+            term: arguments.searchTerm,
+            limit: arguments.numberOfResults
+        )
+        return .string(recipes.map { &quot;- \($0.name): \($0.description)&quot; }.joined(separator: &quot;\n&quot;))
+    }
+}
+```
+
+### 2. Create Session with Tools
+
+```swift
+let session = LanguageModelSession(tools: [RecipeSearchTool()])
+let response = try await session.respond(to: &quot;Find me some pasta recipes&quot;)
+```
+
+### 3. Handle Tool Errors
+
+```swift
+do {
+    let answer = try await session.respond(to: &quot;Find a recipe for tomato soup.&quot;)
+} catch let error as LanguageModelSession.ToolCallError {
+    print(error.tool.name)
+    if case .databaseIsEmpty = error.underlyingError as? RecipeSearchToolError {
+        // 處理特定的 tool 錯誤
+    }
+}
+```
+
+## Core Pattern — Snapshot Streaming
+
+用 `PartiallyGenerated` 型別串流結構化回應，讓 UI 即時更新：
+
+```swift
+@Generable
+struct TripIdeas {
+    @Guide(description: &quot;Ideas for upcoming trips&quot;)
+    var ideas: [String]
+}
+
+let stream = session.streamResponse(
+    to: &quot;What are some exciting trip ideas?&quot;,
+    generating: TripIdeas.self
+)
+
+for try await partial in stream {
+    // partial: TripIdeas.PartiallyGenerated（所有屬性都是 Optional）
+    print(partial)
+}
+```
+
+### SwiftUI Integration
+
+```swift
+@State private var partialResult: TripIdeas.PartiallyGenerated?
+@State private var errorMessage: String?
+
+var body: some View {
+    List {
+        ForEach(partialResult?.ideas ?? [], id: \.self) { idea in
+            Text(idea)
+        }
+    }
+    .overlay {
+        if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
+    }
+    .task {
+        do {
+            let stream = session.streamResponse(to: prompt, generating: TripIdeas.self)
+            for try await partial in stream {
+                partialResult = partial
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+```
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| 在裝置端執行 | 隱私：資料不會離開裝置，離線也能用 |
+| 4,096 token 上限 | 裝置端模型的限制；大量資料要拆成多個 session 分批處理 |
+| Snapshot streaming（不是 delta） | 對結構化輸出友善；每個 snapshot 都是一個完整的部分狀態 |
+| `@Generable` macro | 結構化生成有編譯期安全；自動產生 `PartiallyGenerated` 型別 |
+| 每個 session 同時只處理一個請求 | `isResponding` 會阻止並行請求；需要的話就建多個 session |
+| `response.content`（不是 `.output`） | 這才是正確的 API，一律透過 `.content` 屬性取結果 |
+
+## Best Practices
+
+- **一定要檢查 `model.availability`**，建立 session 前先做，所有不可用的情況都要處理
+- **用 `instructions`** 引導模型行為，它的優先順序高於 prompt
+- **送新請求前先檢查 `isResponding`**，session 一次只處理一個請求
+- **用 `response.content`** 取結果，不要用 `.output`
+- **大型輸入要切成小塊**，4,096 token 的上限是 instructions + prompt + 輸出加起來算
+- **結構化輸出用 `@Generable`**，比解析原始字串更有保障
+- **用 `GenerationOptions(temperature:)`** 調整創意程度（越高越有創意）
+- **用 Instruments 監控**，用 Xcode Instruments 分析請求效能
+
+## Anti-Patterns to Avoid
+
+- 沒先檢查 `model.availability` 就建立 session
+- 送出超過 4,096 token context window 的輸入
+- 在同一個 session 上嘗試並行請求
+- 用 `.output` 而不是 `.content` 來取回應資料
+- 明明可以用 `@Generable` 結構化輸出，卻去解析原始字串回應
+- 把複雜的多步驟邏輯塞在單一個 prompt 裡，應該拆成多個各有重點的 prompt
+- 假設模型永遠可用，裝置資格和設定各有不同
+
+## When to Use
+
+- 對隱私敏感的 app，在裝置端生成文字
+- 從使用者輸入擷取結構化資料（表單、自然語言指令）
+- 一定要能離線運作的 AI 輔助功能
+- 逐步顯示生成內容的串流 UI
+- 透過 tool calling 執行特定領域的 AI 動作（搜尋、運算、查詢）</pre></section><section><h2>英文原文</h2><pre>---
+name: foundation-models-on-device
+description: Apple FoundationModels framework for on-device LLM — text generation, guided generation with @Generable, tool calling, and snapshot streaming in iOS 26+. Use when adding on-device LLM features with Apple FoundationModels on iOS 26+.
+---
+
+# FoundationModels: On-Device LLM (iOS 26)
+
+Patterns for integrating Apple&#x27;s on-device language model into apps using the FoundationModels framework. Covers text generation, structured output with `@Generable`, custom tool calling, and snapshot streaming — all running on-device for privacy and offline support.
+
+## When to Activate
+
+- Building AI-powered features using Apple Intelligence on-device
+- Generating or summarizing text without cloud dependency
+- Extracting structured data from natural language input
+- Implementing custom tool calling for domain-specific AI actions
+- Streaming structured responses for real-time UI updates
+- Need privacy-preserving AI (no data leaves the device)
+
+## Core Pattern — Availability Check
+
+Always check model availability before creating a session:
+
+```swift
+struct GenerativeView: View {
+    private var model = SystemLanguageModel.default
+
+    var body: some View {
+        switch model.availability {
+        case .available:
+            ContentView()
+        case .unavailable(.deviceNotEligible):
+            Text(&quot;Device not eligible for Apple Intelligence&quot;)
+        case .unavailable(.appleIntelligenceNotEnabled):
+            Text(&quot;Please enable Apple Intelligence in Settings&quot;)
+        case .unavailable(.modelNotReady):
+            Text(&quot;Model is downloading or not ready&quot;)
+        case .unavailable(let other):
+            Text(&quot;Model unavailable: \(other)&quot;)
+        }
+    }
+}
+```
+
+## Core Pattern — Basic Session
+
+```swift
+// Single-turn: create a new session each time
+let session = LanguageModelSession()
+let response = try await session.respond(to: &quot;What&#x27;s a good month to visit Paris?&quot;)
+print(response.content)
+
+// Multi-turn: reuse session for conversation context
+let session = LanguageModelSession(instructions: &quot;&quot;&quot;
+    You are a cooking assistant.
+    Provide recipe suggestions based on ingredients.
+    Keep suggestions brief and practical.
+    &quot;&quot;&quot;)
+
+let first = try await session.respond(to: &quot;I have chicken and rice&quot;)
+let followUp = try await session.respond(to: &quot;What about a vegetarian option?&quot;)
+```
+
+Key points for instructions:
+- Define the model&#x27;s role (&quot;You are a mentor&quot;)
+- Specify what to do (&quot;Help extract calendar events&quot;)
+- Set style preferences (&quot;Respond as briefly as possible&quot;)
+- Add safety measures (&quot;Respond with &#x27;I can&#x27;t help with that&#x27; for dangerous requests&quot;)
+
+## Core Pattern — Guided Generation with @Generable
+
+Generate structured Swift types instead of raw strings:
+
+### 1. Define a Generable Type
+
+```swift
+@Generable(description: &quot;Basic profile information about a cat&quot;)
+struct CatProfile {
+    var name: String
+
+    @Guide(description: &quot;The age of the cat&quot;, .range(0...20))
+    var age: Int
+
+    @Guide(description: &quot;A one sentence profile about the cat&#x27;s personality&quot;)
+    var profile: String
+}
+```
+
+### 2. Request Structured Output
+
+```swift
+let response = try await session.respond(
+    to: &quot;Generate a cute rescue cat&quot;,
+    generating: CatProfile.self
+)
+
+// Access structured fields directly
+print(&quot;Name: \(response.content.name)&quot;)
+print(&quot;Age: \(response.content.age)&quot;)
+print(&quot;Profile: \(response.content.profile)&quot;)
+```
+
+### Supported @Guide Constraints
+
+- `.range(0...20)` — numeric range
+- `.count(3)` — array element count
+- `description:` — semantic guidance for generation
+
+## Core Pattern — Tool Calling
+
+Let the model invoke custom code for domain-specific tasks:
+
+### 1. Define a Tool
+
+```swift
+struct RecipeSearchTool: Tool {
+    let name = &quot;recipe_search&quot;
+    let description = &quot;Search for recipes matching a given term and return a list of results.&quot;
+
+    @Generable
+    struct Arguments {
+        var searchTerm: String
+        var numberOfResults: Int
+    }
+
+    func call(arguments: Arguments) async throws -&gt; ToolOutput {
+        let recipes = await searchRecipes(
+            term: arguments.searchTerm,
+            limit: arguments.numberOfResults
+        )
+        return .string(recipes.map { &quot;- \($0.name): \($0.description)&quot; }.joined(separator: &quot;\n&quot;))
+    }
+}
+```
+
+### 2. Create Session with Tools
+
+```swift
+let session = LanguageModelSession(tools: [RecipeSearchTool()])
+let response = try await session.respond(to: &quot;Find me some pasta recipes&quot;)
+```
+
+### 3. Handle Tool Errors
+
+```swift
+do {
+    let answer = try await session.respond(to: &quot;Find a recipe for tomato soup.&quot;)
+} catch let error as LanguageModelSession.ToolCallError {
+    print(error.tool.name)
+    if case .databaseIsEmpty = error.underlyingError as? RecipeSearchToolError {
+        // Handle specific tool error
+    }
+}
+```
+
+## Core Pattern — Snapshot Streaming
+
+Stream structured responses for real-time UI with `PartiallyGenerated` types:
+
+```swift
+@Generable
+struct TripIdeas {
+    @Guide(description: &quot;Ideas for upcoming trips&quot;)
+    var ideas: [String]
+}
+
+let stream = session.streamResponse(
+    to: &quot;What are some exciting trip ideas?&quot;,
+    generating: TripIdeas.self
+)
+
+for try await partial in stream {
+    // partial: TripIdeas.PartiallyGenerated (all properties Optional)
+    print(partial)
+}
+```
+
+### SwiftUI Integration
+
+```swift
+@State private var partialResult: TripIdeas.PartiallyGenerated?
+@State private var errorMessage: String?
+
+var body: some View {
+    List {
+        ForEach(partialResult?.ideas ?? [], id: \.self) { idea in
+            Text(idea)
+        }
+    }
+    .overlay {
+        if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
+    }
+    .task {
+        do {
+            let stream = session.streamResponse(to: prompt, generating: TripIdeas.self)
+            for try await partial in stream {
+                partialResult = partial
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+```
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| On-device execution | Privacy — no data leaves the device; works offline |
+| 4,096 token limit | On-device model constraint; chunk large data across sessions |
+| Snapshot streaming (not deltas) | Structured output friendly; each snapshot is a complete partial state |
+| `@Generable` macro | Compile-time safety for structured generation; auto-generates `PartiallyGenerated` type |
+| Single request per session | `isResponding` prevents concurrent requests; create multiple sessions if needed |
+| `response.content` (not `.output`) | Correct API — always access results via `.content` property |
+
+## Best Practices
+
+- **Always check `model.availability`** before creating a session — handle all unavailability cases
+- **Use `instructions`** to guide model behavior — they take priority over prompts
+- **Check `isResponding`** before sending a new request — sessions handle one request at a time
+- **Access `response.content`** for results — not `.output`
+- **Break large inputs into chunks** — 4,096 token limit applies to instructions + prompt + output combined
+- **Use `@Generable`** for structured output — stronger guarantees than parsing raw strings
+- **Use `GenerationOptions(temperature:)`** to tune creativity (higher = more creative)
+- **Monitor with Instruments** — use Xcode Instruments to profile request performance
+
+## Anti-Patterns to Avoid
+
+- Creating sessions without checking `model.availability` first
+- Sending inputs exceeding the 4,096 token context window
+- Attempting concurrent requests on a single session
+- Using `.output` instead of `.content` to access response data
+- Parsing raw string responses when `@Generable` structured output would work
+- Building complex multi-step logic in a single prompt — break into multiple focused prompts
+- Assuming the model is always available — device eligibility and settings vary
+
+## When to Use
+
+- On-device text generation for privacy-sensitive apps
+- Structured data extraction from user input (forms, natural language commands)
+- AI-assisted features that must work offline
+- Streaming UI that progressively shows generated content
+- Domain-specific AI actions via tool calling (search, compute, lookup)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

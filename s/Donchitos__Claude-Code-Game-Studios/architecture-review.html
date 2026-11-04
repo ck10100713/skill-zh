@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>architecture-review｜Skill 寫法圖鑑</title>
+<meta name="description" content="建立 GDD 需求對 ADR 的追溯矩陣，找缺口、衝突與引擎相容問題">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>architecture-review</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/architecture-review/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">建立 GDD 需求對 ADR 的追溯矩陣，找缺口、衝突與引擎相容問題</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: architecture-review
+description: &quot;把 GDD 需求對應到 ADR 的追溯矩陣。找出缺口、ADR 之間的衝突、引擎相容性。判定 PASS/CONCERNS/NOT ASSESSED/FAIL。&quot;
+argument-hint: &quot;[focus: full | coverage | consistency | engine | rtm | single-gdd path/to/gdd.md]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/architecture-review/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/adr-dep-graph.sh*), Bash(bash .claude/scripts/registry.sh validate*)
+model: opus
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow`
+
+# Architecture Review
+
+架構審查會驗證整體的架構決策是否涵蓋了所有遊戲設計需求、
+內部是否一致，以及是否正確鎖定專案固定的引擎版本。它是從技術設定
+進入前期製作（Pre-Production）之間的品質關卡。
+
+**參數模式：**
+- **沒有參數 / `full`**：完整審查，所有階段
+- **`coverage`**：只做追溯，看哪些 GDD 需求沒有 ADR
+- **`consistency`**：只做 ADR 之間的衝突偵測
+- **`engine`**：只做引擎相容性稽核
+- **`single-gdd [path]`**：審查某一份特定 GDD 的架構涵蓋度
+- **`rtm`**：需求追溯矩陣（Requirements Traceability Matrix），把標準矩陣
+  延伸到包含 story 檔案路徑和測試檔案路徑；輸出
+  `docs/architecture/requirements-traceability.md`，內含完整的
+  GDD 需求 → ADR → Story → Test 鏈。在 story 和測試都已存在的
+  Production 階段使用。
+
+---
+
+每次呼叫 `AskUserQuestion` 都要遵循 `.claude/docs/automation-modes.md`
+（collaborative 一律詢問 · guided 只問重大事項 · autonomous 記錄後直接進行；
+`automation_always_ask` 的類別一律會詢問）。
+
+**`workflow`**（見 `.claude/docs/workflow-modes.md`）：
+- `full` — 涵蓋所有 GDD 和所有 ADR 的完整追溯矩陣。
+- `standard` — 縮小範圍：只看架構文件 + 關鍵的 ADR。
+- `minimal` — 不適用（不需要架構文件）。
+
+## 第 1 階段：載入所有東西
+
+**現在就讀 `references/1-load.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 2 階段：從每份 GDD 擷取技術需求
+
+**現在就讀 `references/2-extract-requirements.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 3 階段：建立追溯矩陣
+
+**現在就讀 `references/3-traceability.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 4 階段：ADR 之間的衝突偵測
+
+**現在就讀 `references/4-conflicts.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 5 階段：引擎相容性交叉檢查
+
+**現在就讀 `references/5-engine.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 6 階段：架構文件涵蓋度
+
+**現在就讀 `references/6-document-coverage.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 7 階段：輸出審查報告
+
+**現在就讀 `references/7-report.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 8 階段：寫入並更新追溯索引
+
+**現在就讀 `references/8-write.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 第 9 階段：交接
+
+**現在就讀 `references/9-handoff.md` 並照著做**：這個階段的步驟在那個檔案裡，不在這裡。如果對話在這個階段被壓縮或恢復了，要重新讀一次。
+
+## 錯誤復原協定
+
+**先驗證產出物。** 如果回傳合約指定了路徑，在把這個階段當成完成之前，
+先檢查那個路徑是否存在，**指名的產出物如果不在磁碟上，就是失敗的階段，
+不管回應讀起來多流暢。** agent 可能花掉一整個階段，回傳一段看似合理的開場白，
+卻什麼都沒寫，這種情況既不是 BLOCKED，也不是錯誤，也不是「無法完成」，
+所以下面的觸發條件永遠不會被觸發。要用指名未達成的合約去恢復它；context
+通常還在。
+
+如果任何被派出的 agent 回傳 BLOCKED、出錯或無法完成：**要立刻浮現這件事，
+不要越過它所阻擋的相依項目繼續往下走，而且一定要產出部分報告**（這裡重試的範圍 = 更少的 GDD / 單一系統）。完整程序：
+`.claude/docs/error-recovery-protocol.md`。
+
+---
+
+## 協作協定
+
+**適用於 `collaborative` 模式（預設）。** `guided` 和
+`autonomous` 模式請見 `.claude/docs/automation-modes.md`，下面的規則
+描述的是 collaborative 模式的要求，不是所有模式通用的行為。
+
+1. **靜靜地讀** — 不要把每個檔案讀取都講出來
+2. **顯示矩陣** — 在任何寫入核准之前，先呈現完整的追溯矩陣；
+   讓使用者看到現況
+3. **不要猜** — 如果某個需求不明確，就問：「[X] 是技術需求，
+   還是設計偏好？」
+4. **核准前先給草稿** — 要寫入的內容（報告、更新後的 ADR 章節、systems-index 的列），
+   在請求核准之前，一定要先在對話裡直接顯示出來。絕對不要請求寫入使用者還沒看過的東西。
+5. **寫入核准用 `AskUserQuestion`** — 純文字的「May I?」是不夠的。
+   用結構化的工具，附上標了 [A]/[B]/[C] 的選項，讓
+   使用者可以在「現在寫入」、「先顯示完整草稿」和「還不要」之間選擇。
+   涉及多個檔案的變更集，必須列出每個檔案和變更內容，然後用分組的選項
+   問一次，不要每個檔案各問一個純文字問題。
+6. **不阻擋** — 判定結果只是建議；就算出現 CONCERNS 甚至 FAIL 的發現，
+   要不要繼續，由使用者決定</pre></section><section><h2>英文原文</h2><pre>---
+name: architecture-review
+description: &quot;Traceability matrix mapping GDD requirements to ADRs. Finds gaps, cross-ADR conflicts, engine compatibility. PASS/CONCERNS/NOT ASSESSED/FAIL.&quot;
+argument-hint: &quot;[focus: full | coverage | consistency | engine | rtm | single-gdd path/to/gdd.md]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/architecture-review/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/review-receipts.sh hash *), Bash(bash .claude/scripts/adr-dep-graph.sh*), Bash(bash .claude/scripts/registry.sh validate*)
+model: opus
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow`
+
+# Architecture Review
+
+The architecture review validates that the complete body of architectural decisions
+covers all game design requirements, is internally consistent, and correctly targets
+the project&#x27;s pinned engine version. It is the quality gate between Technical Setup
+and Pre-Production.
+
+**Argument modes:**
+- **No argument / `full`**: Full review — all phases
+- **`coverage`**: Traceability only — which GDD requirements have no ADR
+- **`consistency`**: Cross-ADR conflict detection only
+- **`engine`**: Engine compatibility audit only
+- **`single-gdd [path]`**: Review architecture coverage for one specific GDD
+- **`rtm`**: Requirements Traceability Matrix — extends the standard matrix
+  to include story file paths and test file paths; outputs
+  `docs/architecture/requirements-traceability.md` with the full
+  GDD requirement → ADR → Story → Test chain. Use in Production phase when
+  stories and tests exist.
+
+---
+
+Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+**`workflow`** (see `.claude/docs/workflow-modes.md`):
+- `full` — full traceability matrix across all GDDs and all ADRs.
+- `standard` — reduced scope: architecture doc + critical ADRs only.
+- `minimal` — not applicable (no architecture doc required).
+
+## Phase 1: Load Everything
+
+**Read `references/1-load.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 2: Extract Technical Requirements from Every GDD
+
+**Read `references/2-extract-requirements.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 3: Build the Traceability Matrix
+
+**Read `references/3-traceability.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 4: Cross-ADR Conflict Detection
+
+**Read `references/4-conflicts.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 5: Engine Compatibility Cross-Check
+
+**Read `references/5-engine.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 6: Architecture Document Coverage
+
+**Read `references/6-document-coverage.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 7: Output the Review Report
+
+**Read `references/7-report.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 8: Write and Update Traceability Index
+
+**Read `references/8-write.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 9: Handoff
+
+**Read `references/9-handoff.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Error Recovery Protocol
+
+**First, verify the artifact.** If the return contract named a path, check the
+path exists before treating the phase as done — **a named artifact that is not
+on disk is a failed phase, however fluent the response reads.** An agent can
+burn a full phase and return a plausible preamble having written nothing, which
+is neither BLOCKED nor an error nor &quot;fails to complete&quot;, so the trigger below
+never fires. Resume it naming the unmet contract; the context is
+usually still there.
+
+If any spawned agent returns BLOCKED, errors, or fails to complete: **surface it
+immediately, don&#x27;t proceed past a dependency it blocks, and always produce a
+partial report** (retry scope here = fewer GDDs / single-system). Full procedure:
+`.claude/docs/error-recovery-protocol.md`.
+
+---
+
+## Collaborative Protocol
+
+**Applies in `collaborative` mode (the default).** For `guided` and
+`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+describe what collaborative mode requires, not universal behavior.
+
+1. **Read silently** — do not narrate every file read
+2. **Show the matrix** — present the full traceability matrix before any write
+   approval; let the user see the state
+3. **Don&#x27;t guess** — if a requirement is ambiguous, ask: &quot;Is [X] a technical
+   requirement or a design preference?&quot;
+4. **Draft before approval** — always show the content that will be written (the
+   report, the updated ADR section, the systems-index row) inline in the conversation
+   before requesting approval. Never ask to write something the user has not yet seen.
+5. **Use `AskUserQuestion` for write approvals** — plain text &quot;May I?&quot; is not
+   sufficient. Use the structured tool with labeled options [A]/[B]/[C] so the
+   user can choose between &quot;write now&quot;, &quot;show full draft first&quot;, and &quot;not yet&quot;.
+   Multi-file changesets must list every file and what changes, then ask once
+   with grouped options — not a separate plain-text question per file.
+6. **Non-blocking** — the verdict is advisory; the user decides whether to continue
+   despite CONCERNS or even FAIL findings</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

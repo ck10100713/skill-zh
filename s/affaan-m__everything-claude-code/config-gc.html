@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>config-gc｜Skill 寫法圖鑑</title>
+<meta name="description" content="定期掃描 ~/.claude 的冗餘設定，逐項確認後軟刪除">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>config-gc</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/config-gc/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">定期掃描 ~/.claude 的冗餘設定，逐項確認後軟刪除</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: config-gc
+description: 為你的 Claude Code 設定做垃圾回收。定期掃描 ~/.claude（skill、記憶、hook、權限、MCP 伺服器、快取）裡多餘、過期、孤立或低價值的項目，然後帶使用者逐項確認刪除。適用於使用者說「clean up my config」、「config GC」、「too many skills」、「audit my setup」、「my .claude is bloated」，或要求定期設定檢視時。
+metadata:
+  origin: ECC
+---
+
+# Config GC — Garbage Collection for Claude Code Setups
+
+借用 runtime 垃圾回收的概念：定期掃描不再被引用、重複、過期或低價值的物件，並回收空間。關鍵差別：**這裡的回收需要人在迴圈中。絕對不准自己決定刪除。**
+
+## When to Activate
+
+- 使用者要求清理、稽核或精簡他們的 Claude Code 設定
+- 使用者抱怨 skill 太多、hook 太吵，或 session 啟動很慢
+- 每月/定期的設定檢視到期了
+- 安裝了大型 skill 包（例如這個 repo）之後，用來整理跟既有設定重疊的部分
+
+**不要**在這些情況啟用：清理專案原始碼（那是重構）、清除對話記錄，或是解除安裝 Claude Code 本身。
+
+## Design Philosophy
+
+1. **只增不減的設定會漏。** Skill、記憶檔案、hook 和權限項目只會一直新增。沒有定期檢視，就會悄悄腐爛。
+2. **定期稽核勝過一次性大掃除。** 大約每 30 天掃一次，每次提出一小批候選項目。
+3. **每個管道有自己的策略。** 每一種累積類型（skill、hook、權限……）都有自己的過期訊號，不要到處套用同一條規則。
+4. **先做軟刪除。** 改名成 `.disabled` &gt; 移到 `~/.claude/_gc_trash/` &gt; 真正刪除。永遠保留復原路徑。
+5. **強制人在迴圈中。** 每個候選項目都有自己的 `[y/n/skip]` 確認。沒有「全部同意」的捷徑。
+6. **留紀錄。** 每次 GC 都會附加到 `~/.claude/gc_log.md`：動了什麼、為什麼、怎麼復原。
+
+## Scan Channels
+
+| # | Channel | Path | Staleness / redundancy signals |
+|---|---------|------|--------------------------------|
+| 1 | Skills | `~/.claude/skills/*/` | 名稱高度重疊；最近的對話記錄裡從沒被觸發過；領域跟使用者實際工作不符；SKILL.md 損壞或是空的 |
+| 2 | Memory | `~/.claude/**/memory/*.md` + 它的索引 | 同一個主題有多個索引項目；內容跟較新的項目矛盾；日期已經過了；沒列在索引裡的孤立檔案；少於 100 字、應該合併的片段 |
+| 3 | Hooks | `~/.claude/hooks/` + settings | 磁碟上有、但沒有任何 hook 設定引用的 script；被重寫版本取代的舊版本 |
+| 4 | Permissions | `settings.json` / `settings.local.json` 裡的 `permissions.allow` | 重複的項目；已經被萬用字元涵蓋的具體項目（例如允許 `Bash(*)` 時的 `Bash(git push)`）；過去實驗留下的一次性授權 |
+| 5 | MCP servers | `~/.claude.json` 或專案的 `.mcp.json` | 連不上的伺服器；功能重複的；很久沒用的 |
+| 6 | Scheduled reminders / jobs | 使用者存放它們的任何地方 | 已觸發超過 30 天的一次性任務；目標 script 已不存在的工作 |
+| 7 | Project history | `~/.claude/projects/*/` | 過期的交接快照；被較新狀態取代的 session 紀錄 |
+| 8 | Runtime caches | `cache/`、`file-history/`、`logs/`、`shell-snapshots/` | 依大小和 mtime 排序；提出超過 30 天且很大的項目 |
+
+## Workflow
+
+1. **掃描**所有管道（或使用者指名的子集）。收集候選項目，附上：路徑、管道、標記它的訊號、大小、最後修改時間。
+2. **排序**依信心程度（損壞/孤立 = 高；只是舊 = 低），以編號表格呈現。每次最多約 20 個候選項目，GC 是定期做的，不是窮盡式的。
+3. **逐一確認。** 對每個候選項目顯示證據，然後問 `[y/n/skip]`。使用者隨時可以停。
+4. **軟刪除已確認的項目**：skill/hook 優先改名成 `.disabled`，檔案則移到 `_gc_trash/&lt;date&gt;/`。權限項目存在 JSON 裡（不能寫註解）：先備份 settings 檔案，把每個被移除的項目原封不動記到 `gc_log.md`，再用 `jq` 從 `allow` 陣列移除。只有使用者明確要求時才硬刪除。
+5. **記錄**這次執行到 `~/.claude/gc_log.md`：時間戳記、處理的項目、復原指示。
+6. **回報**：回收的大小、仍然健康的管道、建議的下次檢視日期。
+
+## Example Scan Commands
+
+孤立的 hook script（管道 3）：磁碟上有、但沒有 hook 設定引用的 script：
+
+```bash
+for f in ~/.claude/hooks/*; do
+  name=$(basename &quot;$f&quot;)
+  grep -rq &quot;$name&quot; ~/.claude/settings.json ~/.claude/settings.local.json 2&gt;/dev/null \
+    || echo &quot;ORPHAN: $f&quot;
+done
+```
+
+多餘的權限項目（管道 4）：重複的，以及被萬用字元蓋掉的具體授權：
+
+```bash
+jq -r &#x27;.permissions.allow[]&#x27; ~/.claude/settings.local.json | sort | uniq -d
+if jq -e &#x27;.permissions.allow | index(&quot;Bash(*)&quot;)&#x27; ~/.claude/settings.local.json &gt;/dev/null; then
+  jq -r &#x27;.permissions.allow[]&#x27; ~/.claude/settings.local.json \
+    | grep &#x27;^Bash(&#x27; | grep -vF &#x27;Bash(*)&#x27;
+fi
+```
+
+最大的過期快取（管道 8）：用 `du -k`，不用只有 GNU 才有的 `find -printf`，所以 macOS/BSD 也能跑：
+
+```bash
+find ~/.claude/file-history ~/.claude/shell-snapshots -type f -mtime +30 \
+  -exec du -k {} + 2&gt;/dev/null | sort -rn | head -20
+```
+
+帶復原路徑的軟刪除（日期只取一次，這樣紀錄才不會跟目錄對不起來）：
+
+```bash
+gc_date=$(date +%Y-%m-%d)
+mkdir -p ~/.claude/_gc_trash/$gc_date
+mv ~/.claude/skills/dead-skill ~/.claude/_gc_trash/$gc_date/
+echo &quot;$(date -Iseconds) moved skills/dead-skill -&gt; _gc_trash/$gc_date/ (undo: mv back)&quot; &gt;&gt; ~/.claude/gc_log.md
+```
+
+移除已確認多餘的權限項目（JSON 不能寫註解，所以先備份、記錄，再編輯）：
+
+```bash
+cp ~/.claude/settings.local.json ~/.claude/settings.local.json.bak
+echo &quot;$(date -Iseconds) removed permission entry: Bash(git push) (undo: restore from .bak or re-add)&quot; &gt;&gt; ~/.claude/gc_log.md
+jq &#x27;.permissions.allow -= [&quot;Bash(git push)&quot;]&#x27; ~/.claude/settings.local.json.bak \
+  &gt; ~/.claude/settings.local.json
+```
+
+## Anti-Patterns
+
+- **整批核准。** 問「刪除全部 15 個？[y/n]」就違背設計了。一個項目，一個決定。
+- **第一輪就硬刪除。** 如果沒有 `_gc_trash/` 的副本或 `.disabled` 改名，就是做錯了。
+- **把「舊」當成「死」。** 60 天沒碰的 skill 可能是季節性的（報稅季、季度檢討）。年齡是訊號，不是判決，所以才要人來確認。
+- **用截斷的方式清理記憶。** 合併兩個互相矛盾的記憶檔案，要先讀完兩個、保留較新的事實，不是刪掉比較長的那個。
+- **動 `~/.claude`（或專案的 `.claude/`）以外的任何東西。** Config GC 絕對不會跑進原始碼目錄。
+
+## Best Practices
+
+- 大量新增之後就跑，不要只照日曆：裝了一個 50 個 skill 的包，正是跟既有 skill 重疊出現的時候。
+- 兩個 skill 重疊時，優先停用觸發描述比較弱的那個，它多半本來就從沒被觸發過。
+- 權限清理是每分鐘價值最高的管道：多餘的 allow 項目會讓安全審查更困難。
+- `gc_log.md` 要永遠留著。它很小，而「我什麼時候停用那個 hook、為什麼」這種問題，比你想的更常出現。
+
+## Related Skills
+
+- `skill-stocktake`：稽核 skill 的*品質*；config-gc 稽核 skill 的*存在*。對撐過 GC 的 skill 再跑 stocktake。
+- `workspace-surface-audit`：加法的對應物，建議該裝什麼。config-gc 是同一個生命週期中減法的那一半。
+- `configure-ecc`：用它安裝完 skill 之後，執行 config-gc 來整理跟你原有設定重疊的地方。
+- `continuous-learning`：產生這個 skill 之後會稽核的記憶檔案。
+- `security-review`：很適合搭配權限管道使用。</pre></section><section><h2>英文原文</h2><pre>---
+name: config-gc
+description: Garbage collection for your Claude Code configuration. Periodically scans ~/.claude (skills, memory, hooks, permissions, MCP servers, caches) for redundant, stale, orphaned, or low-value items, then walks the user through a confirm-each-deletion cleanup. Use when the user says &quot;clean up my config&quot;, &quot;config GC&quot;, &quot;too many skills&quot;, &quot;audit my setup&quot;, &quot;my .claude is bloated&quot;, or asks for a periodic config review.
+metadata:
+  origin: ECC
+---
+
+# Config GC — Garbage Collection for Claude Code Setups
+
+Borrowed from runtime garbage collection: periodically scan for objects that are no longer referenced, redundant, expired, or low-value, and reclaim the space. The critical difference: **here, collection requires a human in the loop. Never delete autonomously.**
+
+## When to Activate
+
+- The user asks to clean up, audit, or slim down their Claude Code configuration
+- The user complains about too many skills, noisy hooks, or slow session startup
+- A monthly/periodic config review is due
+- After installing a large skill pack (e.g. this repo), to reconcile overlaps with existing setup
+
+Do NOT activate for: cleaning project source code (that&#x27;s refactoring), clearing chat history, or uninstalling Claude Code itself.
+
+## Design Philosophy
+
+1. **Append-only configs leak.** Skills, memory files, hooks, and permission entries only ever get added. Without periodic review they rot silently.
+2. **Regular audits beat one-time purges.** Scan every ~30 days, propose a small batch of candidates each time.
+3. **Per-channel strategies.** Each accumulation type (skills, hooks, permissions, ...) has its own staleness signals — don&#x27;t apply one rule everywhere.
+4. **Soft-delete first.** Rename to `.disabled` &gt; move to `~/.claude/_gc_trash/` &gt; real deletion. Always keep an undo path.
+5. **Forced human-in-the-loop.** Every candidate gets its own `[y/n/skip]` confirmation. No &quot;yes to all&quot; shortcut.
+6. **Keep a log.** Every GC run appends to `~/.claude/gc_log.md`: what was touched, why, and how to undo it.
+
+## Scan Channels
+
+| # | Channel | Path | Staleness / redundancy signals |
+|---|---------|------|--------------------------------|
+| 1 | Skills | `~/.claude/skills/*/` | Heavily overlapping names; never triggered in recent transcripts; domain mismatch with the user&#x27;s actual work; broken or empty SKILL.md |
+| 2 | Memory | `~/.claude/**/memory/*.md` + its index | Multiple index entries for one topic; contents contradicting newer entries; dates that have passed; orphan files missing from the index; sub-100-word fragments that should merge |
+| 3 | Hooks | `~/.claude/hooks/` + settings | Scripts present on disk but referenced by no hook config; old versions superseded by rewrites |
+| 4 | Permissions | `permissions.allow` in `settings.json` / `settings.local.json` | Duplicate entries; specific entries already covered by a wildcard (e.g. `Bash(git push)` when `Bash(*)` is allowed); one-off grants from past experiments |
+| 5 | MCP servers | `~/.claude.json` or project `.mcp.json` | Servers that fail to connect; functional duplicates; long-unused |
+| 6 | Scheduled reminders / jobs | wherever the user keeps them | Fired one-shots older than 30 days; jobs whose target scripts no longer exist |
+| 7 | Project history | `~/.claude/projects/*/` | Stale handoff snapshots; session records superseded by newer state |
+| 8 | Runtime caches | `cache/`, `file-history/`, `logs/`, `shell-snapshots/` | Sort by size and mtime; propose items &gt;30 days old and large |
+
+## Workflow
+
+1. **Scan** all channels (or the subset the user names). Collect candidates with: path, channel, signal that flagged it, size, last-modified.
+2. **Rank** by confidence (broken/orphaned = high; merely old = low) and present as a numbered table. Cap each run at ~20 candidates — GC is periodic, not exhaustive.
+3. **Confirm one by one.** For each candidate show the evidence, then ask `[y/n/skip]`. The user can stop at any point.
+4. **Soft-delete confirmed items**: prefer `.disabled` rename for skills/hooks and `_gc_trash/&lt;date&gt;/` move for files. Permission entries live in JSON (no comments possible): back up the settings file, record each removed entry verbatim in `gc_log.md`, then remove it from the `allow` array with `jq`. Only hard-delete when the user explicitly asks.
+5. **Log** the run to `~/.claude/gc_log.md`: timestamp, items actioned, undo instructions.
+6. **Report**: reclaimed size, channels still healthy, suggested next review date.
+
+## Example Scan Commands
+
+Orphaned hook scripts (channel 3) — scripts on disk that no hook config references:
+
+```bash
+for f in ~/.claude/hooks/*; do
+  name=$(basename &quot;$f&quot;)
+  grep -rq &quot;$name&quot; ~/.claude/settings.json ~/.claude/settings.local.json 2&gt;/dev/null \
+    || echo &quot;ORPHAN: $f&quot;
+done
+```
+
+Redundant permission entries (channel 4) — duplicates, and specific grants shadowed by a wildcard:
+
+```bash
+jq -r &#x27;.permissions.allow[]&#x27; ~/.claude/settings.local.json | sort | uniq -d
+if jq -e &#x27;.permissions.allow | index(&quot;Bash(*)&quot;)&#x27; ~/.claude/settings.local.json &gt;/dev/null; then
+  jq -r &#x27;.permissions.allow[]&#x27; ~/.claude/settings.local.json \
+    | grep &#x27;^Bash(&#x27; | grep -vF &#x27;Bash(*)&#x27;
+fi
+```
+
+Largest stale caches (channel 8) — `du -k` instead of GNU-only `find -printf`, so it works on macOS/BSD too:
+
+```bash
+find ~/.claude/file-history ~/.claude/shell-snapshots -type f -mtime +30 \
+  -exec du -k {} + 2&gt;/dev/null | sort -rn | head -20
+```
+
+Soft-delete with undo path (capture the date once so the log can&#x27;t disagree with the directory):
+
+```bash
+gc_date=$(date +%Y-%m-%d)
+mkdir -p ~/.claude/_gc_trash/$gc_date
+mv ~/.claude/skills/dead-skill ~/.claude/_gc_trash/$gc_date/
+echo &quot;$(date -Iseconds) moved skills/dead-skill -&gt; _gc_trash/$gc_date/ (undo: mv back)&quot; &gt;&gt; ~/.claude/gc_log.md
+```
+
+Removing a confirmed-redundant permission entry (JSON has no comments — back up, log, then edit):
+
+```bash
+cp ~/.claude/settings.local.json ~/.claude/settings.local.json.bak
+echo &quot;$(date -Iseconds) removed permission entry: Bash(git push) (undo: restore from .bak or re-add)&quot; &gt;&gt; ~/.claude/gc_log.md
+jq &#x27;.permissions.allow -= [&quot;Bash(git push)&quot;]&#x27; ~/.claude/settings.local.json.bak \
+  &gt; ~/.claude/settings.local.json
+```
+
+## Anti-Patterns
+
+- **Bulk approval.** Asking &quot;delete all 15? [y/n]&quot; defeats the design. One item, one decision.
+- **Hard-deleting on first pass.** If there&#x27;s no `_gc_trash/` copy or `.disabled` rename, you did it wrong.
+- **Treating &quot;old&quot; as &quot;dead&quot;.** A skill untouched for 60 days may be seasonal (tax season, quarterly reviews). Age is a signal, not a verdict — that&#x27;s why a human confirms.
+- **Cleaning memory by truncation.** Merging two contradicting memory files requires reading both and keeping the newer truth, not deleting the longer one.
+- **Touching anything outside `~/.claude`** (or the project&#x27;s `.claude/`). Config GC never wanders into source trees.
+
+## Best Practices
+
+- Run after big additions, not just on a calendar: installing a 50-skill pack is exactly when overlap with existing skills appears.
+- When two skills overlap, prefer disabling the one with the weaker trigger description — it&#x27;s the one that was probably never firing anyway.
+- Permission cleanup is the highest-value channel per minute spent: redundant allow-entries make security review harder.
+- Keep `gc_log.md` forever. It&#x27;s tiny, and &quot;when did I disable that hook and why&quot; comes up more often than you&#x27;d think.
+
+## Related Skills
+
+- `skill-stocktake` — audits skill *quality*; config-gc audits skill *existence*. Run stocktake on what survives GC.
+- `workspace-surface-audit` — the additive counterpart: recommends what to install. config-gc is the subtractive half of the same lifecycle.
+- `configure-ecc` — after installing skills with it, run config-gc to reconcile overlaps with your pre-existing setup.
+- `continuous-learning` — produces the memory files this skill later audits.
+- `security-review` — pairs well with the permissions channel.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

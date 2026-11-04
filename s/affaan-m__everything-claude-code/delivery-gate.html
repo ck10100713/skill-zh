@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>delivery-gate｜Skill 寫法圖鑑</title>
+<meta name="description" content="Stop hook，磁碟不足或學習紀錄過期時機械式擋住 Claude 收工">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>delivery-gate</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/delivery-gate/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Stop hook，磁碟不足或學習紀錄過期時機械式擋住 Claude 收工</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: delivery-gate
+description: 一個 Stop hook，在品質檢查通過之前，擋住 Claude 結束工作。會偵測合理化的說法（表面文字的啟發式判斷）、過期的學習紀錄（檔案系統 mtime）和磁碟空間不足。透過機械式地強制執行學習記錄的習慣，來補足 self-audit。當要在品質檢查和學習記錄真的通過之前，機械式地擋住 Claude 宣稱工作完成時使用。
+metadata:
+  version: 1.1.1
+  origin: ECC
+---
+
+# Delivery Gate：給 Claude Code 的機械式品質關卡
+
+一個 **Stop hook**，在 Claude 結束 session 之前檢查三件事，只用**確定性的檢查**：檔案修改時間戳、磁碟用量，以及對 transcript 文字做的 regex 比對。沒有 AI 推論。
+
+這跟推理型的關卡（像 `self-audit`）不同：delivery-gate 檢查機器可以驗證的事實；self-audit 則是從四個推理面向檢查輸出品質。兩者合起來就是縱深防禦：
+- **delivery-gate**：「今天有動過學習資料庫嗎？磁碟空間安全嗎？」
+- **self-audit**：「檔案內容正確、完整而且誠實嗎？」
+
+這跟 CI pipeline 關卡是同一種模式：自動、確定性的檢查，驗證機器可讀的事實，而不是相信自己回報的狀態。
+
+## 它檢查什麼
+
+| 檢查 | 機制 | 命中時 |
+|-------|-----------|--------|
+| 合理化的說法 | 對 transcript 尾端做 regex | **只警告**（絕不阻擋） |
+| 過期的學習資料庫 | 5 個可設定路徑的 mtime | 部分過期就警告；在複雜任務中，&gt;=3 個過期，或 growth-log 過期，就**阻擋** |
+| 磁碟空間 &lt; 50GB | `shutil.disk_usage` | 提醒 |
+| 磁碟空間 &lt; 30GB | `shutil.disk_usage` | 警告 |
+| 磁碟空間 &lt; 15GB | `shutil.disk_usage` | **阻擋**（exit 2），每次 Stop 都阻擋 |
+
+合理化偵測會對「skip tests for now」和「pre-existing bug」這類說法發出警告，它們是思考可能被草草打住的表面訊號。它自己絕不會阻擋，因為 regex 的啟發式判斷可能誤報。會阻擋的條件是：磁碟到了危急程度（任何 session），或者在複雜任務（&gt;=3 次 Edit/Write 呼叫）中，`&gt;=3 個學習資料庫過期`，或 `growth-log` 特別過期。如果專案的記憶目錄不存在，就跳過學習資料庫的檢查：hook 只會警告它無法驗證學習記錄，複雜任務不會被阻擋（磁碟檢查仍然適用）。
+
+hook 對同一次 Stop 最多只阻擋一次。當 Claude Code 帶著 `stop_hook_active: true` 重新執行它（Claude 已經因為這個 hook 繼續過一次），它就 exit 0，所以 agent 修不好的狀況（例如磁碟空間不足）不會把 session 困在無窮迴圈裡。
+
+## 為什麼
+
+Claude Code 內建的檢查涵蓋程式碼品質（build → type → lint → test）。但還有一種不同的失敗模式：agent 產出了可以運作的程式碼，但 **session 的衛生被忽略了**：沒有記錄學習、有被合理化的捷徑、磁碟默默被用光。
+
+在很多次「出貨就忘」的 session 之後，人並沒有成長。這個 hook 強制執行這個習慣：複雜任務 → 必須動到學習資料庫。
+
+## 安裝
+
+從 ECC repository 的根目錄：
+
+```bash
+mkdir -p ~/.claude/scripts
+cp skills/delivery-gate/hooks/quality-gate.py ~/.claude/scripts/
+```
+
+加到 `~/.claude/settings.json`：
+```json
+{
+  &quot;hooks&quot;: {
+    &quot;Stop&quot;: [{
+      &quot;hooks&quot;: [{
+        &quot;type&quot;: &quot;command&quot;,
+        &quot;command&quot;: &quot;python3 ~/.claude/scripts/quality-gate.py&quot;,
+        &quot;timeout&quot;: 5
+      }]
+    }]
+  }
+}
+```
+
+## 學習資料庫
+
+在你專案的記憶目錄（`~/.claude/projects/&lt;encoded-project-path&gt;/memory/`，專案路徑中每個非英數字元都會變成 `-`）裡建立這些檔案。hook 會檢查其中哪些在今天更新過：
+
+```
+memory/
+├── growth-log/          # Daily learning entries (directory)
+├── decisions/log.md     # Decision log
+├── output-index.md      # Index of session outputs
+├── ratings-tracker.md   # Skill ratings over time
+└── tooling_capabilities.md  # Known tools inventory
+```
+
+自訂 `LIBS` dict 來符合你自己的檔案結構。
+
+## 設定
+
+編輯 `quality-gate.py`：
+
+| 變數 | 預設值 | 用途 |
+|----------|---------|---------|
+| `RATIONALIZE` | 4 個模式 | 偵測合理化說法的 regex 模式 |
+| `LIBS` | 5 個資料庫 | 要檢查今天是否有更新的檔案/目錄 |
+| `COMPLEX_THRESHOLD` | 3 | 判定為複雜任務所需的 Edit/Write 呼叫次數 |
+| `DISK_REMIND_GB` | 50 | 低於這個值就提醒 |
+| `DISK_WARN_GB` | 30 | 低於這個值就警告 |
+| `DISK_CRIT_GB` | 15 | 低於這個值就阻擋 |
+
+## 範例
+
+**簡單的 session，允許：**
+```
+edit_count=1 (&lt; 3, not complex) → exit 0
+```
+
+**複雜任務，有記錄學習，允許：**
+```
+edit_count=5 (complex) → checks LIBS → growth-log + 2 others updated today (2 stale) → exit 0
+```
+
+**複雜任務，沒有學習，阻擋：**
+```
+edit_count=4 (complex) → checks LIBS → all 5 stale → exit 2
+stderr: &quot;Blocked: complex task but &gt;=3 learning libs stale.&quot;
+```
+
+**磁碟空間不足，阻擋：**
+```
+disk_free=12GB &lt; 15GB critical → exit 2
+stderr: &quot;Blocked: disk space at 12GB (&lt;15GB). Free space before continuing.&quot;
+```
+
+## 限制
+
+這個 hook 強制執行的是動到學習資料庫的**習慣**，不是所記錄內容的**品質**。在複雜任務中，只有 `growth-log` 今天有更新，而且過期的資料庫最多 2 個，才會通過；光更新 `output-index.md` 仍然會被阻擋。沒有專案記憶目錄的話就沒東西可以檢查，所以只會警告。這是刻意的設計：機械式的關卡檢查的是機器可以驗證的事實。要驗證內容品質，要搭配 `self-audit`。
+
+## 相容性
+
+- Python 3.8+（使用 `from __future__ import annotations`）
+- 跨平台：Windows、macOS、Linux
+- 除了標準函式庫之外沒有任何相依套件
+
+## 品質
+
+這份程式碼經過 4 輪自動化 code review（CodeRabbit + Greptile），找出並修好了 9 個真正的 bug。
+
+## 另見
+
+- `self-audit`：推理品質關卡（完整性/一致性/有根據/誠實）
+- `verification-loop`：程式碼品質檢查（build/type/lint/test）
+- `gateguard`：PreToolUse 的安全關卡</pre></section><section><h2>英文原文</h2><pre>---
+name: delivery-gate
+description: Stop hook that blocks Claude from finishing until quality checks pass. Detects rationalization patterns (surface text heuristics), stale learning logs (filesystem mtime), and low disk space. Complements self-audit by mechanically enforcing learning capture habits. Use when Claude should be mechanically blocked from declaring work finished before quality checks and learning capture actually pass.
+metadata:
+  version: 1.1.1
+  origin: ECC
+---
+
+# Delivery Gate — Mechanical Quality Gate for Claude Code
+
+A **Stop hook** that checks three things before Claude can finish a session, using only **deterministic checks** — file modification timestamps, disk usage, and regex patterns on the transcript text. No AI inference.
+
+This is distinct from reasoning gates (like `self-audit`): delivery-gate checks machine-verifiable facts; self-audit checks output quality across four reasoning dimensions. Together they form defense in depth:
+- **delivery-gate**: &quot;Was the learning library touched today? Is disk space safe?&quot;
+- **self-audit**: &quot;Is the file content correct, complete, and honest?&quot;
+
+This is the same pattern as CI pipeline gates — automated, deterministic checks that verify machine-readable facts rather than trusting self-reported status.
+
+## What It Checks
+
+| Check | Mechanism | On Hit |
+|-------|-----------|--------|
+| Rationalization patterns | Regex on transcript tail | **Warning only** (never blocks) |
+| Stale learning libraries | mtime on 5 configurable paths | Warning if some stale; **Block** on a complex task if &gt;=3 stale OR growth-log stale |
+| Disk space &lt; 50GB | `shutil.disk_usage` | Reminder |
+| Disk space &lt; 30GB | `shutil.disk_usage` | Warning |
+| Disk space &lt; 15GB | `shutil.disk_usage` | **Block** (exit 2), on every Stop |
+
+Rationalization detection warns about patterns like &quot;skip tests for now&quot; and &quot;pre-existing bug&quot; — surface signals that thinking may have been cut short. It never blocks on its own, because regex heuristics can false-positive. The blocking conditions are: disk critical (any session), or, on a complex task (&gt;=3 Edit/Write calls), `&gt;=3 learning libs stale` OR `growth-log` specifically stale. If the project memory directory does not exist, the learning-library checks are skipped: the hook only warns that it cannot verify learning capture, and a complex task is not blocked (the disk checks still apply).
+
+The hook blocks a given Stop at most once. When Claude Code re-runs it with `stop_hook_active: true` (Claude already continued once because of this hook), it exits 0, so a condition the agent cannot fix (such as low disk space) cannot trap the session in an endless loop.
+
+## Why
+
+Claude Code&#x27;s built-in checks cover code quality (build → type → lint → test). But there&#x27;s a different failure mode: the agent produces working code while the **session hygiene was neglected** — learning not captured, rationalized shortcuts, disk running out silently.
+
+Over many sessions of &quot;ship and forget,&quot; the human hasn&#x27;t grown. This hook enforces the habit: complex task → must touch learning libraries.
+
+## Install
+
+From the ECC repository root:
+
+```bash
+mkdir -p ~/.claude/scripts
+cp skills/delivery-gate/hooks/quality-gate.py ~/.claude/scripts/
+```
+
+Add to `~/.claude/settings.json`:
+```json
+{
+  &quot;hooks&quot;: {
+    &quot;Stop&quot;: [{
+      &quot;hooks&quot;: [{
+        &quot;type&quot;: &quot;command&quot;,
+        &quot;command&quot;: &quot;python3 ~/.claude/scripts/quality-gate.py&quot;,
+        &quot;timeout&quot;: 5
+      }]
+    }]
+  }
+}
+```
+
+## Learning Libraries
+
+Create these files in your project&#x27;s memory directory (`~/.claude/projects/&lt;encoded-project-path&gt;/memory/`, where every non-alphanumeric character of the project path becomes `-`). The hook checks which of them were updated today:
+
+```
+memory/
+├── growth-log/          # Daily learning entries (directory)
+├── decisions/log.md     # Decision log
+├── output-index.md      # Index of session outputs
+├── ratings-tracker.md   # Skill ratings over time
+└── tooling_capabilities.md  # Known tools inventory
+```
+
+Customize the `LIBS` dict to match your own file structure.
+
+## Configuration
+
+Edit `quality-gate.py`:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `RATIONALIZE` | 4 patterns | Regex patterns for rationalization detection |
+| `LIBS` | 5 libraries | Files/dirs to check for today&#x27;s updates |
+| `COMPLEX_THRESHOLD` | 3 | Edit/Write calls to classify as complex |
+| `DISK_REMIND_GB` | 50 | Remind below this |
+| `DISK_WARN_GB` | 30 | Warn below this |
+| `DISK_CRIT_GB` | 15 | Block below this |
+
+## Examples
+
+**Simple session — allowed:**
+```
+edit_count=1 (&lt; 3, not complex) → exit 0
+```
+
+**Complex task, learning captured — allowed:**
+```
+edit_count=5 (complex) → checks LIBS → growth-log + 2 others updated today (2 stale) → exit 0
+```
+
+**Complex task, no learning — BLOCKED:**
+```
+edit_count=4 (complex) → checks LIBS → all 5 stale → exit 2
+stderr: &quot;Blocked: complex task but &gt;=3 learning libs stale.&quot;
+```
+
+**Low disk space — BLOCKED:**
+```
+disk_free=12GB &lt; 15GB critical → exit 2
+stderr: &quot;Blocked: disk space at 12GB (&lt;15GB). Free space before continuing.&quot;
+```
+
+## Limitations
+
+The hook enforces the **habit** of touching learning libraries, not the **quality** of what was recorded. On a complex task it passes only when `growth-log` was updated today and at most 2 libraries are stale; updating `output-index.md` alone still blocks. Without a project memory directory there is nothing to check, so it only warns. This is by design: mechanical gates check machine-verifiable facts. For content quality verification, pair with `self-audit`.
+
+## Compatibility
+
+- Python 3.8+ (uses `from __future__ import annotations`)
+- Cross-platform: Windows, macOS, Linux
+- Zero dependencies beyond stdlib
+
+## Quality
+
+This code went through 4 rounds of automated code review (CodeRabbit + Greptile) with 9 real bugs found and fixed.
+
+## See Also
+
+- `self-audit` — Reasoning quality gate (completeness/consistency/groundedness/honesty)
+- `verification-loop` — Code quality checks (build/type/lint/test)
+- `gateguard` — PreToolUse safety gate</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

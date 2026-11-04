@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cost-tracking｜Skill 寫法圖鑑</title>
+<meta name="description" content="從本機 metrics log 追蹤 Claude Code 的 token 用量和花費">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>cost-tracking</h1>
+<p class="meta">affaan-m ｜ 資料與分析 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/cost-tracking/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">從本機 metrics log 追蹤 Claude Code 的 token 用量和花費</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: cost-tracking
+description: 從本機 ECC cost-tracker 的 metrics log 追蹤並回報 Claude Code 的 token 用量、花費和預算。當使用者問到成本、花費、用量、tokens、預算，或想依模型、session、日期看成本明細時使用。
+metadata:
+  origin: community
+---
+
+# 成本追蹤
+
+用這個 skill 來分析 Claude Code 的成本與用量紀錄，資料來源是 ECC 的 `stop:cost-tracker` hook 寫出來的 metrics log。
+
+## 資料放在哪
+
+tracker 每次 session 結束（stop）就在 `~/.claude/metrics/costs.jsonl` 追加一個 JSON 物件。每一列都是**該 session 的累計快照**，所以要算總花費，得**每個 `session_id` 只取最新的那一列**，再把各 session 加總，每一列都加的話會重複計算。
+
+ECC 還會在 `~/.claude/metrics/cost-snapshots/` 底下維護內部的 per-session 檔案，讓 runtime hook 不用重掃整份歷史就能讀到目前 session 的總額。把這些檔案當成可以重建的快取就好；每份 snapshot 都存了一個 byte cursor，只會掃新追加的列。穩定狀態下讀取是 O(1)，更新是 O(新增的 bytes)。過期的項目會在 30 天後，或目錄超過 512 個 session 時清掉。冷啟動補資料的工作，每次 hook 呼叫上限 16 MiB，超過 1 MiB 且沒有換行結尾的壞掉列會被丟掉，並保留可以接續的 cursor。報表和匯出還是一律用 `costs.jsonl`。
+
+每列的 schema：
+
+| 欄位 | 意義 |
+| --- | --- |
+| `timestamp` | 快照的 ISO 時間戳 |
+| `session_id` | Claude Code 的 session 識別碼 |
+| `transcript_path` | session transcript 的路徑 |
+| `model` | 使用的模型 |
+| `input_tokens` / `output_tokens` | token 數量 |
+| `cache_write_tokens` / `cache_read_tokens` | prompt cache 的 token 數量 |
+| `estimated_cost_usd` | 預先算好的該 session 累計成本（美元） |
+
+要用 `estimated_cost_usd`，不要自己手算價格，因為模型和 cache 的價格會變，tracker 才是 source of truth。
+
+## 何時使用
+
+- 使用者問「我花了多少？」「這個 session 花了多少？」或「我的 token 用量是多少？」
+- 使用者提到預算、花費上限、超支或成本控管。
+- 使用者想依模型、session 或日期看成本明細，或要匯出 CSV。
+
+## 運作方式
+
+先確認 log 存在（用 `node`，不要用 `sqlite3`，因為 tracker 寫的是 JSONL，而且 `node` 跨平台）：
+
+```bash
+node -e &#x27;const fs=require(&quot;fs&quot;),os=require(&quot;os&quot;),p=require(&quot;path&quot;);const f=p.join(os.homedir(),&quot;.claude&quot;,&quot;metrics&quot;,&quot;costs.jsonl&quot;);console.log(fs.existsSync(f)?&quot;cost log found&quot;:&quot;cost log not found: &quot;+f)&#x27;
+```
+
+如果 log 不存在，不要編造用量資料。直接告訴使用者：要在啟用 `stop:cost-tracker` hook 的狀態下跑完第一個 session，成本追蹤才會有資料。
+
+## 範例：摘要、依模型分組、最近 7 天
+
+```bash
+node -e &#x27;
+const fs=require(&quot;fs&quot;),os=require(&quot;os&quot;),path=require(&quot;path&quot;);
+const f=path.join(os.homedir(),&quot;.claude&quot;,&quot;metrics&quot;,&quot;costs.jsonl&quot;);
+if(!fs.existsSync(f)){console.log(&quot;cost log not found: &quot;+f);process.exit(0);}
+const rows=fs.readFileSync(f,&quot;utf8&quot;).split(/\r?\n/).filter(Boolean).map(l=&gt;{try{return JSON.parse(l)}catch{return null}}).filter(Boolean);
+const bySession=new Map();
+for(const r of rows){const k=r.session_id||r.transcript_path||r.timestamp;const p=bySession.get(k);if(!p||String(r.timestamp)&gt;String(p.timestamp))bySession.set(k,r);}
+const latest=[...bySession.values()];
+const cost=r=&gt;Number(r.estimated_cost_usd)||0, day=r=&gt;String(r.timestamp||&quot;&quot;).slice(0,10), sum=a=&gt;a.reduce((s,r)=&gt;s+cost(r),0), f4=n=&gt;&quot;$&quot;+n.toFixed(4);
+const today=new Date().toISOString().slice(0,10), yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
+console.log(&quot;today: &quot;+f4(sum(latest.filter(r=&gt;day(r)===today)))+&quot; | yesterday: &quot;+f4(sum(latest.filter(r=&gt;day(r)===yest)))+&quot; | total: &quot;+f4(sum(latest))+&quot; (&quot;+latest.length+&quot; sessions)&quot;);
+const m=new Map();for(const r of latest){const k=r.model||&quot;(unknown)&quot;;m.set(k,(m.get(k)||0)+cost(r));}
+console.log(&quot;by model:&quot;);[...m.entries()].sort((a,b)=&gt;b[1]-a[1]).forEach(([k,v])=&gt;console.log(&quot;  &quot;+f4(v)+&quot;  &quot;+k));
+&#x27;
+```
+
+要看單一 session 的細節或匯出 CSV，就對同一個 `latest` 集合（CSV 的話用原始 rows）跑迴圈，印出你要的欄位。
+
+## 回報指引
+
+呈現成本資料時，要包含今天和昨天的花費對比、所有 session 的總額、依模型的明細，以及 session 數量。不到一美元的金額顯示四位小數，更大的金額顯示兩位。
+
+## 反模式
+
+- 不要把每一列都加總，它們是每個 session 的累計值；要先縮減成每個 `session_id` 的最新一列。
+- 有 `estimated_cost_usd` 的時候，不要用原始 token 數去估成本。
+- 不要沒檢查就假設 log 存在。
+- 不要在給使用者的回答裡寫死目前的模型價格。
+- 不要推薦安裝沒審查過、會執行任意程式碼的 hook 或 plugin。
+
+## 相關
+
+- `/cost-report` - 針對同一份 metrics log 的指令版報表。
+- `cost-aware-llm-pipeline` - 模型路由與預算設計的模式。
+- `token-budget-advisor` - context 與 token 預算規劃。
+- `strategic-compact` - 用 context 壓縮來減少重複花費的 token。</pre></section><section><h2>英文原文</h2><pre>---
+name: cost-tracking
+description: Track and report Claude Code token usage, spending, and budgets from the local ECC cost-tracker metrics log. Use when the user asks about costs, spending, usage, tokens, budgets, or cost breakdowns by model, session, or date.
+metadata:
+  origin: community
+---
+
+# Cost Tracking
+
+Use this skill to analyze Claude Code cost and usage history from the metrics log
+that ECC&#x27;s `stop:cost-tracker` hook writes.
+
+## Where the data lives
+
+The tracker appends one JSON object per session-stop to
+`~/.claude/metrics/costs.jsonl`. Each row is a **cumulative snapshot for that
+session**, so to total spend you take the **latest row per `session_id`** and
+sum across sessions — summing every row multiply-counts.
+
+ECC also maintains internal per-session files under
+`~/.claude/metrics/cost-snapshots/` so runtime hooks can read the current
+session total without rescanning all history. Treat those files as a
+rebuildable cache; each snapshot stores a byte cursor so only newly appended
+rows are scanned. Stable reads are O(1), while updates are O(new bytes). Stale
+entries are pruned after 30 days or when the directory exceeds 512 sessions.
+Cold catch-up work is limited to 16 MiB per hook invocation, and malformed
+unterminated rows larger than 1 MiB are discarded with a resumable cursor.
+Reports and exports should continue to use `costs.jsonl`.
+
+Row schema:
+
+| Field | Meaning |
+| --- | --- |
+| `timestamp` | ISO timestamp of the snapshot |
+| `session_id` | Claude Code session identifier |
+| `transcript_path` | Path to the session transcript |
+| `model` | Model used |
+| `input_tokens` / `output_tokens` | Token counts |
+| `cache_write_tokens` / `cache_read_tokens` | Prompt-cache token counts |
+| `estimated_cost_usd` | Precomputed cumulative cost in USD for the session |
+
+Prefer `estimated_cost_usd` over hand-calculating pricing — model and cache
+prices change, and the tracker is the source of truth.
+
+## When to Use
+
+- The user asks &quot;how much have I spent?&quot;, &quot;what did this session cost?&quot;, or
+  &quot;what is my token usage?&quot;
+- The user mentions budgets, spending limits, overruns, or cost controls.
+- The user wants a cost breakdown by model, session, or date, or a CSV export.
+
+## How It Works
+
+First verify the log exists (use `node`, not `sqlite3` — the tracker writes
+JSONL, and `node` is cross-platform):
+
+```bash
+node -e &#x27;const fs=require(&quot;fs&quot;),os=require(&quot;os&quot;),p=require(&quot;path&quot;);const f=p.join(os.homedir(),&quot;.claude&quot;,&quot;metrics&quot;,&quot;costs.jsonl&quot;);console.log(fs.existsSync(f)?&quot;cost log found&quot;:&quot;cost log not found: &quot;+f)&#x27;
+```
+
+If the log is missing, do not fabricate usage data. Tell the user that cost
+tracking populates after the first session ends with the `stop:cost-tracker`
+hook enabled.
+
+## Example — summary, by model, last 7 days
+
+```bash
+node -e &#x27;
+const fs=require(&quot;fs&quot;),os=require(&quot;os&quot;),path=require(&quot;path&quot;);
+const f=path.join(os.homedir(),&quot;.claude&quot;,&quot;metrics&quot;,&quot;costs.jsonl&quot;);
+if(!fs.existsSync(f)){console.log(&quot;cost log not found: &quot;+f);process.exit(0);}
+const rows=fs.readFileSync(f,&quot;utf8&quot;).split(/\r?\n/).filter(Boolean).map(l=&gt;{try{return JSON.parse(l)}catch{return null}}).filter(Boolean);
+const bySession=new Map();
+for(const r of rows){const k=r.session_id||r.transcript_path||r.timestamp;const p=bySession.get(k);if(!p||String(r.timestamp)&gt;String(p.timestamp))bySession.set(k,r);}
+const latest=[...bySession.values()];
+const cost=r=&gt;Number(r.estimated_cost_usd)||0, day=r=&gt;String(r.timestamp||&quot;&quot;).slice(0,10), sum=a=&gt;a.reduce((s,r)=&gt;s+cost(r),0), f4=n=&gt;&quot;$&quot;+n.toFixed(4);
+const today=new Date().toISOString().slice(0,10), yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
+console.log(&quot;today: &quot;+f4(sum(latest.filter(r=&gt;day(r)===today)))+&quot; | yesterday: &quot;+f4(sum(latest.filter(r=&gt;day(r)===yest)))+&quot; | total: &quot;+f4(sum(latest))+&quot; (&quot;+latest.length+&quot; sessions)&quot;);
+const m=new Map();for(const r of latest){const k=r.model||&quot;(unknown)&quot;;m.set(k,(m.get(k)||0)+cost(r));}
+console.log(&quot;by model:&quot;);[...m.entries()].sort((a,b)=&gt;b[1]-a[1]).forEach(([k,v])=&gt;console.log(&quot;  &quot;+f4(v)+&quot;  &quot;+k));
+&#x27;
+```
+
+For a session drilldown or CSV export, iterate the same `latest` set (or the raw
+rows for CSV) and print the fields you need.
+
+## Reporting Guidance
+
+When presenting cost data, include today&#x27;s spend vs yesterday, total across all
+sessions, a by-model breakdown, and session count. Format sub-dollar amounts
+with four decimals, larger amounts with two.
+
+## Anti-Patterns
+
+- Do not sum every row — they are cumulative per session; reduce to the latest
+  row per `session_id` first.
+- Do not estimate costs from raw token counts when `estimated_cost_usd` is present.
+- Do not assume the log exists without checking.
+- Do not hard-code current model pricing in user-facing answers.
+- Do not recommend installing unreviewed hooks or plugins that execute arbitrary code.
+
+## Related
+
+- `/cost-report` - Command-form report over the same metrics log.
+- `cost-aware-llm-pipeline` - Model-routing and budget-design patterns.
+- `token-budget-advisor` - Context and token-budget planning.
+- `strategic-compact` - Context compaction to reduce repeated token spend.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

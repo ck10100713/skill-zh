@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sprint-status｜Skill 寫法圖鑑</title>
+<meta name="description" content="快速掃一眼 sprint 進度、burndown 和過時的 story">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>sprint-status</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/sprint-status/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">快速掃一眼 sprint 進度、burndown 和過時的 story</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: sprint-status
+description: &quot;快速精簡的 sprint 快照：burndown 和浮現中的風險，用來掌握現況。&#x27;How is the sprint going?&#x27;&quot;
+argument-hint: &quot;[sprint-number or blank for current]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash(bash &quot;*/.claude/skills/sprint-status/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash &quot;*/.claude/skills/sprint-status/../../scripts/story-status.sh&quot;), Bash(bash .claude/scripts/story-status.sh*)
+model: haiku
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys story_granularity,workflow`
+
+
+
+# Sprint Status
+
+這是快速掌握現況的檢查，不是 sprint 審查。它會讀目前的
+sprint 計畫和 story 檔案、掃描狀態標記，並在 30 行以內產出一份
+精簡的快照。要做詳細的 sprint 管理，用
+`/sprint-plan update` 或 `/milestone-review`。
+
+**這個 skill 是唯讀的。** 它絕對不會提議修改、絕對不會要求寫檔，
+而且最多只給一個具體的建議。
+
+**`story_granularity`**：它決定
+burn-down 判讀的粒度：`coarse`（預設，透過 `rigor: minimal`）是**功能等級**的區塊，`balanced`（`rigor: standard`）是**任務等級**，
+`fine` 是 **AC 等級**。
+
+---
+
+## 1. Find the Sprint
+
+**參數：** `$ARGUMENTS`（空白 = 用目前的 sprint）
+
+- 如果有給參數（例如 `/sprint-status 3`），在
+  `production/sprints/` 裡搜尋符合 `sprint-003.md`、`sprint-03.md`、`sprint-3.md`
+  或類似名稱的檔案（`/sprint-plan` 寫的是三位數）。要回報找到哪個檔案。
+- 如果沒有給參數，找 `production/sprints/` 裡最近修改的檔案，
+  把它當成目前的 sprint。
+- 如果 `production/sprints/` 不存在或是空的：
+  - **在 `workflow: minimal` 時，依設計就沒有 sprint**：brief 的
+    build order 就是計畫，story 檔案承載它。改為回報
+    它的進度，然後停下來：
+    1. 下面的清單是在你讀這個 skill 之前，由 `.claude/scripts/story-status.sh`
+       印出來的：每個未完成的 story 一行，已經依
+       路線的順序排好（`IN_REVIEW`、`IN_PROGRESS`，然後是 `TODO`：`Ready`
+       或 `Not Started` 的 story，依 build order），接著是 `BLOCKED`、`OTHER`、
+       `NO_STATUS` 和 `COMPLETE` 的數量：
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../scripts/story-status.sh&quot;`
+
+    2. 在 15 行以內印出：`Build order: [N] of [M] stories complete`
+       取自 `COMPLETE` 那一行（只計算 `Complete` 和 `Done` 的 story：
+       `In Review` 不算完成），然後是 **Next**：第一個 `IN_REVIEW`、
+       `IN_PROGRESS` 或 `TODO` 那一行的 story。清單已經是
+       最新的；不要再跑一次腳本，也不要重新排序 story 檔案：`In Review` 的 story 要先結掉，
+       才繼續 `In Progress` 的：它的工作已經寫完了。`IN_REVIEW` 建議
+       `/story-done [path]`，`IN_PROGRESS` 或 `TODO` 建議
+       `/dev-story [path]`。任何 `BLOCKED` 的 story 要連同它的 blocker 一起點名；它
+       絕對不會是 Next。
+    3. 每個 story 都是 `Complete`（或 `Done`）→ &quot;Build order done: [M] of [M]
+       stories complete.&quot; 提供三條路往下走：玩玩這個 build；用 `/create-stories`
+       從 brief 加入下一批 story；或者如果遊戲已經超出一頁 brief 的範圍，
+       用 `/settings` 提高 `modes.rigor`。
+    4. `STORIES none`：完全沒有 story 檔案 → &quot;No stories yet. Run
+       `/create-stories` to turn the brief&#x27;s build order into stories.&quot;
+    5. 沒有 `IN_REVIEW`、`IN_PROGRESS` 或 `TODO` 那一行，但 `COMPLETE` 那一行
+       少於總數：每個未完成的 story 都是 `BLOCKED`、`OTHER`
+       （例如 `Draft`）或 `NO_STATUS`。**沒有 Next**，而且 build
+       order **沒有**完成：絕對不要說它完成了。印出 `Build order` 那一行，
+       然後逐一點名每個 `BLOCKED` 的 story 和它的 blocker（從它的 story
+       檔案讀，通常是 `BLOCKED:` 的備註），以及其他每個 story 和它寫的
+       狀態。建議一個步驟：第一個 blocker 需要什麼，否則
+       就是完成第一個 `Draft` 或沒有狀態的 story，並把它的 Status 設成
+       `Ready`。
+  - **在 `standard` 或 `full` 時**，回報：&quot;No sprint files found. Start a sprint
+    with `/sprint-plan new`.&quot; 然後停下來。
+
+完整讀 sprint 檔案。擷取：
+- Sprint 編號和目標
+- 開始日期和結束日期
+- 所有 story 或任務條目，附上它們的優先順序（Must Have / Should Have /
+  Nice to Have）、負責人和估算
+
+---
+
+## 2. Calculate Days Remaining
+
+使用今天的日期和 sprint 檔案裡的 sprint 結束日期，計算：
+- sprint 總天數（結束減開始）
+- 已經過的天數
+- 剩餘天數
+- 已消耗時間的百分比
+
+如果 sprint 檔案沒有明確的日期，註記 &quot;Sprint dates not
+found — burndown assessment skipped.&quot;
+
+---
+
+## 3. Scan Story Status
+
+**首先：檢查 `production/sprint-status.yaml`。**
+
+如果它存在，直接讀它：它是權威的事實來源。
+擷取每個 story 的 `status`，以及有設定時的 `priority`、`owner` 和 `blocker`：它們填進狀態表的欄位。不需要掃描 markdown。
+用它的 `sprint`、`goal`、`start`、`end` 欄位，不要重新解析 sprint 計畫。
+
+**如果 `sprint-status.yaml` 不存在**（舊版 sprint 或第一次設定），
+退而掃描 markdown：
+
+1. 如果條目引用了 story 檔案路徑，檢查檔案是否存在。
+   讀檔案並掃描狀態標記：DONE、COMPLETE、IN PROGRESS、
+   BLOCKED、NOT STARTED（不分大小寫）。
+2. 如果條目沒有檔案路徑（sprint 計畫裡的 inline 任務），掃描
+   sprint 計畫本身，找那個條目旁邊的狀態標記。
+3. 如果找不到狀態標記，分類為 NOT STARTED。
+4. 如果引用了檔案但它不存在，分類為 MISSING 並記下來。
+
+使用備援做法時，在輸出底部加一則註記：
+&quot;⚠ No `sprint-status.yaml` found — status inferred from markdown. Run `/sprint-plan update` to generate one.&quot;
+
+可選的（只做快速檢查，不要做深度掃描）：在程式碼根目錄 grep
+符合 story 系統 slug 的目錄或檔名，檢查有沒有實作的證據。
+這只是提示，不是確定的狀態。
+
+### Stale Story Detection
+
+收集完所有 story 的狀態之後，檢查每個 IN PROGRESS 的 story 是否過時：
+
+- 用**對整組 story 做一次 grep，不要每個 story 各讀一次**
+  來解析日期：日期是單獨一行，為了找它而打開每個進行中的 story，
+  就是這項檢查的全部成本：
+  ```
+  Grep pattern=&quot;\*{0,2}(Last Updated|Updated|last-updated|updated_at)\*{0,2}[[:space:]]*:&quot; glob=&quot;production/epics/**/story-*.md&quot; output_mode=&quot;content&quot;
+  ```
+  那一個 pattern 接受所有欄位名稱的變體。沒有符合的 story 就是
+  **沒有日期**，這不等於過時：把它回報成 &quot;never stamped&quot;，
+  而且不要為它計算天數。
+
+&gt; **`\*{0,2}` 這些包覆是它能運作的根本原因。** `/create-stories` 輸出
+&gt; `&gt; **Last Updated**: …`，所以要求單字後面緊接 `:` 的 pattern
+&gt; 一個 story 都比對不到。再加上緊接在上面的「沒有符合 = never stamped」規則，
+&gt; 那個失敗是靜默的：每個進行中的 story 都回報成 never
+&gt; stamped，過時 story 偵測永遠不會觸發。不要使用單純的 `Updated:`
+&gt; 錨點。
+- 用今天的日期計算距離那個日期的天數。
+- 如果日期超過 4 天前，把 story 標記為 **STALE**。（4 天的門檻考慮到週末：星期五最後碰過的 story，要到星期三才會顯示為過時。）
+- 如果在 story 檔案裡找不到日期欄位，註記 &quot;no timestamp — cannot check staleness.&quot;
+- 如果 story 沒有引用的檔案（inline 任務），註記 &quot;inline task — cannot check staleness.&quot;
+
+STALE 的 story 會列在輸出表格裡，並收集到一個 &quot;Attention Needed&quot;
+段落（見 Phase 5 的輸出格式）。
+
+**過時 story 的升級**：如果任何 IN PROGRESS 的 story 被標為 STALE（4 天以上沒有進展），burndown 的結論
+至少升級為 **At Risk**：即使完成百分比在正常的
+On Track 範圍內。記錄這個升級的原因：&quot;At Risk — [S] stale story(ies): [title]
+([D] days)[, …]&quot;：[S] 是 STALE 的 story 數量，每個 story 都用它自己的 [D] 點名，
+就是從它自己的 Last Updated 日期起算的天數（不是最久的天數，也不是平均值）。
+
+---
+
+## 4. Burndown Assessment
+
+計算：
+- 已完成的任務（DONE 或 COMPLETE）
+- 進行中的任務（IN PROGRESS）
+- 被阻擋的任務（BLOCKED）
+- 尚未開始的任務（NOT STARTED 或 MISSING）
+- 完成百分比：(complete / total) * 100
+
+把完成百分比跟已消耗時間百分比做比較，來評估 burndown：
+
+- **On Track**：完成 % 在已消耗時間 % 的 10 個百分點以內，或是領先
+- **At Risk**：完成 % 落後已消耗時間 % 10-25 個百分點
+- **Behind**：完成 % 落後已消耗時間 % 超過 25 個百分點
+
+如果沒有日期，跳過 burndown 評估，回報 &quot;On Track /
+At Risk / Behind: unknown — sprint dates not found.&quot;
+
+---
+
+## 5. Output
+
+輸出要精簡。story 狀態表是必備的：不要截斷它。總共目標在 50 行以內；如果沒發現什麼值得注意的，就省略 Emerging Risks 段落。使用這個格式：
+
+```markdown
+## Sprint [N] Status — [Today&#x27;s Date]
+**Sprint Goal**: [from sprint plan]
+**Days Remaining**: [N] of [total] ([% time consumed])
+
+### Progress: [complete/total] tasks ([%])
+
+| Story / Task         | Priority   | Status      | Owner   | Blocker        |
+|----------------------|------------|-------------|---------|----------------|
+| [title]              | Must Have  | DONE        | [owner] |                |
+| [title]              | Must Have  | IN PROGRESS | [owner] |                |
+| [title]              | Must Have  | BLOCKED     | [owner] | [brief reason] |
+| [title]              | Should Have| NOT STARTED | [owner] |                |
+
+### Attention Needed
+| Story / Task         | Status      | Last Updated   | Days Stale | Note           |
+|----------------------|-------------|----------------|------------|----------------|
+| [title]              | IN PROGRESS | [date or N/A]  | [N days]   | [STALE / no timestamp — cannot check staleness / inline task — cannot check staleness] |
+
+*(Omit this section entirely if no IN PROGRESS stories are stale or have timestamp concerns.)*
+
+### Burndown: [On Track / At Risk / Behind]
+[1-2 sentences. If behind: which Must Haves are at risk. If on track: confirm
+and note any Should Haves the team could pull.]
+
+### Must-Haves at Risk
+[List any Must Have stories that are BLOCKED or NOT STARTED with less than
+40% of sprint time remaining. If none, write &quot;None.&quot;]
+
+### Emerging Risks
+[Any risks visible from the story scan: missing files, cascading blockers,
+stories with no owner. If none, write &quot;None identified.&quot;]
+
+### Recommendation
+[One concrete action, or &quot;Sprint is on track — no action needed.&quot;]
+```
+
+---
+
+## 6. Fast Escalation Rules
+
+輸出之前套用這些規則，如果觸發了，把旗標放在輸出的最上面
+（狀態表之上）：
+
+**Critical flag**：如果 Must Have 的 story 是 BLOCKED 或 NOT STARTED，而且
+sprint 剩餘時間少於 40%：
+
+```
+SPRINT AT RISK: [N] Must Have stories are not complete with [X]% of sprint
+time remaining. Recommend replanning with `/sprint-plan update`.
+```
+
+**Completion flag**：如果所有 Must Have 的 story 都是 DONE：
+
+```
+All Must Haves complete. Team can pull from Should Have backlog.
+```
+
+**Missing stories flag**：如果任何引用的 story 檔案不存在：
+
+```
+NOTE: [N] story files referenced in the sprint plan are missing.
+Run `/story-readiness sprint` to validate story file coverage.
+```
+
+---
+
+## Collaborative Protocol
+
+這個 skill 是唯讀的。它回報的是從磁碟上的檔案觀察到的事實。
+
+- 它不會更新 sprint 計畫
+- 它不會改變 story 狀態
+- 它不會提議砍範圍（那是 `/sprint-plan update`）
+- 它每次執行最多給一個建議
+
+要看某個特定 story 的更多細節，使用者可以直接讀 story 檔案，
+或是跑 `/story-readiness [path]`。
+
+要重新規劃 sprint，用 `/sprint-plan update`。
+要做 sprint 結束時的回顧，用 `/retrospective`。</pre></section><section><h2>英文原文</h2><pre>---
+name: sprint-status
+description: &quot;Fast, concise sprint snapshot — burndown and emerging risks for situational awareness. &#x27;How is the sprint going?&#x27;&quot;
+argument-hint: &quot;[sprint-number or blank for current]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash(bash &quot;*/.claude/skills/sprint-status/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash &quot;*/.claude/skills/sprint-status/../../scripts/story-status.sh&quot;), Bash(bash .claude/scripts/story-status.sh*)
+model: haiku
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys story_granularity,workflow`
+
+
+
+# Sprint Status
+
+This is a fast situational awareness check, not a sprint review. It reads the
+current sprint plan and story files, scans for status markers, and produces a
+concise snapshot in under 30 lines. For detailed sprint management, use
+`/sprint-plan update` or `/milestone-review`.
+
+**This skill is read-only.** It never proposes changes, never asks to write
+files, and makes at most one concrete recommendation.
+
+**`story_granularity`** — it sets the
+grain of the burn-down read: **feature-sized** chunks at `coarse` (the default, via `rigor: minimal`), **task-sized**
+at `balanced` (`rigor: standard`), **AC-sized** at `fine`.
+
+---
+
+## 1. Find the Sprint
+
+**Argument:** `$ARGUMENTS` (blank = use current sprint)
+
+- If an argument is given (e.g., `/sprint-status 3`), search
+  `production/sprints/` for a file matching `sprint-003.md`, `sprint-03.md`, `sprint-3.md`,
+  or similar (`/sprint-plan` writes three digits). Report which file was found.
+- If no argument is given, find the most recently modified file in
+  `production/sprints/` and treat it as the current sprint.
+- If `production/sprints/` does not exist or is empty:
+  - **At `workflow: minimal` there are no sprints by design** — the brief&#x27;s
+    build order is the plan and the story files carry it. Report progress
+    through it instead, then stop:
+    1. The list below was printed by `.claude/scripts/story-status.sh`
+       before you read this skill: one line per unfinished story, already in
+       the route&#x27;s order (`IN_REVIEW`, `IN_PROGRESS`, then `TODO` — a `Ready`
+       or `Not Started` story — in build order), then `BLOCKED`, `OTHER`,
+       `NO_STATUS` and the `COMPLETE` count:
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../scripts/story-status.sh&quot;`
+
+    2. Print, in under 15 lines: `Build order: [N] of [M] stories complete`
+       from the `COMPLETE` line (count only `Complete` and `Done` stories —
+       `In Review` is not complete), then **Next**: the story on the first
+       `IN_REVIEW`, `IN_PROGRESS` or `TODO` line. The list is already
+       current; do not run the script again, and do not re-rank the story files — an `In Review` story is closed before an
+       `In Progress` one continues: its work is written. Recommend
+       `/story-done [path]` for `IN_REVIEW`, `/dev-story [path]` for
+       `IN_PROGRESS` or `TODO`. Name any `BLOCKED` story with its blocker; it is
+       never Next.
+    3. Every story `Complete` (or `Done`) → &quot;Build order done: [M] of [M]
+       stories complete.&quot; Offer three ways on: play the build; add the next
+       stories from the brief with `/create-stories`; or `/settings` to raise
+       `modes.rigor` if the game has outgrown a one-page brief.
+    4. `STORIES none` — no story files at all → &quot;No stories yet. Run
+       `/create-stories` to turn the brief&#x27;s build order into stories.&quot;
+    5. No `IN_REVIEW`, `IN_PROGRESS` or `TODO` line, yet the `COMPLETE` line
+       is short of the total — every unfinished story is `BLOCKED`, `OTHER`
+       (such as `Draft`) or `NO_STATUS`. There is **no Next**, and the build
+       order is **not** done: never say it is. Print the `Build order` line,
+       then name each `BLOCKED` story with its blocker — read from its story
+       file, usually a `BLOCKED:` note — and each other story with its status
+       as written. Recommend one step: what the first blocker needs, or else
+       finishing the first `Draft` or unstatused story and setting its Status
+       to `Ready`.
+  - **At `standard` or `full`**, report: &quot;No sprint files found. Start a sprint
+    with `/sprint-plan new`.&quot; Then stop.
+
+Read the sprint file in full. Extract:
+- Sprint number and goal
+- Start date and end date
+- All story or task entries with their priority (Must Have / Should Have /
+  Nice to Have), owner, and estimate
+
+---
+
+## 2. Calculate Days Remaining
+
+Using today&#x27;s date and the sprint end date from the sprint file, calculate:
+- Total sprint days (end minus start)
+- Days elapsed
+- Days remaining
+- Percentage of time consumed
+
+If the sprint file does not include explicit dates, note &quot;Sprint dates not
+found — burndown assessment skipped.&quot;
+
+---
+
+## 3. Scan Story Status
+
+**First: check for `production/sprint-status.yaml`.**
+
+If it exists, read it directly — it is the authoritative source of truth.
+Extract each story&#x27;s `status`, and its `priority`, `owner` and `blocker` when set — they fill the status table&#x27;s columns. No markdown scanning needed.
+Use its `sprint`, `goal`, `start`, `end` fields instead of re-parsing the sprint plan.
+
+**If `sprint-status.yaml` does not exist** (legacy sprint or first-time setup),
+fall back to markdown scanning:
+
+1. If the entry references a story file path, check if the file exists.
+   Read the file and scan for status markers: DONE, COMPLETE, IN PROGRESS,
+   BLOCKED, NOT STARTED (case-insensitive).
+2. If the entry has no file path (inline task in the sprint plan), scan the
+   sprint plan itself for status markers next to that entry.
+3. If no status marker is found, classify as NOT STARTED.
+4. If a file is referenced but does not exist, classify as MISSING and note it.
+
+When using the fallback, add a note at the bottom of the output:
+&quot;⚠ No `sprint-status.yaml` found — status inferred from markdown. Run `/sprint-plan update` to generate one.&quot;
+
+Optionally (fast check only — do not do a deep scan): grep the code root for a
+directory or file name that matches the story&#x27;s system slug to check for
+implementation evidence. This is a hint only, not a definitive status.
+
+### Stale Story Detection
+
+After collecting status for all stories, check each IN PROGRESS story for staleness:
+
+- Resolve the dates with **one grep across the story set, not a read per story**
+  — a date is a single line, and opening every in-progress story to find it is
+  the whole cost of this check:
+  ```
+  Grep pattern=&quot;\*{0,2}(Last Updated|Updated|last-updated|updated_at)\*{0,2}[[:space:]]*:&quot; glob=&quot;production/epics/**/story-*.md&quot; output_mode=&quot;content&quot;
+  ```
+  That one pattern accepts every field-name variant. A story with no match has
+  **no date**, which is not the same as being stale — report it as &quot;never
+  stamped&quot; and do not compute an age for it.
+
+&gt; **The `\*{0,2}` wrappers are why this works at all.** `/create-stories` emits
+&gt; `&gt; **Last Updated**: …`, so a pattern requiring `:` immediately after the word
+&gt; matches no story. Combined with the &quot;no match = never stamped&quot; rule directly
+&gt; above, that failure is silent: every in-progress story reports as never
+&gt; stamped and stale-story detection never fires. Do not use a bare `Updated:`
+&gt; anchor.
+- Calculate days since that date using today&#x27;s date.
+- If the date is more than 4 days ago, flag the story as **STALE**. (4-day threshold accounts for weekends — a story last touched on Friday won&#x27;t appear stale until Wednesday.)
+- If no date field is found in the story file, note &quot;no timestamp — cannot check staleness.&quot;
+- If the story has no referenced file (inline task), note &quot;inline task — cannot check staleness.&quot;
+
+STALE stories are included in the output table and collected into an &quot;Attention Needed&quot;
+section (see Phase 5 output format).
+
+**Stale story escalation**: If any IN PROGRESS story is flagged STALE (no progress in 4+ days), the burndown verdict
+is upgraded to at least **At Risk** — even if the completion percentage is within the normal
+On Track window. Record this escalation reason: &quot;At Risk — [S] stale story(ies): [title]
+([D] days)[, …]&quot; — [S] is how many stories are STALE, and each is named with its own [D],
+the days since its own Last Updated date (not the oldest age, not an average).
+
+---
+
+## 4. Burndown Assessment
+
+Calculate:
+- Tasks complete (DONE or COMPLETE)
+- Tasks in progress (IN PROGRESS)
+- Tasks blocked (BLOCKED)
+- Tasks not started (NOT STARTED or MISSING)
+- Completion percentage: (complete / total) * 100
+
+Assess burndown by comparing completion percentage to time consumed percentage:
+
+- **On Track**: completion % is within 10 points of time consumed % or ahead
+- **At Risk**: completion % is 10-25 points behind time consumed %
+- **Behind**: completion % is more than 25 points behind time consumed %
+
+If dates are unavailable, skip the burndown assessment and report &quot;On Track /
+At Risk / Behind: unknown — sprint dates not found.&quot;
+
+---
+
+## 5. Output
+
+Keep the output concise. The story status table is mandatory — do not truncate it. Aim for under 50 lines total; omit the Emerging Risks section if nothing notable was found. Use this format:
+
+```markdown
+## Sprint [N] Status — [Today&#x27;s Date]
+**Sprint Goal**: [from sprint plan]
+**Days Remaining**: [N] of [total] ([% time consumed])
+
+### Progress: [complete/total] tasks ([%])
+
+| Story / Task         | Priority   | Status      | Owner   | Blocker        |
+|----------------------|------------|-------------|---------|----------------|
+| [title]              | Must Have  | DONE        | [owner] |                |
+| [title]              | Must Have  | IN PROGRESS | [owner] |                |
+| [title]              | Must Have  | BLOCKED     | [owner] | [brief reason] |
+| [title]              | Should Have| NOT STARTED | [owner] |                |
+
+### Attention Needed
+| Story / Task         | Status      | Last Updated   | Days Stale | Note           |
+|----------------------|-------------|----------------|------------|----------------|
+| [title]              | IN PROGRESS | [date or N/A]  | [N days]   | [STALE / no timestamp — cannot check staleness / inline task — cannot check staleness] |
+
+*(Omit this section entirely if no IN PROGRESS stories are stale or have timestamp concerns.)*
+
+### Burndown: [On Track / At Risk / Behind]
+[1-2 sentences. If behind: which Must Haves are at risk. If on track: confirm
+and note any Should Haves the team could pull.]
+
+### Must-Haves at Risk
+[List any Must Have stories that are BLOCKED or NOT STARTED with less than
+40% of sprint time remaining. If none, write &quot;None.&quot;]
+
+### Emerging Risks
+[Any risks visible from the story scan: missing files, cascading blockers,
+stories with no owner. If none, write &quot;None identified.&quot;]
+
+### Recommendation
+[One concrete action, or &quot;Sprint is on track — no action needed.&quot;]
+```
+
+---
+
+## 6. Fast Escalation Rules
+
+Apply these rules before outputting, and place the flag at the TOP of the
+output if triggered (above the status table):
+
+**Critical flag** — if Must Have stories are BLOCKED or NOT STARTED and
+less than 40% of the sprint time remains:
+
+```
+SPRINT AT RISK: [N] Must Have stories are not complete with [X]% of sprint
+time remaining. Recommend replanning with `/sprint-plan update`.
+```
+
+**Completion flag** — if all Must Have stories are DONE:
+
+```
+All Must Haves complete. Team can pull from Should Have backlog.
+```
+
+**Missing stories flag** — if any referenced story files do not exist:
+
+```
+NOTE: [N] story files referenced in the sprint plan are missing.
+Run `/story-readiness sprint` to validate story file coverage.
+```
+
+---
+
+## Collaborative Protocol
+
+This skill is read-only. It reports observed facts from files on disk.
+
+- It does not update the sprint plan
+- It does not change story status
+- It does not propose scope cuts (that is `/sprint-plan update`)
+- It makes at most one recommendation per run
+
+For more detail on a specific story, the user can read the story file directly
+or run `/story-readiness [path]`.
+
+For sprint replanning, use `/sprint-plan update`.
+For end-of-sprint retrospective, use `/retrospective`.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

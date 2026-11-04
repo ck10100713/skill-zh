@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Pythonic 慣用寫法、type hint、並行與工具設定的最佳實踐">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>python-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/python-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Pythonic 慣用寫法、type hint、並行與工具設定的最佳實踐</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: python-patterns
+description: Pythonic 慣用寫法、PEP 8 標準、type hint，以及建構穩健、高效、好維護的 Python 應用程式的最佳實踐。撰寫或 review Python 程式碼，且慣用的結構、型別標註或 PEP 8 有疑問時使用。
+metadata:
+  origin: ECC
+---
+
+# Python 開發模式
+
+建構穩健、高效、好維護的應用程式所需的 Python 慣用模式與最佳實踐。
+
+## 何時啟用
+
+- 撰寫新的 Python 程式碼
+- Review Python 程式碼
+- 重構既有的 Python 程式碼
+- 設計 Python 的 package/模組
+
+## 核心原則
+
+### 1. 可讀性很重要
+
+Python 把可讀性放在第一位。程式碼應該一目了然、容易理解。
+
+```python
+# Good: 清楚、好讀
+def get_active_users(users: list[User]) -&gt; list[User]:
+    &quot;&quot;&quot;Return only active users from the provided list.&quot;&quot;&quot;
+    return [user for user in users if user.is_active]
+
+
+# Bad: 很聰明但讓人看不懂
+def get_active_users(u):
+    return [x for x in u if x.a]
+```
+
+### 2. 明確優於隱含
+
+避免魔法；要清楚說明你的程式碼在做什麼。
+
+```python
+# Good: 明確的設定
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=&#x27;%(asctime)s - %(name)s - %(levelname)s - %(message)s&#x27;
+)
+
+# Bad: 隱藏的副作用
+import some_module
+some_module.setup()  # 這在做什麼？
+```
+
+### 3. EAFP：請求原諒比請求許可容易
+
+Python 偏好用例外處理，而不是檢查條件。
+
+```python
+# Good: EAFP 風格
+def get_value(dictionary: dict, key: str, default_value: Any = None) -&gt; Any:
+    try:
+        return dictionary[key]
+    except KeyError:
+        return default_value
+
+# Bad: LBYL（Look Before You Leap）風格
+def get_value(dictionary: dict, key: str, default_value: Any = None) -&gt; Any:
+    if key in dictionary:
+        return dictionary[key]
+    else:
+        return default_value
+```
+
+## Type Hint
+
+### 基本型別標註
+
+```python
+from typing import Optional, List, Dict, Any
+
+def process_user(
+    user_id: str,
+    data: Dict[str, Any],
+    active: bool = True
+) -&gt; Optional[User]:
+    &quot;&quot;&quot;Process a user and return the updated User or None.&quot;&quot;&quot;
+    if not active:
+        return None
+    return User(user_id, data)
+```
+
+### 現代的 Type Hint（Python 3.9+）
+
+```python
+# Python 3.9+：使用內建型別
+def process_items(items: list[str]) -&gt; dict[str, int]:
+    return {item: len(item) for item in items}
+
+# Python 3.8 以前：使用 typing 模組
+from typing import List, Dict
+
+def process_items(items: List[str]) -&gt; Dict[str, int]:
+    return {item: len(item) for item in items}
+```
+
+### Type Alias 與 TypeVar
+
+```python
+from typing import TypeVar, Union
+
+# 複雜型別的 type alias
+JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
+
+def parse_json(data: str) -&gt; JSON:
+    return json.loads(data)
+
+# 泛型
+T = TypeVar(&#x27;T&#x27;)
+
+def first(items: list[T]) -&gt; T | None:
+    &quot;&quot;&quot;Return the first item or None if list is empty.&quot;&quot;&quot;
+    return items[0] if items else None
+```
+
+### 以 Protocol 為基礎的 Duck Typing
+
+```python
+from typing import Protocol
+
+class Renderable(Protocol):
+    def render(self) -&gt; str:
+        &quot;&quot;&quot;Render the object to a string.&quot;&quot;&quot;
+
+def render_all(items: list[Renderable]) -&gt; str:
+    &quot;&quot;&quot;Render all items that implement the Renderable protocol.&quot;&quot;&quot;
+    return &quot;\n&quot;.join(item.render() for item in items)
+```
+
+## 錯誤處理模式
+
+### 處理特定的例外
+
+```python
+# Good: 捕捉特定的例外
+def load_config(path: str) -&gt; Config:
+    try:
+        with open(path) as f:
+            return Config.from_json(f.read())
+    except FileNotFoundError as e:
+        raise ConfigError(f&quot;Config file not found: {path}&quot;) from e
+    except json.JSONDecodeError as e:
+        raise ConfigError(f&quot;Invalid JSON in config: {path}&quot;) from e
+
+# Bad: 裸的 except
+def load_config(path: str) -&gt; Config:
+    try:
+        with open(path) as f:
+            return Config.from_json(f.read())
+    except:
+        return None  # 悄悄失敗！
+```
+
+### 例外串接
+
+```python
+def process_data(data: str) -&gt; Result:
+    try:
+        parsed = json.loads(data)
+    except json.JSONDecodeError as e:
+        # 串接例外，保留 traceback
+        raise ValueError(f&quot;Failed to parse data: {data}&quot;) from e
+```
+
+### 自訂例外階層
+
+```python
+class AppError(Exception):
+    &quot;&quot;&quot;Base exception for all application errors.&quot;&quot;&quot;
+    pass
+
+class ValidationError(AppError):
+    &quot;&quot;&quot;Raised when input validation fails.&quot;&quot;&quot;
+    pass
+
+class NotFoundError(AppError):
+    &quot;&quot;&quot;Raised when a requested resource is not found.&quot;&quot;&quot;
+    pass
+
+# 用法
+def get_user(user_id: str) -&gt; User:
+    user = db.find_user(user_id)
+    if not user:
+        raise NotFoundError(f&quot;User not found: {user_id}&quot;)
+    return user
+```
+
+## Context Manager
+
+### 資源管理
+
+```python
+# Good: 使用 context manager
+def process_file(path: str) -&gt; str:
+    with open(path, &#x27;r&#x27;) as f:
+        return f.read()
+
+# Bad: 手動管理資源
+def process_file(path: str) -&gt; str:
+    f = open(path, &#x27;r&#x27;)
+    try:
+        return f.read()
+    finally:
+        f.close()
+```
+
+### 自訂 Context Manager
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def timer(name: str):
+    &quot;&quot;&quot;Context manager to time a block of code.&quot;&quot;&quot;
+    start = time.perf_counter()
+    yield
+    elapsed = time.perf_counter() - start
+    print(f&quot;{name} took {elapsed:.4f} seconds&quot;)
+
+# 用法
+with timer(&quot;data processing&quot;):
+    process_large_dataset()
+```
+
+### Context Manager Class
+
+```python
+class DatabaseTransaction:
+    def __init__(self, connection):
+        self.connection = connection
+
+    def __enter__(self):
+        self.connection.begin_transaction()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.connection.commit()
+        else:
+            self.connection.rollback()
+        return False  # 不要吞掉例外
+
+# 用法
+with DatabaseTransaction(conn):
+    user = conn.create_user(user_data)
+    conn.create_profile(user.id, profile_data)
+```
+
+## Comprehension 與 Generator
+
+### List Comprehension
+
+```python
+# Good: 簡單的轉換用 list comprehension
+names = [user.name for user in users if user.is_active]
+
+# Bad: 手動寫迴圈
+names = []
+for user in users:
+    if user.is_active:
+        names.append(user.name)
+
+# 複雜的 comprehension 應該展開
+# Bad: 太複雜
+result = [x * 2 for x in items if x &gt; 0 if x % 2 == 0]
+
+# Good: 用 generator function
+def filter_and_transform(items: Iterable[int]) -&gt; list[int]:
+    result = []
+    for x in items:
+        if x &gt; 0 and x % 2 == 0:
+            result.append(x * 2)
+    return result
+```
+
+### Generator Expression
+
+```python
+# Good: 用 generator 做惰性求值
+total = sum(x * x for x in range(1_000_000))
+
+# Bad: 會建立很大的中間 list
+total = sum([x * x for x in range(1_000_000)])
+```
+
+### Generator Function
+
+```python
+def read_large_file(path: str) -&gt; Iterator[str]:
+    &quot;&quot;&quot;Read a large file line by line.&quot;&quot;&quot;
+    with open(path) as f:
+        for line in f:
+            yield line.strip()
+
+# 用法
+for line in read_large_file(&quot;huge.txt&quot;):
+    process(line)
+```
+
+## Data Class 與 Named Tuple
+
+### Data Class
+
+```python
+from dataclasses import dataclass, field
+from datetime import datetime
+
+@dataclass
+class User:
+    &quot;&quot;&quot;User entity with automatic __init__, __repr__, and __eq__.&quot;&quot;&quot;
+    id: str
+    name: str
+    email: str
+    created_at: datetime = field(default_factory=datetime.now)
+    is_active: bool = True
+
+# 用法
+user = User(
+    id=&quot;123&quot;,
+    name=&quot;Alice&quot;,
+    email=&quot;alice@example.com&quot;
+)
+```
+
+### 帶驗證的 Data Class
+
+```python
+@dataclass
+class User:
+    email: str
+    age: int
+
+    def __post_init__(self):
+        # 驗證 email 格式
+        if &quot;@&quot; not in self.email:
+            raise ValueError(f&quot;Invalid email: {self.email}&quot;)
+        # 驗證年齡範圍
+        if self.age &lt; 0 or self.age &gt; 150:
+            raise ValueError(f&quot;Invalid age: {self.age}&quot;)
+```
+
+### Named Tuple
+
+```python
+from typing import NamedTuple
+
+class Point(NamedTuple):
+    &quot;&quot;&quot;Immutable 2D point.&quot;&quot;&quot;
+    x: float
+    y: float
+
+    def distance(self, other: &#x27;Point&#x27;) -&gt; float:
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
+# 用法
+p1 = Point(0, 0)
+p2 = Point(3, 4)
+print(p1.distance(p2))  # 5.0
+```
+
+## Decorator
+
+### 函式 Decorator
+
+```python
+import functools
+import time
+
+def timer(func: Callable) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to time function execution.&quot;&quot;&quot;
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f&quot;{func.__name__} took {elapsed:.4f}s&quot;)
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+
+# slow_function() 會印出：slow_function took 1.0012s
+```
+
+### 帶參數的 Decorator
+
+```python
+def repeat(times: int):
+    &quot;&quot;&quot;Decorator to repeat a function multiple times.&quot;&quot;&quot;
+    def decorator(func: Callable) -&gt; Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            results = []
+            for _ in range(times):
+                results.append(func(*args, **kwargs))
+            return results
+        return wrapper
+    return decorator
+
+@repeat(times=3)
+def greet(name: str) -&gt; str:
+    return f&quot;Hello, {name}!&quot;
+
+# greet(&quot;Alice&quot;) 會回傳 [&quot;Hello, Alice!&quot;, &quot;Hello, Alice!&quot;, &quot;Hello, Alice!&quot;]
+```
+
+### 以 Class 為基礎的 Decorator
+
+```python
+class CountCalls:
+    &quot;&quot;&quot;Decorator that counts how many times a function is called.&quot;&quot;&quot;
+    def __init__(self, func: Callable):
+        functools.update_wrapper(self, func)
+        self.func = func
+        self.count = 0
+
+    def __call__(self, *args, **kwargs):
+        self.count += 1
+        print(f&quot;{self.func.__name__} has been called {self.count} times&quot;)
+        return self.func(*args, **kwargs)
+
+@CountCalls
+def process():
+    pass
+
+# 每次呼叫 process() 都會印出呼叫次數
+```
+
+## 並行模式
+
+### I/O 密集的任務用 Threading
+
+```python
+import concurrent.futures
+import threading
+
+def fetch_url(url: str) -&gt; str:
+    &quot;&quot;&quot;Fetch a URL (I/O-bound operation).&quot;&quot;&quot;
+    import urllib.request
+    with urllib.request.urlopen(url) as response:
+        return response.read().decode()
+
+def fetch_all_urls(urls: list[str]) -&gt; dict[str, str]:
+    &quot;&quot;&quot;Fetch multiple URLs concurrently using threads.&quot;&quot;&quot;
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_url = {executor.submit(fetch_url, url): url for url in urls}
+        results = {}
+        for future in concurrent.futures.as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                results[url] = future.result()
+            except Exception as e:
+                results[url] = f&quot;Error: {e}&quot;
+    return results
+```
+
+### CPU 密集的任務用 Multiprocessing
+
+```python
+def process_data(data: list[int]) -&gt; int:
+    &quot;&quot;&quot;CPU-intensive computation.&quot;&quot;&quot;
+    return sum(x ** 2 for x in data)
+
+def process_all(datasets: list[list[int]]) -&gt; list[int]:
+    &quot;&quot;&quot;Process multiple datasets using multiple processes.&quot;&quot;&quot;
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        results = list(executor.map(process_data, datasets))
+    return results
+```
+
+### 並行 I/O 用 Async/Await
+
+```python
+import asyncio
+
+async def fetch_async(url: str) -&gt; str:
+    &quot;&quot;&quot;Fetch a URL asynchronously.&quot;&quot;&quot;
+    import aiohttp
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+async def fetch_all(urls: list[str]) -&gt; dict[str, str]:
+    &quot;&quot;&quot;Fetch multiple URLs concurrently.&quot;&quot;&quot;
+    tasks = [fetch_async(url) for url in urls]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    return dict(zip(urls, results))
+```
+
+## Package 組織
+
+### 標準專案結構
+
+```
+myproject/
+├── src/
+│   └── mypackage/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── api/
+│       │   ├── __init__.py
+│       │   └── routes.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── user.py
+│       └── utils/
+│           ├── __init__.py
+│           └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_api.py
+│   └── test_models.py
+├── pyproject.toml
+├── README.md
+└── .gitignore
+```
+
+### Import 慣例
+
+```python
+# Good: import 的順序：標準函式庫、第三方、本地
+import os
+import sys
+from pathlib import Path
+
+import requests
+from fastapi import FastAPI
+
+from mypackage.models import User
+from mypackage.utils import format_name
+
+# Good: 用 isort 自動排序 import
+# pip install isort
+```
+
+### 用 __init__.py 匯出 Package 的內容
+
+```python
+# mypackage/__init__.py
+&quot;&quot;&quot;mypackage - A sample Python package.&quot;&quot;&quot;
+
+__version__ = &quot;1.0.0&quot;
+
+# 在 package 層級匯出主要的 class/function
+from mypackage.models import User, Post
+from mypackage.utils import format_name
+
+__all__ = [&quot;User&quot;, &quot;Post&quot;, &quot;format_name&quot;]
+```
+
+## 記憶體與效能
+
+### 用 __slots__ 提升記憶體效率
+
+```python
+# Bad: 一般的 class 用 __dict__（比較吃記憶體）
+class Point:
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
+
+# Good: __slots__ 減少記憶體用量
+class Point:
+    __slots__ = [&#x27;x&#x27;, &#x27;y&#x27;]
+
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
+```
+
+### 大量資料用 Generator
+
+```python
+# Bad: 把整個 list 都回傳到記憶體裡
+def read_lines(path: str) -&gt; list[str]:
+    with open(path) as f:
+        return [line.strip() for line in f]
+
+# Good: 一次 yield 一行
+def read_lines(path: str) -&gt; Iterator[str]:
+    with open(path) as f:
+        for line in f:
+            yield line.strip()
+```
+
+### 避免在迴圈裡做字串串接
+
+```python
+# Bad: 因為字串不可變，是 O(n²)
+result = &quot;&quot;
+for item in items:
+    result += str(item)
+
+# Good: 用 join 是 O(n)
+result = &quot;&quot;.join(str(item) for item in items)
+
+# Good: 用 StringIO 來組字串
+from io import StringIO
+
+buffer = StringIO()
+for item in items:
+    buffer.write(str(item))
+result = buffer.getvalue()
+```
+
+## Python 工具整合
+
+### 常用指令
+
+```bash
+# 程式碼格式化
+black .
+isort .
+
+# Linting
+ruff check .
+pylint mypackage/
+
+# 型別檢查
+mypy .
+
+# 測試
+pytest --cov=mypackage --cov-report=html
+
+# 安全掃描
+bandit -r .
+
+# 依賴管理
+pip-audit
+safety check
+```
+
+### pyproject.toml 設定
+
+```toml
+[project]
+name = &quot;mypackage&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;requests&gt;=2.31.0&quot;,
+    &quot;pydantic&gt;=2.0.0&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;pytest&gt;=7.4.0&quot;,
+    &quot;pytest-cov&gt;=4.1.0&quot;,
+    &quot;black&gt;=23.0.0&quot;,
+    &quot;ruff&gt;=0.1.0&quot;,
+    &quot;mypy&gt;=1.5.0&quot;,
+]
+
+[tool.black]
+line-length = 88
+target-version = [&#x27;py39&#x27;]
+
+[tool.ruff]
+line-length = 88
+select = [&quot;E&quot;, &quot;F&quot;, &quot;I&quot;, &quot;N&quot;, &quot;W&quot;]
+
+[tool.mypy]
+python_version = &quot;3.9&quot;
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]
+addopts = &quot;--cov=mypackage --cov-report=term-missing&quot;
+```
+
+## 速查：Python 慣用寫法
+
+| 慣用寫法 | 說明 |
+|-------|-------------|
+| EAFP | 請求原諒比請求許可容易 |
+| Context manager | 用 `with` 管理資源 |
+| List comprehension | 用於簡單的轉換 |
+| Generator | 用於惰性求值和大型資料集 |
+| Type hint | 替函式簽章加上標註 |
+| Dataclass | 用於資料容器，自動產生方法 |
+| `__slots__` | 用於記憶體最佳化 |
+| f-string | 用於字串格式化（Python 3.6+） |
+| `pathlib.Path` | 用於路徑操作（Python 3.4+） |
+| `enumerate` | 用於迴圈中同時取得索引和元素 |
+
+## 要避免的反模式
+
+```python
+# Bad: 可變的預設引數
+def append_to(item, items=[]):
+    items.append(item)
+    return items
+
+# Good: 用 None，再建立新的 list
+def append_to(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+# Bad: 用 type() 檢查型別
+if type(obj) == list:
+    process(obj)
+
+# Good: 用 isinstance
+if isinstance(obj, list):
+    process(obj)
+
+# Bad: 用 == 跟 None 比較
+if value == None:
+    process()
+
+# Good: 用 is
+if value is None:
+    process()
+
+# Bad: from module import *
+from os.path import *
+
+# Good: 明確的 import
+from os.path import join, exists
+
+# Bad: 裸的 except
+try:
+    risky_operation()
+except:
+    pass
+
+# Good: 特定的例外
+try:
+    risky_operation()
+except SpecificError as e:
+    logger.error(f&quot;Operation failed: {e}&quot;)
+```
+
+__記住__：Python 程式碼應該可讀、明確，並遵循最小驚訝原則。有疑問時，清楚比聰明重要。</pre></section><section><h2>英文原文</h2><pre>---
+name: python-patterns
+description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications. Use when writing or reviewing Python code and idiomatic structure, typing, or PEP 8 is in question.
+metadata:
+  origin: ECC
+---
+
+# Python Development Patterns
+
+Idiomatic Python patterns and best practices for building robust, efficient, and maintainable applications.
+
+## When to Activate
+
+- Writing new Python code
+- Reviewing Python code
+- Refactoring existing Python code
+- Designing Python packages/modules
+
+## Core Principles
+
+### 1. Readability Counts
+
+Python prioritizes readability. Code should be obvious and easy to understand.
+
+```python
+# Good: Clear and readable
+def get_active_users(users: list[User]) -&gt; list[User]:
+    &quot;&quot;&quot;Return only active users from the provided list.&quot;&quot;&quot;
+    return [user for user in users if user.is_active]
+
+
+# Bad: Clever but confusing
+def get_active_users(u):
+    return [x for x in u if x.a]
+```
+
+### 2. Explicit is Better Than Implicit
+
+Avoid magic; be clear about what your code does.
+
+```python
+# Good: Explicit configuration
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=&#x27;%(asctime)s - %(name)s - %(levelname)s - %(message)s&#x27;
+)
+
+# Bad: Hidden side effects
+import some_module
+some_module.setup()  # What does this do?
+```
+
+### 3. EAFP - Easier to Ask Forgiveness Than Permission
+
+Python prefers exception handling over checking conditions.
+
+```python
+# Good: EAFP style
+def get_value(dictionary: dict, key: str, default_value: Any = None) -&gt; Any:
+    try:
+        return dictionary[key]
+    except KeyError:
+        return default_value
+
+# Bad: LBYL (Look Before You Leap) style
+def get_value(dictionary: dict, key: str, default_value: Any = None) -&gt; Any:
+    if key in dictionary:
+        return dictionary[key]
+    else:
+        return default_value
+```
+
+## Type Hints
+
+### Basic Type Annotations
+
+```python
+from typing import Optional, List, Dict, Any
+
+def process_user(
+    user_id: str,
+    data: Dict[str, Any],
+    active: bool = True
+) -&gt; Optional[User]:
+    &quot;&quot;&quot;Process a user and return the updated User or None.&quot;&quot;&quot;
+    if not active:
+        return None
+    return User(user_id, data)
+```
+
+### Modern Type Hints (Python 3.9+)
+
+```python
+# Python 3.9+ - Use built-in types
+def process_items(items: list[str]) -&gt; dict[str, int]:
+    return {item: len(item) for item in items}
+
+# Python 3.8 and earlier - Use typing module
+from typing import List, Dict
+
+def process_items(items: List[str]) -&gt; Dict[str, int]:
+    return {item: len(item) for item in items}
+```
+
+### Type Aliases and TypeVar
+
+```python
+from typing import TypeVar, Union
+
+# Type alias for complex types
+JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
+
+def parse_json(data: str) -&gt; JSON:
+    return json.loads(data)
+
+# Generic types
+T = TypeVar(&#x27;T&#x27;)
+
+def first(items: list[T]) -&gt; T | None:
+    &quot;&quot;&quot;Return the first item or None if list is empty.&quot;&quot;&quot;
+    return items[0] if items else None
+```
+
+### Protocol-Based Duck Typing
+
+```python
+from typing import Protocol
+
+class Renderable(Protocol):
+    def render(self) -&gt; str:
+        &quot;&quot;&quot;Render the object to a string.&quot;&quot;&quot;
+
+def render_all(items: list[Renderable]) -&gt; str:
+    &quot;&quot;&quot;Render all items that implement the Renderable protocol.&quot;&quot;&quot;
+    return &quot;\n&quot;.join(item.render() for item in items)
+```
+
+## Error Handling Patterns
+
+### Specific Exception Handling
+
+```python
+# Good: Catch specific exceptions
+def load_config(path: str) -&gt; Config:
+    try:
+        with open(path) as f:
+            return Config.from_json(f.read())
+    except FileNotFoundError as e:
+        raise ConfigError(f&quot;Config file not found: {path}&quot;) from e
+    except json.JSONDecodeError as e:
+        raise ConfigError(f&quot;Invalid JSON in config: {path}&quot;) from e
+
+# Bad: Bare except
+def load_config(path: str) -&gt; Config:
+    try:
+        with open(path) as f:
+            return Config.from_json(f.read())
+    except:
+        return None  # Silent failure!
+```
+
+### Exception Chaining
+
+```python
+def process_data(data: str) -&gt; Result:
+    try:
+        parsed = json.loads(data)
+    except json.JSONDecodeError as e:
+        # Chain exceptions to preserve the traceback
+        raise ValueError(f&quot;Failed to parse data: {data}&quot;) from e
+```
+
+### Custom Exception Hierarchy
+
+```python
+class AppError(Exception):
+    &quot;&quot;&quot;Base exception for all application errors.&quot;&quot;&quot;
+    pass
+
+class ValidationError(AppError):
+    &quot;&quot;&quot;Raised when input validation fails.&quot;&quot;&quot;
+    pass
+
+class NotFoundError(AppError):
+    &quot;&quot;&quot;Raised when a requested resource is not found.&quot;&quot;&quot;
+    pass
+
+# Usage
+def get_user(user_id: str) -&gt; User:
+    user = db.find_user(user_id)
+    if not user:
+        raise NotFoundError(f&quot;User not found: {user_id}&quot;)
+    return user
+```
+
+## Context Managers
+
+### Resource Management
+
+```python
+# Good: Using context managers
+def process_file(path: str) -&gt; str:
+    with open(path, &#x27;r&#x27;) as f:
+        return f.read()
+
+# Bad: Manual resource management
+def process_file(path: str) -&gt; str:
+    f = open(path, &#x27;r&#x27;)
+    try:
+        return f.read()
+    finally:
+        f.close()
+```
+
+### Custom Context Managers
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def timer(name: str):
+    &quot;&quot;&quot;Context manager to time a block of code.&quot;&quot;&quot;
+    start = time.perf_counter()
+    yield
+    elapsed = time.perf_counter() - start
+    print(f&quot;{name} took {elapsed:.4f} seconds&quot;)
+
+# Usage
+with timer(&quot;data processing&quot;):
+    process_large_dataset()
+```
+
+### Context Manager Classes
+
+```python
+class DatabaseTransaction:
+    def __init__(self, connection):
+        self.connection = connection
+
+    def __enter__(self):
+        self.connection.begin_transaction()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.connection.commit()
+        else:
+            self.connection.rollback()
+        return False  # Don&#x27;t suppress exceptions
+
+# Usage
+with DatabaseTransaction(conn):
+    user = conn.create_user(user_data)
+    conn.create_profile(user.id, profile_data)
+```
+
+## Comprehensions and Generators
+
+### List Comprehensions
+
+```python
+# Good: List comprehension for simple transformations
+names = [user.name for user in users if user.is_active]
+
+# Bad: Manual loop
+names = []
+for user in users:
+    if user.is_active:
+        names.append(user.name)
+
+# Complex comprehensions should be expanded
+# Bad: Too complex
+result = [x * 2 for x in items if x &gt; 0 if x % 2 == 0]
+
+# Good: Use a generator function
+def filter_and_transform(items: Iterable[int]) -&gt; list[int]:
+    result = []
+    for x in items:
+        if x &gt; 0 and x % 2 == 0:
+            result.append(x * 2)
+    return result
+```
+
+### Generator Expressions
+
+```python
+# Good: Generator for lazy evaluation
+total = sum(x * x for x in range(1_000_000))
+
+# Bad: Creates large intermediate list
+total = sum([x * x for x in range(1_000_000)])
+```
+
+### Generator Functions
+
+```python
+def read_large_file(path: str) -&gt; Iterator[str]:
+    &quot;&quot;&quot;Read a large file line by line.&quot;&quot;&quot;
+    with open(path) as f:
+        for line in f:
+            yield line.strip()
+
+# Usage
+for line in read_large_file(&quot;huge.txt&quot;):
+    process(line)
+```
+
+## Data Classes and Named Tuples
+
+### Data Classes
+
+```python
+from dataclasses import dataclass, field
+from datetime import datetime
+
+@dataclass
+class User:
+    &quot;&quot;&quot;User entity with automatic __init__, __repr__, and __eq__.&quot;&quot;&quot;
+    id: str
+    name: str
+    email: str
+    created_at: datetime = field(default_factory=datetime.now)
+    is_active: bool = True
+
+# Usage
+user = User(
+    id=&quot;123&quot;,
+    name=&quot;Alice&quot;,
+    email=&quot;alice@example.com&quot;
+)
+```
+
+### Data Classes with Validation
+
+```python
+@dataclass
+class User:
+    email: str
+    age: int
+
+    def __post_init__(self):
+        # Validate email format
+        if &quot;@&quot; not in self.email:
+            raise ValueError(f&quot;Invalid email: {self.email}&quot;)
+        # Validate age range
+        if self.age &lt; 0 or self.age &gt; 150:
+            raise ValueError(f&quot;Invalid age: {self.age}&quot;)
+```
+
+### Named Tuples
+
+```python
+from typing import NamedTuple
+
+class Point(NamedTuple):
+    &quot;&quot;&quot;Immutable 2D point.&quot;&quot;&quot;
+    x: float
+    y: float
+
+    def distance(self, other: &#x27;Point&#x27;) -&gt; float:
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
+# Usage
+p1 = Point(0, 0)
+p2 = Point(3, 4)
+print(p1.distance(p2))  # 5.0
+```
+
+## Decorators
+
+### Function Decorators
+
+```python
+import functools
+import time
+
+def timer(func: Callable) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to time function execution.&quot;&quot;&quot;
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f&quot;{func.__name__} took {elapsed:.4f}s&quot;)
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+
+# slow_function() prints: slow_function took 1.0012s
+```
+
+### Parameterized Decorators
+
+```python
+def repeat(times: int):
+    &quot;&quot;&quot;Decorator to repeat a function multiple times.&quot;&quot;&quot;
+    def decorator(func: Callable) -&gt; Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            results = []
+            for _ in range(times):
+                results.append(func(*args, **kwargs))
+            return results
+        return wrapper
+    return decorator
+
+@repeat(times=3)
+def greet(name: str) -&gt; str:
+    return f&quot;Hello, {name}!&quot;
+
+# greet(&quot;Alice&quot;) returns [&quot;Hello, Alice!&quot;, &quot;Hello, Alice!&quot;, &quot;Hello, Alice!&quot;]
+```
+
+### Class-Based Decorators
+
+```python
+class CountCalls:
+    &quot;&quot;&quot;Decorator that counts how many times a function is called.&quot;&quot;&quot;
+    def __init__(self, func: Callable):
+        functools.update_wrapper(self, func)
+        self.func = func
+        self.count = 0
+
+    def __call__(self, *args, **kwargs):
+        self.count += 1
+        print(f&quot;{self.func.__name__} has been called {self.count} times&quot;)
+        return self.func(*args, **kwargs)
+
+@CountCalls
+def process():
+    pass
+
+# Each call to process() prints the call count
+```
+
+## Concurrency Patterns
+
+### Threading for I/O-Bound Tasks
+
+```python
+import concurrent.futures
+import threading
+
+def fetch_url(url: str) -&gt; str:
+    &quot;&quot;&quot;Fetch a URL (I/O-bound operation).&quot;&quot;&quot;
+    import urllib.request
+    with urllib.request.urlopen(url) as response:
+        return response.read().decode()
+
+def fetch_all_urls(urls: list[str]) -&gt; dict[str, str]:
+    &quot;&quot;&quot;Fetch multiple URLs concurrently using threads.&quot;&quot;&quot;
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_url = {executor.submit(fetch_url, url): url for url in urls}
+        results = {}
+        for future in concurrent.futures.as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                results[url] = future.result()
+            except Exception as e:
+                results[url] = f&quot;Error: {e}&quot;
+    return results
+```
+
+### Multiprocessing for CPU-Bound Tasks
+
+```python
+def process_data(data: list[int]) -&gt; int:
+    &quot;&quot;&quot;CPU-intensive computation.&quot;&quot;&quot;
+    return sum(x ** 2 for x in data)
+
+def process_all(datasets: list[list[int]]) -&gt; list[int]:
+    &quot;&quot;&quot;Process multiple datasets using multiple processes.&quot;&quot;&quot;
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        results = list(executor.map(process_data, datasets))
+    return results
+```
+
+### Async/Await for Concurrent I/O
+
+```python
+import asyncio
+
+async def fetch_async(url: str) -&gt; str:
+    &quot;&quot;&quot;Fetch a URL asynchronously.&quot;&quot;&quot;
+    import aiohttp
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+async def fetch_all(urls: list[str]) -&gt; dict[str, str]:
+    &quot;&quot;&quot;Fetch multiple URLs concurrently.&quot;&quot;&quot;
+    tasks = [fetch_async(url) for url in urls]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    return dict(zip(urls, results))
+```
+
+## Package Organization
+
+### Standard Project Layout
+
+```
+myproject/
+├── src/
+│   └── mypackage/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── api/
+│       │   ├── __init__.py
+│       │   └── routes.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── user.py
+│       └── utils/
+│           ├── __init__.py
+│           └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_api.py
+│   └── test_models.py
+├── pyproject.toml
+├── README.md
+└── .gitignore
+```
+
+### Import Conventions
+
+```python
+# Good: Import order - stdlib, third-party, local
+import os
+import sys
+from pathlib import Path
+
+import requests
+from fastapi import FastAPI
+
+from mypackage.models import User
+from mypackage.utils import format_name
+
+# Good: Use isort for automatic import sorting
+# pip install isort
+```
+
+### __init__.py for Package Exports
+
+```python
+# mypackage/__init__.py
+&quot;&quot;&quot;mypackage - A sample Python package.&quot;&quot;&quot;
+
+__version__ = &quot;1.0.0&quot;
+
+# Export main classes/functions at package level
+from mypackage.models import User, Post
+from mypackage.utils import format_name
+
+__all__ = [&quot;User&quot;, &quot;Post&quot;, &quot;format_name&quot;]
+```
+
+## Memory and Performance
+
+### Using __slots__ for Memory Efficiency
+
+```python
+# Bad: Regular class uses __dict__ (more memory)
+class Point:
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
+
+# Good: __slots__ reduces memory usage
+class Point:
+    __slots__ = [&#x27;x&#x27;, &#x27;y&#x27;]
+
+    def __init__(self, x: float, y: float):
+        self.x = x
+        self.y = y
+```
+
+### Generator for Large Data
+
+```python
+# Bad: Returns full list in memory
+def read_lines(path: str) -&gt; list[str]:
+    with open(path) as f:
+        return [line.strip() for line in f]
+
+# Good: Yields lines one at a time
+def read_lines(path: str) -&gt; Iterator[str]:
+    with open(path) as f:
+        for line in f:
+            yield line.strip()
+```
+
+### Avoid String Concatenation in Loops
+
+```python
+# Bad: O(n²) due to string immutability
+result = &quot;&quot;
+for item in items:
+    result += str(item)
+
+# Good: O(n) using join
+result = &quot;&quot;.join(str(item) for item in items)
+
+# Good: Using StringIO for building
+from io import StringIO
+
+buffer = StringIO()
+for item in items:
+    buffer.write(str(item))
+result = buffer.getvalue()
+```
+
+## Python Tooling Integration
+
+### Essential Commands
+
+```bash
+# Code formatting
+black .
+isort .
+
+# Linting
+ruff check .
+pylint mypackage/
+
+# Type checking
+mypy .
+
+# Testing
+pytest --cov=mypackage --cov-report=html
+
+# Security scanning
+bandit -r .
+
+# Dependency management
+pip-audit
+safety check
+```
+
+### pyproject.toml Configuration
+
+```toml
+[project]
+name = &quot;mypackage&quot;
+version = &quot;1.0.0&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;requests&gt;=2.31.0&quot;,
+    &quot;pydantic&gt;=2.0.0&quot;,
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;pytest&gt;=7.4.0&quot;,
+    &quot;pytest-cov&gt;=4.1.0&quot;,
+    &quot;black&gt;=23.0.0&quot;,
+    &quot;ruff&gt;=0.1.0&quot;,
+    &quot;mypy&gt;=1.5.0&quot;,
+]
+
+[tool.black]
+line-length = 88
+target-version = [&#x27;py39&#x27;]
+
+[tool.ruff]
+line-length = 88
+select = [&quot;E&quot;, &quot;F&quot;, &quot;I&quot;, &quot;N&quot;, &quot;W&quot;]
+
+[tool.mypy]
+python_version = &quot;3.9&quot;
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]
+addopts = &quot;--cov=mypackage --cov-report=term-missing&quot;
+```
+
+## Quick Reference: Python Idioms
+
+| Idiom | Description |
+|-------|-------------|
+| EAFP | Easier to Ask Forgiveness than Permission |
+| Context managers | Use `with` for resource management |
+| List comprehensions | For simple transformations |
+| Generators | For lazy evaluation and large datasets |
+| Type hints | Annotate function signatures |
+| Dataclasses | For data containers with auto-generated methods |
+| `__slots__` | For memory optimization |
+| f-strings | For string formatting (Python 3.6+) |
+| `pathlib.Path` | For path operations (Python 3.4+) |
+| `enumerate` | For index-element pairs in loops |
+
+## Anti-Patterns to Avoid
+
+```python
+# Bad: Mutable default arguments
+def append_to(item, items=[]):
+    items.append(item)
+    return items
+
+# Good: Use None and create new list
+def append_to(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+# Bad: Checking type with type()
+if type(obj) == list:
+    process(obj)
+
+# Good: Use isinstance
+if isinstance(obj, list):
+    process(obj)
+
+# Bad: Comparing to None with ==
+if value == None:
+    process()
+
+# Good: Use is
+if value is None:
+    process()
+
+# Bad: from module import *
+from os.path import *
+
+# Good: Explicit imports
+from os.path import join, exists
+
+# Bad: Bare except
+try:
+    risky_operation()
+except:
+    pass
+
+# Good: Specific exception
+try:
+    risky_operation()
+except SpecificError as e:
+    logger.error(f&quot;Operation failed: {e}&quot;)
+```
+
+__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

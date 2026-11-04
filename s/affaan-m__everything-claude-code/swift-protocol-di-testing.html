@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swift-protocol-di-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="用小而聚焦的 protocol 注入相依項，讓 Swift 程式碼好測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>swift-protocol-di-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/swift-protocol-di-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用小而聚焦的 protocol 注入相依項，讓 Swift 程式碼好測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: swift-protocol-di-testing
+description: 以 protocol 為基礎的依賴注入，讓 Swift 程式碼可測試：用聚焦的 protocol 和 Swift Testing 來 mock 檔案系統、網路和外部 API。Swift 程式碼需要測試，而且檔案系統、網路或外部 API 必須被 mock 時使用。
+metadata:
+  origin: ECC
+---
+
+# 用 Swift Protocol 依賴注入做測試
+
+把外部相依項（檔案系統、網路、iCloud）抽象到小而聚焦的 protocol 後面，讓 Swift 程式碼可以測試的模式。讓測試不用 I/O 也能保持確定性。
+
+## 何時啟用
+
+- 撰寫會存取檔案系統、網路或外部 API 的 Swift 程式碼
+- 需要測試錯誤處理路徑，又不想觸發真正的失敗
+- 建構要能跨環境運作的模組（app、測試、SwiftUI preview）
+- 搭配 Swift concurrency（actor、Sendable）設計可測試的架構
+
+## 核心模式
+
+### 1. 定義小而聚焦的 Protocol
+
+每個 protocol 只處理一個外部關注點。
+
+```swift
+// File system access
+public protocol FileSystemProviding: Sendable {
+    func containerURL(for purpose: Purpose) -&gt; URL?
+}
+
+// File read/write operations
+public protocol FileAccessorProviding: Sendable {
+    func read(from url: URL) throws -&gt; Data
+    func write(_ data: Data, to url: URL) throws
+    func fileExists(at url: URL) -&gt; Bool
+}
+
+// Bookmark storage (e.g., for sandboxed apps)
+public protocol BookmarkStorageProviding: Sendable {
+    func saveBookmark(_ data: Data, for key: String) throws
+    func loadBookmark(for key: String) throws -&gt; Data?
+}
+```
+
+### 2. 建立預設（正式環境）實作
+
+```swift
+public struct DefaultFileSystemProvider: FileSystemProviding {
+    public init() {}
+
+    public func containerURL(for purpose: Purpose) -&gt; URL? {
+        FileManager.default.url(forUbiquityContainerIdentifier: nil)
+    }
+}
+
+public struct DefaultFileAccessor: FileAccessorProviding {
+    public init() {}
+
+    public func read(from url: URL) throws -&gt; Data {
+        try Data(contentsOf: url)
+    }
+
+    public func write(_ data: Data, to url: URL) throws {
+        try data.write(to: url, options: .atomic)
+    }
+
+    public func fileExists(at url: URL) -&gt; Bool {
+        FileManager.default.fileExists(atPath: url.path)
+    }
+}
+```
+
+### 3. 建立測試用的 Mock 實作
+
+```swift
+public final class MockFileAccessor: FileAccessorProviding, @unchecked Sendable {
+    public var files: [URL: Data] = [:]
+    public var readError: Error?
+    public var writeError: Error?
+
+    public init() {}
+
+    public func read(from url: URL) throws -&gt; Data {
+        if let error = readError { throw error }
+        guard let data = files[url] else {
+            throw CocoaError(.fileReadNoSuchFile)
+        }
+        return data
+    }
+
+    public func write(_ data: Data, to url: URL) throws {
+        if let error = writeError { throw error }
+        files[url] = data
+    }
+
+    public func fileExists(at url: URL) -&gt; Bool {
+        files[url] != nil
+    }
+}
+```
+
+### 4. 用預設參數注入相依項
+
+正式環境的程式碼用預設值；測試則注入 mock。
+
+```swift
+public actor SyncManager {
+    private let fileSystem: FileSystemProviding
+    private let fileAccessor: FileAccessorProviding
+
+    public init(
+        fileSystem: FileSystemProviding = DefaultFileSystemProvider(),
+        fileAccessor: FileAccessorProviding = DefaultFileAccessor()
+    ) {
+        self.fileSystem = fileSystem
+        self.fileAccessor = fileAccessor
+    }
+
+    public func sync() async throws {
+        guard let containerURL = fileSystem.containerURL(for: .sync) else {
+            throw SyncError.containerNotAvailable
+        }
+        let data = try fileAccessor.read(
+            from: containerURL.appendingPathComponent(&quot;data.json&quot;)
+        )
+        // Process data...
+    }
+}
+```
+
+### 5. 用 Swift Testing 寫測試
+
+```swift
+import Testing
+
+@Test(&quot;Sync manager handles missing container&quot;)
+func testMissingContainer() async {
+    let mockFileSystem = MockFileSystemProvider(containerURL: nil)
+    let manager = SyncManager(fileSystem: mockFileSystem)
+
+    await #expect(throws: SyncError.containerNotAvailable) {
+        try await manager.sync()
+    }
+}
+
+@Test(&quot;Sync manager reads data correctly&quot;)
+func testReadData() async throws {
+    let mockFileAccessor = MockFileAccessor()
+    mockFileAccessor.files[testURL] = testData
+
+    let manager = SyncManager(fileAccessor: mockFileAccessor)
+    let result = try await manager.loadData()
+
+    #expect(result == expectedData)
+}
+
+@Test(&quot;Sync manager handles read errors gracefully&quot;)
+func testReadError() async {
+    let mockFileAccessor = MockFileAccessor()
+    mockFileAccessor.readError = CocoaError(.fileReadCorruptFile)
+
+    let manager = SyncManager(fileAccessor: mockFileAccessor)
+
+    await #expect(throws: SyncError.self) {
+        try await manager.sync()
+    }
+}
+```
+
+## 最佳實務
+
+- **單一職責**：每個 protocol 只處理一個關注點，不要建立方法一大堆的「上帝 protocol」
+- **Sendable conformance**：protocol 跨 actor 邊界使用時必須有
+- **預設參數**：讓正式環境的程式碼預設使用真實實作；只有測試需要指定 mock
+- **錯誤模擬**：設計 mock 時，要有可設定的錯誤屬性，用來測試失敗路徑
+- **只 mock 邊界**：mock 外部相依項（檔案系統、網路、API），不要 mock 內部型別
+
+## 要避免的反模式
+
+- 建立涵蓋所有外部存取的單一巨大 protocol
+- Mock 沒有外部相依項的內部型別
+- 用 `#if DEBUG` 條件編譯，取代正確的依賴注入
+- 搭配 actor 使用時，忘了 `Sendable` conformance
+- 過度設計：如果某個型別沒有外部相依項，就不需要 protocol
+
+## 何時使用
+
+- 任何會碰到檔案系統、網路或外部 API 的 Swift 程式碼
+- 測試在真實環境很難觸發的錯誤處理路徑
+- 建構需要在 app、測試和 SwiftUI preview 情境下都能運作的模組
+- 使用 Swift concurrency（actor、結構化並行）、需要可測試架構的 app</pre></section><section><h2>英文原文</h2><pre>---
+name: swift-protocol-di-testing
+description: Protocol-based dependency injection for testable Swift code — mock file system, network, and external APIs using focused protocols and Swift Testing. Use when Swift code needs testing and file system, network, or external APIs must be mocked.
+metadata:
+  origin: ECC
+---
+
+# Swift Protocol-Based Dependency Injection for Testing
+
+Patterns for making Swift code testable by abstracting external dependencies (file system, network, iCloud) behind small, focused protocols. Enables deterministic tests without I/O.
+
+## When to Activate
+
+- Writing Swift code that accesses file system, network, or external APIs
+- Need to test error handling paths without triggering real failures
+- Building modules that work across environments (app, test, SwiftUI preview)
+- Designing testable architecture with Swift concurrency (actors, Sendable)
+
+## Core Pattern
+
+### 1. Define Small, Focused Protocols
+
+Each protocol handles exactly one external concern.
+
+```swift
+// File system access
+public protocol FileSystemProviding: Sendable {
+    func containerURL(for purpose: Purpose) -&gt; URL?
+}
+
+// File read/write operations
+public protocol FileAccessorProviding: Sendable {
+    func read(from url: URL) throws -&gt; Data
+    func write(_ data: Data, to url: URL) throws
+    func fileExists(at url: URL) -&gt; Bool
+}
+
+// Bookmark storage (e.g., for sandboxed apps)
+public protocol BookmarkStorageProviding: Sendable {
+    func saveBookmark(_ data: Data, for key: String) throws
+    func loadBookmark(for key: String) throws -&gt; Data?
+}
+```
+
+### 2. Create Default (Production) Implementations
+
+```swift
+public struct DefaultFileSystemProvider: FileSystemProviding {
+    public init() {}
+
+    public func containerURL(for purpose: Purpose) -&gt; URL? {
+        FileManager.default.url(forUbiquityContainerIdentifier: nil)
+    }
+}
+
+public struct DefaultFileAccessor: FileAccessorProviding {
+    public init() {}
+
+    public func read(from url: URL) throws -&gt; Data {
+        try Data(contentsOf: url)
+    }
+
+    public func write(_ data: Data, to url: URL) throws {
+        try data.write(to: url, options: .atomic)
+    }
+
+    public func fileExists(at url: URL) -&gt; Bool {
+        FileManager.default.fileExists(atPath: url.path)
+    }
+}
+```
+
+### 3. Create Mock Implementations for Testing
+
+```swift
+public final class MockFileAccessor: FileAccessorProviding, @unchecked Sendable {
+    public var files: [URL: Data] = [:]
+    public var readError: Error?
+    public var writeError: Error?
+
+    public init() {}
+
+    public func read(from url: URL) throws -&gt; Data {
+        if let error = readError { throw error }
+        guard let data = files[url] else {
+            throw CocoaError(.fileReadNoSuchFile)
+        }
+        return data
+    }
+
+    public func write(_ data: Data, to url: URL) throws {
+        if let error = writeError { throw error }
+        files[url] = data
+    }
+
+    public func fileExists(at url: URL) -&gt; Bool {
+        files[url] != nil
+    }
+}
+```
+
+### 4. Inject Dependencies with Default Parameters
+
+Production code uses defaults; tests inject mocks.
+
+```swift
+public actor SyncManager {
+    private let fileSystem: FileSystemProviding
+    private let fileAccessor: FileAccessorProviding
+
+    public init(
+        fileSystem: FileSystemProviding = DefaultFileSystemProvider(),
+        fileAccessor: FileAccessorProviding = DefaultFileAccessor()
+    ) {
+        self.fileSystem = fileSystem
+        self.fileAccessor = fileAccessor
+    }
+
+    public func sync() async throws {
+        guard let containerURL = fileSystem.containerURL(for: .sync) else {
+            throw SyncError.containerNotAvailable
+        }
+        let data = try fileAccessor.read(
+            from: containerURL.appendingPathComponent(&quot;data.json&quot;)
+        )
+        // Process data...
+    }
+}
+```
+
+### 5. Write Tests with Swift Testing
+
+```swift
+import Testing
+
+@Test(&quot;Sync manager handles missing container&quot;)
+func testMissingContainer() async {
+    let mockFileSystem = MockFileSystemProvider(containerURL: nil)
+    let manager = SyncManager(fileSystem: mockFileSystem)
+
+    await #expect(throws: SyncError.containerNotAvailable) {
+        try await manager.sync()
+    }
+}
+
+@Test(&quot;Sync manager reads data correctly&quot;)
+func testReadData() async throws {
+    let mockFileAccessor = MockFileAccessor()
+    mockFileAccessor.files[testURL] = testData
+
+    let manager = SyncManager(fileAccessor: mockFileAccessor)
+    let result = try await manager.loadData()
+
+    #expect(result == expectedData)
+}
+
+@Test(&quot;Sync manager handles read errors gracefully&quot;)
+func testReadError() async {
+    let mockFileAccessor = MockFileAccessor()
+    mockFileAccessor.readError = CocoaError(.fileReadCorruptFile)
+
+    let manager = SyncManager(fileAccessor: mockFileAccessor)
+
+    await #expect(throws: SyncError.self) {
+        try await manager.sync()
+    }
+}
+```
+
+## Best Practices
+
+- **Single Responsibility**: Each protocol should handle one concern — don&#x27;t create &quot;god protocols&quot; with many methods
+- **Sendable conformance**: Required when protocols are used across actor boundaries
+- **Default parameters**: Let production code use real implementations by default; only tests need to specify mocks
+- **Error simulation**: Design mocks with configurable error properties for testing failure paths
+- **Only mock boundaries**: Mock external dependencies (file system, network, APIs), not internal types
+
+## Anti-Patterns to Avoid
+
+- Creating a single large protocol that covers all external access
+- Mocking internal types that have no external dependencies
+- Using `#if DEBUG` conditionals instead of proper dependency injection
+- Forgetting `Sendable` conformance when used with actors
+- Over-engineering: if a type has no external dependencies, it doesn&#x27;t need a protocol
+
+## When to Use
+
+- Any Swift code that touches file system, network, or external APIs
+- Testing error handling paths that are hard to trigger in real environments
+- Building modules that need to work in app, test, and SwiftUI preview contexts
+- Apps using Swift concurrency (actors, structured concurrency) that need testable architecture</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

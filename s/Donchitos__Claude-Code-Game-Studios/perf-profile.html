@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>perf-profile｜Skill 寫法圖鑑</title>
+<meta name="description" content="做效能分析，對照預算找瓶頸，產出排好優先順序的最佳化建議">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>perf-profile</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/perf-profile/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">做效能分析，對照預算找瓶頸，產出排好優先順序的最佳化建議</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: perf-profile
+description: &quot;效能分析：找出瓶頸、對照預算量測，並產出依優先順序排序的最佳化建議。&quot;
+argument-hint: &quot;[system-name or &#x27;full&#x27;]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash &quot;*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys performance.enforce,automation,workflow`
+
+上面已經解析好了，直接用。沒有這個區塊的話，用
+`.claude/docs/config-resolution.md` 裡的預設值。
+
+# Performance Profile
+
+每一次 `AskUserQuestion` 呼叫都遵循 `.claude/docs/automation-modes.md`
+（collaborative 一律問 · guided 只問重大的 · autonomous 只記錄然後繼續；
+`automation_always_ask` 的類別一律要問）。
+
+## Insufficient input — check this before producing any report
+
+**如果這個 skill 需要的輸入不存在，答案就是「跑不起來」，
+不是一份填好的報告。** 先檢查，檢查沒過就停下來。
+
+1. 列出這個 skill 會讀的輸入（資料檔、先前的報告、profiler 輸出、
+   測試結果、registry、原始碼）。
+2. 對每一項，記錄 `FOUND` 或 `ABSENT` — 不是「假設存在」。
+3. 如果某個章節需要的任何輸入是 ABSENT，那個章節就是
+   **`NOT ASSESSED — NO DATA`**。不要估算它、不要從
+   相鄰的產出物去推斷它，也不要把一個強制要填的格子留給
+   下一個讀範本的人去填。
+4. 如果**每一個**必要的輸入都是 ABSENT，就停下來，並把
+   **`NOT ASSESSED — NO DATA`** 當成整份判定回報，點名缺了什麼，
+   以及哪個 skill 會產生它。
+
+**`NOT ASSESSED` 的判定是一種成功。** 當沒有資料時，它就是對
+「資料怎麼說？」正確又有用的答案。這條規定要防的失誤很具體：
+判定列舉裡沒有「跑不起來」狀態的報告，會產生
+**假的乾淨通過** — 在沒有資產也沒有標準的專案上，資產稽核回傳 COMPLIANT；
+或者效能分析在零 profiler 資料、也從來沒設過預算的情況下，回報「&gt;99% headroom against
+a 16.67ms budget」。
+
+**沒有證據，不等於證據不存在。** 因為沒有檔案可掃，所以沒找到任何
+符合項目的掃描，什麼都沒驗證。要說清楚到底是這兩者中的哪一個 — 讀的人
+光看綠色結果是分辨不出來的。
+
+---
+
+## Phase 0: Resolve Budget Enforcement
+
+`performance.enforce` 決定預算違規在這次執行中*代表什麼*。它
+不會改變要量測哪些預算 — `performance.target_framerate`、
+`frame_budget_ms`、`draw_call_limit` 和 `memory_ceiling_mb` 在每個等級
+都是用同樣的方式分析：
+
+| Value | Effect on this profile&#x27;s findings |
+|-------|-----------------------------------|
+| `warn` (default) | Violations are reported as findings. They do not block; CI logs them without failing. |
+| `block` | Violations are **blockers**. Say so explicitly in the report — a `block` project treats an over-budget system as release-stopping, and `/gate-check` will FAIL the Polish gate on it. |
+| `off` | Budgets are informational only. Still report measured values, but do not raise violations as findings or recommendations to fix. |
+
+只有 `warn`、`block` 和 `off` 會被認得。看到任何其他值，就告訴
+使用者，並退回 `warn`，不要亂猜。
+
+&gt; 這個值可以在本機覆蓋（`/settings --local performance.enforce=block`），
+&gt; 所以要用上面解析好的區塊，不要去讀 `project.yaml` — 隊友
+&gt; 在本機設的比較嚴格的值，本來就應該只在他的機器上生效。
+
+## Phase 1: Determine Scope
+
+讀參數：
+
+- 系統名稱 → 把分析聚焦在那個特定系統
+- `full` → 對所有系統跑完整的分析
+
+---
+
+## Phase 2: Load Performance Budgets
+
+**先從 config 讀已提交的預算** — 它們是專案對自己同意了什麼的
+紀錄，設計文件只是退路，不是來源：
+
+```bash
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.target_framerate
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.frame_budget_ms
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.draw_call_limit
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.memory_ceiling_mb
+```
+
+每一行當成獨立的純指令執行，一次呼叫一個 key：helper 會自己切換到
+專案根目錄，所以就算 session 是在子資料夾啟動的也能運作，而這個 skill 只預先核准
+那種形式（用 `source` 或 `cd ... &amp;&amp;` 包起來，每次都會問使用者）。輸出是空的，
+代表那個預算沒設。
+
+&gt; **要從 `project.yaml` 解析這些預算，不要從文字敘述。** 上面的 Phase 0
+&gt; 說這四個預算「在每個等級都是用同樣的方式分析」。如果預算是從設計文件或 CLAUDE.md
+&gt; 讀的，在 `project.yaml` 設了
+&gt; `performance.target_framerate: 60` 的使用者，這個設定就會被忽略。
+
+然後對 config 沒有的東西，退回去讀設計文件或 CLAUDE.md：
+
+- 目標 FPS（例如 60fps = 16.67ms 的 frame 預算）
+- 記憶體預算（總量和每個系統）
+- 載入時間目標
+- Draw call 預算
+- 網路頻寬上限（如果是多人遊戲）
+
+**沒有已提交預算的指標是 `NOT ASSESSED`，不是通過。** 不要
+對照範本的 `[16.67ms]` placeholder 去量測 — 沒設的預算不是
+已經達標的預算，而對照一個沒人選的數字去回報 headroom，
+正是這個 skill 自己的標頭警告過的那種捏造。
+
+---
+
+## Phase 3: Analyze Codebase
+
+**CPU 分析目標：**
+- `_process()` / `Update()` / `Tick()` 函式 — 全部列出並估算成本
+- 對大型集合的巢狀迴圈
+- 熱路徑上的字串運算
+- 每個 frame 都執行的程式碼裡的配置模式
+- 對遊戲實體做的未最佳化搜尋/排序
+- 每個 frame 都做的昂貴物理查詢（raycast、overlap）
+
+**記憶體分析目標：**
+- 大型資料結構和它們的成長模式
+- 貼圖/資產記憶體佔用的估計
+- Object pool vs instantiate/destroy 的模式
+- 洩漏的參照（應該被釋放卻沒有的物件）
+- 快取大小和淘汰政策
+
+**渲染目標（如果適用）：**
+- Draw call 估計
+- 重疊的透明物件造成的 overdraw
+- Shader 複雜度
+- 未最佳化的粒子系統
+- 缺少 LOD 或 occlusion culling
+
+**I/O 目標：**
+- 存檔/讀檔效能
+- 資產載入模式（同步 vs 非同步）
+- 網路訊息的頻率和大小
+
+---
+
+## Phase 4: Generate Profiling Report
+
+**把報告寫到 `production/polish/[scope]-report-[date].md`**，並依
+Collaboration Protocol 先問：*&quot;May I write this profiling report to
+`production/polish/[scope]-report-[date].md`?&quot;* 目錄不存在就建立。
+
+&gt; **要點名目的地 — 不要只把範本渲染到對話裡就算了。**
+&gt; 只存在於 transcript 裡的 profile，session 一結束就沒了，
+&gt; 而且沒辦法拿兩次執行來比較。`production/polish/`
+&gt; 刻意跟 `/team-polish` 寫入的位置相同：不管走哪條路取得的 profile，
+&gt; 都應該放在同一個地方，不然這個 skill 存在的目的，也就是比較，
+&gt; 就做不到。
+&gt;
+&gt; 如果有 `NOT ASSESSED` 章節留在報告裡，就把它保留在寫入的
+&gt; 檔案裡。在寫到磁碟的路上把缺口編輯掉的 profile，之後讀起來
+&gt; 會像一份完整的量測。
+
+
+```markdown
+## Performance Profile: [System or Full]
+Generated: [Date]
+
+### Performance Budgets
+| Metric | Budget | Estimated Current | Status |
+|--------|--------|-------------------|--------|
+| Frame time | [16.67ms] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Memory | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Load time | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Draw calls | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+
+### Hotspots Identified
+| # | Location | Issue | Estimated Impact | Fix Effort |
+|---|----------|-------|------------------|------------|
+
+### Optimization Recommendations (Priority Order)
+1. **[Title]** — [Description]
+   - Location: [file:line]
+   - Expected gain: [estimate]
+   - Risk: [Low/Med/High]
+   - Approach: [How to implement]
+
+### Quick Wins (&lt; 1 hour each)
+- [Simple optimization 1]
+
+### Requires Investigation
+- [Area that needs actual runtime profiling to confirm impact]
+```
+
+輸出報告時附上摘要：前 3 個熱點、對每個已設定的預算估計的
+headroom — 沒有預算的指標就寫 `no budget set — headroom not
+assessed` — 以及建議的下一步動作。
+
+---
+
+## Phase 5: Scope and Timeline Decision
+
+只有在任何熱點的 Fix Effort 被評為 M 或 L 時，才啟動這個階段。
+
+呈現需要大量投入的項目，並請使用者對每一項做選擇：
+
+- **A) 實作最佳化**（現在就做修復或排進行程 — 在沒有 sprint 的 `workflow: minimal`，加進 brief 的 build order）
+- **B) 縮減功能範圍**（執行 `/scope-check [feature]` 分析取捨）
+- **C) 接受效能損失，延後到 Polish 階段**（記成已知問題）
+- **D) 升級給 technical-director 做架構決策**（執行 `/architecture-decision`）
+
+如果有多個項目被延後到 Polish（選項 C），把它們記在 `### Deferred to Polish` 底下。
+
+---
+
+## Verdict
+
+每個有產出報告的執行都要收尾 — 不管 Phase 5 有沒有執行 — 用：
+Verdict: **COMPLETE** — performance profile generated（如果寫入有核准，
+就存到 `production/polish/[scope]-report-[date].md`）。唯一的
+另一種結果，就是上面的 `NOT ASSESSED — NO DATA` 路徑。
+
+---
+
+## Phase 6: Next Steps
+
+- 如果瓶頸需要架構層級的改變：執行 `/architecture-decision`。
+- 如果需要縮減範圍：執行 `/scope-check [feature]`。
+- 要把最佳化排進行程：執行 `/sprint-plan update`（在沒有 sprint 的 `workflow: minimal`，改加進 brief 的 build order）。
+
+### Rules
+- 沒量測過就絕對不要最佳化 — 對效能的直覺不可靠
+- 建議必須包含估計的影響 — 「讓它變快」是沒辦法執行的
+- 要在目標硬體上分析，不只是開發機
+- 靜態分析（這個 skill）找出候選項目；runtime profiling 才能確認</pre></section><section><h2>英文原文</h2><pre>---
+name: perf-profile
+description: &quot;Performance profiling — find bottlenecks, measure against budgets, produce ranked optimization recommendations.&quot;
+argument-hint: &quot;[system-name or &#x27;full&#x27;]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(bash &quot;*/.claude/skills/perf-profile/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys performance.enforce,automation,workflow`
+
+Resolved above — use as-is. No block → defaults in
+`.claude/docs/config-resolution.md`.
+
+# Performance Profile
+
+Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+## Insufficient input — check this before producing any report
+
+**If the inputs this skill needs do not exist, the answer is &quot;could not run&quot; —
+not a filled-in report.** Check first, and stop if the check fails.
+
+1. List the inputs this skill reads (data files, prior reports, profiler output,
+   test results, registries, source code).
+2. For each, record `FOUND` or `ABSENT` — not &quot;assumed present&quot;.
+3. If any input required for a section is ABSENT, that section is
+   **`NOT ASSESSED — NO DATA`**. Do not estimate it, do not infer it from an
+   adjacent artifact, and do not leave a mandated cell to be filled by whoever
+   reads the template next.
+4. If **every** required input is ABSENT, stop and report
+   **`NOT ASSESSED — NO DATA`** as the whole verdict, naming what was missing and
+   which skill produces it.
+
+**A verdict of `NOT ASSESSED` is a success.** It is the correct, useful answer to
+&quot;what does the data say?&quot; when there is no data. The failure mode this prevents is
+specific: a report whose verdict enum has no &quot;could not run&quot; state produces
+**false clean passes** — an asset audit returning COMPLIANT on a project with no
+assets and no standards, or a performance profile reporting &quot;&gt;99% headroom against
+a 16.67ms budget&quot; with zero profiler data and no budget ever set.
+
+**Absence of evidence is never evidence of absence.** A scan that finds no
+matches because there are no files to scan has not verified anything. Say which of
+the two happened — a reader cannot tell from a green result.
+
+---
+
+## Phase 0: Resolve Budget Enforcement
+
+`performance.enforce` decides what a budget violation *means* in this run. It
+does not change which budgets are measured — `performance.target_framerate`,
+`frame_budget_ms`, `draw_call_limit` and `memory_ceiling_mb` are profiled the
+same way at every level:
+
+| Value | Effect on this profile&#x27;s findings |
+|-------|-----------------------------------|
+| `warn` (default) | Violations are reported as findings. They do not block; CI logs them without failing. |
+| `block` | Violations are **blockers**. Say so explicitly in the report — a `block` project treats an over-budget system as release-stopping, and `/gate-check` will FAIL the Polish gate on it. |
+| `off` | Budgets are informational only. Still report measured values, but do not raise violations as findings or recommendations to fix. |
+
+Only `warn`, `block` and `off` are recognized. Surface any other value to the
+user and fall back to `warn` rather than guessing.
+
+&gt; The value is locally overridable (`/settings --local performance.enforce=block`),
+&gt; so use the resolved block above rather than reading `project.yaml` — a
+&gt; teammate&#x27;s stricter local setting is meant to bite on their machine only.
+
+## Phase 1: Determine Scope
+
+Read the argument:
+
+- System name → focus profiling on that specific system
+- `full` → run a comprehensive profile across all systems
+
+---
+
+## Phase 2: Load Performance Budgets
+
+**Read the committed budgets from config first** — they are the project&#x27;s
+record of what it agreed to, and design docs are the fallback, not the source:
+
+```bash
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.target_framerate
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.frame_budget_ms
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.draw_call_limit
+bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; get_effective_yaml_key performance.memory_ceiling_mb
+```
+
+Run each line as its own plain command, one key per call: the helper moves to
+the project root itself, so it works when the session was started in a
+subfolder, and this skill pre-approves that form only (a `source` or `cd ... &amp;&amp;`
+wrapper asks the user every time). Empty output means that budget is not set.
+
+&gt; **Resolve these budgets from `project.yaml`, not from prose.** Phase 0 above
+&gt; states these four budgets &quot;are profiled the same way at every level&quot;. A user
+&gt; who set `performance.target_framerate: 60` in `project.yaml` has it ignored if
+&gt; the budget is read from design docs or CLAUDE.md instead.
+
+Then fall back to design docs or CLAUDE.md for anything config does not carry:
+
+- Target FPS (e.g., 60fps = 16.67ms frame budget)
+- Memory budget (total and per-system)
+- Load time targets
+- Draw call budgets
+- Network bandwidth limits (if multiplayer)
+
+**A metric with no committed budget is `NOT ASSESSED`, not a pass.** Do not
+measure against the template&#x27;s `[16.67ms]` placeholder — an unset budget is not
+a budget that was met, and reporting headroom against a number nobody chose is
+the exact fabrication this skill&#x27;s own header warns about.
+
+---
+
+## Phase 3: Analyze Codebase
+
+**CPU Profiling Targets:**
+- `_process()` / `Update()` / `Tick()` functions — list all and estimate cost
+- Nested loops over large collections
+- String operations in hot paths
+- Allocation patterns in per-frame code
+- Unoptimized search/sort over game entities
+- Expensive physics queries (raycasts, overlaps) every frame
+
+**Memory Profiling Targets:**
+- Large data structures and their growth patterns
+- Texture/asset memory footprint estimates
+- Object pool vs instantiate/destroy patterns
+- Leaked references (objects that should be freed but aren&#x27;t)
+- Cache sizes and eviction policies
+
+**Rendering Targets (if applicable):**
+- Draw call estimates
+- Overdraw from overlapping transparent objects
+- Shader complexity
+- Unoptimized particle systems
+- Missing LODs or occlusion culling
+
+**I/O Targets:**
+- Save/load performance
+- Asset loading patterns (sync vs async)
+- Network message frequency and size
+
+---
+
+## Phase 4: Generate Profiling Report
+
+**Write the report to `production/polish/[scope]-report-[date].md`**, asking first
+per the Collaboration Protocol: *&quot;May I write this profiling report to
+`production/polish/[scope]-report-[date].md`?&quot;* Create the directory if absent.
+
+&gt; **Name the destination — do not just render the template into the
+&gt; conversation.** A profile that lives only in the transcript is gone the moment
+&gt; the session ends, and no two runs can be compared. `production/polish/`
+&gt; is the same location `/team-polish` writes, deliberately: a profile taken by
+&gt; either route belongs in one place, or the comparison this skill exists to enable
+&gt; cannot be made.
+&gt;
+&gt; If a `NOT ASSESSED` section survives into the report, keep it in the written
+&gt; file. A profile whose gaps are edited out on the way to disk reads, later, as a
+&gt; complete measurement.
+
+
+```markdown
+## Performance Profile: [System or Full]
+Generated: [Date]
+
+### Performance Budgets
+| Metric | Budget | Estimated Current | Status |
+|--------|--------|-------------------|--------|
+| Frame time | [16.67ms] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Memory | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Load time | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+| Draw calls | [target] | [estimate] | [OK/WARNING/OVER/NOT ASSESSED] |
+
+### Hotspots Identified
+| # | Location | Issue | Estimated Impact | Fix Effort |
+|---|----------|-------|------------------|------------|
+
+### Optimization Recommendations (Priority Order)
+1. **[Title]** — [Description]
+   - Location: [file:line]
+   - Expected gain: [estimate]
+   - Risk: [Low/Med/High]
+   - Approach: [How to implement]
+
+### Quick Wins (&lt; 1 hour each)
+- [Simple optimization 1]
+
+### Requires Investigation
+- [Area that needs actual runtime profiling to confirm impact]
+```
+
+Output the report with a summary: top 3 hotspots, estimated headroom against
+each budget that is set — for a metric with none, `no budget set — headroom not
+assessed` — and recommended next action.
+
+---
+
+## Phase 5: Scope and Timeline Decision
+
+Activate this phase only if any hotspot has Fix Effort rated M or L.
+
+Present significant-effort items and ask the user to choose for each:
+
+- **A) Implement the optimization** (proceed with fix now or schedule it — at `workflow: minimal`, which has no sprints, add it to the brief&#x27;s build order)
+- **B) Reduce feature scope** (run `/scope-check [feature]` to analyze trade-offs)
+- **C) Accept the performance hit and defer to Polish phase** (log as known issue)
+- **D) Escalate to technical-director for an architectural decision** (run `/architecture-decision`)
+
+If multiple items are deferred to Polish (choice C), record them under `### Deferred to Polish`.
+
+---
+
+## Verdict
+
+Close every run that produced a report — whether or not Phase 5 ran — with:
+Verdict: **COMPLETE** — performance profile generated (saved to
+`production/polish/[scope]-report-[date].md` if the write was approved). The only
+other outcome is the `NOT ASSESSED — NO DATA` path above.
+
+---
+
+## Phase 6: Next Steps
+
+- If bottlenecks require architectural change: run `/architecture-decision`.
+- If scope reduction is needed: run `/scope-check [feature]`.
+- To schedule optimizations: run `/sprint-plan update` (at `workflow: minimal`, which has no sprints, add them to the brief&#x27;s build order instead).
+
+### Rules
+- Never optimize without measuring first — gut feelings about performance are unreliable
+- Recommendations must include estimated impact — &quot;make it faster&quot; is not actionable
+- Profile on target hardware, not just development machines
+- Static analysis (this skill) identifies candidates; runtime profiling confirms</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

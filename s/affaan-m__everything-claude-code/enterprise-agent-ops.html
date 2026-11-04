@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>enterprise-agent-ops｜Skill 寫法圖鑑</title>
+<meta name="description" content="長時間運行 agent 系統的營運控制、監控與變更管理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>enterprise-agent-ops</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/enterprise-agent-ops/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">長時間運行 agent 系統的營運控制、監控與變更管理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: enterprise-agent-ops
+description: 長時間運行或雲端託管的 agent 系統的營運控制：runtime 生命週期（啟動、暫停、停止、重啟）、可觀測性（log、metric、trace）、最小權限的安全範圍與 kill switch，以及帶有稽核 log 與成功率/成本指標的 rollout/rollback 變更管理。在 PM2、systemd 或 container 上跑 production agent 叢集，需要監控、事件應變或部署 gate 時使用。
+metadata:
+  origin: ECC
+---
+
+# Enterprise Agent Ops
+
+用在雲端託管或持續運行的 agent 系統，這類系統需要單一 CLI session 以外的營運控制。
+
+## 營運面向
+
+1. runtime 生命週期（啟動、暫停、停止、重啟）
+2. 可觀測性（log、metric、trace）
+3. 安全控制（範圍、權限、kill switch）
+4. 變更管理（rollout、rollback、稽核）
+
+## 基本控制
+
+- 不可變的部署產物
+- 最小權限的憑證
+- 環境層級的 secret 注入
+- 硬性的 timeout 與重試預算
+- 高風險動作的稽核 log
+
+## 要追蹤的指標
+
+- 成功率
+- 每個任務的平均重試次數
+- 恢復時間
+- 每個成功任務的成本
+- 失敗類別分佈
+
+## 事件處理模式
+
+失敗暴增時：
+1. 凍結新的 rollout
+2. 擷取有代表性的 trace
+3. 隔離出問題的路徑
+4. 用最小的安全變更修補
+5. 跑 regression 加安全檢查
+6. 逐步恢復
+
+## 部署整合
+
+這個 skill 可以搭配：
+- PM2 工作流
+- systemd 服務
+- container 編排器
+- CI/CD gate</pre></section><section><h2>英文原文</h2><pre>---
+name: enterprise-agent-ops
+description: Operational controls for long-lived or cloud-hosted agent systems — runtime lifecycle (start, pause, stop, restart), observability (logs, metrics, traces), least-privilege safety scopes and kill switches, and rollout/rollback change management with audit logs and success/cost metrics. Use when running production agent fleets on PM2, systemd, or containers that need monitoring, incident response, or deployment gates.
+metadata:
+  origin: ECC
+---
+
+# Enterprise Agent Ops
+
+Use this skill for cloud-hosted or continuously running agent systems that need operational controls beyond single CLI sessions.
+
+## Operational Domains
+
+1. runtime lifecycle (start, pause, stop, restart)
+2. observability (logs, metrics, traces)
+3. safety controls (scopes, permissions, kill switches)
+4. change management (rollout, rollback, audit)
+
+## Baseline Controls
+
+- immutable deployment artifacts
+- least-privilege credentials
+- environment-level secret injection
+- hard timeout and retry budgets
+- audit log for high-risk actions
+
+## Metrics to Track
+
+- success rate
+- mean retries per task
+- time to recovery
+- cost per successful task
+- failure class distribution
+
+## Incident Pattern
+
+When failure spikes:
+1. freeze new rollout
+2. capture representative traces
+3. isolate failing route
+4. patch with smallest safe change
+5. run regression + security checks
+6. resume gradually
+
+## Deployment Integrations
+
+This skill pairs with:
+- PM2 workflows
+- systemd services
+- container orchestrators
+- CI/CD gates</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

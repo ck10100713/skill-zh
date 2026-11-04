@@ -1,0 +1,408 @@
+---
+name: pitch-deck
+description: "用來源檔案的資料填入投資銀行 pitch deck 範本。適用情境：使用者提供要填寫的 PowerPoint 範本、使用者有來源資料（Excel/CSV）要填進投影片、使用者提到要填寫 pitch deck 範本，或使用者需要把資料轉進現有的投影片版型。不適用於從零開始建立簡報。"
+---
+
+# 填寫投資銀行 Pitch Deck 範本
+
+## 參考檔案
+
+**任務一開始、動手做任何事之前，先把所有參考檔案讀完。** 裡面有關鍵的做法和反面模式，會影響你整個做事方式。不要等遇到問題才去看。
+
+| 檔案 | 用途 |
+|------|---------|
+| [`formatting-standards.md`](reference/formatting-standards.md) | 文字、項目符號、表格、圖表、對齊 |
+| [`slide-templates.md`](reference/slide-templates.md) | 常見投影片類型的內容對應指引 |
+| [`xml-reference.md`](reference/xml-reference.md) | 表格、圖形、箭頭的 PowerPoint XML 寫法 |
+| [`calculation-standards.md`](reference/calculation-standards.md) | 驗算用的財務公式（CAGR、共識預期） |
+
+---
+
+## 工作流程決策樹
+
+**這是哪一種任務？**
+
+```
+┌─ Populating empty template with source data?
+│  └─→ Follow "Template Population Workflow" below
+│
+├─ Editing existing populated slides?
+│  └─→ Extract current content, modify, revalidate
+│
+└─ Fixing formatting issues on existing slides?
+   └─→ See "Common Failures" table, apply targeted fixes
+```
+
+---
+
+## ⚠️ 重大的渲染限制
+
+**驗證時用的是 LibreOffice，但它「無法」精確渲染 PowerPoint 檔案。** 它會搞亂字型、漸層、圖形位置、文字換行，還有部分表格格式。
+
+**這代表：** 在 LibreOffice 裡通過視覺驗證的投影片，在 Microsoft PowerPoint 裡仍可能有問題。驗證迴圈能抓到結構性問題（內容缺漏、表格壞掉、殘留佔位符格式），但**抓不到**字型替換、細微的對齊偏移或漸層問題。
+
+**必須做的事：** 交付成果時，一定要附上這段話：
+> "This file was validated using LibreOffice. Please review in Microsoft PowerPoint before distribution, as rendering differences may exist."
+
+---
+
+## 範本填寫工作流程
+
+複製下面這份清單並追蹤進度：
+
+```
+Pitch Deck Progress:
+- [ ] Phase 1: Extract and validate source data
+- [ ] Phase 2: Map content to template sections
+- [ ] Phase 3: Populate slides with proper formatting
+- [ ] Phase 4: Validate → Fix → Repeat until clean
+- [ ] Phase 5: Final verification
+```
+
+### 階段 1：資料萃取
+1. 動任何東西之前，**先替原始範本建立備份**，複製成 `[filename]_backup.pptx`。直接編輯 XML 或發生意外錯誤都可能弄壞檔案。
+2. 找出所有來源資料（Excel、CSV、PDF 報告、Word 文件、資料庫、網路來源）
+3. 從每個來源萃取相關資料點
+4. 把所有數字跟原始來源核對
+5. 統一單位和幣別（把所有數字轉成範本使用的主要單位／幣別）
+6. 記下需要驗算的計算 → 公式見 [`calculation-standards.md`](reference/calculation-standards.md)
+
+### 階段 2：內容對應
+1. **打開範本並用眼睛檢查**：修改前先搞懂它的結構、風格和現有內容
+2. 分析範本結構：找出所有佔位區域和內容框
+3. 把來源資料對應到範本的各個區塊 → 對應指引見 [`slide-templates.md`](reference/slide-templates.md)
+4. 找出佔位指引框（任務建立者放的彩色說明框）
+5. 記下任何資料缺口或不吻合的地方 → 處理方式見 [`slide-templates.md`](reference/slide-templates.md#handling-data-template-mismatches)
+
+### 階段 3：範本填寫
+1. **移除或重新格式化佔位框**：彩色說明框是告訴你要建立「什麼」內容，不是告訴你「怎麼」排版。把它們刪掉，在原位置建立格式正確的內容。見[關鍵反面模式](#critical-anti-patterns-never-do-these)。
+2. 把對應好的內容填進每個區塊（先專注在內容）
+3. **再套用格式**，讓它符合範本風格 → 見 [`formatting-standards.md`](reference/formatting-standards.md)
+4. 表格要建立成真正的表格物件（絕對不要用直線或 tab 分隔的文字）→ 見 [`xml-reference.md`](reference/xml-reference.md#table-implementation)
+5. 箭頭／圖形要建立成 PowerPoint 物件 → 見 [`xml-reference.md`](reference/xml-reference.md#arrow-shapes)
+6. 如果任務檔案裡有提供公司 logo 就插入；沒有的話，要跟使用者標示："[LOGO NOT PROVIDED - please supply company logo]"
+
+### 階段 4：驗證 → 修正 → 重複
+
+**這是一個回饋迴圈。重複到所有檢查都通過，或觸發升級處理為止。**
+
+```bash
+# Convert to images for visual validation
+soffice --headless --convert-to pdf presentation.pptx
+pdftoppm -jpeg -r 150 presentation.pdf slide
+```
+
+**驗證清單（逐張檢查投影片圖片）：**
+- [ ] 文字在背景上看得清楚嗎？
+- [ ] 表格是真正的物件嗎（欄位對齊，不是用直線／tab 分隔的文字）？
+- [ ] 圖表／表格有填滿指定區域嗎？
+- [ ] 同一區塊內的項目符號格式一致嗎？
+- [ ] 同層級的框，字體大小一致嗎？
+- [ ] 沒有內容超出投影片邊界嗎？
+- [ ] **沒有殘留佔位符格式**（沒有把資料倒進大片彩色方框）？
+- [ ] **沒有文字拼出來的「表格」**（沒有用 `|` 或 tab 分隔符湊出假欄位）？
+- [ ] **跨投影片一致性**：同一個指標／數字，在所有出現的投影片上都一樣嗎？
+
+**修正循環規則：**
+
+| 輪次 | 動作 |
+|-------|--------|
+| 1 | 修好所有找到的問題，重新驗證 |
+| 2 | 修好剩下的問題，重新驗證 |
+| 3 | 如果問題還在，記錄剩下的問題並升級給使用者 |
+
+**3 輪之後如果還有問題：**
+1. 列出每個未解決的問題，附上投影片編號和描述
+2. 說明你試過什麼
+3. 交付檔案，並明確聲明："The following issues could not be resolved automatically: [list]. Manual review required."
+
+**不要**無止盡地循環。有些問題（字型渲染、複雜的圖形對齊）可能需要在 PowerPoint 裡手動處理。
+
+### 階段 5：最終驗證
+
+交付前，把[最終品質檢查清單](#final-quality-checklist)從頭到尾走過一遍。
+
+---
+
+## 速查表
+
+### 項目符號
+
+| 情境 | 符號 | 用法 |
+|---------|--------|-------|
+| 包含／正面 | ✓ | 範圍內的項目、具備的功能 |
+| 排除／負面 | × | 範圍外的項目、不具備的功能 |
+| 中性清單 | • | 一般列舉、評論 |
+| 編號順序 | 1. 2. 3. | 流程步驟、排名 |
+| 次要項目符號 | – | 主項目符號底下的次要重點 |
+
+### 投影片階層層級（一般情況）
+
+以下是一般範圍，請依範本規格調整：
+
+| 層級 | 範例 | 一般大小 | 樣式 |
+|-------|----------|--------------|-------|
+| 標題 | 投影片標題 | 40-48pt | 粗體 |
+| 副標題 | 市場定義、投影片說明 | 18-22pt | 粗體 |
+| 區段標題 | "Key Projections"、"Commentary" | 14-16pt | 一般 |
+| 區塊標籤 | "Segments Included"、"Definition" 側欄 | 12-14pt | 一般 |
+| 區塊內容 | 項目符號重點、內文 | 11-14pt | 一般 |
+| 表格標題列 | 欄位標題 | 10-12pt | 粗體 |
+| 表格內文 | 儲存格內容 | 9-11pt | 一般 |
+| 註腳 | 資料來源、附註 | 8-9pt | 斜體 |
+
+### 字型一致性對照
+
+**同一層級**的框，字體大小「一定要」相同：
+
+| 同一層級 | 必須對齊的對象 |
+|------------|-----------------|
+| "Segments Included" | "Segments Excluded" |
+| "Definition" | "Scope Rationale" |
+| 左欄項目符號 | 右欄項目符號 |
+| 所有區塊標籤 | 彼此 |
+| 所有區段標題 | 彼此 |
+
+### 呈現用的四捨五入
+
+這些是**一般慣例**，請依數值大小和範本風格調整：
+
+| 數值類型 | 一般進位方式 | 範例 |
+|------------|------------------|---------|
+| 大型市場規模（$10bn 以上） | 取最接近的 $1bn | 18.5 → $19bn |
+| 較小市場規模（<$10bn） | 取最接近的 $0.5bn 或 $0.1bn | 2.3 → $2.5bn |
+| 規模區間 | 與來源的精度一致 | 14.9-22.1 → $15-22bn |
+| CAGR | 整數 % 或 0.5% | 16.4% → 16% 或 16.5% |
+| 市占率 | 取最接近的 5%，或與來源一致 | 21.4% → 20% |
+| 倍數 | 小數點 1 位 | 9.69 → 9.7x |
+
+**原則：** 四捨五入不能讓數字有實質改變。數值較小時，用更細的精度。
+
+### 文字密度規則
+
+- 每個內容框最多 6-7 個項目符號
+- 每個項目符號最多 2 行
+- 括號內的範例：放同一行，或縮排放在下方
+- 不要有孤字（單獨一個字掉到新的一行）
+
+### 對齊原則
+
+**垂直堆疊的框**必須有相同的：
+- 左邊界位置、項目符號縮排、文字起始位置、框寬度
+
+**水平相鄰的框**必須有相同的：
+- 上緣位置、高度（盡可能）、內部邊距
+
+### 多張投影片的一致性
+
+同一份資料出現在多張投影片時：
+- 使用相同的數字、格式和用語
+- 如果某張投影片更新了某個指標，所有出現的地方都要更新
+- 驗證時交叉比對，抓出不一致
+
+---
+
+## 必須遵守的要求
+
+不管範本長怎樣，這些要求都沒得商量：
+
+| 要求 | 細節 |
+|-------------|---------|
+| **文字可讀性** | 所有文字「一定要」跟背景有足夠對比。例如：深藍、深綠、黑色背景配白色／淺色文字；白色、淺灰、淺黃背景配黑色／深色文字。 |
+| **真正的表格物件** | 表格資料「一定要」是表格物件，不能是 tab 分隔的文字。見 [`xml-reference.md`](reference/xml-reference.md#table-implementation)。 |
+| **圖表／表格大小適當** | 貼上的視覺內容「一定要」填滿指定區域。見 [`formatting-standards.md`](reference/formatting-standards.md#chart-and-image-handling)。 |
+| **格式一致** | 同一區塊內的項目符號「一定要」一致（符號、大小、縮排）。同層級的框「一定要」用相同字體大小。 |
+| **內容邊界** | 所有內容「一定要」留在投影片邊緣以內。註腳框寬度：16:9 約 32.5cm，4:3 約 24cm。 |
+| **不留佔位符格式** | 移除彩色說明框。主體內文：依範本使用淺色背景配深色文字。 |
+
+---
+
+## 關鍵反面模式：絕對不准這樣做
+
+這些失誤都是因為把佔位符的格式誤當成輸出格式。能認出這些模式非常重要。
+
+### 反面模式 1：把資料填「進」佔位框
+
+**發生什麼事：** 範本有彩色說明框（黃色、橘色等），裡面是指引文字。模型把指引文字換成實際資料，但「保留了那個彩色框」。
+
+**為什麼不對：** 那個彩色框本身就是佔位符，是用來告訴你這裡要放什麼內容。輸出應該有不同的格式，通常是白色／淺色背景配深色文字，或樣式適當的圖形。
+
+**辨認方式：** 如果你填完的投影片有大片填滿資料文字的彩色矩形，就代表你複製了佔位符的格式，而不是取代它。
+
+**關鍵區別：「佔位符」有兩種：**
+
+| 類型 | 怎麼辨認 | 怎麼處理 |
+|------|-----------------|------------|
+| **說明框** | 鮮豔顏色（黃、橘等）、內有 "Insert X here" 之類的指引文字、彩色背景配白色／淺色文字 | 刪掉整個圖形，再用正式的格式建立新內容 |
+| **版面配置佔位符** | 屬於投影片母片／版面配置、中性色且符合範本主題、顯示 "Click to add text" | 保留圖形，只取代文字內容 |
+
+不確定的話：看同一個範本的空白投影片上有沒有這個圖形。版面配置佔位符會一直都在，說明框則是普通圖形。
+
+### 反面模式 2：文字拼出來的「表格」
+
+**發生什麼事：** 模型用分隔字元（`|`、tab、空格）做出像表格的內容，而不是用真正的表格物件。
+
+**為什麼不對：** 這根本不是表格。欄位永遠對不齊、沒辦法一致地設定格式，看起來也不專業。
+
+**辨認方式：** 如果你在打 `|` 字元，或靠空格／tab 來湊欄位，那你做的是文字，不是表格。
+
+**必須驗證：** 建立任何表格之後，確認它是真正的表格物件。驗證方法見 [`xml-reference.md`](reference/xml-reference.md#critical-verify-tables-are-actual-table-objects)。
+
+### 反面模式 3：繼承佔位符的對比配色
+
+**發生什麼事：** 佔位符用的是彩色背景配淺色文字（例如黃底白字）。模型填入資料但保留了這個配色，結果很難閱讀。
+
+**為什麼不對：** 佔位符的顏色刻意做得很突兀，就是要提示「把我換掉」。正式投影片的主體內容通常用淺色背景配深色文字。
+
+**辨認方式：** 如果你填完的內容在主體區域（不是標題）是亮色背景配淺色／白色文字，就代表你繼承了佔位符的格式。
+
+**正確做法：** 套用正式格式，主體內容通常是白色或淺色背景配深色文字（#000000 或 #333333）。標題和強調區域可以用品牌色。
+
+### 總結：佔位符 vs. 正式成品
+
+| 元素 | 佔位符（輸入） | 正式成品（輸出） |
+|---------|---------------------|---------------------|
+| 說明框 | 彩色背景、指引文字 | 移除或重新格式化 |
+| 資料區 | "[Insert data here]" 文字 | 實際資料搭配乾淨的格式 |
+| 表格 | 描述表格應該放什麼 | 有列有欄的真正表格物件 |
+| 內文 | 彩色背景配淺色文字 | 淺色背景配深色文字 |
+
+**佔位符告訴你要建立「什麼」，不是告訴你「怎麼」排版。**
+
+---
+
+## 常見失誤
+
+最關鍵的幾個失誤的詳細說明，見上面的[關鍵反面模式](#critical-anti-patterns-never-do-these)。
+
+| 失誤 | 解法 | 參考 |
+|---------|----------|-----------|
+| 一大坨沒結構的文字 | 拆成項目符號（✓、×、•） | [`formatting-standards.md`](reference/formatting-standards.md#bullet-point-structure) |
+| 用直線／tab 分隔的「表格」 | 建立真正的表格物件，用分隔符的文字不是表格 | [`xml-reference.md`](reference/xml-reference.md#table-implementation) |
+| 文字與背景對比不足 | 逐一檢查每個文字元素 | — |
+| 貼上的圖表太小 | 調整大小填滿區域，只貼圖表 | [`formatting-standards.md`](reference/formatting-standards.md#proper-sizing-workflow) |
+| 圖表連來源資料一起貼上 | 複製前只選取圖表物件 | — |
+| 資料倒進佔位框 | 刪除彩色說明框，建立格式正確的新內容 | [反面模式](#critical-anti-patterns-never-do-these) |
+| 項目符號不一致 | 定義一次樣式，全部套用 | [`formatting-standards.md`](reference/formatting-standards.md#bullet-consistency) |
+| 各框的字型不一致 | 統一同層級的框 | [`formatting-standards.md`](reference/formatting-standards.md#font-consistency) |
+| 內容溢出 | 明確設定框寬（註腳：16:9 為 32.5cm，4:3 為 24cm） | — |
+| 缺 logo | 用任務檔案裡的 logo；沒提供就跟使用者標示 | — |
+| 殘留 `[brackets]` | 搜尋並取代所有佔位符 | — |
+| 文字箭頭（→、⟹） | 改用 PowerPoint 圖形物件 | [`xml-reference.md`](reference/xml-reference.md#arrow-shapes) |
+
+---
+
+## 錯誤處理
+
+**如果 PDF／圖片轉換失敗：**
+1. 檢查有沒有裝 LibreOffice：`which soffice`
+2. 試替代方案：`libreoffice --headless --convert-to pdf presentation.pptx`
+3. 還是失敗的話，手動用 PowerPoint／LibreOffice 開啟後匯出
+
+**如果來源資料有不一致或衝突：**
+1. **優先順序**：先用任務檔案中明確提供的資料
+2. 如果用了其他來源的資料（網路搜尋、外部文件），要跟使用者說
+3. 明確記錄所有不一致之處
+4. 加註腳說明為什麼選這個資料來源
+
+**如果計算結果跟來源的預測對不上：**
+1. 說明你的計算方法
+2. 記下差異和可能的原因（基準年不同、方法不同）
+3. 差異很大的話，兩個數值都列出來
+4. 標示給使用者決定
+
+---
+
+## 表格結構準則
+
+建立表格時（「一定要」是真正的表格物件）：
+
+**欄位對齊：**
+- 文字欄：靠左對齊（標題和內容都是）
+- 數字欄：靠右或置中對齊（標題要跟內容一致）
+
+**標題列：**
+- 粗體文字
+- 有底色（用範本的品牌色）
+- 白色或對比色文字
+
+**共識預期／合計列：**
+- 粗體文字
+- 上方加分隔線
+- 底色要有區別
+
+**寬度：** 完整填滿指定區段的寬度。
+
+XML 實作方式見 [`xml-reference.md`](reference/xml-reference.md#table-implementation)。
+
+---
+
+## 註腳格式
+
+**格式：**
+```
+Sources: [Source 1] (Year), [Source 2] (Year).
+Notes: (1) [First note]; (2) [Second note].
+```
+
+**範例：**
+```
+Sources: Grand View Research (2024), Mordor Intelligence (2024), Markets and Markets (2023).
+Notes: (1) Excludes hardware revenue; (2) Includes both B2B and B2C segments.
+```
+
+投影片本文裡所有的上標數字（¹、²、³）「一定要」有對應的 Notes 條目。
+
+---
+
+## Logo 擺放
+
+- 使用任務資料裡提供的 logo 檔
+- 如果沒提供 logo，要跟使用者標示："[LOGO NOT PROVIDED - please supply company logo]"
+- 位置：通常在右上角，每張投影片大小一致，不能蓋到內容
+
+---
+
+## 各投影片類型的資料需求
+
+每種投影片類型的詳細資料需求、格式原則和欄位標題範例，見 [`slide-templates.md`](reference/slide-templates.md#common-slide-types-and-data-requirements)。
+
+涵蓋的常見投影片類型：Market Definition、Market Sizing/TAM、Competitive Landscape、Financial Summary、Transaction Comparables。
+
+---
+
+## 最終品質檢查清單
+
+交付填好的範本之前，逐項確認：
+
+### 資料正確性
+- [ ] 所有數字都跟原始來源文件吻合
+- [ ] 計算出來的值已用公式驗算（見 [`calculation-standards.md`](reference/calculation-standards.md)）
+- [ ] 年份和時間區間正確
+- [ ] 公司／競爭對手名稱拼寫正確
+- [ ] 同一個數字在所有出現的投影片上都一致
+
+### 內容對應
+- [ ] 範本的每個區段都填入了適當的資料
+- [ ] 沒有殘留 `[bracket]` 佔位文字
+- [ ] 所有來源引用都放進註腳
+- [ ] 註腳編號（¹²³）都有對應的 Notes 條目
+
+### 格式
+- [ ] 文字在所有背景上都看得清楚（對比足夠）
+- [ ] 表格是真正的表格物件（不是用直線／tab 分隔的文字）
+- [ ] 圖表／表格填滿指定區域（沒有縮圖）
+- [ ] 每個區段內的項目符號格式一致
+- [ ] 同層級的框，字體大小一致
+- [ ] 沒有內容超出投影片邊界
+- [ ] 沒有保留佔位框然後把資料倒在裡面
+- [ ] 最終成品沒有彩色說明框
+
+### 範本符合度
+- [ ] 佔位說明框已重新格式化或移除
+- [ ] 格式符合範本風格（顏色、字型）
+- [ ] logo 已放入且位置正確
+- [ ] 已套用正式格式（主要內容為淺色背景配深色文字）
+
+### 最後一步
+- [ ] 建議使用者在發布前用 Microsoft PowerPoint 驗證（LibreOffice 的渲染可能不同）

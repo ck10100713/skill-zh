@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>automation-audit-ops｜Skill 寫法圖鑑</title>
+<meta name="description" content="先盤點 hook、MCP、connector 的運作狀態，再判斷保留合併或砍掉">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>automation-audit-ops</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/automation-audit-ops/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">先盤點 hook、MCP、connector 的運作狀態，再判斷保留合併或砍掉</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: automation-audit-ops
+description: 以證據為先的 ECC 自動化盤點與重疊稽核工作流程。使用者想在動手修之前，先搞清楚哪些 job、hook、connector、MCP server 或 wrapper 是運作中、壞掉、多餘或缺少的時候使用。
+metadata:
+  origin: ECC
+---
+
+# Automation Audit Ops
+
+當使用者問哪些自動化正在運作、哪些 job 壞了、哪裡有重疊，或哪些工具和 connector 目前真的有在做有用的事時，用這個 skill。
+
+這是一個稽核優先的操作員 skill。工作是在重寫任何東西之前，先產出有證據支撐的盤點，以及「保留 / 合併 / 砍掉 / 下一個修」的建議清單。
+
+## Skill 組合
+
+相關的時候，把這些 ECC 原生的 skill 拉進工作流程：
+
+- `workspace-surface-audit`：盤點 connector、MCP、hook 和 app
+- `knowledge-ops`：稽核需要把 repo 的即時實況跟持久的 context 對帳時用
+- `github-ops`：答案取決於 CI、排程的 workflow、issue 或 PR 自動化時用
+- `ecc-tools-cost-audit`：真正的問題是 webhook 扇出、排隊的 job，或姊妹 app repo 的帳單燒太快時用
+- `research-ops`：本地盤點需要跟目前平台支援或公開文件比對時用
+- `verification-loop`：用來證明修復後的狀態，不要靠假設已經恢復
+
+## 何時使用
+
+- 使用者問「我有哪些自動化」「哪些是運作中的」「哪些壞了」或「哪些重疊」
+- 任務橫跨 cron job、GitHub Actions、本機 hook、MCP server、connector、wrapper 或 app 整合
+- 使用者想知道從別的 agent 系統移植過來了什麼，還有什麼需要在 ECC 裡重建
+- 工作區累積了好幾種做同一件事的方式，使用者想要一條標準路線
+
+## 護欄
+
+- 除非使用者明確要求修復，否則一開始先維持唯讀
+- 分開標示：
+  - 已設定
+  - 已驗證身分
+  - 最近驗證過
+  - 過時或壞掉
+  - 完全缺少
+- 不要只因為某個 skill 或設定有提到某個工具，就宣稱它在運作
+- 證據表出現之前，不要合併或刪除重疊的部分
+
+## 工作流程
+
+### 1. 盤點真實的範圍
+
+先讀目前實際運作的範圍，再去推論：
+
+- repo 的 hook 和本機 hook script
+- GitHub Actions 和排程的 workflow
+- MCP 設定和已啟用的 server
+- 由 connector 或 app 支撐的整合
+- wrapper script 和 repo 專屬的自動化進入點
+
+依範圍分組：
+
+- 本機 runtime
+- repo CI / 自動化
+- 已連接的外部系統
+- 訊息 / 通知
+- 帳務 / 客戶營運
+- 研究 / 監控
+
+### 2. 依運作狀態替每個項目分類
+
+對每個找到的自動化，標示：
+
+- 已設定
+- 已驗證身分
+- 最近驗證過
+- 過時或壞掉
+- 缺少
+
+然後分類問題類型：
+
+- 目前正在壞
+- 驗證中斷
+- 狀態過時
+- 重疊或冗餘
+- 缺少的能力
+
+### 3. 追蹤證明路徑
+
+每個重要的主張，都要有具體的來源支撐：
+
+- 檔案路徑
+- workflow 執行紀錄
+- hook log
+- 設定項目
+- 最近的指令輸出
+- 確切的失敗特徵
+
+如果目前的狀態不明確，就直接說，不要假裝稽核已經完成。
+
+### 4. 以保留 / 合併 / 砍掉 / 下一個修收尾
+
+對每個重疊或可疑的部分，給一個判斷：
+
+- 保留（keep）
+- 合併（merge）
+- 砍掉（cut）
+- 下一個修（fix next）
+
+價值在於把吵雜的自動化收斂成一條標準的 ECC 路線，不是把每一條歷史路徑都保留下來。
+
+## 輸出格式
+
+```text
+CURRENT SURFACE
+- automation
+- source
+- live state
+- proof
+
+FINDINGS
+- active breakage
+- overlap
+- stale status
+- missing capability
+
+RECOMMENDATION
+- keep
+- merge
+- cut
+- fix next
+
+NEXT ECC MOVE
+- exact skill / hook / workflow / app lane to strengthen
+```
+
+## 常見陷阱
+
+- 即時盤點讀得到的時候，不要憑記憶回答
+- 不要把「設定裡有」當成「有在運作」
+- 在點名壞掉的高訊號路徑之前，不要先修價值較低的冗餘
+- 使用者先要的是盤點，就不要把任務擴大成重寫整個 repo
+
+## 驗證
+
+- 重要的主張都引用了即時的證明路徑
+- 每個找到的自動化都標上清楚的運作狀態類別
+- 最後的建議有區分保留 / 合併 / 砍掉 / 下一個修</pre></section><section><h2>英文原文</h2><pre>---
+name: automation-audit-ops
+description: Evidence-first automation inventory and overlap audit workflow for ECC. Use when the user wants to know which jobs, hooks, connectors, MCP servers, or wrappers are live, broken, redundant, or missing before fixing anything.
+metadata:
+  origin: ECC
+---
+
+# Automation Audit Ops
+
+Use this when the user asks what automations are live, which jobs are broken, where overlap exists, or what tooling and connectors are actually doing useful work right now.
+
+This is an audit-first operator skill. The job is to produce an evidence-backed inventory and a keep / merge / cut / fix-next recommendation set before rewriting anything.
+
+## Skill Stack
+
+Pull these ECC-native skills into the workflow when relevant:
+
+- `workspace-surface-audit` for connector, MCP, hook, and app inventory
+- `knowledge-ops` when the audit needs to reconcile live repo truth with durable context
+- `github-ops` when the answer depends on CI, scheduled workflows, issues, or PR automation
+- `ecc-tools-cost-audit` when the real problem is webhook fanout, queued jobs, or billing burn in the sibling app repo
+- `research-ops` when local inventory must be compared against current platform support or public docs
+- `verification-loop` for proving post-fix state instead of relying on assumed recovery
+
+## When to Use
+
+- user asks &quot;what automations do I have&quot;, &quot;what is live&quot;, &quot;what is broken&quot;, or &quot;what overlaps&quot;
+- the task spans cron jobs, GitHub Actions, local hooks, MCP servers, connectors, wrappers, or app integrations
+- the user wants to know what was ported from another agent system and what still needs to be rebuilt inside ECC
+- the workspace has accumulated multiple ways to do the same thing and the user wants one canonical lane
+
+## Guardrails
+
+- start read-only unless the user explicitly asked for fixes
+- separate:
+  - configured
+  - authenticated
+  - recently verified
+  - stale or broken
+  - missing entirely
+- do not claim a tool is live just because a skill or config references it
+- do not merge or delete overlapping surfaces until the evidence table exists
+
+## Workflow
+
+### 1. Inventory the real surface
+
+Read the current live surface before theorizing:
+
+- repo hooks and local hook scripts
+- GitHub Actions and scheduled workflows
+- MCP configs and enabled servers
+- connector- or app-backed integrations
+- wrapper scripts and repo-specific automation entrypoints
+
+Group them by surface:
+
+- local runtime
+- repo CI / automation
+- connected external systems
+- messaging / notifications
+- billing / customer operations
+- research / monitoring
+
+### 2. Classify each item by live state
+
+For every surfaced automation, mark:
+
+- configured
+- authenticated
+- recently verified
+- stale or broken
+- missing
+
+Then classify the problem type:
+
+- active breakage
+- auth outage
+- stale status
+- overlap or redundancy
+- missing capability
+
+### 3. Trace the proof path
+
+Back every important claim with a concrete source:
+
+- file path
+- workflow run
+- hook log
+- config entry
+- recent command output
+- exact failure signature
+
+If the current state is ambiguous, say so directly instead of pretending the audit is complete.
+
+### 4. End with keep / merge / cut / fix-next
+
+For each overlapping or suspect surface, return one call:
+
+- keep
+- merge
+- cut
+- fix next
+
+The value is in collapsing noisy automation into one canonical ECC lane, not in preserving every historical path.
+
+## Output Format
+
+```text
+CURRENT SURFACE
+- automation
+- source
+- live state
+- proof
+
+FINDINGS
+- active breakage
+- overlap
+- stale status
+- missing capability
+
+RECOMMENDATION
+- keep
+- merge
+- cut
+- fix next
+
+NEXT ECC MOVE
+- exact skill / hook / workflow / app lane to strengthen
+```
+
+## Pitfalls
+
+- do not answer from memory when the live inventory can be read
+- do not treat &quot;present in config&quot; as &quot;working&quot;
+- do not fix lower-value redundancy before naming the broken high-signal path
+- do not widen the task into a repo rewrite if the user asked for inventory first
+
+## Verification
+
+- important claims cite a live proof path
+- each surfaced automation is labeled with a clear live-state category
+- the final recommendation distinguishes keep / merge / cut / fix-next</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

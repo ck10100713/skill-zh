@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-self-evaluation｜Skill 寫法圖鑑</title>
+<meta name="description" content="完成任務後用五個面向替自己的產出打分，並附證據和改進建議">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-self-evaluation</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-self-evaluation/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">完成任務後用五個面向替自己的產出打分，並附證據和改進建議</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-self-evaluation
+description: 完成任何不簡單的任務之後使用。Agent 依五個面向替自己的產出打分：正確性、完整性、清晰度、可執行性、精簡度，每項都要附具體證據。產出結構化的 1 到 5 分評分表，並附具體的改進建議。
+origin: ECC
+---
+
+# Agent 自我評估
+
+完成複雜任務之後，agent 停下來，用結構化的五面向評分標準替自己的產出打分。這不是通過或不通過的關卡，而是刻意的反思步驟，能在使用者發現之前，先抓出遺漏、標出過度自信，並找出可以改進的地方。
+
+## 何時啟用
+
+- 寫了橫跨 3 個以上檔案或 50 行以上的程式碼之後
+- 完成多步驟工作流程（實作 → 測試 → review）之後
+- 經過 3 次以上嘗試的除錯過程之後
+- 產出設計文件、架構決策或書面分析之後
+- 使用者問「剛剛做得怎麼樣？」或「幫自己打個分」的時候
+- 任何 session 結束的 Stop hook（如果有設定，見 `references/hook-integration.md`）
+
+## 核心概念
+
+### 五個評估面向
+
+| 面向 | 問題 | 抓得到什麼 |
+|---|---|---|
+| **正確性（Accuracy）** | 事實、主張和輸出是正確的嗎？ | 幻覺、錯誤的 API 名稱、不正確的語法、錯誤的陳述 |
+| **完整性（Completeness）** | 使用者要求的每一項都涵蓋了嗎？ | 漏掉的 edge case、沒處理的錯誤路徑、被遺忘的需求、跳過的子任務 |
+| **清晰度（Clarity）** | 說明容易理解、結構良好嗎？ | 令人困惑的說明、沒定義的術語、缺少 context、囉嗦離題 |
+| **可執行性（Actionability）** | 使用者能馬上依據這份輸出行動嗎？ | 模糊的建議、缺少的步驟、只說「你應該 X」卻沒示範怎麼做、沒有驗證路徑 |
+| **精簡度（Conciseness）** | 有用最少的字數或 token 嗎？ | 重複、過度解釋、逐字複述使用者的問題、填充內容 |
+
+### 評分量表
+
+```
+5 — 卓越：沒有合理的改進空間
+4 — 良好：只有小瑕疵，沒有實質缺口
+3 — 堪用：符合要求，但至少一個面向有明顯的弱點
+2 — 偏弱：有明確的缺口，影響可用性或正確性
+1 — 不佳：根本沒達成要求，或含有重大錯誤
+```
+
+### 證據規則
+
+每個低於 5 的分數，一定要引用具體證據。給 3 分不能只寫「可以更好」，必須明確說出缺了什麼或錯在哪。口訣是：**「把缺口秀出來，不要只是點名。」**
+
+## 工作流程
+
+### 步驟 1：蒐集原始素材
+
+收集你要評估的東西：
+
+```
+- 使用者原本的需求（從對話中讀回來）
+- 你最終的回應或輸出（交付物）
+- 任何能驗證正確性的工具輸出（測試結果、exit code、lint 輸出）
+- 任務過程中收到的任何使用者回饋（更正、「再試一次」、「這不對」）
+```
+
+### 步驟 2：獨立替每個面向打分
+
+一次處理一個面向。每個面向都這樣做：
+
+1. 讀這個面向的問題
+2. 在輸出中找證據（或缺乏證據的地方）
+3. 給 1 到 5 的分數
+4. 如果分數低於 5，寫一句引用缺口的改進筆記
+
+不要先在腦中算平均，再倒推各面向的分數。每個面向都要重新獨立打分。
+
+### 步驟 3：產出評估報告
+
+使用 `templates/evaluation-report.md` 的範本。報告必須包含：
+
+```
+- 一句話摘要
+- 五面向評分表（每個面向的分數加證據）
+- 總分（簡單平均，四捨五入到小數點後一位）
+- 1 到 3 項依影響大小排序的具體改進
+- 自我檢查：「使用者會同意這個評估嗎？」
+```
+
+### 步驟 4：套用改進
+
+如果任何面向得到 3 分或以下：
+
+1. 說明你會怎麼做得不一樣
+2. 如果缺口 30 秒內就能修好（缺少的連結、不清楚的措辭），現在就修
+3. 如果缺口需要重做，明確標出來：「這個面向得到 [原因] 的分數，因為 [證據]。用 [具體修正] 重跑，很可能升到 [分數]。」
+
+## 程式碼範例
+
+### 範例：好的評估（4 分以上）
+
+```
+任務：幫 HTTP client 加上重試邏輯
+
+評分表：
+  正確性：    5 — 所有 API 呼叫都正確。已驗證：重試使用
+                  exponential backoff。沒有幻覺出來的方法。
+  完整性：    4 — 涵蓋 happy path 加 3 種錯誤情況。缺少：
+                  卡住連線的 timeout 處理。
+  清晰度：    5 — 程式碼註解說明了 backoff 公式。
+                  PR 描述連結到促成這次修改的事故。
+  可執行性：  5 — 一次 merge 完成。沒有後續任務。測試通過。
+  精簡度：    4 — 總共 47 行。重試迴圈可以抽成 helper，
+                  大約少 8 行。
+
+總分：4.6 — 一個缺口（timeout 處理）。merge 之前先修好。
+```
+
+### 範例：偏弱的評估（2 到 3 分）
+
+```
+任務：幫 HTTP client 加上重試邏輯
+
+評分表：
+  正確性：    2 — 用了 urllib3，跟我們以 httpx 為基礎的
+                  codebase 不合。用錯函式庫。
+  完整性：    3 — GET 可以用。POST/PUT 沒處理（使用者
+                  說的是「所有 HTTP 請求」）。
+  清晰度：    4 — 程式碼好讀。變數名稱不錯。
+  可執行性：  2 — 提到「加測試」，但沒建立測試檔。
+                  使用者 merge 前得自己寫測試。
+  精簡度：    3 — 120 行。重試設定在 3 個地方重複，
+                  沒有共用一個 RetryConfig 物件。
+
+總分：2.8 — 用錯函式庫。需要用 httpx 重寫。
+  先修正確性（換成 httpx），再擴充到所有
+  HTTP method，最後整合設定。
+```
+
+## 反面模式
+
+### 「每項都是 5 分」
+
+```
+FAIL: 正確性：    5 — 都很好。
+   完整性：    5 — 全部涵蓋。
+   清晰度：    5 — 很清楚。
+```
+
+沒有引用證據。這是自我感覺良好，不是評估。真正的 5 分，必須證明已經沒有東西可以改進。
+
+### 因為範圍擴張而過度扣分
+
+```
+FAIL: 完整性：2 — 沒處理 WebSocket 連線或
+   gRPC streaming（使用者沒要求這些）
+```
+
+只對照使用者真正要求的東西來評估，不要拿你「本來還可以多做的」來扣分。
+
+### 拿評估來重新翻案
+
+```
+FAIL: 「我之前就說過，這個做法是錯的。分數：1」
+```
+
+評估針對的是交付出去的產出，不是重新爭論已經做過的設計決定。如果做法有問題，應該在交付前就抓到。
+
+### 把個人偏好跟客觀缺口混在一起
+
+```
+FAIL: 「分數：3。我不喜歡 Python decorator。」
+```
+
+「不喜歡」不是證據。要引用具體的可讀性、可測試性或正確性問題，不然分數就留在 4 分以上。
+
+## 最佳實務
+
+- **評估輸出，不是過程。** 使用者在意的是你交付了什麼，不是你試了幾輪。
+- **每個弱的面向只提一項改進。** 不要在一個面向底下列 5 件事，挑影響最大的缺口。
+- **把改進跟對使用者的影響連起來。** 「少了錯誤處理，使用者的 API 呼叫會無聲無息地崩掉」比「加上錯誤處理」好。
+- **具體說明「修好」長什麼樣子。** 「用設定好重試的 httpx transport 重跑」比「修正函式庫的問題」好。
+- **用工具輸出當證據。** 測試通過就引用測試，lint 乾淨就引用 lint。不要用猜的，用 grep 找證明。
+- **如果你找不到任何缺口，再努力找一下。** 五個面向全拿滿分很少見。問自己：「如果我是使用者，這份輸出哪裡會讓我不爽？」
+
+## 相關 Skill
+
+- `agent-eval`：在基準任務上，對不同 coding agent 做正面比較
+- `verification-loop`：系統化地對照預期結果驗證輸出
+- `security-review`：以安全為主的 code review checklist</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-self-evaluation
+description: Use after completing any non-trivial task. The agent self-rates its output on 5 axes — accuracy, completeness, clarity, actionability, conciseness — with concrete evidence per criterion. Produces a structured 1-5 scorecard with specific improvement suggestions.
+origin: ECC
+---
+
+# Agent Self-Evaluation
+
+After completing a complex task, the agent pauses to rate its own output against a structured 5-axis rubric. This is NOT a pass/fail gate — it&#x27;s a deliberate reflection step that catches omissions, flags overconfidence, and surface areas for improvement before the user has to.
+
+## When to Activate
+
+- After writing code that spans 3+ files or 50+ lines
+- After completing a multi-step workflow (implement → test → review)
+- After a debugging session that involved 3+ attempts
+- After producing a design document, architecture decision, or written analysis
+- When the user asks &quot;how good was that?&quot; or &quot;rate yourself&quot;
+- At the end of any session Stop hook (if configured — see `references/hook-integration.md`)
+
+## Core Concepts
+
+### The 5 Evaluation Axes
+
+| Axis | Question | What it catches |
+|---|---|---|
+| **Accuracy** | Are the facts, claims, and outputs correct? | Hallucinations, wrong API names, incorrect syntax, false statements |
+| **Completeness** | Did it cover everything the user asked for? | Missed edge cases, unhandled error paths, forgotten requirements, skipped subtasks |
+| **Clarity** | Is the explanation understandable and well-structured? | Confusing explanations, jargon without definition, missing context, rambling |
+| **Actionability** | Can the user act on the output immediately? | Vague suggestions, missing steps, &quot;you should X&quot; without showing how, no verification path |
+| **Conciseness** | Did it use the minimum words/tokens needed? | Redundancy, over-explanation, repeating the user&#x27;s question verbatim, filler content |
+
+### Scoring Scale
+
+```
+5 — Exceptional: no reasonable improvement possible
+4 — Good: minor nits only, no substantive gaps
+3 — Adequate: meets the request but has a notable weakness on at least one axis
+2 — Weak: has a clear gap that affects usability or correctness
+1 — Poor: fundamentally misses the request or contains significant errors
+```
+
+### The Evidence Rule
+
+Every score below 5 MUST cite specific evidence. A score of 3 cannot just say &quot;could be better&quot; — it must say exactly what is missing or wrong. The mantra: **&quot;Show the gap, don&#x27;t just name it.&quot;**
+
+## Workflow
+
+### Step 1: Collect the Raw Material
+
+Gather what you&#x27;ll evaluate:
+
+```
+- The original user request (read back from conversation)
+- Your final response/output (the deliverable)
+- Any tool outputs that verify correctness (test results, exit codes, lint output)
+- Any user feedback received during the task (corrections, &quot;try again&quot;, &quot;that&#x27;s not right&quot;)
+```
+
+### Step 2: Score Each Axis Independently
+
+Work through the 5 axes one at a time. For each:
+
+1. Read the axis question
+2. Find evidence (or lack of evidence) in the output
+3. Assign a score 1-5
+4. If score &lt; 5, write a one-sentence improvement note citing the gap
+
+Do NOT average the scores in your head first and then work backwards. Score each axis fresh.
+
+### Step 3: Produce the Evaluation Report
+
+Use the template from `templates/evaluation-report.md`. The report must include:
+
+```
+- One-line summary
+- 5-axis scorecard (score + evidence per axis)
+- Overall score (simple average, rounded to 1 decimal)
+- 1-3 specific improvements ranked by impact
+- Self-check: &quot;Would the user agree with this assessment?&quot;
+```
+
+### Step 4: Apply the Improvement
+
+If any axis scored 3 or below:
+
+1. State what you would do differently
+2. If the gap is fixable in &lt; 30 seconds (missing link, unclear phrasing), fix it now
+3. If the gap requires rework, flag it explicitly: &quot;This axis scored [reason] because [evidence]. Re-running with [specific fix] would likely raise it to [score].&quot;
+
+## Code Examples
+
+### Example: Good Evaluation (Score 4+)
+
+```
+Task: Add retry logic to HTTP client
+
+Scorecard:
+  Accuracy:    5 — All API calls correct. Verified: retries use
+                  exponential backoff. No hallucinated methods.
+  Completeness: 4 — Covered happy path + 3 error cases. Missing:
+                  timeout handling for hung connections.
+  Clarity:      5 — Code comments explain backoff formula.
+                  PR description links to incident that motivated this.
+  Actionability:5 — Single merge. No follow-up tasks. Tests pass.
+  Conciseness:  4 — 47 lines total. The retry loop could be extracted
+                  into a helper to drop ~8 lines.
+
+Overall: 4.6 — One gap (timeout handling). Fix before merging.
+```
+
+### Example: Weak Evaluation (Score 2-3)
+
+```
+Task: Add retry logic to HTTP client
+
+Scorecard:
+  Accuracy:    2 — Used urllib3 which doesn&#x27;t match our
+                  httpx-based codebase. Wrong library.
+  Completeness: 3 — Works for GET. POST/PUT not handled (user
+                  said &quot;all HTTP requests&quot;).
+  Clarity:      4 — Code is readable. Good variable names.
+  Actionability:2 — &quot;Add tests&quot; mentioned but no test file created.
+                  User has to write tests before merging.
+  Conciseness:  3 — 120 lines. The retry config is duplicated in
+                  3 places instead of one shared RetryConfig object.
+
+Overall: 2.8 — Wrong library used. Needs httpx rewrite.
+  Fix accuracy first (switch to httpx), then extend to all
+  HTTP methods, then consolidate config.
+```
+
+## Anti-Patterns
+
+### &quot;Everything is a 5&quot;
+
+```
+FAIL: Accuracy:    5 — All good.
+   Completeness: 5 — Everything covered.
+   Clarity:      5 — Clear.
+```
+
+No evidence cited. This is self-congratulation, not evaluation. A real 5 requires proving there&#x27;s nothing to improve.
+
+### Over-penalizing for scope creep
+
+```
+FAIL: Completeness: 2 — Didn&#x27;t handle WebSocket connections or
+   gRPC streaming (user didn&#x27;t ask for these)
+```
+
+Only evaluate against what the user actually requested, not what you could have additionally built.
+
+### Using the evaluation to re-litigate
+
+```
+FAIL: &quot;As I said earlier, this approach is wrong. Score: 1&quot;
+```
+
+The evaluation is about the delivered output, not about re-arguing design decisions that were already made. If the approach was wrong, that should have been caught before delivery.
+
+### Mixing personal preference with objective gaps
+
+```
+FAIL: &quot;Score: 3. I don&#x27;t like Python decorators.&quot;
+```
+
+&quot;Don&#x27;t like&quot; is not evidence. Cite a concrete readability, testability, or correctness concern, or leave the score at 4+.
+
+## Best Practices
+
+- **Evaluate the output, not the process.** The user cares about what you delivered, not how many iterations you took.
+- **One improvement per weak axis.** Don&#x27;t list 5 things for one axis — pick the highest-impact gap.
+- **Tie improvements to user impact.** &quot;Missing error handling means the user&#x27;s API call will crash silently&quot; beats &quot;add error handling.&quot;
+- **Be specific about what &#x27;fixed&#x27; looks like.** &quot;Re-run with httpx transport configured for retries&quot; beats &quot;fix the library issue.&quot;
+- **Use tool outputs as evidence.** If tests passed, cite them. If lint is clean, cite it. Don&#x27;t guess — grep for the proof.
+- **If you can&#x27;t find any gaps, try harder.** A perfect score across all 5 axes is rare. Ask: &quot;If I were the user, what would annoy me about this output?&quot;
+
+## Related Skills
+
+- `agent-eval` — Head-to-head comparison of different coding agents on benchmark tasks
+- `verification-loop` — Systematic verification of outputs against expected results
+- `security-review` — Security-focused code review checklist</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

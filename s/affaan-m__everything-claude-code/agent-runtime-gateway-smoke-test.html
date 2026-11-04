@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-runtime-gateway-smoke-test｜Skill 寫法圖鑑</title>
+<meta name="description" content="用不需工具的任務驗證本機 API、tunnel 和遠端 sandbox 回呼，再還原連線">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-runtime-gateway-smoke-test</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-runtime-gateway-smoke-test/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用不需工具的任務驗證本機 API、tunnel 和遠端 sandbox 回呼，再還原連線</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-runtime-gateway-smoke-test
+description: 用一個不需要工具的任務，驗證本機 agent API、臨時的 gateway tunnel 和遠端 sandbox 的 callback，最後還原原本的 app 連線。
+metadata:
+  origin: ECC
+---
+
+# Agent Runtime Gateway Smoke Test
+
+當 agent 任務跑在遠端 sandbox，並透過 gateway 回呼本機 API 時，用這個流程。它能驗證整條路徑，而且不依賴已連接的工具，也不碰私有的正式環境資料。
+
+## 何時啟用
+
+- 本機 agent API 需要做端到端的 runtime 檢查。
+- 任務派送之後卡住，gateway 或 tunnel 可能連不到。
+- Web app 暫時指向本機 API 來測試 agent。
+- 先前的測試讓 web app 一直指向已經停掉的 API。
+
+## 必要輸入
+
+- 以 repo 相對路徑寫的啟動 API 和 web app 的說明。
+- Gateway 的 route 路徑，以及它預期的匿名回應。
+- 一個隔離的測試 agent、一個不需要工具的 prompt，以及它確切的預期答案。
+- 能檢查任務狀態，並確認 callback 有打到本機 API 的方法。
+- Provider 的憑證，透過專案正常的 secret store 提供。在共用文件裡只寫 provider 的名字，絕對不要把憑證的值複製進 skill 或測試報告。
+
+如果缺少這些輸入，就回報缺了什麼，不要自己猜 endpoint，也不要用真實帳號。
+
+## 授權與清理
+
+先確認你有授權：透過選定的 tunnel provider 對外開放本機測試 API、派送測試任務，以及暫時修改 web app 的 route。要用隔離的本機 web app 或測試 deployment；不要在這個 smoke test 裡切換共用的正式環境 app。Tunnel 的存取範圍只開放必要的、有驗證的 route。
+
+在修改 route 之前先裝好清理機制：不管成功、錯誤、逾時、中斷或取消，都要還原記下來的目標，並在停掉 API 和 tunnel 之前確認健康狀態。只追蹤這個測試建立的 process ID 或資源。如果還原失敗，要立刻回報，並保留復原所需的證據，不要宣稱成功。
+
+## Smoke Test
+
+1. **記錄並檢查原本的 route。** 記下 web app 目前的 API 目標，並確認它是健康的。把這個值留在本機，之後還原用。確認測試 agent 和資料跟真實使用者是隔離的。
+2. **啟動本機 API 和 tunnel。** 用 process manager 讓兩者在整個測試期間都保持運作。驗證 API 健康。用匿名身分探測 gateway route，確認它回傳文件記載的驗證回應，通常是 `401` 或 `403`。確認這次探測有出現在本機 API 的 log；光有 edge 的回應，不能證明 API 真的被打到。
+3. **兩項檢查都通過後，才切換 web app。** 驗證 web app 發出的請求會打到本機 API。web server 重啟或設定重新載入之後，要再檢查一次 route。
+4. **跑一個不需要工具的任務。** 用一個短 prompt，並有確切的預期答案。確認遠端 sandbox 有呼叫本機 gateway、任務進入終止狀態，而且回傳的答案相符。排隊中或執行中的任務不算通過。
+5. **還原原本的 route。** 把 web app 設回記錄下來的 API 目標，驗證那個目標和一個代表性頁面能載入，然後停掉測試 API 和 tunnel。如果還原失敗，要立刻回報 route 壞了。
+
+檢查指令範例，其中的值由專案提供：
+
+```sh
+curl --silent --show-error --output /dev/null --write-out &#x27;%{http_code}\n&#x27; &quot;$LOCAL_API_HEALTH_URL&quot;
+curl --silent --show-error --output /dev/null --write-out &#x27;%{http_code}\n&#x27; &quot;$PUBLIC_GATEWAY_PROBE_URL&quot;
+```
+
+第一個指令應該回傳專案定義的健康狀態。第二個應該回傳文件記載的匿名驗證狀態，**而且**要出現在本機 API 的 log 裡。兩個 URL 都不要放憑證。
+
+## 已連接工具的後續測試
+
+要等不需要工具的任務通過後，才另外跑這個測試。使用明確的測試連線和授權。「連線是否存在」和「授予了哪些動作」要當成兩件不同的事來回報。不要因為動作搜尋是空的，就推論沒有任何 app 連著。不要拿真實帳號執行寫入動作來當 smoke test。
+
+## 失敗處理
+
+| 觀察到的現象 | 下一步檢查 |
+| --- | --- |
+| 網頁能載入，但 API 請求失敗 | 比對設定的 API 目標和正在監聽的 process，並還原原本的 route。 |
+| Gateway 探測得到連線錯誤或 `404` | 派送任務前，先檢查 tunnel 的存活時間、route 路徑和本機 API 的健康狀態。 |
+| Gateway 探測得到 `401` 或 `403`，但本機 log 沒有紀錄 | 這個回應可能來自 tunnel 的 edge；驗證 callback 路徑。 |
+| 任務一直排隊或執行中 | 檢查是不是被別的 dispatcher 認領了，以及 sandbox 有沒有連到本機 gateway。 |
+| 任務結束但答案錯誤 | 擷取任務狀態和已遮蔽的錯誤；不要說 smoke test 成功。 |
+
+## 輸出約定
+
+回傳一份簡短報告，內容包含：
+
+- 本機 API 是否健康：是或否
+- Gateway 探測的狀態，以及本機 log 的確認
+- 是否觀察到遠端 callback：是或否
+- 不需要工具的任務的終止狀態，以及確切答案是否相符
+- 原本的 web API route 是否已還原且健康：是或否
+- 一個尚未解決的阻礙或下一步動作（如果有）
+
+報告裡不要放帳號資料、憑證的值、個人路徑、公開的 tunnel URL 和原始的私有 log。原始的操作員筆記留在本機。
+
+## 相關 Skill
+
+- `hermes-imports`：分享前先把本機工作流程做去識別化。
+- `agent-introspection-debugging`：agent 執行反覆失敗時用。
+- `verification-loop`：修改 runtime 程式碼之後用。</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-runtime-gateway-smoke-test
+description: Verify a local agent API, temporary gateway tunnel, and remote sandbox callback with a tool-free task, then restore the original app connection.
+metadata:
+  origin: ECC
+---
+
+# Agent Runtime Gateway Smoke Test
+
+Use this workflow when an agent task runs in a remote sandbox that calls back to a local API through a gateway. It verifies the whole path without relying on connected tools or private production data.
+
+## When to Activate
+
+- A local agent API needs an end-to-end runtime check.
+- A task stalls after dispatch and the gateway or tunnel may be unreachable.
+- A web app is temporarily pointed at a local API for agent testing.
+- A previous test left the web app pointing at a stopped API.
+
+## Required Inputs
+
+- Repository-relative instructions for starting the API and web app.
+- The gateway route path and its expected anonymous response.
+- An isolated test agent, a tool-free prompt, and its exact expected answer.
+- A way to inspect task status and confirm a callback reached the local API.
+- Provider credentials, supplied through the project&#x27;s normal secret store. Name the providers in shared documentation; never copy credential values into the skill or test report.
+
+If these inputs are unavailable, report the missing input instead of guessing an endpoint or using a real account.
+
+## Authorization and Cleanup
+
+Confirm authorization to expose the local test API through the selected tunnel provider, dispatch the test task, and temporarily change the web app route. Use an isolated local web app or test deployment; do not switch a shared production app as part of this smoke test. Keep tunnel access scoped to the required authenticated route.
+
+Install cleanup before changing the route: on success, error, timeout, interruption, or cancellation, restore the recorded target and verify health before stopping the API and tunnel. Track only the process IDs or resources created by this test. If restoration fails, report it immediately and keep the evidence needed to recover; do not claim success.
+
+## Smoke Test
+
+1. **Record and check the original route.** Note the web app&#x27;s current API target and verify it is healthy. Keep this value locally for restoration. Confirm the test agent and data are isolated from real users.
+2. **Start the local API and tunnel.** Use a process manager that will keep both alive for the full test. Verify API health. Probe the gateway route anonymously and confirm the documented authentication response, usually `401` or `403`. Confirm the probe appears in the local API log; an edge response alone does not prove the API was reached.
+3. **Switch the web app only after both checks pass.** Verify a request from the web app reaches the local API. Check the route again after any web server restart or configuration reload.
+4. **Run one tool-free task.** Use a short prompt with an exact expected answer. Confirm the remote sandbox called the local gateway, the task reached a terminal state, and the returned answer matches. A queued or running task is not a pass.
+5. **Restore the original route.** Set the web app back to its recorded API target, verify that target and a representative page load, then stop the test API and tunnel. If restoration fails, report the broken route immediately.
+
+Example checks, with values supplied by the project:
+
+```sh
+curl --silent --show-error --output /dev/null --write-out &#x27;%{http_code}\n&#x27; &quot;$LOCAL_API_HEALTH_URL&quot;
+curl --silent --show-error --output /dev/null --write-out &#x27;%{http_code}\n&#x27; &quot;$PUBLIC_GATEWAY_PROBE_URL&quot;
+```
+
+The first command should return the project&#x27;s healthy status. The second should return the documented anonymous authentication status **and** appear in the local API log. Do not put a credential in either URL.
+
+## Connected Tool Follow-up
+
+Run a separate test only after the tool-free task passes. Use an explicit test connection and grants. Report connection presence and actions granted as different facts. Do not infer that an empty action search means no app is connected. Do not execute a write action against a real account as a smoke test.
+
+## Failure Handling
+
+| Observation | Next check |
+| --- | --- |
+| Web page loads but API requests fail | Compare the configured API target with the listening process and restore the original route. |
+| Gateway probe gets a connection error or `404` | Check tunnel lifetime, route path, and local API health before dispatching a task. |
+| Gateway probe gets `401` or `403`, but no local log entry | The response may come from the tunnel edge; verify the callback path. |
+| Task stays queued or running | Check whether another dispatcher claimed it and whether the sandbox reached the local gateway. |
+| Task finishes with the wrong answer | Capture the task status and redacted error; do not call the smoke test successful. |
+
+## Output Contract
+
+Return a short report with:
+
+- Local API healthy: yes or no
+- Gateway probe status and local log confirmation
+- Remote callback observed: yes or no
+- Tool-free task terminal status and whether the exact answer matched
+- Original web API route restored and healthy: yes or no
+- One unresolved blocker or next action, if any
+
+Keep account details, credential values, personal paths, public tunnel URLs, and raw private logs out of the report. Keep the source operator notes local.
+
+## Related Skills
+
+- `hermes-imports` for sanitizing a local workflow before sharing it.
+- `agent-introspection-debugging` when an agent run fails repeatedly.
+- `verification-loop` after changing runtime code.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

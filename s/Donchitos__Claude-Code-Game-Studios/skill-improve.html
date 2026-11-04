@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-improve｜Skill 寫法圖鑑</title>
+<meta name="description" content="用測試、修正、重測的循環改善 skill，分數沒進步就還原">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>skill-improve</h1>
+<p class="meta">Donchitos ｜ Agent 與工作流 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/skill-improve/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用測試、修正、重測的循環改善 skill，分數沒進步就還原</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: skill-improve
+description: &quot;用測試、修正、重測的循環改善 skill：靜態檢查、針對性修正，分數有進步就保留、沒進步就還原。&quot;
+argument-hint: &quot;[skill-name]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**自動化模式**：解析 `modes.automation`（`project.local.yaml` →
+`project.yaml` → 預設 `collaborative`）。每一次 `AskUserQuestion` 呼叫和
+每一次寫檔，都要遵守 `.claude/docs/automation-modes.md`
+（collaborative 一律詢問 · guided 只問重大事項 · autonomous 記錄後直接進行；
+屬於 `automation_always_ask` 的類別一律要詢問）。
+
+# Skill Improve
+
+對單一個 skill 跑改善循環：
+測試 → 修正 → 重測 → 保留或還原。
+
+它的分數來自 `/skill-test` 的靜態與類別檢查，這些檢查是去讀
+skill 而不是去執行它：分數變高代表 skill 寫得比較好，不是
+證明它的行為比較好。要檢查行為，要在修改前後，各拿一個真實的需求去跑這個 skill。
+
+---
+
+## Phase 1: Parse Argument
+
+從第一個參數讀 skill 名稱。如果沒有，輸出用法然後停下來：
+
+```
+Usage: /skill-improve [skill-name]
+Example: /skill-improve tech-debt
+```
+
+確認 `.claude/skills/[name]/SKILL.md` 存在。如果不存在，就停下來並說：
+&quot;Skill &#x27;[name]&#x27; not found.&quot;
+
+Glob `CCGS Skill Testing Framework/catalog.yaml`。如果它存在，先說：
+&quot;`CCGS Skill Testing Framework/` was renamed `studio-tests/` in 1.2.0, and this
+skill reads only `studio-tests/`. Move any specs you wrote there; UPGRADING.md
+(v1.1.3 → v1.2.0, `studio-tests/`) says how.&quot; 然後繼續。
+
+---
+
+## Phase 2: Baseline Test
+
+跑 `/skill-test static [name]` 並記錄基準分數：
+- FAIL 的數量
+- WARN 的數量
+- 哪些具體的檢查失敗（Check 1–7）
+
+顯示給使用者：
+```
+Static baseline:   [N] failures, [M] warnings
+Failing: Check 4 (no ask-before-write), Check 5 (no handoff)
+```
+
+如果靜態結果是 **NOT ASSESSED**（skill 檔案讀不到或無法解析），
+就停下來並回報它和它的原因：沒有分數可以改善，
+而一份沒人讀得了的檔案得到 0 個 FAIL，不是乾淨的結果。
+
+如果基準是 0 個 FAIL 和 0 個 WARN，記下來，然後進 Phase 2b。
+
+### Phase 2b: Category Baseline
+
+在 `studio-tests/catalog.yaml` 裡查這個 skill 的 `category:` 欄位。
+
+如果找不到 `category:` 欄位，顯示：
+&quot;Category: not yet assigned — skipping category checks.&quot;
+然後跳到 Phase 3。
+
+如果找到類別，跑 `/skill-test category [name]` 並記錄類別基準：
+- FAIL 的數量
+- WARN 的數量
+- 哪些具體的類別評分標準指標失敗
+
+顯示給使用者：
+```
+Category baseline: [N] failures, [M] warnings  ([category] rubric)
+```
+
+類別結果如果是 **NOT ASSESSED**（skill-test 找不到或無法套用某個評分標準段落），
+要連同原因一起回報，而且它不是零：這時
+類別這個維度就從下面的「已經通過」判斷中排除。
+
+如果靜態和類別兩個基準都是 0 個 FAIL 和 0 個 WARN，而且兩者都不是
+NOT ASSESSED，就停下來：
+&quot;This skill already passes all static and category checks. No improvements needed.&quot;
+
+---
+
+## Phase 3: Diagnose
+
+讀完整個 skill：`.claude/skills/[name]/SKILL.md`，以及它 `references/` 資料夾裡的每個檔案
+（如果有的話）：最長的 skill 會把每個階段放在那裡。要點名
+每個缺口在哪個檔案。
+
+對每個失敗或警告的**靜態**檢查，找出確切的缺口：
+
+- **Check 1 fail** → 缺少哪個 frontmatter 欄位
+- **Check 2 fail** → 找到幾個 phase，對比最低要求
+- **Check 3 fail** → skill 內文裡完全沒有結論關鍵字
+- **Check 4 fail** → allowed-tools 有 Write 或 Edit，卻沒有寫入前先詢問的用語
+- **Check 5 warn** → 結尾沒有後續或下一步的段落
+- **Check 6 warn** → 設了 `context: fork`，但找到的 phase 少於 5 個
+- **Check 7 warn** → argument-hint 是空的，或跟文件裡寫的模式不符
+
+對每個失敗或警告的**類別**檢查（如果在 Phase 2b 已指派類別），
+找出 skill 文字裡確切的缺口。例如：
+- 如果 G2 失敗（gate 模式，director 面板寬度）：skill 內文沒有依 `modes.workflow`
+  來決定 PHASE-GATE 面板的大小（`minimal` 時是 PR，`standard` 時是 TD + PR，
+  `full` 時是全部 4 個）
+- 如果 A2 失敗（authoring，沒有逐段的 May-I-write）：skill 只在最後問一次，而不是
+  在每一段寫入前問
+- 如果 T3 失敗（team，BLOCKED 沒有被提出）：skill 沒有因為被 blocked 的 agent 而停下依賴它的工作
+
+在提出任何修改之前，先把合併後的完整診斷顯示給使用者。
+
+---
+
+## Phase 4: Propose Fix
+
+針對每個失敗和警告寫一個有針對性的修正。把提議的修改
+用標示清楚的修改前/修改後區塊顯示。只改有問題的地方，不要
+重寫已經通過的段落。在有 `references/` 資料夾的 skill 裡，
+對某個階段步驟的修正要放在那個階段的 `references/` 檔案，不要放回
+`SKILL.md`；下面的詢問就要點名這次修正改動的每一個檔案。
+
+詢問：&quot;May I write this improved version to `.claude/skills/[name]/SKILL.md`?&quot;
+
+如果使用者說不要，就在這裡停下來。
+
+---
+
+## Phase 5: Write and Retest
+
+記錄這次修正要改動的每個檔案目前的內容（確切的文字，保留在
+這段對話裡），讓 Phase 6 可以還原。
+
+把改善後的 skill 寫入 `.claude/skills/[name]/SKILL.md`，以及
+這次修正改動的每個 `references/` 檔案。
+
+重跑 `/skill-test static [name]` 並記錄新的靜態分數：要以那次執行量到的為準，絕對不要憑編輯的內容自己宣稱。
+如果有指派類別，也重跑 `/skill-test category [name]` 並記錄新的類別分數。
+
+顯示比較：
+```
+Static:   Before [N] failures, [M] warnings  →  After [N&#x27;] failures, [M&#x27;] warnings
+Category: Before [N] failures, [M] warnings  →  After [N&#x27;] failures, [M&#x27;] warnings  (if applicable)
+Combined: [before] → [after] (improved / no change / worse)
+```
+
+`[before]` 和 `[after]` 是 Phase 6 的合併計數：失敗加上警告，
+兩個維度都算，例如 `Combined: 3 → 0 (improved)`。
+
+---
+
+## Phase 6: Verdict
+
+計算合併的失敗總數：靜態 FAIL + 類別 FAIL + 靜態 WARN + 類別 WARN。
+**重測結果如果是 NOT ASSESSED**（例如編輯弄壞了
+frontmatter，導致檔案無法再被解析），不管它的計數是多少，絕對不算改善：
+走下面「沒有進步」的分支。
+
+**如果合併分數有進步（合併的失敗計數比基準低）：**
+回報：&quot;Score improved. Changes kept.&quot;
+顯示每個維度修了什麼的摘要。
+
+**如果合併分數一樣或更差：**
+回報：&quot;Combined score did not improve.&quot;
+顯示改了什麼，以及它為什麼可能沒有幫助。
+詢問：&quot;May I restore `.claude/skills/[name]/SKILL.md` to the content it had before this run?&quot;
+要點名 Phase 5 寫過的每個檔案。
+如果同意：用 Write 把 Phase 5 記錄的內容寫回每個檔案；如果不同意，就讓檔案維持寫入後的樣子。絕對不要
+`git checkout` 它：那會回到上一個*已 commit* 的版本，並且丟掉
+這次執行之前做過、還沒 commit 的任何編輯。
+
+---
+
+## Phase 7: Next Steps
+
+- 跑 `/skill-test static all` 找下一個有失敗的 skill。
+- 跑 `/skill-improve [next-name]` 繼續對另一個 skill 跑這個循環。
+- 跑 `/skill-test audit` 看整體涵蓋率的進度。</pre></section><section><h2>英文原文</h2><pre>---
+name: skill-improve
+description: &quot;Improve a skill via a test-fix-retest loop — static checks, targeted fixes, keep or revert on score change.&quot;
+argument-hint: &quot;[skill-name]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/skill-improve/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
+`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+every file write follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+# Skill Improve
+
+Runs an improvement loop on a single skill:
+test → fix → retest → keep or revert.
+
+Its score comes from `/skill-test` static and category checks, which read the
+skill rather than run it: a better score means a better-written skill, not proof
+that it behaves better. To check behaviour, run the skill on a real request
+before and after the change.
+
+---
+
+## Phase 1: Parse Argument
+
+Read the skill name from the first argument. If missing, output usage and stop:
+
+```
+Usage: /skill-improve [skill-name]
+Example: /skill-improve tech-debt
+```
+
+Verify `.claude/skills/[name]/SKILL.md` exists. If not, stop with:
+&quot;Skill &#x27;[name]&#x27; not found.&quot;
+
+Glob `CCGS Skill Testing Framework/catalog.yaml`. When it exists, say so first:
+&quot;`CCGS Skill Testing Framework/` was renamed `studio-tests/` in 1.2.0, and this
+skill reads only `studio-tests/`. Move any specs you wrote there; UPGRADING.md
+(v1.1.3 → v1.2.0, `studio-tests/`) says how.&quot; Then go on.
+
+---
+
+## Phase 2: Baseline Test
+
+Run `/skill-test static [name]` and record the baseline score:
+- Count of FAILs
+- Count of WARNs
+- Which specific checks failed (Check 1–7)
+
+Display to the user:
+```
+Static baseline:   [N] failures, [M] warnings
+Failing: Check 4 (no ask-before-write), Check 5 (no handoff)
+```
+
+If the static result is **NOT ASSESSED** (the skill file could not be read or
+parsed), stop and report it with its reason: there is no score to improve, and
+0 FAILs from a file nobody could read is not a clean result.
+
+If baseline is 0 FAILs and 0 WARNs, note it and proceed to Phase 2b.
+
+### Phase 2b: Category Baseline
+
+Look up the skill&#x27;s `category:` field in `studio-tests/catalog.yaml`.
+
+If no `category:` field is found, display:
+&quot;Category: not yet assigned — skipping category checks.&quot;
+and skip to Phase 3.
+
+If category is found, run `/skill-test category [name]` and record the category baseline:
+- Count of FAILs
+- Count of WARNs
+- Which specific category rubric metrics failed
+
+Display to the user:
+```
+Category baseline: [N] failures, [M] warnings  ([category] rubric)
+```
+
+A category result of **NOT ASSESSED** (a rubric section the skill-test could not
+find or apply) is reported with its reason and is not a zero: the category
+dimension is then excluded from &quot;already passes&quot; below.
+
+If BOTH static and category baselines are 0 FAILs and 0 WARNs — and neither is
+NOT ASSESSED — stop:
+&quot;This skill already passes all static and category checks. No improvements needed.&quot;
+
+---
+
+## Phase 3: Diagnose
+
+Read the full skill: `.claude/skills/[name]/SKILL.md` and every file in its `references/` folder,
+if it has one — the longest skills keep each phase there. Name the file each
+gap is in.
+
+For each failing or warning **static** check, identify the exact gap:
+
+- **Check 1 fail** → which frontmatter field is missing
+- **Check 2 fail** → how many phases found vs. minimum required
+- **Check 3 fail** → no verdict keywords anywhere in the skill body
+- **Check 4 fail** → Write or Edit in allowed-tools but no ask-before-write language
+- **Check 5 warn** → no follow-up or next-step section at the end
+- **Check 6 warn** → `context: fork` set but fewer than 5 phases found
+- **Check 7 warn** → argument-hint is empty or doesn&#x27;t match documented modes
+
+For each failing or warning **category** check (if category was assigned in Phase 2b),
+identify the exact gap in the skill&#x27;s text. For example:
+- If G2 fails (gate mode, director panel width): skill body does not size the
+  PHASE-GATE panel from `modes.workflow` (PR at `minimal`, TD + PR at `standard`,
+  all 4 at `full`)
+- If A2 fails (authoring, no per-section May-I-write): skill asks once at the end, not
+  before each section write
+- If T3 fails (team, BLOCKED not surfaced): skill doesn&#x27;t halt dependent work on blocked agent
+
+Show the full combined diagnosis to the user before proposing any changes.
+
+---
+
+## Phase 4: Propose Fix
+
+Write a targeted fix for each failure and warning. Show the proposed changes
+as clearly marked before/after blocks. Only change what is failing — do not
+rewrite sections that are passing. In a skill with a `references/` folder, a
+fix to a phase&#x27;s steps goes in that phase&#x27;s `references/` file, not back into
+`SKILL.md`; the question below then names each file the fix changes.
+
+Ask: &quot;May I write this improved version to `.claude/skills/[name]/SKILL.md`?&quot;
+
+If the user says no, stop here.
+
+---
+
+## Phase 5: Write and Retest
+
+Record the current content of each file the fix changes — the exact text, kept
+in this conversation — so Phase 6 can restore it.
+
+Write the improved skill to `.claude/skills/[name]/SKILL.md`, and to each
+`references/` file the fix changes.
+
+Re-run `/skill-test static [name]` and record the new static score — measured by that run, never stated from the edit.
+If a category was assigned, also re-run `/skill-test category [name]` and record the new category score.
+
+Display the comparison:
+```
+Static:   Before [N] failures, [M] warnings  →  After [N&#x27;] failures, [M&#x27;] warnings
+Category: Before [N] failures, [M] warnings  →  After [N&#x27;] failures, [M&#x27;] warnings  (if applicable)
+Combined: [before] → [after] (improved / no change / worse)
+```
+
+`[before]` and `[after]` are the Phase 6 combined counts — failures plus
+warnings, both dimensions — e.g. `Combined: 3 → 0 (improved)`.
+
+---
+
+## Phase 6: Verdict
+
+Count the combined failure total: static FAILs + category FAILs + static WARNs + category WARNs.
+**A re-test that comes back NOT ASSESSED** (for example, the edit broke the
+frontmatter so the file no longer parses) is never an improvement, whatever its
+counts: take the &quot;did not improve&quot; branch below.
+
+**If combined score improved (combined failure count is lower than baseline):**
+Report: &quot;Score improved. Changes kept.&quot;
+Show a summary of what was fixed in each dimension.
+
+**If combined score is the same or worse:**
+Report: &quot;Combined score did not improve.&quot;
+Show what changed and why it may not have helped.
+Ask: &quot;May I restore `.claude/skills/[name]/SKILL.md` to the content it had before this run?&quot;
+— naming every file Phase 5 wrote.
+If yes: write the content recorded in Phase 5 back to each file with Write; if no, leave the files as written. Never
+`git checkout` it — that returns the last *committed* version and discards any edits
+made before this run that were not yet committed.
+
+---
+
+## Phase 7: Next Steps
+
+- Run `/skill-test static all` to find the next skill with failures.
+- Run `/skill-improve [next-name]` to continue the loop on another skill.
+- Run `/skill-test audit` to see overall coverage progress.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

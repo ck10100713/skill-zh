@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>recursive-decision-ledger｜Skill 寫法圖鑑</title>
+<meta name="description" content="重複 rollout 時維護決策帳本，遞迴信心不能自動核准實盤或 deploy">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>recursive-decision-ledger</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/recursive-decision-ledger/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">重複 rollout 時維護決策帳本，遞迴信心不能自動核准實盤或 deploy</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: recursive-decision-ledger
+description: 重複做 rollout（「Prime Gauss」風格的遞迴提示），同時維護一份只能追加的決策帳本，記錄各次試驗、標記、一致性檢查和晉升關卡，讓遞迴產生的信心絕對不會自動核准實盤交易、deploy 或破壞性操作。使用者要求重複 rollout、標記式決策流程、高維度搜尋、隨機最佳化、探索局部最佳解、ensemble 比較，或需要看得到證據軌跡的遞迴推理時使用。
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# 遞迴決策帳本
+
+使用者想靠重複 rollout 或「Prime Gauss」風格的遞迴提示，逼出更深的運算時，使用這個 skill。
+保留有用的部分：重複試驗、先前的記憶、新資訊，和明確的標記。
+拿掉不安全的部分：假裝這個迴圈能證明確定性。
+Remove the unsafe part: pretending the loop proves certainty.
+
+## 帳本契約
+
+每次 rollout 都要記錄：
+
+- rollout id 和時間戳；
+- 先前被接受的贏家和先前的觀察名單；
+- 吸收進來的新資訊；
+- 搜尋空間大小；
+- 用到的模型家族或啟發式方法；
+- 試驗次數和有效試驗次數；
+- 前幾名候選；
+- 決策標記；
+- 與先前帳本的一致性標記；
+- 晉升關卡的結果。
+
+append-only 的帳本優先用 JSONL，給人看的摘要用 Markdown。
+
+## Rollout 迴圈
+
+1. 載入先前的帳本。
+2. 在時間步零擷取新資訊。
+3. 跑有界的搜尋。
+4. 標記每個候選：accept、watch、reject、decay watch，或 needs replay。
+5. 把贏家與先前的贏家、最近一次標記過的 rollout 做比較。
+6. 當漂移、尾部風險、資料過期或 replay 失敗讓先前的標記失效時，
+   就把候選降級。
+7. 先追加產出物，再做摘要。
+
+## 一致性標記
+
+加上一個精簡的一致性標記：
+
+```text
+Ensemble matches prior winner: true
+Recursive matches prior winner: false
+Latest rollout match: true
+Live promotion allowed: false
+Reason: replay and freshness gates not satisfied
+```
+
+## 晉升規則
+
+交易、資金配置、production deploy、migration 或破壞性
+操作，遞迴產生的信心不等於核准。
+
+預設用 paper、dry-run、唯讀、預覽或分階段模式，除非使用者
+明確核准實際執行，而且 repo／服務的關卡也支援。
+
+只有在以下情況才晉升：
+
+- 候選在選定的指標上勝過先前被接受的贏家；
+- 正確性和 replay 檢查通過；
+- 風險上限明確；
+- 證據是持久的；
+- 需要時，使用者已核准實際執行的步驟。
+
+## 摘要形式
+
+先講決策，不要講戲劇性的過程：
+
+```text
+第 15 次 rollout 完成。先前的贏家仍然成立，但優勢衰退了 17%。
+狀態：watch，不上實盤。下一個關卡：20 筆 replay 成交，且新的
+orderbook 時效低於門檻。
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: recursive-decision-ledger
+description: Run repeated rollouts (&quot;Prime Gauss&quot; style recursive prompting) while keeping an append-only decision ledger of trials, marks, coherence checks, and promotion gates, so recursive confidence never auto-approves live trading, deploy, or destructive actions. Use when the user asks for repeated rollouts, marked decision processes, high-dimensional search, stochastic optimization, local-optima exploration, ensemble comparison, or recursive reasoning with a visible evidence trail.
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Recursive Decision Ledger
+
+Use this skill when the user is trying to force deeper computation through
+repeated rollouts or &quot;Prime Gauss&quot; style recursive prompting. Preserve the useful
+part: repeated trials, prior memory, fresh information, and explicit marks.
+Remove the unsafe part: pretending the loop proves certainty.
+
+## Ledger Contract
+
+Every rollout should record:
+
+- rollout id and timestamp;
+- prior accepted winner and prior watchlist;
+- fresh information ingested;
+- search space size;
+- model families or heuristics used;
+- trial count and effective trial count;
+- top candidates;
+- decision marks;
+- coherence marks against the prior ledger;
+- promotion gate result.
+
+Prefer JSONL for append-only ledgers and Markdown for human summaries.
+
+## Rollout Loop
+
+1. Load the prior ledger.
+2. Capture new information at time-step zero.
+3. Run the bounded search.
+4. Mark each candidate: accept, watch, reject, decay watch, or needs replay.
+5. Compare winners against prior winners and latest marked rollout.
+6. Downgrade candidates when drift, tail risk, stale data, or failed replay
+   invalidates the previous mark.
+7. Append artifacts before summarizing.
+
+## Coherence Mark
+
+Include a compact coherence mark:
+
+```text
+Ensemble matches prior winner: true
+Recursive matches prior winner: false
+Latest rollout match: true
+Live promotion allowed: false
+Reason: replay and freshness gates not satisfied
+```
+
+## Promotion Rules
+
+For trading, capital allocation, production deploys, migrations, or destructive
+ops, recursive confidence is not approval.
+
+Default to paper, dry-run, read-only, preview, or staged mode unless the user
+explicitly approves the live action and the repo/service gate supports it.
+
+Promote only when:
+
+- the candidate beats the prior accepted winner on the chosen metric;
+- correctness and replay checks pass;
+- risk limits are explicit;
+- the evidence is durable;
+- the user has approved the live step when needed.
+
+## Summary Shape
+
+Lead with the decision, not the drama:
+
+```text
+Rollout 15 complete. The prior winner still holds, but edge deteriorated 17%.
+Status: watch, not live. Next gate: 20 replay fills with fresh orderbook age
+below threshold.
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

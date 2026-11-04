@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>continuous-agent-loop｜Skill 寫法圖鑑</title>
+<meta name="description" content="帶品質關卡、評估和復原機制的持續自主 agent 迴圈模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>continuous-agent-loop</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/continuous-agent-loop/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">帶品質關卡、評估和復原機制的持續自主 agent 迴圈模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: continuous-agent-loop
+description: 持續自主 agent 迴圈的模式，附帶品質關卡、評估和復原控制。適用於執行必須自我檢查、以評估把關，並能從失敗中復原的 agent 迴圈。
+metadata:
+  origin: ECC
+---
+
+# Continuous Agent Loop
+
+這是 v1.8+ 標準的迴圈 skill 名稱。它取代 `autonomous-loops`，並保留一個版本的相容性。
+
+## Loop Selection Flow
+
+```text
+Start
+  |
+  +-- Need strict CI/PR control? -- yes --&gt; continuous-pr
+  |
+  +-- Need RFC decomposition? -- yes --&gt; rfc-dag
+  |
+  +-- Need exploratory parallel generation? -- yes --&gt; infinite
+  |
+  +-- default --&gt; sequential
+```
+
+## Combined Pattern
+
+建議的 production 堆疊：
+1. RFC 分解（`ralphinho-rfc-pipeline`）
+2. 品質關卡（`plankton-code-quality` + `/quality-gate`）
+3. 評估迴圈（`eval-harness`）
+4. session 持久化（`nanoclaw-repl`）
+
+## Failure Modes
+
+- 迴圈空轉，沒有可衡量的進展
+- 同一個根本原因反覆重試
+- merge 佇列停滯
+- 無上限的升級造成成本漂移
+
+## Recovery
+
+- 凍結迴圈
+- 執行 `/harness-audit`
+- 把範圍縮小到失敗的單元
+- 用明確的驗收標準重播</pre></section><section><h2>英文原文</h2><pre>---
+name: continuous-agent-loop
+description: Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls. Use when running an agent loop that must self-check, gate on evals, and recover from failures.
+metadata:
+  origin: ECC
+---
+
+# Continuous Agent Loop
+
+This is the v1.8+ canonical loop skill name. It supersedes `autonomous-loops` while keeping compatibility for one release.
+
+## Loop Selection Flow
+
+```text
+Start
+  |
+  +-- Need strict CI/PR control? -- yes --&gt; continuous-pr
+  |
+  +-- Need RFC decomposition? -- yes --&gt; rfc-dag
+  |
+  +-- Need exploratory parallel generation? -- yes --&gt; infinite
+  |
+  +-- default --&gt; sequential
+```
+
+## Combined Pattern
+
+Recommended production stack:
+1. RFC decomposition (`ralphinho-rfc-pipeline`)
+2. quality gates (`plankton-code-quality` + `/quality-gate`)
+3. eval loop (`eval-harness`)
+4. session persistence (`nanoclaw-repl`)
+
+## Failure Modes
+
+- loop churn without measurable progress
+- repeated retries with same root cause
+- merge queue stalls
+- cost drift from unbounded escalation
+
+## Recovery
+
+- freeze loop
+- run `/harness-audit`
+- reduce scope to failing unit
+- replay with explicit acceptance criteria</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

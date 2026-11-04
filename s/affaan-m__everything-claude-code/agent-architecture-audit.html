@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-architecture-audit｜Skill 寫法圖鑑</title>
+<meta name="description" content="稽核 12 層 agent stack，找出 wrapper 退化與記憶污染">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-architecture-audit</h1>
+<p class="meta">affaan-m ｜ 除錯與調查 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-architecture-audit/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">稽核 12 層 agent stack，找出 wrapper 退化與記憶污染</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-architecture-audit
+description: 針對 agent 和 LLM 應用的全棧診斷。稽核 12 層的 agent stack，找出 wrapper 退化、記憶污染、工具紀律失敗、隱藏的修復迴圈，以及渲染損壞。產出依嚴重程度排序、以程式碼為先的修復建議。對建構 agent 應用、自主迴圈，或任何 LLM 驅動功能的開發者來說很重要。當 agent 或 LLM 功能行為異常、又不知道是哪一層出問題時，或是在出貨 agent stack 之前使用。
+metadata:
+  origin: oh-my-agent-check
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Agent Architecture Audit
+
+針對 agent 系統的診斷工作流程，這類系統會把失敗藏在 wrapper 層、過時的記憶、重試迴圈，或傳輸／渲染的變異後面。
+
+## When to Activate
+
+**以下情況一定要用：**
+- 把任何 agent 或 LLM 驅動的應用發布到 production
+- 出貨帶有工具呼叫、記憶或多步驟工作流程的功能
+- 加了 wrapper 層之後 agent 的行為退化
+- 使用者回報「agent 越來越差」或「工具不穩」
+- 同一個 model 在 playground 裡正常，放進你的 wrapper 裡就壞掉
+- 除錯 agent 行為超過 15 分鐘還找不到根本原因
+
+**特別關鍵的情況：**
+- 你加了新的 prompt 層、工具定義或記憶系統
+- 你系統裡不同的 agent 行為不一致
+- model 昨天還好好的，今天卻在幻覺
+- 你懷疑隱藏的修復／重試迴圈在默默改動回應
+
+**不要用在：**
+- 一般的程式碼除錯：用 `agent-introspection-debugging`
+- Code review：用各語言專屬的 reviewer agent
+- 資安掃描：用 `security-review` 或 `security-review/scan`
+- Agent 效能 benchmark：用 `agent-eval`
+- 寫新功能：用合適的工作流程 skill
+
+## The 12-Layer Stack
+
+每個 agent 系統都有這些層。其中任何一層都可能弄壞答案：
+
+| # | 層 | 會出什麼問題 |
+|---|-------|----------------|
+| 1 | System prompt | 指示衝突、指示膨脹 |
+| 2 | Session history | 從先前的回合注入過時的 context |
+| 3 | 長期記憶 | 跨 session 污染、新對話裡出現舊話題 |
+| 4 | 蒸餾（Distillation） | 壓縮後的產物以偽事實的形式重新進入 |
+| 5 | 主動回想（Active recall） | 多餘的重新摘要層浪費 context |
+| 6 | 工具選擇 | 工具路由錯誤、model 跳過必要的工具 |
+| 7 | 工具執行 | 幻覺執行：聲稱呼叫了卻沒有呼叫 |
+| 8 | 工具結果詮釋 | 誤讀或忽略工具輸出 |
+| 9 | 答案塑形 | 最終回應的格式損壞 |
+| 10 | 平台渲染 | 傳輸層變異（UI、API、CLI 改動了有效的答案） |
+| 11 | 隱藏的修復迴圈 | 默默的 fallback／重試 agent 跑第二次 LLM 處理 |
+| 12 | 持久化 | 過期的狀態或快取的產物被當成即時證據重複使用 |
+
+## Common Failure Patterns
+
+### 1. Wrapper Regression
+
+基礎 model 產出正確的答案，但 wrapper 層讓它變差。
+
+**症狀：**
+- Model 在 playground 或直接呼叫 API 時沒問題，放進你的 agent 就壞掉
+- 加了新的 prompt 層，既有的行為退化
+- Agent 聽起來很有自信，但自信地錯了
+- 「上次更新之前明明是好的」
+
+### 2. Memory Contamination
+
+舊的話題透過歷史、記憶檢索或蒸餾，洩漏到新的對話裡。
+
+**症狀：**
+- Agent 提起不相關的過去話題
+- 使用者的更正留不住（舊記憶覆蓋新的）
+- 同一個 session 的產物以偽事實的形式重新進入
+- 記憶無限成長，隨著時間降低回應品質
+
+### 3. Tool Discipline Failure
+
+工具在 prompt 裡宣告了，卻沒有在程式碼裡強制執行。Model 跳過它們，或是幻覺出執行結果。
+
+**症狀：**
+- Prompt 裡寫「Must use tool X」，但 model 沒呼叫它就回答
+- 工具結果看起來正確，但其實從來沒真的執行過
+- 不同的工具爭搶同一個職責
+- Model 在不該用工具時用了，或是在必須用時跳過
+
+### 4. Rendering/Transport Corruption
+
+Agent 內部的答案是正確的，但平台層在傳遞過程中把它改壞了。
+
+**症狀：**
+- 日誌顯示答案正確，使用者看到的卻是壞掉的輸出
+- Markdown 渲染、JSON 解析或串流片段弄壞了有效的回應
+- 隱藏的 fallback agent 在交付之前悄悄換掉答案
+- 終端機和 UI 的輸出不一樣
+
+### 5. Hidden Agent Layers
+
+默默的修復、重試、摘要或回想 agent，在沒有明確契約的情況下運行。
+
+**症狀：**
+- 輸出在內部產生和交付給使用者之間改變了
+- 「Auto-fix」迴圈跑了使用者不知道的第二次 LLM 處理
+- 多個 agent 在沒有協調的情況下修改同一份輸出
+- 答案被看不見的層「修順」或「更正」
+
+## Audit Workflow
+
+### Phase 1: Scope
+
+定義你要稽核什麼：
+
+- **目標系統**：是哪個 agent 應用？
+- **入口點**：使用者怎麼和它互動？
+- **Model stack**：用哪些 LLM 和供應商？
+- **症狀**：使用者回報了什麼？
+- **時間區間**：什麼時候開始的？
+- **要稽核的層**：12 層中哪些適用？
+
+### Phase 2: Evidence Collection
+
+從 codebase 蒐集證據：
+
+- **原始碼**：agent 迴圈、工具路由器、記憶准入、prompt 組裝
+- **日誌**：歷史 session 的追蹤、工具呼叫記錄
+- **設定**：prompt 範本、工具 schema、供應商設定
+- **記憶檔案**：SOP、知識庫、session 封存
+
+用 `rg` 搜尋 anti-pattern：
+
+```bash
+# 只寫在 prompt 文字裡（不在程式碼裡）的工具要求
+rg &quot;must.*tool|必须.*工具|required.*call&quot; --type md
+
+# 沒有驗證的工具執行
+rg &quot;tool_call|toolCall|tool_use&quot; --type py --type ts
+
+# 主要 agent 迴圈之外隱藏的 LLM 呼叫
+rg &quot;completion|chat\.create|messages\.create|llm\.invoke&quot;
+
+# 沒有使用者更正優先權的記憶准入
+rg &quot;memory.*admit|long.*term.*update|persist.*memory&quot; --type py --type ts
+
+# 會額外執行 LLM 呼叫的 fallback 迴圈
+rg &quot;fallback|retry.*llm|repair.*prompt|re-?prompt&quot; --type py --type ts
+
+# 默默的輸出變異
+rg &quot;mutate|rewrite.*response|transform.*output|shap&quot; --type py --type ts
+```
+
+### Phase 3: Failure Mapping
+
+對每個發現，記錄：
+
+- **症狀**：使用者看到什麼
+- **機制**：wrapper 怎麼造成它
+- **來源層**：12 層中的哪一層
+- **根本原因**：最深層的原因
+- **證據**：file:line 或 log:row 的參照
+- **信心度**：0.0 到 1.0
+
+### Phase 4: Fix Strategy
+
+預設的修復順序（程式碼為先，不是 prompt 為先）：
+
+1. **用程式碼把關工具要求**：在程式碼裡強制執行，不要只寫在 prompt 文字裡
+2. **移除或縮小隱藏的修復 agent**：用契約讓 fallback 變明確
+3. **減少 context 重複**：同樣的資訊同時經過 prompt + history + memory + distillation
+4. **收緊記憶准入**：使用者更正 &gt; agent 的斷言
+5. **收緊蒸餾的觸發條件**：不該壓縮的東西就不要壓縮
+6. **減少渲染變異**：直接穿透，不要轉換
+7. **改成有型別的 JSON envelope**：內部流程用結構化資料，不要用自由格式的文字
+
+## Severity Model
+
+| 等級 | 意義 | 動作 |
+|-------|---------|--------|
+| `critical` | Agent 可能有信心地產出錯誤的營運行為 | 下次發布前修好 |
+| `high` | Agent 經常降低正確性或穩定性 | 這個 sprint 修好 |
+| `medium` | 正確性通常還在，但輸出脆弱或浪費 | 排進下個週期 |
+| `low` | 大多是外觀或可維護性的問題 | 放 backlog |
+
+## Output Format
+
+依這個順序向使用者呈現發現：
+
+1. **依嚴重程度排序的發現**（最關鍵的在前）
+2. **架構診斷**（哪一層弄壞了什麼，為什麼）
+3. **排好順序的修復計畫**（程式碼為先，不是 prompt 為先）
+
+不要用稱讚或摘要開頭。如果系統壞了，就直接說。
+
+## Quick Diagnostic Questions
+
+稽核 agent 系統時，回答這些問題：
+
+| # | 問題 | 如果是 → |
+|---|----------|----------|
+| 1 | Model 能不能跳過必要的工具還照樣回答？ | 工具沒有被程式碼把關 |
+| 2 | 舊的對話內容會不會出現在新的回合？ | 記憶污染 |
+| 3 | 同樣的資訊是不是同時在 system prompt、記憶和 history 裡？ | Context 重複 |
+| 4 | 平台在交付之前會不會跑第二次 LLM 處理？ | 隱藏的修復迴圈 |
+| 5 | 輸出在內部產生和交付給使用者之間有沒有不同？ | 渲染損壞 |
+| 6 | 「must use tool X」的規則是不是只在 prompt 文字裡？ | 工具紀律失敗 |
+| 7 | Agent 自己的獨白會不會變成持久記憶？ | 記憶中毒 |
+
+## Anti-Patterns to Avoid
+
+- 在證偽 wrapper 層的退化之前，不要先怪 model。
+- 沒有展示污染路徑，就不要怪記憶。
+- 不要讓目前乾淨的狀態，抹掉一次髒的歷史事件。
+- 不要把 markdown 文字當成可信的內部協定。
+- 當程式碼從沒強制執行時，不要接受 prompt 文字裡的「must use tool」。
+- 發現要直接、有證據支持，而且依嚴重程度排序。
+
+## Report Schema
+
+稽核應該產出符合這個形狀的結構化報告：
+
+```json
+{
+  &quot;schema_version&quot;: &quot;ecc.agent-architecture-audit.report.v1&quot;,
+  &quot;executive_verdict&quot;: {
+    &quot;overall_health&quot;: &quot;high_risk&quot;,
+    &quot;primary_failure_mode&quot;: &quot;string&quot;,
+    &quot;most_urgent_fix&quot;: &quot;string&quot;
+  },
+  &quot;scope&quot;: {
+    &quot;target_name&quot;: &quot;string&quot;,
+    &quot;model_stack&quot;: [&quot;string&quot;],
+    &quot;layers_to_audit&quot;: [&quot;string&quot;]
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;critical|high|medium|low&quot;,
+      &quot;title&quot;: &quot;string&quot;,
+      &quot;mechanism&quot;: &quot;string&quot;,
+      &quot;source_layer&quot;: &quot;string&quot;,
+      &quot;root_cause&quot;: &quot;string&quot;,
+      &quot;evidence_refs&quot;: [&quot;file:line&quot;],
+      &quot;confidence&quot;: 0.0,
+      &quot;recommended_fix&quot;: &quot;string&quot;
+    }
+  ],
+  &quot;ordered_fix_plan&quot;: [
+    { &quot;order&quot;: 1, &quot;goal&quot;: &quot;string&quot;, &quot;why_now&quot;: &quot;string&quot;, &quot;expected_effect&quot;: &quot;string&quot; }
+  ]
+}
+```
+
+## Related Skills
+
+- `agent-introspection-debugging`：除錯 agent 執行期的失敗（迴圈、逾時、狀態錯誤）
+- `agent-eval`：正面對決式地 benchmark agent 效能
+- `security-review`：程式碼和設定的資安稽核
+- `autonomous-agent-harness`：設定自主 agent 的運作
+- `agent-harness-construction`：從零開始建構 agent harness</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-architecture-audit
+description: Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden repair loops, and rendering corruption. Produces severity-ranked findings with code-first fixes. Essential for developers building agent applications, autonomous loops, or any LLM-powered feature. Use when an agent or LLM feature misbehaves and the failing layer is unknown, or before shipping an agent stack.
+metadata:
+  origin: oh-my-agent-check
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Agent Architecture Audit
+
+A diagnostic workflow for agent systems that hide failures behind wrapper layers, stale memory, retry loops, or transport/rendering mutations.
+
+## When to Activate
+
+**MANDATORY for:**
+- Releasing any agent or LLM-powered application to production
+- Shipping features with tool calling, memory, or multi-step workflows
+- Agent behavior degrades after adding wrapper layers
+- User reports &quot;the agent is getting worse&quot; or &quot;tools are flaky&quot;
+- Same model works in playground but breaks inside your wrapper
+- Debugging agent behavior for more than 15 minutes without finding root cause
+
+**Especially critical when:**
+- You&#x27;ve added new prompt layers, tool definitions, or memory systems
+- Different agents in your system behave inconsistently
+- The model was fine yesterday but is hallucinating today
+- You suspect hidden repair/retry loops silently mutating responses
+
+**Do not use for:**
+- General code debugging — use `agent-introspection-debugging`
+- Code review — use language-specific reviewer agents
+- Security scanning — use `security-review` or `security-review/scan`
+- Agent performance benchmarking — use `agent-eval`
+- Writing new features — use the appropriate workflow skill
+
+## The 12-Layer Stack
+
+Every agent system has these layers. Any of them can corrupt the answer:
+
+| # | Layer | What Goes Wrong |
+|---|-------|----------------|
+| 1 | System prompt | Conflicting instructions, instruction bloat |
+| 2 | Session history | Stale context injection from previous turns |
+| 3 | Long-term memory | Pollution across sessions, old topics in new conversations |
+| 4 | Distillation | Compressed artifacts re-entering as pseudo-facts |
+| 5 | Active recall | Redundant re-summary layers wasting context |
+| 6 | Tool selection | Wrong tool routing, model skips required tools |
+| 7 | Tool execution | Hallucinated execution — claims to call but doesn&#x27;t |
+| 8 | Tool interpretation | Misread or ignored tool output |
+| 9 | Answer shaping | Format corruption in final response |
+| 10 | Platform rendering | Transport-layer mutation (UI, API, CLI mutates valid answers) |
+| 11 | Hidden repair loops | Silent fallback/retry agents running second LLM pass |
+| 12 | Persistence | Expired state or cached artifacts reused as live evidence |
+
+## Common Failure Patterns
+
+### 1. Wrapper Regression
+
+The base model produces correct answers, but the wrapper layers make it worse.
+
+**Symptoms:**
+- Model works fine in playground or direct API call, breaks in your agent
+- Added a new prompt layer, existing behavior degraded
+- Agent sounds confident but is confidently wrong
+- &quot;It was working before the last update&quot;
+
+### 2. Memory Contamination
+
+Old topics leak into new conversations through history, memory retrieval, or distillation.
+
+**Symptoms:**
+- Agent brings up unrelated past topics
+- User corrections don&#x27;t stick (old memory overwrites new)
+- Same-session artifacts re-enter as pseudo-facts
+- Memory grows without bound, degrading response quality over time
+
+### 3. Tool Discipline Failure
+
+Tools are declared in the prompt but not enforced in code. The model skips them or hallucinates execution.
+
+**Symptoms:**
+- &quot;Must use tool X&quot; in prompt, but model answers without calling it
+- Tool results look correct but were never actually executed
+- Different tools fight over the same responsibility
+- Model uses tool when it shouldn&#x27;t, or skips it when it must
+
+### 4. Rendering/Transport Corruption
+
+The agent&#x27;s internal answer is correct, but the platform layer mutates it during delivery.
+
+**Symptoms:**
+- Logs show correct answer, user sees broken output
+- Markdown rendering, JSON parsing, or streaming fragments corrupt valid responses
+- Hidden fallback agent quietly replaces the answer before delivery
+- Output differs between terminal and UI
+
+### 5. Hidden Agent Layers
+
+Silent repair, retry, summarization, or recall agents run without explicit contracts.
+
+**Symptoms:**
+- Output changes between internal generation and user delivery
+- &quot;Auto-fix&quot; loops run a second LLM pass the user doesn&#x27;t know about
+- Multiple agents modify the same output without coordination
+- Answers get &quot;smoothed&quot; or &quot;corrected&quot; by invisible layers
+
+## Audit Workflow
+
+### Phase 1: Scope
+
+Define what you&#x27;re auditing:
+
+- **Target system** — what agent application?
+- **Entrypoints** — how do users interact with it?
+- **Model stack** — which LLM(s) and providers?
+- **Symptoms** — what does the user report?
+- **Time window** — when did it start?
+- **Layers to audit** — which of the 12 layers apply?
+
+### Phase 2: Evidence Collection
+
+Gather evidence from the codebase:
+
+- **Source code** — agent loop, tool router, memory admission, prompt assembly
+- **Logs** — historical session traces, tool call records
+- **Config** — prompt templates, tool schemas, provider settings
+- **Memory files** — SOPs, knowledge bases, session archives
+
+Use `rg` to search for anti-patterns:
+
+```bash
+# Tool requirements expressed only in prompt text (not code)
+rg &quot;must.*tool|必须.*工具|required.*call&quot; --type md
+
+# Tool execution without validation
+rg &quot;tool_call|toolCall|tool_use&quot; --type py --type ts
+
+# Hidden LLM calls outside main agent loop
+rg &quot;completion|chat\.create|messages\.create|llm\.invoke&quot;
+
+# Memory admission without user-correction priority
+rg &quot;memory.*admit|long.*term.*update|persist.*memory&quot; --type py --type ts
+
+# Fallback loops that run additional LLM calls
+rg &quot;fallback|retry.*llm|repair.*prompt|re-?prompt&quot; --type py --type ts
+
+# Silent output mutation
+rg &quot;mutate|rewrite.*response|transform.*output|shap&quot; --type py --type ts
+```
+
+### Phase 3: Failure Mapping
+
+For each finding, document:
+
+- **Symptom** — what the user sees
+- **Mechanism** — how the wrapper causes it
+- **Source layer** — which of the 12 layers
+- **Root cause** — the deepest cause
+- **Evidence** — file:line or log:row reference
+- **Confidence** — 0.0 to 1.0
+
+### Phase 4: Fix Strategy
+
+Default fix order (code-first, not prompt-first):
+
+1. **Code-gate tool requirements** — enforce in code, not just prompt text
+2. **Remove or narrow hidden repair agents** — make fallback explicit with contracts
+3. **Reduce context duplication** — same info through prompt + history + memory + distillation
+4. **Tighten memory admission** — user corrections &gt; agent assertions
+5. **Tighten distillation triggers** — don&#x27;t compress what shouldn&#x27;t be compressed
+6. **Reduce rendering mutation** — pass-through, don&#x27;t transform
+7. **Convert to typed JSON envelopes** — structured internal flow, not freeform prose
+
+## Severity Model
+
+| Level | Meaning | Action |
+|-------|---------|--------|
+| `critical` | Agent can confidently produce wrong operational behavior | Fix before next release |
+| `high` | Agent frequently degrades correctness or stability | Fix this sprint |
+| `medium` | Correctness usually survives but output is fragile or wasteful | Plan for next cycle |
+| `low` | Mostly cosmetic or maintainability issues | Backlog |
+
+## Output Format
+
+Present findings to the user in this order:
+
+1. **Severity-ranked findings** (most critical first)
+2. **Architecture diagnosis** (which layer corrupted what, and why)
+3. **Ordered fix plan** (code-first, not prompt-first)
+
+Do not lead with compliments or summaries. If the system is broken, say so directly.
+
+## Quick Diagnostic Questions
+
+When auditing an agent system, answer these:
+
+| # | Question | If Yes → |
+|---|----------|----------|
+| 1 | Can the model skip a required tool and still answer? | Tool not code-gated |
+| 2 | Does old conversation content appear in new turns? | Memory contamination |
+| 3 | Is the same info in system prompt AND memory AND history? | Context duplication |
+| 4 | Does the platform run a second LLM pass before delivery? | Hidden repair loop |
+| 5 | Does the output differ between internal generation and user delivery? | Rendering corruption |
+| 6 | Are &quot;must use tool X&quot; rules only in prompt text? | Tool discipline failure |
+| 7 | Can the agent&#x27;s own monologue become persistent memory? | Memory poisoning |
+
+## Anti-Patterns to Avoid
+
+- Avoid blaming the model before falsifying wrapper-layer regressions.
+- Avoid blaming memory without showing the contamination path.
+- Do not let a clean current state erase a dirty historical incident.
+- Do not treat markdown prose as a trustworthy internal protocol.
+- Do not accept &quot;must use tool&quot; in prompt text when code never enforces it.
+- Keep findings direct, evidence-backed, and severity-ranked.
+
+## Report Schema
+
+Audits should produce structured reports following this shape:
+
+```json
+{
+  &quot;schema_version&quot;: &quot;ecc.agent-architecture-audit.report.v1&quot;,
+  &quot;executive_verdict&quot;: {
+    &quot;overall_health&quot;: &quot;high_risk&quot;,
+    &quot;primary_failure_mode&quot;: &quot;string&quot;,
+    &quot;most_urgent_fix&quot;: &quot;string&quot;
+  },
+  &quot;scope&quot;: {
+    &quot;target_name&quot;: &quot;string&quot;,
+    &quot;model_stack&quot;: [&quot;string&quot;],
+    &quot;layers_to_audit&quot;: [&quot;string&quot;]
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;critical|high|medium|low&quot;,
+      &quot;title&quot;: &quot;string&quot;,
+      &quot;mechanism&quot;: &quot;string&quot;,
+      &quot;source_layer&quot;: &quot;string&quot;,
+      &quot;root_cause&quot;: &quot;string&quot;,
+      &quot;evidence_refs&quot;: [&quot;file:line&quot;],
+      &quot;confidence&quot;: 0.0,
+      &quot;recommended_fix&quot;: &quot;string&quot;
+    }
+  ],
+  &quot;ordered_fix_plan&quot;: [
+    { &quot;order&quot;: 1, &quot;goal&quot;: &quot;string&quot;, &quot;why_now&quot;: &quot;string&quot;, &quot;expected_effect&quot;: &quot;string&quot; }
+  ]
+}
+```
+
+## Related Skills
+
+- `agent-introspection-debugging` — Debug agent runtime failures (loops, timeouts, state errors)
+- `agent-eval` — Benchmark agent performance head-to-head
+- `security-review` — Security audit for code and configuration
+- `autonomous-agent-harness` — Set up autonomous agent operations
+- `agent-harness-construction` — Build agent harnesses from scratch</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

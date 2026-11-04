@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ito-inference｜Skill 寫法圖鑑</title>
+<meta name="description" content="確認 Itô 預訂的算力能否做模型服務，目前尚未支援所以直接停下">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ito-inference</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/ito-inference/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">確認 Itô 預訂的算力能否做模型服務，目前尚未支援所以直接停下</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ito-inference
+description: 檢查已完成預訂的 Itô 算力是否提供模型服務，當官方後端可用時，交接一份經過明確確認的服務 manifest。在 ito-compute 已預訂 GPU 節點之後，使用者要求 OpenAI 相容的端點、ito-serve、託管的 Kimi，或自行託管的開放權重推論時使用。ECC 自己沒有實作任何服務堆疊。
+metadata:
+  origin: ECC
+  status: scaffold
+  aliases: ito-serve, hosted-open-weights
+---
+
+# Itô Inference
+
+`ito-inference` 是 ECC 中負責 Itô 算力推論服務的唯一官方 skill。提到 `ito-serve`
+的需求都導到這裡；不要建立或安裝第二個 `ito-serve` skill。ECC 絕對不會 SSH 到節點、下載權重、啟動
+引擎或對外開放端點；它也絕對不會預訂、保留或花錢。
+
+## Current production boundary
+
+目前還沒有託管式服務。ECC 的 bridge 只開放 `login`、
+`auth`、`find`、`status` 和有明確把關的 `evals`。它沒有 `serve` 指令。
+官方 runtime 只把 `inference` 記載為不支援的相容性
+探測；ECC 不會呼叫它，也不依賴它。MCP 介面只開放 auth、
+find 和 status。本地端可以強制保證的是：ECC 在解析或啟動帶有憑證的官方 client 之前，
+就會拒絕 `serve`。
+
+因此要在認證或任何指令執行之前就停下來。回報缺少的功能，並把控制權還給
+發起的 agent。絕對不要用本地執行器、SSH 輔助工具、瀏覽器工作流程、購買端點，或任何未被追蹤的
+本地 `ito-serve` 草稿來替代。
+
+## Required entitlement
+
+當服務功能實作完成後，第一道關卡是由伺服器驗證的已完成預訂。Harness 的記憶、RFQ、報價、節點 IP 或 SSH 存取，都不能證明有資格。
+後端必須回傳最新的服務資格，綁定到
+已認證的帳戶、預訂、GPU 拓撲、region、fabric、期限和模型政策。過期、被撤銷、不相符、不完整或已經釋放的預訂，
+在確認之前都要以 fail closed 處理。
+
+## Future CLI and API contract
+
+預計的指令名稱是 `serve`；在正式環境的契約上線後，`inference` 只能作為
+明確標示為已棄用的相容別名保留。
+未來的交接必須等同於：
+
+```sh
+ecc ito serve \
+  --booking &lt;server-verified-booking-id&gt; \
+  --manifest &lt;absolute-reviewed-json-file&gt; \
+  --confirmation-ref &lt;opaque-non-authorizing-reference&gt; \
+  --idempotency-key &lt;stable-retry-key&gt; \
+  --json
+```
+
+經過審查的 manifest 必須指明模型 revision、引擎與版本、
+量化方式、tensor/pipeline 拓撲、端點對外開放的政策、產物
+checksum、儲存空間上限、runtime 限制、選用的 TTFT/TPOT 目標，以及
+最大的增量成本。任何原始的 API key、SSH key、節點密碼或 bearer
+token，都不能出現在引數、manifest、log、MCP 結果或對話中。
+
+Client 必須對 manifest 路徑做規範化、拒絕 symlink、以不跟隨連結的方式開啟一般
+檔案、要求適當的擁有者和嚴格的權限、強制限制大小，並對已開啟的
+file descriptor 的內容做 hash。在任何工作負載變更之前，那個 digest
+必須與綁定在確認裡的 digest 完全相等。路徑被替換、digest 不符、檔案過大或可變動的
+不安全檔案，都要以 fail closed 處理。
+
+建立工作負載必須由官方 API（不是 ECC）負責，並回傳結構化 JSON，
+包含 `ok`、`live_api_contacted`、`notice`，以及 `data` 或 `error`。服務
+資料必須包含穩定的預訂、工作負載、manifest 和 idempotency ID，加上一個
+狀態列舉；在健康檢查和模型檢查通過之前，不能宣稱端點已上線。錯誤必須包含穩定的代碼，以及不含 secret 的安全訊息。
+
+## Confirmation and execution gates
+
+建立工作負載之前，要求以下全部成立：
+
+1. 來自官方後端的最新資格與服務可用性。
+2. 可供審查、不可變的 manifest，以及確定性的 digest。
+3. 另外一份單次使用的確認，綁定帳戶、動作、manifest 和
+   成本，有效期短，並有重放保護。CLI 引數只帶有
+   不透明、不具授權效力的確認參照；伺服器在帶外解析並
+   消耗這個 bearer 能力。
+4. 由呼叫者提供的 idempotency key，並與工作負載一起以原子方式保留。
+5. 伺服器端對 fabric、容量、模型政策、儲存空間和成本的驗證。
+
+認證只代表身分，不代表有工作負載的權限。登入、API key、報價
+或已完成的預訂，絕對不能取代服務確認。檢視
+和產生計畫不能建立工作負載。取消和清理是另外的變更操作，各有自己限定範圍的確認和 idempotency 邊界。
+
+## Lifecycle and recovery
+
+在同一個官方 client 開放租戶範圍的狀態、log、指標、取消和清理操作之前，
+正式環境的介面都是不完整的。每個
+操作都需要有限制的連線和整體 timeout、會感知撤銷的錯誤，
+以及結構化的輸出。遇到不確定的傳輸失敗之後，重試之前要先用
+idempotency key 查詢狀態；絕對不要只因為第一次的回應遺失，就建立第二個工作負載。
+被撤銷的憑證會停止輪詢，並把控制權還給發起的 agent，而不會自動啟動登入。
+
+只有在端點健康、模型身分和 canary 推論全部通過之後，才回報 `ready`。
+要誠實回報中間和終結的失敗狀態。清理必須是可觀察的，
+而且除非另外明確授權了那個經濟行為，否則不能釋放或修改底層的預訂。
+
+## Proposed backend stages
+
+這些階段描述的是未來的後端，不是 ECC 裡現有的程式碼：
+
+1. 驗證資格、拓撲、fabric 和成本的關卡。
+2. 把固定 checksum 的權重抓到由後端管理的儲存空間。
+3. 產出並驗證可供審查的拓撲/引擎計畫。
+4. 透過供應商的 control plane 啟動，絕對不從 ECC 直接用 root SSH。
+5. 暖機、測試健康與模型身分、跑 SLO canary，然後註冊
+   端點和已遮蔽的設定。
+
+在官方 runtime 裡，上面每個關卡和生命週期操作都存在之前，
+這個 skill 都只是一個 fail closed 的可用性檢查，加上文件交接。</pre></section><section><h2>英文原文</h2><pre>---
+name: ito-inference
+description: Inspect the availability of model serving on a completed Itô compute booking and, when the canonical backend becomes available, hand off an explicitly confirmed serving manifest. Use after ito-compute has booked GPU nodes and the user asks for an OpenAI-compatible endpoint, ito-serve, hosted Kimi, or self-hosted open-weights inference. ECC implements no serving stack of its own.
+metadata:
+  origin: ECC
+  status: scaffold
+  aliases: ito-serve, hosted-open-weights
+---
+
+# Itô Inference
+
+`ito-inference` is the sole canonical ECC skill for inference serving on Itô
+compute. Requests naming `ito-serve` route here; do not create or install a
+second `ito-serve` skill. ECC never SSHes to nodes, downloads weights, launches
+an engine, or exposes an endpoint; it never books, reserves, or spends.
+
+## Current production boundary
+
+Managed serving is unavailable today. The ECC bridge exposes only `login`,
+`auth`, `find`, `status`, and explicitly gated `evals`. It has no `serve` verb.
+The canonical runtime documents `inference` only as an unsupported compatibility
+probe; ECC does not invoke or depend on it. The MCP surface exposes only auth,
+find, and status. The locally enforceable guarantee is that ECC rejects `serve`
+before resolving or spawning the credential-bearing canonical client.
+
+Therefore stop before authentication or any command invocation. Report the
+missing capability and return to the originating agent. Never substitute a
+local runner, SSH helper, browser workflow, purchase endpoint, or any untracked
+local `ito-serve` draft.
+
+## Required entitlement
+
+When serving is implemented, its first gate is a server-verified completed
+booking. Harness memory, an RFQ, a quote, node IPs, or SSH access are not proof
+of entitlement. The backend must return fresh serving eligibility bound to the
+authenticated account, booking, GPU topology, region, fabric, term, and model
+policy. Expired, revoked, mismatched, incomplete, or already-released bookings
+fail closed before confirmation.
+
+## Future CLI and API contract
+
+The intended command name is `serve`; `inference` may remain only as an
+explicitly deprecated compatibility alias after the production contract lands.
+The future handoff must be equivalent to:
+
+```sh
+ecc ito serve \
+  --booking &lt;server-verified-booking-id&gt; \
+  --manifest &lt;absolute-reviewed-json-file&gt; \
+  --confirmation-ref &lt;opaque-non-authorizing-reference&gt; \
+  --idempotency-key &lt;stable-retry-key&gt; \
+  --json
+```
+
+The reviewed manifest must identify the model revision, engine and version,
+quantization, tensor/pipeline topology, endpoint exposure policy, artifact
+checksums, storage ceiling, runtime limits, optional TTFT/TPOT objectives, and
+maximum incremental cost. No raw API key, SSH key, node password, or bearer
+token belongs in arguments, manifests, logs, MCP results, or chat.
+
+The client must canonicalize the manifest path, reject symlinks, open a regular
+file without following links, require appropriate ownership and restrictive
+permissions, enforce a bounded size, and hash bytes from the opened descriptor.
+That digest must exactly equal the digest bound into confirmation before any
+workload mutation. A path swap, digest mismatch, oversized file, or mutable
+unsafe file fails closed.
+
+The canonical API—not ECC—must own workload creation and return structured JSON
+with `ok`, `live_api_contacted`, `notice`, and either `data` or `error`. Serving
+data must include stable booking, workload, manifest, and idempotency IDs plus a
+state enum; it must not claim an endpoint is live until health and model checks
+pass. Errors must include a stable code and safe message without secrets.
+
+## Confirmation and execution gates
+
+Before workload creation, require all of the following:
+
+1. Fresh entitlement and serving eligibility from the canonical backend.
+2. A reviewable immutable manifest and deterministic digest.
+3. A separate single-use confirmation bound to account, action, manifest, and
+   cost, with a short expiry and replay protection. CLI arguments carry only an
+   opaque, non-authorizing confirmation reference; the server resolves and
+   consumes the bearer capability out of band.
+4. A caller-supplied idempotency key reserved atomically with the workload.
+5. Server-side fabric, capacity, model-policy, storage, and cost validation.
+
+Authentication is identity, not workload authority. A login, API key, quote,
+or completed booking never substitutes for the serving confirmation. Inspection
+and plan generation must not create a workload. Cancel and cleanup are separate
+mutations with their own scoped confirmation and idempotency boundaries.
+
+## Lifecycle and recovery
+
+The production surface is incomplete until the same canonical client exposes
+tenant-scoped status, logs, metrics, cancel, and cleanup operations. Every
+operation needs bounded connect and overall timeouts, revocation-aware errors,
+and structured output. After an ambiguous transport failure, query status by
+the idempotency key before retrying; never create a second workload merely
+because the first response was lost. A revoked credential stops polling and
+returns control to the originating agent without starting login automatically.
+
+Only report `ready` after endpoint health, model identity, and canary inference
+all pass. Report intermediate and terminal failure states honestly. Cleanup must
+be observable and must not release or modify the underlying booking unless that
+separate economic action was explicitly authorized.
+
+## Proposed backend stages
+
+These stages describe the future backend, not code that exists in ECC:
+
+1. Verify entitlement, topology, fabric, and cost gates.
+2. Fetch checksum-pinned weights into backend-managed storage.
+3. Emit and validate a reviewable topology/engine plan.
+4. Launch through the provider control plane, never direct root SSH from ECC.
+5. Warm up, test health and model identity, run an SLO canary, then register the
+   endpoint and redacted configuration.
+
+Until every gate and lifecycle operation above exists in the canonical runtime,
+this skill remains a fail-closed availability check and documentation handoff.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

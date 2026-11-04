@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swift-concurrency-6-2｜Skill 寫法圖鑑</title>
+<meta name="description" content="Swift 6.2 預設單執行緒，用 @concurrent 明確卸載背景工作">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>swift-concurrency-6-2</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/swift-concurrency-6-2/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Swift 6.2 預設單執行緒，用 @concurrent 明確卸載背景工作</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: swift-concurrency-6-2
+description: Swift 6.2 Approachable Concurrency：預設單執行緒、用 @concurrent 明確卸載到背景、為 main actor 型別提供 isolated conformance。採用 Swift 6.2 concurrency（用 @concurrent 卸載工作，或解決 main-actor 隔離問題）時使用。
+---
+
+# Swift 6.2 Approachable Concurrency
+
+採用 Swift 6.2 並行模型的模式：程式碼預設單執行緒執行，並行要明確引入。在不犧牲效能的前提下，消除常見的資料競爭錯誤。
+
+## 何時啟用
+
+- 把 Swift 5.x 或 6.0/6.1 的專案遷移到 Swift 6.2
+- 解決資料競爭安全性的編譯器錯誤
+- 設計以 MainActor 為基礎的 app 架構
+- 把吃 CPU 的工作卸載到背景執行緒
+- 在 MainActor 隔離的型別上實作 protocol conformance
+- 在 Xcode 26 啟用 Approachable Concurrency 的 build 設定
+
+## 核心問題：隱含的背景卸載
+
+在 Swift 6.1 和更早的版本，async 函式可能被隱含地卸載到背景執行緒，造成資料競爭錯誤，即使是看似安全的程式碼也一樣：
+
+```swift
+// Swift 6.1: ERROR
+@MainActor
+final class StickerModel {
+    let photoProcessor = PhotoProcessor()
+
+    func extractSticker(_ item: PhotosPickerItem) async throws -&gt; Sticker? {
+        guard let data = try await item.loadTransferable(type: Data.self) else { return nil }
+
+        // Error: Sending &#x27;self.photoProcessor&#x27; risks causing data races
+        return await photoProcessor.extractSticker(data: data, with: item.itemIdentifier)
+    }
+}
+```
+
+Swift 6.2 修好了這點：async 函式預設會留在呼叫它的 actor 上。
+
+```swift
+// Swift 6.2: OK — async stays on MainActor, no data race
+@MainActor
+final class StickerModel {
+    let photoProcessor = PhotoProcessor()
+
+    func extractSticker(_ item: PhotosPickerItem) async throws -&gt; Sticker? {
+        guard let data = try await item.loadTransferable(type: Data.self) else { return nil }
+        return await photoProcessor.extractSticker(data: data, with: item.itemIdentifier)
+    }
+}
+```
+
+## 核心模式：Isolated Conformance
+
+MainActor 型別現在可以安全地遵循非隔離的 protocol：
+
+```swift
+protocol Exportable {
+    func export()
+}
+
+// Swift 6.1: ERROR — crosses into main actor-isolated code
+// Swift 6.2: OK with isolated conformance
+extension StickerModel: @MainActor Exportable {
+    func export() {
+        photoProcessor.exportAsPNG()
+    }
+}
+```
+
+編譯器會確保這個 conformance 只在 main actor 上使用：
+
+```swift
+// OK — ImageExporter is also @MainActor
+@MainActor
+struct ImageExporter {
+    var items: [any Exportable]
+
+    mutating func add(_ item: StickerModel) {
+        items.append(item)  // Safe: same actor isolation
+    }
+}
+
+// ERROR — nonisolated context can&#x27;t use MainActor conformance
+nonisolated struct ImageExporter {
+    var items: [any Exportable]
+
+    mutating func add(_ item: StickerModel) {
+        items.append(item)  // Error: Main actor-isolated conformance cannot be used here
+    }
+}
+```
+
+## 核心模式：全域與靜態變數
+
+用 MainActor 保護全域/靜態狀態：
+
+```swift
+// Swift 6.1: ERROR — non-Sendable type may have shared mutable state
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // Error
+}
+
+// Fix: Annotate with @MainActor
+@MainActor
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // OK
+}
+```
+
+### MainActor 預設推斷模式
+
+Swift 6.2 引入了預設推斷為 MainActor 的模式，不需要手動標註：
+
+```swift
+// With MainActor default inference enabled:
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // Implicitly @MainActor
+}
+
+final class StickerModel {
+    let photoProcessor: PhotoProcessor
+    var selection: [PhotosPickerItem]  // Implicitly @MainActor
+}
+
+extension StickerModel: Exportable {  // Implicitly @MainActor conformance
+    func export() {
+        photoProcessor.exportAsPNG()
+    }
+}
+```
+
+這個模式是選用的，建議用在 app、script 和其他可執行檔 target。
+
+## 核心模式：用 @concurrent 做背景工作
+
+需要真正的平行時，用 `@concurrent` 明確卸載：
+
+&gt; **重要：** 這個範例需要 Approachable Concurrency 的 build 設定，也就是 SE-0466（MainActor 預設隔離）和 SE-0461（NonisolatedNonsendingByDefault）。啟用這些之後，`extractSticker` 會留在呼叫端的 actor 上，讓存取可變狀態變得安全。**沒有這些設定，這段程式碼就有資料競爭**，編譯器會標示出來。
+
+```swift
+nonisolated final class PhotoProcessor {
+    private var cachedStickers: [String: Sticker] = [:]
+
+    func extractSticker(data: Data, with id: String) async -&gt; Sticker {
+        if let sticker = cachedStickers[id] {
+            return sticker
+        }
+
+        let sticker = await Self.extractSubject(from: data)
+        cachedStickers[id] = sticker
+        return sticker
+    }
+
+    // Offload expensive work to concurrent thread pool
+    @concurrent
+    static func extractSubject(from data: Data) async -&gt; Sticker { /* ... */ }
+}
+
+// Callers must await
+let processor = PhotoProcessor()
+processedPhotos[item.id] = await processor.extractSticker(data: data, with: item.id)
+```
+
+使用 `@concurrent` 的步驟：
+1. 把包含它的型別標成 `nonisolated`
+2. 在函式上加 `@concurrent`
+3. 還不是非同步的話，加上 `async`
+4. 在呼叫端加上 `await`
+
+## 關鍵設計決策
+
+| 決策 | 理由 |
+|----------|-----------|
+| 預設單執行緒 | 最自然的程式碼沒有資料競爭；並行是選用的 |
+| Async 留在呼叫它的 actor | 消除了造成資料競爭錯誤的隱含卸載 |
+| Isolated conformance | MainActor 型別不用不安全的 workaround 就能遵循 protocol |
+| `@concurrent` 明確選用 | 背景執行是刻意的效能選擇，不是意外發生的 |
+| MainActor 預設推斷 | 減少 app target 上冗長的 `@MainActor` 標註 |
+| 選用式採用 | 不會破壞既有程式碼的遷移路徑，可以逐步啟用功能 |
+
+## 遷移步驟
+
+1. **在 Xcode 啟用**：Build Settings 裡的 Swift Compiler &gt; Concurrency 區塊
+2. **在 SPM 啟用**：在 package manifest 使用 `SwiftSettings` API
+3. **使用遷移工具**：透過 swift.org/migration 自動修改程式碼
+4. **從 MainActor 預設開始**：對 app target 啟用推斷模式
+5. **需要時才加 `@concurrent`**：先做 profile，再卸載熱點路徑
+6. **徹底測試**：資料競爭的問題會變成編譯期錯誤
+
+## 最佳實務
+
+- **從 MainActor 開始**：先寫單執行緒的程式碼，之後再最佳化
+- **`@concurrent` 只用在吃 CPU 的工作**：影像處理、壓縮、複雜運算
+- 對大多是單執行緒的 app target **啟用 MainActor 推斷模式**
+- **卸載之前先 profile**：用 Instruments 找出真正的瓶頸
+- **用 MainActor 保護全域變數**：全域/靜態的可變狀態需要 actor 隔離
+- **使用 isolated conformance**，不要用 `nonisolated` 的 workaround 或 `@Sendable` 包裝
+- **漸進式遷移**：在 build 設定裡一次啟用一個功能
+
+## 要避免的反模式
+
+- 對每個 async 函式都套用 `@concurrent`（大多數不需要背景執行）
+- 沒搞懂隔離就用 `nonisolated` 壓掉編譯器錯誤
+- actor 已經能提供同樣的安全性，還保留舊式的 `DispatchQueue` 寫法
+- 在跟 concurrency 有關的 Foundation Models 程式碼裡，跳過 `model.availability` 檢查
+- 跟編譯器對著幹：如果它回報資料競爭，程式碼就是真的有並行問題
+- 假設所有 async 程式碼都在背景執行（Swift 6.2 預設：留在呼叫它的 actor）
+
+## 何時使用
+
+- 所有新的 Swift 6.2+ 專案（Approachable Concurrency 是建議的預設值）
+- 把既有 app 從 Swift 5.x 或 6.0/6.1 的並行遷移過來
+- 導入 Xcode 26 時，解決資料競爭安全性的編譯器錯誤
+- 建構以 MainActor 為中心的 app 架構（大多數 UI app）
+- 效能最佳化：把特定的繁重運算卸載到背景</pre></section><section><h2>英文原文</h2><pre>---
+name: swift-concurrency-6-2
+description: Swift 6.2 Approachable Concurrency — single-threaded by default, @concurrent for explicit background offloading, isolated conformances for main actor types. Use when adopting Swift 6.2 concurrency — offloading with @concurrent or resolving main-actor isolation.
+---
+
+# Swift 6.2 Approachable Concurrency
+
+Patterns for adopting Swift 6.2&#x27;s concurrency model where code runs single-threaded by default and concurrency is introduced explicitly. Eliminates common data-race errors without sacrificing performance.
+
+## When to Activate
+
+- Migrating Swift 5.x or 6.0/6.1 projects to Swift 6.2
+- Resolving data-race safety compiler errors
+- Designing MainActor-based app architecture
+- Offloading CPU-intensive work to background threads
+- Implementing protocol conformances on MainActor-isolated types
+- Enabling Approachable Concurrency build settings in Xcode 26
+
+## Core Problem: Implicit Background Offloading
+
+In Swift 6.1 and earlier, async functions could be implicitly offloaded to background threads, causing data-race errors even in seemingly safe code:
+
+```swift
+// Swift 6.1: ERROR
+@MainActor
+final class StickerModel {
+    let photoProcessor = PhotoProcessor()
+
+    func extractSticker(_ item: PhotosPickerItem) async throws -&gt; Sticker? {
+        guard let data = try await item.loadTransferable(type: Data.self) else { return nil }
+
+        // Error: Sending &#x27;self.photoProcessor&#x27; risks causing data races
+        return await photoProcessor.extractSticker(data: data, with: item.itemIdentifier)
+    }
+}
+```
+
+Swift 6.2 fixes this: async functions stay on the calling actor by default.
+
+```swift
+// Swift 6.2: OK — async stays on MainActor, no data race
+@MainActor
+final class StickerModel {
+    let photoProcessor = PhotoProcessor()
+
+    func extractSticker(_ item: PhotosPickerItem) async throws -&gt; Sticker? {
+        guard let data = try await item.loadTransferable(type: Data.self) else { return nil }
+        return await photoProcessor.extractSticker(data: data, with: item.itemIdentifier)
+    }
+}
+```
+
+## Core Pattern — Isolated Conformances
+
+MainActor types can now conform to non-isolated protocols safely:
+
+```swift
+protocol Exportable {
+    func export()
+}
+
+// Swift 6.1: ERROR — crosses into main actor-isolated code
+// Swift 6.2: OK with isolated conformance
+extension StickerModel: @MainActor Exportable {
+    func export() {
+        photoProcessor.exportAsPNG()
+    }
+}
+```
+
+The compiler ensures the conformance is only used on the main actor:
+
+```swift
+// OK — ImageExporter is also @MainActor
+@MainActor
+struct ImageExporter {
+    var items: [any Exportable]
+
+    mutating func add(_ item: StickerModel) {
+        items.append(item)  // Safe: same actor isolation
+    }
+}
+
+// ERROR — nonisolated context can&#x27;t use MainActor conformance
+nonisolated struct ImageExporter {
+    var items: [any Exportable]
+
+    mutating func add(_ item: StickerModel) {
+        items.append(item)  // Error: Main actor-isolated conformance cannot be used here
+    }
+}
+```
+
+## Core Pattern — Global and Static Variables
+
+Protect global/static state with MainActor:
+
+```swift
+// Swift 6.1: ERROR — non-Sendable type may have shared mutable state
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // Error
+}
+
+// Fix: Annotate with @MainActor
+@MainActor
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // OK
+}
+```
+
+### MainActor Default Inference Mode
+
+Swift 6.2 introduces a mode where MainActor is inferred by default — no manual annotations needed:
+
+```swift
+// With MainActor default inference enabled:
+final class StickerLibrary {
+    static let shared: StickerLibrary = .init()  // Implicitly @MainActor
+}
+
+final class StickerModel {
+    let photoProcessor: PhotoProcessor
+    var selection: [PhotosPickerItem]  // Implicitly @MainActor
+}
+
+extension StickerModel: Exportable {  // Implicitly @MainActor conformance
+    func export() {
+        photoProcessor.exportAsPNG()
+    }
+}
+```
+
+This mode is opt-in and recommended for apps, scripts, and other executable targets.
+
+## Core Pattern — @concurrent for Background Work
+
+When you need actual parallelism, explicitly offload with `@concurrent`:
+
+&gt; **Important:** This example requires Approachable Concurrency build settings — SE-0466 (MainActor default isolation) and SE-0461 (NonisolatedNonsendingByDefault). With these enabled, `extractSticker` stays on the caller&#x27;s actor, making mutable state access safe. **Without these settings, this code has a data race** — the compiler will flag it.
+
+```swift
+nonisolated final class PhotoProcessor {
+    private var cachedStickers: [String: Sticker] = [:]
+
+    func extractSticker(data: Data, with id: String) async -&gt; Sticker {
+        if let sticker = cachedStickers[id] {
+            return sticker
+        }
+
+        let sticker = await Self.extractSubject(from: data)
+        cachedStickers[id] = sticker
+        return sticker
+    }
+
+    // Offload expensive work to concurrent thread pool
+    @concurrent
+    static func extractSubject(from data: Data) async -&gt; Sticker { /* ... */ }
+}
+
+// Callers must await
+let processor = PhotoProcessor()
+processedPhotos[item.id] = await processor.extractSticker(data: data, with: item.id)
+```
+
+To use `@concurrent`:
+1. Mark the containing type as `nonisolated`
+2. Add `@concurrent` to the function
+3. Add `async` if not already asynchronous
+4. Add `await` at call sites
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Single-threaded by default | Most natural code is data-race free; concurrency is opt-in |
+| Async stays on calling actor | Eliminates implicit offloading that caused data-race errors |
+| Isolated conformances | MainActor types can conform to protocols without unsafe workarounds |
+| `@concurrent` explicit opt-in | Background execution is a deliberate performance choice, not accidental |
+| MainActor default inference | Reduces boilerplate `@MainActor` annotations for app targets |
+| Opt-in adoption | Non-breaking migration path — enable features incrementally |
+
+## Migration Steps
+
+1. **Enable in Xcode**: Swift Compiler &gt; Concurrency section in Build Settings
+2. **Enable in SPM**: Use `SwiftSettings` API in package manifest
+3. **Use migration tooling**: Automatic code changes via swift.org/migration
+4. **Start with MainActor defaults**: Enable inference mode for app targets
+5. **Add `@concurrent` where needed**: Profile first, then offload hot paths
+6. **Test thoroughly**: Data-race issues become compile-time errors
+
+## Best Practices
+
+- **Start on MainActor** — write single-threaded code first, optimize later
+- **Use `@concurrent` only for CPU-intensive work** — image processing, compression, complex computation
+- **Enable MainActor inference mode** for app targets that are mostly single-threaded
+- **Profile before offloading** — use Instruments to find actual bottlenecks
+- **Protect globals with MainActor** — global/static mutable state needs actor isolation
+- **Use isolated conformances** instead of `nonisolated` workarounds or `@Sendable` wrappers
+- **Migrate incrementally** — enable features one at a time in build settings
+
+## Anti-Patterns to Avoid
+
+- Applying `@concurrent` to every async function (most don&#x27;t need background execution)
+- Using `nonisolated` to suppress compiler errors without understanding isolation
+- Keeping legacy `DispatchQueue` patterns when actors provide the same safety
+- Skipping `model.availability` checks in concurrency-related Foundation Models code
+- Fighting the compiler — if it reports a data race, the code has a real concurrency issue
+- Assuming all async code runs in the background (Swift 6.2 default: stays on calling actor)
+
+## When to Use
+
+- All new Swift 6.2+ projects (Approachable Concurrency is the recommended default)
+- Migrating existing apps from Swift 5.x or 6.0/6.1 concurrency
+- Resolving data-race safety compiler errors during Xcode 26 adoption
+- Building MainActor-centric app architectures (most UI apps)
+- Performance optimization — offloading specific heavy computations to background</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

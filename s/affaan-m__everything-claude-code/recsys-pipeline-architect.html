@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>recsys-pipeline-architect｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Source 到 SideEffect 六階段設計推薦、排序和 feed pipeline">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>recsys-pipeline-architect</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/recsys-pipeline-architect/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Source 到 SideEffect 六階段設計推薦、排序和 feed pipeline</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: recsys-pipeline-architect
+description: 用六階段 Source→Hydrator→Filter→Scorer→Selector→SideEffect 框架（由 xAI 開源的 For You 演算法推廣開來）設計可組合的推薦、排序和 feed pipeline。只要使用者在做任何要為「(使用者, 情境) 挑出前 K 個項目」的系統，就用這個 skill，例如社群 feed、內容 CMS、RAG reranker、任務排序、通知分流、搜尋重排、廣告排序。
+metadata:
+  origin: community
+---
+
+# recsys-pipeline-architect
+
+一個用來建立可組合的推薦、排序和 feed pipeline 的規格加鷹架 skill。它把**六階段模式**（Source → Hydrator → Filter → Scorer → Selector → SideEffect）寫成規則，這個模式由 xAI 開源的 [For You 演算法](https://github.com/xai-org/x-algorithm)（Apache 2.0）推廣開來。這個 skill 是該模式的獨立重新實作（MIT），沒有複製原版任何程式碼。
+
+上游：&lt;https://github.com/mturac/recsys-pipeline-architect&gt;
+
+## 何時使用
+
+- 使用者要建任何「為使用者／情境挑出前 K 個項目」的系統
+- 使用者問「X 該怎麼排序」，或描述了 feed／個人化的問題
+- 使用者已經有評分函式，需要它周圍的 pipeline 管線
+- 使用者想從單一相關性分數，遷移到可調權重的多動作預測
+- 使用者包了一個 LLM/ML scorer，需要 filter、hydrator、side-effect，以及他們技術堆疊（TypeScript / Go / Python）裡可執行的鷹架
+- 觸發詞：&quot;recommendation system&quot;、&quot;feed algorithm&quot;、&quot;ranking pipeline&quot;、&quot;for you feed&quot;、&quot;candidate pipeline&quot;、&quot;content recommender&quot;、&quot;pipeline architecture for recsys&quot;、&quot;RAG retrieval reranker&quot;
+
+## 何時不要使用
+
+- 模型架構工作（transformer 設計、two-tower 檢索、embedding 訓練）：這個 skill 處理的是模型*周圍*的管線，不是模型本身
+- 純 ML 訓練 pipeline：評分函式是使用者自己的責任
+- 營運已部署的 pipeline（監控、autoscaling）：不在範圍內
+
+## 六階段框架
+
+| # | 階段 | 工作 | 可平行？ |
+|---|---|---|---|
+| 1 | **Source** | 從一個或多個來源抓取候選項目 | 可以：多個 source 平行執行 |
+| 2 | **Hydrator** | 為每個候選項目補上 filter 和 scorer 需要的 metadata | 可以：互相獨立的 hydrator 平行執行 |
+| 3 | **Filter** | 丟掉永遠不該顯示的候選項目（被封鎖、過期、重複、不符資格） | 依序：每個 filter 看到的項目越來越少 |
+| 4 | **Scorer** | 為每個存活的候選項目指派一個或多個分數 | 依序：後面的 scorer 看得到前面的分數 |
+| 5 | **Selector** | 依最終分數排序，回傳前 K 個 | 單一操作 |
+| 6 | **SideEffect** | 快取已回傳的 ID、記錄曝光、發出事件、更新計數器 | 非同步：絕對不能阻塞回應 |
+
+### 為什麼是這個順序
+
+- Source 在 hydration 之前：先知道有哪些候選項目，再花錢去補資料
+- Hydration 在 filtering 之前：很多 filter 需要 source 沒提供的 metadata
+- Filtering 在 scoring 之前：scoring 是最貴的階段，先丟掉不符資格的
+- Scorer 要串成鏈（不是單一 scorer）：真實的系統會組合 ML 評分、多樣性重排和商業規則
+- Selector 在 scoring 之後：讓 scoring 保持確定性、可快取
+- SideEffect 放最後而且非同步：副作用絕對不能阻塞使用者的回應
+
+## 被呼叫時的工作流程
+
+帶使用者走過這八個步驟：
+
+1. **釐清使用情境**（一輪、三個問題）：要排序的項目是什麼？輸入的情境是什麼？語言／執行環境是什麼？
+2. **找出候選來源**：通常是網路內（追蹤的／擁有的／訂閱的）加網路外（ML 檢索／熱門／類似喜歡過的）
+3. **列出需要的 hydration**：對每個 filter 和 scorer，source 沒提供但它需要什麼資料？
+4. **列出 filter**：重複、自己、時間、封鎖／靜音、先前已回傳、資格。順序很重要，便宜的在貴的之前。
+5. **設計 scorer 鏈**：主要（ML）→ 組合器（多動作加權重）→ 多樣性 → 商業規則
+6. **Selector**：依最終分數由高到低排序，取前 K 個（或網路內／網路外分層混合）
+7. **SideEffects**：快取已回傳的 ID、發出曝光事件、更新計數器、記錄分析，全部丟出去就不管（fire-and-forget）
+8. **在使用者的技術堆疊中產生鷹架**
+
+## 要主動講出來的關鍵取捨（不要默默採用預設）
+
+### 1. 單一分數 vs 多動作預測
+
+- **單一分數**：訓練一個模型預測相關性。要改變行為 → 重新訓練。
+- **多動作**：對很多動作（讀、讚、分享、略過、檢舉）預測 `P(action)`，在服務時用權重組合。要改變行為 → 改權重。不用重新訓練。
+
+X 的 For You 系統用的是多動作，正負權重都有。使用者預期會頻繁調整時，建議用多動作。
+
+### 2. scoring 中的候選隔離
+
+- **隔離**：每個候選項目獨立評分。確定性、可快取。
+- **聯合**：候選項目在評分時彼此 attend（例如對整個 batch 跑 transformer）。表達力更強，但跨 batch 不具確定性。
+
+預設用隔離。只有在有特定理由時才用聯合（例如明確需要感知 batch 的多樣性）。
+
+### 3. 線上 vs 離線
+
+- **請求時（線上）**：pipeline 在每次請求時執行。延遲預算：100–300ms。預設。
+- **預先計算（離線批次）**：pipeline 定期執行，結果快取。延遲較低，新鮮度較低。
+- **混合**：候選檢索離線，排序線上。
+
+## 硬性規則
+
+1. **不要編造 benchmark 數字。** 「快多少？」→「看 workload，自己跑跑看。」
+2. **署名紀律。** 引用這個模式時，要署名為「由 xAI 開源的 For You 演算法推廣開來」／`github.com/xai-org/x-algorithm`（Apache 2.0）。
+3. **不要使用商標。** 不要把使用者的產出物命名為「X-like」，也不要用「For You」品牌。模式是自由的，品牌不是。建議命名：&quot;candidate pipeline&quot;、&quot;feed pipeline&quot;、&quot;ranking pipeline&quot;、&quot;recsys pipeline&quot;。
+4. **講出取捨。** 多動作 vs 單一、隔離 vs 聯合、線上 vs 離線，絕對不要默默採用預設。
+5. **產生的鷹架必須能跑。** 不准拿 pseudocode 冒充程式碼。
+6. **Filter 順序很重要。** 便宜的在貴的之前。通用的在使用者專屬的之前。
+7. **Side effect 絕對不阻塞。** 用 fire-and-forget 的方式包起來（goroutine／沒有 await 的 promise／asyncio task）。
+
+## 反模式
+
+- 先 scoring 再 filtering（把算力浪費在反正會被丟掉的候選項目上）
+- 同步的 side effect（快取寫入／曝光事件發送阻塞了回應）
+- 產品需要針對多個目標調整（互動 vs 安全 vs 多樣性 vs 廣告）時，卻只用單一「相關性」分數
+- 預設就用聯合評分（不具確定性、更難快取、無法和重排階段組合）
+- 為了「示範」而產生 pseudocode，鷹架必須真的能跑
+
+## 上游內容
+
+上游 repo &lt;https://github.com/mturac/recsys-pipeline-architect&gt; 內含：
+
+- 完整的 `SKILL.md`，附完整的 8 步驟工作流程
+- 5 份按需載入的參考文件：4 種語言（TS/Go/Python/Rust）的介面、多動作評分模式、候選隔離、filter 食譜（12 種模式）、scorer 食譜（加權和、MMR、多樣性懲罰、位置去偏）
+- 3 個可執行的範例鷹架，每個的測試套件都是綠的：
+  - Strapi v5 plugin（TypeScript / Jest，3/3 通過）
+  - 相容 Zentra 的 pipeline（Go 泛型，3/3 通過）
+  - PMAI 任務排序器（Python / FastAPI / pytest，3/3 通過）
+- 已標記 v0.1.0 release
+- MIT 授權；模式署名給 xAI 的 X For You 演算法（Apache 2.0）
+
+透過 skills.sh 安裝：`npx skills add mturac/recsys-pipeline-architect`</pre></section><section><h2>英文原文</h2><pre>---
+name: recsys-pipeline-architect
+description: Design composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect framework popularized by xAI&#x27;s open-sourced For You algorithm. Use this skill whenever the user is building any system that picks &quot;the top K items for a (user, context)&quot; — social feeds, content CMSs, RAG rerankers, task prioritizers, notification triage, search reranking, ad ranking.
+metadata:
+  origin: community
+---
+
+# recsys-pipeline-architect
+
+A spec-and-scaffold skill for building composable recommendation, ranking, and feed pipelines. It encodes the **six-stage pattern** — Source → Hydrator → Filter → Scorer → Selector → SideEffect — popularized by xAI&#x27;s open-sourced [For You algorithm](https://github.com/xai-org/x-algorithm) (Apache 2.0). This skill is an independent reimplementation of the pattern (MIT) — no code copied from the original.
+
+Upstream: &lt;https://github.com/mturac/recsys-pipeline-architect&gt;
+
+## When to Use
+
+- User wants to build any system that picks &quot;the top K items for a user/context&quot;
+- User asks &quot;how should I rank X&quot; or describes a feed/personalization problem
+- User has a scoring function and needs the pipeline plumbing around it
+- User wants to migrate from a single relevance score to multi-action prediction with tunable weights
+- User is wrapping an LLM/ML scorer and needs filters, hydrators, side-effects, and a runnable scaffold in their stack (TypeScript / Go / Python)
+- Triggers: &quot;recommendation system&quot;, &quot;feed algorithm&quot;, &quot;ranking pipeline&quot;, &quot;for you feed&quot;, &quot;candidate pipeline&quot;, &quot;content recommender&quot;, &quot;pipeline architecture for recsys&quot;, &quot;RAG retrieval reranker&quot;
+
+## When NOT to Use
+
+- Model architecture work (transformer design, two-tower retrieval, embedding training) — this skill is plumbing *around* the model, not the model itself
+- Pure ML training pipelines — the scoring function is the user&#x27;s responsibility
+- Operating a deployed pipeline (monitoring, autoscaling) — out of scope
+
+## The six-stage framework
+
+| # | Stage | Job | Parallel? |
+|---|---|---|---|
+| 1 | **Source** | Fetch candidates from one or more origins | Yes — multiple sources run in parallel |
+| 2 | **Hydrator** | Enrich each candidate with metadata needed for filtering and scoring | Yes — independent hydrators run in parallel |
+| 3 | **Filter** | Drop candidates that should never be shown (blocked, expired, duplicate, ineligible) | Sequential — each filter sees fewer items |
+| 4 | **Scorer** | Assign each surviving candidate one or more scores | Sequential — later scorers see earlier scores |
+| 5 | **Selector** | Sort by final score, return top K | Single op |
+| 6 | **SideEffect** | Cache served IDs, log impressions, emit events, update counters | Async — must never block the response |
+
+### Why this exact order
+
+- Sources before hydration: know what candidates exist before paying to enrich them
+- Hydration before filtering: many filters need metadata the source did not provide
+- Filtering before scoring: scoring is the expensive stage; drop the ineligible first
+- Scorer chain (not single scorer): real systems compose ML scoring + diversity reranking + business rules
+- Selector after scoring: keeps scoring deterministic and cacheable
+- SideEffects last and async: side effects must never block the user response
+
+## Workflow when invoked
+
+Walk the user through these eight steps:
+
+1. **Clarify the use case** (one round, three questions): items being ranked? input context? language/runtime?
+2. **Identify the candidate sources**: usually in-network (followed/owned/subscribed) + out-of-network (ML retrieval / trending / similar-to-liked)
+3. **List required hydrations**: for each filter and scorer, what data does it need that the source did not provide?
+4. **List the filters**: duplicate, self, age, block/mute, previously-served, eligibility. Order matters — cheap before expensive.
+5. **Design the scorer chain**: primary (ML) → combiner (multi-action with weights) → diversity → business rules
+6. **Selector**: sort descending by final score, take top K (or stratified mix for in-network/out-of-network)
+7. **SideEffects**: cache served IDs, emit impression events, update counters, log analytics — all fire-and-forget
+8. **Generate the scaffold** in the user&#x27;s stack
+
+## Key trade-offs to surface (don&#x27;t default silently)
+
+### 1. Single score vs multi-action prediction
+
+- **Single score**: train one model to predict relevance. To change behavior → retrain.
+- **Multi-action**: predict `P(action)` for many actions (read, like, share, skip, report), combine with weights at serving time. To change behavior → change weights. No retraining.
+
+The X For You system uses multi-action with both positive and negative weights. Recommend multi-action when the user expects to tune frequently.
+
+### 2. Candidate isolation in scoring
+
+- **Isolated**: each candidate scored independently. Deterministic, cacheable.
+- **Joint**: candidates attend to each other during scoring (e.g., transformer over batch). More expressive but non-deterministic across batches.
+
+Default to isolation. Joint only when there&#x27;s a specific reason (e.g., explicit batch-aware diversity).
+
+### 3. Online vs offline
+
+- **Request-time (online)**: pipeline runs on each request. Latency budget: 100–300ms. Default.
+- **Pre-computed (offline batch)**: pipeline runs periodically, results cached. Lower latency, lower freshness.
+- **Hybrid**: candidate retrieval offline, ranking online.
+
+## Hard rules
+
+1. **Do not invent benchmark numbers.** &quot;How much faster?&quot; → &quot;depends on workload, run it yourself.&quot;
+2. **Attribution discipline.** When the pattern is referenced, attribute as &quot;popularized by xAI&#x27;s open-sourced For You algorithm&quot; / `github.com/xai-org/x-algorithm` (Apache 2.0).
+3. **No trademark use.** Do not name the user&#x27;s artifact &quot;X-like&quot; or use &quot;For You&quot; branding. Pattern is free; brand is not. Suggested naming: &quot;candidate pipeline&quot;, &quot;feed pipeline&quot;, &quot;ranking pipeline&quot;, &quot;recsys pipeline&quot;.
+4. **Surface trade-offs.** Multi-action vs single, isolation vs joint, online vs offline — never default silently.
+5. **The generated scaffold must run.** No pseudocode passing as code.
+6. **Filter order matters.** Cheap before expensive. Universal before user-specific.
+7. **Side effects never block.** Wrap in fire-and-forget patterns (goroutines / promises without await / asyncio tasks).
+
+## Anti-Patterns
+
+- Scoring before filtering (wastes compute on candidates that will be dropped anyway)
+- Synchronous side effects (cache writes / impression emits blocking the response)
+- A single &quot;relevance&quot; score when the product needs to tune for multiple objectives (engagement vs safety vs diversity vs ads)
+- Joint scoring as default (non-deterministic, harder to cache, doesn&#x27;t compose with reranking stages)
+- Generating pseudocode &quot;for illustration&quot; — the scaffold must actually run
+
+## Upstream contents
+
+The upstream repository at &lt;https://github.com/mturac/recsys-pipeline-architect&gt; ships:
+
+- Full `SKILL.md` with the complete 8-step workflow
+- 5 load-on-demand reference docs: interfaces in 4 languages (TS/Go/Python/Rust), multi-action scoring pattern, candidate isolation, filter cookbook (12 patterns), scorer cookbook (weighted sum, MMR, diversity penalty, position debiasing)
+- 3 runnable example scaffolds, every one green on its test suite:
+  - Strapi v5 plugin (TypeScript / Jest — 3/3 pass)
+  - Zentra-compatible pipeline (Go with generics — 3/3 pass)
+  - PMAI task prioritizer (Python / FastAPI / pytest — 3/3 pass)
+- v0.1.0 release tagged
+- MIT license; pattern attributed to xAI X For You algorithm (Apache 2.0)
+
+Install via skills.sh: `npx skills add mturac/recsys-pipeline-architect`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

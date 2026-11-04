@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hookify-rules｜Skill 寫法圖鑑</title>
+<meta name="description" content="寫 hookify 規則，用 regex 比對事件並對 agent 警告或阻擋">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>hookify-rules</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/hookify-rules/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">寫 hookify 規則，用 regex 比對事件並對 agent 警告或阻擋</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: hookify-rules
+description: 建立與設定 hookify 規則：用帶 YAML frontmatter 的 markdown 檔，透過 regex 或條件比對 bash、檔案、prompt 或 stop 事件，並對 agent 顯示警告或阻擋訊息。建立 hookify 規則、撰寫 hook 規則語法、設定 hookify，或加入樣式護欄（例如阻擋危險指令、編輯 .env、除錯用程式碼）時使用。
+---
+
+# Writing Hookify Rules
+
+## Overview
+
+ECC 用內建的 Node runtime 來評估專案本地的 Hookify 規則。啟用 ECC hook 之後，
+不需要另外安裝 Hookify plugin 或 Python。
+
+Hookify 規則是帶 YAML frontmatter 的 markdown 檔，定義要監看的樣式，以及樣式比對到時要顯示的訊息。規則存放在 `.claude/hookify.{rule-name}.local.md` 檔案裡。
+
+## Rule File Format
+
+### Basic Structure
+
+```markdown
+---
+name: rule-identifier
+enabled: true
+event: bash|file|stop|prompt|all
+pattern: regex-pattern-here
+---
+
+Message to show Claude when this rule triggers.
+Can include markdown formatting, warnings, suggestions, etc.
+```
+
+### Frontmatter Fields
+
+| Field | Required | Values | Description |
+|-------|----------|--------|-------------|
+| name | Yes | kebab-case string | 唯一識別碼（動詞開頭：warn-*、block-*、require-*） |
+| enabled | Yes | true/false | 不用刪除就能開關 |
+| event | Yes | bash/file/stop/prompt/all | 由哪個 hook 事件觸發 |
+| action | No | warn/block | warn（預設）只顯示訊息；block 會阻止該操作 |
+| pattern | Yes* | regex string | 要比對的樣式（*複雜規則可改用 conditions） |
+
+### Advanced Format (Multiple Conditions)
+
+```markdown
+---
+name: warn-env-api-keys
+enabled: true
+event: file
+conditions:
+  - field: file_path
+    operator: regex_match
+    pattern: \.env$
+  - field: new_text
+    operator: contains
+    pattern: API_KEY
+---
+
+You&#x27;re adding an API key to a .env file. Ensure this file is in .gitignore!
+```
+
+**各事件可用的條件欄位：**
+- bash：`command`
+- file：`file_path`、`new_text`、`old_text`、`content`
+- prompt：`user_prompt`
+
+**運算子：** `regex_match`、`contains`、`equals`、`not_contains`、`starts_with`、`ends_with`
+
+所有條件都要符合，規則才會觸發。
+
+## Event Type Guide
+
+### bash Events
+比對 Bash 指令的樣式：
+- 危險指令：`rm\s+-rf`、`dd\s+if=`、`mkfs`
+- 提權：`sudo\s+`、`su\s+`
+- 權限問題：`chmod\s+777`
+
+### file Events
+比對 Edit/Write/MultiEdit 操作：
+- 除錯用程式碼：`console\.log\(`、`debugger`
+- 安全風險：`eval\(`、`innerHTML\s*=`
+- 敏感檔案：`\.env$`、`credentials`、`\.pem$`
+
+### stop Events
+完成度檢查和提醒。樣式 `.*` 永遠會比對成功。
+
+### prompt Events
+比對使用者 prompt 的內容，用來強制執行工作流程。
+
+## Pattern Writing Tips
+
+### Regex Basics
+- 特殊字元要跳脫：`.` 寫成 `\.`，`(` 寫成 `\(`
+- `\s` 空白字元，`\d` 數字，`\w` 單字字元
+- `+` 一個以上，`*` 零個以上，`?` 可有可無
+- `|` OR 運算子
+
+### Common Pitfalls
+- **太寬**：`log` 會比對到 &quot;login&quot;、&quot;dialog&quot;，要用 `console\.log\(`
+- **太窄**：`rm -rf /tmp`，要用 `rm\s+-rf`
+- **YAML 跳脫**：用不加引號的樣式；加引號的字串要寫 `\\s`
+
+### Testing
+```bash
+python3 -c &quot;import re; print(re.search(r&#x27;your_pattern&#x27;, &#x27;test text&#x27;))&quot;
+```
+
+避免巢狀量詞，例如 `(a+)+`。Runtime 會拒絕有常見災難性回溯形狀的樣式，
+因為規則是在 hook 路徑上同步執行的，而且每次 regex 評估都有 25 ms 的硬性 timeout。
+無效、是 symlink 或過大的本地規則會 fail open 並輸出
+診斷訊息，不會讓其他 Hookify 規則一起失效。
+
+被 git 追蹤的本地規則預設是停用的。要先審查過那些檔案，才設定
+`ECC_HOOKIFY_ALLOW_TRACKED=1`；在本地建立、被 gitignore 的一般規則，
+不需要這個覆寫就會保持啟用。
+
+## Runtime Behavior
+
+- `warn` 會把訊息當成該事件專屬的額外 context 注入，不會阻擋。
+- `block` 會在執行前拒絕符合條件的 Bash、PowerShell、Write、Edit 或 MultiEdit 呼叫。
+- 在 prompt、post-tool 和 stop 事件上，`block` 使用 Claude Code 的結構化 block decision。
+- Stop 規則會跳過遞迴的 `stop_hook_active` 事件，避免無限繼續的迴圈。
+
+## File Organization
+
+- **位置**：專案根目錄下的 `.claude/` 資料夾
+- **命名**：`.claude/hookify.{descriptive-name}.local.md`
+- **Gitignore**：把 `.claude/*.local.md` 加進 `.gitignore`
+
+## Commands
+
+- `/hookify [description]` - 建立新規則（沒給參數就自動分析對話）
+- `/hookify-list` - 用表格列出所有規則
+- `/hookify-configure` - 用互動方式開關規則
+- `/hookify-help` - 完整文件
+
+## Quick Reference
+
+最精簡可用的規則：
+```markdown
+---
+name: my-rule
+enabled: true
+event: bash
+pattern: dangerous_command
+---
+Warning message here
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: hookify-rules
+description: Create and configure hookify rules — markdown files with YAML frontmatter that match bash, file, prompt, or stop events by regex or conditions and show warn/block messages to the agent. Use when creating a hookify rule, writing hook rule syntax, configuring hookify, or adding pattern guardrails such as blocking dangerous commands, .env edits, or debug code.
+---
+
+# Writing Hookify Rules
+
+## Overview
+
+ECC evaluates project-local Hookify rules with its built-in Node runtime. No
+separate Hookify plugin or Python installation is required when ECC hooks are
+enabled.
+
+Hookify rules are markdown files with YAML frontmatter that define patterns to watch for and messages to show when those patterns match. Rules are stored in `.claude/hookify.{rule-name}.local.md` files.
+
+## Rule File Format
+
+### Basic Structure
+
+```markdown
+---
+name: rule-identifier
+enabled: true
+event: bash|file|stop|prompt|all
+pattern: regex-pattern-here
+---
+
+Message to show Claude when this rule triggers.
+Can include markdown formatting, warnings, suggestions, etc.
+```
+
+### Frontmatter Fields
+
+| Field | Required | Values | Description |
+|-------|----------|--------|-------------|
+| name | Yes | kebab-case string | Unique identifier (verb-first: warn-*, block-*, require-*) |
+| enabled | Yes | true/false | Toggle without deleting |
+| event | Yes | bash/file/stop/prompt/all | Which hook event triggers this |
+| action | No | warn/block | warn (default) shows message; block prevents operation |
+| pattern | Yes* | regex string | Pattern to match (*or use conditions for complex rules) |
+
+### Advanced Format (Multiple Conditions)
+
+```markdown
+---
+name: warn-env-api-keys
+enabled: true
+event: file
+conditions:
+  - field: file_path
+    operator: regex_match
+    pattern: \.env$
+  - field: new_text
+    operator: contains
+    pattern: API_KEY
+---
+
+You&#x27;re adding an API key to a .env file. Ensure this file is in .gitignore!
+```
+
+**Condition fields by event:**
+- bash: `command`
+- file: `file_path`, `new_text`, `old_text`, `content`
+- prompt: `user_prompt`
+
+**Operators:** `regex_match`, `contains`, `equals`, `not_contains`, `starts_with`, `ends_with`
+
+All conditions must match for rule to trigger.
+
+## Event Type Guide
+
+### bash Events
+Match Bash command patterns:
+- Dangerous commands: `rm\s+-rf`, `dd\s+if=`, `mkfs`
+- Privilege escalation: `sudo\s+`, `su\s+`
+- Permission issues: `chmod\s+777`
+
+### file Events
+Match Edit/Write/MultiEdit operations:
+- Debug code: `console\.log\(`, `debugger`
+- Security risks: `eval\(`, `innerHTML\s*=`
+- Sensitive files: `\.env$`, `credentials`, `\.pem$`
+
+### stop Events
+Completion checks and reminders. Pattern `.*` matches always.
+
+### prompt Events
+Match user prompt content for workflow enforcement.
+
+## Pattern Writing Tips
+
+### Regex Basics
+- Escape special chars: `.` to `\.`, `(` to `\(`
+- `\s` whitespace, `\d` digit, `\w` word char
+- `+` one or more, `*` zero or more, `?` optional
+- `|` OR operator
+
+### Common Pitfalls
+- **Too broad**: `log` matches &quot;login&quot;, &quot;dialog&quot; — use `console\.log\(`
+- **Too specific**: `rm -rf /tmp` — use `rm\s+-rf`
+- **YAML escaping**: Use unquoted patterns; quoted strings need `\\s`
+
+### Testing
+```bash
+python3 -c &quot;import re; print(re.search(r&#x27;your_pattern&#x27;, &#x27;test text&#x27;))&quot;
+```
+
+Avoid nested quantifiers such as `(a+)+`. The runtime rejects patterns with
+common catastrophic-backtracking shapes because rules run synchronously in the
+hook path, and every regex evaluation has a 25 ms hard timeout. Invalid,
+symlinked, or oversized local rules fail open and emit a
+diagnostic without disabling other Hookify rules.
+
+Git-tracked local rules are disabled by default. Set
+`ECC_HOOKIFY_ALLOW_TRACKED=1` only after reviewing those files; ordinary
+gitignored rules created locally remain active without that override.
+
+## Runtime Behavior
+
+- `warn` injects the message as event-specific additional context and does not block.
+- `block` denies matching Bash, PowerShell, Write, Edit, or MultiEdit calls before execution.
+- On prompt, post-tool, and stop events, `block` uses Claude Code&#x27;s structured block decision.
+- Stop rules skip recursive `stop_hook_active` events to prevent infinite continuation loops.
+
+## File Organization
+
+- **Location**: `.claude/` directory in project root
+- **Naming**: `.claude/hookify.{descriptive-name}.local.md`
+- **Gitignore**: Add `.claude/*.local.md` to `.gitignore`
+
+## Commands
+
+- `/hookify [description]` - Create new rules (auto-analyzes conversation if no args)
+- `/hookify-list` - View all rules in table format
+- `/hookify-configure` - Toggle rules on/off interactively
+- `/hookify-help` - Full documentation
+
+## Quick Reference
+
+Minimum viable rule:
+```markdown
+---
+name: my-rule
+enabled: true
+event: bash
+pattern: dangerous_command
+---
+Warning message here
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vendor-check｜Skill 寫法圖鑑</title>
+<meta name="description" content="跨 CLM、CRM、email 檢查供應商合約狀態並找出缺口">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>vendor-check</h1>
+<p class="meta">Anthropic ｜ 商業與營運 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/legal/skills/vendor-check/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">跨 CLM、CRM、email 檢查供應商合約狀態並找出缺口</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: vendor-check
+description: 跨所有已連線的系統（CLM、CRM、email、文件儲存）檢查與供應商的現有合約狀態，附缺口分析和即將到來的期限。在供應商 onboarding 或續約、需要彙整已簽和缺少的文件（MSA、DPA、SOW），或檢查即將到期的合約和存續義務時使用。
+argument-hint: &quot;[供應商名稱]&quot;
+---
+
+# /vendor-check -- 供應商合約狀態
+
+&gt; 如果看到不認識的 placeholder，或想確認目前連了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+跨所有已連線的系統，檢查與供應商的現有合約狀態。提供這段法律關係的彙整檢視。
+
+**重要**：這個指令協助法務工作流程，但不提供法律意見。合約狀態報告應由合格的法律專業人員對照原始文件驗證。
+
+## 呼叫方式
+
+```
+/vendor-check [vendor name]
+```
+
+如果沒有提供供應商名稱，請使用者指定要檢查哪一家供應商。
+
+## 工作流程
+
+### 步驟 1：辨識供應商
+
+從使用者接收供應商名稱。處理常見的名稱變體：
+- 法定全名 vs. 商業名稱（例如「Alphabet Inc.」vs.「Google」）
+- 縮寫（例如「AWS」vs.「Amazon Web Services」）
+- 母公司/子公司關係
+
+如果供應商名稱有歧義，請使用者釐清。
+
+### 步驟 2：搜尋已連線的系統
+
+依優先順序，在所有可用的已連線系統中搜尋該供應商：
+
+#### CLM（合約生命週期管理）-- 有連線的話
+搜尋涉及該供應商的所有合約：
+- 有效的合約
+- 已到期的合約（最近 3 年）
+- 協商中或等待簽署的合約
+- 修訂和附件
+
+#### CRM -- 有連線的話
+搜尋供應商/帳號的 record：
+- 帳號狀態和關係類型
+- 相關的 opportunity 或 deal
+- 供應商法務/合約團隊的聯絡資訊
+
+#### Email -- 有連線的話
+搜尋最近的相關往來信件：
+- 與合約相關的 email（最近 6 個月）
+- NDA 或合約附件
+- 協商的 thread
+
+#### 文件（例如 Box、Egnyte、SharePoint）-- 有連線的話
+搜尋：
+- 已簽署的合約
+- Redline 和草稿
+- 盡職調查資料
+
+#### 聊天（例如 Slack、Teams）-- 有連線的話
+搜尋最近的提及：
+- 涉及這家供應商的合約申請
+- 關於這家供應商的法務問題
+- 相關的團隊討論（最近 3 個月）
+
+### 步驟 3：彙整合約狀態
+
+對找到的每份合約，回報：
+
+| 欄位 | 詳細內容 |
+|-------|---------|
+| **Agreement Type** | NDA、MSA、SOW、DPA、SLA、授權合約等 |
+| **Status** | Active、Expired、In Negotiation、Pending Signature |
+| **Effective Date** | 合約何時開始 |
+| **Expiration Date** | 何時到期或續約 |
+| **Auto-Renewal** | Yes/No，附續約期間和通知期 |
+| **Key Terms** | 責任上限、準據法、終止條款 |
+| **Amendments** | 已存檔的任何修訂或附件 |
+
+### 步驟 4：缺口分析
+
+找出哪些合約存在，以及可能缺少什麼：
+
+```
+## Agreement Coverage
+
+[CHECK] NDA -- [status]
+[CHECK/MISSING] MSA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] DPA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] SOW(s) -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] SLA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] Insurance Certificate -- [status or &quot;Not found&quot;]
+```
+
+依關係類型，標記可能需要的任何缺口（例如有 MSA 但沒有 DPA，而供應商會處理個人資料）。
+
+### 步驟 5：產出報告
+
+輸出彙整報告：
+
+```
+## Vendor Agreement Status: [Vendor Name]
+
+**Search Date**: [today&#x27;s date]
+**Sources Checked**: [list of systems searched]
+**Sources Unavailable**: [list of systems not connected, if any]
+
+## Relationship Overview
+
+**Vendor**: [full legal name]
+**Relationship Type**: [vendor/partner/customer/etc.]
+**CRM Status**: [if available]
+
+## Agreement Summary
+
+### [Agreement Type 1] -- [Status]
+- **Effective**: [date]
+- **Expires**: [date] ([auto-renews / does not auto-renew])
+- **Key Terms**: [summary of material terms]
+- **Location**: [where the executed copy is stored]
+
+### [Agreement Type 2] -- [Status]
+[etc.]
+
+## Gap Analysis
+
+[What&#x27;s in place vs. what may be needed]
+
+## Upcoming Actions
+
+- [Any approaching expirations or renewal deadlines]
+- [Required agreements not yet in place]
+- [Amendments or updates that may be needed]
+
+## Notes
+
+[Any relevant context from email/chat searches]
+```
+
+### 步驟 6：處理缺少的來源
+
+如果關鍵系統沒有透過 MCP 連線：
+
+- **沒有 CLM**：註明沒有連接 CLM。建議使用者手動查看自己的 CLM。回報在其他系統找到的內容。
+- **沒有 CRM**：略過 CRM 的背景資訊。註明這個缺口。
+- **沒有 Email**：註明沒有搜尋 email。建議使用者自己在 email 搜尋「[vendor name] agreement」或「[vendor name] NDA」。
+- **沒有文件**：註明沒有搜尋文件儲存。
+
+一定要清楚說明檢查了哪些來源、沒檢查哪些，讓使用者知道報告的完整程度。
+
+## 備註
+
+- 如果在任何已連線的系統都找不到合約，要清楚回報，並問使用者合約是不是存放在其他地方
+- 對於供應商集團（例如有多家子公司的供應商），問使用者要檢查特定的實體還是整個集團
+- 標記已到期、但可能仍有存續義務（保密、賠償等）的合約
+- 如果合約即將到期（90 天內），要醒目地標出來</pre></section><section><h2>英文原文</h2><pre>---
+name: vendor-check
+description: Check the status of existing agreements with a vendor across all connected systems — CLM, CRM, email, and document storage — with gap analysis and upcoming deadlines. Use when onboarding or renewing a vendor, when you need a consolidated view of what&#x27;s signed and what&#x27;s missing (MSA, DPA, SOW), or when checking for approaching expirations and surviving obligations.
+argument-hint: &quot;[vendor name]&quot;
+---
+
+# /vendor-check -- Vendor Agreement Status
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Check the status of existing agreements with a vendor across all connected systems. Provides a consolidated view of the legal relationship.
+
+**Important**: This command assists with legal workflows but does not provide legal advice. Agreement status reports should be verified against original documents by qualified legal professionals.
+
+## Invocation
+
+```
+/vendor-check [vendor name]
+```
+
+If no vendor name is provided, prompt the user to specify which vendor to check.
+
+## Workflow
+
+### Step 1: Identify the Vendor
+
+Accept the vendor name from the user. Handle common variations:
+- Full legal name vs. trade name (e.g., &quot;Alphabet Inc.&quot; vs. &quot;Google&quot;)
+- Abbreviations (e.g., &quot;AWS&quot; vs. &quot;Amazon Web Services&quot;)
+- Parent/subsidiary relationships
+
+Ask the user to clarify if the vendor name is ambiguous.
+
+### Step 2: Search Connected Systems
+
+Search for the vendor across all available connected systems, in priority order:
+
+#### CLM (Contract Lifecycle Management) -- If Connected
+Search for all contracts involving the vendor:
+- Active agreements
+- Expired agreements (last 3 years)
+- Agreements in negotiation or pending signature
+- Amendments and addenda
+
+#### CRM -- If Connected
+Search for the vendor/account record:
+- Account status and relationship type
+- Associated opportunities or deals
+- Contact information for vendor&#x27;s legal/contracts team
+
+#### Email -- If Connected
+Search for recent relevant correspondence:
+- Contract-related emails (last 6 months)
+- NDA or agreement attachments
+- Negotiation threads
+
+#### Documents (e.g., Box, Egnyte, SharePoint) -- If Connected
+Search for:
+- Executed agreements
+- Redlines and drafts
+- Due diligence materials
+
+#### Chat (e.g., Slack, Teams) -- If Connected
+Search for recent mentions:
+- Contract requests involving this vendor
+- Legal questions about the vendor
+- Relevant team discussions (last 3 months)
+
+### Step 3: Compile Agreement Status
+
+For each agreement found, report:
+
+| Field | Details |
+|-------|---------|
+| **Agreement Type** | NDA, MSA, SOW, DPA, SLA, License Agreement, etc. |
+| **Status** | Active, Expired, In Negotiation, Pending Signature |
+| **Effective Date** | When the agreement started |
+| **Expiration Date** | When it expires or renews |
+| **Auto-Renewal** | Yes/No, with renewal term and notice period |
+| **Key Terms** | Liability cap, governing law, termination provisions |
+| **Amendments** | Any amendments or addenda on file |
+
+### Step 4: Gap Analysis
+
+Identify what agreements exist and what might be missing:
+
+```
+## Agreement Coverage
+
+[CHECK] NDA -- [status]
+[CHECK/MISSING] MSA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] DPA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] SOW(s) -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] SLA -- [status or &quot;Not found&quot;]
+[CHECK/MISSING] Insurance Certificate -- [status or &quot;Not found&quot;]
+```
+
+Flag any gaps that may be needed based on the relationship type (e.g., if there is an MSA but no DPA and the vendor handles personal data).
+
+### Step 5: Generate Report
+
+Output a consolidated report:
+
+```
+## Vendor Agreement Status: [Vendor Name]
+
+**Search Date**: [today&#x27;s date]
+**Sources Checked**: [list of systems searched]
+**Sources Unavailable**: [list of systems not connected, if any]
+
+## Relationship Overview
+
+**Vendor**: [full legal name]
+**Relationship Type**: [vendor/partner/customer/etc.]
+**CRM Status**: [if available]
+
+## Agreement Summary
+
+### [Agreement Type 1] -- [Status]
+- **Effective**: [date]
+- **Expires**: [date] ([auto-renews / does not auto-renew])
+- **Key Terms**: [summary of material terms]
+- **Location**: [where the executed copy is stored]
+
+### [Agreement Type 2] -- [Status]
+[etc.]
+
+## Gap Analysis
+
+[What&#x27;s in place vs. what may be needed]
+
+## Upcoming Actions
+
+- [Any approaching expirations or renewal deadlines]
+- [Required agreements not yet in place]
+- [Amendments or updates that may be needed]
+
+## Notes
+
+[Any relevant context from email/chat searches]
+```
+
+### Step 6: Handle Missing Sources
+
+If key systems are not connected via MCP:
+
+- **No CLM**: Note that no CLM is connected. Suggest the user check their CLM manually. Report what was found in other systems.
+- **No CRM**: Skip CRM context. Note the gap.
+- **No Email**: Note that email was not searched. Suggest the user search their email for &quot;[vendor name] agreement&quot; or &quot;[vendor name] NDA&quot;.
+- **No Documents**: Note that document storage was not searched.
+
+Always clearly state which sources were checked and which were not, so the user knows the completeness of the report.
+
+## Notes
+
+- If no agreements are found in any connected system, report that clearly and ask the user if they have agreements stored elsewhere
+- For vendor groups (e.g., a vendor with multiple subsidiaries), ask whether the user wants to check a specific entity or the entire group
+- Flag any agreements that are expired but may still have surviving obligations (confidentiality, indemnification, etc.)
+- If an agreement is approaching expiration (within 90 days), highlight this prominently</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>inherit-legacy-style｜Skill 寫法圖鑑</title>
+<meta name="description" content="掃描舊專案的隱含慣例，產出 .ai-style-rules.md 防止 AI 風格漂移">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>inherit-legacy-style</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/inherit-legacy-style/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">掃描舊專案的隱含慣例，產出 .ai-style-rules.md 防止 AI 風格漂移</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: inherit-legacy-style
+description: 在舊專案上防止 AI 的風格漂移：掃描程式碼庫找出隱含的慣例，跟操作者一次一個地解決衝突，然後寫出可執行的 .ai-style-rules.md（Golden Files、命名規則、DONTs），並可選擇加上 CLAUDE.md hook。要讓 AI agent 接手手寫的舊程式碼庫，或要抽出專案沒寫下來的程式規則時使用。
+metadata:
+  origin: community
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion
+---
+
+# Inherit Legacy Style
+
+在舊專案中防止 AI 程式碼風格漂移：沿著 4 個元架構維度掃描程式碼庫，找出隱含的慣例，跟使用者一次一個地解決衝突，再把共識固化成可執行的 `.ai-style-rules.md`。完全不限語言和框架。
+
+## When to Activate
+
+- 使用者輸入 `/inherit-legacy-style`
+- 使用者提到要讓 AI 接手手寫的舊專案
+- 使用者擔心 AI 產生的程式碼會「漂移」，偏離既有的專案慣例
+- 使用者想把專案隱含的程式規則抽出來並明文化
+
+## When to Use
+
+需要保留舊專案風格、防止 AI 產生的風格漂移時用這個 skill。觸發條件見上面的 **When to Activate**。
+
+## Prerequisites
+
+- Git（建議；沒有 Git 的專案，增量模式會退回用檔案時間戳）
+- 對專案根目錄有讀寫權限（會產生 `.ai-style-rules.md`，也可能產生 `CLAUDE.md`）
+
+## Workflow
+
+### Step 0 — Auto-Detect Mode
+
+安靜地檢查專案根目錄有沒有 `.ai-style-rules.md`：
+
+| 檔案存在嗎？ | 模式 |
+|---|---|
+| No | **Branch A — First-time Full-Scan** |
+| Yes | **Branch B — Incremental Sniff** |
+
+用一行話宣告模式然後繼續，絕對不要叫使用者來選。
+
+### Branch A — First-time Full-Scan
+
+**1. Measure scale, pick a scanning tier**
+
+```bash
+git ls-files | grep -cE &#x27;\.(js|ts|jsx|tsx|vue|py|go|rs|java|kt|rb|php|cs|swift|c|cpp|h)$&#x27;
+```
+
+| 層級 | 原始碼檔案數 | 策略 |
+|---|---|---|
+| Small | ≲ 50 | 每個原始檔都完整細讀 |
+| Medium | 50–500 | 基礎設施層完整讀；商業邏輯層每個維度抽樣 2–3 個 |
+| Large | ≳ 500 | 嚴格抽樣加預算上限；先看 `--stat` 摘要，再針對性閱讀 |
+
+**2. Scan along 4 dimensions**
+
+1. **File Anatomy** — 檔案內的宣告順序（imports → types → main logic → helpers → export）
+2. **State &amp; Control Flow** — 非同步狀態、分頁、flag 的命名慣例
+3. **Infrastructure** — 橫切用的工具放在哪（interceptor、formatter、middleware）
+4. **Error Handling** — try/catch、全域 interceptor 還是回傳 Result；null 檢查的習慣
+
+**3. Apply signal-threshold noise reduction**
+
+打斷使用者之前，先評估訊號強度：
+
+- **弱訊號** → 自動壓下：少數派 &lt;5% 而且數量 &lt;10 → 多數派勝出，少數派進 DONTs
+- **強訊號** → 拷問：分布接近對半，或在核心維度上有語意分歧
+- **小專案例外**：原始碼 ≲50 個時，「3 比 2」不算多數 → 要拿來拷問
+
+**4. Resolve conflicts one at a time (Grilling Protocol)**
+
+每個強訊號衝突，只提出一個問題，附 4 個選項：
+
+&gt; Evidence: `pathA` uses style X, `pathB` uses style Y
+&gt; WARNING: Risk: mixing both fractures the project style
+&gt; Choose: `1` follow X  `2` follow Y  `3` this is evolution, update rules  `4` I have a new rule
+
+停下來等使用者回答，再處理下一個衝突。絕對不要一次堆好幾個問題。
+
+**5. Generate `.ai-style-rules.md`**，必須包含三個區段：
+- **[Golden Files]** — 真實的範例路徑，並註明各自示範了什麼
+- **[Naming &amp; State-Control Rules]** — 具體、可檢查的慣例
+- **[DONTs]** — 不能擴散出去的反模式
+
+**6. Install the persistent hook**
+
+問使用者要多強的執行力道（用 `AskUserQuestion`）：
+
+| 選項 | 機制 |
+|---|---|
+| **1** Soft hook（建議） | 在專案的 `CLAUDE.md` 寫入 `@.ai-style-rules.md` 引用 |
+| **2** Hard hook | Soft hook 再加上 `settings.json` 裡的 `PreToolUse[Write\|Edit\|MultiEdit]` Hook |
+| **3** No hook | 保留規則檔，使用者自己手動引用 |
+
+### Branch B — Incremental Sniff
+
+1. 讀既有的 `.ai-style-rules.md`；如果裡面有 commit 指紋，用 `git diff &lt;last_hash&gt; HEAD --stat` 找出差異範圍
+2. 讀最近的 Git 變更（`git log -3 --stat` → 視需要檢查可疑的檔案）
+3. diff 太大（上百個檔案以上）時：只看 `--stat` 摘要，並抽樣變動最大的部分
+4. 把新程式碼對照已記錄的規則 → 有衝突就走 Grilling Protocol
+5. 在 `.ai-style-rules.md` 結尾追加演進紀錄（絕對不要覆蓋舊規則）
+
+### Per-Turn Enforcement
+
+當 `.ai-style-rules.md` 在 context 裡（透過 CLAUDE.md 載入），每個寫程式的任務都必須在推理過程一開頭先做一份**合規聲明**，說明要跟隨哪個範例，以及要避開哪些 DONTs。
+
+## How It Works
+
+這個 skill 會依 `.ai-style-rules.md` 有沒有存在，自動判斷是第一次執行還是增量執行：
+
+- **First-time（Branch A）** — 衡量專案規模，沿著 4 個元架構維度（File Anatomy、State &amp; Control Flow、Infrastructure、Error Handling）掃描程式碼庫，用訊號門檻降噪壓掉弱衝突，跟使用者一次一個地解決強訊號衝突，產生包含 Golden Files / Naming Rules / DONTs 的 `.ai-style-rules.md`，並提供可選的強制執行 hook。
+- **Incremental（Branch B）** — 讀既有規則，檢查最近的 Git diff 有沒有新的或衝突的樣式，對找到的任何衝突跑同一套一次一個的拷問流程，並追加演進紀錄，不覆蓋既有規則。
+- **Per-Turn Enforcement** — 透過 `CLAUDE.md` 掛上 hook 之後，每個寫程式的任務都以一份合規聲明開頭，說明跟隨的範例和避開的 DONTs。
+
+## Output Specification
+
+- 專案根目錄的 `.ai-style-rules.md`（標頭有 commit 指紋和規模層級）
+- 可選：帶有 `@.ai-style-rules.md` 引用的 `CLAUDE.md`
+- 演進紀錄以 `### [YYYY-MM-DD] Style Evolution Log` 條目的形式追加
+
+## Anti-Patterns
+
+- FAIL: 不准跳過規模衡量這一步，30 個檔案的專案用抽樣會「餓死」，5,000 個檔案的 repo 全掃會爆掉
+- FAIL: 不准一次堆好幾個衝突問題，拷問一定是一次一個
+- FAIL: 增量模式下不准覆蓋舊規則，一律追加演進紀錄
+- FAIL: 不准沒問就預設用「hard hook」，執行力道由使用者決定
+- FAIL: 不准評斷語法或技術棧的好壞，這個 skill 只對齊元架構
+- FAIL: 不准照抄範例檔案裡的 bug，要重用結構，並標出缺陷
+
+## Best Practices
+
+- 掃描之前，用一行話宣告偵測到的模式（第一次 vs 增量）和規模層級
+- 大專案先讀 `--stat` 摘要，再對可疑的檔案做針對性的 `Read`
+- 讓訊號門檻去處理雜訊，843 比 8 的命名分歧應該自動解決，不用打斷使用者
+- 對訊號強度拿不準時，傾向於問
+- CLAUDE.md 的 soft hook（`@.ai-style-rules.md`）通常就夠了；只有使用者想要機械式強制執行時才用 hard hook
+
+## Related Skills
+
+- `init` — 初始化新的 CLAUDE.md，附上程式碼庫文件
+- `code-review` — 檢查 diff 的正確性與風格問題
+- `simplify` — 檢查程式碼有沒有可重用和簡化的地方
+
+## Examples
+
+1. **First-time onboarding**
+   - 使用者：「幫我讓 AI 接手這個舊程式碼庫，但不要改它的風格。」
+   - 動作：跑 Branch A 全掃 → 衡量規模 → 掃 4 個維度 → 拷問衝突 → 產生 `.ai-style-rules.md` → 提供 hook 強度選項（soft/hard/none）。
+
+2. **Incremental update after team changes**
+   - 使用者：「我們加了一個新模組，現有的風格規則要保持不變。」
+   - 動作：跑 Branch B 增量偵測 → 把 Git 差異對照已記錄的規則 → 拷問任何新衝突 → 追加演進紀錄，不覆蓋。
+
+3. **Enforcing DONTs via CLAUDE.md**
+   - 使用者：「確保所有新程式碼都跟專案的規則保持一致。」
+   - 動作：安裝 soft hook → `.ai-style-rules.md` 每個 session 自動載入 → 每個寫程式的任務都以合規聲明開頭，重用範例的樣式並避開 DONTs。</pre></section><section><h2>英文原文</h2><pre>---
+name: inherit-legacy-style
+description: Prevent AI style drift on legacy projects by scanning the codebase for implicit conventions, resolving conflicts with the operator one at a time, and writing an enforceable .ai-style-rules.md (Golden Files, naming rules, DONTs) plus an optional CLAUDE.md hook. Use when onboarding an AI agent onto a hand-written legacy codebase or extracting a project&#x27;s unwritten coding rules.
+metadata:
+  origin: community
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion
+---
+
+# Inherit Legacy Style
+
+Prevents AI code style drift in legacy projects by scanning the codebase for implicit conventions across 4 meta-architecture dimensions, resolving conflicts with the user one at a time, and crystallizing the consensus into an enforceable `.ai-style-rules.md`. Fully language- and framework-agnostic.
+
+## When to Activate
+
+- User types `/inherit-legacy-style`
+- User mentions onboarding AI onto a hand-written legacy project
+- User is worried about AI-generated code &quot;drifting&quot; from existing project conventions
+- User wants to extract and codify their project&#x27;s implicit coding rules
+
+## When to Use
+
+Use this skill when you need to preserve legacy project style and prevent AI-generated style drift. See **When to Activate** above for trigger conditions.
+
+## Prerequisites
+
+- Git (recommended; non-Git projects fall back to file timestamps for incremental mode)
+- Read/Write access to the project root (generates `.ai-style-rules.md` and optionally `CLAUDE.md`)
+
+## Workflow
+
+### Step 0 — Auto-Detect Mode
+
+Silently check for `.ai-style-rules.md` at the project root:
+
+| File exists? | Mode |
+|---|---|
+| No | **Branch A — First-time Full-Scan** |
+| Yes | **Branch B — Incremental Sniff** |
+
+Announce the mode in one line and proceed — never ask the user to pick.
+
+### Branch A — First-time Full-Scan
+
+**1. Measure scale, pick a scanning tier**
+
+```bash
+git ls-files | grep -cE &#x27;\.(js|ts|jsx|tsx|vue|py|go|rs|java|kt|rb|php|cs|swift|c|cpp|h)$&#x27;
+```
+
+| Tier | Source files | Strategy |
+|---|---|---|
+| Small | ≲ 50 | Full close-read every source |
+| Medium | 50–500 | Infra layer = full read; business layer = sample 2–3 per dimension |
+| Large | ≳ 500 | Strict sampling + budget cap; `--stat` summary first, then targeted reads |
+
+**2. Scan along 4 dimensions**
+
+1. **File Anatomy** — in-file declaration order (imports → types → main logic → helpers → export)
+2. **State &amp; Control Flow** — naming conventions for async state, pagination, flags
+3. **Infrastructure** — where cross-cutting utils live (interceptors, formatters, middleware)
+4. **Error Handling** — try/catch vs global interceptor vs Result return; null-check habits
+
+**3. Apply signal-threshold noise reduction**
+
+Before interrupting the user, evaluate signal strength:
+
+- **Weak signal** → auto-suppress: minority &lt;5% AND count &lt;10 → majority wins, minority goes to DONTs
+- **Strong signal** → grill: near-even split, or semantic fork on a core dimension
+- **Small-project exception**: sources ≲50, &quot;3 vs 2&quot; is NOT a majority → grill it
+
+**4. Resolve conflicts one at a time (Grilling Protocol)**
+
+For each strong-signal conflict, present exactly ONE question with 4 options:
+
+&gt; Evidence: `pathA` uses style X, `pathB` uses style Y
+&gt; WARNING: Risk: mixing both fractures the project style
+&gt; Choose: `1` follow X  `2` follow Y  `3` this is evolution, update rules  `4` I have a new rule
+
+Suspend until the user answers, then proceed to the next conflict. Never stack questions.
+
+**5. Generate `.ai-style-rules.md`** with three mandatory sections:
+- **[Golden Files]** — real exemplar paths annotated with what they demonstrate
+- **[Naming &amp; State-Control Rules]** — concrete, checkable conventions
+- **[DONTs]** — anti-patterns that must not propagate
+
+**6. Install the persistent hook**
+
+Ask the user for enforcement strength (use `AskUserQuestion`):
+
+| Option | Mechanism |
+|---|---|
+| **1** Soft hook (recommended) | Write `@.ai-style-rules.md` reference into project `CLAUDE.md` |
+| **2** Hard hook | Soft hook + `PreToolUse[Write\|Edit\|MultiEdit]` Hook in `settings.json` |
+| **3** No hook | Keep the rules file; user references manually |
+
+### Branch B — Incremental Sniff
+
+1. Read existing `.ai-style-rules.md`; if it has a commit fingerprint, `git diff &lt;last_hash&gt; HEAD --stat` to pinpoint delta
+2. Read recent Git changes (`git log -3 --stat` → inspect suspect files on demand)
+3. For oversized diffs (&gt;hundreds of files): `--stat` summary only + sample the largest changes
+4. Compare new code against recorded rules → conflicts go through Grilling Protocol
+5. Append evolution log at the end of `.ai-style-rules.md` (never overwrite old rules)
+
+### Per-Turn Enforcement
+
+When `.ai-style-rules.md` is in context (loaded via CLAUDE.md), every code-writing task must open with a **compliance declaration** in the reasoning chain, naming the exemplar being followed and the DONTs being avoided.
+
+## How It Works
+
+This skill auto-detects whether it&#x27;s a first-time or incremental run via `.ai-style-rules.md` presence:
+
+- **First-time (Branch A)** — Measures project scale, scans codebase across 4 meta-architecture dimensions (File Anatomy, State &amp; Control Flow, Infrastructure, Error Handling), applies signal-threshold noise reduction to suppress weak conflicts, resolves strong-signal conflicts one-at-a-time with the user, generates `.ai-style-rules.md` with Golden Files / Naming Rules / DONTs, and offers optional enforcement hooks.
+- **Incremental (Branch B)** — Reads existing rules, checks recent Git diffs for new or conflicting patterns, runs the same one-at-a-time grilling protocol for any conflicts found, and appends evolution logs without overwriting existing rules.
+- **Per-Turn Enforcement** — When hooked via `CLAUDE.md`, every code-writing task opens with a compliance declaration naming the exemplar followed and the DONTs avoided.
+
+## Output Specification
+
+- `.ai-style-rules.md` at project root (with commit fingerprint + scale tier in header)
+- Optionally `CLAUDE.md` with `@.ai-style-rules.md` reference
+- Evolution logs appended as `### [YYYY-MM-DD] Style Evolution Log` entries
+
+## Anti-Patterns
+
+- FAIL: Do NOT skip the scale measurement step — sampling a 30-file project &quot;starves&quot; it; full-scanning a 5,000-file repo blows up
+- FAIL: Do NOT stack multiple conflict questions at once — grilling is strictly one-at-a-time
+- FAIL: Do NOT overwrite old rules in incremental mode — always append evolution logs
+- FAIL: Do NOT default to &quot;hard hook&quot; without asking — enforcement strength is the user&#x27;s call
+- FAIL: Do NOT judge syntax or tech-stack quality — this skill aligns meta-architecture only
+- FAIL: Do NOT copy bugs from exemplar files — reuse structure, flag defects
+
+## Best Practices
+
+- Announce the detected mode (first-time vs incremental) and scale tier in one line before scanning
+- For large projects, read `--stat` summaries first, then targeted `Read` on suspect files
+- Let the signal threshold handle noise — a 843-vs-8 naming split should auto-resolve without user interruption
+- When in doubt about signal strength, lean toward asking
+- The CLAUDE.md soft hook (`@.ai-style-rules.md`) is usually sufficient; hard hook only if the user wants mechanical enforcement
+
+## Related Skills
+
+- `init` — initialize a new CLAUDE.md with codebase documentation
+- `code-review` — review diffs for correctness and style issues
+- `simplify` — review code for reuse and simplification opportunities
+
+## Examples
+
+1. **First-time onboarding**
+   - User: &quot;Help me onboard AI to this older codebase without changing its style.&quot;
+   - Action: Run Branch A full-scan → measure scale → scan 4 dimensions → grill conflicts → generate `.ai-style-rules.md` → offer hook strength (soft/hard/none).
+
+2. **Incremental update after team changes**
+   - User: &quot;We added a new module; keep existing style rules intact.&quot;
+   - Action: Run Branch B incremental sniff → compare Git deltas to recorded rules → grill any new conflicts → append evolution log without overwriting.
+
+3. **Enforcing DONTs via CLAUDE.md**
+   - User: &quot;Make sure all new code stays consistent with the project&#x27;s rules.&quot;
+   - Action: Soft hook installed → `.ai-style-rules.md` auto-loaded every session → every code-writing task opens with compliance declaration, reusing exemplar patterns and avoiding DONTs.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

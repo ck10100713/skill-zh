@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>homelab-network-setup｜Skill 寫法圖鑑</title>
+<meta name="description" content="規劃家用跟 homelab 網路的 IP 網段、DHCP、DNS 跟佈線">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>homelab-network-setup</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/homelab-network-setup/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">規劃家用跟 homelab 網路的 IP 網段、DHCP、DNS 跟佈線</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: homelab-network-setup
+description: 家用與 homelab 網路的實用規劃，涵蓋 gateway、switch、access point、IP 網段、DHCP 保留位址、DNS、佈線，以及新手常犯的錯誤。規劃或修正家用或 homelab 網路時使用，包含 gateway、switch、AP、IP 網段、DHCP、DNS 或佈線。
+metadata:
+  origin: community
+---
+
+# Homelab Network Setup
+
+用這個 skill 設計一個家用或小型實驗室網路，讓它可以長大，
+不用整個砍掉重建。
+
+## When to Use
+
+- 規劃新的家用網路，或重新設計只靠 ISP router 的環境。
+- 決定 gateway、switch 和 access point 各自的角色。
+- 設計 IP 網段、DHCP scope、固定保留位址和 DNS。
+- 為之後的 VLAN、Pi-hole、NAS、實驗室伺服器或 VPN 存取做準備。
+- 排查新網路的問題，例如 double NAT、Wi-Fi 不穩，或伺服器位址一直變。
+
+## How It Works
+
+先把裝置的角色分開：
+
+```text
+Internet
+  |
+Modem or ONT
+  |
+Gateway or router      NAT, firewall, DHCP, DNS, inter-VLAN routing
+  |
+Managed switch         wired clients, AP uplinks, optional VLAN trunks
+  |
+Access points          Wi-Fi only; ideally wired backhaul
+Servers and NAS        stable addresses, DNS names, monitoring
+Clients and IoT        DHCP pools, isolated later if VLANs are available
+```
+
+挑 gateway 要看操作者的實際狀況，不要只看功能清單：
+
+| 選項 | 最適合 | 備註 |
+| --- | --- | --- |
+| ISP router | 只需要基本上網 | 可控性有限，VLAN 支援常常很差 |
+| UniFi gateway | 有管理的家用網路 | UI 好用，但會被生態系綁住 |
+| OPNsense 或 pfSense | 彈性高的 homelab | VLAN、firewall、VPN 和 DNS 的控制都很強 |
+| MikroTik | 進階網路使用者 | 功能強，但很容易設錯 |
+| Linux router | 愛玩的人 | 當主要 gateway 之前，先寫好回復方式 |
+
+## IP Plan
+
+如果預期會用 VPN，就避開最常見的預設值 `192.168.1.0/24`。
+它常常跟飯店、辦公室和 ISP router 的網段衝突。
+
+```text
+Example small homelab plan:
+
+192.168.10.0/24  trusted clients
+192.168.20.0/24  IoT and media devices
+192.168.30.0/24  servers and NAS
+192.168.40.0/24  guest Wi-Fi
+192.168.99.0/24  network management
+
+Gateway convention: .1
+Infrastructure reservations: .2 through .49
+Dynamic DHCP pool: .50 through .240
+Spare room: .241 through .254
+```
+
+本地名稱用 `home.arpa`。它是保留給家用網路的，也避開了
+`home.lan` 這類臨時取名會有的外洩或衝突問題。
+
+```text
+nas.home.arpa
+pihole.home.arpa
+gateway.home.arpa
+switch-01.home.arpa
+```
+
+## DHCP And DNS
+
+- 凡是你會 SSH 進去、加書籤、監控，或當成服務對外提供的東西，都用 DHCP 保留位址。
+- 在刻意部署本地 resolver 之前，先把 gateway 當成 DNS 發出去。
+- 如果用 Pi-hole 或其他 DNS 過濾器，先幫它做保留位址，再把
+  DHCP 的 DNS 選項指到那個位址。
+- 每個子網留一小段固定/保留範圍，這樣換裝置時才不會跟動態 lease 撞在一起。
+
+## Cabling And Wi-Fi
+
+- 能拉網路線的話，AP 的 backhaul 優先選有線，不要用 mesh。
+- 預算允許的話，AP 和攝影機用 PoE switch。
+- 每條線的兩端都貼標籤，並維護一份簡單的 port 對照表。
+- 如果常停電，把 gateway、switch、DNS 伺服器和 NAS 接在 UPS 上。
+
+## Examples
+
+### Beginner Upgrade
+
+目標：保留 ISP router，但讓小型實驗室穩定下來。
+
+1. 幫 NAS、Pi 和所有 SSH 主機設定 DHCP 保留位址。
+2. 把本地名稱改成 `home.arpa`。
+3. 關掉次要 router 或 AP 上重複的 DHCP 伺服器。
+4. 主要的 AP 改用有線連接，不要靠無線 backhaul。
+
+### VLAN-Ready Plan
+
+目標：為之後的網路分段做好準備，但先不啟用。
+
+1. 為 trusted、IoT、servers、guest 和 management 各挑一個互不重疊的 /24 網段。
+2. 每個子網都把 .1 留給 gateway，.2-.49 留給基礎設施。
+3. 買支援 VLAN 和 inter-VLAN firewall 規則的 gateway 與 switch。
+4. 記錄之後哪些 SSID 和 switch port 會對應到各個網路。
+
+## Anti-Patterns
+
+- 沒有理由也沒有文件說明的 double NAT。
+- 計畫要用 VPN，卻用 `192.168.1.0/24`。
+- NAS、Pi-hole、Home Assistant 或其他服務主機用動態位址。
+- 把消費級 router 拿來當 AP，卻沒關掉它的 DHCP 伺服器。
+- 攝影機、智慧插座、筆電和伺服器全部擠在同一個信任邊界的扁平網路。
+
+## See Also
+
+- Skill: `network-interface-health`
+- Skill: `network-config-validation`</pre></section><section><h2>英文原文</h2><pre>---
+name: homelab-network-setup
+description: Practical home and homelab network planning for gateways, switches, access points, IP ranges, DHCP reservations, DNS, cabling, and common beginner mistakes. Use when planning or fixing a home or homelab network — gateway, switch, AP, IP ranges, DHCP, DNS, or cabling.
+metadata:
+  origin: community
+---
+
+# Homelab Network Setup
+
+Use this skill to design a home or small-lab network that can grow without
+needing a full rebuild.
+
+## When to Use
+
+- Planning a new home network or redesigning an ISP-router-only setup.
+- Choosing gateway, switch, and access point roles.
+- Designing IP ranges, DHCP scopes, static reservations, and DNS.
+- Preparing for future VLANs, Pi-hole, NAS, lab servers, or VPN access.
+- Troubleshooting a new network that has double NAT, unstable Wi-Fi, or changing
+  server addresses.
+
+## How It Works
+
+Start by separating device roles:
+
+```text
+Internet
+  |
+Modem or ONT
+  |
+Gateway or router      NAT, firewall, DHCP, DNS, inter-VLAN routing
+  |
+Managed switch         wired clients, AP uplinks, optional VLAN trunks
+  |
+Access points          Wi-Fi only; ideally wired backhaul
+Servers and NAS        stable addresses, DNS names, monitoring
+Clients and IoT        DHCP pools, isolated later if VLANs are available
+```
+
+Pick a gateway that matches the operator, not just the feature checklist:
+
+| Option | Best fit | Notes |
+| --- | --- | --- |
+| ISP router | Basic internet only | Limited control and often poor VLAN support |
+| UniFi gateway | Managed home network | Good UI, ecosystem lock-in |
+| OPNsense or pfSense | Flexible homelab | Strong VLAN, firewall, VPN, and DNS control |
+| MikroTik | Advanced network users | Powerful, but easy to misconfigure |
+| Linux router | Tinkerers | Document rollback before using as primary gateway |
+
+## IP Plan
+
+Avoid the most common default, `192.168.1.0/24`, when you expect to use VPNs.
+It often conflicts with hotels, offices, and ISP routers.
+
+```text
+Example small homelab plan:
+
+192.168.10.0/24  trusted clients
+192.168.20.0/24  IoT and media devices
+192.168.30.0/24  servers and NAS
+192.168.40.0/24  guest Wi-Fi
+192.168.99.0/24  network management
+
+Gateway convention: .1
+Infrastructure reservations: .2 through .49
+Dynamic DHCP pool: .50 through .240
+Spare room: .241 through .254
+```
+
+Use `home.arpa` for local names. It is reserved for home networks and avoids the
+leakage/conflict problems of ad hoc names like `home.lan`.
+
+```text
+nas.home.arpa
+pihole.home.arpa
+gateway.home.arpa
+switch-01.home.arpa
+```
+
+## DHCP And DNS
+
+- Use DHCP reservations for anything you SSH into, bookmark, monitor, or expose
+  as a service.
+- Hand out the gateway as DNS until a local resolver is intentionally deployed.
+- If using Pi-hole or another DNS filter, give it a reservation first, then point
+  DHCP DNS options at that address.
+- Keep a small static/reserved range per subnet so replacements do not collide
+  with dynamic leases.
+
+## Cabling And Wi-Fi
+
+- Prefer wired AP backhaul over mesh when you can run Ethernet.
+- Use a PoE switch for APs and cameras if the budget allows it.
+- Label both ends of each cable and keep a simple port map.
+- Put the gateway, switch, DNS server, and NAS on UPS power if outages are common.
+
+## Examples
+
+### Beginner Upgrade
+
+Goal: Keep the ISP router but stabilize a small lab.
+
+1. Set DHCP reservations for NAS, Pi, and any SSH hosts.
+2. Move local names to `home.arpa`.
+3. Disable duplicate DHCP servers on secondary routers or APs.
+4. Wire the main AP instead of relying on wireless backhaul.
+
+### VLAN-Ready Plan
+
+Goal: Prepare for future segmentation without enabling it immediately.
+
+1. Choose non-overlapping /24 ranges for trusted, IoT, servers, guest, and
+   management.
+2. Reserve .1 for the gateway and .2-.49 for infrastructure on every subnet.
+3. Buy a gateway and switch that support VLANs and inter-VLAN firewall rules.
+4. Document which SSIDs and switch ports will eventually map to each network.
+
+## Anti-Patterns
+
+- Double NAT without a reason or documentation.
+- Using `192.168.1.0/24` when VPN access is planned.
+- Dynamic addresses for NAS, Pi-hole, Home Assistant, or other service hosts.
+- Consumer routers repurposed as APs while their DHCP servers are still enabled.
+- Flat networks with cameras, smart plugs, laptops, and servers all sharing the
+  same trust boundary.
+
+## See Also
+
+- Skill: `network-interface-health`
+- Skill: `network-config-validation`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

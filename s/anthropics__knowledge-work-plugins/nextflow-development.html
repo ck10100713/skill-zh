@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nextflow-development｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 nf-core 對 RNA-seq、WGS、ATAC-seq 資料跑生物資訊 pipeline">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>nextflow-development</h1>
+<p class="meta">Anthropic ｜ 資料與分析 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/bio-research/skills/nextflow-development/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用 nf-core 對 RNA-seq、WGS、ATAC-seq 資料跑生物資訊 pipeline</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: nextflow-development
+description: 對定序資料執行 nf-core 生物資訊 pipeline（rnaseq、sarek、atacseq）。分析 RNA-seq、WGS/WES 或 ATAC-seq 資料時使用，本地 FASTQ 或 GEO/SRA 的公開資料集都可以。觸發詞包括 nf-core、Nextflow、FASTQ 分析、variant calling、基因表現、差異表現、GEO 重新分析、GSE/GSM/SRR 編號，或建立 samplesheet。
+---
+
+# nf-core Pipeline 部署
+
+對本地或公開的定序資料執行 nf-core 生物資訊 pipeline。
+
+**目標使用者：** 沒有專門生物資訊訓練、但需要跑大規模 omics 分析（差異表現、variant calling 或染色質可及性分析）的實驗室科學家和研究人員。
+
+## 工作流程檢查清單
+
+```
+- [ ] Step 0: Acquire data (if from GEO/SRA)
+- [ ] Step 1: Environment check (MUST pass)
+- [ ] Step 2: Select pipeline (confirm with user)
+- [ ] Step 3: Run test profile (MUST pass)
+- [ ] Step 4: Create samplesheet
+- [ ] Step 5: Configure &amp; run (confirm genome with user)
+- [ ] Step 6: Verify outputs
+```
+
+---
+
+## Step 0：取得資料（只限 GEO/SRA）
+
+**如果使用者有本地 FASTQ 檔案，就跳過這一步。**
+
+公開資料集要先從 GEO/SRA 抓取。完整流程請見 [references/geo-sra-acquisition.md](references/geo-sra-acquisition.md)。
+
+**快速開始：**
+
+```bash
+# 1. Get study info
+python scripts/sra_geo_fetch.py info GSE110004
+
+# 2. Download (interactive mode)
+python scripts/sra_geo_fetch.py download GSE110004 -o ./fastq -i
+
+# 3. Generate samplesheet
+python scripts/sra_geo_fetch.py samplesheet GSE110004 --fastq-dir ./fastq -o samplesheet.csv
+```
+
+**決策點：** 抓完研究資訊之後，跟使用者確認：
+- 要下載哪個樣本子集（如果有多種資料類型）
+- 建議的基因組和 pipeline
+
+然後繼續 Step 1。
+
+---
+
+## Step 1：環境檢查
+
+**最先執行。環境沒通過，pipeline 一定會失敗。**
+
+```bash
+python scripts/check_environment.py
+```
+
+所有關鍵檢查都必須通過。如果有任何失敗，提供修復指示：
+
+### Docker 問題
+
+| 問題 | 修法 |
+|---------|-----|
+| 沒安裝 | 從 https://docs.docker.com/get-docker/ 安裝 |
+| Permission denied | `sudo usermod -aG docker $USER`，然後重新登入 |
+| Daemon 沒在跑 | `sudo systemctl start docker` |
+
+### Nextflow 問題
+
+| 問題 | 修法 |
+|---------|-----|
+| 沒安裝 | `curl -s https://get.nextflow.io \| bash &amp;&amp; mv nextflow ~/bin/` |
+| 版本 &lt; 23.04 | `nextflow self-update` |
+
+### Java 問題
+
+| 問題 | 修法 |
+|---------|-----|
+| 沒安裝 / &lt; 11 | `sudo apt install openjdk-11-jdk` |
+
+**檢查沒全部通過，就不要往下走。** HPC/Singularity 的情況請見 [references/troubleshooting.md](references/troubleshooting.md)。
+
+---
+
+## Step 2：選擇 Pipeline
+
+**決策點：往下之前先跟使用者確認。**
+
+| 資料類型 | Pipeline | 版本 | 目標 |
+|-----------|----------|---------|------|
+| RNA-seq | `rnaseq` | 3.22.2 | 基因表現 |
+| WGS/WES | `sarek` | 3.7.1 | Variant calling |
+| ATAC-seq | `atacseq` | 2.1.2 | 染色質可及性 |
+
+從資料自動偵測：
+```bash
+python scripts/detect_data_type.py /path/to/data
+```
+
+各 pipeline 的詳細說明：
+- [references/pipelines/rnaseq.md](references/pipelines/rnaseq.md)
+- [references/pipelines/sarek.md](references/pipelines/sarek.md)
+- [references/pipelines/atacseq.md](references/pipelines/atacseq.md)
+
+---
+
+## Step 3：執行測試 Profile
+
+**用小資料驗證環境。真實資料之前，這一步一定要通過。**
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; -r &lt;version&gt; -profile test,docker --outdir test_output
+```
+
+| Pipeline | 指令 |
+|----------|---------|
+| rnaseq | `nextflow run nf-core/rnaseq -r 3.22.2 -profile test,docker --outdir test_rnaseq` |
+| sarek | `nextflow run nf-core/sarek -r 3.7.1 -profile test,docker --outdir test_sarek` |
+| atacseq | `nextflow run nf-core/atacseq -r 2.1.2 -profile test,docker --outdir test_atacseq` |
+
+驗證：
+```bash
+ls test_output/multiqc/multiqc_report.html
+grep &quot;Pipeline completed successfully&quot; .nextflow.log
+```
+
+如果測試失敗，請見 [references/troubleshooting.md](references/troubleshooting.md)。
+
+---
+
+## Step 4：建立 Samplesheet
+
+### 自動產生
+
+```bash
+python scripts/generate_samplesheet.py /path/to/data &lt;pipeline&gt; -o samplesheet.csv
+```
+
+這個 script 會：
+- 找出 FASTQ/BAM/CRAM 檔案
+- 配對 R1/R2 reads
+- 推斷樣本 metadata
+- 寫入之前先驗證
+
+**sarek：** 如果無法自動偵測，script 會詢問 tumor/normal 狀態。
+
+### 驗證既有的 samplesheet
+
+```bash
+python scripts/generate_samplesheet.py --validate samplesheet.csv &lt;pipeline&gt;
+```
+
+### Samplesheet 格式
+
+**rnaseq：**
+```csv
+sample,fastq_1,fastq_2,strandedness
+SAMPLE1,/abs/path/R1.fq.gz,/abs/path/R2.fq.gz,auto
+```
+
+**sarek：**
+```csv
+patient,sample,lane,fastq_1,fastq_2,status
+patient1,tumor,L001,/abs/path/tumor_R1.fq.gz,/abs/path/tumor_R2.fq.gz,1
+patient1,normal,L001,/abs/path/normal_R1.fq.gz,/abs/path/normal_R2.fq.gz,0
+```
+
+**atacseq：**
+```csv
+sample,fastq_1,fastq_2,replicate
+CONTROL,/abs/path/ctrl_R1.fq.gz,/abs/path/ctrl_R2.fq.gz,1
+```
+
+---
+
+## Step 5：設定並執行
+
+### 5a. 檢查基因組是否可用
+
+```bash
+python scripts/manage_genomes.py check &lt;genome&gt;
+# If not installed:
+python scripts/manage_genomes.py download &lt;genome&gt;
+```
+
+常用基因組：GRCh38（人類）、GRCh37（舊版）、GRCm39（小鼠）、R64-1-1（酵母）、BDGP6（果蠅）
+
+### 5b. 決策點
+
+**決策點：跟使用者確認：**
+
+1. **基因組：** 要用哪個參考基因組
+2. **各 pipeline 專屬選項：**
+   - **rnaseq：** aligner（建議 star_salmon，記憶體少時用 hisat2）
+   - **sarek：** 工具（germline 用 haplotypecaller，somatic 用 mutect2）
+   - **atacseq：** read_length（50、75、100 或 150）
+
+### 5c. 執行 pipeline
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; \
+    -r &lt;version&gt; \
+    -profile docker \
+    --input samplesheet.csv \
+    --outdir results \
+    --genome &lt;genome&gt; \
+    -resume
+```
+
+**關鍵參數：**
+- `-r`：鎖定版本
+- `-profile docker`：使用 Docker（HPC 用 `singularity`）
+- `--genome`：iGenomes key
+- `-resume`：從 checkpoint 繼續
+
+**資源上限（需要時）：**
+```bash
+--max_cpus 8 --max_memory &#x27;32.GB&#x27; --max_time &#x27;24.h&#x27;
+```
+
+---
+
+## Step 6：驗證輸出
+
+### 檢查是否完成
+
+```bash
+ls results/multiqc/multiqc_report.html
+grep &quot;Pipeline completed successfully&quot; .nextflow.log
+```
+
+### 各 pipeline 的關鍵輸出
+
+**rnaseq：**
+- `results/star_salmon/salmon.merged.gene_counts.tsv` - 基因 counts
+- `results/star_salmon/salmon.merged.gene_tpm.tsv` - TPM 值
+
+**sarek：**
+- `results/variant_calling/*/` - VCF 檔案
+- `results/preprocessing/recalibrated/` - BAM 檔案
+
+**atacseq：**
+- `results/macs2/narrowPeak/` - Peak calls
+- `results/bwa/mergedLibrary/bigwig/` - Coverage tracks
+
+---
+
+## 快速參考
+
+常見的 exit code 和修法，請見 [references/troubleshooting.md](references/troubleshooting.md)。
+
+### 恢復失敗的執行
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; -resume
+```
+
+---
+
+## 參考資料
+
+- [references/geo-sra-acquisition.md](references/geo-sra-acquisition.md) - 下載公開的 GEO/SRA 資料
+- [references/troubleshooting.md](references/troubleshooting.md) - 常見問題與修法
+- [references/installation.md](references/installation.md) - 環境設定
+- [references/pipelines/rnaseq.md](references/pipelines/rnaseq.md) - RNA-seq pipeline 細節
+- [references/pipelines/sarek.md](references/pipelines/sarek.md) - Variant calling 細節
+- [references/pipelines/atacseq.md](references/pipelines/atacseq.md) - ATAC-seq 細節
+
+---
+
+## 免責聲明
+
+這個 skill 是以原型範例的形式提供，示範如何把 nf-core 生物資訊 pipeline 整合進 Claude Code，做自動化分析工作流程。目前的實作支援三個 pipeline（rnaseq、sarek 和 atacseq），作為基礎，讓社群能把支援擴充到完整的 nf-core pipeline 集合。
+
+它是為教育和研究目的而設計，沒有針對你的特定使用情境做適當驗證之前，不應該被視為可用於正式環境。使用者要自行確保運算環境符合 pipeline 的需求，並驗證分析結果。
+
+Anthropic 不保證生物資訊輸出的正確性，使用者應該遵循標準做法來驗證運算分析。這個整合並未獲得 nf-core 社群的官方背書，也與其無關。
+
+## 出處標示
+
+發表結果時，請引用適當的 pipeline。引用資訊可以在各個 nf-core repository 的 CITATIONS.md 檔案中找到（例如 https://github.com/nf-core/rnaseq/blob/3.22.2/CITATIONS.md）。
+
+## 授權
+
+- **nf-core pipelines：** MIT License (https://nf-co.re/about)
+- **Nextflow：** Apache License, Version 2.0 (https://www.nextflow.io/about-us.html)
+- **NCBI SRA Toolkit：** Public Domain (https://github.com/ncbi/sra-tools/blob/master/LICENSE)</pre></section><section><h2>英文原文</h2><pre>---
+name: nextflow-development
+description: Run nf-core bioinformatics pipelines (rnaseq, sarek, atacseq) on sequencing data. Use when analyzing RNA-seq, WGS/WES, or ATAC-seq data—either local FASTQs or public datasets from GEO/SRA. Triggers on nf-core, Nextflow, FASTQ analysis, variant calling, gene expression, differential expression, GEO reanalysis, GSE/GSM/SRR accessions, or samplesheet creation.
+---
+
+# nf-core Pipeline Deployment
+
+Run nf-core bioinformatics pipelines on local or public sequencing data.
+
+**Target users:** Bench scientists and researchers without specialized bioinformatics training who need to run large-scale omics analyses—differential expression, variant calling, or chromatin accessibility analysis.
+
+## Workflow Checklist
+
+```
+- [ ] Step 0: Acquire data (if from GEO/SRA)
+- [ ] Step 1: Environment check (MUST pass)
+- [ ] Step 2: Select pipeline (confirm with user)
+- [ ] Step 3: Run test profile (MUST pass)
+- [ ] Step 4: Create samplesheet
+- [ ] Step 5: Configure &amp; run (confirm genome with user)
+- [ ] Step 6: Verify outputs
+```
+
+---
+
+## Step 0: Acquire Data (GEO/SRA Only)
+
+**Skip this step if user has local FASTQ files.**
+
+For public datasets, fetch from GEO/SRA first. See [references/geo-sra-acquisition.md](references/geo-sra-acquisition.md) for the full workflow.
+
+**Quick start:**
+
+```bash
+# 1. Get study info
+python scripts/sra_geo_fetch.py info GSE110004
+
+# 2. Download (interactive mode)
+python scripts/sra_geo_fetch.py download GSE110004 -o ./fastq -i
+
+# 3. Generate samplesheet
+python scripts/sra_geo_fetch.py samplesheet GSE110004 --fastq-dir ./fastq -o samplesheet.csv
+```
+
+**DECISION POINT:** After fetching study info, confirm with user:
+- Which sample subset to download (if multiple data types)
+- Suggested genome and pipeline
+
+Then continue to Step 1.
+
+---
+
+## Step 1: Environment Check
+
+**Run first. Pipeline will fail without passing environment.**
+
+```bash
+python scripts/check_environment.py
+```
+
+All critical checks must pass. If any fail, provide fix instructions:
+
+### Docker issues
+
+| Problem | Fix |
+|---------|-----|
+| Not installed | Install from https://docs.docker.com/get-docker/ |
+| Permission denied | `sudo usermod -aG docker $USER` then re-login |
+| Daemon not running | `sudo systemctl start docker` |
+
+### Nextflow issues
+
+| Problem | Fix |
+|---------|-----|
+| Not installed | `curl -s https://get.nextflow.io \| bash &amp;&amp; mv nextflow ~/bin/` |
+| Version &lt; 23.04 | `nextflow self-update` |
+
+### Java issues
+
+| Problem | Fix |
+|---------|-----|
+| Not installed / &lt; 11 | `sudo apt install openjdk-11-jdk` |
+
+**Do not proceed until all checks pass.** For HPC/Singularity, see [references/troubleshooting.md](references/troubleshooting.md).
+
+---
+
+## Step 2: Select Pipeline
+
+**DECISION POINT: Confirm with user before proceeding.**
+
+| Data Type | Pipeline | Version | Goal |
+|-----------|----------|---------|------|
+| RNA-seq | `rnaseq` | 3.22.2 | Gene expression |
+| WGS/WES | `sarek` | 3.7.1 | Variant calling |
+| ATAC-seq | `atacseq` | 2.1.2 | Chromatin accessibility |
+
+Auto-detect from data:
+```bash
+python scripts/detect_data_type.py /path/to/data
+```
+
+For pipeline-specific details:
+- [references/pipelines/rnaseq.md](references/pipelines/rnaseq.md)
+- [references/pipelines/sarek.md](references/pipelines/sarek.md)
+- [references/pipelines/atacseq.md](references/pipelines/atacseq.md)
+
+---
+
+## Step 3: Run Test Profile
+
+**Validates environment with small data. MUST pass before real data.**
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; -r &lt;version&gt; -profile test,docker --outdir test_output
+```
+
+| Pipeline | Command |
+|----------|---------|
+| rnaseq | `nextflow run nf-core/rnaseq -r 3.22.2 -profile test,docker --outdir test_rnaseq` |
+| sarek | `nextflow run nf-core/sarek -r 3.7.1 -profile test,docker --outdir test_sarek` |
+| atacseq | `nextflow run nf-core/atacseq -r 2.1.2 -profile test,docker --outdir test_atacseq` |
+
+Verify:
+```bash
+ls test_output/multiqc/multiqc_report.html
+grep &quot;Pipeline completed successfully&quot; .nextflow.log
+```
+
+If test fails, see [references/troubleshooting.md](references/troubleshooting.md).
+
+---
+
+## Step 4: Create Samplesheet
+
+### Generate automatically
+
+```bash
+python scripts/generate_samplesheet.py /path/to/data &lt;pipeline&gt; -o samplesheet.csv
+```
+
+The script:
+- Discovers FASTQ/BAM/CRAM files
+- Pairs R1/R2 reads
+- Infers sample metadata
+- Validates before writing
+
+**For sarek:** Script prompts for tumor/normal status if not auto-detected.
+
+### Validate existing samplesheet
+
+```bash
+python scripts/generate_samplesheet.py --validate samplesheet.csv &lt;pipeline&gt;
+```
+
+### Samplesheet formats
+
+**rnaseq:**
+```csv
+sample,fastq_1,fastq_2,strandedness
+SAMPLE1,/abs/path/R1.fq.gz,/abs/path/R2.fq.gz,auto
+```
+
+**sarek:**
+```csv
+patient,sample,lane,fastq_1,fastq_2,status
+patient1,tumor,L001,/abs/path/tumor_R1.fq.gz,/abs/path/tumor_R2.fq.gz,1
+patient1,normal,L001,/abs/path/normal_R1.fq.gz,/abs/path/normal_R2.fq.gz,0
+```
+
+**atacseq:**
+```csv
+sample,fastq_1,fastq_2,replicate
+CONTROL,/abs/path/ctrl_R1.fq.gz,/abs/path/ctrl_R2.fq.gz,1
+```
+
+---
+
+## Step 5: Configure &amp; Run
+
+### 5a. Check genome availability
+
+```bash
+python scripts/manage_genomes.py check &lt;genome&gt;
+# If not installed:
+python scripts/manage_genomes.py download &lt;genome&gt;
+```
+
+Common genomes: GRCh38 (human), GRCh37 (legacy), GRCm39 (mouse), R64-1-1 (yeast), BDGP6 (fly)
+
+### 5b. Decision points
+
+**DECISION POINT: Confirm with user:**
+
+1. **Genome:** Which reference to use
+2. **Pipeline-specific options:**
+   - **rnaseq:** aligner (star_salmon recommended, hisat2 for low memory)
+   - **sarek:** tools (haplotypecaller for germline, mutect2 for somatic)
+   - **atacseq:** read_length (50, 75, 100, or 150)
+
+### 5c. Run pipeline
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; \
+    -r &lt;version&gt; \
+    -profile docker \
+    --input samplesheet.csv \
+    --outdir results \
+    --genome &lt;genome&gt; \
+    -resume
+```
+
+**Key flags:**
+- `-r`: Pin version
+- `-profile docker`: Use Docker (or `singularity` for HPC)
+- `--genome`: iGenomes key
+- `-resume`: Continue from checkpoint
+
+**Resource limits (if needed):**
+```bash
+--max_cpus 8 --max_memory &#x27;32.GB&#x27; --max_time &#x27;24.h&#x27;
+```
+
+---
+
+## Step 6: Verify Outputs
+
+### Check completion
+
+```bash
+ls results/multiqc/multiqc_report.html
+grep &quot;Pipeline completed successfully&quot; .nextflow.log
+```
+
+### Key outputs by pipeline
+
+**rnaseq:**
+- `results/star_salmon/salmon.merged.gene_counts.tsv` - Gene counts
+- `results/star_salmon/salmon.merged.gene_tpm.tsv` - TPM values
+
+**sarek:**
+- `results/variant_calling/*/` - VCF files
+- `results/preprocessing/recalibrated/` - BAM files
+
+**atacseq:**
+- `results/macs2/narrowPeak/` - Peak calls
+- `results/bwa/mergedLibrary/bigwig/` - Coverage tracks
+
+---
+
+## Quick Reference
+
+For common exit codes and fixes, see [references/troubleshooting.md](references/troubleshooting.md).
+
+### Resume failed run
+
+```bash
+nextflow run nf-core/&lt;pipeline&gt; -resume
+```
+
+---
+
+## References
+
+- [references/geo-sra-acquisition.md](references/geo-sra-acquisition.md) - Downloading public GEO/SRA data
+- [references/troubleshooting.md](references/troubleshooting.md) - Common issues and fixes
+- [references/installation.md](references/installation.md) - Environment setup
+- [references/pipelines/rnaseq.md](references/pipelines/rnaseq.md) - RNA-seq pipeline details
+- [references/pipelines/sarek.md](references/pipelines/sarek.md) - Variant calling details
+- [references/pipelines/atacseq.md](references/pipelines/atacseq.md) - ATAC-seq details
+
+---
+
+## Disclaimer
+
+This skill is provided as a prototype example demonstrating how to integrate nf-core bioinformatics pipelines into Claude Code for automated analysis workflows. The current implementation supports three pipelines (rnaseq, sarek, and atacseq), serving as a foundation that enables the community to expand support to the full set of nf-core pipelines.
+
+It is intended for educational and research purposes and should not be considered production-ready without appropriate validation for your specific use case. Users are responsible for ensuring their computing environment meets pipeline requirements and for verifying analysis results.
+
+Anthropic does not guarantee the accuracy of bioinformatics outputs, and users should follow standard practices for validating computational analyses. This integration is not officially endorsed by or affiliated with the nf-core community.
+
+## Attribution
+
+When publishing results, cite the appropriate pipeline. Citations are available in each nf-core repository&#x27;s CITATIONS.md file (e.g., https://github.com/nf-core/rnaseq/blob/3.22.2/CITATIONS.md).
+
+## Licenses
+
+- **nf-core pipelines:** MIT License (https://nf-co.re/about)
+- **Nextflow:** Apache License, Version 2.0 (https://www.nextflow.io/about-us.html)
+- **NCBI SRA Toolkit:** Public Domain (https://github.com/ncbi/sra-tools/blob/master/LICENSE)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

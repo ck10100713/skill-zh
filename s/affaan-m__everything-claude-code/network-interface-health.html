@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>network-interface-health｜Skill 寫法圖鑑</title>
+<meta name="description" content="診斷介面錯誤、CRC、丟包、duplex 不一致與計數器趨勢">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>network-interface-health</h1>
+<p class="meta">affaan-m ｜ 除錯與調查 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/network-interface-health/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">診斷介面錯誤、CRC、丟包、duplex 不一致與計數器趨勢</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: network-interface-health
+description: 診斷路由器、交換器和 Linux 主機上的介面錯誤、丟包、CRC、duplex 不一致、震盪、速度協商問題和計數器趨勢。介面出現錯誤、丟包、CRC、震盪，或 duplex 或速度不一致時使用。
+metadata:
+  origin: community
+---
+
+# Network Interface Health
+
+網路症狀可能是由實體連線、交換器
+埠、線材、收發器、duplex 設定或擁塞的介面造成時，用這個 skill。
+
+## When to Use
+
+- 主機或 VLAN 有封包遺失、延遲飆高或時好時壞的連線。
+- 交換器或路由器的介面出現 CRC、runt、giant、丟包、reset 或震盪。
+- 更換硬體之前，需要比對連線兩端。
+- 變更時段需要變更前/後的介面計數器證據。
+- 監控回報 `ifInErrors`、`ifOutErrors` 或 `ifOutDiscards` 在上升。
+
+## How It Works
+
+介面計數器是證據，但趨勢比絕對數字重要。先擷取基準，等一個量測
+區間，再擷取一次，然後比較增量。
+
+```text
+show interfaces &lt;interface&gt;
+show interfaces &lt;interface&gt; status
+show logging | include &lt;interface&gt;|changed state|line protocol
+```
+
+在 Linux 主機上：
+
+```text
+ip -s link show &lt;interface&gt;
+ethtool &lt;interface&gt;
+ethtool -S &lt;interface&gt;
+```
+
+## Counter Reference
+
+| 計數器 | 意義 | 常見原因 |
+| --- | --- | --- |
+| CRC | 收到的 frame checksum 驗證失敗 | 壞掉的線材、髒掉的光纖、壞掉的光模組、duplex 不一致 |
+| input errors | 接收端錯誤的總和 | 下結論之前先看子計數器 |
+| runts | 小於乙太網路最小尺寸的 frame | duplex 不一致、碰撞域、故障的網卡 |
+| giants | 比預期 MTU 更大的 frame | MTU 不一致或 jumbo frame 邊界 |
+| input drops | 設備無法接受進來的封包 | 突發流量、超額訂閱、CPU 路徑、佇列壓力 |
+| output drops | 出口佇列丟棄封包 | 擁塞、QoS 政策、上行頻寬不足 |
+| resets | 介面硬體 reset | 震盪、keepalive、driver、光模組、電源 |
+| collisions | 乙太網路碰撞計數器 | 半雙工或協商不一致 |
+
+## Diagnosis Flow
+
+### CRCs Or Input Errors
+
+1. 確認計數器正在增加，而不只是歷史數字。
+2. 檢查連線兩端。接收端的錯誤通常指向抵達那一側的
+   訊號，不一定是回報錯誤的那個埠。
+3. 更換跳線，或清潔/更換光纖和光模組。
+4. 確認兩端的速度/duplex 設定一致。
+5. 檢查同一時間點前後的紀錄有沒有震盪事件。
+
+### Drops
+
+1. 把 input drops 和 output drops 分開。
+2. 比較介面速率和容量。
+3. 檢查 QoS 政策、佇列計數器，以及這條連線是不是超額訂閱的
+   上行。
+4. 佇列調校是次要的。先證明連線是不是真的擁塞。
+
+### Duplex And Speed
+
+現代乙太網路連線在兩端都支援時，偏好用自動協商。如果
+有一端必須固定，就把兩端都明確設定，並記錄原因。絕不要
+一端固定速度/duplex，另一端卻用 auto。
+
+```text
+show interfaces &lt;interface&gt; | include duplex|speed
+```
+
+## Safe Parser Example
+
+從一個標頭切到下一個標頭，來切出每個介面區塊。不要用任意的
+字元視窗；大的介面區塊可能造成計數器被漏掉，或被
+歸到錯誤的埠。
+
+```python
+import re
+from typing import Any
+
+HEADER_RE = re.compile(
+    r&quot;^(?P&lt;name&gt;\S+) is (?P&lt;status&gt;(?:administratively )?down|up), &quot;
+    r&quot;line protocol is (?P&lt;protocol&gt;up|down)&quot;,
+    re.I | re.M,
+)
+ERROR_RE = re.compile(r&quot;(?P&lt;input&gt;\d+) input errors, (?P&lt;crc&gt;\d+) CRC&quot;, re.I)
+DROP_RE = re.compile(r&quot;(?P&lt;output&gt;\d+) output errors&quot;, re.I)
+DUPLEX_RE = re.compile(r&quot;(?P&lt;duplex&gt;Full|Half|Auto)-duplex,\s+(?P&lt;speed&gt;[^,]+)&quot;, re.I)
+
+def parse_show_interfaces(raw: str) -&gt; list[dict[str, Any]]:
+    headers = list(HEADER_RE.finditer(raw))
+    interfaces = []
+    for index, header in enumerate(headers):
+        end = headers[index + 1].start() if index + 1 &lt; len(headers) else len(raw)
+        block = raw[header.start():end]
+        errors = ERROR_RE.search(block)
+        drops = DROP_RE.search(block)
+        duplex = DUPLEX_RE.search(block)
+        interfaces.append({
+            &quot;name&quot;: header.group(&quot;name&quot;),
+            &quot;status&quot;: header.group(&quot;status&quot;),
+            &quot;protocol&quot;: header.group(&quot;protocol&quot;),
+            &quot;duplex&quot;: duplex.group(&quot;duplex&quot;) if duplex else &quot;unknown&quot;,
+            &quot;speed&quot;: duplex.group(&quot;speed&quot;).strip() if duplex else &quot;unknown&quot;,
+            &quot;input_errors&quot;: int(errors.group(&quot;input&quot;)) if errors else 0,
+            &quot;crc_errors&quot;: int(errors.group(&quot;crc&quot;)) if errors else 0,
+            &quot;output_errors&quot;: int(drops.group(&quot;output&quot;)) if drops else 0,
+        })
+    return interfaces
+```
+
+## Examples
+
+### CRCs On One Switch Port
+
+1. 擷取本地埠的計數器。
+2. 擷取連接的遠端埠的計數器。
+3. 在改路由或防火牆規則之前，先換線材或光模組。
+4. 記錄基準之後，才清除計數器。
+5. 隔固定的區間後再檢查一次。
+
+### Internet Slow But LAN Is Fine
+
+1. 檢查 WAN 介面的丟包/錯誤。
+2. 檢查 LAN 上行的使用率和 output drops。
+3. 如果 WAN 連線乾淨但吞吐量還是低，就檢查閘道的 CPU。
+4. 在怪上游服務之前，先比較有線和無線的測試結果。
+
+## Anti-Patterns
+
+- 還沒存基準就先清除計數器。
+- 只看連線的其中一端。
+- 沒有時間窗口，就假設所有歷史 CRC 都是現在的問題。
+- 一端用自動協商，另一端卻用固定速度/duplex。
+- 還沒檢查擁塞，就把 output drops 當成線材問題。
+
+## See Also
+
+- Agent: `network-troubleshooter`
+- Skill: `network-config-validation`
+- Skill: `homelab-network-setup`</pre></section><section><h2>英文原文</h2><pre>---
+name: network-interface-health
+description: Diagnose interface errors, drops, CRCs, duplex mismatches, flapping, speed negotiation issues, and counter trends on routers, switches, and Linux hosts. Use when an interface shows errors, drops, CRCs, flapping, or a duplex or speed mismatch.
+metadata:
+  origin: community
+---
+
+# Network Interface Health
+
+Use this skill when a network symptom might be caused by a physical link, switch
+port, cable, transceiver, duplex setting, or congested interface.
+
+## When to Use
+
+- A host or VLAN has packet loss, latency spikes, or intermittent reachability.
+- A switch or router interface shows CRCs, runts, giants, drops, resets, or flaps.
+- You need to compare both ends of a link before replacing hardware.
+- A change window needs before/after interface counter evidence.
+- Monitoring reports rising `ifInErrors`, `ifOutErrors`, or `ifOutDiscards`.
+
+## How It Works
+
+Interface counters are evidence, but the trend matters more than the absolute
+number. Capture a baseline, wait a measurement interval, capture again, then
+compare increments.
+
+```text
+show interfaces &lt;interface&gt;
+show interfaces &lt;interface&gt; status
+show logging | include &lt;interface&gt;|changed state|line protocol
+```
+
+On Linux hosts:
+
+```text
+ip -s link show &lt;interface&gt;
+ethtool &lt;interface&gt;
+ethtool -S &lt;interface&gt;
+```
+
+## Counter Reference
+
+| Counter | Meaning | Common cause |
+| --- | --- | --- |
+| CRC | Received frame checksum failed | Bad cable, dirty fiber, bad optic, duplex mismatch |
+| input errors | Aggregate receive-side errors | Check sub-counters before concluding |
+| runts | Frames below minimum Ethernet size | Duplex mismatch, collision domain, faulty NIC |
+| giants | Frames larger than expected MTU | MTU mismatch or jumbo-frame boundary |
+| input drops | Device could not accept inbound packets | Burst, oversubscription, CPU path, queue pressure |
+| output drops | Egress queue discarded packets | Congestion, QoS policy, undersized uplink |
+| resets | Interface hardware reset | Flapping, keepalive, driver, optic, power |
+| collisions | Ethernet collision counter | Half duplex or negotiation mismatch |
+
+## Diagnosis Flow
+
+### CRCs Or Input Errors
+
+1. Confirm counters are incrementing, not just historical.
+2. Check both ends of the link. Receive-side errors usually point to the signal
+   arriving on that side, not necessarily the port reporting the error.
+3. Replace patch cable or clean/replace fiber and optics.
+4. Confirm speed/duplex settings match on both sides.
+5. Check logs for flap events around the same timestamp.
+
+### Drops
+
+1. Separate input drops from output drops.
+2. Compare interface rate against capacity.
+3. Check QoS policy, queue counters, and whether the link is an oversubscribed
+   uplink.
+4. Treat queue tuning as secondary. First prove whether the link is congested.
+
+### Duplex And Speed
+
+Prefer auto-negotiation on modern Ethernet links when both sides support it. If
+one side must be fixed, configure both sides explicitly and document why. Never
+mix fixed speed/duplex on one side with auto on the other.
+
+```text
+show interfaces &lt;interface&gt; | include duplex|speed
+```
+
+## Safe Parser Example
+
+Slice each interface block from one header to the next. Do not use an arbitrary
+character window; large interface blocks can cause counters to be missed or
+assigned to the wrong port.
+
+```python
+import re
+from typing import Any
+
+HEADER_RE = re.compile(
+    r&quot;^(?P&lt;name&gt;\S+) is (?P&lt;status&gt;(?:administratively )?down|up), &quot;
+    r&quot;line protocol is (?P&lt;protocol&gt;up|down)&quot;,
+    re.I | re.M,
+)
+ERROR_RE = re.compile(r&quot;(?P&lt;input&gt;\d+) input errors, (?P&lt;crc&gt;\d+) CRC&quot;, re.I)
+DROP_RE = re.compile(r&quot;(?P&lt;output&gt;\d+) output errors&quot;, re.I)
+DUPLEX_RE = re.compile(r&quot;(?P&lt;duplex&gt;Full|Half|Auto)-duplex,\s+(?P&lt;speed&gt;[^,]+)&quot;, re.I)
+
+def parse_show_interfaces(raw: str) -&gt; list[dict[str, Any]]:
+    headers = list(HEADER_RE.finditer(raw))
+    interfaces = []
+    for index, header in enumerate(headers):
+        end = headers[index + 1].start() if index + 1 &lt; len(headers) else len(raw)
+        block = raw[header.start():end]
+        errors = ERROR_RE.search(block)
+        drops = DROP_RE.search(block)
+        duplex = DUPLEX_RE.search(block)
+        interfaces.append({
+            &quot;name&quot;: header.group(&quot;name&quot;),
+            &quot;status&quot;: header.group(&quot;status&quot;),
+            &quot;protocol&quot;: header.group(&quot;protocol&quot;),
+            &quot;duplex&quot;: duplex.group(&quot;duplex&quot;) if duplex else &quot;unknown&quot;,
+            &quot;speed&quot;: duplex.group(&quot;speed&quot;).strip() if duplex else &quot;unknown&quot;,
+            &quot;input_errors&quot;: int(errors.group(&quot;input&quot;)) if errors else 0,
+            &quot;crc_errors&quot;: int(errors.group(&quot;crc&quot;)) if errors else 0,
+            &quot;output_errors&quot;: int(drops.group(&quot;output&quot;)) if drops else 0,
+        })
+    return interfaces
+```
+
+## Examples
+
+### CRCs On One Switch Port
+
+1. Capture counters on the local port.
+2. Capture counters on the connected remote port.
+3. Replace the cable or optic before changing routing or firewall rules.
+4. Clear counters only after recording the baseline.
+5. Recheck after a fixed interval.
+
+### Internet Slow But LAN Is Fine
+
+1. Check WAN interface drops/errors.
+2. Check LAN uplink utilization and output drops.
+3. Check gateway CPU if the WAN link is clean but throughput is still low.
+4. Compare wired and wireless tests before blaming upstream service.
+
+## Anti-Patterns
+
+- Clearing counters before saving a baseline.
+- Looking at only one side of a link.
+- Assuming all historical CRCs are active problems without a time window.
+- Mixing auto-negotiation on one side with fixed speed/duplex on the other.
+- Treating output drops as a cable problem before checking congestion.
+
+## See Also
+
+- Agent: `network-troubleshooter`
+- Skill: `network-config-validation`
+- Skill: `homelab-network-setup`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

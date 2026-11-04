@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-sc-safety-stock｜Skill 寫法圖鑑</title>
+<meta name="description" content="計算緩衝需求與前置時間變異所需的安全庫存">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-sc-safety-stock</h1>
+<p class="meta">asgard-ai-platform ｜ 商業與營運 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-sc-safety-stock/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">計算緩衝需求與前置時間變異所需的安全庫存</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-sc-safety-stock&quot;
+description: &quot;計算安全庫存水準，用來緩衝需求和前置時間的不確定性。當使用者需要設定庫存緩衝、權衡服務水準，或在多個 SKU 之間最佳化安全庫存時就用這個 skill，即使他們說的是「要留多少緩衝庫存」「避免缺貨」或「服務水準計算」。&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;safety-stock&quot;, &quot;inventory&quot;, &quot;service-level&quot;]
+---
+
+# Safety Stock Calculation
+
+## Overview
+
+安全庫存是為了應付需求和前置時間變異而多留的緩衝庫存。公式：SS = z × √(LT × σ²_d + d² × σ²_LT)，其中 z = 服務係數，LT = 前置時間，σ_d = 需求標準差，d = 平均需求，σ_LT = 前置時間標準差。它直接拿庫存成本去換缺貨風險。
+
+## When to Use
+
+**觸發條件：**
+- 為需求會波動的品項設定庫存緩衝
+- 選定目標服務水準，並算出所需的安全庫存
+- 在一整組 SKU 之間最佳化安全庫存
+
+**不適用的情況：**
+- 需求是確定的時候（直接用 EOQ，不需要安全庫存）
+- 一次性採購決策（用 newsvendor 模型）
+
+## Algorithm
+
+```
+IRON LAW: Safety Stock Is a TRADE-OFF, Not a Target
+More safety stock = fewer stockouts but higher holding cost.
+The relationship is non-linear: going from 95% to 99% service level
+roughly DOUBLES safety stock. Going from 99% to 99.9% doubles it
+again. Always quantify the cost of each service level increment.
+z-values: 90%→1.28, 95%→1.65, 99%→2.33, 99.9%→3.09.
+```
+
+### Phase 1: Input Validation
+收集：歷史需求資料（週／月）、前置時間資料（平均與變異）、目標服務水準、單位成本與持有率。
+**Gate：** 至少有 12 期的需求資料，而且有前置時間的估計值。
+
+### Phase 2: Core Algorithm
+1. 計算需求統計量：平均需求（d）、需求標準差（σ_d）
+2. 計算前置時間統計量：平均 LT、LT 標準差（σ_LT）
+3. 計算合併變異：σ_combined = √(LT × σ²_d + d² × σ²_LT)
+4. 查出目標服務水準對應的 z
+5. 安全庫存 = z × σ_combined
+6. 再訂購點 = d × LT + SS
+
+### Phase 3: Verification
+模擬：用歷史需求來看，算出來的 SS 能不能在目標服務水準下避免缺貨？
+**Gate：** 模擬出來的服務水準符合目標（±2%）。
+
+### Phase 4: Output
+回傳安全庫存，附上成本影響和服務水準分析。
+
+## Output Format
+
+```json
+{
+  &quot;safety_stock&quot;: 250,
+  &quot;reorder_point&quot;: 850,
+  &quot;service_level&quot;: 0.95,
+  &quot;annual_holding_cost&quot;: 5000,
+  &quot;metadata&quot;: {&quot;avg_demand_weekly&quot;: 120, &quot;demand_cv&quot;: 0.3, &quot;avg_lead_time_weeks&quot;: 5}
+}
+```
+
+## Examples
+
+### Sample I/O
+**輸入：** 每週需求：平均 = 100，σ = 30。前置時間：平均 = 4 週，σ = 1 週。目標：95%。
+**預期結果：** σ_combined = √(4×900 + 10000×1) = √(3600+10000) = √13600 = 116.6。SS = 1.65 × 116.6 = 192 單位。
+
+### Edge Cases
+| 輸入 | 預期結果 | 原因 |
+|-------|----------|-----|
+| 需求完全沒有變異 | SS 只來自前置時間的變異 | σ_d = 0，只剩前置時間的風險 |
+| 前置時間完全沒有變異 | SS 只來自需求的變異 | σ_LT = 0，標準公式簡化 |
+| 前置時間很長 | SS 很高 | 期間越長，累積的不確定性越多 |
+
+## Gotchas
+
+- **常態分布假設**：公式假設需求服從常態分布。高度間歇性的需求（很多期是零）要用別的方法（Poisson、negative binomial）。
+- **要看預測誤差，不是需求變異**：如果用了預測值，SS 要緩衝的是預測「誤差」（σ_error），不是原始需求的變異。
+- **服務水準的定義**：週期服務水準（cycle service level，每個週期不缺貨的機率）≠ 滿足率（fill rate，需求中由庫存滿足的比例）。公司常常想要的是 fill rate，算的卻是 cycle SL。
+- **前置時間資料品質**：前置時間的變異常常沒有好好追蹤。低估 σ_LT 會讓安全庫存不夠。
+- **ABC 分類**：不要所有 SKU 都用同一個服務水準。A 類品項（營收高）值得 99%，C 類品項 90% 可能就夠了。
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/safety_stock.py` | 計算安全庫存和再訂購點，把需求與前置時間的變異合併考慮 | `python scripts/safety_stock.py --help` |
+
+執行 `python scripts/safety_stock.py --verify` 可以跑內建的基本檢查測試。
+
+## References
+
+- 多階層（multi-echelon）安全庫存最佳化，請見 `references/multi-echelon.md`
+- 間歇性需求的處理方法，請見 `references/intermittent-demand.md`</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-sc-safety-stock&quot;
+description: &quot;Calculate safety stock levels to buffer against demand and lead time uncertainty. Use this skill when the user needs to set inventory buffers, determine service level trade-offs, or optimize safety stock across SKUs — even if they say &#x27;how much buffer inventory&#x27;, &#x27;stockout prevention&#x27;, or &#x27;service level calculation&#x27;.&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;safety-stock&quot;, &quot;inventory&quot;, &quot;service-level&quot;]
+---
+
+# Safety Stock Calculation
+
+## Overview
+
+Safety stock is buffer inventory held to protect against demand and lead time variability. Formula: SS = z × √(LT × σ²_d + d² × σ²_LT) where z=service factor, LT=lead time, σ_d=demand std dev, d=avg demand, σ_LT=lead time std dev. Directly trades inventory cost against stockout risk.
+
+## When to Use
+
+**Trigger conditions:**
+- Setting inventory buffers for variable-demand items
+- Choosing target service levels and computing required safety stock
+- Optimizing safety stock across a portfolio of SKUs
+
+**When NOT to use:**
+- When demand is deterministic (use EOQ without safety stock)
+- For one-time purchase decisions (use newsvendor model)
+
+## Algorithm
+
+```
+IRON LAW: Safety Stock Is a TRADE-OFF, Not a Target
+More safety stock = fewer stockouts but higher holding cost.
+The relationship is non-linear: going from 95% to 99% service level
+roughly DOUBLES safety stock. Going from 99% to 99.9% doubles it
+again. Always quantify the cost of each service level increment.
+z-values: 90%→1.28, 95%→1.65, 99%→2.33, 99.9%→3.09.
+```
+
+### Phase 1: Input Validation
+Collect: historical demand data (weekly/monthly), lead time data (average and variability), target service level, unit cost and holding rate.
+**Gate:** Minimum 12 periods of demand data, lead time estimates available.
+
+### Phase 2: Core Algorithm
+1. Compute demand statistics: average demand (d), demand standard deviation (σ_d)
+2. Compute lead time statistics: average LT, LT standard deviation (σ_LT)
+3. Compute combined variability: σ_combined = √(LT × σ²_d + d² × σ²_LT)
+4. Look up z for target service level
+5. Safety stock = z × σ_combined
+6. Reorder point = d × LT + SS
+
+### Phase 3: Verification
+Simulate: using historical demand, would the computed SS have prevented stockouts at the target service level?
+**Gate:** Simulated service level matches target (±2%).
+
+### Phase 4: Output
+Return safety stock with cost impact and service level analysis.
+
+## Output Format
+
+```json
+{
+  &quot;safety_stock&quot;: 250,
+  &quot;reorder_point&quot;: 850,
+  &quot;service_level&quot;: 0.95,
+  &quot;annual_holding_cost&quot;: 5000,
+  &quot;metadata&quot;: {&quot;avg_demand_weekly&quot;: 120, &quot;demand_cv&quot;: 0.3, &quot;avg_lead_time_weeks&quot;: 5}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** Weekly demand: avg=100, σ=30. Lead time: avg=4 weeks, σ=1 week. Target: 95%.
+**Expected:** σ_combined = √(4×900 + 10000×1) = √(3600+10000) = √13600 = 116.6. SS = 1.65 × 116.6 = 192 units.
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| Zero demand variability | SS from LT variability only | σ_d = 0, only lead time risk remains |
+| Zero lead time variability | SS from demand variability only | σ_LT = 0, standard formula simplifies |
+| Very long lead time | High SS | More uncertainty accumulates over longer periods |
+
+## Gotchas
+
+- **Normal distribution assumption**: Formula assumes normally distributed demand. Highly intermittent demand (many zeros) needs different approaches (Poisson, negative binomial).
+- **Demand forecast error, not demand variability**: If you use a forecast, SS should buffer forecast ERROR (σ_error), not raw demand variability.
+- **Service level definition**: Cycle service level (probability of no stockout per cycle) ≠ fill rate (fraction of demand met from stock). Companies often mean fill rate but calculate cycle SL.
+- **Lead time data quality**: Lead time variability is often poorly tracked. Underestimating σ_LT leads to insufficient safety stock.
+- **ABC segmentation**: Don&#x27;t apply the same service level to all SKUs. A-items (high revenue) deserve 99%; C-items may be fine at 90%.
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/safety_stock.py` | Compute safety stock and reorder point with combined demand/lead-time variability | `python scripts/safety_stock.py --help` |
+
+Run `python scripts/safety_stock.py --verify` to execute built-in sanity tests.
+
+## References
+
+- For multi-echelon safety stock optimization, see `references/multi-echelon.md`
+- For intermittent demand methods, see `references/intermittent-demand.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

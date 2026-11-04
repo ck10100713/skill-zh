@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>react-performance｜Skill 寫法圖鑑</title>
+<meta name="description" content="改編自 Vercel 的 React/Next.js 效能最佳化規則，按優先級整理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>react-performance</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/react-performance/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">改編自 Vercel 的 React/Next.js 效能最佳化規則，按優先級整理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: react-performance
+description: 改編自 Vercel Engineering《React Best Practices》（https://github.com/vercel-labs/agent-skills）的 React 與 Next.js 效能最佳化模式。70 多條規則分成 8 個優先級類別：waterfall、bundle 大小、server 端、client 資料抓取、re-render、渲染、JS 微效能、進階。寫、review 或重構 React/Next.js 程式碼以提升效能時使用。
+metadata:
+  origin: ECC
+---
+
+# React 效能
+
+React 18/19 與 Next.js 的效能最佳化模式，改編自 [Vercel Labs `react-best-practices`](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices)（MIT，v1.0.0）。這個 skill 依優先級組織規則，並提供決策樹式的指引，用在實際的 code review 和重構。
+
+## 何時啟用
+
+- 為了效能寫或 review React/Next.js 程式碼
+- 診斷頁面載入慢、互動慢，或 client 端 CPU 過高
+- 稽核 bundle 大小或 Lighthouse Core Web Vitals 退化
+- 消除 Server Component / API route 裡的 waterfall
+- 減少 client 端的 re-render
+- 最佳化長列表、動畫或 hydration
+- 稽核動到 `app/`、`pages/`、`components/` 或資料層的 PR 裡的最佳化選擇
+
+## 優先級索引
+
+| 優先級 | 類別 | 前綴 | 何時重要 |
+|---|---|---|---|
+| 1 — CRITICAL | 消除 Waterfall | `async-` | 每當 `await` 後面接著一個獨立的 `await` |
+| 2 — CRITICAL | Bundle 大小最佳化 | `bundle-` | 首次載入的 JS、route 層級的 import、第三方函式庫 |
+| 3 — HIGH | Server 端效能 | `server-` | RSC、Server Action、API route、SSR |
+| 4 — MEDIUM-HIGH | Client 端資料抓取 | `client-` | hook 裡的 SWR / TanStack Query / 原生 `fetch` |
+| 5 — MEDIUM | Re-render 最佳化 | `rerender-` | 高頻率的 state 更新、父子元件的扇出 |
+| 6 — MEDIUM | 渲染效能 | `rendering-` | 長列表、動畫、hydration |
+| 7 — LOW-MEDIUM | JavaScript 效能 | `js-` | 熱迴圈、頻繁配置記憶體 |
+| 8 — LOW | 進階模式 | `advanced-` | Effect 與 event 整合、穩定的 ref |
+
+## 1. 消除 Waterfall（CRITICAL）
+
+&gt; 「Waterfall 是效能殺手第一名」：每一個依序執行的 `await` 都會加上完整的網路延遲。
+
+### await 之前先做便宜的條件判斷
+
+在 await 遠端資料之前，先檢查同步條件（props、env、寫死的 flag）。
+
+```ts
+// INCORRECT
+async function Page({ id }: { id: string }) {
+  const flag = await getFlag(&quot;show-page&quot;);
+  if (!flag || !id) return null;
+  const data = await getData(id);
+  // ...
+}
+
+// CORRECT: 先對便宜的同步條件短路
+async function Page({ id }: { id: string }) {
+  if (!id) return null;
+  const flag = await getFlag(&quot;show-page&quot;);
+  if (!flag) return null;
+  const data = await getData(id);
+}
+```
+
+### 等到要用才 await
+
+把 `await` 移進會用到它的分支。
+
+```ts
+// INCORRECT: 還沒決定需不需要資料就先 await 了
+const user = await getUser(id);
+if (mode === &quot;guest&quot;) return renderGuest();
+return renderUser(user);
+
+// CORRECT
+if (mode === &quot;guest&quot;) return renderGuest();
+const user = await getUser(id);
+return renderUser(user);
+```
+
+### 獨立的工作用 Promise.all
+
+```ts
+// INCORRECT: 依序執行
+const user = await getUser(id);
+const posts = await getPosts(id);
+const followers = await getFollowers(id);
+
+// CORRECT: 平行執行
+const [user, posts, followers] = await Promise.all([
+  getUser(id),
+  getPosts(id),
+  getFollowers(id),
+]);
+```
+
+### 部分依賴：早點開始，晚點才 await
+
+```ts
+// CORRECT: 先把所有 promise 都啟動，每個結果要用到時才 await
+const userP = getUser(id);
+const postsP = getPosts(id);
+const profile = await getProfile(id);
+if (profile.private) return null;
+const [user, posts] = await Promise.all([userP, postsP]);
+```
+
+### 用 Suspense 做 streaming
+
+把 `&lt;Suspense&gt;` boundary 推到靠近資料的地方，這樣頁面能先畫出已經有的部分，較慢的子樹再串流進來。代價：內容抵達時會有 layout shift，所以要預留空間（skeleton 或 `min-height`）。
+
+### Server Component：透過組合達成平行
+
+```tsx
+// INCORRECT: 同一個元件裡的 sibling await 會依序執行
+export default async function Page() {
+  const user = await getUser();
+  const cart = await getCart();
+  return &lt;View user={user} cart={cart} /&gt;;
+}
+
+// CORRECT: 拆成子元件，React 會平行執行它們
+export default async function Page() {
+  return (
+    &lt;View&gt;
+      &lt;UserSection /&gt;
+      &lt;CartSection /&gt;
+    &lt;/View&gt;
+  );
+}
+```
+
+## 2. Bundle 大小最佳化（CRITICAL）
+
+### 直接 import，不要用 barrel
+
+即使 tree-shaking 已經移除大部分內容，barrel `index.ts` 檔案還是會逼 bundler 走完整個 module graph。直接 import 在很多真實世界的應用裡，可以省下 200-800ms 的首次載入 JS。
+
+```ts
+// INCORRECT
+import { Button, Card, Modal } from &quot;@/components&quot;;
+
+// CORRECT
+import { Button } from &quot;@/components/Button&quot;;
+import { Card } from &quot;@/components/Card&quot;;
+import { Modal } from &quot;@/components/Modal&quot;;
+```
+
+Next.js 13.5+ 有 [Optimize Package Imports](https://nextjs.org/docs/app/api-reference/next-config-js/optimizePackageImports)，會對列出的套件自動處理這件事，用它；沒列在清單上的函式庫，仍然要手動直接 import。
+
+### 可靜態分析的路徑
+
+```ts
+// INCORRECT: 讓 bundler／trace 分析失效
+const mod = await import(`./pages/${name}`);
+
+// CORRECT: 每個分支都明確寫出來
+const mod = name === &quot;home&quot; ? await import(&quot;./pages/home&quot;) : await import(&quot;./pages/about&quot;);
+```
+
+### 重元件用 dynamic import
+
+```tsx
+import dynamic from &quot;next/dynamic&quot;;
+
+const HeavyChart = dynamic(() =&gt; import(&quot;./HeavyChart&quot;), {
+  loading: () =&gt; &lt;Skeleton /&gt;,
+  ssr: false, // 僅限 client 端時
+});
+```
+
+### 延後載入第三方 script
+
+在 hydration **之後**才載入 analytics、logging、客服 widget。用 `next/script` 搭配 `strategy=&quot;afterInteractive&quot;`（預設）或 `&quot;lazyOnload&quot;`。
+
+### 條件式載入 module
+
+```tsx
+if (user.role === &quot;admin&quot;) {
+  const { AdminPanel } = await import(&quot;./admin/AdminPanel&quot;);
+  // ...
+}
+```
+
+### 在 hover/focus 時預載
+
+在 hover 時觸發 `&lt;link rel=&quot;preload&quot;&gt;` 或 `import()`，這樣使用者點下去時 bundle 已經在快取裡了。
+
+## 3. Server 端效能（HIGH）
+
+### 像對待 API route 一樣驗證 Server Action
+
+每個 `&quot;use server&quot;` 函式都是公開的 endpoint。要在 action 裡面做驗證**和**授權，絕對不要依賴呼叫端 Client Component 的把關。
+
+```ts
+&quot;use server&quot;;
+export async function deleteUser(formData: FormData) {
+  const session = await getSession();
+  if (!session?.user) throw new Error(&quot;Unauthorized&quot;);
+  const targetId = String(formData.get(&quot;id&quot;));
+  if (session.user.role !== &quot;admin&quot; &amp;&amp; session.user.id !== targetId) {
+    throw new Error(&quot;Forbidden&quot;);
+  }
+  await db.user.delete({ where: { id: targetId } });
+}
+```
+
+### 用 `React.cache()` 做單一請求內的去重
+
+```ts
+import { cache } from &quot;react&quot;;
+
+export const getUser = cache(async (id: string) =&gt; {
+  return db.user.findUnique({ where: { id } });
+});
+```
+
+`React.cache` 在單一請求內去重。同一次 render 裡有三個 Server Component 呼叫 `getUser(&quot;1&quot;)`，等於一次 DB 查詢。
+
+### 跨請求的資料用 LRU cache
+
+不會隨請求變動的資料（設定、查找表），用 LRU cache 或 `unstable_cache` 在 React 之外快取。
+
+### 避免 RSC props 重複序列化
+
+當 Server Component 把同一份資料渲染進多個 Client Component 時，資料會依消費者數量各序列化一次。把 Client Component 往上提，再傳 children。
+
+### 把靜態 I/O 提到 module 範圍
+
+```ts
+// CORRECT: module 載入時只執行一次
+const fontData = readFileSync(fontPath);
+
+export async function Page() {
+  return &lt;Banner font={fontData} /&gt;;
+}
+```
+
+### RSC/SSR 裡不要有可變的 module 層級 state
+
+server 上的 module state 在所有請求之間共享，會造成使用者之間的 race condition。改用請求範圍的儲存（`headers()`、`cookies()`、async context）。
+
+### 最小化傳給 Client Component 的資料
+
+只序列化 Client 需要的東西。去掉欄位、做分頁、在 DB 層就選好要的欄位。
+
+### 巢狀 fetch 對每個項目各自用 Promise.all 平行化
+
+```ts
+const users = await getUsers();
+const enriched = await Promise.all(
+  users.map(async (u) =&gt; ({ ...u, posts: await getPostsFor(u.id) })),
+);
+```
+
+### 用 `after()` 做不阻塞的工作
+
+Next.js 15 的 `after()` 會在回應送出之後才執行工作，例如 logging、快取預熱、analytics。
+
+```ts
+import { after } from &quot;next/server&quot;;
+export async function GET() {
+  const data = await getData();
+  after(() =&gt; logAnalytics(data));
+  return Response.json(data);
+}
+```
+
+## 4. Client 端資料抓取（MEDIUM-HIGH）
+
+### 用 SWR / TanStack Query 去重
+
+多個元件呼叫 `useUser(id)` 應該共用一次網路請求和一份快取。用 SWR 或 TanStack Query，共享資料絕對不要自己土炮 `useEffect` 加 `fetch`。
+
+### 全域事件監聽器去重
+
+```tsx
+// INCORRECT: 每個元件各自加一個
+useEffect(() =&gt; {
+  window.addEventListener(&quot;scroll&quot;, handler);
+  return () =&gt; window.removeEventListener(&quot;scroll&quot;, handler);
+}, []);
+
+// CORRECT: 透過 hook 加全域 subject，共用單一 listener
+const useScroll = createScrollHook(); // 底層是 singleton subject
+```
+
+### scroll 用 passive listener
+
+```ts
+window.addEventListener(&quot;scroll&quot;, handler, { passive: true });
+```
+
+讓捲動更順；這個 listener 不能呼叫 `preventDefault()`。
+
+### localStorage：加版本並縮小
+
+- 一律存一個 `version` 欄位；schema 變動時升版，並遷移或丟棄舊資料
+- payload 要小，`localStorage` 是同步的，會阻塞 main thread
+
+## 5. Re-render 最佳化（MEDIUM）
+
+### 不要訂閱只在 callback 裡用到的 state
+
+```tsx
+// INCORRECT: count 每次變動都會 re-render
+const count = useStore((s) =&gt; s.count);
+const handler = () =&gt; doSomething(count);
+
+// CORRECT: 呼叫時才讀一次
+const handler = () =&gt; {
+  const count = useStore.getState().count;
+  doSomething(count);
+};
+```
+
+### 把昂貴的工作抽進 memoize 過的元件
+
+```tsx
+// CORRECT: 子元件只在 `items` 改變時才 re-render
+const Heavy = memo(function Heavy({ items }: { items: Item[] }) {
+  return &lt;Chart data={transform(items)} /&gt;;
+});
+```
+
+### 把預設的非 primitive props 提出來
+
+```tsx
+// INCORRECT: 每次 render 都產生新陣列，破壞 memo
+&lt;List items={items ?? []} /&gt;
+
+// CORRECT
+const EMPTY: Item[] = [];
+&lt;List items={items ?? EMPTY} /&gt;
+```
+
+### effect 裡的依賴用 primitive
+
+```tsx
+// INCORRECT: 每次 render 物件 identity 都是新的
+useEffect(() =&gt; {}, [{ id, name }]);
+
+// CORRECT: primitive
+useEffect(() =&gt; {}, [id, name]);
+```
+
+### 訂閱衍生的 boolean，不要訂閱原始值
+
+```tsx
+// INCORRECT: 購物車任何變動都會 re-render
+const cart = useStore((s) =&gt; s.cart);
+const hasItems = cart.length &gt; 0;
+
+// CORRECT: 只在「是否為空」翻轉時才 re-render
+const hasItems = useStore((s) =&gt; s.cart.length &gt; 0);
+```
+
+### 在 render 期間推導，絕對不要透過 `useEffect`
+
+```tsx
+// INCORRECT
+const [full, setFull] = useState(&quot;&quot;);
+useEffect(() =&gt; setFull(`${first} ${last}`), [first, last]);
+
+// CORRECT
+const full = `${first} ${last}`;
+```
+
+### 用 functional `setState` 取得穩定的 callback
+
+```tsx
+// CORRECT
+const increment = useCallback(() =&gt; setCount((c) =&gt; c + 1), []);
+```
+
+### 昂貴的值用 lazy state initializer
+
+```tsx
+const [tree] = useState(() =&gt; parseTree(largeInput));
+```
+
+### 單純的 primitive 不要用 memo
+
+`useMemo(() =&gt; x + 1, [x])` 是額外負擔。memo 的價值在物件 identity 和昂貴的運算。
+
+### 依賴獨立的 hook 要拆開
+
+```tsx
+// INCORRECT: 任一個來源改變，兩個 selector 都會重跑
+const { a, b } = useSomething(source1, source2);
+
+// CORRECT
+const a = useA(source1);
+const b = useB(source2);
+```
+
+### 把互動邏輯移進事件處理器
+
+事件處理器只在使用者動作時執行，`useEffect` 則是依賴一變就重跑。
+
+### 非緊急的更新用 `startTransition`
+
+```tsx
+const [pending, startTransition] = useTransition();
+startTransition(() =&gt; setFilters(newFilters));
+```
+
+### 昂貴的 render 用 `useDeferredValue`
+
+```tsx
+const deferredQuery = useDeferredValue(query);
+const results = useMemo(() =&gt; expensiveSearch(deferredQuery), [deferredQuery]);
+```
+
+### 短暫又頻繁的值用 `useRef`
+
+適用於經常改變、但不該觸發 re-render 的值（時間戳、最後一個按鍵、累加器）。
+
+### 不要在元件裡面定義元件
+
+```tsx
+// INCORRECT: 每次 Outer render，Inner 都是新的元件
+function Outer() {
+  const Inner = () =&gt; &lt;span /&gt;;
+  return &lt;Inner /&gt;;
+}
+```
+
+每次 render 都會產生新的 `Inner` 型別，破壞 reconciliation，還會讓子元件 unmount。
+
+## 6. 渲染效能（MEDIUM）
+
+### 動畫要動 wrapper，不要動 SVG
+
+對包住 SVG 的 `&lt;div&gt;` wrapper 做 transform 有 GPU 加速；直接 transform SVG 本身則會觸發 paint。
+
+### 長列表用 `content-visibility: auto`
+
+```css
+.row { content-visibility: auto; contain-intrinsic-size: auto 80px; }
+```
+
+瀏覽器會跳過畫面外的渲染，對有幾百列的列表是大幅改善。
+
+### 把靜態 JSX 提出來
+
+```tsx
+const STATIC_HEADER = &lt;h1&gt;Title&lt;/h1&gt;;
+function Page() {
+  return &lt;&gt;{STATIC_HEADER}&lt;Body /&gt;&lt;/&gt;;
+}
+```
+
+### SVG：降低座標精度
+
+`d=&quot;M10.123456,20.654321&quot;` → `d=&quot;M10.12,20.65&quot;`。每個位數都花 byte，而視覺差異只有 sub-pixel。
+
+### 用 inline script 讓 hydration 不閃爍
+
+hydration 之前就需要的值（theme、locale），用 inline `&lt;script&gt;` 在 React mount 之前設定 `document.documentElement.dataset.*`。
+
+### 小範圍地抑制預期中的 hydration 不一致
+
+```tsx
+&lt;time suppressHydrationWarning&gt;{new Date().toLocaleString()}&lt;/time&gt;
+```
+
+**只**用在已知會不一致的葉節點，絕對不要用在包含其他子節點的樹上。
+
+### 用 `&lt;Activity&gt;` 做顯示／隱藏，不要 mount/unmount
+
+React 19 的 `&lt;Activity mode=&quot;visible|hidden&quot;&gt;` 讓樹的 state 和 effect 保持 mount 但隱藏，對 tab 和 accordion 來說比 unmount/remount 便宜。
+
+### 條件渲染用三元運算子，不要用 `&amp;&amp;`
+
+```tsx
+// INCORRECT: `0` 會被渲染成文字節點
+{count &amp;&amp; &lt;Badge&gt;{count}&lt;/Badge&gt;}
+
+// CORRECT
+{count &gt; 0 ? &lt;Badge&gt;{count}&lt;/Badge&gt; : null}
+```
+
+### 載入狀態用 `useTransition`
+
+把 `startTransition` 搭配 action；下一個 state 計算期間，React 會把上一個 UI 顯示為 `isPending`。
+
+### React DOM 資源提示
+
+```tsx
+import { preload, preconnect } from &quot;react-dom&quot;;
+preload(&quot;/api/critical&quot;, { as: &quot;fetch&quot; });
+preconnect(&quot;https://api.example.com&quot;);
+```
+
+### `&lt;script&gt;` 標籤的 `defer` / `async`
+
+`defer` 用於在 DOMContentLoaded 之後依序執行；`async` 用於丟出去就不管。
+
+## 7. JavaScript 效能（LOW-MEDIUM）
+
+- **批次處理 DOM/CSS 變更**：用換 class 或 `cssText` 套用，不要一個屬性一個屬性改
+- **重複查找用 `Map`**：`O(1)` 對比 `O(n)` 線性掃描
+- **迴圈裡快取屬性存取**：`const len = arr.length`
+- **Memoize 純函式**：module 層級的 `Map&lt;key, result&gt;`
+- **快取 `localStorage` 的讀取**：同步 API；每次 render 只讀一次
+- **把 `filter().map()` 合併成一趟**：`flatMap` 或單一 `for`
+- 昂貴的比較之前，**先檢查陣列長度**
+- 函式**提早 return**
+- 把 **RegExp 提出**迴圈外：編譯不是免費的
+- 求最小／最大值用**迴圈**，不要用 `sort()`：`O(n)` 對比 `O(n log n)`
+- **成員檢查用 `Set`/`Map`**：`O(1)` 對比 `Array.includes` 的 `O(n)`
+- 在意不可變性時，用 **`toSorted()`** 而不是原地修改
+- 用 **`flatMap` 一趟完成 map 和 filter**
+- 非關鍵工作用 **`requestIdleCallback`**
+
+## 8. 進階模式（LOW）
+
+### `useEffectEvent` 的依賴
+
+`useEffectEvent` 的值是穩定的，**不要**把它們加進 effect 的依賴。
+
+### 事件處理器的 ref
+
+傳給 memoize 過的子元件的穩定 callback：
+
+```tsx
+const handlerRef = useRef(handler);
+useEffect(() =&gt; { handlerRef.current = handler; });
+const stable = useCallback((arg) =&gt; handlerRef.current(arg), []);
+```
+
+### 每次載入應用只初始化一次
+
+module 層級的 singleton（telemetry、logger），用 module 範圍的 flag 把關，不要用 `useEffect`。
+
+### 用 `useLatest` 取得穩定的 callback ref
+
+```tsx
+function useLatest&lt;T&gt;(value: T) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
+}
+```
+
+## 自動化工具
+
+這些規則很多現在都已經自動化了：
+
+- **Next.js 13.5+ Optimize Package Imports**：barrel import 最佳化
+- **React Compiler**（RFC，canary 中）：自動 memoization
+- **Turbopack**：更快的 build、更好的 tree-shaking
+- **Bundle Analyzer**（`@next/bundle-analyzer`）：視覺化首次載入的 JS
+
+專案採用 React Compiler 之後，把 `rerender-*` 的手動 memoization 規則降級成「只用於 review」，因為 compiler 會處理它們。手動寫 `useMemo`/`useCallback` 會變成多餘的雜訊。
+
+## Lighthouse / Web Vitals 對照
+
+| 指標 | 最相關的類別 |
+|---|---|
+| **LCP**（Largest Contentful Paint） | Waterfall、Bundle 大小、Resource Hint |
+| **INP**（Interaction to Next Paint） | Re-render、渲染、JavaScript |
+| **CLS**（Cumulative Layout Shift） | 渲染（Suspense 放置位置、圖片尺寸） |
+| **TBT**（Total Blocking Time） | Bundle 大小、JavaScript、延後載入第三方 |
+| **FID**（舊指標） | Bundle 大小、Hydration |
+
+## 相關
+
+- Skills：[react-patterns](../react-patterns/SKILL.md)、[react-testing](../react-testing/SKILL.md)、[frontend-patterns](../frontend-patterns/SKILL.md)、[accessibility](../accessibility/SKILL.md)、[nextjs-turbopack](../nextjs-turbopack/SKILL.md)
+- 規則：[rules/react/](../../rules/react/)
+- Agents：`react-reviewer` 在 code review 時強制執行這些規則；`react-build-resolver` 處理相關的 build 失敗
+- 指令：`/react-review`、`/react-build`、`/react-test`
+
+## 出處
+
+改編自 Vercel Labs 的 `react-best-practices` skill（MIT License，版權屬於 Vercel Engineering，v1.0.0，2026 年 1 月）。來源：[https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices)。
+
+這個 skill 把原本 70 條規則的目錄重新整理、改編成單一可瀏覽的參考。完整的原始規則集與延伸範例，請看上游 repo。</pre></section><section><h2>英文原文</h2><pre>---
+name: react-performance
+description: React and Next.js performance optimization patterns adapted from Vercel Engineering&#x27;s React Best Practices (https://github.com/vercel-labs/agent-skills). Organizes 70+ rules across 8 priority categories — waterfalls, bundle size, server-side, client fetching, re-render, rendering, JS micro-perf, advanced. Use when writing, reviewing, or refactoring React/Next.js code for performance.
+metadata:
+  origin: ECC
+---
+
+# React Performance
+
+Performance optimization patterns for React 18/19 and Next.js, adapted from [Vercel Labs `react-best-practices`](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) (MIT, v1.0.0). This skill organizes rules by priority and provides decision-tree guidance for active code review and refactoring.
+
+## When to Activate
+
+- Writing or reviewing React/Next.js code for performance
+- Diagnosing slow page loads, slow interactions, or high CPU on the client
+- Auditing bundle size or Lighthouse Core Web Vitals regressions
+- Removing waterfalls in Server Components / API routes
+- Reducing client-side re-renders
+- Optimizing long lists, animations, or hydration
+- Auditing optimization choices in PRs touching `app/`, `pages/`, `components/`, or data layers
+
+## Priority Index
+
+| Priority | Category | Prefix | When it matters |
+|---|---|---|---|
+| 1 — CRITICAL | Eliminating Waterfalls | `async-` | Anytime `await` is followed by independent `await` |
+| 2 — CRITICAL | Bundle Size Optimization | `bundle-` | First-load JS, route-level imports, third-party libs |
+| 3 — HIGH | Server-Side Performance | `server-` | RSC, Server Actions, API routes, SSR |
+| 4 — MEDIUM-HIGH | Client-Side Data Fetching | `client-` | SWR / TanStack Query / raw `fetch` in hooks |
+| 5 — MEDIUM | Re-render Optimization | `rerender-` | High-frequency state updates, parent-child fan-out |
+| 6 — MEDIUM | Rendering Performance | `rendering-` | Long lists, animations, hydration |
+| 7 — LOW-MEDIUM | JavaScript Performance | `js-` | Hot loops, frequent allocations |
+| 8 — LOW | Advanced Patterns | `advanced-` | Effect-event integration, stable refs |
+
+## 1. Eliminating Waterfalls (CRITICAL)
+
+&gt; &quot;Waterfalls are the #1 performance killer&quot; — every sequential `await` adds full network latency.
+
+### Cheap conditions before await
+
+Check sync conditions (props, env, hardcoded flags) before awaiting remote data.
+
+```ts
+// INCORRECT
+async function Page({ id }: { id: string }) {
+  const flag = await getFlag(&quot;show-page&quot;);
+  if (!flag || !id) return null;
+  const data = await getData(id);
+  // ...
+}
+
+// CORRECT — short-circuit on cheap sync condition first
+async function Page({ id }: { id: string }) {
+  if (!id) return null;
+  const flag = await getFlag(&quot;show-page&quot;);
+  if (!flag) return null;
+  const data = await getData(id);
+}
+```
+
+### Defer awaits until used
+
+Move `await` into the branch that uses it.
+
+```ts
+// INCORRECT — awaits before deciding it needs the data
+const user = await getUser(id);
+if (mode === &quot;guest&quot;) return renderGuest();
+return renderUser(user);
+
+// CORRECT
+if (mode === &quot;guest&quot;) return renderGuest();
+const user = await getUser(id);
+return renderUser(user);
+```
+
+### Promise.all for independent work
+
+```ts
+// INCORRECT — sequential
+const user = await getUser(id);
+const posts = await getPosts(id);
+const followers = await getFollowers(id);
+
+// CORRECT — parallel
+const [user, posts, followers] = await Promise.all([
+  getUser(id),
+  getPosts(id),
+  getFollowers(id),
+]);
+```
+
+### Partial dependencies — start early, await late
+
+```ts
+// CORRECT — kick off all promises, await only when each result is needed
+const userP = getUser(id);
+const postsP = getPosts(id);
+const profile = await getProfile(id);
+if (profile.private) return null;
+const [user, posts] = await Promise.all([userP, postsP]);
+```
+
+### Suspense for streaming
+
+Push `&lt;Suspense&gt;` boundaries close to the data so the page paints what it can while slower sub-trees stream in. The trade-off: layout shift when content arrives — reserve space (skeleton or `min-height`).
+
+### Server Components: parallel through composition
+
+```tsx
+// INCORRECT — sibling awaits run sequentially inside one component
+export default async function Page() {
+  const user = await getUser();
+  const cart = await getCart();
+  return &lt;View user={user} cart={cart} /&gt;;
+}
+
+// CORRECT — split into children, React runs them in parallel
+export default async function Page() {
+  return (
+    &lt;View&gt;
+      &lt;UserSection /&gt;
+      &lt;CartSection /&gt;
+    &lt;/View&gt;
+  );
+}
+```
+
+## 2. Bundle Size Optimization (CRITICAL)
+
+### Direct imports, not barrels
+
+Barrel `index.ts` files force the bundler to walk the entire module graph even when tree-shaking removes most of it. Direct imports save 200-800ms of first-load JS in many real-world apps.
+
+```ts
+// INCORRECT
+import { Button, Card, Modal } from &quot;@/components&quot;;
+
+// CORRECT
+import { Button } from &quot;@/components/Button&quot;;
+import { Card } from &quot;@/components/Card&quot;;
+import { Modal } from &quot;@/components/Modal&quot;;
+```
+
+Next.js 13.5+ has [Optimize Package Imports](https://nextjs.org/docs/app/api-reference/next-config-js/optimizePackageImports) that automates this for listed packages — use it; manual direct imports still required for non-listed libs.
+
+### Statically analyzable paths
+
+```ts
+// INCORRECT — defeats bundler/trace analysis
+const mod = await import(`./pages/${name}`);
+
+// CORRECT — explicit per branch
+const mod = name === &quot;home&quot; ? await import(&quot;./pages/home&quot;) : await import(&quot;./pages/about&quot;);
+```
+
+### Dynamic imports for heavy components
+
+```tsx
+import dynamic from &quot;next/dynamic&quot;;
+
+const HeavyChart = dynamic(() =&gt; import(&quot;./HeavyChart&quot;), {
+  loading: () =&gt; &lt;Skeleton /&gt;,
+  ssr: false, // when client-only
+});
+```
+
+### Defer third-party scripts
+
+Load analytics, logging, support widgets AFTER hydration. Use `next/script` with `strategy=&quot;afterInteractive&quot;` (default) or `&quot;lazyOnload&quot;`.
+
+### Conditional module loading
+
+```tsx
+if (user.role === &quot;admin&quot;) {
+  const { AdminPanel } = await import(&quot;./admin/AdminPanel&quot;);
+  // ...
+}
+```
+
+### Preload on hover/focus
+
+Trigger `&lt;link rel=&quot;preload&quot;&gt;` or `import()` on hover so the bundle is in cache by the time the user clicks.
+
+## 3. Server-Side Performance (HIGH)
+
+### Authenticate Server Actions like API routes
+
+Every `&quot;use server&quot;` function is a public endpoint. Authenticate AND authorize inside the action — never rely on the calling Client Component&#x27;s gating.
+
+```ts
+&quot;use server&quot;;
+export async function deleteUser(formData: FormData) {
+  const session = await getSession();
+  if (!session?.user) throw new Error(&quot;Unauthorized&quot;);
+  const targetId = String(formData.get(&quot;id&quot;));
+  if (session.user.role !== &quot;admin&quot; &amp;&amp; session.user.id !== targetId) {
+    throw new Error(&quot;Forbidden&quot;);
+  }
+  await db.user.delete({ where: { id: targetId } });
+}
+```
+
+### `React.cache()` for per-request deduplication
+
+```ts
+import { cache } from &quot;react&quot;;
+
+export const getUser = cache(async (id: string) =&gt; {
+  return db.user.findUnique({ where: { id } });
+});
+```
+
+`React.cache` dedupes within a single request. Calling `getUser(&quot;1&quot;)` from three Server Components in the same render = one DB query.
+
+### LRU cache for cross-request data
+
+For data that does NOT change per request (config, lookup tables), cache outside React with an LRU cache or `unstable_cache`.
+
+### Avoid duplicate serialization in RSC props
+
+When a Server Component renders the same data into multiple Client Components, the data is serialized once per consumer. Lift the Client Component up and pass children.
+
+### Hoist static I/O to module scope
+
+```ts
+// CORRECT — runs once at module load
+const fontData = readFileSync(fontPath);
+
+export async function Page() {
+  return &lt;Banner font={fontData} /&gt;;
+}
+```
+
+### No mutable module-level state in RSC/SSR
+
+Module state on the server is shared across all requests — a race condition between users. Use request-scoped storage (`headers()`, `cookies()`, async context) instead.
+
+### Minimize data passed to Client Components
+
+Only serialize what the Client needs. Strip fields, paginate, project columns at the DB layer.
+
+### Parallelize nested fetches with Promise.all per item
+
+```ts
+const users = await getUsers();
+const enriched = await Promise.all(
+  users.map(async (u) =&gt; ({ ...u, posts: await getPostsFor(u.id) })),
+);
+```
+
+### Use `after()` for non-blocking work
+
+Next.js 15 `after()` runs work after the response is sent — logging, cache warming, analytics.
+
+```ts
+import { after } from &quot;next/server&quot;;
+export async function GET() {
+  const data = await getData();
+  after(() =&gt; logAnalytics(data));
+  return Response.json(data);
+}
+```
+
+## 4. Client-Side Data Fetching (MEDIUM-HIGH)
+
+### SWR / TanStack Query for deduplication
+
+Multiple components calling `useUser(id)` should share one network request and one cache entry. Use SWR or TanStack Query — never roll your own `useEffect` + `fetch` for shared data.
+
+### Deduplicate global event listeners
+
+```tsx
+// INCORRECT — every component adds its own
+useEffect(() =&gt; {
+  window.addEventListener(&quot;scroll&quot;, handler);
+  return () =&gt; window.removeEventListener(&quot;scroll&quot;, handler);
+}, []);
+
+// CORRECT — single shared listener via a hook + global subject
+const useScroll = createScrollHook(); // singleton subject under the hood
+```
+
+### Passive listeners for scroll
+
+```ts
+window.addEventListener(&quot;scroll&quot;, handler, { passive: true });
+```
+
+Improves scrolling smoothness; the listener cannot `preventDefault()`.
+
+### localStorage: version + minimize
+
+- Always store a `version` field; bump on schema change and migrate or discard old data
+- Keep payloads small — `localStorage` is synchronous and blocks main thread
+
+## 5. Re-render Optimization (MEDIUM)
+
+### Don&#x27;t subscribe to state used only in callbacks
+
+```tsx
+// INCORRECT — re-renders every time count changes
+const count = useStore((s) =&gt; s.count);
+const handler = () =&gt; doSomething(count);
+
+// CORRECT — read once on call
+const handler = () =&gt; {
+  const count = useStore.getState().count;
+  doSomething(count);
+};
+```
+
+### Extract expensive work into memoized components
+
+```tsx
+// CORRECT — child re-renders only when `items` changes
+const Heavy = memo(function Heavy({ items }: { items: Item[] }) {
+  return &lt;Chart data={transform(items)} /&gt;;
+});
+```
+
+### Hoist default non-primitive props
+
+```tsx
+// INCORRECT — new array each render breaks memo
+&lt;List items={items ?? []} /&gt;
+
+// CORRECT
+const EMPTY: Item[] = [];
+&lt;List items={items ?? EMPTY} /&gt;
+```
+
+### Primitive dependencies in effects
+
+```tsx
+// INCORRECT — new object identity every render
+useEffect(() =&gt; {}, [{ id, name }]);
+
+// CORRECT — primitives
+useEffect(() =&gt; {}, [id, name]);
+```
+
+### Subscribe to derived booleans, not raw values
+
+```tsx
+// INCORRECT — re-renders for any cart change
+const cart = useStore((s) =&gt; s.cart);
+const hasItems = cart.length &gt; 0;
+
+// CORRECT — re-renders only when emptiness flips
+const hasItems = useStore((s) =&gt; s.cart.length &gt; 0);
+```
+
+### Derive during render, never via `useEffect`
+
+```tsx
+// INCORRECT
+const [full, setFull] = useState(&quot;&quot;);
+useEffect(() =&gt; setFull(`${first} ${last}`), [first, last]);
+
+// CORRECT
+const full = `${first} ${last}`;
+```
+
+### Functional `setState` for stable callbacks
+
+```tsx
+// CORRECT
+const increment = useCallback(() =&gt; setCount((c) =&gt; c + 1), []);
+```
+
+### Lazy state initializer for expensive values
+
+```tsx
+const [tree] = useState(() =&gt; parseTree(largeInput));
+```
+
+### Avoid memo for simple primitives
+
+`useMemo(() =&gt; x + 1, [x])` is overhead. Memo earns its keep on object identity and expensive computation.
+
+### Split hooks with independent deps
+
+```tsx
+// INCORRECT — both selectors re-run if either source changes
+const { a, b } = useSomething(source1, source2);
+
+// CORRECT
+const a = useA(source1);
+const b = useB(source2);
+```
+
+### Move interaction logic into event handlers
+
+Event handlers run only on the user action — `useEffect` re-runs whenever deps change.
+
+### `startTransition` for non-urgent updates
+
+```tsx
+const [pending, startTransition] = useTransition();
+startTransition(() =&gt; setFilters(newFilters));
+```
+
+### `useDeferredValue` for expensive renders
+
+```tsx
+const deferredQuery = useDeferredValue(query);
+const results = useMemo(() =&gt; expensiveSearch(deferredQuery), [deferredQuery]);
+```
+
+### `useRef` for transient frequent values
+
+For values that change often but should not trigger re-render (timestamps, last-key, accumulators).
+
+### Don&#x27;t define components inside components
+
+```tsx
+// INCORRECT — Inner is a new component on every Outer render
+function Outer() {
+  const Inner = () =&gt; &lt;span /&gt;;
+  return &lt;Inner /&gt;;
+}
+```
+
+Each render makes a new `Inner` type, defeating reconciliation and unmounting children.
+
+## 6. Rendering Performance (MEDIUM)
+
+### Animate the wrapper, not the SVG
+
+Transforming a `&lt;div&gt;` wrapper around an SVG is GPU-accelerated; transforming the SVG itself triggers paint.
+
+### `content-visibility: auto` for long lists
+
+```css
+.row { content-visibility: auto; contain-intrinsic-size: auto 80px; }
+```
+
+Browser skips offscreen rendering — major win for lists with hundreds of rows.
+
+### Hoist static JSX
+
+```tsx
+const STATIC_HEADER = &lt;h1&gt;Title&lt;/h1&gt;;
+function Page() {
+  return &lt;&gt;{STATIC_HEADER}&lt;Body /&gt;&lt;/&gt;;
+}
+```
+
+### SVG: reduce coordinate precision
+
+`d=&quot;M10.123456,20.654321&quot;` → `d=&quot;M10.12,20.65&quot;`. Each digit costs bytes; the visual difference is sub-pixel.
+
+### Hydration no-flicker via inline script
+
+For values needed before hydration (theme, locale), inline a `&lt;script&gt;` that sets `document.documentElement.dataset.*` before React mounts.
+
+### Suppress expected hydration mismatches narrowly
+
+```tsx
+&lt;time suppressHydrationWarning&gt;{new Date().toLocaleString()}&lt;/time&gt;
+```
+
+Use ONLY for known-divergent leaf nodes — never on a tree containing other children.
+
+### `&lt;Activity&gt;` for show/hide instead of mount/unmount
+
+React 19 `&lt;Activity mode=&quot;visible|hidden&quot;&gt;` keeps tree state and effects mounted but hides — cheaper than unmount/remount for tabs and accordions.
+
+### Ternary over `&amp;&amp;` for conditional render
+
+```tsx
+// INCORRECT — `0` renders as text node
+{count &amp;&amp; &lt;Badge&gt;{count}&lt;/Badge&gt;}
+
+// CORRECT
+{count &gt; 0 ? &lt;Badge&gt;{count}&lt;/Badge&gt; : null}
+```
+
+### `useTransition` for loading states
+
+Pair `startTransition` with the action; React shows the previous UI as `isPending` while the next state computes.
+
+### React DOM resource hints
+
+```tsx
+import { preload, preconnect } from &quot;react-dom&quot;;
+preload(&quot;/api/critical&quot;, { as: &quot;fetch&quot; });
+preconnect(&quot;https://api.example.com&quot;);
+```
+
+### `defer` / `async` on `&lt;script&gt;` tags
+
+`defer` for ordered execution after DOMContentLoaded; `async` for fire-and-forget.
+
+## 7. JavaScript Performance (LOW-MEDIUM)
+
+- **Batch DOM/CSS changes** — apply via class swap or `cssText`, not property-by-property
+- **`Map` for repeated lookups** — `O(1)` vs `O(n)` linear scan
+- **Cache property access in loops** — `const len = arr.length`
+- **Memoize pure functions** — module-level `Map&lt;key, result&gt;`
+- **Cache `localStorage` reads** — sync API; one read per render
+- **Combine `filter().map()` into one pass** — `flatMap` or single `for`
+- **Check array length first** before expensive comparisons
+- **Early return** from functions
+- **Hoist RegExp** out of loops — compilation is not free
+- **Loop for min/max** instead of `sort()` — `O(n)` vs `O(n log n)`
+- **`Set`/`Map` for membership** — `O(1)` vs `Array.includes` `O(n)`
+- **`toSorted()` over mutation** when immutability matters
+- **`flatMap` to map and filter in one pass**
+- **`requestIdleCallback`** for non-critical work
+
+## 8. Advanced Patterns (LOW)
+
+### `useEffectEvent` deps
+
+Values from `useEffectEvent` are stable — do NOT add them to effect deps.
+
+### Event handler refs
+
+For stable callbacks passed to memoized children:
+
+```tsx
+const handlerRef = useRef(handler);
+useEffect(() =&gt; { handlerRef.current = handler; });
+const stable = useCallback((arg) =&gt; handlerRef.current(arg), []);
+```
+
+### Init once per app load
+
+For module-level singletons (telemetry, logger), guard with a module-scope flag — not `useEffect`.
+
+### `useLatest` for stable callback refs
+
+```tsx
+function useLatest&lt;T&gt;(value: T) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
+}
+```
+
+## Automated Tools
+
+Many of these rules are now automated:
+
+- **Next.js 13.5+ Optimize Package Imports** — barrel import optimization
+- **React Compiler** (RFC, in canary) — auto-memoization
+- **Turbopack** — faster builds, better tree-shaking
+- **Bundle Analyzer** (`@next/bundle-analyzer`) — visualize first-load JS
+
+When the project ships React Compiler, demote `rerender-*` manual memoization rules to &quot;review-only&quot; — the compiler handles them. Manual `useMemo`/`useCallback` becomes unnecessary noise.
+
+## Lighthouse / Web Vitals Mapping
+
+| Metric | Most relevant categories |
+|---|---|
+| **LCP** (Largest Contentful Paint) | Waterfalls, Bundle Size, Resource Hints |
+| **INP** (Interaction to Next Paint) | Re-render, Rendering, JavaScript |
+| **CLS** (Cumulative Layout Shift) | Rendering (Suspense placement, image dimensions) |
+| **TBT** (Total Blocking Time) | Bundle Size, JavaScript, Defer Third-Party |
+| **FID** (legacy) | Bundle Size, Hydration |
+
+## Related
+
+- Skills: [react-patterns](../react-patterns/SKILL.md), [react-testing](../react-testing/SKILL.md), [frontend-patterns](../frontend-patterns/SKILL.md), [accessibility](../accessibility/SKILL.md), [nextjs-turbopack](../nextjs-turbopack/SKILL.md)
+- Rules: [rules/react/](../../rules/react/)
+- Agents: `react-reviewer` enforces these rules in code review; `react-build-resolver` handles related build failures
+- Commands: `/react-review`, `/react-build`, `/react-test`
+
+## Attribution
+
+Adapted from Vercel Labs `react-best-practices` skill (MIT License, copyright Vercel Engineering, v1.0.0 January 2026). Source: [https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices).
+
+This skill restructures and adapts the original 70-rule catalog into a single navigable reference. For the full original ruleset with extended examples, see the upstream repository.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

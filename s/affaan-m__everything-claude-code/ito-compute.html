@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ito-compute｜Skill 寫法圖鑑</title>
+<meta name="description" content="查 GPU 庫存、送 Itô 固定費率 RFQ，並說明算力租用的支援邊界">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ito-compute</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/ito-compute/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">查 GPU 庫存、送 Itô 固定費率 RFQ，並說明算力租用的支援邊界</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ito-compute
+description: 透過另外安裝的官方 CLI，查詢即時 GPU 庫存、送出經過認證的 Itô 固定費率 RFQ、檢查 RFQ 或採購狀態、撤銷裝置憑證，並執行有明確把關的節點資格驗證。使用者要找 H100/H200 算力、申請固定算力費率、查看 Itô 算力狀態、驗證 GPU 節點、撤銷 Itô 存取，或租用/購買 GPU 算力、而且需要說明支援範圍的邊界時使用。
+---
+
+# Itô Compute
+
+使用官方的 Itô compute CLI 或 MCP 伺服器。ECC 沒有實作平行的 client、本地模擬、預訂、
+工作負載執行器或推論伺服器。ECC 自己不做任何瀏覽器自動化。
+
+## Install the canonical local package
+
+`ito-compute-cli` 目前尚未發布。要從它的官方 repository 自己建置，
+不要用 `npx`、`npm exec` 或來路不明的套件：
+
+```sh
+git clone https://github.com/Ito-Markets/ito-cloud-runtime.git
+cd ito-cloud-runtime/cli/ito-compute-cli
+npm ci
+npm run check
+```
+
+把 `ECC_ITO_CLI_EXECUTABLE` 設成明確的絕對路徑，指向建置好的入口：
+
+```text
+/absolute/path/to/ito-cloud-runtime/cli/ito-compute-cli/dist/bin/ito.js
+```
+
+ECC 絕對不會透過 `PATH` 去尋找這個帶有憑證的 client。
+`ecc ito login` 執行的是裝置授權，而且絕對不會繼承 `ITO_API_KEY`。
+僅供驗證用的 `auth`，以及 `find` 和 `status`，在有設定時會直接轉發 `ITO_API_KEY`；
+不需要 `ITO_AUTH_MODE=legacy`。絕對不要把
+key 或 token 放進引數、被追蹤的檔案、MCP 結果、log 或對話中。
+
+## CLI workflow
+
+1. 第一次操作之前先執行 `ecc ito login`。ECC 會把這件事委派給
+   官方 CLI 的裝置授權，它預設會打開 Itô 驗證頁面，
+   並把裝置 token 存進 macOS Keychain。用
+   `ecc ito login --no-browser` 可以不跳出頁面。ECC 自己不做
+   瀏覽器自動化。如果發起的 agent 無法完成需要登入的瀏覽器步驟，就把確切的指令交給使用者；等核准完成之後，
+   回到原本的任務，繼續執行 `ecc ito auth`。
+   裝置 token 預設使用 macOS Keychain。改用檔案 token 必須是明確的選擇，
+   而且它的資料夾和 token 檔案都必須維持僅限擁有者存取（0700 和 0600）。
+2. 執行 `ecc ito auth` 來驗證既有憑證；它絕對不會啟動登入，
+   而且會拒絕 `--no-browser`。
+3. 在 `ecc ito find` 之前，要先取得買方明確同意送出 RFQ 的授權。
+   - 必須有 `gpu`、`count`、整數的 `days`、`max-rate`、`nodes`、
+     `gpus-per-node`、`storage-tb`、`start-window`、`form-factor`、
+     `contract-type`、`fabric`、`region`，以及是否允許分批滿足的決定。
+   - 要求 `count == nodes * gpus-per-node`；絕對不要自己推導拓撲。
+   - 只有在買方明確接受任何 fabric 或 region 時，才用 `any`。
+   - 省略 `--allow-split` 代表 false。
+4. 執行即時的 RFQ 指令：
+
+   ```sh
+   ecc ito find \
+     --gpu h200 \
+     --count 8 \
+     --nodes 1 \
+     --gpus-per-node 8 \
+     --days 30 \
+     --storage-tb 1 \
+     --start-window 2099-08-15 \
+     --max-rate 3.00 \
+     --form-factor bare_metal \
+     --contract-type reservation \
+     --fabric infiniband \
+     --region us-east-1
+   ```
+
+5. 執行 `ecc ito status` 來檢查 RFQ 和採購訂單。
+   遇到不確定的傳輸失敗之後，要先查狀態，再重複 `find`。
+6. 當報價準備好，而且買方明確同意時，接受它：
+
+   ```sh
+   ecc ito accept rfq_&lt;ticket-id&gt;
+   ```
+
+   這會把票據送到交易台做人工審核。它不會轉移資金，
+   也不會預訂容量。沒有買方的明確授權，不要接受。
+7. 只有在使用者明確要求撤銷這台裝置時，才執行 `ecc ito logout`。
+   遠端撤銷失敗時，官方 CLI 會保留本地憑證，讓
+   操作者可以重試；絕對不要手動刪除 token 來代替。
+
+庫存價格只是參考價。RFQ 不等於預訂容量。只有當官方結果包含
+非 null 的確定報價時，才把費率視為固定。
+
+## Live node qualification
+
+`ecc ito evals` 把官方 CLI 狹窄的即時轉接器，開放給另外安裝的
+`sixtytwo-cli==0.3.33`。它不會透過 ECC 開放本地 fixture 的執行。
+呼叫它之前，必須全部滿足以下條件：
+
+- 營運者授權可以聯絡指名的節點；
+- `ITO_ENABLE_SIXTYTWO_LIVE=1`；
+- `--live-sixtytwo`；
+- 明確的節點清單；以及
+- 一個已存在的絕對路徑設定資料夾，裡面有 `sixtytwo.yaml`。
+
+```sh
+ecc ito evals \
+  --cluster clu_prod_example \
+  --live-sixtytwo \
+  --nodes gpu-01,gpu-02 \
+  --config-dir /absolute/path/to/qualification-config
+```
+
+官方轉接器只能對明確指定的節點，執行固定版本的檢查和
+`sixtytwo test --full`。它不能租用、啟動、
+復原、修復、重置、購買或訂購任何資源。ECC 不會把
+`ITO_API_KEY` 或模型/雲端憑證轉發到節點資格驗證裡。
+
+## MCP workflow
+
+建置官方套件，然後用絕對路徑設定 stdio 伺服器：
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;ito-compute&quot;: {
+      &quot;command&quot;: &quot;node&quot;,
+      &quot;args&quot;: [
+        &quot;/absolute/path/to/ito-cloud-runtime/cli/ito-compute-cli/dist/bin/ito-mcp.js&quot;
+      ]
+    }
+  }
+}
+```
+
+這個伺服器只開放：
+
+- `ito_auth`
+- `ito_find`
+- `ito_status`
+- `ito_accept`
+
+`ito_auth` 驗證既有憑證；它不會啟動裝置登入。使用
+`ito_auth`，收集買方明確的授權和每一項硬性限制，呼叫
+`ito_find`，需要時再用 `ito_status` 輪詢。當報價準備好，而且
+買方明確同意時，用票據 id 呼叫 `ito_accept`。交易台的
+報價通常只是參考價，在交易台確認之前沒有約束力；結果會帶有 `quote_class`。
+
+## Rent or purchase semantics
+
+`find` 會送出 RFQ，可能回傳確定報價，但它不會租用、
+購買、預訂、佈建或轉移資金。`accept` 把報價送到交易台
+做人工審核；它不會轉移資金，也不會預訂容量。`status` 是
+偏讀取的操作，不過供應商的端點可能會對帳既有的採購
+訂單。ECC 說明裡那個被動的 dashboard 連結，是使用者自己操作的另一條網頁
+路徑；不要拿來當成缺少 CLI 功能時的替代品去開啟或操作。
+
+## Unsupported operations
+
+支援的 client 介面無法鎖定報價、預訂容量、執行
+工作負載或提供推論服務。`accept` 是交給交易台的交接，不是購買。
+MCP 伺服器不開放資格驗證；請使用上面明確的 CLI 指令。不要
+自己發明額外的工具或購買路徑。本地 CLI 不存在或即時操作失敗時，
+不要用瀏覽器或 fixture 來替代。回報缺少的功能，然後停下來。</pre></section><section><h2>英文原文</h2><pre>---
+name: ito-compute
+description: Query live GPU inventory, submit an authenticated Itô fixed-rate RFQ, inspect RFQ or procurement status, revoke device credentials, and run explicitly gated node qualification through the separately installed canonical CLI. Use when a user asks to find H100/H200 capacity, request a fixed compute rate, check Itô compute status, validate GPU nodes, revoke Itô access, or rent or purchase GPU compute and needs the supported boundary explained.
+---
+
+# Itô Compute
+
+Use the canonical Itô compute CLI or MCP server. ECC does not implement a
+parallel client, local simulation, reservation, workload runner, or inference
+server. ECC itself does no browser automation.
+
+## Install the canonical local package
+
+`ito-compute-cli` is currently unpublished. Build it from its canonical
+repository instead of using `npx`, `npm exec`, or an unverified package:
+
+```sh
+git clone https://github.com/Ito-Markets/ito-cloud-runtime.git
+cd ito-cloud-runtime/cli/ito-compute-cli
+npm ci
+npm run check
+```
+
+Set `ECC_ITO_CLI_EXECUTABLE` to the explicit absolute built entry:
+
+```text
+/absolute/path/to/ito-cloud-runtime/cli/ito-compute-cli/dist/bin/ito.js
+```
+
+ECC never discovers this credential-bearing client through `PATH`.
+`ecc ito login` performs device authorization and never inherits `ITO_API_KEY`.
+The validation-only `auth`, plus `find` and `status`, forward `ITO_API_KEY`
+directly when configured; `ITO_AUTH_MODE=legacy` is not required. Never put a
+key or token in arguments, tracked files, MCP results, logs, or chat.
+
+## CLI workflow
+
+1. Run `ecc ito login` before the first operation. ECC delegates this to the
+   canonical CLI&#x27;s device authorization, which opens the Itô verification page
+   by default and persists a device token in macOS Keychain. Use
+   `ecc ito login --no-browser` to suppress the page handoff. ECC itself does no
+   browser automation. If the originating agent cannot complete the signed-in
+   browser step, hand the exact command to the user; after approval finishes,
+   return to the originating task and continue with `ecc ito auth`.
+   Device tokens use macOS Keychain by default. File-token fallback is explicit
+   and its directory and token file must remain owner-only (0700 and 0600).
+2. Run `ecc ito auth` to validate existing credentials; it never starts login
+   and rejects `--no-browser`.
+3. Before `ecc ito find`, obtain explicit buyer authority to submit an RFQ.
+   - Require `gpu`, `count`, whole `days`, `max-rate`, `nodes`,
+     `gpus-per-node`, `storage-tb`, `start-window`, `form-factor`,
+     `contract-type`, `fabric`, `region`, and the split-fill decision.
+   - Require `count == nodes * gpus-per-node`; never derive topology.
+   - Use `any` only when the buyer explicitly accepts any fabric or region.
+   - Omitted `--allow-split` means false.
+4. Run the live RFQ command:
+
+   ```sh
+   ecc ito find \
+     --gpu h200 \
+     --count 8 \
+     --nodes 1 \
+     --gpus-per-node 8 \
+     --days 30 \
+     --storage-tb 1 \
+     --start-window 2099-08-15 \
+     --max-rate 3.00 \
+     --form-factor bare_metal \
+     --contract-type reservation \
+     --fabric infiniband \
+     --region us-east-1
+   ```
+
+5. Run `ecc ito status` to inspect RFQs and procurement orders.
+   After an ambiguous transport failure, check status before repeating `find`.
+6. When a quote is ready and the buyer explicitly approves, accept it:
+
+   ```sh
+   ecc ito accept rfq_&lt;ticket-id&gt;
+   ```
+
+   This routes the ticket to the desk for human review. It does not move funds
+   or reserve capacity. Do not accept without explicit buyer authority.
+7. Run `ecc ito logout` when the user explicitly asks to revoke this device.
+   The canonical CLI keeps the local credential when remote revocation fails so
+   the operator can retry; never delete the token manually as a substitute.
+
+Inventory prices are indicative. An RFQ is not reserved capacity. Treat a rate
+as fixed only when the canonical result contains a non-null firm quote.
+
+## Live node qualification
+
+`ecc ito evals` exposes the canonical CLI&#x27;s narrow live adapter to a separately
+installed `sixtytwo-cli==0.3.33`. It does not expose local fixture execution
+through ECC.
+Require all of the following before invoking it:
+
+- operator authorization to contact the named nodes;
+- `ITO_ENABLE_SIXTYTWO_LIVE=1`;
+- `--live-sixtytwo`;
+- an explicit node list; and
+- an existing absolute config directory containing `sixtytwo.yaml`.
+
+```sh
+ecc ito evals \
+  --cluster clu_prod_example \
+  --live-sixtytwo \
+  --nodes gpu-01,gpu-02 \
+  --config-dir /absolute/path/to/qualification-config
+```
+
+The canonical adapter can run only the pinned version check and
+`sixtytwo test --full` against the explicit nodes. It cannot rent, launch,
+recover, repair, reset, purchase, or order resources. ECC does not forward
+`ITO_API_KEY` or model/cloud credentials into node qualification.
+
+## MCP workflow
+
+Build the canonical package, then configure the stdio server with an absolute
+path:
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;ito-compute&quot;: {
+      &quot;command&quot;: &quot;node&quot;,
+      &quot;args&quot;: [
+        &quot;/absolute/path/to/ito-cloud-runtime/cli/ito-compute-cli/dist/bin/ito-mcp.js&quot;
+      ]
+    }
+  }
+}
+```
+
+The server exposes only:
+
+- `ito_auth`
+- `ito_find`
+- `ito_status`
+- `ito_accept`
+
+`ito_auth` validates existing credentials; it does not start device login. Use
+`ito_auth`, gather explicit buyer authority and every hard constraint, call
+`ito_find`, then poll with `ito_status` when needed. When a quote is ready and
+the buyer explicitly approves, call `ito_accept` with the ticket id. Desk
+quotes are usually indicative and nonbinding until the desk confirms; the
+result carries `quote_class`.
+
+## Rent or purchase semantics
+
+`find` submits an RFQ and may return a firm quote, but it does not rent,
+purchase, reserve, provision, or move funds. `accept` routes a quote to the desk
+for human review; it does not move funds or reserve capacity. `status` is
+read-oriented, though the provider endpoint may reconcile an existing procurement
+order. The passive dashboard link in ECC help is a separate user-operated web
+route; do not open or operate it as a substitute for a missing CLI capability.
+
+## Unsupported operations
+
+The supported client surface cannot lock quotes, reserve capacity, execute
+workloads, or serve inference. `accept` is a desk handoff, not a purchase. The
+MCP server does not expose qualification; use the explicit CLI command above. Do
+not invent additional tools or a purchase path. Do not substitute a browser or
+fixture when the local CLI is missing or a live operation fails. Report the
+missing capability and stop.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>context-budget｜Skill 寫法圖鑑</title>
+<meta name="description" content="即時 context 用量導向原生指令，靜態稽核只在明確要求時做">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>context-budget</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/context-budget/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">即時 context 用量導向原生指令，靜態稽核只在明確要求時做</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: context-budget
+description: 把即時的 context 檢查導向 Codex 或 Claude Code 原生的計量器，不掃描檔案；只有在被明確要求時，才執行有界限的靜態元件稽核。適用於詢問剩餘容量或已安裝的 context 開銷的 context-budget 需求。
+metadata:
+  origin: ECC
+---
+
+# Context Budget
+
+即時的 session 用量，用供應商原生的計量器。把另外一套、
+估算性質的安裝稽核，放在明確 opt-in 之後才做。
+
+## Default: Live Context
+
+沒有要求稽核的呼叫，一律當成即時 context 的請求。
+包括詢問目前的視窗、剩餘容量、餘裕、token
+用量，或 context 明細。
+
+這條預設路徑：
+
+- 不要呼叫或使用工具。
+- 不要掃描或讀取檔案。
+- 不要執行 shell 指令、供應商 CLI、除錯記錄或 MCP 探索。
+- 只回覆原生指令，加上一句簡短的說明。
+
+依目前啟用的 harness 導向：
+
+| Harness | Native command | Guidance |
+| --- | --- | --- |
+| Codex CLI | `/status` | 顯示目前的 token 用量和剩餘的 context 容量。用 `/statusline` 並啟用 **Context stats** 加 **Token counters**，就能在頁尾常駐顯示計量器。 |
+| Codex app | `/status` | 顯示目前對話串的 context 用量和速率限制。 |
+| Claude Code | `/context` | 顯示即時的 context 明細。用 `/context all` 看展開的項目。 |
+| Other or unknown | None verified | 說明 ECC 無法讀取供應商的即時狀態，並問目前用的是哪個 harness。 |
+
+這些指令記載在 [Codex 指令參考](https://developers.openai.com/codex/cli/slash-commands)和 [Claude Code 指令參考](https://code.claude.com/docs/en/commands)。
+
+Skill 無法代替使用者呼叫 TUI 的斜線指令。絕對不要用估算的掃描
+取代原生指令，也絕對不要從「context 很重」或「還剩多少」
+這類說法去推斷使用者要求稽核。
+
+## Explicit Static Audit
+
+只有在使用者明確說出
+`--audit`、「audit installed components」，或同樣明確無歧義的措辭時，才執行安裝/設定稽核。
+`--verbose` 只會改變報告的細節程度，它本身不代表 opt-in 稽核。
+
+如果稽核範圍不明確，在讀取任何東西之前，先問 harness
+和安裝根目錄。每次稽核都要有界限而且唯讀：
+
+1. 只檢查指名的 plugin/安裝根目錄，以及指名的 harness 已知的
+   設定檔。
+2. 絕對不要遞迴列舉 workspace 根目錄、家目錄、供應商
+   快取、對話記錄、除錯記錄或不相關的 worktree。
+3. 絕對不要為了計算工具數量而啟動供應商 CLI、MCP 伺服器或除錯 session。
+4. 每個元件類別的清單輸出上限是 50 個項目。其餘的用摘要帶過。
+5. 不要寫暫存記錄，也不要把設定內容複製進報告。
+
+只稽核跟 eager discovery（預先探索）有關的元件 metadata：
+
+- agent 和 skill 的描述；
+- 當 harness 預先探索指令時，指令的描述；
+- 在明確指名的範圍內、永遠載入的指示檔案；
+- 現有有界限的 manifest 有公開時，已設定的 MCP 工具 schema。
+
+完整的 skill、agent、指令和規則本文，通常是按需載入的內容。
+把它們的磁碟大小，跟估算的 eager 開銷分開回報，不要
+把每份本文都加進 session 基準裡。
+
+## Audit Output
+
+回傳一份精簡的報告，包含：
+
+- harness 和實際檢查過的路徑；
+- 依元件類別估算的 eager/探索開銷；
+- 已安裝的數量，和最重的 metadata 項目；
+- 假設、無法取得的量測，以及最多三項最佳化建議。
+
+每個計算出來的 token 數字，都是靜態設定開銷的估算，
+不是即時的 session context。不要宣稱估算值是供應商回報的、
+目前的、精確的，或是已實現節省的證據。把使用者引導回
+原生的即時 context 指令，查看目前的用量。
+
+## Optional Selected-Record Diagnostic
+
+只有在使用者為了這個診斷明確選定某個檔案時，才檢查已持久化的記錄。這跟預設的即時 context 請求和安裝稽核是分開的。
+
+做本地檔案診斷時，要明確選定一個穩定、一般的 JSONL 檔案，或是你
+打算檢查的快照。把下面範例的路徑換掉；這不會去尋找或重新連回 session。
+這段程式碼只會印出彙總的位元組數。它一次讀一行，所以記憶體用量取決於
+最大的那筆記錄；避免很大的記錄和還在持續成長的檔案。
+
+```sh
+python3 - &quot;/path/to/selected-session.jsonl&quot; &lt;&lt;&#x27;EOF&#x27;
+import json
+import sys
+
+total = attachment = other = unclassified = 0
+try:
+    with open(sys.argv[1], &quot;rb&quot;) as source:
+        for raw in source:
+            size = len(raw)
+            total += size
+            try:
+                record = json.loads(raw.decode(&quot;utf-8&quot;))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                unclassified += size
+                continue
+            record_type = record.get(&quot;type&quot;) if isinstance(record, dict) else None
+            if not isinstance(record_type, str):
+                unclassified += size
+            elif record_type == &quot;attachment&quot;:
+                attachment += size
+            else:
+                other += size
+except OSError:
+    print(&quot;Cannot read selected JSONL file.&quot;, file=sys.stderr)
+    raise SystemExit(1)
+
+pct = attachment * 100.0 / total if total else 0.0
+print(f&quot;persisted {total}B | attachment records {attachment}B ({pct:.1f}%) | &quot;
+      f&quot;other records {other}B | unclassified {unclassified}B&quot;)
+EOF
+```
+
+三個類別加起來等於原始檔案的位元組數，包含換行符號和空白行。
+`attachment` 是精確的記錄類型過濾，不保證符合 harness 目前內部的
+schema。其他記錄的 `type` 是不同的字串；格式錯誤的 JSON、無效的 UTF-8、非物件的
+值、缺少或非字串的 type，以及空白行，都歸為 unclassified。這兩個類別都不代表
+「對話」，百分比也只是已持久化位元組數的佔比。
+
+這些數字無法證明目前使用中的 context、剩餘空間、token 用量、計費，或是重新連線時會載入什麼。
+要看 harness 回報的目前 context 和用量，請使用對應版本的
+[`/context` 和 `/usage` 指令（`/cost` 是別名）](https://code.claude.com/docs/en/commands)。</pre></section><section><h2>英文原文</h2><pre>---
+name: context-budget
+description: Routes live context checks to the native Codex or Claude Code meter without scanning files, and performs a bounded static component audit only when explicitly requested. Use for context-budget requests about remaining capacity or installed context overhead.
+metadata:
+  origin: ECC
+---
+
+# Context Budget
+
+Use the provider&#x27;s native meter for live session usage. Keep the separate,
+estimated installation audit behind an explicit opt-in.
+
+## Default: Live Context
+
+Treat an invocation with no audit request as a live-context request. This
+includes requests for the current window, remaining capacity, headroom, token
+usage, or a context breakdown.
+
+For this default path:
+
+- Do not call or use tools.
+- Do not scan or read files.
+- Do not run shell commands, provider CLIs, debug logging, or MCP discovery.
+- Reply with only the native command and one short explanation.
+
+Route by the active harness:
+
+| Harness | Native command | Guidance |
+| --- | --- | --- |
+| Codex CLI | `/status` | Shows current token usage and remaining context capacity. Use `/statusline` and enable **Context stats** plus **Token counters** for a persistent footer meter. |
+| Codex app | `/status` | Shows current thread context usage and rate limits. |
+| Claude Code | `/context` | Shows the live context breakdown. Use `/context all` for expanded items. |
+| Other or unknown | None verified | State that ECC cannot read live provider state and ask which harness is active. |
+
+These commands are documented in the [Codex command reference](https://developers.openai.com/codex/cli/slash-commands) and [Claude Code command reference](https://code.claude.com/docs/en/commands).
+
+A skill cannot invoke a TUI slash command on the user&#x27;s behalf. Never replace
+the native command with an estimated scan and never infer an audit request from
+phrases such as “context is heavy” or “how much is left.”
+
+## Explicit Static Audit
+
+Run an installation/configuration audit only when the user explicitly says
+`--audit`, “audit installed components,” or equivalent unambiguous wording.
+`--verbose` changes report detail; it does not opt into an audit by itself.
+
+If the audit scope is ambiguous, ask for the harness and installation root
+before reading anything. Keep every audit bounded and read-only:
+
+1. Inspect only the named plugin/install root and the named harness&#x27;s known
+   configuration files.
+2. Never recursively enumerate the workspace root, home directory, provider
+   cache, transcripts, debug logs, or unrelated worktrees.
+3. Never launch a provider CLI, MCP server, or debug session to count tools.
+4. Cap inventory output at 50 entries per component class. Summarize the rest.
+5. Do not write temporary logs or copy configuration content into the report.
+
+Audit only the component metadata relevant to eager discovery:
+
+- agent and skill descriptions;
+- command descriptions when the harness discovers them eagerly;
+- always-loaded instruction files in the explicitly named scope;
+- configured MCP tool schemas when an existing bounded manifest exposes them.
+
+Full skill, agent, command, and rule bodies are generally on-demand content.
+Report their disk size separately from estimated eager overhead instead of
+adding every body to the session baseline.
+
+## Audit Output
+
+Return a compact report containing:
+
+- harness and exact paths inspected;
+- estimated eager/discovery overhead by component class;
+- installed counts and the heaviest metadata entries;
+- assumptions, unavailable measurements, and up to three optimizations.
+
+Every calculated token number is an estimate of static configuration overhead,
+not live session context. Do not claim that an estimate is provider-reported,
+current, exact, or evidence of realized savings. Direct the user back to the
+native live-context command for current usage.
+
+## Optional Selected-Record Diagnostic
+
+Inspect a persisted record only when the user explicitly selects that file for this diagnostic. This is separate from the default live-context request and the installation audit.
+
+For a local file diagnostic, explicitly select a stable, regular JSONL file or a snapshot you
+intend to inspect. Replace the example path below; this does not find or reconnect a session.
+The snippet prints aggregate byte counts only. It reads one line at a time, so memory use depends
+on the largest record; avoid very large records and actively growing files.
+
+```sh
+python3 - &quot;/path/to/selected-session.jsonl&quot; &lt;&lt;&#x27;EOF&#x27;
+import json
+import sys
+
+total = attachment = other = unclassified = 0
+try:
+    with open(sys.argv[1], &quot;rb&quot;) as source:
+        for raw in source:
+            size = len(raw)
+            total += size
+            try:
+                record = json.loads(raw.decode(&quot;utf-8&quot;))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                unclassified += size
+                continue
+            record_type = record.get(&quot;type&quot;) if isinstance(record, dict) else None
+            if not isinstance(record_type, str):
+                unclassified += size
+            elif record_type == &quot;attachment&quot;:
+                attachment += size
+            else:
+                other += size
+except OSError:
+    print(&quot;Cannot read selected JSONL file.&quot;, file=sys.stderr)
+    raise SystemExit(1)
+
+pct = attachment * 100.0 / total if total else 0.0
+print(f&quot;persisted {total}B | attachment records {attachment}B ({pct:.1f}%) | &quot;
+      f&quot;other records {other}B | unclassified {unclassified}B&quot;)
+EOF
+```
+
+The three categories add up to the original file bytes, including line endings and blank lines.
+`attachment` is an exact record-type filter, not a guarantee about a harness&#x27;s current internal
+schema. Other records have a different string `type`; malformed JSON, invalid UTF-8, nonobject
+values, missing or non-string types, and blank lines are unclassified. Neither category means
+&quot;conversation,&quot; and the percentage is only a share of persisted bytes.
+
+These counts do not establish active context, remaining room, token usage, billing, or what a
+reconnect loads. For current harness-reported context and usage, use the version-appropriate
+[`/context` and `/usage` commands (`/cost` is an alias)](https://code.claude.com/docs/en/commands).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

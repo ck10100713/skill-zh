@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>canary-watch｜Skill 寫法圖鑑</title>
+<meta name="description" content="部署後持續監控 URL，抓 HTTP、console、效能退化">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>canary-watch</h1>
+<p class="meta">affaan-m ｜ 部署與發布 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/canary-watch/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">部署後持續監控 URL，抓 HTTP、console、效能退化</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: canary-watch
+description: 發布後用這個 skill 監控並驗證已部署的 URL，在部署、merge 或依賴升級之後，檢查 HTTP endpoint、SSE 串流、靜態資源、console 錯誤和效能退化。屬於冒煙測試 / canary / 部署後驗證。
+metadata:
+  origin: ECC
+---
+
+# Canary Watch — Post-Deploy Monitoring
+
+## When to Use
+
+- 部署到 production 或 staging 之後
+- merge 了有風險的 PR 之後
+- 想確認某個修正真的修好了
+- 上線時段的持續監控
+- 依賴升級之後
+
+## How It Works
+
+監控已部署的 URL 有沒有退化。持續循環執行，直到被停止或監看時間到期。
+
+### What It Watches
+
+```
+1. HTTP Status — is the page returning 200?
+2. Console Errors — new errors that weren&#x27;t there before?
+3. Network Failures — failed API calls, 5xx responses?
+4. Performance — LCP/CLS/INP regression vs baseline?
+5. Content — did key elements disappear? (h1, nav, footer, CTA)
+6. API Health — are critical endpoints responding within SLA?
+7. Static Assets — are JS, CSS, image, and font requests returning 2xx/3xx with expected content types?
+8. SSE Streams — do event-stream endpoints connect and receive an initial event or heartbeat?
+```
+
+### Watch Modes
+
+**快速檢查**（預設）：跑一輪，回報結果
+```
+/canary-watch https://myapp.com
+```
+
+**持續監看**：每 N 分鐘檢查一次，持續 M 小時
+```
+/canary-watch https://myapp.com --interval 5m --duration 2h
+```
+
+**Diff 模式**：比較 staging 和 production
+```
+/canary-watch --compare https://staging.myapp.com https://myapp.com
+```
+
+### Alert Thresholds
+
+```yaml
+critical:  # immediate alert
+  - HTTP status != 200
+  - Console error count &gt; 5 (new errors only)
+  - LCP &gt; 4s
+  - API endpoint returns 5xx
+  - Static asset returns 4xx/5xx
+  - SSE endpoint cannot connect or drops before first heartbeat
+
+warning:   # flag in report
+  - LCP increased &gt; 500ms from baseline
+  - CLS &gt; 0.1
+  - New console warnings
+  - Response time &gt; 2x baseline
+  - Static asset content type changed unexpectedly
+  - SSE heartbeat latency &gt; 2x baseline
+
+info:      # log only
+  - Minor performance variance
+  - New network requests (third-party scripts added?)
+```
+
+### Notifications
+
+超過 critical 門檻時：
+- 桌面通知（macOS/Linux）
+- 選用：Slack/Discord webhook
+- 記錄到 `~/.claude/canary-watch.log`
+
+## Output
+
+```markdown
+## Canary Report — myapp.com — 2026-03-23 03:15 PST
+
+### Status: HEALTHY ✓
+
+| Check | Result | Baseline | Delta |
+|-------|--------|----------|-------|
+| HTTP | 200 ✓ | 200 | — |
+| Console errors | 0 ✓ | 0 | — |
+| LCP | 1.8s ✓ | 1.6s | +200ms |
+| CLS | 0.01 ✓ | 0.01 | — |
+| API /health | 145ms ✓ | 120ms | +25ms |
+| Static assets | 42/42 ✓ | 42/42 | — |
+| SSE /events | connected ✓ | connected | +80ms heartbeat |
+
+### No regressions detected. Deploy is clean.
+```
+
+## Integration
+
+可以搭配：
+- `/browser-qa` 做部署前的驗證
+- Hooks：加成 `git push` 上的 PostToolUse hook，部署後自動檢查
+- CI：在 GitHub Actions 的部署步驟之後執行</pre></section><section><h2>英文原文</h2><pre>---
+name: canary-watch
+description: Use this skill to monitor and verify a deployed URL after releases — checks HTTP endpoints, SSE streams, static assets, console errors, and performance regressions after deploys, merges, or dependency upgrades. Smoke / canary / post-deploy verification.
+metadata:
+  origin: ECC
+---
+
+# Canary Watch — Post-Deploy Monitoring
+
+## When to Use
+
+- After deploying to production or staging
+- After merging a risky PR
+- When you want to verify a fix actually fixed it
+- Continuous monitoring during a launch window
+- After dependency upgrades
+
+## How It Works
+
+Monitors a deployed URL for regressions. Runs in a loop until stopped or until the watch window expires.
+
+### What It Watches
+
+```
+1. HTTP Status — is the page returning 200?
+2. Console Errors — new errors that weren&#x27;t there before?
+3. Network Failures — failed API calls, 5xx responses?
+4. Performance — LCP/CLS/INP regression vs baseline?
+5. Content — did key elements disappear? (h1, nav, footer, CTA)
+6. API Health — are critical endpoints responding within SLA?
+7. Static Assets — are JS, CSS, image, and font requests returning 2xx/3xx with expected content types?
+8. SSE Streams — do event-stream endpoints connect and receive an initial event or heartbeat?
+```
+
+### Watch Modes
+
+**Quick check** (default): single pass, report results
+```
+/canary-watch https://myapp.com
+```
+
+**Sustained watch**: check every N minutes for M hours
+```
+/canary-watch https://myapp.com --interval 5m --duration 2h
+```
+
+**Diff mode**: compare staging vs production
+```
+/canary-watch --compare https://staging.myapp.com https://myapp.com
+```
+
+### Alert Thresholds
+
+```yaml
+critical:  # immediate alert
+  - HTTP status != 200
+  - Console error count &gt; 5 (new errors only)
+  - LCP &gt; 4s
+  - API endpoint returns 5xx
+  - Static asset returns 4xx/5xx
+  - SSE endpoint cannot connect or drops before first heartbeat
+
+warning:   # flag in report
+  - LCP increased &gt; 500ms from baseline
+  - CLS &gt; 0.1
+  - New console warnings
+  - Response time &gt; 2x baseline
+  - Static asset content type changed unexpectedly
+  - SSE heartbeat latency &gt; 2x baseline
+
+info:      # log only
+  - Minor performance variance
+  - New network requests (third-party scripts added?)
+```
+
+### Notifications
+
+When a critical threshold is crossed:
+- Desktop notification (macOS/Linux)
+- Optional: Slack/Discord webhook
+- Log to `~/.claude/canary-watch.log`
+
+## Output
+
+```markdown
+## Canary Report — myapp.com — 2026-03-23 03:15 PST
+
+### Status: HEALTHY ✓
+
+| Check | Result | Baseline | Delta |
+|-------|--------|----------|-------|
+| HTTP | 200 ✓ | 200 | — |
+| Console errors | 0 ✓ | 0 | — |
+| LCP | 1.8s ✓ | 1.6s | +200ms |
+| CLS | 0.01 ✓ | 0.01 | — |
+| API /health | 145ms ✓ | 120ms | +25ms |
+| Static assets | 42/42 ✓ | 42/42 | — |
+| SSE /events | connected ✓ | connected | +80ms heartbeat |
+
+### No regressions detected. Deploy is clean.
+```
+
+## Integration
+
+Pair with:
+- `/browser-qa` for pre-deploy verification
+- Hooks: add as a PostToolUse hook on `git push` to auto-check after deploys
+- CI: run in GitHub Actions after deploy step</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

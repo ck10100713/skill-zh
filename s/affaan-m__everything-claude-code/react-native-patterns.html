@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>react-native-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="React Native 搭配 Expo 的導覽、狀態、資料抓取與列表做法">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>react-native-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/react-native-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">React Native 搭配 Expo 的導覽、狀態、資料抓取與列表做法</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: react-native-patterns
+description: React Native 與 Expo 應用程式模式：Expo Router 導覽、狀態分離（server／client／route／form）、搭配 Zod 的 TanStack Query 資料抓取、高效能列表、NativeWind／StyleSheet 樣式、原生 API，以及安全儲存。建置或編輯 React Native / Expo 的畫面、元件、導覽或資料層時使用。
+origin: ECC
+---
+
+# React Native / Expo 模式
+
+用 Expo 打造 production React Native 應用程式的實用模式。涵蓋導覽、狀態、資料抓取、列表、樣式和原生 API。搭配 `rules/react-native/` 規則集使用：規則講*要強制什麼*，這個 skill 示範*怎麼做*。
+
+下面提到的函式庫（NativeWind、Zustand/Jotai、TanStack Query）都是常見、成熟的選項，只是拿來示範。重點是模式，不是特定套件，任何等價的都行。用 Zod 做驗證，是為了和 ECC 現有的 `typescript/` 規則保持一致。
+
+這些模式假設用的是 managed Expo 工作流程（Expo Router、EAS、`expo-*` 模組），而且跑在 New Architecture 上（近期 Expo SDK 的預設，SDK 55+ 起強制）。它們**不**假設有瀏覽器 DOM：React Native 沒有 `&lt;div&gt;`、沒有網址列，也沒有網頁那套資料抓取預設值。
+
+## 何時啟用
+
+在以下情況使用這個 skill：
+
+- 建置或編輯 React Native / Expo 的畫面、元件或導覽
+- 用 Expo Router 設定路由（以檔案為基礎的 `app/` 目錄）
+- 決定狀態該放哪（server 快取 vs client store vs route 參數 vs 表單）
+- 用 TanStack Query 串資料抓取，並用 Zod 驗證回應
+- 渲染很長或很重的列表
+- 選擇或套用樣式做法（NativeWind 或 StyleSheet）
+- 存取原生裝置 API（相機、位置、通知）或安全儲存
+- Review RN 程式碼的行動裝置專屬問題
+
+**不要**在這裡用 web／React-DOM 的模式：URL 當狀態、`&lt;div&gt;`、瀏覽器用的 SWR，都不適用於 React Native。
+
+## 核心概念
+
+### 專案結構（Expo Router）
+
+`app/` 底下用檔案式路由。route 檔案要保持精簡：只讀取並驗證參數，然後委派給放在 `components/` 或 `features/` 的畫面元件。
+
+```
+app/
+  _layout.tsx          # 根 stack
+  (tabs)/
+    _layout.tsx        # tab 導覽器
+    index.tsx          # 首頁
+  user/[id].tsx        # 動態路由
+components/
+features/
+  user/UserProfile.tsx
+```
+
+### 導覽：驗證 route 參數
+
+Deep link 和動態路由送進來的是不可信任的字串。用之前先用 Zod 驗證。
+
+```tsx
+// app/user/[id].tsx
+import { useLocalSearchParams, router } from &#x27;expo-router&#x27;
+import { z } from &#x27;zod&#x27;
+import { UserProfile } from &#x27;@/features/user/UserProfile&#x27;
+
+const Params = z.object({ id: z.string().uuid() })
+
+export default function UserRoute() {
+  const parsed = Params.safeParse(useLocalSearchParams())
+  if (!parsed.success) {
+    router.replace(&#x27;/not-found&#x27;)
+    return null
+  }
+  return &lt;UserProfile userId={parsed.data.id} /&gt;
+}
+```
+
+### 狀態：把關注點分開
+
+不要把 server 資料複製到 client store。每種關注點都有自己的家。
+
+| 關注點 | 常見選擇 |
+|---------|------|
+| Server 狀態（遠端資料） | server 快取函式庫（TanStack Query、SWR） |
+| Client／UI 狀態 | 輕量 store（Zustand、Jotai）或 Context |
+| Route／導覽狀態 | Expo Router 參數 |
+| 表單狀態 | 表單函式庫（例如 React Hook Form）加 schema 驗證 |
+| Secret／token | `expo-secure-store` |
+| 非機密的持久化 | `AsyncStorage` / MMKV |
+
+狀態真的需要共享之前，優先用區域的 `useState`。
+
+### 資料抓取：快取函式庫加 Zod
+
+用 server 快取函式庫（TanStack Query、SWR），不要在 `useEffect` 裡 fetch。在邊界處驗證，並從 schema 推導型別。明確處理 loading、error 和空狀態。（範例用 TanStack Query。）
+
+```tsx
+import { useQuery, useMutation, useQueryClient } from &#x27;@tanstack/react-query&#x27;
+import { z } from &#x27;zod&#x27;
+
+const User = z.object({ id: z.string(), email: z.string().email() })
+type User = z.infer&lt;typeof User&gt;
+
+export function useUser(id: string) {
+  return useQuery({
+    queryKey: [&#x27;user&#x27;, id],
+    queryFn: async (): Promise&lt;User&gt; =&gt; User.parse(await api.getUser(id)),
+  })
+}
+
+export function useUpdateEmail(id: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (email: string) =&gt; api.updateEmail(id, email),
+    onSuccess: () =&gt; qc.invalidateQueries({ queryKey: [&#x27;user&#x27;, id] }),
+  })
+}
+```
+
+### 列表：要虛擬化，絕對不要在 ScrollView 裡 map 大陣列
+
+```tsx
+import { FlatList } from &#x27;react-native&#x27;
+
+&lt;FlatList
+  data={items}
+  keyExtractor={(item) =&gt; item.id}
+  renderItem={renderItem}          // 已 memoize
+  initialNumToRender={10}
+  windowSize={5}
+/&gt;
+```
+
+大型或異質的列表用 `FlashList`（Shopify）。
+
+### 樣式：挑一套系統
+
+`StyleSheet.create()` 是框架原生的選項；utility class 函式庫（例如 NativeWind）是常見的替代方案。選一個，並保持一致。絕對不要在熱點路徑的 JSX 裡內聯建立 style 物件。
+
+```tsx
+// NativeWind
+&lt;View className=&quot;p-4 rounded-2xl bg-white&quot;&gt;
+  &lt;Text className=&quot;text-base font-semibold&quot;&gt;Hello&lt;/Text&gt;
+&lt;/View&gt;
+
+// StyleSheet
+const styles = StyleSheet.create({ card: { padding: 16, borderRadius: 16, backgroundColor: &#x27;#fff&#x27; } })
+&lt;View style={styles.card}&gt;...&lt;/View&gt;
+```
+
+### 原生 API：包進 hook，並清理 effect
+
+Expo SDK 的呼叫和訂閱要放在 `use*` hook 裡，不要放在 JSX。一定要清理。
+
+```tsx
+import { useEffect, useState } from &#x27;react&#x27;
+import * as Location from &#x27;expo-location&#x27;
+
+type LocationState =
+  | { status: &#x27;loading&#x27; }
+  | { status: &#x27;denied&#x27; }
+  | { status: &#x27;granted&#x27;; coords: Location.LocationObjectCoords }
+
+export function useCurrentLocation() {
+  // 追蹤狀態，不只是座標，這樣 UI 才能分辨「還在載入」
+  // 和「權限被拒」，並顯示可以採取行動的訊息。
+  const [state, setState] = useState&lt;LocationState&gt;({ status: &#x27;loading&#x27; })
+
+  useEffect(() =&gt; {
+    let active = true
+    ;(async () =&gt; {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== &#x27;granted&#x27;) {
+        if (active) setState({ status: &#x27;denied&#x27; })
+        return
+      }
+      const pos = await Location.getCurrentPositionAsync({})
+      if (active) setState({ status: &#x27;granted&#x27;, coords: pos.coords })
+    })()
+    return () =&gt; { active = false }   // unmount 後忽略過期的結果
+  }, [])
+
+  return state
+}
+```
+
+### Token 的安全儲存
+
+```tsx
+import * as SecureStore from &#x27;expo-secure-store&#x27;
+
+await SecureStore.setItemAsync(&#x27;auth_token&#x27;, token)   // Keychain / Keystore
+const token = await SecureStore.getItemAsync(&#x27;auth_token&#x27;)
+```
+
+## 程式碼範例
+
+### 完整畫面：route → query → 列表 → 各種狀態
+
+```tsx
+// app/(tabs)/orders.tsx
+import { memo, useCallback } from &#x27;react&#x27;
+import { FlatList, Text, View } from &#x27;react-native&#x27;
+import { useQuery } from &#x27;@tanstack/react-query&#x27;
+import { z } from &#x27;zod&#x27;
+
+const OrderSchema = z.object({ id: z.string(), total: z.number(), status: z.string() })
+const OrdersSchema = z.array(OrderSchema)
+type Order = z.infer&lt;typeof OrderSchema&gt;
+
+function useOrders() {
+  return useQuery({
+    queryKey: [&#x27;orders&#x27;],
+    queryFn: async () =&gt; OrdersSchema.parse(await api.listOrders()),
+  })
+}
+
+// 已 memoize，讓它的 reference 在各次 render 間穩定（見列表的說明）。
+const OrderRow = memo(function OrderRow({ item }: { item: Order }) {
+  return (
+    &lt;View className=&quot;px-4 py-3 border-b border-neutral-200&quot;&gt;
+      &lt;Text className=&quot;font-medium&quot;&gt;#{item.id}&lt;/Text&gt;
+      &lt;Text className=&quot;text-neutral-500&quot;&gt;{item.status} · ${item.total}&lt;/Text&gt;
+    &lt;/View&gt;
+  )
+})
+
+export default function OrdersScreen() {
+  const { data, isLoading, isError, refetch, isRefetching } = useOrders()
+  const renderItem = useCallback(({ item }: { item: Order }) =&gt; &lt;OrderRow item={item} /&gt;, [])
+
+  if (isLoading) return &lt;Centered&gt;&lt;Text&gt;Loading…&lt;/Text&gt;&lt;/Centered&gt;
+  if (isError) return &lt;Centered&gt;&lt;Text accessibilityRole=&quot;alert&quot;&gt;Could not load orders.&lt;/Text&gt;&lt;/Centered&gt;
+  if (!data?.length) return &lt;Centered&gt;&lt;Text&gt;No orders yet.&lt;/Text&gt;&lt;/Centered&gt;
+
+  return (
+    &lt;FlatList
+      data={data}
+      keyExtractor={(o) =&gt; o.id}
+      onRefresh={refetch}
+      refreshing={isRefetching}
+      renderItem={renderItem}
+    /&gt;
+  )
+}
+```
+
+### 表單：React Hook Form 加 Zod resolver
+
+```tsx
+import { useForm, Controller } from &#x27;react-hook-form&#x27;
+import { zodResolver } from &#x27;@hookform/resolvers/zod&#x27;
+import { z } from &#x27;zod&#x27;
+import { TextInput, Button, Text } from &#x27;react-native&#x27;
+
+const Schema = z.object({ email: z.string().email(&#x27;Invalid email&#x27;) })
+type FormValues = z.infer&lt;typeof Schema&gt;
+
+export function EmailForm({ onSubmit }: { onSubmit: (v: FormValues) =&gt; void }) {
+  const { control, handleSubmit, formState: { errors } } = useForm&lt;FormValues&gt;({
+    resolver: zodResolver(Schema),
+    defaultValues: { email: &#x27;&#x27; },
+  })
+
+  return (
+    &lt;&gt;
+      &lt;Controller
+        control={control}
+        name=&quot;email&quot;
+        render={({ field: { value, onChange, onBlur } }) =&gt; (
+          &lt;TextInput
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            autoCapitalize=&quot;none&quot;
+            keyboardType=&quot;email-address&quot;
+            accessibilityLabel=&quot;Email address&quot;
+          /&gt;
+        )}
+      /&gt;
+      {errors.email &amp;&amp; &lt;Text accessibilityRole=&quot;alert&quot;&gt;{errors.email.message}&lt;/Text&gt;}
+      &lt;Button title=&quot;Save&quot; onPress={handleSubmit(onSubmit)} /&gt;
+    &lt;/&gt;
+  )
+}
+```
+
+## 反模式
+
+```tsx
+// WRONG: 在 ScrollView 裡 map 大陣列（沒有虛擬化、卡頓、記憶體高）
+&lt;ScrollView&gt;{items.map((i) =&gt; &lt;Row key={i.id} item={i} /&gt;)}&lt;/ScrollView&gt;
+// RIGHT: FlatList / FlashList
+
+// WRONG: server 資料複製到 client store（兩個真相來源、資料過期）
+const useStore = create((set) =&gt; ({ users: [], setUsers: (u) =&gt; set({ users: u }) }))
+useEffect(() =&gt; { getUsers().then(setUsers) }, [])
+// RIGHT: 由 useQuery 持有 server 狀態；需要的東西用推導的
+
+// WRONG: token 放在 AsyncStorage（沒有加密）
+await AsyncStorage.setItem(&#x27;auth_token&#x27;, token)
+// RIGHT: expo-secure-store
+
+// WRONG: 信任 deep link 的參數
+const { id } = useLocalSearchParams(); fetchUser(id)
+// RIGHT: 用之前先用 Zod 驗證
+
+// WRONG: 熱點路徑上每次 render 都重建 inline style 物件
+&lt;View style={{ padding: 16, backgroundColor: &#x27;#fff&#x27; }} /&gt;
+// RIGHT: 在 module 範圍用 StyleSheet.create，或用 NativeWind className
+
+// WRONG: 真正的 secret 被打包進 bundle
+const STRIPE_SECRET = &#x27;sk_live_...&#x27;
+// RIGHT: 有特權的呼叫留在 server 端；只出貨受後端規則保護的公開 key
+```
+
+## 最佳實踐
+
+- route 檔案保持精簡；邏輯放進畫面元件和 `use*` hook。
+- 每個外部輸入（API 回應、route 參數、push payload）都用 Zod 驗證。
+- 讓 TanStack Query 持有 server 狀態；client store 保持小。
+- 一定要渲染 loading、error 和空狀態，絕對不要只放一個沒有 fallback 的 spinner。
+- 列表要虛擬化；`renderItem` 要 memoize；提供穩定的 `keyExtractor`。
+- 動畫用 `react-native-reanimated`（UI thread）；避免在 JS thread 做重活。
+- token 存在 `expo-secure-store`；授權絕對不要信任 client。
+- 從一開始就顧到 safe area、Dynamic Type 和無障礙的 role／label。
+- 每個原生依賴在發佈前，都要確認和 New Architecture 相容。
+
+## 相關 skill
+
+- `frontend-patterns`：React/Next.js（web）模式；共通的 React 概念可以參考，但那些是 DOM 專屬的。
+- `coding-standards`：適用於 RN 程式碼的 TypeScript/JavaScript 慣用寫法。
+- `tdd-workflow`、`e2e-testing`：測試流程（RN 用 Jest 加 React Native Testing Library，Maestro/Detox 做 e2e）。
+- `security-review`：通用的安全檢查清單，補充上面 RN bundle／secret 的指引。</pre></section><section><h2>英文原文</h2><pre>---
+name: react-native-patterns
+description: React Native and Expo app patterns — Expo Router navigation, state separation (server/client/route/form), TanStack Query data fetching with Zod, performant lists, NativeWind/StyleSheet styling, native APIs, and secure storage. Use when building or editing React Native / Expo screens, components, navigation, or data layers.
+origin: ECC
+---
+
+# React Native / Expo Patterns
+
+Practical patterns for building production React Native apps with Expo. Covers navigation, state, data fetching, lists, styling, and native APIs. Pairs with the `rules/react-native/` ruleset: rules say *what* to enforce, this skill shows *how*.
+
+Libraries named below (NativeWind, Zustand/Jotai, TanStack Query) are common, well-established options shown for illustration — the patterns matter more than the specific package, and any equivalent works. Zod is used for validation to stay consistent with ECC&#x27;s existing `typescript/` rules.
+
+These patterns assume the managed Expo workflow (Expo Router, EAS, `expo-*` modules) on the New Architecture (the default in recent Expo SDKs, mandatory from SDK 55+). They do NOT assume the browser DOM — React Native has no `&lt;div&gt;`, no URL bar, and no web data-fetching defaults.
+
+## When to Activate
+
+Use this skill when:
+
+- Building or editing React Native / Expo screens, components, or navigation
+- Setting up routing with Expo Router (file-based `app/` directory)
+- Deciding where state belongs (server cache vs client store vs route params vs form)
+- Wiring data fetching with TanStack Query and validating responses with Zod
+- Rendering long or heavy lists
+- Choosing or applying a styling approach (NativeWind or StyleSheet)
+- Accessing native device APIs (camera, location, notifications) or secure storage
+- Reviewing RN code for mobile-specific issues
+
+Do NOT use the web/React-DOM patterns here — URL-as-state, `&lt;div&gt;`, and SWR-for-browser do not apply to React Native.
+
+## Core Concepts
+
+### Project structure (Expo Router)
+
+File-based routing under `app/`. Keep route files thin: they read and validate params, then delegate to a screen component that lives in `components/` or `features/`.
+
+```
+app/
+  _layout.tsx          # root stack
+  (tabs)/
+    _layout.tsx        # tab navigator
+    index.tsx          # Home
+  user/[id].tsx        # dynamic route
+components/
+features/
+  user/UserProfile.tsx
+```
+
+### Navigation: validate route params
+
+Deep links and dynamic routes deliver untrusted strings. Validate them with Zod before use.
+
+```tsx
+// app/user/[id].tsx
+import { useLocalSearchParams, router } from &#x27;expo-router&#x27;
+import { z } from &#x27;zod&#x27;
+import { UserProfile } from &#x27;@/features/user/UserProfile&#x27;
+
+const Params = z.object({ id: z.string().uuid() })
+
+export default function UserRoute() {
+  const parsed = Params.safeParse(useLocalSearchParams())
+  if (!parsed.success) {
+    router.replace(&#x27;/not-found&#x27;)
+    return null
+  }
+  return &lt;UserProfile userId={parsed.data.id} /&gt;
+}
+```
+
+### State: keep concerns separate
+
+Do not duplicate server data into a client store. Each concern has its own home.
+
+| Concern | Common choices |
+|---------|------|
+| Server state (remote data) | a server-cache library (TanStack Query, SWR) |
+| Client/UI state | a lightweight store (Zustand, Jotai) or Context |
+| Route/navigation state | Expo Router params |
+| Form state | a form library (e.g. React Hook Form) + schema validation |
+| Secrets / tokens | `expo-secure-store` |
+| Non-secret persistence | `AsyncStorage` / MMKV |
+
+Prefer local `useState` until state genuinely needs sharing.
+
+### Data fetching: a cache library + Zod
+
+Use a server-cache library (TanStack Query, SWR) instead of fetch-in-`useEffect`. Validate at the boundary and infer types from the schema. Handle loading, error, and empty states explicitly. (Example uses TanStack Query.)
+
+```tsx
+import { useQuery, useMutation, useQueryClient } from &#x27;@tanstack/react-query&#x27;
+import { z } from &#x27;zod&#x27;
+
+const User = z.object({ id: z.string(), email: z.string().email() })
+type User = z.infer&lt;typeof User&gt;
+
+export function useUser(id: string) {
+  return useQuery({
+    queryKey: [&#x27;user&#x27;, id],
+    queryFn: async (): Promise&lt;User&gt; =&gt; User.parse(await api.getUser(id)),
+  })
+}
+
+export function useUpdateEmail(id: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (email: string) =&gt; api.updateEmail(id, email),
+    onSuccess: () =&gt; qc.invalidateQueries({ queryKey: [&#x27;user&#x27;, id] }),
+  })
+}
+```
+
+### Lists: virtualize, never map a big array in a ScrollView
+
+```tsx
+import { FlatList } from &#x27;react-native&#x27;
+
+&lt;FlatList
+  data={items}
+  keyExtractor={(item) =&gt; item.id}
+  renderItem={renderItem}          // memoized
+  initialNumToRender={10}
+  windowSize={5}
+/&gt;
+```
+
+Use `FlashList` (Shopify) for large or heterogeneous lists.
+
+### Styling: pick one system
+
+`StyleSheet.create()` is the framework-native option; utility-class libraries (e.g. NativeWind) are a common alternative. Choose one and stay consistent. Never build style objects inline in JSX on hot paths.
+
+```tsx
+// NativeWind
+&lt;View className=&quot;p-4 rounded-2xl bg-white&quot;&gt;
+  &lt;Text className=&quot;text-base font-semibold&quot;&gt;Hello&lt;/Text&gt;
+&lt;/View&gt;
+
+// StyleSheet
+const styles = StyleSheet.create({ card: { padding: 16, borderRadius: 16, backgroundColor: &#x27;#fff&#x27; } })
+&lt;View style={styles.card}&gt;...&lt;/View&gt;
+```
+
+### Native APIs: wrap in hooks, clean up effects
+
+Keep Expo SDK calls and subscriptions inside `use*` hooks, not in JSX. Always clean up.
+
+```tsx
+import { useEffect, useState } from &#x27;react&#x27;
+import * as Location from &#x27;expo-location&#x27;
+
+type LocationState =
+  | { status: &#x27;loading&#x27; }
+  | { status: &#x27;denied&#x27; }
+  | { status: &#x27;granted&#x27;; coords: Location.LocationObjectCoords }
+
+export function useCurrentLocation() {
+  // Track status, not just coords — so the UI can tell &quot;still loading&quot; apart
+  // from &quot;permission denied&quot; and show an actionable message.
+  const [state, setState] = useState&lt;LocationState&gt;({ status: &#x27;loading&#x27; })
+
+  useEffect(() =&gt; {
+    let active = true
+    ;(async () =&gt; {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== &#x27;granted&#x27;) {
+        if (active) setState({ status: &#x27;denied&#x27; })
+        return
+      }
+      const pos = await Location.getCurrentPositionAsync({})
+      if (active) setState({ status: &#x27;granted&#x27;, coords: pos.coords })
+    })()
+    return () =&gt; { active = false }   // ignore stale result after unmount
+  }, [])
+
+  return state
+}
+```
+
+### Secure storage for tokens
+
+```tsx
+import * as SecureStore from &#x27;expo-secure-store&#x27;
+
+await SecureStore.setItemAsync(&#x27;auth_token&#x27;, token)   // Keychain / Keystore
+const token = await SecureStore.getItemAsync(&#x27;auth_token&#x27;)
+```
+
+## Code Examples
+
+### A full screen: route → query → list → states
+
+```tsx
+// app/(tabs)/orders.tsx
+import { memo, useCallback } from &#x27;react&#x27;
+import { FlatList, Text, View } from &#x27;react-native&#x27;
+import { useQuery } from &#x27;@tanstack/react-query&#x27;
+import { z } from &#x27;zod&#x27;
+
+const OrderSchema = z.object({ id: z.string(), total: z.number(), status: z.string() })
+const OrdersSchema = z.array(OrderSchema)
+type Order = z.infer&lt;typeof OrderSchema&gt;
+
+function useOrders() {
+  return useQuery({
+    queryKey: [&#x27;orders&#x27;],
+    queryFn: async () =&gt; OrdersSchema.parse(await api.listOrders()),
+  })
+}
+
+// Memoized so its reference is stable across renders (see the lists guidance).
+const OrderRow = memo(function OrderRow({ item }: { item: Order }) {
+  return (
+    &lt;View className=&quot;px-4 py-3 border-b border-neutral-200&quot;&gt;
+      &lt;Text className=&quot;font-medium&quot;&gt;#{item.id}&lt;/Text&gt;
+      &lt;Text className=&quot;text-neutral-500&quot;&gt;{item.status} · ${item.total}&lt;/Text&gt;
+    &lt;/View&gt;
+  )
+})
+
+export default function OrdersScreen() {
+  const { data, isLoading, isError, refetch, isRefetching } = useOrders()
+  const renderItem = useCallback(({ item }: { item: Order }) =&gt; &lt;OrderRow item={item} /&gt;, [])
+
+  if (isLoading) return &lt;Centered&gt;&lt;Text&gt;Loading…&lt;/Text&gt;&lt;/Centered&gt;
+  if (isError) return &lt;Centered&gt;&lt;Text accessibilityRole=&quot;alert&quot;&gt;Could not load orders.&lt;/Text&gt;&lt;/Centered&gt;
+  if (!data?.length) return &lt;Centered&gt;&lt;Text&gt;No orders yet.&lt;/Text&gt;&lt;/Centered&gt;
+
+  return (
+    &lt;FlatList
+      data={data}
+      keyExtractor={(o) =&gt; o.id}
+      onRefresh={refetch}
+      refreshing={isRefetching}
+      renderItem={renderItem}
+    /&gt;
+  )
+}
+```
+
+### A form: React Hook Form + Zod resolver
+
+```tsx
+import { useForm, Controller } from &#x27;react-hook-form&#x27;
+import { zodResolver } from &#x27;@hookform/resolvers/zod&#x27;
+import { z } from &#x27;zod&#x27;
+import { TextInput, Button, Text } from &#x27;react-native&#x27;
+
+const Schema = z.object({ email: z.string().email(&#x27;Invalid email&#x27;) })
+type FormValues = z.infer&lt;typeof Schema&gt;
+
+export function EmailForm({ onSubmit }: { onSubmit: (v: FormValues) =&gt; void }) {
+  const { control, handleSubmit, formState: { errors } } = useForm&lt;FormValues&gt;({
+    resolver: zodResolver(Schema),
+    defaultValues: { email: &#x27;&#x27; },
+  })
+
+  return (
+    &lt;&gt;
+      &lt;Controller
+        control={control}
+        name=&quot;email&quot;
+        render={({ field: { value, onChange, onBlur } }) =&gt; (
+          &lt;TextInput
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            autoCapitalize=&quot;none&quot;
+            keyboardType=&quot;email-address&quot;
+            accessibilityLabel=&quot;Email address&quot;
+          /&gt;
+        )}
+      /&gt;
+      {errors.email &amp;&amp; &lt;Text accessibilityRole=&quot;alert&quot;&gt;{errors.email.message}&lt;/Text&gt;}
+      &lt;Button title=&quot;Save&quot; onPress={handleSubmit(onSubmit)} /&gt;
+    &lt;/&gt;
+  )
+}
+```
+
+## Anti-Patterns
+
+```tsx
+// WRONG: large array mapped inside a ScrollView (no virtualization, janky, high memory)
+&lt;ScrollView&gt;{items.map((i) =&gt; &lt;Row key={i.id} item={i} /&gt;)}&lt;/ScrollView&gt;
+// RIGHT: FlatList / FlashList
+
+// WRONG: server data copied into a client store (two sources of truth, stale data)
+const useStore = create((set) =&gt; ({ users: [], setUsers: (u) =&gt; set({ users: u }) }))
+useEffect(() =&gt; { getUsers().then(setUsers) }, [])
+// RIGHT: useQuery owns server state; derive what you need
+
+// WRONG: tokens in AsyncStorage (not encrypted)
+await AsyncStorage.setItem(&#x27;auth_token&#x27;, token)
+// RIGHT: expo-secure-store
+
+// WRONG: trusting deep-link params
+const { id } = useLocalSearchParams(); fetchUser(id)
+// RIGHT: validate with Zod before use
+
+// WRONG: inline style object recreated every render on a hot path
+&lt;View style={{ padding: 16, backgroundColor: &#x27;#fff&#x27; }} /&gt;
+// RIGHT: StyleSheet.create at module scope, or NativeWind className
+
+// WRONG: real secret shipped in the bundle
+const STRIPE_SECRET = &#x27;sk_live_...&#x27;
+// RIGHT: keep privileged calls server-side; ship only public keys protected by backend rules
+```
+
+## Best Practices
+
+- Keep route files thin; put logic in screen components and `use*` hooks.
+- Validate every external input (API responses, route params, push payloads) with Zod.
+- Let TanStack Query own server state; keep client stores small.
+- Always render loading, error, and empty states — never just a spinner with no fallback.
+- Virtualize lists; memoize `renderItem`; provide a stable `keyExtractor`.
+- Use `react-native-reanimated` for animation (UI thread); avoid heavy work on the JS thread.
+- Store tokens in `expo-secure-store`; never trust the client for authorization.
+- Respect safe areas, Dynamic Type, and accessibility roles/labels from the start.
+- Confirm New Architecture compatibility for every native dependency before release.
+
+## Related Skills
+
+- `frontend-patterns` — React/Next.js (web) patterns; useful for shared React concepts, but DOM-specific.
+- `coding-standards` — TypeScript/JavaScript idioms that apply to RN code.
+- `tdd-workflow`, `e2e-testing` — testing process (use Jest + React Native Testing Library, Maestro/Detox for RN).
+- `security-review` — general security checklist that complements the RN bundle/secret guidance above.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

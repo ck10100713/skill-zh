@@ -1,0 +1,351 @@
+---
+name: story-done
+description: "結掉一個完成的 story：驗證每條驗收條件、檢查有沒有偏離設計或 ADR，並更新它的狀態。使用時機：使用者說某個 story 做完了、完成了或可以結案。"
+argument-hint: "[story-file-path] [--review full|lean|solo]"
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Agent, Bash(bash "*/.claude/skills/story-done/../../hooks/yaml-helper.sh" resolve_config *), Bash(bash .claude/scripts/story-facts.sh *), Bash(bash .claude/scripts/story-status.sh*), Bash(bash .claude/scripts/adr-status.sh *), Bash(bash .claude/scripts/md-section.sh *), Bash(bash .claude/scripts/review-receipts.sh check *), Bash(bash .claude/scripts/session-state.sh *), Bash(git status --porcelain*)
+model: sonnet
+---
+
+!`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,review_gate,automation,automation_always_ask,workflow,qa.level,gate_level,system_overrides`
+
+上面已經解析完畢，直接用；`--review` 會覆寫 `review_mode`。沒有這個區塊的話，
+預設值看 `.claude/docs/config-resolution.md`。
+
+用提問工具來問。沒有提問工具的話，把選項編號列出來，然後結束你的回合
+等待。被略過或關閉的問題不算回答：要用純文字再問一次。
+
+# Story Done
+
+結掉一個完成的 story。每條驗收條件都對照證據檢查，
+偏離 GDD、ADR 和 story 自己範圍的地方都當作事實回報，
+而且只有在使用者說 yes 之後，才會把 story 標成 Complete。
+
+**使用者說 yes 之後才寫入：** story 檔案（`Status`、`Last Updated`、一個
+`## Completion Notes` 段落）和它在 `production/sprint-status.yaml` 裡的條目；
+`docs/tech-debt-register.md` 只有在使用者選了那個選項時才寫。
+session checkpoint 在每次執行結束時都會寫，不管結論是什麼。
+**下一步：** 下一個 story（Phase 8）。
+
+詢問遵循 `.claude/docs/automation-modes.md`（collaborative 一律詢問，guided
+在重大選擇時才問，autonomous 記錄後繼續；`automation_always_ask`
+類別一律要詢問）。
+
+檢查清單（複製它，邊做邊勾）：
+
+```
+- [ ] Phase 1: story found, facts and settings read
+- [ ] Phase 2: what the story is checked against, loaded for its tier
+- [ ] Phase 3: each criterion verified, traceability table built
+- [ ] Phase 4: test evidence and run result checked
+- [ ] Phase 5: deviations and scope checked
+- [ ] Phase 6: review gates run, or their skip noted
+- [ ] Phase 7: report and verdict shown; close asked
+- [ ] Phase 8: next story named, checkpoint written, closing block printed
+```
+
+## Phase 1: The story and its settings
+
+**哪個 story。** 打在 skill 名稱後面的文字，去掉任何 `--review <mode>`
+成對的參數之後，就是 story 路徑。什麼都沒打時：
+
+1. `production/session-state/active.md` 裡的 checkpoint：它的 **Current task**
+   那一行，當它點名了某個 story 時。
+2. 否則找進行中的 story：`bash .claude/scripts/story-facts.sh --all`，狀態是
+   `IN_REVIEW` 或 `IN_PROGRESS` 的那些列。有好幾個：問 "Which story are we
+   closing?"，每個 story 一個選項。
+3. 都沒有：問路徑。當 `production/epics/` 完全沒有任何 story 檔案時，
+   就停下來：
+   "No stories found in `production/epics/` — run `/create-stories [epic-slug]` to make them (at `standard` and `full`, run `/create-epics` first if there is no epic yet)."
+
+**它的事實。** `bash .claude/scripts/story-facts.sh <story-path>` 會給出狀態、
+類型、layer、TR-ID、ADR、條件數量、測試證據狀態和依賴。
+然後完整讀這個 story：條件的文字、Test Evidence 路徑、`## Files`、
+Out of Scope。
+
+**等級。** story 所屬系統的 `workflow`，以它 `GDD:` 路徑的 GDD 檔名主幹為準
+（`design/gdd/<stem>.md` → `<stem>`；只有在沒有 GDD 路徑時，才用它的 TR-ID 的
+`[system]`）：如果該系統有 `system_overrides` 那一列就用它，
+否則用專案的值。
+
+**`qa.level` 要求什麼**（`.claude/docs/coding-standards.md` 裡的證據各列）。
+值要取自上面 `qa.level` 那一行，絕對不要取自 `workflow` 或 `rigor`：
+兩者是分開設定的，所以 `workflow: minimal` 搭配 `qa.level: standard` 仍然要求
+Logic story 的單元測試。
+
+| Check | `qa.level: minimal` | `qa.level: standard` | `qa.level: full` |
+|---|---|---|---|
+| Logic, Integration test | waived | required | required |
+| Config/Data smoke report | waived | required, advisory by default | required, **blocking** by default |
+| Visual/Feel, UI retained screenshot | required | required | required |
+| Untested criteria (Phase 3) | never escalate | more than half block | **any** blocks |
+
+外觀絕對不會被免除：Visual/Feel 或 UI 的 story 在每個等級都需要它的截圖。
+每個類型的 **Gate level** 是上面的 `gate_level` 那一行。在 `full` 時，
+Config/Data 的預設值（`config=advisory(default…)`）會變成阻擋；
+明確設的 `testing.strict.config: false` 仍然讓它維持建議。
+
+## Phase 2: What the story is checked against
+
+依等級。每份文件都分段讀，絕對不要整份讀。
+
+- **`full`：** 每個 TR-ID 目前的需求文字：在
+  `docs/architecture/tr-registry.yaml` 裡，符合 `id: <TR-ID>\s*$` 的那幾行，
+  以及條目下面的文字（錨點避免 `TR-combat-001` 比對到
+  `TR-combat-0010`；`\s*` 處理 Windows 的換行）。絕對不要用 story 裡引用的文字；
+  GDD 的 Acceptance Criteria 和 Detailed Design
+  （`bash .claude/scripts/md-section.sh extract design/gdd/<file>.md "Acceptance Criteria"`，
+  然後對 `"Detailed Design"` 做同樣的事；結束碼 3：試 `"Detailed Rules"`，也就是
+  設計標準對同一個段落的名稱）；
+  每個 ADR 的狀態用 `bash .claude/scripts/adr-status.sh <ADR ids>`，然後是它的
+  Decision 和 Consequences 段落。
+- **`standard`：** 同樣的 GDD 段落；ADR 的段落只看關鍵的 ADR
+  （`adr-status.sh` 的 layer 欄位是 Foundation，或沒有 layer）。
+- **`minimal`：** 都不用。story 的條件就是規格。
+
+在每個等級，當 `docs/architecture/control-manifest.md` 存在時，記下它的
+`Manifest Version` 那一行。
+
+## Phase 3: Verify each criterion
+
+依序處理每條驗收條件：
+
+- **用看的檢查：** 條件點名的檔案存在；它點名的測試檔案
+  存在（回報 "test file present"，絕對不要說 "test passes"：這裡沒有任何東西會執行它）；
+  屬於資料檔的遊戲玩法程式碼裡的數字字面值；屬於在地化檔案的、程式碼根目錄裡
+  給玩家看的字串（依 `.claude/docs/code-root-resolution.md` 解析根目錄；
+  無法解析時，回報 `NOT ASSESSED —
+  code root unresolved`，絕對不要寫零命中）。
+- **用問的：** 行為（"the player takes damage when…"）、手感和效能
+  條件。絕對不要只讀程式碼就把其中一條標成通過：程式碼說的是應該
+  發生什麼，不是 build 實際做了什麼。每次問最多四條："Does [criterion]?" 選項：
+  Yes — passes / No — fails / Not tested yet。`Not tested yet` 就是 UNTESTED，
+  而且讓結論頂多是 NOT ASSESSED，直到有人檢查它。
+- **在畫面上看到：** 關於看得見的東西的條件，要由
+  `production/qa/evidence/[story-slug]/` 底下一張保留的圖片涵蓋（`[story-slug]`：story
+  檔案不含 `.md` 的名稱），而且那張圖是你打開過、並在裡面看到那個東西的。
+  絕對不要描述你沒打開過的圖片；checkpoint 裡的 `Run result:
+  OBSERVED — <text>` 是 `/dev-story` 的描述，要當成它的描述來引用。
+- **需要完整的 playtest：** `DEFERRED — requires playtest session`。它不
+  阻擋。
+
+然後把每條條件對應到涵蓋它的東西：測試根目錄底下的一個測試、一個
+"Yes — passes"，或是一張保留的圖片。
+
+```
+| Criterion | Covered by | Status |
+|-----------|------------|--------|
+| AC-1: [text] | tests/unit/[system]/[file]::[test] | COVERED |
+| AC-2: [text] | production/qa/evidence/[slug]/01-[what].png | COVERED |
+| AC-3: [text] | — | UNTESTED |
+```
+
+未測試的條件依 Phase 1 的表升級：在線之上是阻擋；在線之下是
+建議，在 Completion Notes 裡列為 "Untested criteria: [AC-N list]"。
+
+## Phase 4: Test evidence and the run result
+
+依 story 的類型，在 Phase 1 的 gate level 檢查。跳過 `qa.level` 免除的檢查，並
+說出來：`Test evidence: waived at qa.level minimal`。
+
+- **Logic：** story 的 Test Evidence 段落裡的確切路徑，否則是
+  `tests/unit/[system]/` 底下任何地方。
+- **Integration：** 同樣的東西放在 `tests/integration/[system]/` 底下，否則是
+  `production/qa/playtests/` 裡點名這個 story 的 playtest 紀錄（`/playtest-report`
+  會寫在那裡）。
+- **UI：** UI story 由所觸及每個畫面的保留截圖滿足，
+  放在 `production/qa/evidence/` 底下。不需要證據文件或簽核。
+- **Visual/Feel：** 截圖，而且 Visual/Feel 的 story 也需要簽核：
+  `production/qa/evidence/[story-slug]-evidence.md`，每個簽核列
+  都是 `[x] Approved`（一個人可以簽所有角色）。
+- **Config/Data：** 一份 `production/qa/smoke-*.md` 報告；沒有的話："No smoke check
+  report found. Run `/smoke-check`."
+- **沒有 Type：** 建議："Story Type not declared. Add `Type:` to the story header."
+
+缺少的項目就是 gate level 的缺口：BLOCKING 會擋住 COMPLETE，ADVISORY 放進
+備註。點名缺了什麼、該放在哪裡。旁邊沒有圖片的證據文件
+不算證據：描述出來的檢查只是一個斷言。
+
+**證據比它的程式碼還舊嗎？** 對保留的圖片，執行
+`bash .claude/scripts/review-receipts.sh check production/qa/evidence/[story-slug]/stamp.txt`。
+每個 `CHANGED:` 或 `GONE:` 的檔案："[file] changed after the evidence was captured —
+re-capture it." `RECEIPT: NONE`："no stamp — whether the evidence is older than the
+code cannot be told"。回報這幾行；它們絕對不會改變結論。
+
+**Run result，所有其他類型。** 從 `/dev-story` 的 checkpoint 取 `Run result:` 那一行
+（只有當它的 **Current task** 點名了這個 story 時）或 story 的 Completion Notes。
+`OBSERVED` 帶有路徑：記下來。`N/A — <reason>`：只接受說明
+為什麼沒有東西可觀察的理由（"it's a Logic story" 不算）。`NOT VERIFIED` 出現在
+條件點名了畫面上某個東西的 story：這是 gate level 的缺口。沒有那一行：
+建議，"confirm the build was launched and looked at"。使用者對
+畫面上的條件說 "Yes — passes"，卻沒有保留的圖片，那是斷言，不是
+觀察：這是 gate level 的缺口。
+
+## Phase 5: Deviations and scope
+
+依等級執行（`minimal` 跳過 1 和 3）：
+
+1. **GDD 規則**（`full`；`standard` 看它必要的段落）：在改過的檔案中搜尋
+   目前 GDD 文字和 TR 需求用到的名稱。
+2. **Manifest：** story 的 `Manifest Version` 比 manifest 的舊：ADVISORY，
+   "written against manifest v[story]; current is v[current] — run
+   `/story-readiness` to check"。沒有 manifest：跳過。story 裡的 `Manifest-Note:` 那一行
+   會原樣帶進偏離項目。
+3. **ADR 限制**（`full`；`standard` 看關鍵的 ADR）：搜尋 ADR 的 Decision 或
+   manifest 禁止的 pattern。
+4. 改過的檔案裡**寫死的值**。
+5. **範圍：** story 在 `## Files` 底下列出的檔案，對照改過的
+   程式碼和測試檔案（`git status --porcelain`）。清單沒有點名的改動檔案
+   就是 OUT OF SCOPE。沒有 `## Files` 段落的 story：當 checkpoint 的 Current task 點名了這個 story 時，
+   用 checkpoint 的
+   **Files in progress**；否則回報
+   `Scope: NOT ASSESSED — the story lists no files`。乾淨的工作樹：回報
+   `Scope: not checked — no uncommitted changes to compare`。
+
+每個偏離項目是 **BLOCKING**（跟 GDD 或 ADR 矛盾）、**ADVISORY**（有偏離
+但運作相同；由使用者決定）或 **OUT OF SCOPE**（讓人知道）。把它們當作事實
+陳述；由使用者判斷。
+
+## Phase 6: Review gates
+
+讀上面的 `review_gate` 那一行。
+
+- **`skill-gates=skip`：** 不生成 agent。註記 `QL-TEST-COVERAGE skipped — [Solo | Lean]
+  mode` 和 `LP-CODE-REVIEW skipped — [Solo | Lean] mode`。在 `lean` 模式下，問："Did
+  you run `/code-review` on the implemented files?" 選項：Yes — it passed or was
+  approved with suggestions / No — skipping review for this story / No — I'll run
+  it before the sprint close-out。答案決定 Reviewed by。
+- **`skill-gates=run`：** 讀 `references/review-gates.md` 和
+  `.claude/docs/director-gates.md`，現在就跑兩個 gate。跳過時，不要載入
+  它。
+
+**Reviewed by** 絕對不是空白：LP-CODE-REVIEW 有跑時是 `lead-programmer`；
+lean 的 Yes 是 `/code-review (you said you ran it; not verified here)`；solo 模式、
+兩個 No，以及還沒有實作檔案時，是 `self, no
+independent review`。
+
+## Phase 7: Report, verdict, and the close
+
+```markdown
+## Story Done: [title]
+**Story**: [path] · **Type**: [type] · **Date**: [today]
+
+### Acceptance Criteria: [X/Y passing]
+- [x] [criterion] — [how verified]
+- [ ] [criterion] — FAILS: [reason]
+- [?] [criterion] — DEFERRED: requires playtest
+
+### Traceability
+[the Phase 3 table]
+
+### Test Evidence
+**Required**: [what the type needs at this qa.level, or "waived at qa.level minimal"]
+**Found**: [YES — path | NO — BLOCKING | NO — ADVISORY]
+
+### Deviations
+[NONE, or each: BLOCKING / ADVISORY / OUT OF SCOPE — description — reference]
+
+### Review
+**Reviewed by**: [value]
+
+### Verdict: [COMPLETE | COMPLETE WITH NOTES | NOT ASSESSED | BLOCKED]
+```
+
+**結論，第一個符合的勝出：**
+
+1. **BLOCKED：** 有條件失敗，或是有 BLOCKING 的缺口或偏離存在。
+2. **NOT ASSESSED：** 有條件無法評估：它沒有點名可觀察的
+   結果、使用者回答 "Not tested yet"、review gate 回傳了 NOT ASSESSED
+   而它的輸入沒有補上、證據存在但讀不到，或是偏離項目要對照的 GDD
+   或 ADR 不存在。逐一點名，並說明
+   什麼能解決它。它的優先順序高於兩種通過，而且絕對不會藏起失敗。
+3. **COMPLETE WITH NOTES：** 每條條件都通過或是 DEFERRED，並列出建議
+   項目。資訊行不算建議項目：證據戳記
+   那幾行、沒有 sprint 檔案，以及 run result，絕對不會把 COMPLETE 變成 COMPLETE
+   WITH NOTES。
+4. **COMPLETE：** 每條條件都通過，沒有任何建議項目。
+
+**然後在寫入任何東西之前先問：** "How do you want to proceed?" 選項：
+Close the story — mark it Complete and log notes (Recommended) / Close and log the
+advisory deviations as tech debt / Don't close yet — I'll fix things first / Close
+anyway, accepting the deviations。在 BLOCKED 或 NOT ASSESSED 時，建議 "Don't close
+yet"，並列出必須改變的東西。結掉這樣的 story 是 `scope_changes` 決策：
+當 `automation_always_ask` 那一行有列它時，在每一種自動化模式下都要問，
+即使走到這裡正是使用者自己的要求。只有在明確選擇結案時才寫入。
+
+**結案時：**
+
+1. `bash .claude/scripts/md-section.sh set-field <story> Status Complete`，然後
+   `set-field <story> "Last Updated" <YYYY-MM-DD> --after Status`。
+2. 用檔案編輯加在 story 的結尾，絕對不要用 shell 指令（shell
+   寫入會略過專案的寫入檢查）：
+   ```markdown
+   ## Completion Notes
+   **Completed**: [date]
+   **Criteria**: [X/Y passing] ([deferred items])
+   **Deviations**: [None, or the advisory ones]
+   **Test Evidence**: [path, or "waived at qa.level minimal", or "none required"]
+   **Reviewed by**: [value]
+   ```
+3. "Close and log as tech debt"：讀 `references/tech-debt-row.md`，每個建議的偏離項目
+   加一列。
+4. `production/sprint-status.yaml`，當它存在時：這個 story 的條目改成
+   `status: done` 和 `completed: [date]`，最上層的 `updated` 改成今天。
+   結案的回答已經涵蓋這個寫入。
+5. 印出建議的 commit：`git add [the changed code and test files] [story path]`
+   和 `git commit -m "feat: [story title] ([TR-ID])"`。
+
+**選 "Don't close yet" 時：** 不改任何 story 檔案。列出使用者標記的東西。絕對不要
+自己去修失敗的條件：回報它，並問該怎麼做。
+
+## Phase 8: Next story, checkpoint, close
+
+**下一個 story。** 在 `production/sprints/` 沒有 sprint 計畫時（在
+`workflow: minimal` 一律如此）：結案之後執行 `bash .claude/scripts/story-status.sh`，讓
+這個 story 的新狀態包含在內。它會依路線的順序印出未完成的 story；
+不要重新排序。第一個 `In Review` 的 story 是下一個（第一個 `IN_REVIEW`
+那一行），否則是第一個 `In Progress` 的，否則是第一個 `Ready` 或 `Not Started` 的
+（`TODO`）：
+
+```
+### Next Up
+**[Story NNN: title]** — [one line]
+Run `/story-done [path]` to close it (In Review) — else `/dev-story [path]` to implement it.
+```
+
+當上面的 `workflow` 那一行是 `minimal` 時，完全不要印 `/story-readiness` 那一行，
+連當作選項也不要：它不在那條路徑上。在 `workflow: standard` 或 `full` 時沒有 sprint 計畫，
+加上 "Run `/story-readiness [path]` first."
+
+- 只有 `COMPLETE N of N`：每個 story 都做完了。提供：玩玩這個 build，並記下
+  哪裡感覺不對；用 `/create-stories` 從 brief 加入 story；或者如果遊戲已經超出它的 brief，
+  用 `/settings` 提高 `modes.rigor`。
+- 只剩 `BLOCKED`、`OTHER` 或 `NO_STATUS` 的行：沒有 Next Up，而且
+  build order **沒有**完成。逐一點名每個 story 和它的 blocker、`Draft` 或 `no
+  status`。
+- 在這個分支上絕對不要印 Sprint Close-Out Sequence：沒有 sprint。
+
+有 sprint 計畫時：讀 `references/sprint-next.md`。
+
+**Checkpoint**，每個結論都要寫，不管有沒有結案。把這個區塊透過 pipe 傳給
+`bash .claude/scripts/session-state.sh checkpoint`，它會取代舊的區塊：
+
+```
+**Updated:** [date]
+**Branch:** `[current git branch]`
+**Current task:** /story-done — [story path]: [verdict], [closed | left open]
+**Next step:** [the Next Up command, or the fix the verdict named]
+**Blocked on:** [nothing, or what blocked the verdict]
+**Files in progress:** none
+**Open questions:** [tech debt logged: N items, or none]
+```
+
+**這次執行的最後一則回覆以這個區塊結尾**（如果先前顯示過，就再重複一次）：
+
+```
+Verdict: [COMPLETE | COMPLETE WITH NOTES | NOT ASSESSED | BLOCKED] — [story path]
+Story: [closed — Status: Complete | left open — Status: [status]]
+Review: [Reviewed by value; the gates' skip notes]
+Next step: [/dev-story [path] | /story-done [path] | the fix | play the build]
+```

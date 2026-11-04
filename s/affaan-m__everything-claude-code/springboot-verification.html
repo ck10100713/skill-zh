@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>springboot-verification｜Skill 寫法圖鑑</title>
+<meta name="description" content="跑完 Spring Boot 的 build、靜態分析、測試和安全掃描產出就緒報告">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>springboot-verification</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/springboot-verification/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">跑完 Spring Boot 的 build、靜態分析、測試和安全掃描產出就緒報告</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: springboot-verification
+description: 執行完整的 Spring Boot 驗證迴圈：Maven 或 Gradle build、SpotBugs、PMD 和 Checkstyle 靜態分析、搭配 JaCoCo 覆蓋率的單元與 Testcontainers 整合測試、OWASP 相依套件和 secret 掃描，以及 diff review，最後產出通過/失敗的就緒報告。準備 Spring Boot pull request、驗證覆蓋率門檻，或做部署前驗證時使用。
+metadata:
+  origin: ECC
+---
+
+# Spring Boot 驗證迴圈
+
+在開 PR 之前、重大變更之後，以及部署前執行。
+
+## 何時啟用
+
+- 為 Spring Boot 服務開 pull request 之前
+- 大規模重構或升級相依套件之後
+- 部署到 staging 或正式環境前的驗證
+- 執行完整的 build → lint → test → 安全掃描 pipeline
+- 驗證測試覆蓋率有達到門檻
+
+## 階段 1：Build
+
+```bash
+mvn -T 4 clean verify -DskipTests
+# or
+./gradlew clean assemble -x test
+```
+
+Build 失敗就停下來修。
+
+## 階段 2：靜態分析
+
+Maven（常見外掛）：
+```bash
+mvn -T 4 spotbugs:check pmd:check checkstyle:check
+```
+
+Gradle（如果有設定）：
+```bash
+./gradlew checkstyleMain pmdMain spotbugsMain
+```
+
+## 階段 3：測試 + 覆蓋率
+
+```bash
+mvn -T 4 test
+mvn jacoco:report   # verify 80%+ coverage
+# or
+./gradlew test jacocoTestReport
+```
+
+回報：
+- 測試總數、通過/失敗
+- 覆蓋率 %（行/分支）
+
+### 單元測試
+
+用 mock 的相依項，單獨測試 service 邏輯：
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+  @Mock private UserRepository userRepository;
+  @InjectMocks private UserService userService;
+
+  @Test
+  void createUser_validInput_returnsUser() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;alice@example.com&quot;);
+    var expected = new User(1L, &quot;Alice&quot;, &quot;alice@example.com&quot;);
+    when(userRepository.save(any(User.class))).thenReturn(expected);
+
+    var result = userService.create(dto);
+
+    assertThat(result.name()).isEqualTo(&quot;Alice&quot;);
+    verify(userRepository).save(any(User.class));
+  }
+
+  @Test
+  void createUser_duplicateEmail_throwsException() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;existing@example.com&quot;);
+    when(userRepository.existsByEmail(dto.email())).thenReturn(true);
+
+    assertThatThrownBy(() -&gt; userService.create(dto))
+        .isInstanceOf(DuplicateEmailException.class);
+  }
+}
+```
+
+### 搭配 Testcontainers 的整合測試
+
+對真實資料庫測試，不要用 H2：
+
+```java
+@SpringBootTest
+@Testcontainers
+class UserRepositoryIntegrationTest {
+
+  @Container
+  static PostgreSQLContainer&lt;?&gt; postgres = new PostgreSQLContainer&lt;&gt;(&quot;postgres:16-alpine&quot;)
+      .withDatabaseName(&quot;testdb&quot;);
+
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add(&quot;spring.datasource.url&quot;, postgres::getJdbcUrl);
+    registry.add(&quot;spring.datasource.username&quot;, postgres::getUsername);
+    registry.add(&quot;spring.datasource.password&quot;, postgres::getPassword);
+  }
+
+  @Autowired private UserRepository userRepository;
+
+  @Test
+  void findByEmail_existingUser_returnsUser() {
+    userRepository.save(new User(&quot;Alice&quot;, &quot;alice@example.com&quot;));
+
+    var found = userRepository.findByEmail(&quot;alice@example.com&quot;);
+
+    assertThat(found).isPresent();
+    assertThat(found.get().getName()).isEqualTo(&quot;Alice&quot;);
+  }
+}
+```
+
+### 搭配 MockMvc 的 API 測試
+
+用完整的 Spring context 測試 controller 層：
+
+```java
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+  @Autowired private MockMvc mockMvc;
+  @MockBean private UserService userService;
+
+  @Test
+  void createUser_validInput_returns201() throws Exception {
+    var user = new UserDto(1L, &quot;Alice&quot;, &quot;alice@example.com&quot;);
+    when(userService.create(any())).thenReturn(user);
+
+    mockMvc.perform(post(&quot;/api/users&quot;)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(&quot;&quot;&quot;
+                {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@example.com&quot;}
+                &quot;&quot;&quot;))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath(&quot;$.name&quot;).value(&quot;Alice&quot;));
+  }
+
+  @Test
+  void createUser_invalidEmail_returns400() throws Exception {
+    mockMvc.perform(post(&quot;/api/users&quot;)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(&quot;&quot;&quot;
+                {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;not-an-email&quot;}
+                &quot;&quot;&quot;))
+        .andExpect(status().isBadRequest());
+  }
+}
+```
+
+## 階段 4：安全掃描
+
+```bash
+# Dependency CVEs
+mvn org.owasp:dependency-check-maven:check
+# or
+./gradlew dependencyCheckAnalyze
+
+# Secrets in source
+grep -rn &quot;password\s*=\s*\&quot;&quot; src/ --include=&quot;*.java&quot; --include=&quot;*.yml&quot; --include=&quot;*.properties&quot;
+grep -rn &quot;sk-\|api_key\|secret&quot; src/ --include=&quot;*.java&quot; --include=&quot;*.yml&quot;
+
+# Secrets (git history)
+git secrets --scan  # if configured
+```
+
+### 常見的安全發現
+
+```
+# Check for System.out.println (use logger instead)
+grep -rn &quot;System\.out\.print&quot; src/main/ --include=&quot;*.java&quot;
+
+# Check for raw exception messages in responses
+grep -rn &quot;e\.getMessage()&quot; src/main/ --include=&quot;*.java&quot;
+
+# Check for wildcard CORS
+grep -rn &quot;allowedOrigins.*\*&quot; src/main/ --include=&quot;*.java&quot;
+```
+
+## 階段 5：Lint/格式化（選用關卡）
+
+```bash
+mvn spotless:apply   # if using Spotless plugin
+./gradlew spotlessApply
+```
+
+## 階段 6：Diff Review
+
+```bash
+git diff --stat
+git diff
+```
+
+檢查清單：
+- 沒有遺留除錯日誌（`System.out`、沒有 guard 的 `log.debug`）
+- 錯誤訊息和 HTTP 狀態碼有意義
+- 需要的地方有交易和驗證
+- 設定變更有記錄文件
+
+## 輸出範本
+
+```
+VERIFICATION REPORT
+===================
+Build:     [PASS/FAIL]
+Static:    [PASS/FAIL] (spotbugs/pmd/checkstyle)
+Tests:     [PASS/FAIL] (X/Y passed, Z% coverage)
+Security:  [PASS/FAIL] (CVE findings: N)
+Diff:      [X files changed]
+
+Overall:   [READY / NOT READY]
+
+Issues to Fix:
+1. ...
+2. ...
+```
+
+## 持續模式
+
+- 有重大變更時重新執行各階段，長時間的 session 則每 30 到 60 分鐘執行一次
+- 保持短迴圈：`mvn -T 4 test` 加 spotbugs，快速取得回饋
+
+**記住**：快速回饋勝過遲來的驚嚇。關卡要嚴格，在正式環境的系統裡，警告就當成缺陷處理。</pre></section><section><h2>英文原文</h2><pre>---
+name: springboot-verification
+description: Run the full Spring Boot verification loop — Maven or Gradle build, SpotBugs, PMD, and Checkstyle static analysis, unit and Testcontainers integration tests with JaCoCo coverage, OWASP dependency and secret scans, and diff review — producing a pass/fail readiness report. Use when preparing a Spring Boot pull request, validating coverage thresholds, or running pre-deploy verification.
+metadata:
+  origin: ECC
+---
+
+# Spring Boot Verification Loop
+
+Run before PRs, after major changes, and pre-deploy.
+
+## When to Activate
+
+- Before opening a pull request for a Spring Boot service
+- After major refactoring or dependency upgrades
+- Pre-deployment verification for staging or production
+- Running full build → lint → test → security scan pipeline
+- Validating test coverage meets thresholds
+
+## Phase 1: Build
+
+```bash
+mvn -T 4 clean verify -DskipTests
+# or
+./gradlew clean assemble -x test
+```
+
+If build fails, stop and fix.
+
+## Phase 2: Static Analysis
+
+Maven (common plugins):
+```bash
+mvn -T 4 spotbugs:check pmd:check checkstyle:check
+```
+
+Gradle (if configured):
+```bash
+./gradlew checkstyleMain pmdMain spotbugsMain
+```
+
+## Phase 3: Tests + Coverage
+
+```bash
+mvn -T 4 test
+mvn jacoco:report   # verify 80%+ coverage
+# or
+./gradlew test jacocoTestReport
+```
+
+Report:
+- Total tests, passed/failed
+- Coverage % (lines/branches)
+
+### Unit Tests
+
+Test service logic in isolation with mocked dependencies:
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+  @Mock private UserRepository userRepository;
+  @InjectMocks private UserService userService;
+
+  @Test
+  void createUser_validInput_returnsUser() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;alice@example.com&quot;);
+    var expected = new User(1L, &quot;Alice&quot;, &quot;alice@example.com&quot;);
+    when(userRepository.save(any(User.class))).thenReturn(expected);
+
+    var result = userService.create(dto);
+
+    assertThat(result.name()).isEqualTo(&quot;Alice&quot;);
+    verify(userRepository).save(any(User.class));
+  }
+
+  @Test
+  void createUser_duplicateEmail_throwsException() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;existing@example.com&quot;);
+    when(userRepository.existsByEmail(dto.email())).thenReturn(true);
+
+    assertThatThrownBy(() -&gt; userService.create(dto))
+        .isInstanceOf(DuplicateEmailException.class);
+  }
+}
+```
+
+### Integration Tests with Testcontainers
+
+Test against a real database instead of H2:
+
+```java
+@SpringBootTest
+@Testcontainers
+class UserRepositoryIntegrationTest {
+
+  @Container
+  static PostgreSQLContainer&lt;?&gt; postgres = new PostgreSQLContainer&lt;&gt;(&quot;postgres:16-alpine&quot;)
+      .withDatabaseName(&quot;testdb&quot;);
+
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add(&quot;spring.datasource.url&quot;, postgres::getJdbcUrl);
+    registry.add(&quot;spring.datasource.username&quot;, postgres::getUsername);
+    registry.add(&quot;spring.datasource.password&quot;, postgres::getPassword);
+  }
+
+  @Autowired private UserRepository userRepository;
+
+  @Test
+  void findByEmail_existingUser_returnsUser() {
+    userRepository.save(new User(&quot;Alice&quot;, &quot;alice@example.com&quot;));
+
+    var found = userRepository.findByEmail(&quot;alice@example.com&quot;);
+
+    assertThat(found).isPresent();
+    assertThat(found.get().getName()).isEqualTo(&quot;Alice&quot;);
+  }
+}
+```
+
+### API Tests with MockMvc
+
+Test controller layer with full Spring context:
+
+```java
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+  @Autowired private MockMvc mockMvc;
+  @MockBean private UserService userService;
+
+  @Test
+  void createUser_validInput_returns201() throws Exception {
+    var user = new UserDto(1L, &quot;Alice&quot;, &quot;alice@example.com&quot;);
+    when(userService.create(any())).thenReturn(user);
+
+    mockMvc.perform(post(&quot;/api/users&quot;)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(&quot;&quot;&quot;
+                {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@example.com&quot;}
+                &quot;&quot;&quot;))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath(&quot;$.name&quot;).value(&quot;Alice&quot;));
+  }
+
+  @Test
+  void createUser_invalidEmail_returns400() throws Exception {
+    mockMvc.perform(post(&quot;/api/users&quot;)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(&quot;&quot;&quot;
+                {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;not-an-email&quot;}
+                &quot;&quot;&quot;))
+        .andExpect(status().isBadRequest());
+  }
+}
+```
+
+## Phase 4: Security Scan
+
+```bash
+# Dependency CVEs
+mvn org.owasp:dependency-check-maven:check
+# or
+./gradlew dependencyCheckAnalyze
+
+# Secrets in source
+grep -rn &quot;password\s*=\s*\&quot;&quot; src/ --include=&quot;*.java&quot; --include=&quot;*.yml&quot; --include=&quot;*.properties&quot;
+grep -rn &quot;sk-\|api_key\|secret&quot; src/ --include=&quot;*.java&quot; --include=&quot;*.yml&quot;
+
+# Secrets (git history)
+git secrets --scan  # if configured
+```
+
+### Common Security Findings
+
+```
+# Check for System.out.println (use logger instead)
+grep -rn &quot;System\.out\.print&quot; src/main/ --include=&quot;*.java&quot;
+
+# Check for raw exception messages in responses
+grep -rn &quot;e\.getMessage()&quot; src/main/ --include=&quot;*.java&quot;
+
+# Check for wildcard CORS
+grep -rn &quot;allowedOrigins.*\*&quot; src/main/ --include=&quot;*.java&quot;
+```
+
+## Phase 5: Lint/Format (optional gate)
+
+```bash
+mvn spotless:apply   # if using Spotless plugin
+./gradlew spotlessApply
+```
+
+## Phase 6: Diff Review
+
+```bash
+git diff --stat
+git diff
+```
+
+Checklist:
+- No debugging logs left (`System.out`, `log.debug` without guards)
+- Meaningful errors and HTTP statuses
+- Transactions and validation present where needed
+- Config changes documented
+
+## Output Template
+
+```
+VERIFICATION REPORT
+===================
+Build:     [PASS/FAIL]
+Static:    [PASS/FAIL] (spotbugs/pmd/checkstyle)
+Tests:     [PASS/FAIL] (X/Y passed, Z% coverage)
+Security:  [PASS/FAIL] (CVE findings: N)
+Diff:      [X files changed]
+
+Overall:   [READY / NOT READY]
+
+Issues to Fix:
+1. ...
+2. ...
+```
+
+## Continuous Mode
+
+- Re-run phases on significant changes or every 30–60 minutes in long sessions
+- Keep a short loop: `mvn -T 4 test` + spotbugs for quick feedback
+
+**Remember**: Fast feedback beats late surprises. Keep the gate strict—treat warnings as defects in production systems.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

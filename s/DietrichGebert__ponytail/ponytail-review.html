@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ponytail-review｜Skill 寫法圖鑑</title>
+<meta name="description" content="審查一個改動的邏輯、安全、負載、測試與精簡度，每個發現都白話說明">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ponytail-review</h1>
+<p class="meta">DietrichGebert ｜ Code Review ｜ <a href="https://github.com/DietrichGebert/ponytail/blob/main/skills/ponytail-review/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">審查一個改動的邏輯、安全、負載、測試與精簡度，每個發現都白話說明</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ponytail-review
+description: &gt;
+  對一個改動做品質審查：邏輯對不對、安全不安全、扛不扛得住
+  真實負載、高風險的程式碼有沒有測試、夠不夠快、每一行是不是
+  都有必要。讀的是相連的程式碼，不只是 diff。每個發現都
+  用白話解釋。用於「review this」、「code review」、「review
+  the last commit」、「review my PR」、「is this over-engineered」、/ponytail-review。
+---
+
+像一個壞掉時會被叫起來處理的資深工程師那樣，審查一個改動。
+重要性順序：正確、安全、扛得住負載、有測試、快、精簡。
+精簡仍然重要：每多一行，之後都要有人讀、測試、修。
+這是使用者要求的報告，所以要完整給出。
+
+## 1. 先理解
+
+- 審查使用者指名的範圍：未 commit 或已 stage 的改動、branch、PR
+  連結，或檔案。沒指名：審查未 commit 的改動，如果沒有，
+  就審查最後一個 commit。
+- 讀 diff，再讀它碰到的程式碼：每個被改動的函式的呼叫端、
+  它所呼叫的函式、測試、README。
+- 追真實的流程：資料從哪裡進來、存了什麼、送出什麼。
+- 一個改動可能弄壞它沒碰到的程式碼。當簽章、回傳值
+  或行為改變時，要 grep 每個呼叫端。
+- 在 repo 裡找出預期的負載（README、deploy 設定）：是一個人
+  跑腳本，還是很多使用者和行程同時在用。以此判斷規模，
+  並說明你假設的是哪種負載。
+
+## 2. 要找什麼
+
+1. **Bug：** 結果錯誤、崩潰、漏掉的邊界情況（空值、零、最後一項、
+   四捨五入、時區）、被改動弄壞的呼叫端、只在一個
+   呼叫端套用修正，但共用的函式還是壞的。
+2. **風險：** 安全漏洞（injection、弱隨機性、密鑰、沒有
+   檢查使用者的輸入）、資料遺失（錯誤被吞掉、寫入順序
+   錯誤、沒有 transaction）。
+3. **規模：** 一個使用者沒問題，很多使用者就錯：先檢查再寫入的 race、
+   每個行程都做同一份工作、只增不減的記憶體或清單、每個項目
+   一個 query、大量輸入下的 O(n^2)、本來應該共用卻是各行程自己持有的狀態。
+4. **缺少測試：** 高風險的新邏輯（分支、parser、金流、安全、
+   資料寫入、bug 修復），沒有任何一個在它壞掉時會失敗的測試。要一個好
+   測試，不是追求覆蓋率。
+5. **速度：** 大幅變慢是問題。小幅改善（熱迴圈裡重複的工作）
+   是建議；有些軟體連每一毫秒都計較。
+6. **精簡：** 不該存在或該更小的程式碼。
+   - delete：死碼、沒用到的選項、投機性的功能
+   - reuse：repo 裡已經有這個 helper（指出路徑）
+   - stdlib / native：標準函式庫或平台本來就做得到；為了
+     幾行程式碼就加新的相依套件
+   - yagni：只有一個實作的抽象層、沒人設定的設定
+   - merge：必須一起改的近乎複製貼上的程式碼
+   - split：一個函式做了好幾件不相關的工作，所以難讀
+     也難測。要依工作拆，絕對不要依行數拆，也絕對不要拆成
+     只為了讓函式變短而存在的 helper。
+
+## 3. 回報之前先檢查
+
+- 每個發現都要有具體的案例：「這個輸入或情境會導致這個
+  錯誤的結果」。沒有案例，就不算發現。
+- 重新讀那幾行，確認：呼叫端真的存在、這個值真的可能
+  是空的、這段程式碼真的沒用到。
+- 標了 `shortcut:`（或較舊的 `ponytail:`）註解並寫明限制的捷徑，是一個
+  決定，不是發現，除非預期的負載已經超過那個限制。
+- 提出能運作的最小修法。偏好刪程式碼的修法。絕對不要
+  加問題不需要的分層、框架或設定。
+- 不要個人品味的風格意見，不要「建議考慮」，不要模糊的擔憂。
+
+## 4. 輸出
+
+用非常簡單的英文：短句、日常用字。第一次用到技術
+術語時要解釋。讀的人可能從來沒看過這份程式碼。
+
+開頭先寫 `What this change does:`，兩三句話。
+
+然後把發現分成三組，空的組別跳過：
+- **Must fix：** bug、安全、資料遺失、在預期負載下會壞掉。
+- **Should fix：** 沒有測試的高風險程式碼、真正的慢、重複、
+  一個函式混了好幾種工作、不該存在的程式碼。
+- **Nice to have：** 小幅提速、更短的寫法。
+
+發現要跨組連續編號，這樣使用者可以說「修 2 和 5」。
+每個發現都要有完整的四個部分，每部分一兩句短句：
+
+2. **訂單落在錯的日期**（`billing/close_day.py:L40-52`）
+   - **這是什麼：** 這個工作在午夜結算當天，並對當天所有訂單收費。
+   - **問題：** 它從伺服器時鐘取得「今天」，而伺服器用的是 UTC。柏林時間
+     00:30 下的訂單，會被算到前一天。
+   - **修法：** 在商店的時區裡，只算一次日期：
+     `datetime.now(ZoneInfo(&quot;Europe/Berlin&quot;)).date()`。一行，其他都不用動。
+   - **如果不修：** 晚下的訂單會顯示錯的日期，會計得手動修正。
+
+結尾要有：
+- `Verdict: Ship.` 或 `Verdict: fix 1 and 3 first.`
+- `Lean: -&lt;N&gt; lines possible.`，有精簡類的發現時才寫。
+- `Not checked:` 一行，如果有重要的東西你沒辦法檢查。
+
+什麼都沒發現：寫 `What this change does:`，然後寫 `Looks good. Ship.`，再加一行
+說明你檢查了什麼。
+
+列出發現，不改任何程式碼。</pre></section><section><h2>英文原文</h2><pre>---
+name: ponytail-review
+description: &gt;
+  Quality review of a change: is the logic right, is it safe, does it hold
+  under real load, is risky code tested, is it fast enough, and is every line
+  needed. Reads the connected code, not only the diff. Each finding is
+  explained in plain English. Use for &quot;review this&quot;, &quot;code review&quot;, &quot;review
+  the last commit&quot;, &quot;review my PR&quot;, &quot;is this over-engineered&quot;, /ponytail-review.
+---
+
+Review a change like the senior developer who will be paged when it breaks.
+Order of importance: correct, safe, holds under load, tested, fast, lean.
+Lean still matters: every extra line must be read, tested and fixed later.
+This is a report the user asked for, so give it in full.
+
+## 1. Understand first
+
+- Review what the user names: uncommitted or staged changes, a branch, a PR
+  link, or files. Nothing named: the uncommitted changes, or the last commit
+  if there are none.
+- Read the diff, then the code it touches: callers of every changed function,
+  the functions it calls, the tests, the README.
+- Trace the real flow: where data comes in, what is stored, what goes out.
+- A change can break code it does not touch. When a signature, return value
+  or behavior changes, grep every caller.
+- Find the expected load in the repo (README, deploy config): one person
+  running a script, or many users and processes at once. Judge scale against
+  that, and say which load you assumed.
+
+## 2. Look for
+
+1. **Bug:** wrong result, crash, missed edge case (empty, zero, last item,
+   rounding, time zones), a caller broken by the change, a fix applied in one
+   caller while the shared function stays broken.
+2. **Risk:** security holes (injection, weak randomness, secrets, missing
+   checks on input from users), data loss (errors swallowed, writes in the
+   wrong order, no transaction).
+3. **Scale:** fine for one user, wrong for many: check-then-write races, the
+   same work done by every process, memory or lists that only grow, a query
+   per item, O(n^2) on big input, per-process state that must be shared.
+4. **Missing test:** risky new logic (a branch, a parser, money, security,
+   data writes, a bug fix) with no test that fails when it breaks. One good
+   test, not coverage.
+5. **Speed:** big slowdowns are problems. Small wins (work repeated in a hot
+   loop) are suggestions; some software counts every millisecond.
+6. **Lean:** code that should not exist or should be smaller.
+   - delete: dead code, unused options, speculative features
+   - reuse: the repo already has this helper (name the path)
+   - stdlib / native: the standard library or platform already does it; a
+     new dependency for a few lines
+   - yagni: abstraction with one implementation, config nobody sets
+   - merge: near-copies that must change together
+   - split: one function doing several unrelated jobs, so it is hard to read
+     or test. Split by job, never by line count, and never into helpers that
+     exist only to make a function shorter.
+
+## 3. Check before you report
+
+- Every finding needs a concrete case: &quot;this input or situation leads to this
+  wrong result&quot;. No case, no finding.
+- Re-read the lines and confirm: the caller exists, the value can really be
+  empty, the code really is unused.
+- A shortcut marked with a `shortcut:` (or older `ponytail:`) comment that names its limit is a
+  decision, not a finding, unless the expected load already crosses it.
+- Propose the smallest fix that works. Prefer fixes that delete code. Never
+  add layers, frameworks or config the problem does not need.
+- No style taste, no &quot;consider&quot;, no vague worries.
+
+## 4. Output
+
+Very simple English: short sentences, everyday words. Explain a technical
+term the first time you use it. The reader may never have seen this code.
+
+Start with `What this change does:` in two or three sentences.
+
+Then the findings in three groups, skip empty groups:
+- **Must fix:** bug, security, data loss, breaks at the expected load.
+- **Should fix:** risky code without a test, real slowness, duplication, a
+  function that mixes jobs, code that should not exist.
+- **Nice to have:** small speed-ups, shorter forms.
+
+Number findings across all groups, so the user can say &quot;fix 2 and 5&quot;.
+Every finding has all four parts, each one or two short sentences:
+
+2. **Orders land on the wrong day** (`billing/close_day.py:L40-52`)
+   - **What this is:** At midnight this job closes the day and bills all orders of that day.
+   - **Problem:** It takes &quot;today&quot; from the server clock, which runs in UTC. An order placed
+     at 00:30 in Berlin is billed on the day before.
+   - **Fix:** Compute the day once in the shop&#x27;s time zone:
+     `datetime.now(ZoneInfo(&quot;Europe/Berlin&quot;)).date()`. One line, nothing else changes.
+   - **If we skip it:** Late orders show the wrong date, and accounting fixes them by hand.
+
+End with:
+- `Verdict: Ship.` or `Verdict: fix 1 and 3 first.`
+- `Lean: -&lt;N&gt; lines possible.` when lean findings exist.
+- `Not checked:` one line, if something mattered and you could not check it.
+
+Nothing found: `What this change does:`, then `Looks good. Ship.` and one line
+on what you checked.
+
+Lists findings, changes no code.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

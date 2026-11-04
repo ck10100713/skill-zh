@@ -1,0 +1,1797 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>windows-desktop-e2e｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 pywinauto 和 UI Automation 對 Windows 原生桌面 app 做 E2E 測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>windows-desktop-e2e</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/windows-desktop-e2e/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 pywinauto 和 UI Automation 對 Windows 原生桌面 app 做 E2E 測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: windows-desktop-e2e
+description: 用 pywinauto 和 Windows UI Automation，對 Windows 原生桌面 app（WPF、WinForms、Win32/MFC、Qt）做 E2E 測試。要用 pywinauto 或 UI Automation 為 Windows 原生桌面 app 寫 E2E 測試時使用。
+metadata:
+  origin: ECC
+---
+
+# Windows 桌面 E2E 測試
+
+用 **pywinauto** 搭配 Windows UI Automation（UIA），對 Windows 原生桌面應用程式做端對端測試。涵蓋 WPF、WinForms、Win32/MFC 和 Qt（5.x / 6.x），其中 Qt 另有專屬章節說明。
+
+## 何時啟用
+
+- 為 Windows 原生桌面應用程式撰寫或執行 E2E 測試
+- 從零開始建立桌面 GUI 測試套件
+- 診斷不穩定（flaky）或失敗的桌面自動化測試
+- 為既有 app 加上可測試性（AutomationId、accessible name）
+- 把桌面 E2E 整合進 CI/CD 流程（GitHub Actions 的 `windows-latest`）
+
+### 何時不要使用
+
+- Web 應用程式 → 用 `e2e-testing` skill（Playwright）
+- Electron / CEF / WebView2 app → HTML 那層需要的是瀏覽器自動化，不是 UIA
+- 行動 app → 用各平台專用的工具（UIAutomator、XCUITest）
+- 不需要執行 GUI 的純單元測試或整合測試
+
+## 核心概念
+
+所有 Windows 桌面自動化都仰賴 **UI Automation（UIA）**，這是 Windows 內建的無障礙 API。每個支援的框架都會暴露一棵 UIA 元素樹，上面的屬性 Claude 可以讀取並據以操作：
+
+```
+你的測試 (Python)
+    └── pywinauto (UIA backend)
+        └── Windows UI Automation API   ← Windows 內建，與框架無關
+            └── App 的 UIA provider      ← 每個框架各自提供
+                └── 執行中的 .exe
+```
+
+**各框架的 UIA 品質：**
+
+| 框架 | AutomationId | 可靠度 | 備註 |
+|-----------|-------------|-------------|-------|
+| WPF | 5/5 | 極佳 | `x:Name` 直接對應到 AutomationId |
+| WinForms | 4/5 | 良好 | `AccessibleName` = AutomationId |
+| UWP / WinUI 3 | 5/5 | 極佳 | Microsoft 完整支援 |
+| Qt 6.x | 5/5 | 極佳 | 預設啟用 Accessibility；class name 會變成 `Qt6*` |
+| Qt 5.15+ | 4/5 | 良好 | 改良過的 Accessibility 模組 |
+| Qt 5.7–5.14 | 3/5 | 普通 | 需要 `QT_ACCESSIBILITY=1`；objectName 要手動設定 |
+| Win32 / MFC | 3/5 | 普通 | 可以存取 control ID；常需要靠文字比對 |
+
+## 設定與前置需求
+
+```bash
+# Python 3.8+，僅限 Windows
+pip install pywinauto pytest pytest-html Pillow pytest-timeout
+# 選用：螢幕錄影
+# 安裝 ffmpeg 並加進 PATH：https://ffmpeg.org/download.html
+```
+
+確認 UIA 連得到：
+
+```python
+from pywinauto import Desktop
+Desktop(backend=&quot;uia&quot;).windows()  # 列出所有最上層視窗
+```
+
+安裝 **Accessibility Insights for Windows**（Microsoft 出的免費工具），在寫任何測試之前，用它檢視 UIA 元素樹，等於是你的 DevTools。
+
+## 可測試性設定（依框架）
+
+影響最大的一件事，是在寫測試之前，**幫每個可互動的控制項設定穩定的 AutomationId**。
+
+### WPF
+
+```xml
+&lt;!-- XAML：x:Name 會自動變成 AutomationId --&gt;
+&lt;TextBox x:Name=&quot;usernameInput&quot; /&gt;
+&lt;PasswordBox x:Name=&quot;passwordInput&quot; /&gt;
+&lt;Button x:Name=&quot;btnLogin&quot; Content=&quot;Login&quot; /&gt;
+&lt;TextBlock x:Name=&quot;lblError&quot; /&gt;
+```
+
+### WinForms
+
+```csharp
+// 在設計工具或程式碼裡設定
+usernameInput.AccessibleName = &quot;usernameInput&quot;;
+passwordInput.AccessibleName = &quot;passwordInput&quot;;
+btnLogin.AccessibleName = &quot;btnLogin&quot;;
+lblError.AccessibleName = &quot;lblError&quot;;
+```
+
+### Win32 / MFC
+
+```cpp
+// .rc 檔裡的 control resource ID 會以 AutomationId 字串的形式暴露出來
+// IDC_EDIT_USERNAME -&gt; AutomationId &quot;1001&quot;
+// Name 優先用 SetWindowText；要更完整的支援就加上 IAccessible
+```
+
+### Qt：請看下方專屬章節
+
+---
+
+## Page Object Model
+
+```
+tests/
+├── conftest.py          # app 啟動 fixture、失敗時截圖
+├── pytest.ini
+├── config.py
+├── pages/
+│   ├── __init__.py      # import 需要這個檔案
+│   ├── base_page.py     # locator、等待、截圖的輔助函式
+│   ├── login_page.py
+│   └── main_page.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_login.py
+│   └── test_main_flow.py
+└── artifacts/           # 截圖、影片、log
+```
+
+### base_page.py
+
+```python
+import os, time
+from pywinauto import Desktop
+from config import ACTION_TIMEOUT, ARTIFACT_DIR
+
+class BasePage:
+    def __init__(self, window):
+        self.window = window
+
+    # --- Locator（依優先順序）---
+
+    def by_id(self, auto_id, **kw):
+        &quot;&quot;&quot;AutomationId，最穩定，優先使用。&quot;&quot;&quot;
+        return self.window.child_window(auto_id=auto_id, **kw)
+
+    def by_name(self, name, **kw):
+        &quot;&quot;&quot;畫面上看得到的文字 / accessible name。&quot;&quot;&quot;
+        return self.window.child_window(title=name, **kw)
+
+    def by_class(self, cls, index=0, **kw):
+        &quot;&quot;&quot;控制項 class + index，很脆弱，盡量避免。&quot;&quot;&quot;
+        return self.window.child_window(class_name=cls, found_index=index, **kw)
+
+    # --- 等待 ---
+
+    def wait_visible(self, spec, timeout=ACTION_TIMEOUT):
+        spec.wait(&quot;visible&quot;, timeout=timeout)
+        return spec
+
+    def wait_gone(self, spec, timeout=ACTION_TIMEOUT):
+        spec.wait_not(&quot;visible&quot;, timeout=timeout)
+        return spec
+
+    def wait_window(self, title, timeout=ACTION_TIMEOUT):
+        &quot;&quot;&quot;等待新的最上層視窗出現（對話框、子視窗）。&quot;&quot;&quot;
+        dlg = Desktop(backend=&quot;uia&quot;).window(title=title)
+        dlg.wait(&quot;visible&quot;, timeout=timeout)
+        return dlg
+
+    def wait_until(self, fn, timeout=ACTION_TIMEOUT, interval=0.3):
+        &quot;&quot;&quot;輪詢任意條件，UIA 事件不可靠時使用。&quot;&quot;&quot;
+        deadline = time.time() + timeout
+        while time.time() &lt; deadline:
+            try:
+                if fn():
+                    return True
+            except Exception:
+                pass
+            time.sleep(interval)
+        raise TimeoutError(f&quot;Condition not met within {timeout}s&quot;)
+
+    # --- 動作 ---
+
+    def click(self, spec):
+        self.wait_visible(spec)
+        spec.click_input()
+
+    def type_text(self, spec, text):
+        self.wait_visible(spec)
+        ctrl = spec.wrapper_object()
+        try:
+            ctrl.set_edit_text(text)
+        except Exception as e:
+            # Qt 5.x 的備援做法：UIA Value Pattern 可能不完整
+            import sys, pywinauto.keyboard as kb
+            print(f&quot;[windows-desktop-e2e] set_edit_text failed ({e}), using keyboard fallback&quot;, file=sys.stderr)
+            ctrl.click_input()
+            kb.send_keys(&quot;^a&quot;)
+            kb.send_keys(text, with_spaces=True)
+
+    def get_text(self, spec):
+        ctrl = spec.wrapper_object()
+        for attr in (&quot;window_text&quot;, &quot;get_value&quot;):
+            try:
+                v = getattr(ctrl, attr)()
+                if v:
+                    return v
+            except Exception:
+                pass
+        return &quot;&quot;
+
+    # --- 產出物（Artifact）---
+
+    def screenshot(self, name):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        path = os.path.join(ARTIFACT_DIR, f&quot;{name}.png&quot;)
+        self.window.capture_as_image().save(path)
+        return path
+```
+
+### login_page.py
+
+```python
+from pages.base_page import BasePage
+
+class LoginPage(BasePage):
+    @property
+    def username(self): return self.by_id(&quot;usernameInput&quot;)
+
+    @property
+    def password(self): return self.by_id(&quot;passwordInput&quot;)
+
+    @property
+    def btn_login(self): return self.by_id(&quot;btnLogin&quot;)
+
+    @property
+    def error_label(self): return self.by_id(&quot;lblError&quot;)
+
+    def login(self, user, pwd):
+        self.type_text(self.username, user)
+        self.type_text(self.password, pwd)
+        self.click(self.btn_login)
+
+    def login_ok(self, user, pwd, main_title=&quot;Main Window&quot;):
+        self.login(user, pwd)
+        return self.wait_window(main_title)
+
+    def login_fail(self, user, pwd):
+        self.login(user, pwd)
+        self.wait_visible(self.error_label)
+        return self.get_text(self.error_label)
+```
+
+### conftest.py
+
+&gt; 新專案請優先用 **Tier 1 sandbox fixture**（見下方），它不用額外成本就能提供檔案系統隔離。這個基本版 fixture 只給最精簡/舊式的設定使用。
+
+```python
+import os, pytest
+os.environ[&quot;QT_ACCESSIBILITY&quot;] = &quot;1&quot;  # Qt 5.x 的 UIA 支援需要這個
+
+from pywinauto import Application
+from config import APP_PATH, MAIN_WINDOW_TITLE, LAUNCH_TIMEOUT, ARTIFACT_DIR
+
+@pytest.fixture
+def app(request):
+    if not APP_PATH:
+        pytest.exit(&quot;APP_PATH environment variable is not set&quot;, returncode=1)
+    proc = Application(backend=&quot;uia&quot;).start(APP_PATH, timeout=LAUNCH_TIMEOUT)
+    win  = proc.window(title=MAIN_WINDOW_TITLE)
+    win.wait(&quot;visible&quot;, timeout=LAUNCH_TIMEOUT)
+    yield win
+    # 失敗時截圖
+    if getattr(getattr(request.node, &quot;rep_call&quot;, None), &quot;failed&quot;, False):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            win.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;FAIL_{request.node.name}.png&quot;)
+            )
+        except Exception:
+            pass
+    # 先正常關閉，不行再強制 kill
+    # proc 是 pywinauto 的 Application，要用 wait_for_process_exit()，不是 wait_for_process()
+    try:
+        win.close()
+        proc.wait_for_process_exit(timeout=5)
+    except Exception:
+        proc.kill()
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    setattr(item, f&quot;rep_{outcome.get_result().when}&quot;, outcome.get_result())
+```
+
+### config.py
+
+```python
+import os
+APP_PATH          = os.environ.get(&quot;APP_PATH&quot;, &quot;&quot;)           # 用環境變數設定，不給預設路徑
+MAIN_WINDOW_TITLE = os.environ.get(&quot;APP_TITLE&quot;, &quot;&quot;)
+LAUNCH_TIMEOUT    = int(os.environ.get(&quot;LAUNCH_TIMEOUT&quot;, &quot;15&quot;))
+ACTION_TIMEOUT    = int(os.environ.get(&quot;ACTION_TIMEOUT&quot;, &quot;10&quot;))
+ARTIFACT_DIR      = os.path.join(os.path.dirname(__file__), &quot;artifacts&quot;)
+```
+
+### pytest.ini
+
+```ini
+[pytest]
+testpaths = tests
+markers =
+    smoke: fast smoke tests for critical paths
+    flaky: known-unstable tests
+addopts = -v --tb=short --html=artifacts/report.html --self-contained-html
+```
+
+## Locator 策略
+
+```
+AutomationId  &gt;  Name（文字）  &gt;  ClassName + index  &gt;  XPath
+  （穩定）         （好讀）          （脆弱）            （最後手段）
+```
+
+用 Accessibility Insights 檢視 → **Properties** 面板 → 先找 `AutomationId`。
+
+```python
+# 在 runtime 檢視，貼到 REPL 裡探索元素樹
+win.print_control_identifiers()
+# 或縮小範圍：
+win.child_window(auto_id=&quot;groupBox1&quot;).print_control_identifiers()
+```
+
+## 等待模式
+
+```python
+# 等控制項出現
+page.wait_visible(page.by_id(&quot;statusLabel&quot;))
+
+# 等控制項消失（例如 loading spinner）
+page.wait_gone(page.by_id(&quot;spinnerOverlay&quot;))
+
+# 等對話框跳出來
+dlg = page.wait_window(&quot;Confirm Delete&quot;)
+
+# 自訂條件（例如文字變了）
+page.wait_until(lambda: page.get_text(page.by_id(&quot;lblStatus&quot;)) == &quot;Ready&quot;)
+```
+
+**絕對不要把 `time.sleep()` 當成主要的同步手段**，要用 `wait()` 或 `wait_until()`。
+
+## 產出物管理
+
+```python
+# 需要時截圖
+page.screenshot(&quot;after_login&quot;)
+
+# 全螢幕擷取（視窗在畫面外或被最小化時）
+import pyautogui
+pyautogui.screenshot(&quot;artifacts/fullscreen.png&quot;)
+
+# 用 ffmpeg 錄影（測試前開始，測試後停止）
+import subprocess
+
+def start_recording(name):
+    return subprocess.Popen([
+        &quot;ffmpeg&quot;, &quot;-f&quot;, &quot;gdigrab&quot;, &quot;-framerate&quot;, &quot;10&quot;,
+        &quot;-i&quot;, &quot;desktop&quot;, &quot;-y&quot;, f&quot;artifacts/videos/{name}.mp4&quot;
+    ], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def stop_recording(proc):
+    proc.stdin.write(b&quot;q&quot;); proc.stdin.flush(); proc.wait(timeout=10)
+```
+
+## 逐步追蹤（選擇性開啟）
+
+預設的失敗截圖，通常不足以診斷不穩定的測試。下面的步驟層級追蹤**預設是關閉的**，只在重現 flaky 案例時才開。
+
+### 啟用
+
+```bash
+E2E_TRACE=1 pytest tests/test_login.py -v
+# 把輸入的文字也寫進 JSONL log（有輸入帳密/個資的測試「不要」用）：
+E2E_TRACE=1 E2E_TRACE_INCLUDE_TEXT=1 pytest ...
+```
+
+### 補進 BasePage
+
+```python
+import os, json, time
+TRACE_ENABLED      = os.environ.get(&quot;E2E_TRACE&quot;) == &quot;1&quot;
+TRACE_INCLUDE_TEXT = os.environ.get(&quot;E2E_TRACE_INCLUDE_TEXT&quot;) == &quot;1&quot;
+
+class BasePage:
+    _step = 0
+
+    def _trace(self, action, spec=None, text=None):
+        if not TRACE_ENABLED:
+            return
+        BasePage._step += 1
+        idx = f&quot;{BasePage._step:03d}&quot;
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            self.window.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;step_{idx}_{action}.png&quot;))
+        except Exception:
+            pass  # 擷取失敗不能害測試壞掉
+        rec = {
+            &quot;ts&quot;: time.time(), &quot;step&quot;: BasePage._step, &quot;action&quot;: action,
+            &quot;locator&quot;: getattr(spec, &quot;criteria&quot;, None),
+            &quot;text&quot;: text if TRACE_INCLUDE_TEXT else (&quot;&lt;redacted&gt;&quot; if text else None),
+        }
+        with open(os.path.join(ARTIFACT_DIR, &quot;trace.jsonl&quot;), &quot;a&quot;) as f:
+            f.write(json.dumps(rec) + &quot;\n&quot;)
+
+    def click(self, spec):
+        self.wait_visible(spec); self._trace(&quot;click_before&quot;, spec)
+        spec.click_input();      self._trace(&quot;click_after&quot;,  spec)
+
+    def type_text(self, spec, text):
+        self.wait_visible(spec); self._trace(&quot;type_before&quot;, spec, text)
+        # ... 既有的 set_edit_text / keyboard 備援 ...
+        self._trace(&quot;type_after&quot;, spec)
+```
+
+### 注意事項
+
+- **個資 / 帳密**：`type_text` 的內容預設會被換成 `&lt;redacted&gt;`。登入或付款流程絕對不要設 `E2E_TRACE_INCLUDE_TEXT=1`。
+- **額外負擔**：每個動作約 50–200ms，再加上每一步在磁碟上多一張 PNG。不要在預設的 CI matrix 開啟，只在專門重現 flaky 的 job 裡開。
+- **產出物膨脹**：一個很長的流程會產生幾十 MB，`retention-days` 要跟著調整。
+- **平行/重跑的整潔**：這個簡單範例會一直往 `trace.jsonl` 追加，還用了 class 層級的計數器。重跑之前要先清空 artifact 目錄，平行測試則要給每個 worker 各自的 artifact 目錄。
+- **涵蓋缺口**：在 `BasePage` 之外執行的動作（測試程式碼裡直接呼叫 `pywinauto`）不會被追蹤。
+
+## 不穩定測試的處理
+
+```python
+# 隔離：等同於 Playwright 的 test.fixme()
+@pytest.mark.skip(reason=&quot;Flaky: animation race on slow CI. Issue #42&quot;)
+def test_animated_transition(self, app): ...
+
+# 只在 CI 跳過
+@pytest.mark.skipif(os.environ.get(&quot;CI&quot;) == &quot;true&quot;, reason=&quot;Flaky in CI #43&quot;)
+def test_heavy_load(self, app): ...
+```
+
+常見原因與解法：
+
+| 原因 | 解法 |
+|-------|-----|
+| 控制項還沒就緒 | 把 `time.sleep` 換成 `wait_visible` |
+| 視窗沒有焦點 | 互動前加上 `win.set_focus()` |
+| 動畫進行中 | `wait_until(lambda: not loading_indicator.exists())` |
+| 對話框時機問題 | `wait_window(title, timeout=15)` |
+| CI 的顯示環境還沒準備好 | 設定 `DISPLAY`，或在 CI 使用虛擬桌面 |
+| `set_edit_text` 丟出 NotImplementedError | 缺少 UIA ValuePattern（Qt 5.x 常見），`BasePage.type_text` 已經會退回用 `keyboard.send_keys` |
+| 控制項存在但 `wait_visible` 逾時 | 視窗被最小化或在畫面外，等待之前先呼叫 `win.restore()` + `win.set_focus()` |
+
+## 測試隔離與 Sandbox
+
+隔離分三層，選能滿足需求的最輕那一層。
+
+### Tier 1：檔案系統隔離（預設，一律使用）
+
+每個測試透過 `subprocess.Popen` 和 `Application.connect()`，各自拿到獨立的 `APPDATA` / `LOCALAPPDATA` / `TEMP`。pytest 的 `tmp_path` fixture 會自動負責清理。
+
+```python
+# conftest.py：用這個取代基本版的 `app` fixture
+import os, subprocess, pytest
+from pywinauto import Application
+from config import APP_PATH, APP_ARGS, APP_TITLE, LAUNCH_TIMEOUT, ACTION_TIMEOUT, ARTIFACT_DIR
+
+@pytest.fixture(scope=&quot;function&quot;)
+def app(request, tmp_path):
+    &quot;&quot;&quot;每個測試用全新的 process + 隔離的使用者資料目錄。&quot;&quot;&quot;
+    if not APP_PATH:
+        pytest.exit(&quot;APP_PATH not set&quot;, returncode=1)
+
+    # 把所有每位使用者的儲存位置，都導向隔離的暫存目錄
+    sandbox_env = os.environ.copy()
+    sandbox_env[&quot;QT_ACCESSIBILITY&quot;]  = &quot;1&quot;
+    sandbox_env[&quot;APPDATA&quot;]           = str(tmp_path / &quot;AppData&quot; / &quot;Roaming&quot;)
+    sandbox_env[&quot;LOCALAPPDATA&quot;]      = str(tmp_path / &quot;AppData&quot; / &quot;Local&quot;)
+    sandbox_env[&quot;TEMP&quot;] = sandbox_env[&quot;TMP&quot;] = str(tmp_path / &quot;Temp&quot;)
+    for p in (sandbox_env[&quot;APPDATA&quot;], sandbox_env[&quot;LOCALAPPDATA&quot;], sandbox_env[&quot;TEMP&quot;]):
+        os.makedirs(p, exist_ok=True)
+
+    if not APP_TITLE:
+        pytest.exit(&quot;APP_TITLE environment variable is not set&quot;, returncode=1)
+
+    # shlex.split 能處理含空白的引號參數；單純的 split() 會被它搞壞
+    import shlex
+    # 用 subprocess 啟動才能傳入 env；再用 PID 讓 pywinauto 連上去
+    proc = subprocess.Popen(
+        [APP_PATH] + shlex.split(APP_ARGS),
+        env=sandbox_env,
+    )
+    pw_app = Application(backend=&quot;uia&quot;).connect(process=proc.pid, timeout=LAUNCH_TIMEOUT)
+    win    = pw_app.window(title=APP_TITLE)
+    win.wait(&quot;visible&quot;, timeout=LAUNCH_TIMEOUT)
+    yield win
+
+    if getattr(getattr(request.node, &quot;rep_call&quot;, None), &quot;failed&quot;, False):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            win.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;FAIL_{request.node.name}.png&quot;)
+            )
+        except Exception:
+            pass
+    try:
+        win.close()
+        proc.wait(timeout=5)
+    except Exception:
+        proc.kill()
+    # tmp_path 會由 pytest 自動清理
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    setattr(item, f&quot;rep_{outcome.get_result().when}&quot;, outcome.get_result())
+```
+
+### Tier 2：Windows Job Object（選用：限制 process 的生命週期）
+
+把 process 掛到 Job Object 上，當測試 fixture 的 job handle 被 GC 時，它就會**自動被終止**。也能避免 app 產生逃過 fixture 清理的子 process。
+
+&gt; **隔離的範圍：**Job Object **不會**虛擬化檔案系統存取，也不會
+&gt; 擋網路流量。檔案寫入與網路的隔離，需要 AppContainer、
+&gt; Windows 防火牆規則，或 Tier 3（Windows Sandbox）。Tier 2 只用在
+&gt; 控制 process 生命週期與子 process 的範圍。
+
+不需要額外的相依套件。
+
+```python
+import ctypes, ctypes.wintypes as wt
+
+def restrict_process(pid: int):
+    &quot;&quot;&quot;
+    把 process 掛到 Job Object 上，防止它：
+    - 在 job 之外產生 process（LIMIT_KILL_ON_JOB_CLOSE）
+    不會擋網路，網路要用 Windows 防火牆規則處理。
+    &quot;&quot;&quot;
+    JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000
+    # 最小權限：SET_QUOTA (0x0100) | TERMINATE (0x0001)
+    PROCESS_SET_QUOTA_AND_TERMINATE    = 0x0101
+
+    kernel32 = ctypes.windll.kernel32
+    job   = kernel32.CreateJobObjectW(None, None)
+    hproc = kernel32.OpenProcess(PROCESS_SET_QUOTA_AND_TERMINATE, False, pid)
+
+    # 正確的 struct 配置：LimitFlags 在 offset +16，不是 +44
+    class JOBOBJECT_BASIC_LIMIT_INFORMATION(ctypes.Structure):
+        _fields_ = [
+            (&quot;PerProcessUserTimeLimit&quot;, wt.LARGE_INTEGER),
+            (&quot;PerJobUserTimeLimit&quot;,     wt.LARGE_INTEGER),
+            (&quot;LimitFlags&quot;,             wt.DWORD),
+            (&quot;MinimumWorkingSetSize&quot;,   ctypes.c_size_t),
+            (&quot;MaximumWorkingSetSize&quot;,   ctypes.c_size_t),
+            (&quot;ActiveProcessLimit&quot;,      wt.DWORD),
+            (&quot;Affinity&quot;,               ctypes.c_size_t),
+            (&quot;PriorityClass&quot;,          wt.DWORD),
+            (&quot;SchedulingClass&quot;,        wt.DWORD),
+        ]
+
+    info = JOBOBJECT_BASIC_LIMIT_INFORMATION()
+    info.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+    ok = kernel32.SetInformationJobObject(job, 2, ctypes.byref(info), ctypes.sizeof(info))
+    if not ok:
+        raise ctypes.WinError()
+    kernel32.AssignProcessToJobObject(job, hproc)
+    kernel32.CloseHandle(hproc)
+    return job  # 要一直保留，job 被 GC 時就會關閉（連帶殺掉 process）
+
+# 在 proc = subprocess.Popen(...) 之後：  job = restrict_process(proc.pid)
+```
+
+### Tier 3：Windows Sandbox（CI 的整個 OS 隔離）
+
+當你每次執行都需要乾淨的 Windows 映像檔（沒有殘留的 registry key、沒有共用的 GPU 狀態、真正的隔離），就把**整個測試套件**放到
+[Windows Sandbox](https://learn.microsoft.com/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-overview) 裡面跑。
+
+**需求：**Windows 10/11 Pro 或 Enterprise，並啟用虛擬化。
+
+在專案根目錄建立 `e2e-sandbox.wsb`：
+
+```xml
+&lt;Configuration&gt;
+  &lt;MappedFolders&gt;
+    &lt;!-- App 執行檔（唯讀） --&gt;
+    &lt;MappedFolder&gt;
+      &lt;HostFolder&gt;C:\path\to\your\build\Release&lt;/HostFolder&gt;
+      &lt;SandboxFolder&gt;C:\app&lt;/SandboxFolder&gt;
+      &lt;ReadOnly&gt;true&lt;/ReadOnly&gt;
+    &lt;/MappedFolder&gt;
+    &lt;!-- 測試套件（可讀寫，因為要寫入產出物） --&gt;
+    &lt;MappedFolder&gt;
+      &lt;HostFolder&gt;C:\path\to\your\e2e_test&lt;/HostFolder&gt;
+      &lt;SandboxFolder&gt;C:\e2e_test&lt;/SandboxFolder&gt;
+      &lt;ReadOnly&gt;false&lt;/ReadOnly&gt;
+    &lt;/MappedFolder&gt;
+  &lt;/MappedFolders&gt;
+  &lt;LogonCommand&gt;
+    &lt;!--
+      Windows Sandbox 啟動時沒有 Python。先靜默安裝，
+      再安裝相依套件並執行測試。產出物會透過上面的
+      MappedFolder 寫回 host。
+    --&gt;
+    &lt;Command&gt;powershell -Command &quot;
+      winget install --id Python.Python.3.11 --silent --accept-package-agreements;
+      $env:PATH += &#x27;;&#x27; + $env:LOCALAPPDATA + &#x27;\Programs\Python\Python311\Scripts&#x27;;
+      cd C:\e2e_test;
+      pip install -r requirements.txt;
+      pytest tests\ -v
+    &quot;&lt;/Command&gt;
+  &lt;/LogonCommand&gt;
+&lt;/Configuration&gt;
+```
+
+啟動：`WindowsSandbox.exe e2e-sandbox.wsb`
+
+&gt; pywinauto 和 app 都在 sandbox **裡面**執行（需要在同一個 session）。
+&gt; 產出物會透過對應的資料夾寫回 host。
+
+### 各 Tier 比較
+
+| Tier | 隔離範圍 | 設定成本 | CI 可用 | 何時使用 |
+|------|-----------|-----------|-------------|----------|
+| 1：`tmp_path` 環境變數導向 | 檔案系統 | 零 | 一律可用 | 所有測試的預設 |
+| 2：Job Object | Process 樹 | 低 | 一律可用 | 防止子 process 逃脫 |
+| 3：Windows Sandbox | 整個 OS | 中 | 需要 Pro/Enterprise 映像檔 | 每晚的乾淨環境執行 |
+
+### 防止測試卡住
+
+加上 `pytest-timeout` 來限制任何單一測試的時間。在 `pytest.ini` 裡設定 `timeout = 60` 和 `timeout_method = thread`。注意：`thread` 方法在 Windows 上殺不掉 Qt app 的子 process，要在 `conftest.py` 加上 `atexit.register(lambda: [p.kill() for p in psutil.Process().children(recursive=True)])` 來回收孤兒 process。
+
+## CI/CD 整合
+
+```yaml
+# .github/workflows/e2e-desktop.yml
+name: Desktop E2E
+on: [push, pull_request]
+
+jobs:
+  e2e:
+    runs-on: windows-latest   # 真實的 GUI 環境，不需要 Xvfb
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: &quot;3.11&quot; }
+
+      - name: Install deps
+        run: pip install pywinauto pytest pytest-html Pillow
+
+      - name: Build app
+        run: cmake --build build --config Release  # 依你的建置系統調整
+
+      - name: Run E2E
+        env:
+          APP_PATH: ${{ github.workspace }}\build\Release\MyApp.exe
+          APP_TITLE: &quot;My Application&quot;
+          CI: &quot;true&quot;
+        run: pytest tests/ --html=artifacts/report.html --self-contained-html --junitxml=artifacts/results.xml -v
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-artifacts
+          path: artifacts/
+          retention-days: 14
+```
+
+## Qt 專屬
+
+### 在 Qt 5.x 啟用 UIA
+
+Qt 5.x 的 accessibility 在某些 build 預設是關閉的（尤其是 5.7–5.14）。要在啟動**之前**設定環境變數。Qt 6.x 預設就啟用 accessibility，Qt 6 可以跳過這一步。
+
+```python
+# conftest.py：加在 module 最上面
+import os
+os.environ[&quot;QT_ACCESSIBILITY&quot;] = &quot;1&quot;
+```
+
+或是在 CI 裡 export：
+
+```yaml
+env:
+  QT_ACCESSIBILITY: &quot;1&quot;
+```
+
+### 為 Qt Widget 加上穩定的識別碼
+
+```cpp
+// 建議：同時設定 objectName 和 accessibleName
+void setTestId(QWidget* w, const char* id) {
+    w-&gt;setObjectName(id);
+    w-&gt;setAccessibleName(id);  // 會變成 UIA 的 Name 屬性
+}
+
+// 在你的 dialog 建構函式裡：
+setTestId(ui-&gt;usernameEdit, &quot;usernameInput&quot;);
+setTestId(ui-&gt;passwordEdit, &quot;passwordInput&quot;);
+setTestId(ui-&gt;loginButton,  &quot;btnLogin&quot;);
+setTestId(ui-&gt;errorLabel,   &quot;lblError&quot;);
+```
+
+把所有 ID 集中放在一個 header 裡，避免打錯字：
+
+```cpp
+// test_ids.h
+#define TID_USERNAME   &quot;usernameInput&quot;
+#define TID_PASSWORD   &quot;passwordInput&quot;
+#define TID_BTN_LOGIN  &quot;btnLogin&quot;
+#define TID_LBL_ERROR  &quot;lblError&quot;
+```
+
+### Qt 專屬的怪癖
+
+**QComboBox**：下拉選單是獨立的最上層視窗：
+
+```python
+from pywinauto import Desktop
+
+def select_combo_item(page, combo_spec, item_text):
+    page.click(combo_spec)
+    # 下拉選單會以新的根層級視窗出現
+    # class_name 會依 Qt 版本而異，要用 Accessibility Insights 確認
+    # Qt 5.x: &quot;Qt5QWindowIcon&quot;  |  Qt 6.x: &quot;Qt6QWindowIcon&quot;，要用 Accessibility Insights 確認
+    popup = Desktop(backend=&quot;uia&quot;).window(class_name_re=&quot;Qt[56]QWindowIcon&quot;)
+    popup.wait(&quot;visible&quot;, timeout=5)
+    popup.child_window(title=item_text).click_input()
+```
+
+**QMessageBox / QDialog**：同樣是獨立的最上層視窗：
+
+```python
+dlg = page.wait_window(&quot;Confirm&quot;)          # 等對話框標題
+dlg.child_window(title=&quot;OK&quot;).click_input() # 點裡面的按鈕
+```
+
+**QTableWidget / QTableView**：存取 row/cell：
+
+```python
+table = page.by_id(&quot;tblUsers&quot;).wrapper_object()
+cell  = table.cell(row=0, column=1)
+print(cell.window_text())
+```
+
+**自繪的控制項**（只有 `paintEvent`、`QGraphicsView`、`QOpenGLWidget`）：UIA 看不到它們的內部。請用下面的 Fallback 章節。
+
+## 備援方案：截圖模式
+
+當控制項無法透過 UIA 取得時（自繪、第三方、遊戲引擎）：
+
+```bash
+pip install pyautogui Pillow opencv-python
+```
+
+```python
+import pyautogui, cv2, numpy as np
+from PIL import Image
+
+def find_image_on_screen(template_path, confidence=0.85):
+    &quot;&quot;&quot;在螢幕上找出樣板圖片。回傳 (x, y) 中心點，找不到回傳 None。&quot;&quot;&quot;
+    screen   = np.array(pyautogui.screenshot())
+    template = np.array(Image.open(template_path))
+    result   = cv2.matchTemplate(
+        cv2.cvtColor(screen, cv2.COLOR_RGB2BGR),
+        cv2.cvtColor(template, cv2.COLOR_RGB2BGR),
+        cv2.TM_CCOEFF_NORMED,
+    )
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+    if max_val &gt;= confidence:
+        h, w = template.shape[:2]
+        return max_loc[0] + w // 2, max_loc[1] + h // 2
+    return None
+
+def click_image(template_path, confidence=0.85):
+    pos = find_image_on_screen(template_path, confidence)
+    if pos is None:
+        raise RuntimeError(f&quot;Image not found on screen: {template_path}&quot;)
+    pyautogui.click(*pos)
+```
+
+### DPI / 縮放規則（僅限截圖模式）
+
+截圖比對對 Windows 的顯示縮放（100% / 125% / 150%）極度敏感。有三條硬性規則：
+
+1. **用跟目標機器相同的縮放比例擷取樣板。**不要想用 `PIL.Image.resize` 來補救不一致，`cv2.matchTemplate` 對重新取樣造成的雜訊非常脆弱。
+2. **固定 CI 的顯示縮放。**在 `windows-latest` 上加一個像 `Set-DisplayResolution 1920 1080 -Force` 的步驟，並關閉各螢幕獨立的 DPI 縮放，讓截圖尺寸可以重現。
+3. **把縮放比例跟每個產出物記在一起。**擷取時，把 `GetDpiForWindow(hwnd) / 96` 寫進 `artifacts/&lt;test&gt;/metadata.json`，事後檢討就一目了然，不用靠猜。
+
+&gt; 當被測的 app 是 Qt 寫的，process 層級的 DPI awareness（`SetProcessDpiAwarenessContext`）**可能會跟 Qt 自己的 DPI 處理衝突**。與其在 fixture 裡切換整個 process 的 DPI 模式，不如用「相同縮放的樣板 + 固定 CI」。
+
+### 除錯比對信心值
+
+調整 `confidence` 門檻時，唯一合理的做法是**親眼看**比對結果落在哪裡。下面的 helper 只用來診斷，不要從測試程式碼呼叫它。
+
+```python
+def debug_match(template_path, out=&quot;artifacts/match_debug.png&quot;, confidence=0.85):
+    &quot;&quot;&quot;只用來診斷。把最佳比對的矩形與分數畫回目前的螢幕畫面。
+
+    不能用在正式測試：只在校準 confidence 或追查誤判時使用。
+    &quot;&quot;&quot;
+    import os, cv2, pyautogui, numpy as np
+    screen = np.array(pyautogui.screenshot())[:, :, ::-1]
+    tpl    = cv2.imread(template_path)
+    if tpl is None:
+        raise RuntimeError(f&quot;Template unreadable: {template_path}&quot;)
+    res    = cv2.matchTemplate(screen, tpl, cv2.TM_CCOEFF_NORMED)
+    _, mv, _, ml = cv2.minMaxLoc(res)
+    h, w   = tpl.shape[:2]
+    colour = (0, 255, 0) if mv &gt;= confidence else (0, 0, 255)  # 綠色通過 / 紅色失敗
+    cv2.rectangle(screen, ml, (ml[0]+w, ml[1]+h), colour, 2)
+    cv2.putText(screen, f&quot;score={mv:.3f} thr={confidence}&quot;,
+                (ml[0], max(20, ml[1]-6)),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, colour, 2)
+    os.makedirs(os.path.dirname(out) or &quot;.&quot;, exist_ok=True)
+    cv2.imwrite(out, screen)
+    return mv
+```
+
+**少用**：圖片比對會因為 DPI 改變、換佈景主題、部分被遮住而失效。
+一律先試 UIA，只有真的碰不到的控制項才退回截圖。
+
+## 反模式
+
+```python
+# 錯誤：固定 sleep
+time.sleep(3)
+page.click(page.by_id(&quot;btnSubmit&quot;))
+
+# 正確：條件等待
+page.wait_visible(page.by_id(&quot;btnSubmit&quot;))
+page.click(page.by_id(&quot;btnSubmit&quot;))
+```
+
+```python
+# 錯誤：把脆弱的 class+index locator 當主要策略
+page.by_class(&quot;Edit&quot;, index=2).type_keys(&quot;hello&quot;)
+
+# 正確：AutomationId
+page.by_id(&quot;usernameInput&quot;).set_edit_text(&quot;hello&quot;)
+```
+
+```python
+# 錯誤：對像素座標做 assert
+assert btn.rectangle().left == 120
+
+# 正確：對內容 / 狀態做 assert
+assert page.get_text(page.by_id(&quot;lblStatus&quot;)) == &quot;Logged in&quot;
+assert page.by_id(&quot;btnLogout&quot;).is_enabled()
+```
+
+```python
+# 錯誤：所有測試共用同一個 app instance（狀態會互相汙染）
+@pytest.fixture(scope=&quot;session&quot;)
+def app(): ...
+
+# 正確：每個測試用全新的 process（頂多每個 class 一個）
+@pytest.fixture(scope=&quot;function&quot;)
+def app(): ...
+```
+
+## 執行測試
+
+```bash
+# 全部測試
+pytest tests/ -v
+
+# 只跑 smoke
+pytest tests/ -m smoke -v
+
+# 指定檔案
+pytest tests/test_login.py -v
+
+# 指定 app 路徑
+APP_PATH=&quot;C:\build\Release\MyApp.exe&quot; APP_TITLE=&quot;MyApp&quot; pytest tests/ -v
+
+# 偵測 flaky 測試（每個重複跑 5 次）
+pip install pytest-repeat
+pytest tests/test_login.py --count=5 -v
+```
+
+## 相關 Skill
+
+- `e2e-testing`：Web 應用程式的 Playwright E2E
+- `cpp-testing`：用 GoogleTest 做 C++ 單元/整合測試
+- `cpp-coding-standards`：C++ 程式碼風格與模式</pre></section><section><h2>英文原文</h2><pre>---
+name: windows-desktop-e2e
+description: E2E testing for Windows native desktop apps (WPF, WinForms, Win32/MFC, Qt) using pywinauto and Windows UI Automation. Use when writing E2E tests for a Windows native desktop app with pywinauto or UI Automation.
+metadata:
+  origin: ECC
+---
+
+# Windows Desktop E2E Testing
+
+End-to-end testing for Windows native desktop applications using **pywinauto** backed by Windows UI Automation (UIA). Covers WPF, WinForms, Win32/MFC, and Qt (5.x / 6.x) — with Qt-specific guidance as a dedicated section.
+
+## When to Activate
+
+- Writing or running E2E tests for a Windows native desktop application
+- Setting up a desktop GUI test suite from scratch
+- Diagnosing flaky or failing desktop automation tests
+- Adding testability (AutomationId, accessible names) to an existing app
+- Integrating desktop E2E into a CI/CD pipeline (GitHub Actions `windows-latest`)
+
+### When NOT to Use
+
+- Web applications → use `e2e-testing` skill (Playwright)
+- Electron / CEF / WebView2 apps → the HTML layer needs browser automation, not UIA
+- Mobile apps → use platform-specific tools (UIAutomator, XCUITest)
+- Pure unit or integration tests that don&#x27;t need a running GUI
+
+## Core Concepts
+
+All Windows desktop automation relies on **UI Automation (UIA)**, a Windows-built-in accessibility API. Every supported framework exposes a tree of UIA elements with properties Claude can read and act on:
+
+```
+Your test (Python)
+    └── pywinauto (UIA backend)
+        └── Windows UI Automation API   ← built into Windows, framework-agnostic
+            └── App&#x27;s UIA provider      ← each framework ships its own
+                └── Running .exe
+```
+
+**UIA quality by framework:**
+
+| Framework | AutomationId | Reliability | Notes |
+|-----------|-------------|-------------|-------|
+| WPF | 5/5 | Excellent | `x:Name` maps directly to AutomationId |
+| WinForms | 4/5 | Good | `AccessibleName` = AutomationId |
+| UWP / WinUI 3 | 5/5 | Excellent | Full Microsoft support |
+| Qt 6.x | 5/5 | Excellent | Accessibility enabled by default; class names change to `Qt6*` |
+| Qt 5.15+ | 4/5 | Good | Improved Accessibility module |
+| Qt 5.7–5.14 | 3/5 | Fair | Needs `QT_ACCESSIBILITY=1`; objectName manual |
+| Win32 / MFC | 3/5 | Fair | Control IDs accessible; text matching common |
+
+## Setup &amp; Prerequisites
+
+```bash
+# Python 3.8+, Windows only
+pip install pywinauto pytest pytest-html Pillow pytest-timeout
+# Optional: screen recording
+# Install ffmpeg and add to PATH: https://ffmpeg.org/download.html
+```
+
+Verify UIA is reachable:
+
+```python
+from pywinauto import Desktop
+Desktop(backend=&quot;uia&quot;).windows()  # lists all top-level windows
+```
+
+Install **Accessibility Insights for Windows** (free, from Microsoft) — your DevTools equivalent for inspecting the UIA element tree before writing any test.
+
+## Testability Setup (by Framework)
+
+The single most impactful thing you can do is **give every interactive control a stable AutomationId** before writing tests.
+
+### WPF
+
+```xml
+&lt;!-- XAML: x:Name becomes AutomationId automatically --&gt;
+&lt;TextBox x:Name=&quot;usernameInput&quot; /&gt;
+&lt;PasswordBox x:Name=&quot;passwordInput&quot; /&gt;
+&lt;Button x:Name=&quot;btnLogin&quot; Content=&quot;Login&quot; /&gt;
+&lt;TextBlock x:Name=&quot;lblError&quot; /&gt;
+```
+
+### WinForms
+
+```csharp
+// Set in designer or code
+usernameInput.AccessibleName = &quot;usernameInput&quot;;
+passwordInput.AccessibleName = &quot;passwordInput&quot;;
+btnLogin.AccessibleName = &quot;btnLogin&quot;;
+lblError.AccessibleName = &quot;lblError&quot;;
+```
+
+### Win32 / MFC
+
+```cpp
+// Control resource IDs in .rc file are exposed as AutomationId strings
+// IDC_EDIT_USERNAME -&gt; AutomationId &quot;1001&quot;
+// Prefer SetWindowText for Name; add IAccessible for richer support
+```
+
+### Qt — see dedicated section below
+
+---
+
+## Page Object Model
+
+```
+tests/
+├── conftest.py          # app launch fixture, failure screenshot
+├── pytest.ini
+├── config.py
+├── pages/
+│   ├── __init__.py      # required for imports
+│   ├── base_page.py     # locators, wait, screenshot helpers
+│   ├── login_page.py
+│   └── main_page.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_login.py
+│   └── test_main_flow.py
+└── artifacts/           # screenshots, videos, logs
+```
+
+### base_page.py
+
+```python
+import os, time
+from pywinauto import Desktop
+from config import ACTION_TIMEOUT, ARTIFACT_DIR
+
+class BasePage:
+    def __init__(self, window):
+        self.window = window
+
+    # --- Locators (priority order) ---
+
+    def by_id(self, auto_id, **kw):
+        &quot;&quot;&quot;AutomationId — most stable. Use as first choice.&quot;&quot;&quot;
+        return self.window.child_window(auto_id=auto_id, **kw)
+
+    def by_name(self, name, **kw):
+        &quot;&quot;&quot;Visible text / accessible name.&quot;&quot;&quot;
+        return self.window.child_window(title=name, **kw)
+
+    def by_class(self, cls, index=0, **kw):
+        &quot;&quot;&quot;Control class + index — fragile, avoid if possible.&quot;&quot;&quot;
+        return self.window.child_window(class_name=cls, found_index=index, **kw)
+
+    # --- Waits ---
+
+    def wait_visible(self, spec, timeout=ACTION_TIMEOUT):
+        spec.wait(&quot;visible&quot;, timeout=timeout)
+        return spec
+
+    def wait_gone(self, spec, timeout=ACTION_TIMEOUT):
+        spec.wait_not(&quot;visible&quot;, timeout=timeout)
+        return spec
+
+    def wait_window(self, title, timeout=ACTION_TIMEOUT):
+        &quot;&quot;&quot;Wait for a new top-level window (dialogs, child windows).&quot;&quot;&quot;
+        dlg = Desktop(backend=&quot;uia&quot;).window(title=title)
+        dlg.wait(&quot;visible&quot;, timeout=timeout)
+        return dlg
+
+    def wait_until(self, fn, timeout=ACTION_TIMEOUT, interval=0.3):
+        &quot;&quot;&quot;Poll an arbitrary condition — use when UIA events are unreliable.&quot;&quot;&quot;
+        deadline = time.time() + timeout
+        while time.time() &lt; deadline:
+            try:
+                if fn():
+                    return True
+            except Exception:
+                pass
+            time.sleep(interval)
+        raise TimeoutError(f&quot;Condition not met within {timeout}s&quot;)
+
+    # --- Actions ---
+
+    def click(self, spec):
+        self.wait_visible(spec)
+        spec.click_input()
+
+    def type_text(self, spec, text):
+        self.wait_visible(spec)
+        ctrl = spec.wrapper_object()
+        try:
+            ctrl.set_edit_text(text)
+        except Exception as e:
+            # Qt 5.x fallback: UIA Value Pattern may be incomplete
+            import sys, pywinauto.keyboard as kb
+            print(f&quot;[windows-desktop-e2e] set_edit_text failed ({e}), using keyboard fallback&quot;, file=sys.stderr)
+            ctrl.click_input()
+            kb.send_keys(&quot;^a&quot;)
+            kb.send_keys(text, with_spaces=True)
+
+    def get_text(self, spec):
+        ctrl = spec.wrapper_object()
+        for attr in (&quot;window_text&quot;, &quot;get_value&quot;):
+            try:
+                v = getattr(ctrl, attr)()
+                if v:
+                    return v
+            except Exception:
+                pass
+        return &quot;&quot;
+
+    # --- Artifacts ---
+
+    def screenshot(self, name):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        path = os.path.join(ARTIFACT_DIR, f&quot;{name}.png&quot;)
+        self.window.capture_as_image().save(path)
+        return path
+```
+
+### login_page.py
+
+```python
+from pages.base_page import BasePage
+
+class LoginPage(BasePage):
+    @property
+    def username(self): return self.by_id(&quot;usernameInput&quot;)
+
+    @property
+    def password(self): return self.by_id(&quot;passwordInput&quot;)
+
+    @property
+    def btn_login(self): return self.by_id(&quot;btnLogin&quot;)
+
+    @property
+    def error_label(self): return self.by_id(&quot;lblError&quot;)
+
+    def login(self, user, pwd):
+        self.type_text(self.username, user)
+        self.type_text(self.password, pwd)
+        self.click(self.btn_login)
+
+    def login_ok(self, user, pwd, main_title=&quot;Main Window&quot;):
+        self.login(user, pwd)
+        return self.wait_window(main_title)
+
+    def login_fail(self, user, pwd):
+        self.login(user, pwd)
+        self.wait_visible(self.error_label)
+        return self.get_text(self.error_label)
+```
+
+### conftest.py
+
+&gt; For new projects prefer the **Tier 1 sandbox fixture** (see below) — it adds filesystem isolation at zero extra cost. This basic fixture is for minimal/legacy setups only.
+
+```python
+import os, pytest
+os.environ[&quot;QT_ACCESSIBILITY&quot;] = &quot;1&quot;  # Required for Qt 5.x UIA support
+
+from pywinauto import Application
+from config import APP_PATH, MAIN_WINDOW_TITLE, LAUNCH_TIMEOUT, ARTIFACT_DIR
+
+@pytest.fixture
+def app(request):
+    if not APP_PATH:
+        pytest.exit(&quot;APP_PATH environment variable is not set&quot;, returncode=1)
+    proc = Application(backend=&quot;uia&quot;).start(APP_PATH, timeout=LAUNCH_TIMEOUT)
+    win  = proc.window(title=MAIN_WINDOW_TITLE)
+    win.wait(&quot;visible&quot;, timeout=LAUNCH_TIMEOUT)
+    yield win
+    # Screenshot on failure
+    if getattr(getattr(request.node, &quot;rep_call&quot;, None), &quot;failed&quot;, False):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            win.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;FAIL_{request.node.name}.png&quot;)
+            )
+        except Exception:
+            pass
+    # Graceful exit first, force-kill as fallback
+    # proc is a pywinauto Application — use wait_for_process_exit(), not wait_for_process()
+    try:
+        win.close()
+        proc.wait_for_process_exit(timeout=5)
+    except Exception:
+        proc.kill()
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    setattr(item, f&quot;rep_{outcome.get_result().when}&quot;, outcome.get_result())
+```
+
+### config.py
+
+```python
+import os
+APP_PATH          = os.environ.get(&quot;APP_PATH&quot;, &quot;&quot;)           # set via env — no default path
+MAIN_WINDOW_TITLE = os.environ.get(&quot;APP_TITLE&quot;, &quot;&quot;)
+LAUNCH_TIMEOUT    = int(os.environ.get(&quot;LAUNCH_TIMEOUT&quot;, &quot;15&quot;))
+ACTION_TIMEOUT    = int(os.environ.get(&quot;ACTION_TIMEOUT&quot;, &quot;10&quot;))
+ARTIFACT_DIR      = os.path.join(os.path.dirname(__file__), &quot;artifacts&quot;)
+```
+
+### pytest.ini
+
+```ini
+[pytest]
+testpaths = tests
+markers =
+    smoke: fast smoke tests for critical paths
+    flaky: known-unstable tests
+addopts = -v --tb=short --html=artifacts/report.html --self-contained-html
+```
+
+## Locator Strategy
+
+```
+AutomationId  &gt;  Name (text)  &gt;  ClassName + index  &gt;  XPath
+  (stable)         (readable)       (fragile)           (last resort)
+```
+
+Inspect with Accessibility Insights → **Properties** pane → look for `AutomationId` first.
+
+```python
+# Inspect at runtime — paste into a REPL to explore the tree
+win.print_control_identifiers()
+# or narrow scope:
+win.child_window(auto_id=&quot;groupBox1&quot;).print_control_identifiers()
+```
+
+## Wait Patterns
+
+```python
+# Wait for control to appear
+page.wait_visible(page.by_id(&quot;statusLabel&quot;))
+
+# Wait for control to disappear (e.g. loading spinner)
+page.wait_gone(page.by_id(&quot;spinnerOverlay&quot;))
+
+# Wait for a dialog to pop up
+dlg = page.wait_window(&quot;Confirm Delete&quot;)
+
+# Custom condition (e.g. text changes)
+page.wait_until(lambda: page.get_text(page.by_id(&quot;lblStatus&quot;)) == &quot;Ready&quot;)
+```
+
+**Never use `time.sleep()` as primary synchronization** — use `wait()` or `wait_until()`.
+
+## Artifact Management
+
+```python
+# Screenshot on demand
+page.screenshot(&quot;after_login&quot;)
+
+# Full-screen capture (when window is off-screen or minimised)
+import pyautogui
+pyautogui.screenshot(&quot;artifacts/fullscreen.png&quot;)
+
+# Screen recording with ffmpeg (start before test, stop after)
+import subprocess
+
+def start_recording(name):
+    return subprocess.Popen([
+        &quot;ffmpeg&quot;, &quot;-f&quot;, &quot;gdigrab&quot;, &quot;-framerate&quot;, &quot;10&quot;,
+        &quot;-i&quot;, &quot;desktop&quot;, &quot;-y&quot;, f&quot;artifacts/videos/{name}.mp4&quot;
+    ], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def stop_recording(proc):
+    proc.stdin.write(b&quot;q&quot;); proc.stdin.flush(); proc.wait(timeout=10)
+```
+
+## Per-Step Trace (opt-in)
+
+The default failure screenshot is often too thin for diagnosing flaky tests. The step-level trace below is **off by default** — enable it only when reproducing a flaky case.
+
+### Enable
+
+```bash
+E2E_TRACE=1 pytest tests/test_login.py -v
+# Include typed text in the JSONL log (DO NOT use on tests that type credentials/PII):
+E2E_TRACE=1 E2E_TRACE_INCLUDE_TEXT=1 pytest ...
+```
+
+### Patch into BasePage
+
+```python
+import os, json, time
+TRACE_ENABLED      = os.environ.get(&quot;E2E_TRACE&quot;) == &quot;1&quot;
+TRACE_INCLUDE_TEXT = os.environ.get(&quot;E2E_TRACE_INCLUDE_TEXT&quot;) == &quot;1&quot;
+
+class BasePage:
+    _step = 0
+
+    def _trace(self, action, spec=None, text=None):
+        if not TRACE_ENABLED:
+            return
+        BasePage._step += 1
+        idx = f&quot;{BasePage._step:03d}&quot;
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            self.window.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;step_{idx}_{action}.png&quot;))
+        except Exception:
+            pass  # capture failure must not break the test
+        rec = {
+            &quot;ts&quot;: time.time(), &quot;step&quot;: BasePage._step, &quot;action&quot;: action,
+            &quot;locator&quot;: getattr(spec, &quot;criteria&quot;, None),
+            &quot;text&quot;: text if TRACE_INCLUDE_TEXT else (&quot;&lt;redacted&gt;&quot; if text else None),
+        }
+        with open(os.path.join(ARTIFACT_DIR, &quot;trace.jsonl&quot;), &quot;a&quot;) as f:
+            f.write(json.dumps(rec) + &quot;\n&quot;)
+
+    def click(self, spec):
+        self.wait_visible(spec); self._trace(&quot;click_before&quot;, spec)
+        spec.click_input();      self._trace(&quot;click_after&quot;,  spec)
+
+    def type_text(self, spec, text):
+        self.wait_visible(spec); self._trace(&quot;type_before&quot;, spec, text)
+        # ... existing set_edit_text / keyboard fallback ...
+        self._trace(&quot;type_after&quot;, spec)
+```
+
+### Caveats
+
+- **PII / credentials**: `type_text` content is `&lt;redacted&gt;` by default. Never set `E2E_TRACE_INCLUDE_TEXT=1` on login or payment flows.
+- **Overhead**: ~50–200ms per action + one PNG per step on disk. Don&#x27;t enable on the default CI matrix — only on a dedicated flake-repro job.
+- **Artifact bloat**: a long flow produces tens of MB; tune `retention-days` accordingly.
+- **Parallel/rerun hygiene**: this simple example appends to `trace.jsonl` and uses a class-level counter. Clear the artifact directory before reruns, and use per-worker artifact dirs for parallel tests.
+- **Coverage gap**: actions performed outside `BasePage` (raw `pywinauto` calls in test code) are not traced.
+
+## Flaky Test Handling
+
+```python
+# Quarantine — equivalent to Playwright&#x27;s test.fixme()
+@pytest.mark.skip(reason=&quot;Flaky: animation race on slow CI. Issue #42&quot;)
+def test_animated_transition(self, app): ...
+
+# Skip in CI only
+@pytest.mark.skipif(os.environ.get(&quot;CI&quot;) == &quot;true&quot;, reason=&quot;Flaky in CI #43&quot;)
+def test_heavy_load(self, app): ...
+```
+
+Common causes and fixes:
+
+| Cause | Fix |
+|-------|-----|
+| Control not ready | Replace `time.sleep` with `wait_visible` |
+| Window not focused | Add `win.set_focus()` before interactions |
+| Animation in progress | `wait_until(lambda: not loading_indicator.exists())` |
+| Dialog timing | `wait_window(title, timeout=15)` |
+| CI display not ready | Set `DISPLAY` or use virtual desktop in CI |
+| `set_edit_text` raises NotImplementedError | UIA ValuePattern missing (common on Qt 5.x) — `BasePage.type_text` already falls back to `keyboard.send_keys` |
+| Control exists but `wait_visible` times out | Window minimised or off-screen — call `win.restore()` + `win.set_focus()` before waiting |
+
+## Test Isolation &amp; Sandbox
+
+Three tiers of isolation — use the lightest tier that satisfies your needs.
+
+### Tier 1 — Filesystem Isolation (default, always use)
+
+Each test gets its own `APPDATA` / `LOCALAPPDATA` / `TEMP` via `subprocess.Popen` and `Application.connect()`. pytest&#x27;s `tmp_path` fixture handles cleanup automatically.
+
+```python
+# conftest.py — replace the basic `app` fixture with this
+import os, subprocess, pytest
+from pywinauto import Application
+from config import APP_PATH, APP_ARGS, APP_TITLE, LAUNCH_TIMEOUT, ACTION_TIMEOUT, ARTIFACT_DIR
+
+@pytest.fixture(scope=&quot;function&quot;)
+def app(request, tmp_path):
+    &quot;&quot;&quot;Fresh process + isolated user-data dirs per test.&quot;&quot;&quot;
+    if not APP_PATH:
+        pytest.exit(&quot;APP_PATH not set&quot;, returncode=1)
+
+    # Redirect all per-user storage to an isolated tmp directory
+    sandbox_env = os.environ.copy()
+    sandbox_env[&quot;QT_ACCESSIBILITY&quot;]  = &quot;1&quot;
+    sandbox_env[&quot;APPDATA&quot;]           = str(tmp_path / &quot;AppData&quot; / &quot;Roaming&quot;)
+    sandbox_env[&quot;LOCALAPPDATA&quot;]      = str(tmp_path / &quot;AppData&quot; / &quot;Local&quot;)
+    sandbox_env[&quot;TEMP&quot;] = sandbox_env[&quot;TMP&quot;] = str(tmp_path / &quot;Temp&quot;)
+    for p in (sandbox_env[&quot;APPDATA&quot;], sandbox_env[&quot;LOCALAPPDATA&quot;], sandbox_env[&quot;TEMP&quot;]):
+        os.makedirs(p, exist_ok=True)
+
+    if not APP_TITLE:
+        pytest.exit(&quot;APP_TITLE environment variable is not set&quot;, returncode=1)
+
+    # shlex.split handles quoted args with spaces; plain split() breaks on them
+    import shlex
+    # Launch via subprocess so we can pass env; connect pywinauto by PID
+    proc = subprocess.Popen(
+        [APP_PATH] + shlex.split(APP_ARGS),
+        env=sandbox_env,
+    )
+    pw_app = Application(backend=&quot;uia&quot;).connect(process=proc.pid, timeout=LAUNCH_TIMEOUT)
+    win    = pw_app.window(title=APP_TITLE)
+    win.wait(&quot;visible&quot;, timeout=LAUNCH_TIMEOUT)
+    yield win
+
+    if getattr(getattr(request.node, &quot;rep_call&quot;, None), &quot;failed&quot;, False):
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        try:
+            win.capture_as_image().save(
+                os.path.join(ARTIFACT_DIR, f&quot;FAIL_{request.node.name}.png&quot;)
+            )
+        except Exception:
+            pass
+    try:
+        win.close()
+        proc.wait(timeout=5)
+    except Exception:
+        proc.kill()
+    # tmp_path is cleaned up automatically by pytest
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    setattr(item, f&quot;rep_{outcome.get_result().when}&quot;, outcome.get_result())
+```
+
+### Tier 2 — Windows Job Object (optional: process-lifetime containment)
+
+Attach the process to a Job Object so it is **automatically terminated** when
+the test fixture&#x27;s job handle is GC&#x27;d. Also prevents the app from spawning
+child processes that escape fixture cleanup.
+
+&gt; **Scope of isolation:** Job Objects do NOT virtualize filesystem access or
+&gt; block network traffic. File-write and network isolation require AppContainer,
+&gt; Windows Firewall rules, or Tier 3 (Windows Sandbox). Use Tier 2 only for
+&gt; process-lifetime and child-process containment.
+
+Requires no extra dependencies.
+
+```python
+import ctypes, ctypes.wintypes as wt
+
+def restrict_process(pid: int):
+    &quot;&quot;&quot;
+    Attach the process to a Job Object that prevents it from:
+    - spawning processes outside the job (LIMIT_KILL_ON_JOB_CLOSE)
+    Does NOT block network — use Windows Firewall rules for that.
+    &quot;&quot;&quot;
+    JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000
+    # Minimal rights: SET_QUOTA (0x0100) | TERMINATE (0x0001)
+    PROCESS_SET_QUOTA_AND_TERMINATE    = 0x0101
+
+    kernel32 = ctypes.windll.kernel32
+    job   = kernel32.CreateJobObjectW(None, None)
+    hproc = kernel32.OpenProcess(PROCESS_SET_QUOTA_AND_TERMINATE, False, pid)
+
+    # Correct struct layout — LimitFlags is at offset +16, not +44
+    class JOBOBJECT_BASIC_LIMIT_INFORMATION(ctypes.Structure):
+        _fields_ = [
+            (&quot;PerProcessUserTimeLimit&quot;, wt.LARGE_INTEGER),
+            (&quot;PerJobUserTimeLimit&quot;,     wt.LARGE_INTEGER),
+            (&quot;LimitFlags&quot;,             wt.DWORD),
+            (&quot;MinimumWorkingSetSize&quot;,   ctypes.c_size_t),
+            (&quot;MaximumWorkingSetSize&quot;,   ctypes.c_size_t),
+            (&quot;ActiveProcessLimit&quot;,      wt.DWORD),
+            (&quot;Affinity&quot;,               ctypes.c_size_t),
+            (&quot;PriorityClass&quot;,          wt.DWORD),
+            (&quot;SchedulingClass&quot;,        wt.DWORD),
+        ]
+
+    info = JOBOBJECT_BASIC_LIMIT_INFORMATION()
+    info.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+    ok = kernel32.SetInformationJobObject(job, 2, ctypes.byref(info), ctypes.sizeof(info))
+    if not ok:
+        raise ctypes.WinError()
+    kernel32.AssignProcessToJobObject(job, hproc)
+    kernel32.CloseHandle(hproc)
+    return job  # keep alive — job closes (kills proc) when GC&#x27;d
+
+# After proc = subprocess.Popen(...):  job = restrict_process(proc.pid)
+```
+
+### Tier 3 — Windows Sandbox (CI full-OS isolation)
+
+When you need a clean Windows image per run (no leftover registry keys, no
+shared GPU state, true isolation), run the **entire test suite** inside
+[Windows Sandbox](https://learn.microsoft.com/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-overview).
+
+**Requirement:** Windows 10/11 Pro or Enterprise, Virtualization enabled.
+
+Create `e2e-sandbox.wsb` in your project root:
+
+```xml
+&lt;Configuration&gt;
+  &lt;MappedFolders&gt;
+    &lt;!-- App binary (read-only) --&gt;
+    &lt;MappedFolder&gt;
+      &lt;HostFolder&gt;C:\path\to\your\build\Release&lt;/HostFolder&gt;
+      &lt;SandboxFolder&gt;C:\app&lt;/SandboxFolder&gt;
+      &lt;ReadOnly&gt;true&lt;/ReadOnly&gt;
+    &lt;/MappedFolder&gt;
+    &lt;!-- Test suite (read-write for artifacts) --&gt;
+    &lt;MappedFolder&gt;
+      &lt;HostFolder&gt;C:\path\to\your\e2e_test&lt;/HostFolder&gt;
+      &lt;SandboxFolder&gt;C:\e2e_test&lt;/SandboxFolder&gt;
+      &lt;ReadOnly&gt;false&lt;/ReadOnly&gt;
+    &lt;/MappedFolder&gt;
+  &lt;/MappedFolders&gt;
+  &lt;LogonCommand&gt;
+    &lt;!--
+      Windows Sandbox starts with no Python. Install it silently first,
+      then install deps and run tests. Artifacts are written back to the
+      host via the MappedFolder above.
+    --&gt;
+    &lt;Command&gt;powershell -Command &quot;
+      winget install --id Python.Python.3.11 --silent --accept-package-agreements;
+      $env:PATH += &#x27;;&#x27; + $env:LOCALAPPDATA + &#x27;\Programs\Python\Python311\Scripts&#x27;;
+      cd C:\e2e_test;
+      pip install -r requirements.txt;
+      pytest tests\ -v
+    &quot;&lt;/Command&gt;
+  &lt;/LogonCommand&gt;
+&lt;/Configuration&gt;
+```
+
+Launch: `WindowsSandbox.exe e2e-sandbox.wsb`
+
+&gt; pywinauto and the app both run **inside** the sandbox (same session required).
+&gt; Artifacts are written back to the host via the mapped folder.
+
+### Tier comparison
+
+| Tier | Isolation | Setup cost | Works on CI | Use when |
+|------|-----------|-----------|-------------|----------|
+| 1 — `tmp_path` env redirect | Filesystem | Zero | Always | Default for all tests |
+| 2 — Job Object | Process tree | Low | Always | Prevent child-process escape |
+| 3 — Windows Sandbox | Full OS | Medium | Needs Pro/Enterprise image | Nightly clean-room runs |
+
+### Prevent hanging tests
+
+Add `pytest-timeout` to cap any single test. In `pytest.ini` set `timeout = 60` and `timeout_method = thread`. Note: `thread` method cannot kill Qt app subprocesses on Windows — add `atexit.register(lambda: [p.kill() for p in psutil.Process().children(recursive=True)])` in `conftest.py` to reap orphans.
+
+## CI/CD Integration
+
+```yaml
+# .github/workflows/e2e-desktop.yml
+name: Desktop E2E
+on: [push, pull_request]
+
+jobs:
+  e2e:
+    runs-on: windows-latest   # real GUI environment, no Xvfb needed
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: &quot;3.11&quot; }
+
+      - name: Install deps
+        run: pip install pywinauto pytest pytest-html Pillow
+
+      - name: Build app
+        run: cmake --build build --config Release  # adjust to your build system
+
+      - name: Run E2E
+        env:
+          APP_PATH: ${{ github.workspace }}\build\Release\MyApp.exe
+          APP_TITLE: &quot;My Application&quot;
+          CI: &quot;true&quot;
+        run: pytest tests/ --html=artifacts/report.html --self-contained-html --junitxml=artifacts/results.xml -v
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-artifacts
+          path: artifacts/
+          retention-days: 14
+```
+
+## Qt Specific
+
+### Enable UIA in Qt 5.x
+
+Qt 5.x accessibility is disabled by default in some builds (especially 5.7–5.14). Set the environment variable **before** launching. Qt 6.x enables accessibility by default — skip this step for Qt 6.
+
+```python
+# conftest.py — add at module top
+import os
+os.environ[&quot;QT_ACCESSIBILITY&quot;] = &quot;1&quot;
+```
+
+Or export it in CI:
+
+```yaml
+env:
+  QT_ACCESSIBILITY: &quot;1&quot;
+```
+
+### Add Stable Identifiers to Qt Widgets
+
+```cpp
+// Preferred: both objectName and accessibleName
+void setTestId(QWidget* w, const char* id) {
+    w-&gt;setObjectName(id);
+    w-&gt;setAccessibleName(id);  // becomes UIA Name property
+}
+
+// In your dialog constructor:
+setTestId(ui-&gt;usernameEdit, &quot;usernameInput&quot;);
+setTestId(ui-&gt;passwordEdit, &quot;passwordInput&quot;);
+setTestId(ui-&gt;loginButton,  &quot;btnLogin&quot;);
+setTestId(ui-&gt;errorLabel,   &quot;lblError&quot;);
+```
+
+Centralise all IDs in a header to avoid typos:
+
+```cpp
+// test_ids.h
+#define TID_USERNAME   &quot;usernameInput&quot;
+#define TID_PASSWORD   &quot;passwordInput&quot;
+#define TID_BTN_LOGIN  &quot;btnLogin&quot;
+#define TID_LBL_ERROR  &quot;lblError&quot;
+```
+
+### Qt-Specific Quirks
+
+**QComboBox** — the dropdown is a separate top-level window:
+
+```python
+from pywinauto import Desktop
+
+def select_combo_item(page, combo_spec, item_text):
+    page.click(combo_spec)
+    # Dropdown appears as a new root-level window
+    # class_name varies by Qt version — verify with Accessibility Insights
+    # Qt 5.x: &quot;Qt5QWindowIcon&quot;  |  Qt 6.x: &quot;Qt6QWindowIcon&quot; — verify with Accessibility Insights
+    popup = Desktop(backend=&quot;uia&quot;).window(class_name_re=&quot;Qt[56]QWindowIcon&quot;)
+    popup.wait(&quot;visible&quot;, timeout=5)
+    popup.child_window(title=item_text).click_input()
+```
+
+**QMessageBox / QDialog** — also separate top-level windows:
+
+```python
+dlg = page.wait_window(&quot;Confirm&quot;)          # wait for dialog title
+dlg.child_window(title=&quot;OK&quot;).click_input() # click button inside it
+```
+
+**QTableWidget / QTableView** — row/cell access:
+
+```python
+table = page.by_id(&quot;tblUsers&quot;).wrapper_object()
+cell  = table.cell(row=0, column=1)
+print(cell.window_text())
+```
+
+**Self-drawn controls** (`paintEvent`-only, `QGraphicsView`, `QOpenGLWidget`) — UIA cannot see their internals. Use the Fallback section below.
+
+## Fallback: Screenshot Mode
+
+When a control is not reachable via UIA (self-drawn, third-party, game engine):
+
+```bash
+pip install pyautogui Pillow opencv-python
+```
+
+```python
+import pyautogui, cv2, numpy as np
+from PIL import Image
+
+def find_image_on_screen(template_path, confidence=0.85):
+    &quot;&quot;&quot;Locate a template image on screen. Returns (x, y) center or None.&quot;&quot;&quot;
+    screen   = np.array(pyautogui.screenshot())
+    template = np.array(Image.open(template_path))
+    result   = cv2.matchTemplate(
+        cv2.cvtColor(screen, cv2.COLOR_RGB2BGR),
+        cv2.cvtColor(template, cv2.COLOR_RGB2BGR),
+        cv2.TM_CCOEFF_NORMED,
+    )
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+    if max_val &gt;= confidence:
+        h, w = template.shape[:2]
+        return max_loc[0] + w // 2, max_loc[1] + h // 2
+    return None
+
+def click_image(template_path, confidence=0.85):
+    pos = find_image_on_screen(template_path, confidence)
+    if pos is None:
+        raise RuntimeError(f&quot;Image not found on screen: {template_path}&quot;)
+    pyautogui.click(*pos)
+```
+
+### DPI / Scaling Rules (screenshot mode only)
+
+Screenshot matching is brutally sensitive to Windows display scaling (100% / 125% / 150%). Three hard rules:
+
+1. **Capture templates at the same scale as the target machine.** Don&#x27;t try to rescue a mismatch with `PIL.Image.resize` — `cv2.matchTemplate` is very fragile against resampling artefacts.
+2. **Pin the CI display scaling.** On `windows-latest` add a step like `Set-DisplayResolution 1920 1080 -Force` and disable per-monitor DPI scaling, so screenshot dimensions are reproducible.
+3. **Record the scale alongside each artefact.** On capture, write `GetDpiForWindow(hwnd) / 96` to `artifacts/&lt;test&gt;/metadata.json` — postmortems become obvious instead of guess-work.
+
+&gt; Process-level DPI awareness (`SetProcessDpiAwarenessContext`) **can conflict with Qt&#x27;s own DPI handling** when the app under test is Qt-based. Prefer &quot;same-scale templates + CI pin&quot; over flipping process-wide DPI mode in fixtures.
+
+### Debugging Match Confidence
+
+When tuning the `confidence` threshold, the only sane workflow is to **see** where the match landed. The helper below is diagnosis-only — do not call it from test code.
+
+```python
+def debug_match(template_path, out=&quot;artifacts/match_debug.png&quot;, confidence=0.85):
+    &quot;&quot;&quot;Diagnosis-only. Draw the best-match rectangle + score back on the current screen.
+
+    NOT for production tests — use when calibrating confidence or chasing false matches.
+    &quot;&quot;&quot;
+    import os, cv2, pyautogui, numpy as np
+    screen = np.array(pyautogui.screenshot())[:, :, ::-1]
+    tpl    = cv2.imread(template_path)
+    if tpl is None:
+        raise RuntimeError(f&quot;Template unreadable: {template_path}&quot;)
+    res    = cv2.matchTemplate(screen, tpl, cv2.TM_CCOEFF_NORMED)
+    _, mv, _, ml = cv2.minMaxLoc(res)
+    h, w   = tpl.shape[:2]
+    colour = (0, 255, 0) if mv &gt;= confidence else (0, 0, 255)  # green pass / red fail
+    cv2.rectangle(screen, ml, (ml[0]+w, ml[1]+h), colour, 2)
+    cv2.putText(screen, f&quot;score={mv:.3f} thr={confidence}&quot;,
+                (ml[0], max(20, ml[1]-6)),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, colour, 2)
+    os.makedirs(os.path.dirname(out) or &quot;.&quot;, exist_ok=True)
+    cv2.imwrite(out, screen)
+    return mv
+```
+
+**Use sparingly** — image matching breaks on DPI changes, theme switches, and partial occlusion.
+Always try UIA first; fall back to screenshots only for genuinely unreachable controls.
+
+## Anti-Patterns
+
+```python
+# BAD: fixed sleep
+time.sleep(3)
+page.click(page.by_id(&quot;btnSubmit&quot;))
+
+# GOOD: condition wait
+page.wait_visible(page.by_id(&quot;btnSubmit&quot;))
+page.click(page.by_id(&quot;btnSubmit&quot;))
+```
+
+```python
+# BAD: brittle class+index locator as primary strategy
+page.by_class(&quot;Edit&quot;, index=2).type_keys(&quot;hello&quot;)
+
+# GOOD: AutomationId
+page.by_id(&quot;usernameInput&quot;).set_edit_text(&quot;hello&quot;)
+```
+
+```python
+# BAD: assert on pixel coordinates
+assert btn.rectangle().left == 120
+
+# GOOD: assert on content / state
+assert page.get_text(page.by_id(&quot;lblStatus&quot;)) == &quot;Logged in&quot;
+assert page.by_id(&quot;btnLogout&quot;).is_enabled()
+```
+
+```python
+# BAD: share app instance across all tests (state leaks)
+@pytest.fixture(scope=&quot;session&quot;)
+def app(): ...
+
+# GOOD: fresh process per test (or per class at most)
+@pytest.fixture(scope=&quot;function&quot;)
+def app(): ...
+```
+
+## Running Tests
+
+```bash
+# All tests
+pytest tests/ -v
+
+# Smoke only
+pytest tests/ -m smoke -v
+
+# Specific file
+pytest tests/test_login.py -v
+
+# With custom app path
+APP_PATH=&quot;C:\build\Release\MyApp.exe&quot; APP_TITLE=&quot;MyApp&quot; pytest tests/ -v
+
+# Detect flaky tests (repeat each 5 times)
+pip install pytest-repeat
+pytest tests/test_login.py --count=5 -v
+```
+
+## Related Skills
+
+- `e2e-testing` — Playwright E2E for web applications
+- `cpp-testing` — C++ unit/integration testing with GoogleTest
+- `cpp-coding-standards` — C++ code style and patterns</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

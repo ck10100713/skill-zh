@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>api-connector-builder｜Skill 寫法圖鑑</title>
+<meta name="description" content="完全比照 repo 既有模式，新增一個 API connector 或 provider">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>api-connector-builder</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/api-connector-builder/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">完全比照 repo 既有模式，新增一個 API connector 或 provider</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: api-connector-builder
+description: 完全比照目標 repo 既有的整合模式，建立新的 API connector 或 provider。想多加一個整合、又不想另外發明第二套架構時使用。
+metadata:
+  version: &quot;1.0.0&quot;
+  origin: ECC direct-port adaptation
+---
+
+# API Connector Builder
+
+當工作是要加上一個符合 repo 原生做法的整合介面，而不只是一個通用的 HTTP client 時用。
+
+重點是比照宿主 repo 的模式：
+
+- connector 的檔案配置
+- 設定 schema
+- 驗證模型
+- 錯誤處理
+- 測試風格
+- 註冊/探索的接線
+
+## 何時使用
+
+- 「幫這個專案做一個 Jira connector」
+- 「照現有的模式加一個 Slack provider」
+- 「替這個 API 建一個新的整合」
+- 「做一個符合 repo connector 風格的 plugin」
+
+## 護欄
+
+- repo 已經有整合架構時，不要另外發明新的
+- 不要只從廠商文件開始；先從 repo 裡既有的 connector 開始
+- repo 預期有 registry 接線、測試和文件時，不要只做到傳輸層的程式碼
+- repo 有比較新的現行模式時，不要盲目照抄舊的 connector
+
+## 工作流程
+
+### 1. 學會這個 repo 的風格
+
+至少檢視 2 個既有的 connector/provider，並整理出：
+
+- 檔案配置
+- 抽象邊界
+- 設定模型
+- 重試 / 分頁的慣例
+- registry hook
+- 測試 fixture 和命名
+
+### 2. 縮小目標整合的範圍
+
+只定義 repo 真正需要的介面：
+
+- 驗證流程
+- 關鍵實體
+- 核心的讀寫操作
+- 分頁和速率限制
+- webhook 或輪詢模型
+
+### 3. 以 repo 原生的分層建構
+
+典型的切分：
+
+- 設定/schema
+- client/傳輸層
+- 對應層
+- connector/provider 進入點
+- 註冊
+- 測試
+
+### 4. 對照來源模式驗證
+
+新的 connector 在 codebase 裡看起來應該理所當然，而不是從另一個生態系移植過來的。
+
+## 參考形狀
+
+### Provider 風格
+
+```text
+providers/
+  existing_provider/
+    __init__.py
+    provider.py
+    config.py
+```
+
+### Connector 風格
+
+```text
+integrations/
+  existing/
+    client.py
+    models.py
+    connector.py
+```
+
+### TypeScript plugin 風格
+
+```text
+src/integrations/
+  existing/
+    index.ts
+    client.ts
+    types.ts
+    test.ts
+```
+
+## 品質檢查表
+
+- [ ] 符合 repo 裡既有的整合模式
+- [ ] 有設定驗證
+- [ ] 驗證和錯誤處理都是明確的
+- [ ] 分頁/重試行為遵循 repo 的慣例
+- [ ] registry/探索的接線完整
+- [ ] 測試呼應宿主 repo 的風格
+- [ ] repo 預期的話，文件/範例也已更新
+
+## 相關 Skill
+
+- `backend-patterns`
+- `mcp-server-patterns`
+- `github-ops`</pre></section><section><h2>英文原文</h2><pre>---
+name: api-connector-builder
+description: Build a new API connector or provider by matching the target repo&#x27;s existing integration pattern exactly. Use when adding one more integration without inventing a second architecture.
+metadata:
+  version: &quot;1.0.0&quot;
+  origin: ECC direct-port adaptation
+---
+
+# API Connector Builder
+
+Use this when the job is to add a repo-native integration surface, not just a generic HTTP client.
+
+The point is to match the host repository&#x27;s pattern:
+
+- connector layout
+- config schema
+- auth model
+- error handling
+- test style
+- registration/discovery wiring
+
+## When to Use
+
+- &quot;Build a Jira connector for this project&quot;
+- &quot;Add a Slack provider following the existing pattern&quot;
+- &quot;Create a new integration for this API&quot;
+- &quot;Build a plugin that matches the repo&#x27;s connector style&quot;
+
+## Guardrails
+
+- do not invent a new integration architecture when the repo already has one
+- do not start from vendor docs alone; start from existing in-repo connectors first
+- do not stop at transport code if the repo expects registry wiring, tests, and docs
+- do not cargo-cult old connectors if the repo has a newer current pattern
+
+## Workflow
+
+### 1. Learn the house style
+
+Inspect at least 2 existing connectors/providers and map:
+
+- file layout
+- abstraction boundaries
+- config model
+- retry / pagination conventions
+- registry hooks
+- test fixtures and naming
+
+### 2. Narrow the target integration
+
+Define only the surface the repo actually needs:
+
+- auth flow
+- key entities
+- core read/write operations
+- pagination and rate limits
+- webhook or polling model
+
+### 3. Build in repo-native layers
+
+Typical slices:
+
+- config/schema
+- client/transport
+- mapping layer
+- connector/provider entrypoint
+- registration
+- tests
+
+### 4. Validate against the source pattern
+
+The new connector should look obvious in the codebase, not imported from a different ecosystem.
+
+## Reference Shapes
+
+### Provider-style
+
+```text
+providers/
+  existing_provider/
+    __init__.py
+    provider.py
+    config.py
+```
+
+### Connector-style
+
+```text
+integrations/
+  existing/
+    client.py
+    models.py
+    connector.py
+```
+
+### TypeScript plugin-style
+
+```text
+src/integrations/
+  existing/
+    index.ts
+    client.ts
+    types.ts
+    test.ts
+```
+
+## Quality Checklist
+
+- [ ] matches an existing in-repo integration pattern
+- [ ] config validation exists
+- [ ] auth and error handling are explicit
+- [ ] pagination/retry behavior follows repo norms
+- [ ] registry/discovery wiring is complete
+- [ ] tests mirror the host repo&#x27;s style
+- [ ] docs/examples are updated if expected by the repo
+
+## Related Skills
+
+- `backend-patterns`
+- `mcp-server-patterns`
+- `github-ops`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

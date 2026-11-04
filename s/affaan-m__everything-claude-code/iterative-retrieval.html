@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iterative-retrieval｜Skill 寫法圖鑑</title>
+<meta name="description" content="分幾輪逐步精煉檢索條件，讓 sub-agent 拿到剛好夠用的 context">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>iterative-retrieval</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/iterative-retrieval/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">分幾輪逐步精煉檢索條件，讓 sub-agent 拿到剛好夠用的 context</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: iterative-retrieval
+description: 逐步精煉 context 檢索的模式，用來解決 sub-agent 的 context 問題。當 sub-agent 缺少所需的 context，必須分好幾輪精煉檢索時使用。
+metadata:
+  origin: ECC
+---
+
+# Iterative Retrieval Pattern
+
+解決多 agent 工作流程裡的「context 問題」：sub-agent 要等到開始工作，才知道自己需要什麼 context。
+
+## When to Activate
+
+- 啟動 sub-agent，而它需要的程式碼庫 context 無法事先預測
+- 建構 context 會逐步精煉的多 agent 工作流程
+- 在 agent 任務中遇到「context 太大」或「缺少 context」的失敗
+- 設計用於程式碼探索、類似 RAG 的檢索 pipeline
+- 最佳化 agent 編排中的 token 用量
+
+## The Problem
+
+Sub-agent 是帶著有限的 context 被啟動的。它們不知道：
+- 哪些檔案裡有相關的程式碼
+- 程式碼庫裡有哪些慣用模式
+- 專案用的是什麼術語
+
+標準做法都會失敗：
+- **全部都送**：超過 context 上限
+- **什麼都不送**：agent 缺少關鍵資訊
+- **猜需要什麼**：常常猜錯
+
+## The Solution: Iterative Retrieval
+
+一個 4 階段的迴圈，逐步精煉 context：
+
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│   ┌──────────┐      ┌──────────┐            │
+│   │ DISPATCH │─────│ EVALUATE │            │
+│   └──────────┘      └──────────┘            │
+│        ▲                  │                 │
+│        │                  ▼                 │
+│   ┌──────────┐      ┌──────────┐            │
+│   │   LOOP   │─────│  REFINE  │            │
+│   └──────────┘      └──────────┘            │
+│                                             │
+│        Max 3 cycles, then proceed           │
+└─────────────────────────────────────────────┘
+```
+
+### Phase 1: DISPATCH
+
+先做一次範圍廣的初始查詢，收集候選檔案：
+
+```javascript
+// 從高層次的意圖開始
+const initialQuery = {
+  patterns: [&#x27;src/**/*.ts&#x27;, &#x27;lib/**/*.ts&#x27;],
+  keywords: [&#x27;authentication&#x27;, &#x27;user&#x27;, &#x27;session&#x27;],
+  excludes: [&#x27;*.test.ts&#x27;, &#x27;*.spec.ts&#x27;]
+};
+
+// 派給檢索 agent
+const candidates = await retrieveFiles(initialQuery);
+```
+
+### Phase 2: EVALUATE
+
+評估檢索到的內容是否相關：
+
+```javascript
+function evaluateRelevance(files, task) {
+  return files.map(file =&gt; ({
+    path: file.path,
+    relevance: scoreRelevance(file.content, task),
+    reason: explainRelevance(file.content, task),
+    missingContext: identifyGaps(file.content, task)
+  }));
+}
+```
+
+評分標準：
+- **High (0.8-1.0)**：直接實作目標功能
+- **Medium (0.5-0.7)**：包含相關的樣式或型別
+- **Low (0.2-0.4)**：只有間接相關
+- **None (0-0.2)**：不相關，排除
+
+### Phase 3: REFINE
+
+根據評估結果更新搜尋條件：
+
+```javascript
+function refineQuery(evaluation, previousQuery) {
+  return {
+    // 加入在高相關檔案裡發現的新樣式
+    patterns: [...previousQuery.patterns, ...extractPatterns(evaluation)],
+
+    // 加入在程式碼庫裡發現的術語
+    keywords: [...previousQuery.keywords, ...extractKeywords(evaluation)],
+
+    // 排除已確認不相關的路徑
+    excludes: [...previousQuery.excludes, ...evaluation
+      .filter(e =&gt; e.relevance &lt; 0.2)
+      .map(e =&gt; e.path)
+    ],
+
+    // 針對特定缺口
+    focusAreas: evaluation
+      .flatMap(e =&gt; e.missingContext)
+      .filter(unique)
+  };
+}
+```
+
+### Phase 4: LOOP
+
+用精煉後的條件重複（最多 3 輪）：
+
+```javascript
+async function iterativeRetrieve(task, maxCycles = 3) {
+  let query = createInitialQuery(task);
+  let bestContext = [];
+
+  for (let cycle = 0; cycle &lt; maxCycles; cycle++) {
+    const candidates = await retrieveFiles(query);
+    const evaluation = evaluateRelevance(candidates, task);
+
+    // 檢查 context 是否足夠
+    const highRelevance = evaluation.filter(e =&gt; e.relevance &gt;= 0.7);
+    if (highRelevance.length &gt;= 3 &amp;&amp; !hasCriticalGaps(evaluation)) {
+      return highRelevance;
+    }
+
+    // 精煉後繼續
+    query = refineQuery(evaluation, query);
+    bestContext = mergeContext(bestContext, highRelevance);
+  }
+
+  return bestContext;
+}
+```
+
+## Practical Examples
+
+### Example 1: Bug Fix Context
+
+```
+Task: &quot;Fix the authentication token expiry bug&quot;
+
+Cycle 1:
+  DISPATCH: Search for &quot;token&quot;, &quot;auth&quot;, &quot;expiry&quot; in src/**
+  EVALUATE: Found auth.ts (0.9), tokens.ts (0.8), user.ts (0.3)
+  REFINE: Add &quot;refresh&quot;, &quot;jwt&quot; keywords; exclude user.ts
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found session-manager.ts (0.95), jwt-utils.ts (0.85)
+  REFINE: Sufficient context (2 high-relevance files)
+
+Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
+```
+
+### Example 2: Feature Implementation
+
+```
+Task: &quot;Add rate limiting to API endpoints&quot;
+
+Cycle 1:
+  DISPATCH: Search &quot;rate&quot;, &quot;limit&quot;, &quot;api&quot; in routes/**
+  EVALUATE: No matches - codebase uses &quot;throttle&quot; terminology
+  REFINE: Add &quot;throttle&quot;, &quot;middleware&quot; keywords
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found throttle.ts (0.9), middleware/index.ts (0.7)
+  REFINE: Need router patterns
+
+Cycle 3:
+  DISPATCH: Search &quot;router&quot;, &quot;express&quot; patterns
+  EVALUATE: Found router-setup.ts (0.8)
+  REFINE: Sufficient context
+
+Result: throttle.ts, middleware/index.ts, router-setup.ts
+```
+
+## Integration with Agents
+
+在 agent 的 prompt 裡使用：
+
+```markdown
+When retrieving context for this task:
+1. Start with broad keyword search
+2. Evaluate each file&#x27;s relevance (0-1 scale)
+3. Identify what context is still missing
+4. Refine search criteria and repeat (max 3 cycles)
+5. Return files with relevance &gt;= 0.7
+```
+
+## Best Practices
+
+1. **先廣後窄，逐步收斂** - 初始查詢不要訂得太死
+2. **學會程式碼庫的術語** - 第一輪常常會揭露命名慣例
+3. **追蹤缺了什麼** - 明確找出缺口，才能驅動精煉
+4. **見好就收** - 3 個高相關檔案勝過 10 個普通的
+5. **有把握地排除** - 低相關的檔案不會突然變得相關
+
+## Related
+
+- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent orchestration 章節
+- `continuous-learning` skill - 用於隨時間逐漸改善的模式
+- 隨 ECC 打包的 agent 定義（手動安裝路徑：`agents/`）</pre></section><section><h2>英文原文</h2><pre>---
+name: iterative-retrieval
+description: Pattern for progressively refining context retrieval to solve the subagent context problem. Use when a subagent lacks the context it needs and retrieval must be refined across passes.
+metadata:
+  origin: ECC
+---
+
+# Iterative Retrieval Pattern
+
+Solves the &quot;context problem&quot; in multi-agent workflows where subagents don&#x27;t know what context they need until they start working.
+
+## When to Activate
+
+- Spawning subagents that need codebase context they cannot predict upfront
+- Building multi-agent workflows where context is progressively refined
+- Encountering &quot;context too large&quot; or &quot;missing context&quot; failures in agent tasks
+- Designing RAG-like retrieval pipelines for code exploration
+- Optimizing token usage in agent orchestration
+
+## The Problem
+
+Subagents are spawned with limited context. They don&#x27;t know:
+- Which files contain relevant code
+- What patterns exist in the codebase
+- What terminology the project uses
+
+Standard approaches fail:
+- **Send everything**: Exceeds context limits
+- **Send nothing**: Agent lacks critical information
+- **Guess what&#x27;s needed**: Often wrong
+
+## The Solution: Iterative Retrieval
+
+A 4-phase loop that progressively refines context:
+
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│   ┌──────────┐      ┌──────────┐            │
+│   │ DISPATCH │─────│ EVALUATE │            │
+│   └──────────┘      └──────────┘            │
+│        ▲                  │                 │
+│        │                  ▼                 │
+│   ┌──────────┐      ┌──────────┐            │
+│   │   LOOP   │─────│  REFINE  │            │
+│   └──────────┘      └──────────┘            │
+│                                             │
+│        Max 3 cycles, then proceed           │
+└─────────────────────────────────────────────┘
+```
+
+### Phase 1: DISPATCH
+
+Initial broad query to gather candidate files:
+
+```javascript
+// Start with high-level intent
+const initialQuery = {
+  patterns: [&#x27;src/**/*.ts&#x27;, &#x27;lib/**/*.ts&#x27;],
+  keywords: [&#x27;authentication&#x27;, &#x27;user&#x27;, &#x27;session&#x27;],
+  excludes: [&#x27;*.test.ts&#x27;, &#x27;*.spec.ts&#x27;]
+};
+
+// Dispatch to retrieval agent
+const candidates = await retrieveFiles(initialQuery);
+```
+
+### Phase 2: EVALUATE
+
+Assess retrieved content for relevance:
+
+```javascript
+function evaluateRelevance(files, task) {
+  return files.map(file =&gt; ({
+    path: file.path,
+    relevance: scoreRelevance(file.content, task),
+    reason: explainRelevance(file.content, task),
+    missingContext: identifyGaps(file.content, task)
+  }));
+}
+```
+
+Scoring criteria:
+- **High (0.8-1.0)**: Directly implements target functionality
+- **Medium (0.5-0.7)**: Contains related patterns or types
+- **Low (0.2-0.4)**: Tangentially related
+- **None (0-0.2)**: Not relevant, exclude
+
+### Phase 3: REFINE
+
+Update search criteria based on evaluation:
+
+```javascript
+function refineQuery(evaluation, previousQuery) {
+  return {
+    // Add new patterns discovered in high-relevance files
+    patterns: [...previousQuery.patterns, ...extractPatterns(evaluation)],
+
+    // Add terminology found in codebase
+    keywords: [...previousQuery.keywords, ...extractKeywords(evaluation)],
+
+    // Exclude confirmed irrelevant paths
+    excludes: [...previousQuery.excludes, ...evaluation
+      .filter(e =&gt; e.relevance &lt; 0.2)
+      .map(e =&gt; e.path)
+    ],
+
+    // Target specific gaps
+    focusAreas: evaluation
+      .flatMap(e =&gt; e.missingContext)
+      .filter(unique)
+  };
+}
+```
+
+### Phase 4: LOOP
+
+Repeat with refined criteria (max 3 cycles):
+
+```javascript
+async function iterativeRetrieve(task, maxCycles = 3) {
+  let query = createInitialQuery(task);
+  let bestContext = [];
+
+  for (let cycle = 0; cycle &lt; maxCycles; cycle++) {
+    const candidates = await retrieveFiles(query);
+    const evaluation = evaluateRelevance(candidates, task);
+
+    // Check if we have sufficient context
+    const highRelevance = evaluation.filter(e =&gt; e.relevance &gt;= 0.7);
+    if (highRelevance.length &gt;= 3 &amp;&amp; !hasCriticalGaps(evaluation)) {
+      return highRelevance;
+    }
+
+    // Refine and continue
+    query = refineQuery(evaluation, query);
+    bestContext = mergeContext(bestContext, highRelevance);
+  }
+
+  return bestContext;
+}
+```
+
+## Practical Examples
+
+### Example 1: Bug Fix Context
+
+```
+Task: &quot;Fix the authentication token expiry bug&quot;
+
+Cycle 1:
+  DISPATCH: Search for &quot;token&quot;, &quot;auth&quot;, &quot;expiry&quot; in src/**
+  EVALUATE: Found auth.ts (0.9), tokens.ts (0.8), user.ts (0.3)
+  REFINE: Add &quot;refresh&quot;, &quot;jwt&quot; keywords; exclude user.ts
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found session-manager.ts (0.95), jwt-utils.ts (0.85)
+  REFINE: Sufficient context (2 high-relevance files)
+
+Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
+```
+
+### Example 2: Feature Implementation
+
+```
+Task: &quot;Add rate limiting to API endpoints&quot;
+
+Cycle 1:
+  DISPATCH: Search &quot;rate&quot;, &quot;limit&quot;, &quot;api&quot; in routes/**
+  EVALUATE: No matches - codebase uses &quot;throttle&quot; terminology
+  REFINE: Add &quot;throttle&quot;, &quot;middleware&quot; keywords
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found throttle.ts (0.9), middleware/index.ts (0.7)
+  REFINE: Need router patterns
+
+Cycle 3:
+  DISPATCH: Search &quot;router&quot;, &quot;express&quot; patterns
+  EVALUATE: Found router-setup.ts (0.8)
+  REFINE: Sufficient context
+
+Result: throttle.ts, middleware/index.ts, router-setup.ts
+```
+
+## Integration with Agents
+
+Use in agent prompts:
+
+```markdown
+When retrieving context for this task:
+1. Start with broad keyword search
+2. Evaluate each file&#x27;s relevance (0-1 scale)
+3. Identify what context is still missing
+4. Refine search criteria and repeat (max 3 cycles)
+5. Return files with relevance &gt;= 0.7
+```
+
+## Best Practices
+
+1. **Start broad, narrow progressively** - Don&#x27;t over-specify initial queries
+2. **Learn codebase terminology** - First cycle often reveals naming conventions
+3. **Track what&#x27;s missing** - Explicit gap identification drives refinement
+4. **Stop at &quot;good enough&quot;** - 3 high-relevance files beats 10 mediocre ones
+5. **Exclude confidently** - Low-relevance files won&#x27;t become relevant
+
+## Related
+
+- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent orchestration section
+- `continuous-learning` skill - For patterns that improve over time
+- Agent definitions bundled with ECC (manual install path: `agents/`)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

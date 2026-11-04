@@ -1,0 +1,1674 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kotlin-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Kotest、MockK 與 Kover 寫 Kotlin 測試，走 TDD 流程">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>kotlin-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/kotlin-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Kotest、MockK 與 Kover 寫 Kotlin 測試，走 TDD 流程</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: kotlin-testing
+description: 用 Kotest、MockK、coroutine 測試、property-based testing 與 Kover 覆蓋率的 Kotlin 測試模式，遵循 TDD 方法論與慣用的 Kotlin 寫法。在用 Kotest 或 MockK 寫 Kotlin 測試，或測試 coroutines、檢查覆蓋率時使用。
+metadata:
+  origin: ECC
+---
+
+# Kotlin Testing Patterns
+
+用 Kotest 與 MockK、依 TDD 方法論撰寫可靠、好維護的 Kotlin 測試的完整模式。
+
+## 何時使用
+
+- 撰寫新的 Kotlin 函式或 class
+- 為既有的 Kotlin 程式碼補測試覆蓋
+- 實作 property-based test
+- 在 Kotlin 專案中遵循 TDD 流程
+- 設定 Kover 來量測程式碼覆蓋率
+
+## 運作方式
+
+1. **找出目標程式碼**：找到要測試的函式、class 或 module
+2. **寫 Kotest spec**：依測試範圍選擇 spec 風格（StringSpec、FunSpec、BehaviorSpec）
+3. **mock 依賴**：用 MockK 隔離被測單元
+4. **跑測試（RED）**：確認測試以預期的錯誤失敗
+5. **實作程式碼（GREEN）**：寫最少的程式碼讓測試通過
+6. **Refactor**：在測試維持綠燈的前提下改善實作
+7. **檢查覆蓋率**：執行 `./gradlew koverHtmlReport`，確認覆蓋率 80% 以上
+
+## 範例
+
+以下各節針對每種測試模式提供詳細、可執行的範例：
+
+### 速查
+
+- **Kotest spec**：StringSpec、FunSpec、BehaviorSpec、DescribeSpec 的範例在 [Kotest Spec Styles](#kotest-spec-styles)
+- **Mock**：MockK 設定、coroutine mock、參數捕捉在 [MockK](#mockk)
+- **TDD 逐步示範**：用 EmailValidator 走完整的 RED/GREEN/REFACTOR 循環，在 [TDD Workflow for Kotlin](#tdd-workflow-for-kotlin)
+- **覆蓋率**：Kover 設定與指令在 [Kover Coverage](#kover-coverage)
+- **Ktor 測試**：testApplication 設定在 [Ktor testApplication Testing](#ktor-testapplication-testing)
+
+### TDD Workflow for Kotlin
+
+#### RED-GREEN-REFACTOR 循環
+
+```
+RED     -&gt; Write a failing test first
+GREEN   -&gt; Write minimal code to pass the test
+REFACTOR -&gt; Improve code while keeping tests green
+REPEAT  -&gt; Continue with next requirement
+```
+
+#### 在 Kotlin 中逐步做 TDD
+
+```kotlin
+// Step 1: Define the interface/signature
+// EmailValidator.kt
+package com.example.validator
+
+fun validateEmail(email: String): Result&lt;String&gt; {
+    TODO(&quot;not implemented&quot;)
+}
+
+// Step 2: Write failing test (RED)
+// EmailValidatorTest.kt
+package com.example.validator
+
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.result.shouldBeFailure
+import io.kotest.matchers.result.shouldBeSuccess
+
+class EmailValidatorTest : StringSpec({
+    &quot;valid email returns success&quot; {
+        validateEmail(&quot;user@example.com&quot;).shouldBeSuccess(&quot;user@example.com&quot;)
+    }
+
+    &quot;empty email returns failure&quot; {
+        validateEmail(&quot;&quot;).shouldBeFailure()
+    }
+
+    &quot;email without @ returns failure&quot; {
+        validateEmail(&quot;userexample.com&quot;).shouldBeFailure()
+    }
+})
+
+// Step 3: Run tests - verify FAIL
+// $ ./gradlew test
+// EmailValidatorTest &gt; valid email returns success FAILED
+//   kotlin.NotImplementedError: An operation is not implemented
+
+// Step 4: Implement minimal code (GREEN)
+fun validateEmail(email: String): Result&lt;String&gt; {
+    if (email.isBlank()) return Result.failure(IllegalArgumentException(&quot;Email cannot be blank&quot;))
+    if (&#x27;@&#x27; !in email) return Result.failure(IllegalArgumentException(&quot;Email must contain @&quot;))
+    val regex = Regex(&quot;^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$&quot;)
+    if (!regex.matches(email)) return Result.failure(IllegalArgumentException(&quot;Invalid email format&quot;))
+    return Result.success(email)
+}
+
+// Step 5: Run tests - verify PASS
+// $ ./gradlew test
+// EmailValidatorTest &gt; valid email returns success PASSED
+// EmailValidatorTest &gt; empty email returns failure PASSED
+// EmailValidatorTest &gt; email without @ returns failure PASSED
+
+// Step 6: Refactor if needed, verify tests still pass
+```
+
+### Kotest Spec Styles
+
+#### StringSpec（最簡單）
+
+```kotlin
+class CalculatorTest : StringSpec({
+    &quot;add two positive numbers&quot; {
+        Calculator.add(2, 3) shouldBe 5
+    }
+
+    &quot;add negative numbers&quot; {
+        Calculator.add(-1, -2) shouldBe -3
+    }
+
+    &quot;add zero&quot; {
+        Calculator.add(0, 5) shouldBe 5
+    }
+})
+```
+
+#### FunSpec（類 JUnit）
+
+```kotlin
+class UserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val service = UserService(repository)
+
+    test(&quot;getUser returns user when found&quot;) {
+        val expected = User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        coEvery { repository.findById(&quot;1&quot;) } returns expected
+
+        val result = service.getUser(&quot;1&quot;)
+
+        result shouldBe expected
+    }
+
+    test(&quot;getUser throws when not found&quot;) {
+        coEvery { repository.findById(&quot;999&quot;) } returns null
+
+        shouldThrow&lt;UserNotFoundException&gt; {
+            service.getUser(&quot;999&quot;)
+        }
+    }
+})
+```
+
+#### BehaviorSpec（BDD 風格）
+
+```kotlin
+class OrderServiceTest : BehaviorSpec({
+    val repository = mockk&lt;OrderRepository&gt;()
+    val paymentService = mockk&lt;PaymentService&gt;()
+    val service = OrderService(repository, paymentService)
+
+    Given(&quot;a valid order request&quot;) {
+        val request = CreateOrderRequest(
+            userId = &quot;user-1&quot;,
+            items = listOf(OrderItem(&quot;product-1&quot;, quantity = 2)),
+        )
+
+        When(&quot;the order is placed&quot;) {
+            coEvery { paymentService.charge(any()) } returns PaymentResult.Success
+            coEvery { repository.save(any()) } answers { firstArg() }
+
+            val result = service.placeOrder(request)
+
+            Then(&quot;it should return a confirmed order&quot;) {
+                result.status shouldBe OrderStatus.CONFIRMED
+            }
+
+            Then(&quot;it should charge payment&quot;) {
+                coVerify(exactly = 1) { paymentService.charge(any()) }
+            }
+        }
+
+        When(&quot;payment fails&quot;) {
+            coEvery { paymentService.charge(any()) } returns PaymentResult.Declined
+
+            Then(&quot;it should throw PaymentException&quot;) {
+                shouldThrow&lt;PaymentException&gt; {
+                    service.placeOrder(request)
+                }
+            }
+        }
+    }
+})
+```
+
+#### DescribeSpec（RSpec 風格）
+
+```kotlin
+class UserValidatorTest : DescribeSpec({
+    describe(&quot;validateUser&quot;) {
+        val validator = UserValidator()
+
+        context(&quot;with valid input&quot;) {
+            it(&quot;accepts a normal user&quot;) {
+                val user = CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeValid()
+            }
+        }
+
+        context(&quot;with invalid name&quot;) {
+            it(&quot;rejects blank name&quot;) {
+                val user = CreateUserRequest(&quot;&quot;, &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeInvalid()
+            }
+
+            it(&quot;rejects name exceeding max length&quot;) {
+                val user = CreateUserRequest(&quot;A&quot;.repeat(256), &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeInvalid()
+            }
+        }
+    }
+})
+```
+
+### Kotest Matchers
+
+#### 核心 Matcher
+
+```kotlin
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.*
+import io.kotest.matchers.collections.*
+import io.kotest.matchers.nulls.*
+
+// Equality
+result shouldBe expected
+result shouldNotBe unexpected
+
+// Strings
+name shouldStartWith &quot;Al&quot;
+name shouldEndWith &quot;ice&quot;
+name shouldContain &quot;lic&quot;
+name shouldMatch Regex(&quot;[A-Z][a-z]+&quot;)
+name.shouldBeBlank()
+
+// Collections
+list shouldContain &quot;item&quot;
+list shouldHaveSize 3
+list.shouldBeSorted()
+list.shouldContainAll(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+list.shouldBeEmpty()
+
+// Nulls
+result.shouldNotBeNull()
+result.shouldBeNull()
+
+// Types
+result.shouldBeInstanceOf&lt;User&gt;()
+
+// Numbers
+count shouldBeGreaterThan 0
+price shouldBeInRange 1.0..100.0
+
+// Exceptions
+shouldThrow&lt;IllegalArgumentException&gt; {
+    validateAge(-1)
+}.message shouldBe &quot;Age must be positive&quot;
+
+shouldNotThrow&lt;Exception&gt; {
+    validateAge(25)
+}
+```
+
+#### 自訂 Matcher
+
+```kotlin
+fun beActiveUser() = object : Matcher&lt;User&gt; {
+    override fun test(value: User) = MatcherResult(
+        value.isActive &amp;&amp; value.lastLogin != null,
+        { &quot;User ${value.id} should be active with a last login&quot; },
+        { &quot;User ${value.id} should not be active&quot; },
+    )
+}
+
+// Usage
+user should beActiveUser()
+```
+
+### MockK
+
+#### 基本 Mock
+
+```kotlin
+class UserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val logger = mockk&lt;Logger&gt;(relaxed = true) // Relaxed: returns defaults
+    val service = UserService(repository, logger)
+
+    beforeTest {
+        clearMocks(repository, logger)
+    }
+
+    test(&quot;findUser delegates to repository&quot;) {
+        val expected = User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        every { repository.findById(&quot;1&quot;) } returns expected
+
+        val result = service.findUser(&quot;1&quot;)
+
+        result shouldBe expected
+        verify(exactly = 1) { repository.findById(&quot;1&quot;) }
+    }
+
+    test(&quot;findUser returns null for unknown id&quot;) {
+        every { repository.findById(any()) } returns null
+
+        val result = service.findUser(&quot;unknown&quot;)
+
+        result.shouldBeNull()
+    }
+})
+```
+
+#### Coroutine Mock
+
+```kotlin
+class AsyncUserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val service = UserService(repository)
+
+    test(&quot;getUser suspending function&quot;) {
+        coEvery { repository.findById(&quot;1&quot;) } returns User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+
+        val result = service.getUser(&quot;1&quot;)
+
+        result.name shouldBe &quot;Alice&quot;
+        coVerify { repository.findById(&quot;1&quot;) }
+    }
+
+    test(&quot;getUser with delay&quot;) {
+        coEvery { repository.findById(&quot;1&quot;) } coAnswers {
+            delay(100) // Simulate async work
+            User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        }
+
+        val result = service.getUser(&quot;1&quot;)
+        result.name shouldBe &quot;Alice&quot;
+    }
+})
+```
+
+#### 參數捕捉
+
+```kotlin
+test(&quot;save captures the user argument&quot;) {
+    val slot = slot&lt;User&gt;()
+    coEvery { repository.save(capture(slot)) } returns Unit
+
+    service.createUser(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+
+    slot.captured.name shouldBe &quot;Alice&quot;
+    slot.captured.email shouldBe &quot;alice@example.com&quot;
+    slot.captured.id.shouldNotBeNull()
+}
+```
+
+#### Spy 與部分 Mock
+
+```kotlin
+test(&quot;spy on real object&quot;) {
+    val realService = UserService(repository)
+    val spy = spyk(realService)
+
+    every { spy.generateId() } returns &quot;fixed-id&quot;
+
+    spy.createUser(request)
+
+    verify { spy.generateId() } // Overridden
+    // Other methods use real implementation
+}
+```
+
+### Coroutine 測試
+
+#### 用 runTest 測 Suspend 函式
+
+```kotlin
+import kotlinx.coroutines.test.runTest
+
+class CoroutineServiceTest : FunSpec({
+    test(&quot;concurrent fetches complete together&quot;) {
+        runTest {
+            val service = DataService(testScope = this)
+
+            val result = service.fetchAllData()
+
+            result.users.shouldNotBeEmpty()
+            result.products.shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;timeout after delay&quot;) {
+        runTest {
+            val service = SlowService()
+
+            shouldThrow&lt;TimeoutCancellationException&gt; {
+                withTimeout(100) {
+                    service.slowOperation() // Takes &gt; 100ms
+                }
+            }
+        }
+    }
+})
+```
+
+#### 測試 Flow
+
+```kotlin
+import io.kotest.matchers.collections.shouldContainInOrder
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
+
+class FlowServiceTest : FunSpec({
+    test(&quot;observeUsers emits updates&quot;) {
+        runTest {
+            val service = UserFlowService()
+
+            val emissions = service.observeUsers()
+                .take(3)
+                .toList()
+
+            emissions shouldHaveSize 3
+            emissions.last().shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;searchUsers debounces input&quot;) {
+        runTest {
+            val service = SearchService()
+            val queries = MutableSharedFlow&lt;String&gt;()
+
+            val results = mutableListOf&lt;List&lt;User&gt;&gt;()
+            val job = launch {
+                service.searchUsers(queries).collect { results.add(it) }
+            }
+
+            queries.emit(&quot;a&quot;)
+            queries.emit(&quot;ab&quot;)
+            queries.emit(&quot;abc&quot;) // Only this should trigger search
+            advanceTimeBy(500)
+
+            results shouldHaveSize 1
+            job.cancel()
+        }
+    }
+})
+```
+
+#### TestDispatcher
+
+```kotlin
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+
+class DispatcherTest : FunSpec({
+    test(&quot;uses test dispatcher for controlled execution&quot;) {
+        val dispatcher = StandardTestDispatcher()
+
+        runTest(dispatcher) {
+            var completed = false
+
+            launch {
+                delay(1000)
+                completed = true
+            }
+
+            completed shouldBe false
+            advanceTimeBy(1000)
+            completed shouldBe true
+        }
+    }
+})
+```
+
+### Property-Based Testing
+
+#### Kotest Property Testing
+
+```kotlin
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.*
+import io.kotest.property.forAll
+import io.kotest.property.checkAll
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+
+// Note: The serialization roundtrip test below requires the User data class
+// to be annotated with @Serializable (from kotlinx.serialization).
+
+class PropertyTest : FunSpec({
+    test(&quot;string reverse is involutory&quot;) {
+        forAll&lt;String&gt; { s -&gt;
+            s.reversed().reversed() == s
+        }
+    }
+
+    test(&quot;list sort is idempotent&quot;) {
+        forAll(Arb.list(Arb.int())) { list -&gt;
+            list.sorted() == list.sorted().sorted()
+        }
+    }
+
+    test(&quot;serialization roundtrip preserves data&quot;) {
+        checkAll(Arb.bind(Arb.string(1..50), Arb.string(5..100)) { name, email -&gt;
+            User(name = name, email = &quot;$email@test.com&quot;)
+        }) { user -&gt;
+            val json = Json.encodeToString(user)
+            val decoded = Json.decodeFromString&lt;User&gt;(json)
+            decoded shouldBe user
+        }
+    }
+})
+```
+
+#### 自訂 Generator
+
+```kotlin
+val userArb: Arb&lt;User&gt; = Arb.bind(
+    Arb.string(minSize = 1, maxSize = 50),
+    Arb.email(),
+    Arb.enum&lt;Role&gt;(),
+) { name, email, role -&gt;
+    User(
+        id = UserId(UUID.randomUUID().toString()),
+        name = name,
+        email = Email(email),
+        role = role,
+    )
+}
+
+val moneyArb: Arb&lt;Money&gt; = Arb.bind(
+    Arb.long(1L..1_000_000L),
+    Arb.enum&lt;Currency&gt;(),
+) { amount, currency -&gt;
+    Money(amount, currency)
+}
+```
+
+### 資料驅動測試
+
+#### Kotest 的 withData
+
+```kotlin
+class ParserTest : FunSpec({
+    context(&quot;parsing valid dates&quot;) {
+        withData(
+            &quot;2026-01-15&quot; to LocalDate(2026, 1, 15),
+            &quot;2026-12-31&quot; to LocalDate(2026, 12, 31),
+            &quot;2000-01-01&quot; to LocalDate(2000, 1, 1),
+        ) { (input, expected) -&gt;
+            parseDate(input) shouldBe expected
+        }
+    }
+
+    context(&quot;rejecting invalid dates&quot;) {
+        withData(
+            nameFn = { &quot;rejects &#x27;$it&#x27;&quot; },
+            &quot;not-a-date&quot;,
+            &quot;2026-13-01&quot;,
+            &quot;2026-00-15&quot;,
+            &quot;&quot;,
+        ) { input -&gt;
+            shouldThrow&lt;DateParseException&gt; {
+                parseDate(input)
+            }
+        }
+    }
+})
+```
+
+### 測試生命週期與 Fixture
+
+#### BeforeTest / AfterTest
+
+```kotlin
+class DatabaseTest : FunSpec({
+    lateinit var db: Database
+
+    beforeSpec {
+        db = Database.connect(&quot;jdbc:h2:mem:test;DB_CLOSE_DELAY=-1&quot;)
+        transaction(db) {
+            SchemaUtils.create(UsersTable)
+        }
+    }
+
+    afterSpec {
+        transaction(db) {
+            SchemaUtils.drop(UsersTable)
+        }
+    }
+
+    beforeTest {
+        transaction(db) {
+            UsersTable.deleteAll()
+        }
+    }
+
+    test(&quot;insert and retrieve user&quot;) {
+        transaction(db) {
+            UsersTable.insert {
+                it[name] = &quot;Alice&quot;
+                it[email] = &quot;alice@example.com&quot;
+            }
+        }
+
+        val users = transaction(db) {
+            UsersTable.selectAll().map { it[UsersTable.name] }
+        }
+
+        users shouldContain &quot;Alice&quot;
+    }
+})
+```
+
+#### Kotest Extension
+
+```kotlin
+// Reusable test extension
+class DatabaseExtension : BeforeSpecListener, AfterSpecListener {
+    lateinit var db: Database
+
+    override suspend fun beforeSpec(spec: Spec) {
+        db = Database.connect(&quot;jdbc:h2:mem:test;DB_CLOSE_DELAY=-1&quot;)
+    }
+
+    override suspend fun afterSpec(spec: Spec) {
+        // cleanup
+    }
+}
+
+class UserRepositoryTest : FunSpec({
+    val dbExt = DatabaseExtension()
+    register(dbExt)
+
+    test(&quot;save and find user&quot;) {
+        val repo = UserRepository(dbExt.db)
+        // ...
+    }
+})
+```
+
+### Kover Coverage
+
+#### Gradle 設定
+
+```kotlin
+// build.gradle.kts
+plugins {
+    id(&quot;org.jetbrains.kotlinx.kover&quot;) version &quot;0.9.7&quot;
+}
+
+kover {
+    reports {
+        total {
+            html { onCheck = true }
+            xml { onCheck = true }
+        }
+        filters {
+            excludes {
+                classes(&quot;*.generated.*&quot;, &quot;*.config.*&quot;)
+            }
+        }
+        verify {
+            rule {
+                minBound(80) // Fail build below 80% coverage
+            }
+        }
+    }
+}
+```
+
+#### 覆蓋率指令
+
+```bash
+# Run tests with coverage
+./gradlew koverHtmlReport
+
+# Verify coverage thresholds
+./gradlew koverVerify
+
+# XML report for CI
+./gradlew koverXmlReport
+
+# View HTML report (use the command for your OS)
+# macOS:   open build/reports/kover/html/index.html
+# Linux:   xdg-open build/reports/kover/html/index.html
+# Windows: start build/reports/kover/html/index.html
+```
+
+#### 覆蓋率目標
+
+| 程式碼類型 | 目標 |
+|-----------|--------|
+| 關鍵商業邏輯 | 100% |
+| 公開 API | 90%+ |
+| 一般程式碼 | 80%+ |
+| 產生的程式碼 / 設定檔 | 排除 |
+
+### Ktor testApplication Testing
+
+```kotlin
+class ApiRoutesTest : FunSpec({
+    test(&quot;GET /users returns list&quot;) {
+        testApplication {
+            application {
+                configureRouting()
+                configureSerialization()
+            }
+
+            val response = client.get(&quot;/users&quot;)
+
+            response.status shouldBe HttpStatusCode.OK
+            val users = response.body&lt;List&lt;UserResponse&gt;&gt;()
+            users.shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;POST /users creates user&quot;) {
+        testApplication {
+            application {
+                configureRouting()
+                configureSerialization()
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+})
+```
+
+### 測試指令
+
+```bash
+# Run all tests
+./gradlew test
+
+# Run specific test class
+./gradlew test --tests &quot;com.example.UserServiceTest&quot;
+
+# Run specific test
+./gradlew test --tests &quot;com.example.UserServiceTest.getUser returns user when found&quot;
+
+# Run with verbose output
+./gradlew test --info
+
+# Run with coverage
+./gradlew koverHtmlReport
+
+# Run detekt (static analysis)
+./gradlew detekt
+
+# Run ktlint (formatting check)
+./gradlew ktlintCheck
+
+# Continuous testing
+./gradlew test --continuous
+```
+
+### 最佳實務
+
+**要做：**
+- 測試要先寫（TDD）
+- 整個專案一致使用 Kotest 的 spec 風格
+- suspend 函式用 MockK 的 `coEvery`/`coVerify`
+- coroutine 測試用 `runTest`
+- 測行為，不要測實作
+- 純函式用 property-based testing
+- 用 `data class` 當測試 fixture，比較清楚
+
+**不要做：**
+- 混用測試框架（選定 Kotest 就一路用下去）
+- mock data class（用真實的實例）
+- 在 coroutine 測試裡用 `Thread.sleep()`（改用 `advanceTimeBy`）
+- 跳過 TDD 的 RED 階段
+- 直接測 private 函式
+- 忽略不穩定（flaky）的測試
+
+### 整合 CI/CD
+
+```yaml
+# GitHub Actions example
+test:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: &#x27;temurin&#x27;
+        java-version: &#x27;21&#x27;
+
+    - name: Run tests with coverage
+      run: ./gradlew test koverXmlReport
+
+    - name: Verify coverage
+      run: ./gradlew koverVerify
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v5
+      with:
+        files: build/reports/kover/report.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+```
+
+**記住**：測試就是文件，它們展示你的 Kotlin 程式碼該怎麼用。用 Kotest 有表達力的 matcher 讓測試好讀，用 MockK 乾淨地 mock 依賴。</pre></section><section><h2>英文原文</h2><pre>---
+name: kotlin-testing
+description: Kotlin testing patterns with Kotest, MockK, coroutine testing, property-based testing, and Kover coverage. Follows TDD methodology with idiomatic Kotlin practices. Use when writing Kotlin tests with Kotest or MockK, or testing coroutines and checking coverage.
+metadata:
+  origin: ECC
+---
+
+# Kotlin Testing Patterns
+
+Comprehensive Kotlin testing patterns for writing reliable, maintainable tests following TDD methodology with Kotest and MockK.
+
+## When to Use
+
+- Writing new Kotlin functions or classes
+- Adding test coverage to existing Kotlin code
+- Implementing property-based tests
+- Following TDD workflow in Kotlin projects
+- Configuring Kover for code coverage
+
+## How It Works
+
+1. **Identify target code** — Find the function, class, or module to test
+2. **Write a Kotest spec** — Choose a spec style (StringSpec, FunSpec, BehaviorSpec) matching the test scope
+3. **Mock dependencies** — Use MockK to isolate the unit under test
+4. **Run tests (RED)** — Verify the test fails with the expected error
+5. **Implement code (GREEN)** — Write minimal code to pass the test
+6. **Refactor** — Improve the implementation while keeping tests green
+7. **Check coverage** — Run `./gradlew koverHtmlReport` and verify 80%+ coverage
+
+## Examples
+
+The following sections contain detailed, runnable examples for each testing pattern:
+
+### Quick Reference
+
+- **Kotest specs** — StringSpec, FunSpec, BehaviorSpec, DescribeSpec examples in [Kotest Spec Styles](#kotest-spec-styles)
+- **Mocking** — MockK setup, coroutine mocking, argument capture in [MockK](#mockk)
+- **TDD walkthrough** — Full RED/GREEN/REFACTOR cycle with EmailValidator in [TDD Workflow for Kotlin](#tdd-workflow-for-kotlin)
+- **Coverage** — Kover configuration and commands in [Kover Coverage](#kover-coverage)
+- **Ktor testing** — testApplication setup in [Ktor testApplication Testing](#ktor-testapplication-testing)
+
+### TDD Workflow for Kotlin
+
+#### The RED-GREEN-REFACTOR Cycle
+
+```
+RED     -&gt; Write a failing test first
+GREEN   -&gt; Write minimal code to pass the test
+REFACTOR -&gt; Improve code while keeping tests green
+REPEAT  -&gt; Continue with next requirement
+```
+
+#### Step-by-Step TDD in Kotlin
+
+```kotlin
+// Step 1: Define the interface/signature
+// EmailValidator.kt
+package com.example.validator
+
+fun validateEmail(email: String): Result&lt;String&gt; {
+    TODO(&quot;not implemented&quot;)
+}
+
+// Step 2: Write failing test (RED)
+// EmailValidatorTest.kt
+package com.example.validator
+
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.result.shouldBeFailure
+import io.kotest.matchers.result.shouldBeSuccess
+
+class EmailValidatorTest : StringSpec({
+    &quot;valid email returns success&quot; {
+        validateEmail(&quot;user@example.com&quot;).shouldBeSuccess(&quot;user@example.com&quot;)
+    }
+
+    &quot;empty email returns failure&quot; {
+        validateEmail(&quot;&quot;).shouldBeFailure()
+    }
+
+    &quot;email without @ returns failure&quot; {
+        validateEmail(&quot;userexample.com&quot;).shouldBeFailure()
+    }
+})
+
+// Step 3: Run tests - verify FAIL
+// $ ./gradlew test
+// EmailValidatorTest &gt; valid email returns success FAILED
+//   kotlin.NotImplementedError: An operation is not implemented
+
+// Step 4: Implement minimal code (GREEN)
+fun validateEmail(email: String): Result&lt;String&gt; {
+    if (email.isBlank()) return Result.failure(IllegalArgumentException(&quot;Email cannot be blank&quot;))
+    if (&#x27;@&#x27; !in email) return Result.failure(IllegalArgumentException(&quot;Email must contain @&quot;))
+    val regex = Regex(&quot;^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$&quot;)
+    if (!regex.matches(email)) return Result.failure(IllegalArgumentException(&quot;Invalid email format&quot;))
+    return Result.success(email)
+}
+
+// Step 5: Run tests - verify PASS
+// $ ./gradlew test
+// EmailValidatorTest &gt; valid email returns success PASSED
+// EmailValidatorTest &gt; empty email returns failure PASSED
+// EmailValidatorTest &gt; email without @ returns failure PASSED
+
+// Step 6: Refactor if needed, verify tests still pass
+```
+
+### Kotest Spec Styles
+
+#### StringSpec (Simplest)
+
+```kotlin
+class CalculatorTest : StringSpec({
+    &quot;add two positive numbers&quot; {
+        Calculator.add(2, 3) shouldBe 5
+    }
+
+    &quot;add negative numbers&quot; {
+        Calculator.add(-1, -2) shouldBe -3
+    }
+
+    &quot;add zero&quot; {
+        Calculator.add(0, 5) shouldBe 5
+    }
+})
+```
+
+#### FunSpec (JUnit-like)
+
+```kotlin
+class UserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val service = UserService(repository)
+
+    test(&quot;getUser returns user when found&quot;) {
+        val expected = User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        coEvery { repository.findById(&quot;1&quot;) } returns expected
+
+        val result = service.getUser(&quot;1&quot;)
+
+        result shouldBe expected
+    }
+
+    test(&quot;getUser throws when not found&quot;) {
+        coEvery { repository.findById(&quot;999&quot;) } returns null
+
+        shouldThrow&lt;UserNotFoundException&gt; {
+            service.getUser(&quot;999&quot;)
+        }
+    }
+})
+```
+
+#### BehaviorSpec (BDD Style)
+
+```kotlin
+class OrderServiceTest : BehaviorSpec({
+    val repository = mockk&lt;OrderRepository&gt;()
+    val paymentService = mockk&lt;PaymentService&gt;()
+    val service = OrderService(repository, paymentService)
+
+    Given(&quot;a valid order request&quot;) {
+        val request = CreateOrderRequest(
+            userId = &quot;user-1&quot;,
+            items = listOf(OrderItem(&quot;product-1&quot;, quantity = 2)),
+        )
+
+        When(&quot;the order is placed&quot;) {
+            coEvery { paymentService.charge(any()) } returns PaymentResult.Success
+            coEvery { repository.save(any()) } answers { firstArg() }
+
+            val result = service.placeOrder(request)
+
+            Then(&quot;it should return a confirmed order&quot;) {
+                result.status shouldBe OrderStatus.CONFIRMED
+            }
+
+            Then(&quot;it should charge payment&quot;) {
+                coVerify(exactly = 1) { paymentService.charge(any()) }
+            }
+        }
+
+        When(&quot;payment fails&quot;) {
+            coEvery { paymentService.charge(any()) } returns PaymentResult.Declined
+
+            Then(&quot;it should throw PaymentException&quot;) {
+                shouldThrow&lt;PaymentException&gt; {
+                    service.placeOrder(request)
+                }
+            }
+        }
+    }
+})
+```
+
+#### DescribeSpec (RSpec Style)
+
+```kotlin
+class UserValidatorTest : DescribeSpec({
+    describe(&quot;validateUser&quot;) {
+        val validator = UserValidator()
+
+        context(&quot;with valid input&quot;) {
+            it(&quot;accepts a normal user&quot;) {
+                val user = CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeValid()
+            }
+        }
+
+        context(&quot;with invalid name&quot;) {
+            it(&quot;rejects blank name&quot;) {
+                val user = CreateUserRequest(&quot;&quot;, &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeInvalid()
+            }
+
+            it(&quot;rejects name exceeding max length&quot;) {
+                val user = CreateUserRequest(&quot;A&quot;.repeat(256), &quot;alice@example.com&quot;)
+                validator.validate(user).shouldBeInvalid()
+            }
+        }
+    }
+})
+```
+
+### Kotest Matchers
+
+#### Core Matchers
+
+```kotlin
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.*
+import io.kotest.matchers.collections.*
+import io.kotest.matchers.nulls.*
+
+// Equality
+result shouldBe expected
+result shouldNotBe unexpected
+
+// Strings
+name shouldStartWith &quot;Al&quot;
+name shouldEndWith &quot;ice&quot;
+name shouldContain &quot;lic&quot;
+name shouldMatch Regex(&quot;[A-Z][a-z]+&quot;)
+name.shouldBeBlank()
+
+// Collections
+list shouldContain &quot;item&quot;
+list shouldHaveSize 3
+list.shouldBeSorted()
+list.shouldContainAll(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+list.shouldBeEmpty()
+
+// Nulls
+result.shouldNotBeNull()
+result.shouldBeNull()
+
+// Types
+result.shouldBeInstanceOf&lt;User&gt;()
+
+// Numbers
+count shouldBeGreaterThan 0
+price shouldBeInRange 1.0..100.0
+
+// Exceptions
+shouldThrow&lt;IllegalArgumentException&gt; {
+    validateAge(-1)
+}.message shouldBe &quot;Age must be positive&quot;
+
+shouldNotThrow&lt;Exception&gt; {
+    validateAge(25)
+}
+```
+
+#### Custom Matchers
+
+```kotlin
+fun beActiveUser() = object : Matcher&lt;User&gt; {
+    override fun test(value: User) = MatcherResult(
+        value.isActive &amp;&amp; value.lastLogin != null,
+        { &quot;User ${value.id} should be active with a last login&quot; },
+        { &quot;User ${value.id} should not be active&quot; },
+    )
+}
+
+// Usage
+user should beActiveUser()
+```
+
+### MockK
+
+#### Basic Mocking
+
+```kotlin
+class UserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val logger = mockk&lt;Logger&gt;(relaxed = true) // Relaxed: returns defaults
+    val service = UserService(repository, logger)
+
+    beforeTest {
+        clearMocks(repository, logger)
+    }
+
+    test(&quot;findUser delegates to repository&quot;) {
+        val expected = User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        every { repository.findById(&quot;1&quot;) } returns expected
+
+        val result = service.findUser(&quot;1&quot;)
+
+        result shouldBe expected
+        verify(exactly = 1) { repository.findById(&quot;1&quot;) }
+    }
+
+    test(&quot;findUser returns null for unknown id&quot;) {
+        every { repository.findById(any()) } returns null
+
+        val result = service.findUser(&quot;unknown&quot;)
+
+        result.shouldBeNull()
+    }
+})
+```
+
+#### Coroutine Mocking
+
+```kotlin
+class AsyncUserServiceTest : FunSpec({
+    val repository = mockk&lt;UserRepository&gt;()
+    val service = UserService(repository)
+
+    test(&quot;getUser suspending function&quot;) {
+        coEvery { repository.findById(&quot;1&quot;) } returns User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+
+        val result = service.getUser(&quot;1&quot;)
+
+        result.name shouldBe &quot;Alice&quot;
+        coVerify { repository.findById(&quot;1&quot;) }
+    }
+
+    test(&quot;getUser with delay&quot;) {
+        coEvery { repository.findById(&quot;1&quot;) } coAnswers {
+            delay(100) // Simulate async work
+            User(id = &quot;1&quot;, name = &quot;Alice&quot;)
+        }
+
+        val result = service.getUser(&quot;1&quot;)
+        result.name shouldBe &quot;Alice&quot;
+    }
+})
+```
+
+#### Argument Capture
+
+```kotlin
+test(&quot;save captures the user argument&quot;) {
+    val slot = slot&lt;User&gt;()
+    coEvery { repository.save(capture(slot)) } returns Unit
+
+    service.createUser(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+
+    slot.captured.name shouldBe &quot;Alice&quot;
+    slot.captured.email shouldBe &quot;alice@example.com&quot;
+    slot.captured.id.shouldNotBeNull()
+}
+```
+
+#### Spy and Partial Mocking
+
+```kotlin
+test(&quot;spy on real object&quot;) {
+    val realService = UserService(repository)
+    val spy = spyk(realService)
+
+    every { spy.generateId() } returns &quot;fixed-id&quot;
+
+    spy.createUser(request)
+
+    verify { spy.generateId() } // Overridden
+    // Other methods use real implementation
+}
+```
+
+### Coroutine Testing
+
+#### runTest for Suspend Functions
+
+```kotlin
+import kotlinx.coroutines.test.runTest
+
+class CoroutineServiceTest : FunSpec({
+    test(&quot;concurrent fetches complete together&quot;) {
+        runTest {
+            val service = DataService(testScope = this)
+
+            val result = service.fetchAllData()
+
+            result.users.shouldNotBeEmpty()
+            result.products.shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;timeout after delay&quot;) {
+        runTest {
+            val service = SlowService()
+
+            shouldThrow&lt;TimeoutCancellationException&gt; {
+                withTimeout(100) {
+                    service.slowOperation() // Takes &gt; 100ms
+                }
+            }
+        }
+    }
+})
+```
+
+#### Testing Flows
+
+```kotlin
+import io.kotest.matchers.collections.shouldContainInOrder
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
+
+class FlowServiceTest : FunSpec({
+    test(&quot;observeUsers emits updates&quot;) {
+        runTest {
+            val service = UserFlowService()
+
+            val emissions = service.observeUsers()
+                .take(3)
+                .toList()
+
+            emissions shouldHaveSize 3
+            emissions.last().shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;searchUsers debounces input&quot;) {
+        runTest {
+            val service = SearchService()
+            val queries = MutableSharedFlow&lt;String&gt;()
+
+            val results = mutableListOf&lt;List&lt;User&gt;&gt;()
+            val job = launch {
+                service.searchUsers(queries).collect { results.add(it) }
+            }
+
+            queries.emit(&quot;a&quot;)
+            queries.emit(&quot;ab&quot;)
+            queries.emit(&quot;abc&quot;) // Only this should trigger search
+            advanceTimeBy(500)
+
+            results shouldHaveSize 1
+            job.cancel()
+        }
+    }
+})
+```
+
+#### TestDispatcher
+
+```kotlin
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+
+class DispatcherTest : FunSpec({
+    test(&quot;uses test dispatcher for controlled execution&quot;) {
+        val dispatcher = StandardTestDispatcher()
+
+        runTest(dispatcher) {
+            var completed = false
+
+            launch {
+                delay(1000)
+                completed = true
+            }
+
+            completed shouldBe false
+            advanceTimeBy(1000)
+            completed shouldBe true
+        }
+    }
+})
+```
+
+### Property-Based Testing
+
+#### Kotest Property Testing
+
+```kotlin
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.*
+import io.kotest.property.forAll
+import io.kotest.property.checkAll
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+
+// Note: The serialization roundtrip test below requires the User data class
+// to be annotated with @Serializable (from kotlinx.serialization).
+
+class PropertyTest : FunSpec({
+    test(&quot;string reverse is involutory&quot;) {
+        forAll&lt;String&gt; { s -&gt;
+            s.reversed().reversed() == s
+        }
+    }
+
+    test(&quot;list sort is idempotent&quot;) {
+        forAll(Arb.list(Arb.int())) { list -&gt;
+            list.sorted() == list.sorted().sorted()
+        }
+    }
+
+    test(&quot;serialization roundtrip preserves data&quot;) {
+        checkAll(Arb.bind(Arb.string(1..50), Arb.string(5..100)) { name, email -&gt;
+            User(name = name, email = &quot;$email@test.com&quot;)
+        }) { user -&gt;
+            val json = Json.encodeToString(user)
+            val decoded = Json.decodeFromString&lt;User&gt;(json)
+            decoded shouldBe user
+        }
+    }
+})
+```
+
+#### Custom Generators
+
+```kotlin
+val userArb: Arb&lt;User&gt; = Arb.bind(
+    Arb.string(minSize = 1, maxSize = 50),
+    Arb.email(),
+    Arb.enum&lt;Role&gt;(),
+) { name, email, role -&gt;
+    User(
+        id = UserId(UUID.randomUUID().toString()),
+        name = name,
+        email = Email(email),
+        role = role,
+    )
+}
+
+val moneyArb: Arb&lt;Money&gt; = Arb.bind(
+    Arb.long(1L..1_000_000L),
+    Arb.enum&lt;Currency&gt;(),
+) { amount, currency -&gt;
+    Money(amount, currency)
+}
+```
+
+### Data-Driven Testing
+
+#### withData in Kotest
+
+```kotlin
+class ParserTest : FunSpec({
+    context(&quot;parsing valid dates&quot;) {
+        withData(
+            &quot;2026-01-15&quot; to LocalDate(2026, 1, 15),
+            &quot;2026-12-31&quot; to LocalDate(2026, 12, 31),
+            &quot;2000-01-01&quot; to LocalDate(2000, 1, 1),
+        ) { (input, expected) -&gt;
+            parseDate(input) shouldBe expected
+        }
+    }
+
+    context(&quot;rejecting invalid dates&quot;) {
+        withData(
+            nameFn = { &quot;rejects &#x27;$it&#x27;&quot; },
+            &quot;not-a-date&quot;,
+            &quot;2026-13-01&quot;,
+            &quot;2026-00-15&quot;,
+            &quot;&quot;,
+        ) { input -&gt;
+            shouldThrow&lt;DateParseException&gt; {
+                parseDate(input)
+            }
+        }
+    }
+})
+```
+
+### Test Lifecycle and Fixtures
+
+#### BeforeTest / AfterTest
+
+```kotlin
+class DatabaseTest : FunSpec({
+    lateinit var db: Database
+
+    beforeSpec {
+        db = Database.connect(&quot;jdbc:h2:mem:test;DB_CLOSE_DELAY=-1&quot;)
+        transaction(db) {
+            SchemaUtils.create(UsersTable)
+        }
+    }
+
+    afterSpec {
+        transaction(db) {
+            SchemaUtils.drop(UsersTable)
+        }
+    }
+
+    beforeTest {
+        transaction(db) {
+            UsersTable.deleteAll()
+        }
+    }
+
+    test(&quot;insert and retrieve user&quot;) {
+        transaction(db) {
+            UsersTable.insert {
+                it[name] = &quot;Alice&quot;
+                it[email] = &quot;alice@example.com&quot;
+            }
+        }
+
+        val users = transaction(db) {
+            UsersTable.selectAll().map { it[UsersTable.name] }
+        }
+
+        users shouldContain &quot;Alice&quot;
+    }
+})
+```
+
+#### Kotest Extensions
+
+```kotlin
+// Reusable test extension
+class DatabaseExtension : BeforeSpecListener, AfterSpecListener {
+    lateinit var db: Database
+
+    override suspend fun beforeSpec(spec: Spec) {
+        db = Database.connect(&quot;jdbc:h2:mem:test;DB_CLOSE_DELAY=-1&quot;)
+    }
+
+    override suspend fun afterSpec(spec: Spec) {
+        // cleanup
+    }
+}
+
+class UserRepositoryTest : FunSpec({
+    val dbExt = DatabaseExtension()
+    register(dbExt)
+
+    test(&quot;save and find user&quot;) {
+        val repo = UserRepository(dbExt.db)
+        // ...
+    }
+})
+```
+
+### Kover Coverage
+
+#### Gradle Configuration
+
+```kotlin
+// build.gradle.kts
+plugins {
+    id(&quot;org.jetbrains.kotlinx.kover&quot;) version &quot;0.9.7&quot;
+}
+
+kover {
+    reports {
+        total {
+            html { onCheck = true }
+            xml { onCheck = true }
+        }
+        filters {
+            excludes {
+                classes(&quot;*.generated.*&quot;, &quot;*.config.*&quot;)
+            }
+        }
+        verify {
+            rule {
+                minBound(80) // Fail build below 80% coverage
+            }
+        }
+    }
+}
+```
+
+#### Coverage Commands
+
+```bash
+# Run tests with coverage
+./gradlew koverHtmlReport
+
+# Verify coverage thresholds
+./gradlew koverVerify
+
+# XML report for CI
+./gradlew koverXmlReport
+
+# View HTML report (use the command for your OS)
+# macOS:   open build/reports/kover/html/index.html
+# Linux:   xdg-open build/reports/kover/html/index.html
+# Windows: start build/reports/kover/html/index.html
+```
+
+#### Coverage Targets
+
+| Code Type | Target |
+|-----------|--------|
+| Critical business logic | 100% |
+| Public APIs | 90%+ |
+| General code | 80%+ |
+| Generated / config code | Exclude |
+
+### Ktor testApplication Testing
+
+```kotlin
+class ApiRoutesTest : FunSpec({
+    test(&quot;GET /users returns list&quot;) {
+        testApplication {
+            application {
+                configureRouting()
+                configureSerialization()
+            }
+
+            val response = client.get(&quot;/users&quot;)
+
+            response.status shouldBe HttpStatusCode.OK
+            val users = response.body&lt;List&lt;UserResponse&gt;&gt;()
+            users.shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;POST /users creates user&quot;) {
+        testApplication {
+            application {
+                configureRouting()
+                configureSerialization()
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+})
+```
+
+### Testing Commands
+
+```bash
+# Run all tests
+./gradlew test
+
+# Run specific test class
+./gradlew test --tests &quot;com.example.UserServiceTest&quot;
+
+# Run specific test
+./gradlew test --tests &quot;com.example.UserServiceTest.getUser returns user when found&quot;
+
+# Run with verbose output
+./gradlew test --info
+
+# Run with coverage
+./gradlew koverHtmlReport
+
+# Run detekt (static analysis)
+./gradlew detekt
+
+# Run ktlint (formatting check)
+./gradlew ktlintCheck
+
+# Continuous testing
+./gradlew test --continuous
+```
+
+### Best Practices
+
+**DO:**
+- Write tests FIRST (TDD)
+- Use Kotest&#x27;s spec styles consistently across the project
+- Use MockK&#x27;s `coEvery`/`coVerify` for suspend functions
+- Use `runTest` for coroutine testing
+- Test behavior, not implementation
+- Use property-based testing for pure functions
+- Use `data class` test fixtures for clarity
+
+**DON&#x27;T:**
+- Mix testing frameworks (pick Kotest and stick with it)
+- Mock data classes (use real instances)
+- Use `Thread.sleep()` in coroutine tests (use `advanceTimeBy`)
+- Skip the RED phase in TDD
+- Test private functions directly
+- Ignore flaky tests
+
+### Integration with CI/CD
+
+```yaml
+# GitHub Actions example
+test:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: &#x27;temurin&#x27;
+        java-version: &#x27;21&#x27;
+
+    - name: Run tests with coverage
+      run: ./gradlew test koverXmlReport
+
+    - name: Verify coverage
+      run: ./gradlew koverVerify
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v5
+      with:
+        files: build/reports/kover/report.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+```
+
+**Remember**: Tests are documentation. They show how your Kotlin code is meant to be used. Use Kotest&#x27;s expressive matchers to make tests readable and MockK for clean mocking of dependencies.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

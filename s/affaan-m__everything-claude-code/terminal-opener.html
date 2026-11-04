@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terminal-opener｜Skill 寫法圖鑑</title>
+<meta name="description" content="用不經 shell 的啟動計畫，在可見的終端機視窗開指令">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>terminal-opener</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/terminal-opener/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用不經 shell 的啟動計畫，在可見的終端機視窗開指令</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: terminal-opener
+description: 透過一個可重複使用、不經過 shell 的啟動計畫，把執行檔和它的引數陣列開在看得見的終端機視窗裡，支援 dry-run、JSON、能力偵測、分離式 fallback 和獨立復原模式。當 Codex 需要在新的主機終端機視窗中開啟互動式 CLI、SSH session、本機開發 process、sandbox，或其他以 argv 為基礎的指令；診斷是否有支援的終端機可用；或在要求的終端機不被支援時提供可操作的計畫時使用。
+---
+
+# Terminal Opener
+
+用 `scripts/open-terminal.js`，把執行檔和每個引數都保留成
+分開的 process 項目。絕對不要把 shell 指令字串插值進去。每一次
+spawn 都要保持 `shell: false`。預設用不會真的啟動的計畫。只有在
+使用者明確要求開真正的視窗、而且 argv 已經審查過之後，才用 `--launch`。
+被啟動的 process 會繼承呼叫端 process 的完整環境，
+包括帶有祕密的變數。啟動器不會過濾
+環境。要從一個環境暴露給目標指令也安全的 shell 來執行它。
+
+## 啟動指令
+
+啟動器的選項放在 `--` 之前，然後只傳一個執行檔，接著是
+它的引數陣列：
+
+```bash
+node skills/terminal-opener/scripts/open-terminal.js \
+  --launch \
+  --cwd /absolute/host/path \
+  -- ssh -t example.test command-with-arguments
+```
+
+先跑一般模式。讓 WezTerm 先嘗試用 mux 開新視窗，如果 mux
+不可用，啟動器再 fallback 成分離式的 `wezterm start` process。
+用了 fallback 時，要讀 JSON 輸出裡的 `muxFailure`（或
+人類可讀的失敗那一行），診斷 mux 路徑為什麼失敗。
+
+## 從終端機設定中復原
+
+當使用者設定或 mux 狀態可能干擾要求的指令時，加上 `--recover` 或 `--standalone`。用下面的參數
+啟動一個分離式的 WezTerm process：
+
+```text
+--skip-config start --always-new-process
+```
+
+要預期復原模式會刻意略過所有使用者的終端機設定。
+
+## 啟動前先檢查
+
+省略 `--launch`（或加上 `--dry-run`），再加上 `--json`，就能檢查確切的
+執行檔、argv、工作目錄、終端機 adapter、主要啟動方式和
+fallback，而不會開視窗。把 JSON 計畫當作給呼叫端的
+組合邊界。
+
+不帶指令執行 `--detect --json`，可以探測終端機是否可用。當 adapter 缺少或不被支援時，
+照著回傳的 `action` 做。目前的 adapter 用的是 WezTerm；
+其他被要求的終端機，要當成不被支援的計畫處理，
+不要當成要執行的指令。</pre></section><section><h2>英文原文</h2><pre>---
+name: terminal-opener
+description: Open an executable and its argument array in a visible terminal window through a reusable, shell-free launch plan with dry-run, JSON, capability detection, detached fallback, and standalone recovery modes. Use when Codex needs to open an interactive CLI, SSH session, local development process, sandbox, or other argv-based command in a new host terminal; diagnose whether a supported terminal is available; or provide an actionable plan when the requested terminal is unsupported.
+---
+
+# Terminal Opener
+
+Use `scripts/open-terminal.js` to preserve an executable and every argument as
+separate process entries. Never interpolate a shell command string. Keep every
+spawn on `shell: false`. Default to a non-launching plan. Use `--launch` only
+after the user explicitly requests a real window and the argv has been reviewed.
+The launched process inherits the full environment of the calling process,
+including secret-bearing variables. The launcher does not filter the
+environment. Run it from a shell whose environment is safe to expose to the
+target command.
+
+## Launch a command
+
+Pass launcher options before `--`, then pass exactly one executable followed by
+its argument array:
+
+```bash
+node skills/terminal-opener/scripts/open-terminal.js \
+  --launch \
+  --cwd /absolute/host/path \
+  -- ssh -t example.test command-with-arguments
+```
+
+Run normal mode first. Let WezTerm try its mux with a new window, then let the
+launcher fall back to a detached `wezterm start` process if the mux is not
+available. When fallback is used, read `muxFailure` from JSON output (or the
+human-readable failure line) to diagnose why the mux path failed.
+
+## Recover from terminal configuration
+
+Add `--recover` or `--standalone` when user configuration or mux state may
+interfere with the requested command. Start a detached WezTerm process with:
+
+```text
+--skip-config start --always-new-process
+```
+
+Expect recovery mode to skip all user terminal configuration intentionally.
+
+## Inspect before launch
+
+Omit `--launch` (or add `--dry-run`) and add `--json` to inspect the exact
+executable, argv, working directory, terminal adapter, primary launch, and
+fallback without opening a window. Treat the JSON plan as the composition
+boundary for callers.
+
+Run `--detect --json` without a command to probe terminal availability. Follow
+the returned `action` when the adapter is missing or unsupported. Use WezTerm
+for the current adapter; treat other requested terminals as unsupported plans,
+not as commands to execute.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

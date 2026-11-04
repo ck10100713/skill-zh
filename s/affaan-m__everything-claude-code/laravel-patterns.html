@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laravel-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Laravel 架構模式：controller、service 層、Eloquent、queue 與快取">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>laravel-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/laravel-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Laravel 架構模式：controller、service 層、Eloquent、queue 與快取</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: laravel-patterns
+description: 給 production 應用程式用的 Laravel 架構模式，包含路由/controller、Eloquent ORM、service 層、queue、event、快取與 API resource。在建構或 review Laravel 應用程式時使用（controller、Eloquent、service 層、queue 或 API resource）。
+metadata:
+  origin: ECC
+---
+
+# Laravel Development Patterns
+
+用來打造可擴充、好維護的應用程式的 production 等級 Laravel 架構模式。
+
+## 何時使用
+
+- 建構 Laravel 網頁應用程式或 API
+- 規劃 controller、service 與領域邏輯的結構
+- 處理 Eloquent model 與關聯
+- 用 resource 與分頁設計 API
+- 加入 queue、event、快取與背景 job
+
+## 運作方式
+
+- 以清楚的邊界組織應用程式（controller -&gt; service/action -&gt; model）。
+- 使用明確的 binding 與 scoped binding，讓路由行為可預期；存取控制仍然要做授權檢查。
+- 多用有型別的 model、cast 與 scope，讓領域邏輯保持一致。
+- IO 密集的工作放進 queue，昂貴的讀取加上快取。
+- 設定集中放在 `config/*`，環境要明確。
+
+## 範例
+
+### 專案結構
+
+用慣例的 Laravel 目錄配置，並讓各層（HTTP、service/action、model）邊界清楚。
+
+### 建議的目錄配置
+
+```
+app/
+├── Actions/            # Single-purpose use cases
+├── Console/
+├── Events/
+├── Exceptions/
+├── Http/
+│   ├── Controllers/
+│   ├── Middleware/
+│   ├── Requests/       # Form request validation
+│   └── Resources/      # API resources
+├── Jobs/
+├── Models/
+├── Policies/
+├── Providers/
+├── Services/           # Coordinating domain services
+└── Support/
+config/
+database/
+├── factories/
+├── migrations/
+└── seeders/
+resources/
+├── views/
+└── lang/
+routes/
+├── api.php
+├── web.php
+└── console.php
+```
+
+### Controller -&gt; Service -&gt; Action
+
+Controller 保持精簡。協調流程放在 service，單一用途的邏輯放在 action。
+
+```php
+final class CreateOrderAction
+{
+    public function __construct(private OrderRepository $orders) {}
+
+    public function handle(CreateOrderData $data): Order
+    {
+        return $this-&gt;orders-&gt;create($data);
+    }
+}
+
+final class OrdersController extends Controller
+{
+    public function __construct(private CreateOrderAction $createOrder) {}
+
+    public function store(StoreOrderRequest $request): JsonResponse
+    {
+        $order = $this-&gt;createOrder-&gt;handle($request-&gt;toDto());
+
+        return response()-&gt;json([
+            &#x27;success&#x27; =&gt; true,
+            &#x27;data&#x27; =&gt; OrderResource::make($order),
+            &#x27;error&#x27; =&gt; null,
+            &#x27;meta&#x27; =&gt; null,
+        ], 201);
+    }
+}
+```
+
+### 路由與 Controller
+
+為了清楚起見，優先用 route-model binding 與 resource controller。
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::apiResource(&#x27;projects&#x27;, ProjectController::class);
+});
+```
+
+### Route Model Binding（Scoped）
+
+用 scoped binding 防止跨租戶存取。
+
+```php
+Route::scopeBindings()-&gt;group(function () {
+    Route::get(&#x27;/accounts/{account}/projects/{project}&#x27;, [ProjectController::class, &#x27;show&#x27;]);
+});
+```
+
+### 巢狀路由與 Binding 名稱
+
+- 前綴與路徑保持一致，避免重複巢狀（例如 `conversation` 與 `conversations`）。
+- 使用單一參數名稱，並與綁定的 model 一致（例如 `Conversation` 用 `{conversation}`）。
+- 巢狀時優先用 scoped binding，強制父子關係。
+
+```php
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;prefix(&#x27;conversations&#x27;)-&gt;group(function () {
+    Route::post(&#x27;/&#x27;, [ConversationController::class, &#x27;store&#x27;])-&gt;name(&#x27;conversations.store&#x27;);
+
+    Route::scopeBindings()-&gt;group(function () {
+        Route::get(&#x27;/{conversation}&#x27;, [ConversationController::class, &#x27;show&#x27;])
+            -&gt;name(&#x27;conversations.show&#x27;);
+
+        Route::post(&#x27;/{conversation}/messages&#x27;, [MessageController::class, &#x27;store&#x27;])
+            -&gt;name(&#x27;conversation-messages.store&#x27;);
+
+        Route::get(&#x27;/{conversation}/messages/{message}&#x27;, [MessageController::class, &#x27;show&#x27;])
+            -&gt;name(&#x27;conversation-messages.show&#x27;);
+    });
+});
+```
+
+如果你想讓某個參數解析成不同的 model class，就定義明確的 binding。需要自訂 binding 邏輯時，用 `Route::bind()` 或在 model 上實作 `resolveRouteBinding()`。
+
+```php
+use App\Models\AiConversation;
+use Illuminate\Support\Facades\Route;
+
+Route::model(&#x27;conversation&#x27;, AiConversation::class);
+```
+
+### Service Container Binding
+
+在 service provider 裡把介面綁到實作，讓依賴關係一目了然。
+
+```php
+use App\Repositories\EloquentOrderRepository;
+use App\Repositories\OrderRepository;
+use Illuminate\Support\ServiceProvider;
+
+final class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this-&gt;app-&gt;bind(OrderRepository::class, EloquentOrderRepository::class);
+    }
+}
+```
+
+### Eloquent Model 模式
+
+### Model 設定
+
+```php
+final class Project extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [&#x27;name&#x27;, &#x27;owner_id&#x27;, &#x27;status&#x27;];
+
+    protected $casts = [
+        &#x27;status&#x27; =&gt; ProjectStatus::class,
+        &#x27;archived_at&#x27; =&gt; &#x27;datetime&#x27;,
+    ];
+
+    public function owner(): BelongsTo
+    {
+        return $this-&gt;belongsTo(User::class, &#x27;owner_id&#x27;);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query-&gt;whereNull(&#x27;archived_at&#x27;);
+    }
+}
+```
+
+### 自訂 Cast 與 Value Object
+
+用 enum 或 value object 做嚴格型別。
+
+```php
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+protected $casts = [
+    &#x27;status&#x27; =&gt; ProjectStatus::class,
+];
+```
+
+```php
+protected function budgetCents(): Attribute
+{
+    return Attribute::make(
+        get: fn (int $value) =&gt; Money::fromCents($value),
+        set: fn (Money $money) =&gt; $money-&gt;toCents(),
+    );
+}
+```
+
+### 用 Eager Loading 避免 N+1
+
+```php
+$orders = Order::query()
+    -&gt;with([&#x27;customer&#x27;, &#x27;items.product&#x27;])
+    -&gt;latest()
+    -&gt;paginate(25);
+```
+
+### 複雜篩選用 Query Object
+
+```php
+final class ProjectQuery
+{
+    public function __construct(private Builder $query) {}
+
+    public function ownedBy(int $userId): self
+    {
+        $query = clone $this-&gt;query;
+
+        return new self($query-&gt;where(&#x27;owner_id&#x27;, $userId));
+    }
+
+    public function active(): self
+    {
+        $query = clone $this-&gt;query;
+
+        return new self($query-&gt;whereNull(&#x27;archived_at&#x27;));
+    }
+
+    public function builder(): Builder
+    {
+        return $this-&gt;query;
+    }
+}
+```
+
+### Global Scope 與 Soft Delete
+
+用 global scope 做預設篩選，用 `SoftDeletes` 處理可還原的資料。
+同一個篩選條件，global scope 和 named scope 擇一使用就好，除非你刻意要疊加行為。
+
+```php
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+
+final class Project extends Model
+{
+    use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(&#x27;active&#x27;, function (Builder $builder): void {
+            $builder-&gt;whereNull(&#x27;archived_at&#x27;);
+        });
+    }
+}
+```
+
+### 可重用篩選用 Query Scope
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+
+final class Project extends Model
+{
+    public function scopeOwnedBy(Builder $query, int $userId): Builder
+    {
+        return $query-&gt;where(&#x27;owner_id&#x27;, $userId);
+    }
+}
+
+// In service, repository etc.
+$projects = Project::ownedBy($user-&gt;id)-&gt;get();
+```
+
+### 多步驟更新用 Transaction
+
+```php
+use Illuminate\Support\Facades\DB;
+
+DB::transaction(function (): void {
+    $order-&gt;update([&#x27;status&#x27; =&gt; &#x27;paid&#x27;]);
+    $order-&gt;items()-&gt;update([&#x27;paid_at&#x27; =&gt; now()]);
+});
+```
+
+### Migration
+
+### 命名慣例
+
+- 檔名使用時間戳記：`YYYY_MM_DD_HHMMSS_create_users_table.php`
+- Migration 使用匿名 class（不取 class 名稱），由檔名表達意圖
+- 資料表名稱預設是 `snake_case` 且用複數
+
+### Migration 範例
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create(&#x27;orders&#x27;, function (Blueprint $table): void {
+            $table-&gt;id();
+            $table-&gt;foreignId(&#x27;customer_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+            $table-&gt;string(&#x27;status&#x27;, 32)-&gt;index();
+            $table-&gt;unsignedInteger(&#x27;total_cents&#x27;);
+            $table-&gt;timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists(&#x27;orders&#x27;);
+    }
+};
+```
+
+### Form Request 與驗證
+
+驗證放在 form request，並把輸入轉成 DTO。
+
+```php
+use App\Models\Order;
+
+final class StoreOrderRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this-&gt;user()?-&gt;can(&#x27;create&#x27;, Order::class) ?? false;
+    }
+
+    public function rules(): array
+    {
+        return [
+            &#x27;customer_id&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;exists:customers,id&#x27;],
+            &#x27;items&#x27; =&gt; [&#x27;required&#x27;, &#x27;array&#x27;, &#x27;min:1&#x27;],
+            &#x27;items.*.sku&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;],
+            &#x27;items.*.quantity&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;min:1&#x27;],
+        ];
+    }
+
+    public function toDto(): CreateOrderData
+    {
+        return new CreateOrderData(
+            customerId: (int) $this-&gt;validated(&#x27;customer_id&#x27;),
+            items: $this-&gt;validated(&#x27;items&#x27;),
+        );
+    }
+}
+```
+
+### API Resource
+
+用 resource 與分頁讓 API response 保持一致。
+
+```php
+$projects = Project::query()-&gt;active()-&gt;paginate(25);
+
+return response()-&gt;json([
+    &#x27;success&#x27; =&gt; true,
+    &#x27;data&#x27; =&gt; ProjectResource::collection($projects-&gt;items()),
+    &#x27;error&#x27; =&gt; null,
+    &#x27;meta&#x27; =&gt; [
+        &#x27;page&#x27; =&gt; $projects-&gt;currentPage(),
+        &#x27;per_page&#x27; =&gt; $projects-&gt;perPage(),
+        &#x27;total&#x27; =&gt; $projects-&gt;total(),
+    ],
+]);
+```
+
+### Event、Job 與 Queue
+
+- 副作用（email、analytics）用 domain event 發出
+- 慢的工作（報表、匯出、webhook）用 queued job
+- 優先用冪等的 handler，搭配 retry 與 backoff
+
+### 快取
+
+- 快取讀取量大的 endpoint 與昂貴的查詢
+- 在 model event（created/updated/deleted）時讓快取失效
+- 快取相關資料時用 tag，方便一併失效
+
+### 設定與環境
+
+- secret 放 `.env`，設定放 `config/*.php`
+- 使用各環境的設定覆寫，production 用 `config:cache`</pre></section><section><h2>英文原文</h2><pre>---
+name: laravel-patterns
+description: Laravel architecture patterns, routing/controllers, Eloquent ORM, service layers, queues, events, caching, and API resources for production apps. Use when building or reviewing Laravel apps — controllers, Eloquent, service layers, queues, or API resources.
+metadata:
+  origin: ECC
+---
+
+# Laravel Development Patterns
+
+Production-grade Laravel architecture patterns for scalable, maintainable applications.
+
+## When to Use
+
+- Building Laravel web applications or APIs
+- Structuring controllers, services, and domain logic
+- Working with Eloquent models and relationships
+- Designing APIs with resources and pagination
+- Adding queues, events, caching, and background jobs
+
+## How It Works
+
+- Structure the app around clear boundaries (controllers -&gt; services/actions -&gt; models).
+- Use explicit bindings and scoped bindings to keep routing predictable; still enforce authorization for access control.
+- Favor typed models, casts, and scopes to keep domain logic consistent.
+- Keep IO-heavy work in queues and cache expensive reads.
+- Centralize config in `config/*` and keep environments explicit.
+
+## Examples
+
+### Project Structure
+
+Use a conventional Laravel layout with clear layer boundaries (HTTP, services/actions, models).
+
+### Recommended Layout
+
+```
+app/
+├── Actions/            # Single-purpose use cases
+├── Console/
+├── Events/
+├── Exceptions/
+├── Http/
+│   ├── Controllers/
+│   ├── Middleware/
+│   ├── Requests/       # Form request validation
+│   └── Resources/      # API resources
+├── Jobs/
+├── Models/
+├── Policies/
+├── Providers/
+├── Services/           # Coordinating domain services
+└── Support/
+config/
+database/
+├── factories/
+├── migrations/
+└── seeders/
+resources/
+├── views/
+└── lang/
+routes/
+├── api.php
+├── web.php
+└── console.php
+```
+
+### Controllers -&gt; Services -&gt; Actions
+
+Keep controllers thin. Put orchestration in services and single-purpose logic in actions.
+
+```php
+final class CreateOrderAction
+{
+    public function __construct(private OrderRepository $orders) {}
+
+    public function handle(CreateOrderData $data): Order
+    {
+        return $this-&gt;orders-&gt;create($data);
+    }
+}
+
+final class OrdersController extends Controller
+{
+    public function __construct(private CreateOrderAction $createOrder) {}
+
+    public function store(StoreOrderRequest $request): JsonResponse
+    {
+        $order = $this-&gt;createOrder-&gt;handle($request-&gt;toDto());
+
+        return response()-&gt;json([
+            &#x27;success&#x27; =&gt; true,
+            &#x27;data&#x27; =&gt; OrderResource::make($order),
+            &#x27;error&#x27; =&gt; null,
+            &#x27;meta&#x27; =&gt; null,
+        ], 201);
+    }
+}
+```
+
+### Routing and Controllers
+
+Prefer route-model binding and resource controllers for clarity.
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    Route::apiResource(&#x27;projects&#x27;, ProjectController::class);
+});
+```
+
+### Route Model Binding (Scoped)
+
+Use scoped bindings to prevent cross-tenant access.
+
+```php
+Route::scopeBindings()-&gt;group(function () {
+    Route::get(&#x27;/accounts/{account}/projects/{project}&#x27;, [ProjectController::class, &#x27;show&#x27;]);
+});
+```
+
+### Nested Routes and Binding Names
+
+- Keep prefixes and paths consistent to avoid double nesting (e.g., `conversation` vs `conversations`).
+- Use a single parameter name that matches the bound model (e.g., `{conversation}` for `Conversation`).
+- Prefer scoped bindings when nesting to enforce parent-child relationships.
+
+```php
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(&#x27;auth:sanctum&#x27;)-&gt;prefix(&#x27;conversations&#x27;)-&gt;group(function () {
+    Route::post(&#x27;/&#x27;, [ConversationController::class, &#x27;store&#x27;])-&gt;name(&#x27;conversations.store&#x27;);
+
+    Route::scopeBindings()-&gt;group(function () {
+        Route::get(&#x27;/{conversation}&#x27;, [ConversationController::class, &#x27;show&#x27;])
+            -&gt;name(&#x27;conversations.show&#x27;);
+
+        Route::post(&#x27;/{conversation}/messages&#x27;, [MessageController::class, &#x27;store&#x27;])
+            -&gt;name(&#x27;conversation-messages.store&#x27;);
+
+        Route::get(&#x27;/{conversation}/messages/{message}&#x27;, [MessageController::class, &#x27;show&#x27;])
+            -&gt;name(&#x27;conversation-messages.show&#x27;);
+    });
+});
+```
+
+If you want a parameter to resolve to a different model class, define explicit binding. For custom binding logic, use `Route::bind()` or implement `resolveRouteBinding()` on the model.
+
+```php
+use App\Models\AiConversation;
+use Illuminate\Support\Facades\Route;
+
+Route::model(&#x27;conversation&#x27;, AiConversation::class);
+```
+
+### Service Container Bindings
+
+Bind interfaces to implementations in a service provider for clear dependency wiring.
+
+```php
+use App\Repositories\EloquentOrderRepository;
+use App\Repositories\OrderRepository;
+use Illuminate\Support\ServiceProvider;
+
+final class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this-&gt;app-&gt;bind(OrderRepository::class, EloquentOrderRepository::class);
+    }
+}
+```
+
+### Eloquent Model Patterns
+
+### Model Configuration
+
+```php
+final class Project extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [&#x27;name&#x27;, &#x27;owner_id&#x27;, &#x27;status&#x27;];
+
+    protected $casts = [
+        &#x27;status&#x27; =&gt; ProjectStatus::class,
+        &#x27;archived_at&#x27; =&gt; &#x27;datetime&#x27;,
+    ];
+
+    public function owner(): BelongsTo
+    {
+        return $this-&gt;belongsTo(User::class, &#x27;owner_id&#x27;);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query-&gt;whereNull(&#x27;archived_at&#x27;);
+    }
+}
+```
+
+### Custom Casts and Value Objects
+
+Use enums or value objects for strict typing.
+
+```php
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+protected $casts = [
+    &#x27;status&#x27; =&gt; ProjectStatus::class,
+];
+```
+
+```php
+protected function budgetCents(): Attribute
+{
+    return Attribute::make(
+        get: fn (int $value) =&gt; Money::fromCents($value),
+        set: fn (Money $money) =&gt; $money-&gt;toCents(),
+    );
+}
+```
+
+### Eager Loading to Avoid N+1
+
+```php
+$orders = Order::query()
+    -&gt;with([&#x27;customer&#x27;, &#x27;items.product&#x27;])
+    -&gt;latest()
+    -&gt;paginate(25);
+```
+
+### Query Objects for Complex Filters
+
+```php
+final class ProjectQuery
+{
+    public function __construct(private Builder $query) {}
+
+    public function ownedBy(int $userId): self
+    {
+        $query = clone $this-&gt;query;
+
+        return new self($query-&gt;where(&#x27;owner_id&#x27;, $userId));
+    }
+
+    public function active(): self
+    {
+        $query = clone $this-&gt;query;
+
+        return new self($query-&gt;whereNull(&#x27;archived_at&#x27;));
+    }
+
+    public function builder(): Builder
+    {
+        return $this-&gt;query;
+    }
+}
+```
+
+### Global Scopes and Soft Deletes
+
+Use global scopes for default filtering and `SoftDeletes` for recoverable records.
+Use either a global scope or a named scope for the same filter, not both, unless you intend layered behavior.
+
+```php
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+
+final class Project extends Model
+{
+    use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(&#x27;active&#x27;, function (Builder $builder): void {
+            $builder-&gt;whereNull(&#x27;archived_at&#x27;);
+        });
+    }
+}
+```
+
+### Query Scopes for Reusable Filters
+
+```php
+use Illuminate\Database\Eloquent\Builder;
+
+final class Project extends Model
+{
+    public function scopeOwnedBy(Builder $query, int $userId): Builder
+    {
+        return $query-&gt;where(&#x27;owner_id&#x27;, $userId);
+    }
+}
+
+// In service, repository etc.
+$projects = Project::ownedBy($user-&gt;id)-&gt;get();
+```
+
+### Transactions for Multi-Step Updates
+
+```php
+use Illuminate\Support\Facades\DB;
+
+DB::transaction(function (): void {
+    $order-&gt;update([&#x27;status&#x27; =&gt; &#x27;paid&#x27;]);
+    $order-&gt;items()-&gt;update([&#x27;paid_at&#x27; =&gt; now()]);
+});
+```
+
+### Migrations
+
+### Naming Convention
+
+- File names use timestamps: `YYYY_MM_DD_HHMMSS_create_users_table.php`
+- Migrations use anonymous classes (no named class); the filename communicates intent
+- Table names are `snake_case` and plural by default
+
+### Example Migration
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create(&#x27;orders&#x27;, function (Blueprint $table): void {
+            $table-&gt;id();
+            $table-&gt;foreignId(&#x27;customer_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+            $table-&gt;string(&#x27;status&#x27;, 32)-&gt;index();
+            $table-&gt;unsignedInteger(&#x27;total_cents&#x27;);
+            $table-&gt;timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists(&#x27;orders&#x27;);
+    }
+};
+```
+
+### Form Requests and Validation
+
+Keep validation in form requests and transform inputs to DTOs.
+
+```php
+use App\Models\Order;
+
+final class StoreOrderRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this-&gt;user()?-&gt;can(&#x27;create&#x27;, Order::class) ?? false;
+    }
+
+    public function rules(): array
+    {
+        return [
+            &#x27;customer_id&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;exists:customers,id&#x27;],
+            &#x27;items&#x27; =&gt; [&#x27;required&#x27;, &#x27;array&#x27;, &#x27;min:1&#x27;],
+            &#x27;items.*.sku&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;],
+            &#x27;items.*.quantity&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;min:1&#x27;],
+        ];
+    }
+
+    public function toDto(): CreateOrderData
+    {
+        return new CreateOrderData(
+            customerId: (int) $this-&gt;validated(&#x27;customer_id&#x27;),
+            items: $this-&gt;validated(&#x27;items&#x27;),
+        );
+    }
+}
+```
+
+### API Resources
+
+Keep API responses consistent with resources and pagination.
+
+```php
+$projects = Project::query()-&gt;active()-&gt;paginate(25);
+
+return response()-&gt;json([
+    &#x27;success&#x27; =&gt; true,
+    &#x27;data&#x27; =&gt; ProjectResource::collection($projects-&gt;items()),
+    &#x27;error&#x27; =&gt; null,
+    &#x27;meta&#x27; =&gt; [
+        &#x27;page&#x27; =&gt; $projects-&gt;currentPage(),
+        &#x27;per_page&#x27; =&gt; $projects-&gt;perPage(),
+        &#x27;total&#x27; =&gt; $projects-&gt;total(),
+    ],
+]);
+```
+
+### Events, Jobs, and Queues
+
+- Emit domain events for side effects (emails, analytics)
+- Use queued jobs for slow work (reports, exports, webhooks)
+- Prefer idempotent handlers with retries and backoff
+
+### Caching
+
+- Cache read-heavy endpoints and expensive queries
+- Invalidate caches on model events (created/updated/deleted)
+- Use tags when caching related data for easy invalidation
+
+### Configuration and Environments
+
+- Keep secrets in `.env` and config in `config/*.php`
+- Use per-environment config overrides and `config:cache` in production</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>netmiko-ssh-automation｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python Netmiko 安全地唯讀蒐集網路設備狀態與推送受保護的設定">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>netmiko-ssh-automation</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/netmiko-ssh-automation/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python Netmiko 安全地唯讀蒐集網路設備狀態與推送受保護的設定</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: netmiko-ssh-automation
+description: 安全的 Python Netmiko 模式，涵蓋唯讀蒐集、有上限的批次 SSH、TextFSM 解析、有防護的設定變更、逾時，以及網路自動化的錯誤處理。用 Python Netmiko 自動化存取網路設備時使用，不論是蒐集狀態還是推送有防護的設定變更。
+metadata:
+  origin: community
+---
+
+# Netmiko SSH Automation
+
+撰寫或審查用 Netmiko 連線到網路設備的 Python 自動化時，用這個 skill。預設路徑要保持唯讀；
+設定變更需要另外的變更時段、同儕審查和回滾計畫。
+
+## When to Use
+
+- 跨路由器、交換器或防火牆蒐集 `show` 指令的輸出。
+- 建一個小型的稽核腳本，蒐集介面、路由或設定的證據。
+- 替網路 SSH 腳本加上逾時和例外處理。
+- 有範本時，用 TextFSM 解析指令輸出。
+- 在自動化碰到正式環境設備之前先審查。
+
+## Safety Defaults
+
+- 從唯讀的 `send_command()` 蒐集開始。
+- 讓清單小而明確；不要掃整個位址範圍。
+- 用環境變數、vault 或 `getpass`；絕對不要寫死憑證。
+- 設定連線逾時和讀取逾時。
+- 限制並行數量，免得舊設備被壓垮。
+- 在 `send_config_set()` 之前，要求明確的操作員旗標。
+- 變更還沒驗證並核准之前，不要呼叫 `save_config()`。
+
+## Read-Only Connection Pattern
+
+```python
+import os
+from getpass import getpass
+from netmiko import ConnectHandler
+from netmiko.exceptions import (
+    NetmikoAuthenticationException,
+    NetmikoTimeoutException,
+    ReadTimeout,
+)
+
+device = {
+    &quot;device_type&quot;: &quot;cisco_ios&quot;,
+    &quot;host&quot;: &quot;192.0.2.10&quot;,
+    &quot;username&quot;: os.environ.get(&quot;NETMIKO_USERNAME&quot;) or input(&quot;Username: &quot;),
+    &quot;password&quot;: os.environ.get(&quot;NETMIKO_PASSWORD&quot;) or getpass(&quot;Password: &quot;),
+    &quot;secret&quot;: os.environ.get(&quot;NETMIKO_ENABLE_SECRET&quot;),
+    &quot;conn_timeout&quot;: 10,
+    &quot;auth_timeout&quot;: 20,
+    &quot;banner_timeout&quot;: 15,
+    &quot;read_timeout_override&quot;: 30,
+}
+
+try:
+    with ConnectHandler(**device) as conn:
+        if device.get(&quot;secret&quot;) and not conn.check_enable_mode():
+            conn.enable()
+        output = conn.send_command(&quot;show ip interface brief&quot;, read_timeout=30)
+        print(output)
+except NetmikoAuthenticationException:
+    print(&quot;Authentication failed&quot;)
+except NetmikoTimeoutException:
+    print(&quot;SSH connection timed out&quot;)
+except ReadTimeout:
+    print(&quot;Command read timed out&quot;)
+```
+
+範例裡用文件保留範圍的 placeholder 位址。真正的
+設備清單放在被忽略的本機檔案，或由機密管理的系統裡。
+
+## Batch Collection
+
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any
+
+def collect_show(device: dict[str, Any], command: str) -&gt; dict[str, Any]:
+    host = device[&quot;host&quot;]
+    try:
+        with ConnectHandler(**device) as conn:
+            output = conn.send_command(command, read_timeout=45)
+        return {&quot;host&quot;: host, &quot;ok&quot;: True, &quot;output&quot;: output}
+    except (NetmikoAuthenticationException, NetmikoTimeoutException, ReadTimeout) as exc:
+        return {&quot;host&quot;: host, &quot;ok&quot;: False, &quot;error&quot;: type(exc).__name__}
+
+results = []
+with ThreadPoolExecutor(max_workers=8) as pool:
+    futures = [pool.submit(collect_show, device, &quot;show version&quot;) for device in devices]
+    for future in as_completed(futures):
+        results.append(future.result())
+```
+
+除非確定設備群和 AAA 系統能承受更高的連線量，
+否則 `max_workers` 要設低一點。
+
+## Structured Parsing
+
+Netmiko 可以請 TextFSM、TTP 或 Genie 解析支援的指令輸出。把
+解析器的輸出當作最佳化，不要當成唯一的證據路徑。
+
+```python
+with ConnectHandler(**device) as conn:
+    parsed = conn.send_command(
+        &quot;show ip interface brief&quot;,
+        use_textfsm=True,
+        raise_parsing_error=False,
+        read_timeout=30,
+    )
+
+if isinstance(parsed, str):
+    print(&quot;No parser template matched; store raw output for review&quot;)
+else:
+    for row in parsed:
+        print(row)
+```
+
+如果解析結果會驅動會擋住流程的決策，要把原始的指令輸出
+和解析結果一起留著，讓操作員可以檢查不一致的地方。
+
+## Guarded Config Pattern
+
+```python
+import os
+
+commands = [
+    &quot;interface GigabitEthernet0/1&quot;,
+    &quot;description CHANGE-1234 UPLINK-TO-CORE&quot;,
+]
+
+apply_changes = os.environ.get(&quot;APPLY_NETWORK_CHANGES&quot;) == &quot;1&quot;
+
+if not apply_changes:
+    print(&quot;Dry run only. Candidate commands:&quot;)
+    print(&quot;\n&quot;.join(commands))
+else:
+    with ConnectHandler(**device) as conn:
+        conn.enable()
+        before = conn.send_command(&quot;show running-config interface GigabitEthernet0/1&quot;)
+        output = conn.send_config_set(commands)
+        after = conn.send_command(&quot;show running-config interface GigabitEthernet0/1&quot;)
+        print(before)
+        print(output)
+        print(after)
+        print(&quot;Verify behavior before saving startup config.&quot;)
+```
+
+儲存設定是另外一個核准步驟。在正式環境裡，要附上回滾
+片段，並把變更前/後的證據記在變更紀錄裡。
+
+## Review Checklist
+
+- 腳本有沒有指明明確的設備清單來源？
+- 憑證有沒有完全不出現在原始碼、紀錄和例外訊息裡？
+- 有沒有設定 `conn_timeout`、`auth_timeout` 和指令的 `read_timeout`？
+- 失敗是依設備分別回報，而不會讓整批停掉嗎？
+- 腳本有沒有避免大範圍掃描和沒有上限的並行？
+- 設定變更是不是放在 dry-run 或明確的操作員旗標後面？
+- `save_config()` 有沒有和最初的推送分開，並且綁在驗證之後？
+
+## Anti-Patterns
+
+- 在原始碼裡寫死密碼、enable secret 或私鑰。
+- 把送出設定指令當成預設的程式路徑。
+- 對 CIDR 範圍跑自動化，而不是對審查過的設備清單跑。
+- 沒有清理就把完整的 running config 記到共用系統。
+- 把解析成功當成設備狀態正確的證明。
+
+## See Also
+
+- Skill: `cisco-ios-patterns`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section><section><h2>英文原文</h2><pre>---
+name: netmiko-ssh-automation
+description: Safe Python Netmiko patterns for read-only collection, bounded batch SSH, TextFSM parsing, guarded config changes, timeouts, and network automation error handling. Use when automating network device access with Python Netmiko, whether collecting state or pushing guarded config changes.
+metadata:
+  origin: community
+---
+
+# Netmiko SSH Automation
+
+Use this skill when writing or reviewing Python automation that connects to
+network devices with Netmiko. Keep the default path read-only; config changes
+need a separate change window, peer review, and rollback plan.
+
+## When to Use
+
+- Collecting `show` command output across routers, switches, or firewalls.
+- Building a small audit script for interface, routing, or config evidence.
+- Adding timeouts and exception handling to network SSH scripts.
+- Parsing command output with TextFSM when a template exists.
+- Reviewing automation before it touches production devices.
+
+## Safety Defaults
+
+- Start with read-only `send_command()` collection.
+- Keep inventory small and explicit; do not sweep whole address ranges.
+- Use environment variables, a vault, or `getpass`; never hardcode credentials.
+- Set connection and read timeouts.
+- Limit concurrency so older devices are not overloaded.
+- Require an explicit operator flag before `send_config_set()`.
+- Do not call `save_config()` until the change has been verified and approved.
+
+## Read-Only Connection Pattern
+
+```python
+import os
+from getpass import getpass
+from netmiko import ConnectHandler
+from netmiko.exceptions import (
+    NetmikoAuthenticationException,
+    NetmikoTimeoutException,
+    ReadTimeout,
+)
+
+device = {
+    &quot;device_type&quot;: &quot;cisco_ios&quot;,
+    &quot;host&quot;: &quot;192.0.2.10&quot;,
+    &quot;username&quot;: os.environ.get(&quot;NETMIKO_USERNAME&quot;) or input(&quot;Username: &quot;),
+    &quot;password&quot;: os.environ.get(&quot;NETMIKO_PASSWORD&quot;) or getpass(&quot;Password: &quot;),
+    &quot;secret&quot;: os.environ.get(&quot;NETMIKO_ENABLE_SECRET&quot;),
+    &quot;conn_timeout&quot;: 10,
+    &quot;auth_timeout&quot;: 20,
+    &quot;banner_timeout&quot;: 15,
+    &quot;read_timeout_override&quot;: 30,
+}
+
+try:
+    with ConnectHandler(**device) as conn:
+        if device.get(&quot;secret&quot;) and not conn.check_enable_mode():
+            conn.enable()
+        output = conn.send_command(&quot;show ip interface brief&quot;, read_timeout=30)
+        print(output)
+except NetmikoAuthenticationException:
+    print(&quot;Authentication failed&quot;)
+except NetmikoTimeoutException:
+    print(&quot;SSH connection timed out&quot;)
+except ReadTimeout:
+    print(&quot;Command read timed out&quot;)
+```
+
+Use placeholder addresses from documentation ranges in examples. Keep real
+inventory in an ignored local file or a secrets-managed system.
+
+## Batch Collection
+
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any
+
+def collect_show(device: dict[str, Any], command: str) -&gt; dict[str, Any]:
+    host = device[&quot;host&quot;]
+    try:
+        with ConnectHandler(**device) as conn:
+            output = conn.send_command(command, read_timeout=45)
+        return {&quot;host&quot;: host, &quot;ok&quot;: True, &quot;output&quot;: output}
+    except (NetmikoAuthenticationException, NetmikoTimeoutException, ReadTimeout) as exc:
+        return {&quot;host&quot;: host, &quot;ok&quot;: False, &quot;error&quot;: type(exc).__name__}
+
+results = []
+with ThreadPoolExecutor(max_workers=8) as pool:
+    futures = [pool.submit(collect_show, device, &quot;show version&quot;) for device in devices]
+    for future in as_completed(futures):
+        results.append(future.result())
+```
+
+Keep `max_workers` low unless the device estate and AAA systems are known to
+handle higher connection volume.
+
+## Structured Parsing
+
+Netmiko can ask TextFSM, TTP, or Genie to parse supported command output. Treat
+parser output as an optimization, not the only evidence path.
+
+```python
+with ConnectHandler(**device) as conn:
+    parsed = conn.send_command(
+        &quot;show ip interface brief&quot;,
+        use_textfsm=True,
+        raise_parsing_error=False,
+        read_timeout=30,
+    )
+
+if isinstance(parsed, str):
+    print(&quot;No parser template matched; store raw output for review&quot;)
+else:
+    for row in parsed:
+        print(row)
+```
+
+If parsing drives a blocking decision, keep the raw command output alongside
+the parsed result so an operator can inspect mismatches.
+
+## Guarded Config Pattern
+
+```python
+import os
+
+commands = [
+    &quot;interface GigabitEthernet0/1&quot;,
+    &quot;description CHANGE-1234 UPLINK-TO-CORE&quot;,
+]
+
+apply_changes = os.environ.get(&quot;APPLY_NETWORK_CHANGES&quot;) == &quot;1&quot;
+
+if not apply_changes:
+    print(&quot;Dry run only. Candidate commands:&quot;)
+    print(&quot;\n&quot;.join(commands))
+else:
+    with ConnectHandler(**device) as conn:
+        conn.enable()
+        before = conn.send_command(&quot;show running-config interface GigabitEthernet0/1&quot;)
+        output = conn.send_config_set(commands)
+        after = conn.send_command(&quot;show running-config interface GigabitEthernet0/1&quot;)
+        print(before)
+        print(output)
+        print(after)
+        print(&quot;Verify behavior before saving startup config.&quot;)
+```
+
+Saving the config is a separate approval step. In production, include a rollback
+snippet and capture before/after evidence in the change record.
+
+## Review Checklist
+
+- Does the script identify an explicit inventory source?
+- Are credentials absent from source, logs, and exception messages?
+- Are `conn_timeout`, `auth_timeout`, and command `read_timeout` set?
+- Are failures reported per device without stopping the whole batch?
+- Does the script avoid broad scans and unbounded concurrency?
+- Are config changes behind a dry-run or explicit operator flag?
+- Is `save_config()` separate from the initial push and tied to verification?
+
+## Anti-Patterns
+
+- Hardcoding passwords, enable secrets, or private keys in source.
+- Sending config commands as the default code path.
+- Running automation against a CIDR range instead of a reviewed inventory.
+- Logging full running configs to shared systems without sanitization.
+- Treating parser success as proof that the device state is correct.
+
+## See Also
+
+- Skill: `cisco-ios-patterns`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

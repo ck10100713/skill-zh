@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>coding-standards｜Skill 寫法圖鑑</title>
+<meta name="description" content="跨專案通用的命名、可讀性、不可變性與品質審查慣例">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>coding-standards</h1>
+<p class="meta">affaan-m ｜ Code Review ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/coding-standards/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">跨專案通用的命名、可讀性、不可變性與品質審查慣例</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: coding-standards
+description: 跨專案通用的基礎寫程式慣例，涵蓋命名、可讀性、不可變性和程式碼品質審查。framework 專屬的模式請用更詳細的前端或後端 skill。適用於審查程式碼品質或命名、而且沒有適用的 framework 專屬 skill 時。
+metadata:
+  origin: ECC
+---
+
+# Coding Standards &amp; Best Practices
+
+適用於各專案的基礎寫程式慣例。
+
+這個 skill 是共用的底線，不是詳細的 framework 作法手冊。
+
+- React、狀態、表單、渲染和 UI 架構，用 `frontend-patterns`。
+- repository/service 分層、endpoint 設計、驗證和伺服器端相關的問題，用 `backend-patterns` 或 `api-design`。
+- 需要最短、可重複使用的規則層，而不是完整的 skill 導覽時，用 `rules/common/coding-style.md`。
+
+## When to Activate
+
+- 開始新專案或新模組
+- 審查程式碼的品質與可維護性
+- 重構既有程式碼以符合慣例
+- 落實命名、格式或結構的一致性
+- 設定 lint、格式化或型別檢查規則
+- 帶新的貢獻者熟悉寫程式慣例
+
+## Scope Boundaries
+
+適合啟用這個 skill 的情況：
+- 描述性的命名
+- 預設不可變性
+- 落實可讀性、KISS、DRY 和 YAGNI
+- 錯誤處理的期望，以及 code smell 審查
+
+不要把這個 skill 當作下列內容的主要依據：
+- React 的組合、hook 或渲染模式
+- 後端架構、API 設計或資料庫分層
+- 已經有更精確的 ECC skill 時的特定領域 framework 指引
+
+## Code Quality Principles
+
+### 1. Readability First
+- 程式碼被讀的次數比被寫的次數多
+- 變數和函式名稱要清楚
+- 自我說明的程式碼優於註解
+- 格式要一致
+
+### 2. KISS (Keep It Simple, Stupid)
+- 用能動的最簡單解法
+- 避免過度設計
+- 不要過早最佳化
+- 容易理解 &gt; 耍聰明的程式碼
+
+### 3. DRY (Don&#x27;t Repeat Yourself)
+- 把共通邏輯抽成函式
+- 建立可重複使用的元件
+- 跨模組共用工具函式
+- 避免複製貼上式的寫法
+
+### 4. YAGNI (You Aren&#x27;t Gonna Need It)
+- 還沒需要之前，不要先做功能
+- 避免投機式的通用化
+- 只在必要時才增加複雜度
+- 從簡單開始，需要時再重構
+
+## TypeScript/JavaScript Standards
+
+### Variable Naming
+
+```typescript
+// PASS: GOOD: 描述性的名稱
+const marketSearchQuery = &#x27;election&#x27;
+const isUserAuthenticated = true
+const totalRevenue = 1000
+
+// FAIL: BAD: 不清楚的名稱
+const q = &#x27;election&#x27;
+const flag = true
+const x = 1000
+```
+
+### Function Naming
+
+```typescript
+// PASS: GOOD: 動詞加名詞的模式
+async function fetchMarketData(marketId: string) { }
+function calculateSimilarity(a: number[], b: number[]) { }
+function isValidEmail(email: string): boolean { }
+
+// FAIL: BAD: 不清楚，或只有名詞
+async function market(id: string) { }
+function similarity(a, b) { }
+function email(e) { }
+```
+
+### Immutability Pattern (CRITICAL)
+
+```typescript
+// PASS: 一律使用 spread 運算子
+const updatedUser = {
+  ...user,
+  name: &#x27;New Name&#x27;
+}
+
+const updatedArray = [...items, newItem]
+
+// FAIL: 絕對不要直接修改
+user.name = &#x27;New Name&#x27;  // BAD
+items.push(newItem)     // BAD
+```
+
+### Error Handling
+
+```typescript
+// PASS: GOOD: 完整的錯誤處理
+async function fetchData(url: string) {
+  try {
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error(&#x27;Fetch failed:&#x27;, error)
+    throw new Error(&#x27;Failed to fetch data&#x27;)
+  }
+}
+
+// FAIL: BAD: 沒有錯誤處理
+async function fetchData(url) {
+  const response = await fetch(url)
+  return response.json()
+}
+```
+
+### Async/Await Best Practices
+
+```typescript
+// PASS: GOOD: 可以的話就平行執行
+const [users, markets, stats] = await Promise.all([
+  fetchUsers(),
+  fetchMarkets(),
+  fetchStats()
+])
+
+// FAIL: BAD: 不必要的循序執行
+const users = await fetchUsers()
+const markets = await fetchMarkets()
+const stats = await fetchStats()
+```
+
+### Type Safety
+
+```typescript
+// PASS: GOOD: 正確的型別
+interface Market {
+  id: string
+  name: string
+  status: &#x27;active&#x27; | &#x27;resolved&#x27; | &#x27;closed&#x27;
+  created_at: Date
+}
+
+function getMarket(id: string): Promise&lt;Market&gt; {
+  // Implementation
+}
+
+// FAIL: BAD: 使用 &#x27;any&#x27;
+function getMarket(id: any): Promise&lt;any&gt; {
+  // Implementation
+}
+```
+
+## React Best Practices
+
+### Component Structure
+
+```typescript
+// PASS: GOOD: 有型別的函式元件
+interface ButtonProps {
+  children: React.ReactNode
+  onClick: () =&gt; void
+  disabled?: boolean
+  variant?: &#x27;primary&#x27; | &#x27;secondary&#x27;
+}
+
+export function Button({
+  children,
+  onClick,
+  disabled = false,
+  variant = &#x27;primary&#x27;
+}: ButtonProps) {
+  return (
+    &lt;button
+      onClick={onClick}
+      disabled={disabled}
+      className={`btn btn-${variant}`}
+    &gt;
+      {children}
+    &lt;/button&gt;
+  )
+}
+
+// FAIL: BAD: 沒有型別，結構不清楚
+export function Button(props) {
+  return &lt;button onClick={props.onClick}&gt;{props.children}&lt;/button&gt;
+}
+```
+
+### Custom Hooks
+
+```typescript
+// PASS: GOOD: 可重複使用的自訂 hook
+export function useDebounce&lt;T&gt;(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState&lt;T&gt;(value)
+
+  useEffect(() =&gt; {
+    const handler = setTimeout(() =&gt; {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () =&gt; clearTimeout(handler)
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+// 用法
+const debouncedQuery = useDebounce(searchQuery, 500)
+```
+
+### State Management
+
+```typescript
+// PASS: GOOD: 正確的 state 更新
+const [count, setCount] = useState(0)
+
+// 以前一個 state 為基礎的更新，用函式形式
+setCount(prev =&gt; prev + 1)
+
+// FAIL: BAD: 直接引用 state
+setCount(count + 1)  // 在非同步情境下可能是過期的值
+```
+
+### Conditional Rendering
+
+```typescript
+// PASS: GOOD: 清楚的條件渲染
+{isLoading &amp;&amp; &lt;Spinner /&gt;}
+{error &amp;&amp; &lt;ErrorMessage error={error} /&gt;}
+{data &amp;&amp; &lt;DataDisplay data={data} /&gt;}
+
+// FAIL: BAD: 三元運算子地獄
+{isLoading ? &lt;Spinner /&gt; : error ? &lt;ErrorMessage error={error} /&gt; : data ? &lt;DataDisplay data={data} /&gt; : null}
+```
+
+## API Design Standards
+
+### REST API Conventions
+
+```
+GET    /api/markets              # List all markets
+GET    /api/markets/:id          # Get specific market
+POST   /api/markets              # Create new market
+PUT    /api/markets/:id          # Update market (full)
+PATCH  /api/markets/:id          # Update market (partial)
+DELETE /api/markets/:id          # Delete market
+
+# Query parameters for filtering
+GET /api/markets?status=active&amp;limit=10&amp;offset=0
+```
+
+### Response Format
+
+```typescript
+// PASS: GOOD: 一致的回應結構
+interface ApiResponse&lt;T&gt; {
+  success: boolean
+  data?: T
+  error?: string
+  meta?: {
+    total: number
+    page: number
+    limit: number
+  }
+}
+
+// 成功回應
+return NextResponse.json({
+  success: true,
+  data: markets,
+  meta: { total: 100, page: 1, limit: 10 }
+})
+
+// 錯誤回應
+return NextResponse.json({
+  success: false,
+  error: &#x27;Invalid request&#x27;
+}, { status: 400 })
+```
+
+### Input Validation
+
+```typescript
+import { z } from &#x27;zod&#x27;
+
+// PASS: GOOD: Schema 驗證
+const CreateMarketSchema = z.object({
+  name: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  endDate: z.string().datetime(),
+  categories: z.array(z.string()).min(1)
+})
+
+export async function POST(request: Request) {
+  const body = await request.json()
+
+  try {
+    const validated = CreateMarketSchema.parse(body)
+    // 用驗證過的資料繼續處理
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({
+        success: false,
+        error: &#x27;Validation failed&#x27;,
+        details: error.issues
+      }, { status: 400 })
+    }
+  }
+}
+```
+
+## File Organization
+
+### Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   ├── markets/           # Market pages
+│   └── (auth)/           # Auth pages (route groups)
+├── components/            # React components
+│   ├── ui/               # Generic UI components
+│   ├── forms/            # Form components
+│   └── layouts/          # Layout components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and configs
+│   ├── api/             # API clients
+│   ├── utils/           # Helper functions
+│   └── constants/       # Constants
+├── types/                # TypeScript types
+└── styles/              # Global styles
+```
+
+### File Naming
+
+```
+components/Button.tsx          # PascalCase for components
+hooks/useAuth.ts              # camelCase with &#x27;use&#x27; prefix
+lib/formatDate.ts             # camelCase for utilities
+types/market.types.ts         # camelCase with .types suffix
+```
+
+## Comments &amp; Documentation
+
+### When to Comment
+
+```typescript
+// PASS: GOOD: 解釋為什麼（WHY），不是做什麼（WHAT）
+// Use exponential backoff to avoid overwhelming the API during outages
+const delay = Math.min(1000 * Math.pow(2, retryCount), 30000)
+
+// Deliberately using mutation here for performance with large arrays
+items.push(newItem)
+
+// FAIL: BAD: 說明顯而易見的事
+// Increment counter by 1
+count++
+
+// Set name to user&#x27;s name
+name = user.name
+```
+
+### JSDoc for Public APIs
+
+```typescript
+/**
+ * Searches markets using semantic similarity.
+ *
+ * @param query - Natural language search query
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Array of markets sorted by similarity score
+ * @throws {Error} If OpenAI API fails or Redis unavailable
+ *
+ * @example
+ * ```typescript
+ * const results = await searchMarkets(&#x27;election&#x27;, 5)
+ * console.log(results[0].name) // &quot;Trump vs Biden&quot;
+ * ```
+ */
+export async function searchMarkets(
+  query: string,
+  limit: number = 10
+): Promise&lt;Market[]&gt; {
+  // Implementation
+}
+```
+
+## Performance Best Practices
+
+### Memoization
+
+```typescript
+import { useMemo, useCallback } from &#x27;react&#x27;
+
+// PASS: GOOD: 把昂貴的計算 memoize
+// 排序前先複製，因為 Array.prototype.sort 會就地修改
+const sortedMarkets = useMemo(() =&gt; {
+  return [...markets].sort((a, b) =&gt; b.volume - a.volume)
+}, [markets])
+
+// PASS: GOOD: 把 callback memoize
+const handleSearch = useCallback((query: string) =&gt; {
+  setSearchQuery(query)
+}, [])
+```
+
+### Lazy Loading
+
+```typescript
+import { lazy, Suspense } from &#x27;react&#x27;
+
+// PASS: GOOD: 延遲載入大型元件
+const HeavyChart = lazy(() =&gt; import(&#x27;./HeavyChart&#x27;))
+
+export function Dashboard() {
+  return (
+    &lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+      &lt;HeavyChart /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+```
+
+### Database Queries
+
+```typescript
+// PASS: GOOD: 只選需要的欄位
+const { data } = await supabase
+  .from(&#x27;markets&#x27;)
+  .select(&#x27;id, name, status&#x27;)
+  .limit(10)
+
+// FAIL: BAD: 全部都選
+const { data } = await supabase
+  .from(&#x27;markets&#x27;)
+  .select(&#x27;*&#x27;)
+```
+
+## Testing Standards
+
+### Test Structure (AAA Pattern)
+
+```typescript
+test(&#x27;calculates similarity correctly&#x27;, () =&gt; {
+  // Arrange
+  const vector1 = [1, 0, 0]
+  const vector2 = [0, 1, 0]
+
+  // Act
+  const similarity = calculateCosineSimilarity(vector1, vector2)
+
+  // Assert
+  expect(similarity).toBe(0)
+})
+```
+
+### Test Naming
+
+```typescript
+// PASS: GOOD: 描述性的測試名稱
+test(&#x27;returns empty array when no markets match query&#x27;, () =&gt; { })
+test(&#x27;throws error when OpenAI API key is missing&#x27;, () =&gt; { })
+test(&#x27;falls back to substring search when Redis unavailable&#x27;, () =&gt; { })
+
+// FAIL: BAD: 模糊的測試名稱
+test(&#x27;works&#x27;, () =&gt; { })
+test(&#x27;test search&#x27;, () =&gt; { })
+```
+
+## Code Smell Detection
+
+留意這些反模式：
+
+### 1. Long Functions
+```typescript
+// FAIL: BAD: 函式超過 50 行
+function processMarketData() {
+  // 100 lines of code
+}
+
+// PASS: GOOD: 拆成較小的函式
+function processMarketData() {
+  const validated = validateData()
+  const transformed = transformData(validated)
+  return saveData(transformed)
+}
+```
+
+### 2. Deep Nesting
+```typescript
+// FAIL: BAD: 5 層以上的巢狀
+if (user) {
+  if (user.isAdmin) {
+    if (market) {
+      if (market.isActive) {
+        if (hasPermission) {
+          // Do something
+        }
+      }
+    }
+  }
+}
+
+// PASS: GOOD: 提早 return
+if (!user) return
+if (!user.isAdmin) return
+if (!market) return
+if (!market.isActive) return
+if (!hasPermission) return
+
+// Do something
+```
+
+### 3. Magic Numbers
+```typescript
+// FAIL: BAD: 沒有說明的數字
+if (retryCount &gt; 3) { }
+setTimeout(callback, 500)
+
+// PASS: GOOD: 有名字的常數
+const MAX_RETRIES = 3
+const DEBOUNCE_DELAY_MS = 500
+
+if (retryCount &gt; MAX_RETRIES) { }
+setTimeout(callback, DEBOUNCE_DELAY_MS)
+```
+
+**記住**：程式碼品質沒有商量餘地。清楚、好維護的程式碼，才能讓開發快速、重構有信心。</pre></section><section><h2>英文原文</h2><pre>---
+name: coding-standards
+description: Baseline cross-project coding conventions for naming, readability, immutability, and code-quality review. Use detailed frontend or backend skills for framework-specific patterns. Use when reviewing code quality or naming with no framework-specific skill that applies.
+metadata:
+  origin: ECC
+---
+
+# Coding Standards &amp; Best Practices
+
+Baseline coding conventions applicable across projects.
+
+This skill is the shared floor, not the detailed framework playbook.
+
+- Use `frontend-patterns` for React, state, forms, rendering, and UI architecture.
+- Use `backend-patterns` or `api-design` for repository/service layers, endpoint design, validation, and server-specific concerns.
+- Use `rules/common/coding-style.md` when you need the shortest reusable rule layer instead of a full skill walkthrough.
+
+## When to Activate
+
+- Starting a new project or module
+- Reviewing code for quality and maintainability
+- Refactoring existing code to follow conventions
+- Enforcing naming, formatting, or structural consistency
+- Setting up linting, formatting, or type-checking rules
+- Onboarding new contributors to coding conventions
+
+## Scope Boundaries
+
+Activate this skill for:
+- descriptive naming
+- immutability defaults
+- readability, KISS, DRY, and YAGNI enforcement
+- error-handling expectations and code-smell review
+
+Do not use this skill as the primary source for:
+- React composition, hooks, or rendering patterns
+- backend architecture, API design, or database layering
+- domain-specific framework guidance when a narrower ECC skill already exists
+
+## Code Quality Principles
+
+### 1. Readability First
+- Code is read more than written
+- Clear variable and function names
+- Self-documenting code preferred over comments
+- Consistent formatting
+
+### 2. KISS (Keep It Simple, Stupid)
+- Simplest solution that works
+- Avoid over-engineering
+- No premature optimization
+- Easy to understand &gt; clever code
+
+### 3. DRY (Don&#x27;t Repeat Yourself)
+- Extract common logic into functions
+- Create reusable components
+- Share utilities across modules
+- Avoid copy-paste programming
+
+### 4. YAGNI (You Aren&#x27;t Gonna Need It)
+- Don&#x27;t build features before they&#x27;re needed
+- Avoid speculative generality
+- Add complexity only when required
+- Start simple, refactor when needed
+
+## TypeScript/JavaScript Standards
+
+### Variable Naming
+
+```typescript
+// PASS: GOOD: Descriptive names
+const marketSearchQuery = &#x27;election&#x27;
+const isUserAuthenticated = true
+const totalRevenue = 1000
+
+// FAIL: BAD: Unclear names
+const q = &#x27;election&#x27;
+const flag = true
+const x = 1000
+```
+
+### Function Naming
+
+```typescript
+// PASS: GOOD: Verb-noun pattern
+async function fetchMarketData(marketId: string) { }
+function calculateSimilarity(a: number[], b: number[]) { }
+function isValidEmail(email: string): boolean { }
+
+// FAIL: BAD: Unclear or noun-only
+async function market(id: string) { }
+function similarity(a, b) { }
+function email(e) { }
+```
+
+### Immutability Pattern (CRITICAL)
+
+```typescript
+// PASS: ALWAYS use spread operator
+const updatedUser = {
+  ...user,
+  name: &#x27;New Name&#x27;
+}
+
+const updatedArray = [...items, newItem]
+
+// FAIL: NEVER mutate directly
+user.name = &#x27;New Name&#x27;  // BAD
+items.push(newItem)     // BAD
+```
+
+### Error Handling
+
+```typescript
+// PASS: GOOD: Comprehensive error handling
+async function fetchData(url: string) {
+  try {
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error(&#x27;Fetch failed:&#x27;, error)
+    throw new Error(&#x27;Failed to fetch data&#x27;)
+  }
+}
+
+// FAIL: BAD: No error handling
+async function fetchData(url) {
+  const response = await fetch(url)
+  return response.json()
+}
+```
+
+### Async/Await Best Practices
+
+```typescript
+// PASS: GOOD: Parallel execution when possible
+const [users, markets, stats] = await Promise.all([
+  fetchUsers(),
+  fetchMarkets(),
+  fetchStats()
+])
+
+// FAIL: BAD: Sequential when unnecessary
+const users = await fetchUsers()
+const markets = await fetchMarkets()
+const stats = await fetchStats()
+```
+
+### Type Safety
+
+```typescript
+// PASS: GOOD: Proper types
+interface Market {
+  id: string
+  name: string
+  status: &#x27;active&#x27; | &#x27;resolved&#x27; | &#x27;closed&#x27;
+  created_at: Date
+}
+
+function getMarket(id: string): Promise&lt;Market&gt; {
+  // Implementation
+}
+
+// FAIL: BAD: Using &#x27;any&#x27;
+function getMarket(id: any): Promise&lt;any&gt; {
+  // Implementation
+}
+```
+
+## React Best Practices
+
+### Component Structure
+
+```typescript
+// PASS: GOOD: Functional component with types
+interface ButtonProps {
+  children: React.ReactNode
+  onClick: () =&gt; void
+  disabled?: boolean
+  variant?: &#x27;primary&#x27; | &#x27;secondary&#x27;
+}
+
+export function Button({
+  children,
+  onClick,
+  disabled = false,
+  variant = &#x27;primary&#x27;
+}: ButtonProps) {
+  return (
+    &lt;button
+      onClick={onClick}
+      disabled={disabled}
+      className={`btn btn-${variant}`}
+    &gt;
+      {children}
+    &lt;/button&gt;
+  )
+}
+
+// FAIL: BAD: No types, unclear structure
+export function Button(props) {
+  return &lt;button onClick={props.onClick}&gt;{props.children}&lt;/button&gt;
+}
+```
+
+### Custom Hooks
+
+```typescript
+// PASS: GOOD: Reusable custom hook
+export function useDebounce&lt;T&gt;(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState&lt;T&gt;(value)
+
+  useEffect(() =&gt; {
+    const handler = setTimeout(() =&gt; {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () =&gt; clearTimeout(handler)
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+// Usage
+const debouncedQuery = useDebounce(searchQuery, 500)
+```
+
+### State Management
+
+```typescript
+// PASS: GOOD: Proper state updates
+const [count, setCount] = useState(0)
+
+// Functional update for state based on previous state
+setCount(prev =&gt; prev + 1)
+
+// FAIL: BAD: Direct state reference
+setCount(count + 1)  // Can be stale in async scenarios
+```
+
+### Conditional Rendering
+
+```typescript
+// PASS: GOOD: Clear conditional rendering
+{isLoading &amp;&amp; &lt;Spinner /&gt;}
+{error &amp;&amp; &lt;ErrorMessage error={error} /&gt;}
+{data &amp;&amp; &lt;DataDisplay data={data} /&gt;}
+
+// FAIL: BAD: Ternary hell
+{isLoading ? &lt;Spinner /&gt; : error ? &lt;ErrorMessage error={error} /&gt; : data ? &lt;DataDisplay data={data} /&gt; : null}
+```
+
+## API Design Standards
+
+### REST API Conventions
+
+```
+GET    /api/markets              # List all markets
+GET    /api/markets/:id          # Get specific market
+POST   /api/markets              # Create new market
+PUT    /api/markets/:id          # Update market (full)
+PATCH  /api/markets/:id          # Update market (partial)
+DELETE /api/markets/:id          # Delete market
+
+# Query parameters for filtering
+GET /api/markets?status=active&amp;limit=10&amp;offset=0
+```
+
+### Response Format
+
+```typescript
+// PASS: GOOD: Consistent response structure
+interface ApiResponse&lt;T&gt; {
+  success: boolean
+  data?: T
+  error?: string
+  meta?: {
+    total: number
+    page: number
+    limit: number
+  }
+}
+
+// Success response
+return NextResponse.json({
+  success: true,
+  data: markets,
+  meta: { total: 100, page: 1, limit: 10 }
+})
+
+// Error response
+return NextResponse.json({
+  success: false,
+  error: &#x27;Invalid request&#x27;
+}, { status: 400 })
+```
+
+### Input Validation
+
+```typescript
+import { z } from &#x27;zod&#x27;
+
+// PASS: GOOD: Schema validation
+const CreateMarketSchema = z.object({
+  name: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  endDate: z.string().datetime(),
+  categories: z.array(z.string()).min(1)
+})
+
+export async function POST(request: Request) {
+  const body = await request.json()
+
+  try {
+    const validated = CreateMarketSchema.parse(body)
+    // Proceed with validated data
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({
+        success: false,
+        error: &#x27;Validation failed&#x27;,
+        details: error.issues
+      }, { status: 400 })
+    }
+  }
+}
+```
+
+## File Organization
+
+### Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   ├── markets/           # Market pages
+│   └── (auth)/           # Auth pages (route groups)
+├── components/            # React components
+│   ├── ui/               # Generic UI components
+│   ├── forms/            # Form components
+│   └── layouts/          # Layout components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities and configs
+│   ├── api/             # API clients
+│   ├── utils/           # Helper functions
+│   └── constants/       # Constants
+├── types/                # TypeScript types
+└── styles/              # Global styles
+```
+
+### File Naming
+
+```
+components/Button.tsx          # PascalCase for components
+hooks/useAuth.ts              # camelCase with &#x27;use&#x27; prefix
+lib/formatDate.ts             # camelCase for utilities
+types/market.types.ts         # camelCase with .types suffix
+```
+
+## Comments &amp; Documentation
+
+### When to Comment
+
+```typescript
+// PASS: GOOD: Explain WHY, not WHAT
+// Use exponential backoff to avoid overwhelming the API during outages
+const delay = Math.min(1000 * Math.pow(2, retryCount), 30000)
+
+// Deliberately using mutation here for performance with large arrays
+items.push(newItem)
+
+// FAIL: BAD: Stating the obvious
+// Increment counter by 1
+count++
+
+// Set name to user&#x27;s name
+name = user.name
+```
+
+### JSDoc for Public APIs
+
+```typescript
+/**
+ * Searches markets using semantic similarity.
+ *
+ * @param query - Natural language search query
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Array of markets sorted by similarity score
+ * @throws {Error} If OpenAI API fails or Redis unavailable
+ *
+ * @example
+ * ```typescript
+ * const results = await searchMarkets(&#x27;election&#x27;, 5)
+ * console.log(results[0].name) // &quot;Trump vs Biden&quot;
+ * ```
+ */
+export async function searchMarkets(
+  query: string,
+  limit: number = 10
+): Promise&lt;Market[]&gt; {
+  // Implementation
+}
+```
+
+## Performance Best Practices
+
+### Memoization
+
+```typescript
+import { useMemo, useCallback } from &#x27;react&#x27;
+
+// PASS: GOOD: Memoize expensive computations
+// Copy before sorting - Array.prototype.sort mutates in place
+const sortedMarkets = useMemo(() =&gt; {
+  return [...markets].sort((a, b) =&gt; b.volume - a.volume)
+}, [markets])
+
+// PASS: GOOD: Memoize callbacks
+const handleSearch = useCallback((query: string) =&gt; {
+  setSearchQuery(query)
+}, [])
+```
+
+### Lazy Loading
+
+```typescript
+import { lazy, Suspense } from &#x27;react&#x27;
+
+// PASS: GOOD: Lazy load heavy components
+const HeavyChart = lazy(() =&gt; import(&#x27;./HeavyChart&#x27;))
+
+export function Dashboard() {
+  return (
+    &lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+      &lt;HeavyChart /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+```
+
+### Database Queries
+
+```typescript
+// PASS: GOOD: Select only needed columns
+const { data } = await supabase
+  .from(&#x27;markets&#x27;)
+  .select(&#x27;id, name, status&#x27;)
+  .limit(10)
+
+// FAIL: BAD: Select everything
+const { data } = await supabase
+  .from(&#x27;markets&#x27;)
+  .select(&#x27;*&#x27;)
+```
+
+## Testing Standards
+
+### Test Structure (AAA Pattern)
+
+```typescript
+test(&#x27;calculates similarity correctly&#x27;, () =&gt; {
+  // Arrange
+  const vector1 = [1, 0, 0]
+  const vector2 = [0, 1, 0]
+
+  // Act
+  const similarity = calculateCosineSimilarity(vector1, vector2)
+
+  // Assert
+  expect(similarity).toBe(0)
+})
+```
+
+### Test Naming
+
+```typescript
+// PASS: GOOD: Descriptive test names
+test(&#x27;returns empty array when no markets match query&#x27;, () =&gt; { })
+test(&#x27;throws error when OpenAI API key is missing&#x27;, () =&gt; { })
+test(&#x27;falls back to substring search when Redis unavailable&#x27;, () =&gt; { })
+
+// FAIL: BAD: Vague test names
+test(&#x27;works&#x27;, () =&gt; { })
+test(&#x27;test search&#x27;, () =&gt; { })
+```
+
+## Code Smell Detection
+
+Watch for these anti-patterns:
+
+### 1. Long Functions
+```typescript
+// FAIL: BAD: Function &gt; 50 lines
+function processMarketData() {
+  // 100 lines of code
+}
+
+// PASS: GOOD: Split into smaller functions
+function processMarketData() {
+  const validated = validateData()
+  const transformed = transformData(validated)
+  return saveData(transformed)
+}
+```
+
+### 2. Deep Nesting
+```typescript
+// FAIL: BAD: 5+ levels of nesting
+if (user) {
+  if (user.isAdmin) {
+    if (market) {
+      if (market.isActive) {
+        if (hasPermission) {
+          // Do something
+        }
+      }
+    }
+  }
+}
+
+// PASS: GOOD: Early returns
+if (!user) return
+if (!user.isAdmin) return
+if (!market) return
+if (!market.isActive) return
+if (!hasPermission) return
+
+// Do something
+```
+
+### 3. Magic Numbers
+```typescript
+// FAIL: BAD: Unexplained numbers
+if (retryCount &gt; 3) { }
+setTimeout(callback, 500)
+
+// PASS: GOOD: Named constants
+const MAX_RETRIES = 3
+const DEBOUNCE_DELAY_MS = 500
+
+if (retryCount &gt; MAX_RETRIES) { }
+setTimeout(callback, DEBOUNCE_DELAY_MS)
+```
+
+**Remember**: Code quality is not negotiable. Clear, maintainable code enables rapid development and confident refactoring.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

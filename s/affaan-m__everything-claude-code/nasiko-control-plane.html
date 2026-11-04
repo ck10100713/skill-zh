@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nasiko-control-plane｜Skill 寫法圖鑑</title>
+<meta name="description" content="透過 ECC 安全地安裝、檢查與移除實驗性的 Nasiko CLI">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>nasiko-control-plane</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/nasiko-control-plane/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">透過 ECC 安全地安裝、檢查與移除實驗性的 Nasiko CLI</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: nasiko-control-plane
+description: 透過 ECC 管理實驗性的 Nasiko CLI 生命週期：唯讀的狀態檢查、需經同意才能安裝且先 dry-run 預覽的指定合格版本，以及會檢查所有權的解除安裝，全程在明確的遙測和機密界線之下。使用者要求安裝、檢查或移除 Nasiko CLI，或確認它是否存在時使用。
+---
+
+# Nasiko CLI Lifecycle Bridge
+
+使用者明確要求 ECC 安裝、檢查或移除合格的 Nasiko CLI 時，用這個 skill。
+這個 skill 不會操作 Nasiko control plane。
+
+## Safety contract
+
+- 一開始先跑 `ecc nasiko status --json`。status 是唯讀的。
+- 安裝一律需要使用者明確同意，並加上 `--yes`。
+- 只安裝 ECC 合格的指定版本，目前是 `v0.1.0`。
+- 先用 `ecc nasiko install --version v0.1.0 --dry-run --json` 預覽。
+- 要等使用者審閱過版本、registry 來源、digest 和目的地之後，才用
+  `ecc nasiko install --version v0.1.0 --yes --json` 安裝。
+- 只移除仍然合格、由 ECC 管理的執行檔，用
+  `ecc nasiko uninstall --version v0.1.0 --yes --json`。移除前先用
+  `--dry-run` 預覽。
+- 合格的來源是 `https://github.com/Nasiko-Labs/nasiko`，授權為
+  Apache-2.0；壓縮檔和解開後執行檔的 SHA-256 值都有固定。
+- 絕對不要用下載來的 shell 或 PowerShell
+  bootstrap 腳本取代合格的指令。
+- 絕對不要把機密或憑證放進指令參數、紀錄、skill 輸出、
+  安裝 metadata 或 ECC 狀態裡。
+- Nasiko 的遙測，以及任何和 Nasiko 或 Ito 的分享，都必須是 opt-in，
+  而且要另外揭露。安裝不等於同意遙測。
+
+## Lifecycle boundary
+
+最初的 ECC bridge 支援合格的安裝、唯讀的狀態，以及
+會檢查所有權的解除安裝。連線、驗證、
+啟動、deploy 或關閉這些動作，在它們有自己經過驗證的 ECC
+合約之前，直接使用正統的 Nasiko CLI。不要猜 CLI 的動詞。
+
+安裝 CLI 並不能證明 control-plane server 正在運作、
+agent 受到治理、路由或 ACL 有效、可觀測性完整、遙測
+已啟用，或 Ito 運算已連上。每個狀態都要分開回報。
+
+## Failure behavior
+
+- 如果平台、架構、版本、manifest、digest、壓縮檔、執行檔或
+  目的地沒通過驗證，就停下來，不要執行該成品。
+- 不要退回使用 `latest`。
+- 不要搜尋任意的 `PATH` 項目。用 ECC 的合格位置，或為了開發驗證而明確指定的
+  絕對路徑 `ECC_NASIKO_CLI_EXECUTABLE`。
+- 不要把部分完成或有歧義的安裝當成成功。</pre></section><section><h2>英文原文</h2><pre>---
+name: nasiko-control-plane
+description: Manage the experimental Nasiko CLI lifecycle through ECC — read-only status checks, consent-gated install of the pinned qualified version with dry-run preview, and ownership-checked uninstall, under explicit telemetry and secrets boundaries. Use when the user asks to install, inspect, or remove the Nasiko CLI or check whether it is present.
+---
+
+# Nasiko CLI Lifecycle Bridge
+
+Use this skill when a user explicitly asks ECC to install, inspect, or remove
+the qualified Nasiko CLI. This skill does not operate a Nasiko control plane.
+
+## Safety contract
+
+- Begin with `ecc nasiko status --json`. Status is read-only.
+- Installation always requires explicit user consent and `--yes`.
+- Install only an ECC-qualified pinned version, currently `v0.1.0`.
+- Preview first with `ecc nasiko install --version v0.1.0 --dry-run --json`.
+- Install with `ecc nasiko install --version v0.1.0 --yes --json` only after the
+  user reviews the version, registry origin, digest, and destination.
+- Remove only a still-qualified ECC-managed binary with
+  `ecc nasiko uninstall --version v0.1.0 --yes --json`. Preview removal with
+  `--dry-run` first.
+- The qualified source is `https://github.com/Nasiko-Labs/nasiko`, licensed
+  under Apache-2.0; artifact and extracted-binary SHA-256 values are pinned.
+- Never replace the qualified command with a downloaded shell or PowerShell
+  bootstrap script.
+- Never put secrets or credentials in command arguments, logs, skill output,
+  install metadata, or ECC state.
+- Nasiko telemetry and any sharing with Nasiko or Ito must be opt-in and
+  separately disclosed. Installation is not telemetry consent.
+
+## Lifecycle boundary
+
+The initial ECC bridge supports qualified installation, read-only status, and
+ownership-checked uninstall. Use the canonical Nasiko CLI directly for connection, authentication,
+launch, deployment, or shutdown until those verbs have their own verified ECC
+contracts. Do not guess CLI verbs.
+
+Installing the CLI does not prove that a control-plane server is running, an
+agent is governed, routing or ACLs work, observability is complete, telemetry
+was enabled, or Ito compute is connected. Report each state separately.
+
+## Failure behavior
+
+- If the platform, architecture, version, manifest, digest, archive, binary, or
+  destination fails validation, stop without executing the artifact.
+- Do not fall back to `latest`.
+- Do not search arbitrary `PATH` entries. Use ECC&#x27;s qualified location or an
+  explicit absolute `ECC_NASIKO_CLI_EXECUTABLE` for development verification.
+- Do not treat a partial or ambiguous installation as success.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

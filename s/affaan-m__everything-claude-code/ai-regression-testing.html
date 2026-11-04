@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-regression-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 sandbox 模式 API 測試抓出 AI 自己寫自己 review 的盲點回歸">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ai-regression-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/ai-regression-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 sandbox 模式 API 測試抓出 AI 自己寫自己 review 的盲點回歸</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ai-regression-testing
+description: 給 AI 輔助開發用的回歸測試策略。不依賴資料庫的 sandbox 模式 API 測試、自動化的 bug 檢查流程，以及抓出「同一個模型寫程式又 review」所造成的 AI 盲點的模式。要替 AI 輔助寫出的程式碼補回歸覆蓋，或同一個模型既寫又 review 同一份修改時使用。
+metadata:
+  origin: ECC
+---
+
+# AI 回歸測試
+
+專門為 AI 輔助開發設計的測試模式。在這種開發方式裡，同一個模型既寫程式也 review 程式，會產生系統性的盲點，只有自動化測試抓得到。
+
+## 何時啟用
+
+- AI agent（Claude Code、Cursor、Codex）修改了 API route 或後端邏輯
+- 找到並修好了一個 bug，需要防止它再被引入
+- 專案有 sandbox/mock 模式，可以用來做免資料庫的測試
+- 程式碼修改之後，執行 `/bug-check` 或類似的 review 指令
+- 存在多條程式碼路徑（sandbox 對 production、feature flag 等）
+
+## 核心問題
+
+AI 寫完程式再 review 自己的作品時，兩個步驟帶著同樣的假設。這會造成可預測的失敗模式：
+
+```
+AI 寫修正 → AI review 修正 → AI 說「看起來正確」 → Bug 還在
+```
+
+**真實案例**（在正式環境觀察到的）：
+
+```
+Fix 1: 在 API 回應裡加了 notification_settings
+  → 忘了把它加進 SELECT 查詢
+  → AI review 時漏掉了（同樣的盲點）
+
+Fix 2: 把它加進 SELECT 查詢
+  → TypeScript build 錯誤（欄位不在產生出來的型別裡）
+  → AI review 了 Fix 1，但沒抓到 SELECT 的問題
+
+Fix 3: 改成 SELECT *
+  → 修好了 production 路徑，忘了 sandbox 路徑
+  → AI review 時又漏掉了（第 4 次發生）
+
+Fix 4: 測試第一次跑就馬上抓到 PASS:
+```
+
+這個模式是：**sandbox/production 路徑不一致**是 AI 引入的第一名回歸。
+
+## Sandbox 模式 API 測試
+
+大多數對 AI 友善的架構，都有 sandbox/mock 模式。這是快速、免資料庫 API 測試的關鍵。
+
+### 設定（Vitest + Next.js App Router）
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from &quot;vitest/config&quot;;
+import path from &quot;path&quot;;
+
+export default defineConfig({
+  test: {
+    environment: &quot;node&quot;,
+    globals: true,
+    include: [&quot;__tests__/**/*.test.ts&quot;],
+    setupFiles: [&quot;__tests__/setup.ts&quot;],
+  },
+  resolve: {
+    alias: {
+      &quot;@&quot;: path.resolve(__dirname, &quot;.&quot;),
+    },
+  },
+});
+```
+
+```typescript
+// __tests__/setup.ts
+// 強制使用 sandbox 模式，不需要資料庫
+process.env.SANDBOX_MODE = &quot;true&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_URL = &quot;&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = &quot;&quot;;
+```
+
+### Next.js API Route 的測試 Helper
+
+```typescript
+// __tests__/helpers.ts
+import { NextRequest } from &quot;next/server&quot;;
+
+export function createTestRequest(
+  url: string,
+  options?: {
+    method?: string;
+    body?: Record&lt;string, unknown&gt;;
+    headers?: Record&lt;string, string&gt;;
+    sandboxUserId?: string;
+  },
+): NextRequest {
+  const { method = &quot;GET&quot;, body, headers = {}, sandboxUserId } = options || {};
+  const fullUrl = url.startsWith(&quot;http&quot;) ? url : `http://localhost:3000${url}`;
+  const reqHeaders: Record&lt;string, string&gt; = { ...headers };
+
+  if (sandboxUserId) {
+    reqHeaders[&quot;x-sandbox-user-id&quot;] = sandboxUserId;
+  }
+
+  const init: { method: string; headers: Record&lt;string, string&gt;; body?: string } = {
+    method,
+    headers: reqHeaders,
+  };
+
+  if (body) {
+    init.body = JSON.stringify(body);
+    reqHeaders[&quot;content-type&quot;] = &quot;application/json&quot;;
+  }
+
+  return new NextRequest(fullUrl, init);
+}
+
+export async function parseResponse(response: Response) {
+  const json = await response.json();
+  return { status: response.status, json };
+}
+```
+
+### 撰寫回歸測試
+
+關鍵原則：**替找到過的 bug 寫測試，不是替正常運作的程式碼寫測試**。
+
+```typescript
+// __tests__/api/user/profile.test.ts
+import { describe, it, expect } from &quot;vitest&quot;;
+import { createTestRequest, parseResponse } from &quot;../../helpers&quot;;
+import { GET, PATCH } from &quot;@/app/api/user/profile/route&quot;;
+
+// 定義契約：回應裡「必須」有哪些欄位
+const REQUIRED_FIELDS = [
+  &quot;id&quot;,
+  &quot;email&quot;,
+  &quot;full_name&quot;,
+  &quot;phone&quot;,
+  &quot;role&quot;,
+  &quot;created_at&quot;,
+  &quot;avatar_url&quot;,
+  &quot;notification_settings&quot;,  // ← 發現它漏掉之後才加進來的
+];
+
+describe(&quot;GET /api/user/profile&quot;, () =&gt; {
+  it(&quot;returns all required fields&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { status, json } = await parseResponse(res);
+
+    expect(status).toBe(200);
+    for (const field of REQUIRED_FIELDS) {
+      expect(json.data).toHaveProperty(field);
+    }
+  });
+
+  // 回歸測試：這個一模一樣的 bug，AI 引入過 4 次
+  it(&quot;notification_settings is not undefined (BUG-R1 regression)&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    expect(&quot;notification_settings&quot; in json.data).toBe(true);
+    const ns = json.data.notification_settings;
+    expect(ns === null || typeof ns === &quot;object&quot;).toBe(true);
+  });
+});
+```
+
+### 測試 Sandbox/Production 一致性
+
+最常見的 AI 回歸：修了 production 路徑卻忘了 sandbox 路徑（或反過來）。
+
+```typescript
+// 測試 sandbox 的回應符合預期的契約
+describe(&quot;GET /api/user/messages (conversation list)&quot;, () =&gt; {
+  it(&quot;includes partner_name in sandbox mode&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/messages&quot;, {
+      sandboxUserId: &quot;user-001&quot;,
+    });
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    // 這個測試抓到過一個 bug：partner_name 被加到
+    // production 路徑，但沒加到 sandbox 路徑
+    if (json.data.length &gt; 0) {
+      for (const conv of json.data) {
+        expect(&quot;partner_name&quot; in conv).toBe(true);
+      }
+    }
+  });
+});
+```
+
+## 把測試整合進 Bug-Check 工作流程
+
+### 自訂 Command 定義
+
+```markdown
+&lt;!-- .claude/commands/bug-check.md --&gt;
+# Bug Check
+
+## Step 1: 自動化測試（必做，不能跳過）
+
+任何 code review 之前，先跑這些指令：
+
+    npm run test       # Vitest 測試套件
+    npm run build      # TypeScript 型別檢查 + build
+
+- 測試失敗 → 回報為最高優先的 bug
+- Build 失敗 → 把型別錯誤回報為最高優先
+- 兩者都通過才進到 Step 2
+
+## Step 2: Code Review（AI review）
+
+1. Sandbox / production 路徑一致性
+2. API 回應的形狀符合前端的預期
+3. SELECT 子句是否完整
+4. 帶有 rollback 的錯誤處理
+5. 樂觀更新的 race condition
+
+## Step 3: 每修一個 bug，就提議一個回歸測試
+```
+
+### 工作流程
+
+```
+User: &quot;バグチェックして&quot; (or &quot;/bug-check&quot;)
+  │
+  ├─ Step 1: npm run test
+  │   ├─ FAIL → 機械式地找到 bug（不需要 AI 判斷）
+  │   └─ PASS → 繼續
+  │
+  ├─ Step 2: npm run build
+  │   ├─ FAIL → 機械式地找到型別錯誤
+  │   └─ PASS → 繼續
+  │
+  ├─ Step 3: AI code review（心裡記著已知的盲點）
+  │   └─ 回報發現的問題
+  │
+  └─ Step 4: 每個修正都寫一個回歸測試
+      └─ 下次 bug-check 就會抓到修正是否被破壞
+```
+
+## 常見的 AI 回歸模式
+
+### 模式 1：Sandbox/Production 路徑不一致
+
+**頻率**：最常見（4 次回歸中有 3 次）
+
+```typescript
+// FAIL: AI 只把欄位加到 production 路徑
+if (isSandboxMode()) {
+  return { data: { id, email, name } };  // 缺少新欄位
+}
+// Production 路徑
+return { data: { id, email, name, notification_settings } };
+
+// PASS: 兩條路徑都必須回傳同樣的形狀
+if (isSandboxMode()) {
+  return { data: { id, email, name, notification_settings: null } };
+}
+return { data: { id, email, name, notification_settings } };
+```
+
+**抓出它的測試**：
+
+```typescript
+it(&quot;sandbox and production return same fields&quot;, async () =&gt; {
+  // 測試環境裡，sandbox 模式是強制開啟的
+  const res = await GET(createTestRequest(&quot;/api/user/profile&quot;));
+  const { json } = await parseResponse(res);
+
+  for (const field of REQUIRED_FIELDS) {
+    expect(json.data).toHaveProperty(field);
+  }
+});
+```
+
+### 模式 2：SELECT 子句遺漏
+
+**頻率**：用 Supabase/Prisma 新增欄位時很常見
+
+```typescript
+// FAIL: 新欄位加進回應，卻沒加進 SELECT
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;id, email, name&quot;)  // notification_settings 不在這裡
+  .single();
+
+return { data: { ...data, notification_settings: data.notification_settings } };
+// → notification_settings 永遠是 undefined
+
+// PASS: 用 SELECT *，或明確包含新欄位
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;*&quot;)
+  .single();
+```
+
+### 模式 3：錯誤狀態外洩
+
+**頻率**：中等，在既有元件加上錯誤處理時會發生
+
+```typescript
+// FAIL: 設了錯誤狀態，但舊資料沒清掉
+catch (err) {
+  setError(&quot;Failed to load&quot;);
+  // reservations 還顯示著上一個 tab 的資料！
+}
+
+// PASS: 發生錯誤時，清掉相關的狀態
+catch (err) {
+  setReservations([]);  // 清掉過期資料
+  setError(&quot;Failed to load&quot;);
+}
+```
+
+### 模式 4：樂觀更新沒有適當的 Rollback
+
+```typescript
+// FAIL: 失敗時沒有 rollback
+const handleRemove = async (id: string) =&gt; {
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+  // 如果 API 失敗，項目在 UI 上消失了，但還在 DB 裡
+};
+
+// PASS: 記下先前的狀態，失敗時 rollback
+const handleRemove = async (id: string) =&gt; {
+  const prevItems = [...items];
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  try {
+    const res = await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+    if (!res.ok) throw new Error(&quot;API error&quot;);
+  } catch {
+    setItems(prevItems);  // Rollback
+    alert(&quot;削除に失敗しました&quot;);
+  }
+};
+```
+
+## 策略：在 Bug 出現的地方測試
+
+不要追求 100% 覆蓋率。而是：
+
+```
+在 /api/user/profile 找到 bug     → 替 profile API 寫測試
+在 /api/user/messages 找到 bug    → 替 messages API 寫測試
+在 /api/user/favorites 找到 bug   → 替 favorites API 寫測試
+/api/user/notifications 沒有 bug  → （暫時）不寫測試
+```
+
+**為什麼這在 AI 開發裡有效：**
+
+1. AI 傾向於反覆犯**同一類的錯誤**
+2. Bug 會集中在複雜的區域（驗證、多路徑邏輯、狀態管理）
+3. 一旦有測試，那個確切的回歸**就不會再發生**
+4. 測試數量隨著 bug 修正自然增長，沒有白費力氣
+
+## 快速參考
+
+| AI 回歸模式 | 測試策略 | 優先順序 |
+|---|---|---|
+| Sandbox/production 不一致 | 斷言 sandbox 模式下的回應形狀相同 |  高 |
+| SELECT 子句遺漏 | 斷言回應裡有所有必要欄位 |  高 |
+| 錯誤狀態外洩 | 斷言發生錯誤時狀態有被清掉 |  中 |
+| 缺少 rollback | 斷言 API 失敗時狀態有被還原 |  中 |
+| 型別轉換遮住 null | 斷言欄位不是 undefined |  中 |
+
+## 該做 / 不該做
+
+**該做：**
+- 找到 bug 之後馬上寫測試（可能的話，在修之前寫）
+- 測試 API 回應的形狀，不是實作
+- 每次 bug-check 的第一步都跑測試
+- 讓測試保持快速（用 sandbox 模式，總共不到 1 秒）
+- 用它要防止的 bug 來命名測試（例如「BUG-R1 regression」）
+
+**不該做：**
+- 替從來沒出過 bug 的程式碼寫測試
+- 把 AI 的自我 review 當成自動化測試的替代品
+- 因為「只是 mock 資料」就跳過 sandbox 路徑的測試
+- 單元測試就夠用時，還去寫整合測試
+- 追求覆蓋率的百分比，要追求的是防止回歸</pre></section><section><h2>英文原文</h2><pre>---
+name: ai-regression-testing
+description: Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns to catch AI blind spots where the same model writes and reviews code. Use when adding regression coverage to AI-assisted code, or when the same model both wrote and reviewed a change.
+metadata:
+  origin: ECC
+---
+
+# AI Regression Testing
+
+Testing patterns specifically designed for AI-assisted development, where the same model writes code and reviews it — creating systematic blind spots that only automated tests can catch.
+
+## When to Activate
+
+- AI agent (Claude Code, Cursor, Codex) has modified API routes or backend logic
+- A bug was found and fixed — need to prevent re-introduction
+- Project has a sandbox/mock mode that can be leveraged for DB-free testing
+- Running `/bug-check` or similar review commands after code changes
+- Multiple code paths exist (sandbox vs production, feature flags, etc.)
+
+## The Core Problem
+
+When an AI writes code and then reviews its own work, it carries the same assumptions into both steps. This creates a predictable failure pattern:
+
+```
+AI writes fix → AI reviews fix → AI says &quot;looks correct&quot; → Bug still exists
+```
+
+**Real-world example** (observed in production):
+
+```
+Fix 1: Added notification_settings to API response
+  → Forgot to add it to the SELECT query
+  → AI reviewed and missed it (same blind spot)
+
+Fix 2: Added it to SELECT query
+  → TypeScript build error (column not in generated types)
+  → AI reviewed Fix 1 but didn&#x27;t catch the SELECT issue
+
+Fix 3: Changed to SELECT *
+  → Fixed production path, forgot sandbox path
+  → AI reviewed and missed it AGAIN (4th occurrence)
+
+Fix 4: Test caught it instantly on first run PASS:
+```
+
+The pattern: **sandbox/production path inconsistency** is the #1 AI-introduced regression.
+
+## Sandbox-Mode API Testing
+
+Most projects with AI-friendly architecture have a sandbox/mock mode. This is the key to fast, DB-free API testing.
+
+### Setup (Vitest + Next.js App Router)
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from &quot;vitest/config&quot;;
+import path from &quot;path&quot;;
+
+export default defineConfig({
+  test: {
+    environment: &quot;node&quot;,
+    globals: true,
+    include: [&quot;__tests__/**/*.test.ts&quot;],
+    setupFiles: [&quot;__tests__/setup.ts&quot;],
+  },
+  resolve: {
+    alias: {
+      &quot;@&quot;: path.resolve(__dirname, &quot;.&quot;),
+    },
+  },
+});
+```
+
+```typescript
+// __tests__/setup.ts
+// Force sandbox mode — no database needed
+process.env.SANDBOX_MODE = &quot;true&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_URL = &quot;&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = &quot;&quot;;
+```
+
+### Test Helper for Next.js API Routes
+
+```typescript
+// __tests__/helpers.ts
+import { NextRequest } from &quot;next/server&quot;;
+
+export function createTestRequest(
+  url: string,
+  options?: {
+    method?: string;
+    body?: Record&lt;string, unknown&gt;;
+    headers?: Record&lt;string, string&gt;;
+    sandboxUserId?: string;
+  },
+): NextRequest {
+  const { method = &quot;GET&quot;, body, headers = {}, sandboxUserId } = options || {};
+  const fullUrl = url.startsWith(&quot;http&quot;) ? url : `http://localhost:3000${url}`;
+  const reqHeaders: Record&lt;string, string&gt; = { ...headers };
+
+  if (sandboxUserId) {
+    reqHeaders[&quot;x-sandbox-user-id&quot;] = sandboxUserId;
+  }
+
+  const init: { method: string; headers: Record&lt;string, string&gt;; body?: string } = {
+    method,
+    headers: reqHeaders,
+  };
+
+  if (body) {
+    init.body = JSON.stringify(body);
+    reqHeaders[&quot;content-type&quot;] = &quot;application/json&quot;;
+  }
+
+  return new NextRequest(fullUrl, init);
+}
+
+export async function parseResponse(response: Response) {
+  const json = await response.json();
+  return { status: response.status, json };
+}
+```
+
+### Writing Regression Tests
+
+The key principle: **write tests for bugs that were found, not for code that works**.
+
+```typescript
+// __tests__/api/user/profile.test.ts
+import { describe, it, expect } from &quot;vitest&quot;;
+import { createTestRequest, parseResponse } from &quot;../../helpers&quot;;
+import { GET, PATCH } from &quot;@/app/api/user/profile/route&quot;;
+
+// Define the contract — what fields MUST be in the response
+const REQUIRED_FIELDS = [
+  &quot;id&quot;,
+  &quot;email&quot;,
+  &quot;full_name&quot;,
+  &quot;phone&quot;,
+  &quot;role&quot;,
+  &quot;created_at&quot;,
+  &quot;avatar_url&quot;,
+  &quot;notification_settings&quot;,  // ← Added after bug found it missing
+];
+
+describe(&quot;GET /api/user/profile&quot;, () =&gt; {
+  it(&quot;returns all required fields&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { status, json } = await parseResponse(res);
+
+    expect(status).toBe(200);
+    for (const field of REQUIRED_FIELDS) {
+      expect(json.data).toHaveProperty(field);
+    }
+  });
+
+  // Regression test — this exact bug was introduced by AI 4 times
+  it(&quot;notification_settings is not undefined (BUG-R1 regression)&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    expect(&quot;notification_settings&quot; in json.data).toBe(true);
+    const ns = json.data.notification_settings;
+    expect(ns === null || typeof ns === &quot;object&quot;).toBe(true);
+  });
+});
+```
+
+### Testing Sandbox/Production Parity
+
+The most common AI regression: fixing production path but forgetting sandbox path (or vice versa).
+
+```typescript
+// Test that sandbox responses match the expected contract
+describe(&quot;GET /api/user/messages (conversation list)&quot;, () =&gt; {
+  it(&quot;includes partner_name in sandbox mode&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/messages&quot;, {
+      sandboxUserId: &quot;user-001&quot;,
+    });
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    // This caught a bug where partner_name was added
+    // to production path but not sandbox path
+    if (json.data.length &gt; 0) {
+      for (const conv of json.data) {
+        expect(&quot;partner_name&quot; in conv).toBe(true);
+      }
+    }
+  });
+});
+```
+
+## Integrating Tests into Bug-Check Workflow
+
+### Custom Command Definition
+
+```markdown
+&lt;!-- .claude/commands/bug-check.md --&gt;
+# Bug Check
+
+## Step 1: Automated Tests (mandatory, cannot skip)
+
+Run these commands FIRST before any code review:
+
+    npm run test       # Vitest test suite
+    npm run build      # TypeScript type check + build
+
+- If tests fail → report as highest priority bug
+- If build fails → report type errors as highest priority
+- Only proceed to Step 2 if both pass
+
+## Step 2: Code Review (AI review)
+
+1. Sandbox / production path consistency
+2. API response shape matches frontend expectations
+3. SELECT clause completeness
+4. Error handling with rollback
+5. Optimistic update race conditions
+
+## Step 3: For each bug fixed, propose a regression test
+```
+
+### The Workflow
+
+```
+User: &quot;バグチェックして&quot; (or &quot;/bug-check&quot;)
+  │
+  ├─ Step 1: npm run test
+  │   ├─ FAIL → Bug found mechanically (no AI judgment needed)
+  │   └─ PASS → Continue
+  │
+  ├─ Step 2: npm run build
+  │   ├─ FAIL → Type error found mechanically
+  │   └─ PASS → Continue
+  │
+  ├─ Step 3: AI code review (with known blind spots in mind)
+  │   └─ Findings reported
+  │
+  └─ Step 4: For each fix, write a regression test
+      └─ Next bug-check catches if fix breaks
+```
+
+## Common AI Regression Patterns
+
+### Pattern 1: Sandbox/Production Path Mismatch
+
+**Frequency**: Most common (observed in 3 out of 4 regressions)
+
+```typescript
+// FAIL: AI adds field to production path only
+if (isSandboxMode()) {
+  return { data: { id, email, name } };  // Missing new field
+}
+// Production path
+return { data: { id, email, name, notification_settings } };
+
+// PASS: Both paths must return the same shape
+if (isSandboxMode()) {
+  return { data: { id, email, name, notification_settings: null } };
+}
+return { data: { id, email, name, notification_settings } };
+```
+
+**Test to catch it**:
+
+```typescript
+it(&quot;sandbox and production return same fields&quot;, async () =&gt; {
+  // In test env, sandbox mode is forced ON
+  const res = await GET(createTestRequest(&quot;/api/user/profile&quot;));
+  const { json } = await parseResponse(res);
+
+  for (const field of REQUIRED_FIELDS) {
+    expect(json.data).toHaveProperty(field);
+  }
+});
+```
+
+### Pattern 2: SELECT Clause Omission
+
+**Frequency**: Common with Supabase/Prisma when adding new columns
+
+```typescript
+// FAIL: New column added to response but not to SELECT
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;id, email, name&quot;)  // notification_settings not here
+  .single();
+
+return { data: { ...data, notification_settings: data.notification_settings } };
+// → notification_settings is always undefined
+
+// PASS: Use SELECT * or explicitly include new columns
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;*&quot;)
+  .single();
+```
+
+### Pattern 3: Error State Leakage
+
+**Frequency**: Moderate — when adding error handling to existing components
+
+```typescript
+// FAIL: Error state set but old data not cleared
+catch (err) {
+  setError(&quot;Failed to load&quot;);
+  // reservations still shows data from previous tab!
+}
+
+// PASS: Clear related state on error
+catch (err) {
+  setReservations([]);  // Clear stale data
+  setError(&quot;Failed to load&quot;);
+}
+```
+
+### Pattern 4: Optimistic Update Without Proper Rollback
+
+```typescript
+// FAIL: No rollback on failure
+const handleRemove = async (id: string) =&gt; {
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+  // If API fails, item is gone from UI but still in DB
+};
+
+// PASS: Capture previous state and rollback on failure
+const handleRemove = async (id: string) =&gt; {
+  const prevItems = [...items];
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  try {
+    const res = await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+    if (!res.ok) throw new Error(&quot;API error&quot;);
+  } catch {
+    setItems(prevItems);  // Rollback
+    alert(&quot;削除に失敗しました&quot;);
+  }
+};
+```
+
+## Strategy: Test Where Bugs Were Found
+
+Don&#x27;t aim for 100% coverage. Instead:
+
+```
+Bug found in /api/user/profile     → Write test for profile API
+Bug found in /api/user/messages    → Write test for messages API
+Bug found in /api/user/favorites   → Write test for favorites API
+No bug in /api/user/notifications  → Don&#x27;t write test (yet)
+```
+
+**Why this works with AI development:**
+
+1. AI tends to make the **same category of mistake** repeatedly
+2. Bugs cluster in complex areas (auth, multi-path logic, state management)
+3. Once tested, that exact regression **cannot happen again**
+4. Test count grows organically with bug fixes — no wasted effort
+
+## Quick Reference
+
+| AI Regression Pattern | Test Strategy | Priority |
+|---|---|---|
+| Sandbox/production mismatch | Assert same response shape in sandbox mode |  High |
+| SELECT clause omission | Assert all required fields in response |  High |
+| Error state leakage | Assert state cleanup on error |  Medium |
+| Missing rollback | Assert state restored on API failure |  Medium |
+| Type cast masking null | Assert field is not undefined |  Medium |
+
+## DO / DON&#x27;T
+
+**DO:**
+- Write tests immediately after finding a bug (before fixing it if possible)
+- Test the API response shape, not the implementation
+- Run tests as the first step of every bug-check
+- Keep tests fast (&lt; 1 second total with sandbox mode)
+- Name tests after the bug they prevent (e.g., &quot;BUG-R1 regression&quot;)
+
+**DON&#x27;T:**
+- Write tests for code that has never had a bug
+- Trust AI self-review as a substitute for automated tests
+- Skip sandbox path testing because &quot;it&#x27;s just mock data&quot;
+- Write integration tests when unit tests suffice
+- Aim for coverage percentage — aim for regression prevention</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

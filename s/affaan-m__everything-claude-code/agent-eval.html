@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-eval｜Skill 寫法圖鑑</title>
+<meta name="description" content="用通過率、成本、時間正面比較不同 coding agent">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-eval</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-eval/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用通過率、成本、時間正面比較不同 coding agent</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-eval
+description: 在自訂任務上，正面比較 coding agent（Claude Code、Aider、Codex 等），指標包含通過率、成本、時間和一致性。在 coding agent 之間做選擇時，或是 agent 設定的改動需要量測過的通過率、成本和時間，而不是憑印象時使用。
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Agent Eval Skill
+
+一個輕量的 CLI 工具，在可重現的任務上正面比較 coding agent。每一次「哪個 coding agent 最好？」的比較都是憑感覺在跑，這個工具把它系統化。
+
+## When to Activate
+
+- 在你自己的 codebase 上比較 coding agent（Claude Code、Aider、Codex 等）
+- 在採用新工具或新 model 之前，量測 agent 的表現
+- 當 agent 更新它的 model 或工具時，跑迴歸檢查
+- 為團隊產出有資料支持的 agent 選擇決策
+
+## Installation
+
+&gt; **注意：** 審閱原始碼之後，再從它的 repository 安裝 agent-eval。
+
+## Core Concepts
+
+### YAML Task Definitions
+
+用宣告的方式定義任務。每個任務指定要做什麼、要動哪些檔案，以及怎麼判斷成功：
+
+```yaml
+name: add-retry-logic
+description: Add exponential backoff retry to the HTTP client
+repo: ./my-project
+files:
+  - src/http_client.py
+prompt: |
+  Add retry logic with exponential backoff to all HTTP requests.
+  Max 3 retries. Initial delay 1s, max delay 30s.
+judge:
+  - type: pytest
+    command: pytest tests/test_http_client.py -v
+  - type: grep
+    pattern: &quot;exponential_backoff|retry&quot;
+    files: src/http_client.py
+commit: &quot;abc1234&quot;  # 釘在特定的 commit，確保可重現
+```
+
+### Git Worktree Isolation
+
+每次 agent 執行都有自己的 git worktree，不需要 Docker。這提供了可重現性的隔離，所以 agent 不會互相干擾，也不會弄壞基底 repo。
+
+### Metrics Collected
+
+| 指標 | 量測什麼 |
+|--------|-----------------|
+| 通過率 | Agent 產出的程式碼有沒有通過 judge？ |
+| 成本 | 每個任務的 API 花費（如果有資料的話） |
+| 時間 | 到完成為止的實際經過秒數 |
+| 一致性 | 重複執行的通過率（例如 3/3 = 100%） |
+
+## Workflow
+
+### 1. Define Tasks
+
+建立 `tasks/` 目錄放 YAML 檔案，一個任務一個檔案：
+
+```bash
+mkdir tasks
+# 寫任務定義（見上面的範本）
+```
+
+### 2. Run Agents
+
+對你的任務執行 agent：
+
+```bash
+agent-eval run --task tasks/add-retry-logic.yaml --agent claude-code --agent aider --runs 3
+```
+
+每次執行：
+1. 從指定的 commit 建立全新的 git worktree
+2. 把 prompt 交給 agent
+3. 執行 judge 準則
+4. 記錄通過／失敗、成本和時間
+
+### 3. Compare Results
+
+產生比較報告：
+
+```bash
+agent-eval report --format table
+```
+
+```
+Task: add-retry-logic (3 runs each)
+┌──────────────┬───────────┬────────┬────────┬─────────────┐
+│ Agent        │ Pass Rate │ Cost   │ Time   │ Consistency │
+├──────────────┼───────────┼────────┼────────┼─────────────┤
+│ claude-code  │ 3/3       │ $0.12  │ 45s    │ 100%        │
+│ aider        │ 2/3       │ $0.08  │ 38s    │  67%        │
+└──────────────┴───────────┴────────┴────────┴─────────────┘
+```
+
+## Judge Types
+
+### Code-Based (deterministic)
+
+```yaml
+judge:
+  - type: pytest
+    command: pytest tests/ -v
+  - type: command
+    command: npm run build
+```
+
+### Pattern-Based
+
+```yaml
+judge:
+  - type: grep
+    pattern: &quot;class.*Retry&quot;
+    files: src/**/*.py
+```
+
+### Model-Based (LLM-as-judge)
+
+```yaml
+judge:
+  - type: llm
+    prompt: |
+      Does this implementation correctly handle exponential backoff?
+      Check for: max retries, increasing delays, jitter.
+```
+
+## Best Practices
+
+- **從 3 到 5 個任務開始**，要能代表你真實的工作負載，不要用玩具範例
+- **每個 agent 至少跑 3 次**以捕捉變異：agent 是非確定性的
+- **在任務 YAML 裡釘住 commit**，讓結果在幾天／幾週之後都可以重現
+- **每個任務至少放一個確定性的 judge**（測試、build）：LLM judge 會增加雜訊
+- **把成本和通過率一起追蹤**：成本是 10 倍的 95% agent，可能不是對的選擇
+- **替你的任務定義做版本控制**：它們是測試 fixture，當作程式碼對待
+
+## Links
+
+- Repository: [github.com/joaquinhuigomez/agent-eval](https://github.com/joaquinhuigomez/agent-eval)</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-eval
+description: Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics. Use when choosing between coding agents, or when a change to an agent setup needs measured pass rate, cost, and time rather than an impression.
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Agent Eval Skill
+
+A lightweight CLI tool for comparing coding agents head-to-head on reproducible tasks. Every &quot;which coding agent is best?&quot; comparison runs on vibes — this tool systematizes it.
+
+## When to Activate
+
+- Comparing coding agents (Claude Code, Aider, Codex, etc.) on your own codebase
+- Measuring agent performance before adopting a new tool or model
+- Running regression checks when an agent updates its model or tooling
+- Producing data-backed agent selection decisions for a team
+
+## Installation
+
+&gt; **Note:** Install agent-eval from its repository after reviewing the source.
+
+## Core Concepts
+
+### YAML Task Definitions
+
+Define tasks declaratively. Each task specifies what to do, which files to touch, and how to judge success:
+
+```yaml
+name: add-retry-logic
+description: Add exponential backoff retry to the HTTP client
+repo: ./my-project
+files:
+  - src/http_client.py
+prompt: |
+  Add retry logic with exponential backoff to all HTTP requests.
+  Max 3 retries. Initial delay 1s, max delay 30s.
+judge:
+  - type: pytest
+    command: pytest tests/test_http_client.py -v
+  - type: grep
+    pattern: &quot;exponential_backoff|retry&quot;
+    files: src/http_client.py
+commit: &quot;abc1234&quot;  # pin to specific commit for reproducibility
+```
+
+### Git Worktree Isolation
+
+Each agent run gets its own git worktree — no Docker required. This provides reproducibility isolation so agents cannot interfere with each other or corrupt the base repo.
+
+### Metrics Collected
+
+| Metric | What It Measures |
+|--------|-----------------|
+| Pass rate | Did the agent produce code that passes the judge? |
+| Cost | API spend per task (when available) |
+| Time | Wall-clock seconds to completion |
+| Consistency | Pass rate across repeated runs (e.g., 3/3 = 100%) |
+
+## Workflow
+
+### 1. Define Tasks
+
+Create a `tasks/` directory with YAML files, one per task:
+
+```bash
+mkdir tasks
+# Write task definitions (see template above)
+```
+
+### 2. Run Agents
+
+Execute agents against your tasks:
+
+```bash
+agent-eval run --task tasks/add-retry-logic.yaml --agent claude-code --agent aider --runs 3
+```
+
+Each run:
+1. Creates a fresh git worktree from the specified commit
+2. Hands the prompt to the agent
+3. Runs the judge criteria
+4. Records pass/fail, cost, and time
+
+### 3. Compare Results
+
+Generate a comparison report:
+
+```bash
+agent-eval report --format table
+```
+
+```
+Task: add-retry-logic (3 runs each)
+┌──────────────┬───────────┬────────┬────────┬─────────────┐
+│ Agent        │ Pass Rate │ Cost   │ Time   │ Consistency │
+├──────────────┼───────────┼────────┼────────┼─────────────┤
+│ claude-code  │ 3/3       │ $0.12  │ 45s    │ 100%        │
+│ aider        │ 2/3       │ $0.08  │ 38s    │  67%        │
+└──────────────┴───────────┴────────┴────────┴─────────────┘
+```
+
+## Judge Types
+
+### Code-Based (deterministic)
+
+```yaml
+judge:
+  - type: pytest
+    command: pytest tests/ -v
+  - type: command
+    command: npm run build
+```
+
+### Pattern-Based
+
+```yaml
+judge:
+  - type: grep
+    pattern: &quot;class.*Retry&quot;
+    files: src/**/*.py
+```
+
+### Model-Based (LLM-as-judge)
+
+```yaml
+judge:
+  - type: llm
+    prompt: |
+      Does this implementation correctly handle exponential backoff?
+      Check for: max retries, increasing delays, jitter.
+```
+
+## Best Practices
+
+- **Start with 3-5 tasks** that represent your real workload, not toy examples
+- **Run at least 3 trials** per agent to capture variance — agents are non-deterministic
+- **Pin the commit** in your task YAML so results are reproducible across days/weeks
+- **Include at least one deterministic judge** (tests, build) per task — LLM judges add noise
+- **Track cost alongside pass rate** — a 95% agent at 10x the cost may not be the right choice
+- **Version your task definitions** — they are test fixtures, treat them as code
+
+## Links
+
+- Repository: [github.com/joaquinhuigomez/agent-eval](https://github.com/joaquinhuigomez/agent-eval)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>android-clean-architecture｜Skill 寫法圖鑑</title>
+<meta name="description" content="Android 與 KMP 專案的模組分層、UseCase、Repository 和資料層寫法">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>android-clean-architecture</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/android-clean-architecture/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Android 與 KMP 專案的模組分層、UseCase、Repository 和資料層寫法</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: android-clean-architecture
+description: 給 Android 和 Kotlin Multiplatform 專案用的 Clean Architecture 模式：模組結構、相依規則、UseCase、Repository 和資料層模式。在 Android 或 KMP 專案裡規劃模組、分層或資料流時使用。
+metadata:
+  origin: ECC
+---
+
+# Android Clean Architecture
+
+給 Android 和 KMP 專案用的 Clean Architecture 模式。涵蓋模組邊界、依賴反轉、UseCase/Repository 模式，以及搭配 Room、SQLDelight 和 Ktor 的資料層設計。
+
+## 何時啟用
+
+- 規劃 Android 或 KMP 專案的模組
+- 實作 UseCase、Repository 或 DataSource
+- 設計各層之間的資料流（domain、data、presentation）
+- 用 Koin 或 Hilt 設定依賴注入
+- 在分層架構裡使用 Room、SQLDelight 或 Ktor
+
+## 模組結構
+
+### 建議的配置
+
+```
+project/
+├── app/                  # Android 進入點、DI 接線、Application class
+├── core/                 # 共用工具、base class、錯誤型別
+├── domain/               # UseCase、領域模型、repository 介面（純 Kotlin）
+├── data/                 # Repository 實作、DataSource、DB、網路
+├── presentation/         # 畫面、ViewModel、UI 模型、導覽
+├── design-system/        # 可重複使用的 Compose 元件、主題、字型
+└── feature/              # Feature 模組（選用，給較大的專案）
+    ├── auth/
+    ├── settings/
+    └── profile/
+```
+
+### 相依規則
+
+```
+app → presentation, domain, data, core
+presentation → domain, design-system, core
+data → domain, core
+domain → core (or no dependencies)
+core → (nothing)
+```
+
+**關鍵**：`domain` 絕對不能依賴 `data`、`presentation` 或任何框架。它只含純 Kotlin。
+
+## Domain 層
+
+### UseCase 模式
+
+每個 UseCase 代表一個商業操作。用 `operator fun invoke` 讓呼叫端更乾淨：
+
+```kotlin
+class GetItemsByCategoryUseCase(
+    private val repository: ItemRepository
+) {
+    suspend operator fun invoke(category: String): Result&lt;List&lt;Item&gt;&gt; {
+        return repository.getItemsByCategory(category)
+    }
+}
+
+// 給反應式串流用的、以 Flow 為基礎的 UseCase
+class ObserveUserProgressUseCase(
+    private val repository: UserRepository
+) {
+    operator fun invoke(userId: String): Flow&lt;UserProgress&gt; {
+        return repository.observeProgress(userId)
+    }
+}
+```
+
+### 領域模型
+
+領域模型是單純的 Kotlin data class，沒有框架的 annotation：
+
+```kotlin
+data class Item(
+    val id: String,
+    val title: String,
+    val description: String,
+    val tags: List&lt;String&gt;,
+    val status: Status,
+    val category: String
+)
+
+enum class Status { DRAFT, ACTIVE, ARCHIVED }
+```
+
+### Repository 介面
+
+在 domain 定義，在 data 實作：
+
+```kotlin
+interface ItemRepository {
+    suspend fun getItemsByCategory(category: String): Result&lt;List&lt;Item&gt;&gt;
+    suspend fun saveItem(item: Item): Result&lt;Unit&gt;
+    fun observeItems(): Flow&lt;List&lt;Item&gt;&gt;
+}
+```
+
+## Data 層
+
+### Repository 實作
+
+協調本地和遠端資料來源：
+
+```kotlin
+class ItemRepositoryImpl(
+    private val localDataSource: ItemLocalDataSource,
+    private val remoteDataSource: ItemRemoteDataSource
+) : ItemRepository {
+
+    override suspend fun getItemsByCategory(category: String): Result&lt;List&lt;Item&gt;&gt; {
+        return runCatching {
+            val remote = remoteDataSource.fetchItems(category)
+            localDataSource.insertItems(remote.map { it.toEntity() })
+            localDataSource.getItemsByCategory(category).map { it.toDomain() }
+        }
+    }
+
+    override suspend fun saveItem(item: Item): Result&lt;Unit&gt; {
+        return runCatching {
+            localDataSource.insertItems(listOf(item.toEntity()))
+        }
+    }
+
+    override fun observeItems(): Flow&lt;List&lt;Item&gt;&gt; {
+        return localDataSource.observeAll().map { entities -&gt;
+            entities.map { it.toDomain() }
+        }
+    }
+}
+```
+
+### Mapper 模式
+
+把 mapper 寫成 extension function，放在資料模型附近：
+
+```kotlin
+// 在 data 層
+fun ItemEntity.toDomain() = Item(
+    id = id,
+    title = title,
+    description = description,
+    tags = tags.split(&quot;|&quot;),
+    status = Status.valueOf(status),
+    category = category
+)
+
+fun ItemDto.toEntity() = ItemEntity(
+    id = id,
+    title = title,
+    description = description,
+    tags = tags.joinToString(&quot;|&quot;),
+    status = status,
+    category = category
+)
+```
+
+### Room Database（Android）
+
+```kotlin
+@Entity(tableName = &quot;items&quot;)
+data class ItemEntity(
+    @PrimaryKey val id: String,
+    val title: String,
+    val description: String,
+    val tags: String,
+    val status: String,
+    val category: String
+)
+
+@Dao
+interface ItemDao {
+    @Query(&quot;SELECT * FROM items WHERE category = :category&quot;)
+    suspend fun getByCategory(category: String): List&lt;ItemEntity&gt;
+
+    @Upsert
+    suspend fun upsert(items: List&lt;ItemEntity&gt;)
+
+    @Query(&quot;SELECT * FROM items&quot;)
+    fun observeAll(): Flow&lt;List&lt;ItemEntity&gt;&gt;
+}
+```
+
+### SQLDelight（KMP）
+
+```sql
+-- Item.sq
+CREATE TABLE ItemEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    tags TEXT NOT NULL,
+    status TEXT NOT NULL,
+    category TEXT NOT NULL
+);
+
+getByCategory:
+SELECT * FROM ItemEntity WHERE category = ?;
+
+upsert:
+INSERT OR REPLACE INTO ItemEntity (id, title, description, tags, status, category)
+VALUES (?, ?, ?, ?, ?, ?);
+
+observeAll:
+SELECT * FROM ItemEntity;
+```
+
+### Ktor Network Client（KMP）
+
+```kotlin
+class ItemRemoteDataSource(private val client: HttpClient) {
+
+    suspend fun fetchItems(category: String): List&lt;ItemDto&gt; {
+        return client.get(&quot;api/items&quot;) {
+            parameter(&quot;category&quot;, category)
+        }.body()
+    }
+}
+
+// 設定帶有 content negotiation 的 HttpClient
+val httpClient = HttpClient {
+    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+    install(Logging) { level = LogLevel.HEADERS }
+    defaultRequest { url(&quot;https://api.example.com/&quot;) }
+}
+```
+
+## 依賴注入
+
+### Koin（對 KMP 友善）
+
+```kotlin
+// Domain module
+val domainModule = module {
+    factory { GetItemsByCategoryUseCase(get()) }
+    factory { ObserveUserProgressUseCase(get()) }
+}
+
+// Data module
+val dataModule = module {
+    single&lt;ItemRepository&gt; { ItemRepositoryImpl(get(), get()) }
+    single { ItemLocalDataSource(get()) }
+    single { ItemRemoteDataSource(get()) }
+}
+
+// Presentation module
+val presentationModule = module {
+    viewModelOf(::ItemListViewModel)
+    viewModelOf(::DashboardViewModel)
+}
+```
+
+### Hilt（只限 Android）
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    abstract fun bindItemRepository(impl: ItemRepositoryImpl): ItemRepository
+}
+
+@HiltViewModel
+class ItemListViewModel @Inject constructor(
+    private val getItems: GetItemsByCategoryUseCase
+) : ViewModel()
+```
+
+## 錯誤處理
+
+### Result/Try 模式
+
+用 `Result&lt;T&gt;` 或自訂的 sealed type 來傳遞錯誤：
+
+```kotlin
+sealed interface Try&lt;out T&gt; {
+    data class Success&lt;T&gt;(val value: T) : Try&lt;T&gt;
+    data class Failure(val error: AppError) : Try&lt;Nothing&gt;
+}
+
+sealed interface AppError {
+    data class Network(val message: String) : AppError
+    data class Database(val message: String) : AppError
+    data object Unauthorized : AppError
+}
+
+// 在 ViewModel 裡：對應成 UI 狀態
+viewModelScope.launch {
+    when (val result = getItems(category)) {
+        is Try.Success -&gt; _state.update { it.copy(items = result.value, isLoading = false) }
+        is Try.Failure -&gt; _state.update { it.copy(error = result.error.toMessage(), isLoading = false) }
+    }
+}
+```
+
+## Convention Plugin（Gradle）
+
+KMP 專案可以用 convention plugin 減少 build 檔案的重複：
+
+```kotlin
+// build-logic/src/main/kotlin/kmp-library.gradle.kts
+plugins {
+    id(&quot;org.jetbrains.kotlin.multiplatform&quot;)
+}
+
+kotlin {
+    androidTarget()
+    iosX64(); iosArm64(); iosSimulatorArm64()
+    sourceSets {
+        commonMain.dependencies { /* 共用相依套件 */ }
+        commonTest.dependencies { implementation(kotlin(&quot;test&quot;)) }
+    }
+}
+```
+
+在各模組裡套用：
+
+```kotlin
+// domain/build.gradle.kts
+plugins { id(&quot;kmp-library&quot;) }
+```
+
+## 要避免的反面模式
+
+- 在 `domain` 裡 import Android 框架的 class：保持純 Kotlin
+- 把資料庫 entity 或 DTO 直接暴露給 UI 層：一律對應成領域模型
+- 把商業邏輯放在 ViewModel：抽到 UseCase
+- 使用 `GlobalScope` 或非結構化的 coroutine：用 `viewModelScope` 或結構化並行
+- 肥大的 repository 實作：拆成各有專責的 DataSource
+- 模組之間循環相依：如果 A 依賴 B，B 就不能依賴 A
+
+## 參考資料
+
+UI 模式請見 skill：`compose-multiplatform-patterns`。
+非同步模式請見 skill：`kotlin-coroutines-flows`。</pre></section><section><h2>英文原文</h2><pre>---
+name: android-clean-architecture
+description: Clean Architecture patterns for Android and Kotlin Multiplatform projects — module structure, dependency rules, UseCases, Repositories, and data layer patterns. Use when structuring modules, layers, or data flow in an Android or KMP project.
+metadata:
+  origin: ECC
+---
+
+# Android Clean Architecture
+
+Clean Architecture patterns for Android and KMP projects. Covers module boundaries, dependency inversion, UseCase/Repository patterns, and data layer design with Room, SQLDelight, and Ktor.
+
+## When to Activate
+
+- Structuring Android or KMP project modules
+- Implementing UseCases, Repositories, or DataSources
+- Designing data flow between layers (domain, data, presentation)
+- Setting up dependency injection with Koin or Hilt
+- Working with Room, SQLDelight, or Ktor in a layered architecture
+
+## Module Structure
+
+### Recommended Layout
+
+```
+project/
+├── app/                  # Android entry point, DI wiring, Application class
+├── core/                 # Shared utilities, base classes, error types
+├── domain/               # UseCases, domain models, repository interfaces (pure Kotlin)
+├── data/                 # Repository implementations, DataSources, DB, network
+├── presentation/         # Screens, ViewModels, UI models, navigation
+├── design-system/        # Reusable Compose components, theme, typography
+└── feature/              # Feature modules (optional, for larger projects)
+    ├── auth/
+    ├── settings/
+    └── profile/
+```
+
+### Dependency Rules
+
+```
+app → presentation, domain, data, core
+presentation → domain, design-system, core
+data → domain, core
+domain → core (or no dependencies)
+core → (nothing)
+```
+
+**Critical**: `domain` must NEVER depend on `data`, `presentation`, or any framework. It contains pure Kotlin only.
+
+## Domain Layer
+
+### UseCase Pattern
+
+Each UseCase represents one business operation. Use `operator fun invoke` for clean call sites:
+
+```kotlin
+class GetItemsByCategoryUseCase(
+    private val repository: ItemRepository
+) {
+    suspend operator fun invoke(category: String): Result&lt;List&lt;Item&gt;&gt; {
+        return repository.getItemsByCategory(category)
+    }
+}
+
+// Flow-based UseCase for reactive streams
+class ObserveUserProgressUseCase(
+    private val repository: UserRepository
+) {
+    operator fun invoke(userId: String): Flow&lt;UserProgress&gt; {
+        return repository.observeProgress(userId)
+    }
+}
+```
+
+### Domain Models
+
+Domain models are plain Kotlin data classes — no framework annotations:
+
+```kotlin
+data class Item(
+    val id: String,
+    val title: String,
+    val description: String,
+    val tags: List&lt;String&gt;,
+    val status: Status,
+    val category: String
+)
+
+enum class Status { DRAFT, ACTIVE, ARCHIVED }
+```
+
+### Repository Interfaces
+
+Defined in domain, implemented in data:
+
+```kotlin
+interface ItemRepository {
+    suspend fun getItemsByCategory(category: String): Result&lt;List&lt;Item&gt;&gt;
+    suspend fun saveItem(item: Item): Result&lt;Unit&gt;
+    fun observeItems(): Flow&lt;List&lt;Item&gt;&gt;
+}
+```
+
+## Data Layer
+
+### Repository Implementation
+
+Coordinates between local and remote data sources:
+
+```kotlin
+class ItemRepositoryImpl(
+    private val localDataSource: ItemLocalDataSource,
+    private val remoteDataSource: ItemRemoteDataSource
+) : ItemRepository {
+
+    override suspend fun getItemsByCategory(category: String): Result&lt;List&lt;Item&gt;&gt; {
+        return runCatching {
+            val remote = remoteDataSource.fetchItems(category)
+            localDataSource.insertItems(remote.map { it.toEntity() })
+            localDataSource.getItemsByCategory(category).map { it.toDomain() }
+        }
+    }
+
+    override suspend fun saveItem(item: Item): Result&lt;Unit&gt; {
+        return runCatching {
+            localDataSource.insertItems(listOf(item.toEntity()))
+        }
+    }
+
+    override fun observeItems(): Flow&lt;List&lt;Item&gt;&gt; {
+        return localDataSource.observeAll().map { entities -&gt;
+            entities.map { it.toDomain() }
+        }
+    }
+}
+```
+
+### Mapper Pattern
+
+Keep mappers as extension functions near the data models:
+
+```kotlin
+// In data layer
+fun ItemEntity.toDomain() = Item(
+    id = id,
+    title = title,
+    description = description,
+    tags = tags.split(&quot;|&quot;),
+    status = Status.valueOf(status),
+    category = category
+)
+
+fun ItemDto.toEntity() = ItemEntity(
+    id = id,
+    title = title,
+    description = description,
+    tags = tags.joinToString(&quot;|&quot;),
+    status = status,
+    category = category
+)
+```
+
+### Room Database (Android)
+
+```kotlin
+@Entity(tableName = &quot;items&quot;)
+data class ItemEntity(
+    @PrimaryKey val id: String,
+    val title: String,
+    val description: String,
+    val tags: String,
+    val status: String,
+    val category: String
+)
+
+@Dao
+interface ItemDao {
+    @Query(&quot;SELECT * FROM items WHERE category = :category&quot;)
+    suspend fun getByCategory(category: String): List&lt;ItemEntity&gt;
+
+    @Upsert
+    suspend fun upsert(items: List&lt;ItemEntity&gt;)
+
+    @Query(&quot;SELECT * FROM items&quot;)
+    fun observeAll(): Flow&lt;List&lt;ItemEntity&gt;&gt;
+}
+```
+
+### SQLDelight (KMP)
+
+```sql
+-- Item.sq
+CREATE TABLE ItemEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    tags TEXT NOT NULL,
+    status TEXT NOT NULL,
+    category TEXT NOT NULL
+);
+
+getByCategory:
+SELECT * FROM ItemEntity WHERE category = ?;
+
+upsert:
+INSERT OR REPLACE INTO ItemEntity (id, title, description, tags, status, category)
+VALUES (?, ?, ?, ?, ?, ?);
+
+observeAll:
+SELECT * FROM ItemEntity;
+```
+
+### Ktor Network Client (KMP)
+
+```kotlin
+class ItemRemoteDataSource(private val client: HttpClient) {
+
+    suspend fun fetchItems(category: String): List&lt;ItemDto&gt; {
+        return client.get(&quot;api/items&quot;) {
+            parameter(&quot;category&quot;, category)
+        }.body()
+    }
+}
+
+// HttpClient setup with content negotiation
+val httpClient = HttpClient {
+    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+    install(Logging) { level = LogLevel.HEADERS }
+    defaultRequest { url(&quot;https://api.example.com/&quot;) }
+}
+```
+
+## Dependency Injection
+
+### Koin (KMP-friendly)
+
+```kotlin
+// Domain module
+val domainModule = module {
+    factory { GetItemsByCategoryUseCase(get()) }
+    factory { ObserveUserProgressUseCase(get()) }
+}
+
+// Data module
+val dataModule = module {
+    single&lt;ItemRepository&gt; { ItemRepositoryImpl(get(), get()) }
+    single { ItemLocalDataSource(get()) }
+    single { ItemRemoteDataSource(get()) }
+}
+
+// Presentation module
+val presentationModule = module {
+    viewModelOf(::ItemListViewModel)
+    viewModelOf(::DashboardViewModel)
+}
+```
+
+### Hilt (Android-only)
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    abstract fun bindItemRepository(impl: ItemRepositoryImpl): ItemRepository
+}
+
+@HiltViewModel
+class ItemListViewModel @Inject constructor(
+    private val getItems: GetItemsByCategoryUseCase
+) : ViewModel()
+```
+
+## Error Handling
+
+### Result/Try Pattern
+
+Use `Result&lt;T&gt;` or a custom sealed type for error propagation:
+
+```kotlin
+sealed interface Try&lt;out T&gt; {
+    data class Success&lt;T&gt;(val value: T) : Try&lt;T&gt;
+    data class Failure(val error: AppError) : Try&lt;Nothing&gt;
+}
+
+sealed interface AppError {
+    data class Network(val message: String) : AppError
+    data class Database(val message: String) : AppError
+    data object Unauthorized : AppError
+}
+
+// In ViewModel — map to UI state
+viewModelScope.launch {
+    when (val result = getItems(category)) {
+        is Try.Success -&gt; _state.update { it.copy(items = result.value, isLoading = false) }
+        is Try.Failure -&gt; _state.update { it.copy(error = result.error.toMessage(), isLoading = false) }
+    }
+}
+```
+
+## Convention Plugins (Gradle)
+
+For KMP projects, use convention plugins to reduce build file duplication:
+
+```kotlin
+// build-logic/src/main/kotlin/kmp-library.gradle.kts
+plugins {
+    id(&quot;org.jetbrains.kotlin.multiplatform&quot;)
+}
+
+kotlin {
+    androidTarget()
+    iosX64(); iosArm64(); iosSimulatorArm64()
+    sourceSets {
+        commonMain.dependencies { /* shared deps */ }
+        commonTest.dependencies { implementation(kotlin(&quot;test&quot;)) }
+    }
+}
+```
+
+Apply in modules:
+
+```kotlin
+// domain/build.gradle.kts
+plugins { id(&quot;kmp-library&quot;) }
+```
+
+## Anti-Patterns to Avoid
+
+- Importing Android framework classes in `domain` — keep it pure Kotlin
+- Exposing database entities or DTOs to the UI layer — always map to domain models
+- Putting business logic in ViewModels — extract to UseCases
+- Using `GlobalScope` or unstructured coroutines — use `viewModelScope` or structured concurrency
+- Fat repository implementations — split into focused DataSources
+- Circular module dependencies — if A depends on B, B must not depend on A
+
+## References
+
+See skill: `compose-multiplatform-patterns` for UI patterns.
+See skill: `kotlin-coroutines-flows` for async patterns.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

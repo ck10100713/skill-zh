@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>springboot-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Spring Boot 後端架構模式：REST、分層、快取、非同步與日誌">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>springboot-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/springboot-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Spring Boot 後端架構模式：REST、分層、快取、非同步與日誌</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: springboot-patterns
+description: Spring Boot 架構模式、REST API 設計、分層 service、資料存取、快取、非同步處理和日誌。用於 Java Spring Boot 後端工作。打造或 review Spring Boot 後端（REST 層、service、資料存取、快取或非同步工作）時使用。
+metadata:
+  origin: ECC
+---
+
+# Spring Boot 開發模式
+
+用於可擴展、正式環境等級服務的 Spring Boot 架構與 API 模式。
+
+## 何時啟用
+
+- 用 Spring MVC 或 WebFlux 建構 REST API
+- 規劃 controller → service → repository 的分層
+- 設定 Spring Data JPA、快取或非同步處理
+- 加入驗證、例外處理或分頁
+- 為 dev/staging/production 環境設定 profile
+- 用 Spring Events 或 Kafka 實作事件驅動模式
+
+## REST API 結構
+
+```java
+@RestController
+@RequestMapping(&quot;/api/markets&quot;)
+@Validated
+class MarketController {
+  private final MarketService marketService;
+
+  MarketController(MarketService marketService) {
+    this.marketService = marketService;
+  }
+
+  @GetMapping
+  ResponseEntity&lt;Page&lt;MarketResponse&gt;&gt; list(
+      @RequestParam(defaultValue = &quot;0&quot;) int page,
+      @RequestParam(defaultValue = &quot;20&quot;) int size) {
+    Page&lt;Market&gt; markets = marketService.list(PageRequest.of(page, size));
+    return ResponseEntity.ok(markets.map(MarketResponse::from));
+  }
+
+  @PostMapping
+  ResponseEntity&lt;MarketResponse&gt; create(@Valid @RequestBody CreateMarketRequest request) {
+    Market market = marketService.create(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(MarketResponse.from(market));
+  }
+}
+```
+
+## Repository 模式（Spring Data JPA）
+
+```java
+public interface MarketRepository extends JpaRepository&lt;MarketEntity, Long&gt; {
+  @Query(&quot;select m from MarketEntity m where m.status = :status order by m.volume desc&quot;)
+  List&lt;MarketEntity&gt; findActive(@Param(&quot;status&quot;) MarketStatus status, Pageable pageable);
+}
+```
+
+## 帶交易的 Service 層
+
+```java
+@Service
+public class MarketService {
+  private final MarketRepository repo;
+
+  public MarketService(MarketRepository repo) {
+    this.repo = repo;
+  }
+
+  @Transactional
+  public Market create(CreateMarketRequest request) {
+    MarketEntity entity = MarketEntity.from(request);
+    MarketEntity saved = repo.save(entity);
+    return Market.from(saved);
+  }
+}
+```
+
+## DTO 與驗證
+
+```java
+public record CreateMarketRequest(
+    @NotBlank @Size(max = 200) String name,
+    @NotBlank @Size(max = 2000) String description,
+    @NotNull @FutureOrPresent Instant endDate,
+    @NotEmpty List&lt;@NotBlank String&gt; categories) {}
+
+public record MarketResponse(Long id, String name, MarketStatus status) {
+  static MarketResponse from(Market market) {
+    return new MarketResponse(market.id(), market.name(), market.status());
+  }
+}
+```
+
+## 例外處理
+
+```java
+@ControllerAdvice
+class GlobalExceptionHandler {
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  ResponseEntity&lt;ApiError&gt; handleValidation(MethodArgumentNotValidException ex) {
+    String message = ex.getBindingResult().getFieldErrors().stream()
+        .map(e -&gt; e.getField() + &quot;: &quot; + e.getDefaultMessage())
+        .collect(Collectors.joining(&quot;, &quot;));
+    return ResponseEntity.badRequest().body(ApiError.validation(message));
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  ResponseEntity&lt;ApiError&gt; handleAccessDenied() {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError.of(&quot;Forbidden&quot;));
+  }
+
+  @ExceptionHandler(Exception.class)
+  ResponseEntity&lt;ApiError&gt; handleGeneric(Exception ex) {
+    // Log unexpected errors with stack traces
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(ApiError.of(&quot;Internal server error&quot;));
+  }
+}
+```
+
+## 快取
+
+需要在設定類別上加 `@EnableCaching`。
+
+```java
+@Service
+public class MarketCacheService {
+  private final MarketRepository repo;
+
+  public MarketCacheService(MarketRepository repo) {
+    this.repo = repo;
+  }
+
+  @Cacheable(value = &quot;market&quot;, key = &quot;#id&quot;)
+  public Market getById(Long id) {
+    return repo.findById(id)
+        .map(Market::from)
+        .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Market not found&quot;));
+  }
+
+  @CacheEvict(value = &quot;market&quot;, key = &quot;#id&quot;)
+  public void evict(Long id) {}
+}
+```
+
+## 非同步處理
+
+需要在設定類別上加 `@EnableAsync`。
+
+```java
+@Service
+public class NotificationService {
+  @Async
+  public CompletableFuture&lt;Void&gt; sendAsync(Notification notification) {
+    // send email/SMS
+    return CompletableFuture.completedFuture(null);
+  }
+}
+```
+
+## 日誌（SLF4J）
+
+```java
+@Service
+public class ReportService {
+  private static final Logger log = LoggerFactory.getLogger(ReportService.class);
+
+  public Report generate(Long marketId) {
+    log.info(&quot;generate_report marketId={}&quot;, marketId);
+    try {
+      // logic
+    } catch (Exception ex) {
+      log.error(&quot;generate_report_failed marketId={}&quot;, marketId, ex);
+      throw ex;
+    }
+    return new Report();
+  }
+}
+```
+
+## Middleware / Filter
+
+```java
+@Component
+public class RequestLoggingFilter extends OncePerRequestFilter {
+  private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    long start = System.currentTimeMillis();
+    try {
+      filterChain.doFilter(request, response);
+    } finally {
+      long duration = System.currentTimeMillis() - start;
+      log.info(&quot;req method={} uri={} status={} durationMs={}&quot;,
+          request.getMethod(), request.getRequestURI(), response.getStatus(), duration);
+    }
+  }
+}
+```
+
+## 分頁與排序
+
+```java
+PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(&quot;createdAt&quot;).descending());
+Page&lt;Market&gt; results = marketService.list(page);
+```
+
+## 容錯的外部呼叫
+
+```java
+public &lt;T&gt; T withRetry(Supplier&lt;T&gt; supplier, int maxRetries) {
+  int attempts = 0;
+  while (true) {
+    try {
+      return supplier.get();
+    } catch (Exception ex) {
+      attempts++;
+      if (attempts &gt;= maxRetries) {
+        throw ex;
+      }
+      try {
+        Thread.sleep((long) Math.pow(2, attempts) * 100L);
+      } catch (InterruptedException ie) {
+        Thread.currentThread().interrupt();
+        throw ex;
+      }
+    }
+  }
+}
+```
+
+## Rate Limiting（Filter + Bucket4j）
+
+**安全注意事項**：`X-Forwarded-For` header 預設是不可信的，因為客戶端可以偽造。
+只有在符合下面這些條件時，才使用 forwarded header：
+1. 你的應用程式位在可信任的反向代理後面（nginx、AWS ALB 等）
+2. 你已經把 `ForwardedHeaderFilter` 註冊成 bean
+3. 你已在 application properties 中設定 `server.forward-headers-strategy=NATIVE` 或 `FRAMEWORK`
+4. 你的代理已設定成覆寫（而不是附加）`X-Forwarded-For` header
+
+`ForwardedHeaderFilter` 設定正確時，`request.getRemoteAddr()` 會自動從 forwarded header 回傳正確的客戶端 IP。沒有這個設定的話，直接用 `request.getRemoteAddr()`，它回傳的是直接連線的 IP，這是唯一可信的值。
+
+```java
+@Component
+public class RateLimitFilter extends OncePerRequestFilter {
+  private final Map&lt;String, Bucket&gt; buckets = new ConcurrentHashMap&lt;&gt;();
+
+  /*
+   * SECURITY: This filter uses request.getRemoteAddr() to identify clients for rate limiting.
+   *
+   * If your application is behind a reverse proxy (nginx, AWS ALB, etc.), you MUST configure
+   * Spring to handle forwarded headers properly for accurate client IP detection:
+   *
+   * 1. Set server.forward-headers-strategy=NATIVE (for cloud platforms) or FRAMEWORK in
+   *    application.properties/yaml
+   * 2. If using FRAMEWORK strategy, register ForwardedHeaderFilter:
+   *
+   *    @Bean
+   *    ForwardedHeaderFilter forwardedHeaderFilter() {
+   *        return new ForwardedHeaderFilter();
+   *    }
+   *
+   * 3. Ensure your proxy overwrites (not appends) the X-Forwarded-For header to prevent spoofing
+   * 4. Configure server.tomcat.remoteip.trusted-proxies or equivalent for your container
+   *
+   * Without this configuration, request.getRemoteAddr() returns the proxy IP, not the client IP.
+   * Do NOT read X-Forwarded-For directly—it is trivially spoofable without trusted proxy handling.
+   */
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    // Use getRemoteAddr() which returns the correct client IP when ForwardedHeaderFilter
+    // is configured, or the direct connection IP otherwise. Never trust X-Forwarded-For
+    // headers directly without proper proxy configuration.
+    String clientIp = request.getRemoteAddr();
+
+    Bucket bucket = buckets.computeIfAbsent(clientIp,
+        k -&gt; Bucket.builder()
+            .addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofMinutes(1))))
+            .build());
+
+    if (bucket.tryConsume(1)) {
+      filterChain.doFilter(request, response);
+    } else {
+      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    }
+  }
+}
+```
+
+## 背景工作
+
+使用 Spring 的 `@Scheduled`，或整合佇列（例如 Kafka、SQS、RabbitMQ）。讓 handler 保持冪等而且可觀測。
+
+## 可觀測性
+
+- 透過 Logback encoder 輸出結構化日誌（JSON）
+- Metrics：Micrometer + Prometheus/OTel
+- Tracing：Micrometer Tracing 搭配 OpenTelemetry 或 Brave 後端
+
+## 正式環境預設值
+
+- 優先用建構子注入，避免欄位注入
+- 啟用 `spring.mvc.problemdetails.enabled=true`，輸出符合 RFC 7807 的錯誤（Spring Boot 3+）
+- 依工作負載設定 HikariCP 連線池大小，並設定 timeout
+- 查詢用 `@Transactional(readOnly = true)`
+- 適當的地方用 `@NonNull` 和 `Optional` 強化 null 安全
+
+**記住**：controller 要薄、service 要專注、repository 要簡單、錯誤要集中處理。以好維護和好測試為最佳化目標。</pre></section><section><h2>英文原文</h2><pre>---
+name: springboot-patterns
+description: Spring Boot architecture patterns, REST API design, layered services, data access, caching, async processing, and logging. Use for Java Spring Boot backend work. Use when building or reviewing a Spring Boot backend — REST layer, services, data access, caching, or async work.
+metadata:
+  origin: ECC
+---
+
+# Spring Boot Development Patterns
+
+Spring Boot architecture and API patterns for scalable, production-grade services.
+
+## When to Activate
+
+- Building REST APIs with Spring MVC or WebFlux
+- Structuring controller → service → repository layers
+- Configuring Spring Data JPA, caching, or async processing
+- Adding validation, exception handling, or pagination
+- Setting up profiles for dev/staging/production environments
+- Implementing event-driven patterns with Spring Events or Kafka
+
+## REST API Structure
+
+```java
+@RestController
+@RequestMapping(&quot;/api/markets&quot;)
+@Validated
+class MarketController {
+  private final MarketService marketService;
+
+  MarketController(MarketService marketService) {
+    this.marketService = marketService;
+  }
+
+  @GetMapping
+  ResponseEntity&lt;Page&lt;MarketResponse&gt;&gt; list(
+      @RequestParam(defaultValue = &quot;0&quot;) int page,
+      @RequestParam(defaultValue = &quot;20&quot;) int size) {
+    Page&lt;Market&gt; markets = marketService.list(PageRequest.of(page, size));
+    return ResponseEntity.ok(markets.map(MarketResponse::from));
+  }
+
+  @PostMapping
+  ResponseEntity&lt;MarketResponse&gt; create(@Valid @RequestBody CreateMarketRequest request) {
+    Market market = marketService.create(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(MarketResponse.from(market));
+  }
+}
+```
+
+## Repository Pattern (Spring Data JPA)
+
+```java
+public interface MarketRepository extends JpaRepository&lt;MarketEntity, Long&gt; {
+  @Query(&quot;select m from MarketEntity m where m.status = :status order by m.volume desc&quot;)
+  List&lt;MarketEntity&gt; findActive(@Param(&quot;status&quot;) MarketStatus status, Pageable pageable);
+}
+```
+
+## Service Layer with Transactions
+
+```java
+@Service
+public class MarketService {
+  private final MarketRepository repo;
+
+  public MarketService(MarketRepository repo) {
+    this.repo = repo;
+  }
+
+  @Transactional
+  public Market create(CreateMarketRequest request) {
+    MarketEntity entity = MarketEntity.from(request);
+    MarketEntity saved = repo.save(entity);
+    return Market.from(saved);
+  }
+}
+```
+
+## DTOs and Validation
+
+```java
+public record CreateMarketRequest(
+    @NotBlank @Size(max = 200) String name,
+    @NotBlank @Size(max = 2000) String description,
+    @NotNull @FutureOrPresent Instant endDate,
+    @NotEmpty List&lt;@NotBlank String&gt; categories) {}
+
+public record MarketResponse(Long id, String name, MarketStatus status) {
+  static MarketResponse from(Market market) {
+    return new MarketResponse(market.id(), market.name(), market.status());
+  }
+}
+```
+
+## Exception Handling
+
+```java
+@ControllerAdvice
+class GlobalExceptionHandler {
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  ResponseEntity&lt;ApiError&gt; handleValidation(MethodArgumentNotValidException ex) {
+    String message = ex.getBindingResult().getFieldErrors().stream()
+        .map(e -&gt; e.getField() + &quot;: &quot; + e.getDefaultMessage())
+        .collect(Collectors.joining(&quot;, &quot;));
+    return ResponseEntity.badRequest().body(ApiError.validation(message));
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  ResponseEntity&lt;ApiError&gt; handleAccessDenied() {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError.of(&quot;Forbidden&quot;));
+  }
+
+  @ExceptionHandler(Exception.class)
+  ResponseEntity&lt;ApiError&gt; handleGeneric(Exception ex) {
+    // Log unexpected errors with stack traces
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(ApiError.of(&quot;Internal server error&quot;));
+  }
+}
+```
+
+## Caching
+
+Requires `@EnableCaching` on a configuration class.
+
+```java
+@Service
+public class MarketCacheService {
+  private final MarketRepository repo;
+
+  public MarketCacheService(MarketRepository repo) {
+    this.repo = repo;
+  }
+
+  @Cacheable(value = &quot;market&quot;, key = &quot;#id&quot;)
+  public Market getById(Long id) {
+    return repo.findById(id)
+        .map(Market::from)
+        .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Market not found&quot;));
+  }
+
+  @CacheEvict(value = &quot;market&quot;, key = &quot;#id&quot;)
+  public void evict(Long id) {}
+}
+```
+
+## Async Processing
+
+Requires `@EnableAsync` on a configuration class.
+
+```java
+@Service
+public class NotificationService {
+  @Async
+  public CompletableFuture&lt;Void&gt; sendAsync(Notification notification) {
+    // send email/SMS
+    return CompletableFuture.completedFuture(null);
+  }
+}
+```
+
+## Logging (SLF4J)
+
+```java
+@Service
+public class ReportService {
+  private static final Logger log = LoggerFactory.getLogger(ReportService.class);
+
+  public Report generate(Long marketId) {
+    log.info(&quot;generate_report marketId={}&quot;, marketId);
+    try {
+      // logic
+    } catch (Exception ex) {
+      log.error(&quot;generate_report_failed marketId={}&quot;, marketId, ex);
+      throw ex;
+    }
+    return new Report();
+  }
+}
+```
+
+## Middleware / Filters
+
+```java
+@Component
+public class RequestLoggingFilter extends OncePerRequestFilter {
+  private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    long start = System.currentTimeMillis();
+    try {
+      filterChain.doFilter(request, response);
+    } finally {
+      long duration = System.currentTimeMillis() - start;
+      log.info(&quot;req method={} uri={} status={} durationMs={}&quot;,
+          request.getMethod(), request.getRequestURI(), response.getStatus(), duration);
+    }
+  }
+}
+```
+
+## Pagination and Sorting
+
+```java
+PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(&quot;createdAt&quot;).descending());
+Page&lt;Market&gt; results = marketService.list(page);
+```
+
+## Error-Resilient External Calls
+
+```java
+public &lt;T&gt; T withRetry(Supplier&lt;T&gt; supplier, int maxRetries) {
+  int attempts = 0;
+  while (true) {
+    try {
+      return supplier.get();
+    } catch (Exception ex) {
+      attempts++;
+      if (attempts &gt;= maxRetries) {
+        throw ex;
+      }
+      try {
+        Thread.sleep((long) Math.pow(2, attempts) * 100L);
+      } catch (InterruptedException ie) {
+        Thread.currentThread().interrupt();
+        throw ex;
+      }
+    }
+  }
+}
+```
+
+## Rate Limiting (Filter + Bucket4j)
+
+**Security Note**: The `X-Forwarded-For` header is untrusted by default because clients can spoof it.
+Only use forwarded headers when:
+1. Your app is behind a trusted reverse proxy (nginx, AWS ALB, etc.)
+2. You have registered `ForwardedHeaderFilter` as a bean
+3. You have configured `server.forward-headers-strategy=NATIVE` or `FRAMEWORK` in application properties
+4. Your proxy is configured to overwrite (not append to) the `X-Forwarded-For` header
+
+When `ForwardedHeaderFilter` is properly configured, `request.getRemoteAddr()` will automatically
+return the correct client IP from the forwarded headers. Without this configuration, use
+`request.getRemoteAddr()` directly—it returns the immediate connection IP, which is the only
+trustworthy value.
+
+```java
+@Component
+public class RateLimitFilter extends OncePerRequestFilter {
+  private final Map&lt;String, Bucket&gt; buckets = new ConcurrentHashMap&lt;&gt;();
+
+  /*
+   * SECURITY: This filter uses request.getRemoteAddr() to identify clients for rate limiting.
+   *
+   * If your application is behind a reverse proxy (nginx, AWS ALB, etc.), you MUST configure
+   * Spring to handle forwarded headers properly for accurate client IP detection:
+   *
+   * 1. Set server.forward-headers-strategy=NATIVE (for cloud platforms) or FRAMEWORK in
+   *    application.properties/yaml
+   * 2. If using FRAMEWORK strategy, register ForwardedHeaderFilter:
+   *
+   *    @Bean
+   *    ForwardedHeaderFilter forwardedHeaderFilter() {
+   *        return new ForwardedHeaderFilter();
+   *    }
+   *
+   * 3. Ensure your proxy overwrites (not appends) the X-Forwarded-For header to prevent spoofing
+   * 4. Configure server.tomcat.remoteip.trusted-proxies or equivalent for your container
+   *
+   * Without this configuration, request.getRemoteAddr() returns the proxy IP, not the client IP.
+   * Do NOT read X-Forwarded-For directly—it is trivially spoofable without trusted proxy handling.
+   */
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    // Use getRemoteAddr() which returns the correct client IP when ForwardedHeaderFilter
+    // is configured, or the direct connection IP otherwise. Never trust X-Forwarded-For
+    // headers directly without proper proxy configuration.
+    String clientIp = request.getRemoteAddr();
+
+    Bucket bucket = buckets.computeIfAbsent(clientIp,
+        k -&gt; Bucket.builder()
+            .addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofMinutes(1))))
+            .build());
+
+    if (bucket.tryConsume(1)) {
+      filterChain.doFilter(request, response);
+    } else {
+      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    }
+  }
+}
+```
+
+## Background Jobs
+
+Use Spring’s `@Scheduled` or integrate with queues (e.g., Kafka, SQS, RabbitMQ). Keep handlers idempotent and observable.
+
+## Observability
+
+- Structured logging (JSON) via Logback encoder
+- Metrics: Micrometer + Prometheus/OTel
+- Tracing: Micrometer Tracing with OpenTelemetry or Brave backend
+
+## Production Defaults
+
+- Prefer constructor injection, avoid field injection
+- Enable `spring.mvc.problemdetails.enabled=true` for RFC 7807 errors (Spring Boot 3+)
+- Configure HikariCP pool sizes for workload, set timeouts
+- Use `@Transactional(readOnly = true)` for queries
+- Enforce null-safety via `@NonNull` and `Optional` where appropriate
+
+**Remember**: Keep controllers thin, services focused, repositories simple, and errors handled centrally. Optimize for maintainability and testability.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

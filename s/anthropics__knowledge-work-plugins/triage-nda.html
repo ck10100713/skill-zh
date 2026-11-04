@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>triage-nda｜Skill 寫法圖鑑</title>
+<meta name="description" content="快速篩查 NDA，分成 GREEN、YELLOW、RED 決定要不要送法務">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>triage-nda</h1>
+<p class="meta">Anthropic ｜ 商業與營運 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/legal/skills/triage-nda/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">快速篩查 NDA，分成 GREEN、YELLOW、RED 決定要不要送法務</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: triage-nda
+description: 快速對收到的 NDA 做分流，分成 GREEN（標準核准）、YELLOW（需法務審閱）或 RED（需完整法務審查）。業務或 BD 送來新的 NDA、要篩查夾帶的禁止招攬或競業禁止條款、或缺少例外條款，或要判斷 NDA 能不能依標準授權簽署時使用。
+argument-hint: &quot;&lt;NDA 檔案或文字&gt;&quot;
+---
+
+# /triage-nda -- NDA 預先篩查
+
+&gt; 如果看到不認識的 placeholder，或想確認目前連了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+對這份 NDA 做 triage：@$1
+
+依標準篩查準則，快速對收到的 NDA 做 triage。把 NDA 分類以便轉派：標準核准、法務審閱，或完整法務審查。
+
+**重要**：你協助法務工作流程，但不提供法律意見。所有分析在被採信之前，都必須由合格的法律專業人員審閱。
+
+## 呼叫方式
+
+```
+/triage-nda
+```
+
+## 工作流程
+
+### 步驟 1：接收 NDA
+
+接受任何格式的 NDA：
+- **上傳檔案**：PDF、DOCX 或其他文件格式
+- **URL**：文件系統裡的 NDA 連結
+- **貼上的文字**：直接貼上的 NDA 內文
+
+如果沒有提供 NDA，請使用者提供。
+
+### 步驟 2：載入 NDA Playbook
+
+到本地設定（例如 `legal.local.md`）找 NDA 篩查準則。
+
+NDA playbook 應該定義：
+- 雙向 vs. 單向的要求
+- 可接受的期間長度
+- 必備的例外條款
+- 禁止的條款
+- 組織特有的要求
+
+**如果沒有設定 NDA playbook：**
+- 用合理的市場標準預設值繼續
+- 清楚註明正在使用預設值
+- 套用的預設值：
+  - 要求雙向義務（除非組織只是揭露方）
+  - 期間：標準為 2-3 年，營業秘密最長 5 年
+  - 必備的標準例外條款：獨立開發、公開可得、合法從第三方取得、法律要求
+  - 不得有禁止招攬或競業禁止條款
+  - 不得有 residuals 條款（若有，範圍必須很窄）
+  - 準據法在合理的商業司法管轄區
+
+### 步驟 3：快速篩查
+
+逐項、有系統地依每個篩查準則評估這份 NDA。
+
+#### 1. 合約結構
+- [ ] **類型已確認**：雙向 NDA、單向（揭露方），或單向（接收方）
+- [ ] **符合情境**：NDA 類型適合這段業務關係嗎？（例如探索性討論用雙向，單向揭露用單向）
+- [ ] **獨立合約**：確認 NDA 是獨立的合約，不是嵌在較大商業合約裡的保密條款
+
+#### 2. 機密資訊的定義
+- [ ] **範圍合理**：不過度寬泛（避免「任何種類的所有資訊，不論是否標示為機密」）
+- [ ] **標示要求**：如果要求標示，做得到嗎？（口頭揭露後 30 天內以書面標示是標準做法）
+- [ ] **有排除條款**：已定義標準排除事項（見下方「標準例外條款」）
+- [ ] **沒有問題的納入項目**：沒有把公開可得的資訊或獨立開發的資料定義為機密
+
+#### 3. 接收方的義務
+- [ ] **注意標準**：合理注意，或至少與保護自己機密資訊相同的注意程度
+- [ ] **使用限制**：限於所述目的
+- [ ] **揭露限制**：限於有必要知道、且受類似義務拘束的人
+- [ ] **沒有過重的義務**：沒有不切實際的要求（例如所有通訊都要加密、維護實體紀錄）
+
+#### 4. 標準例外條款
+以下例外條款應該全部都有：
+- [ ] **公眾知悉**：接收方沒有過失而已經或變成公開可得的資訊
+- [ ] **先前持有**：接收方在揭露前就已經知道的資訊
+- [ ] **獨立開發**：沒有使用或參考機密資訊而獨立開發出來的資訊
+- [ ] **第三方取得**：合法從第三方取得、沒有限制的資訊
+- [ ] **法律強制**：法律、法規或法律程序要求時有權揭露（法律允許的話，須通知揭露方）
+
+#### 5. 允許的揭露對象
+- [ ] **員工**：可以告知有必要知道的員工
+- [ ] **承包商/顧問**：可以在類似保密義務下告知承包商、顧問和專業諮詢人員
+- [ ] **關係企業**：可以告知關係企業（為了業務目的有需要的話）
+- [ ] **法律/法規**：法律或法規要求時可以揭露
+
+#### 6. 期間與存續
+- [ ] **合約期間**：對這段業務關係來說期間合理（1-3 年是標準）
+- [ ] **保密義務存續**：終止後義務在合理期間內繼續有效（2-5 年是標準，營業秘密可以更長）
+- [ ] **不是永久**：避免無限期或永久的保密義務（例外：營業秘密可能需要更長的保護）
+
+#### 7. 返還與銷毀
+- [ ] **觸發義務**：終止時或應要求時
+- [ ] **範圍合理**：返還或銷毀機密資訊及所有副本
+- [ ] **保留例外**：允許保留法律、法規或內部合規/備份政策要求的副本
+- [ ] **證明**：銷毀證明是合理的，要求宣誓書就太重了
+
+#### 8. 救濟
+- [ ] **禁制令救濟**：承認違約可能造成無法彌補的損害、可能適用衡平救濟，是標準做法
+- [ ] **沒有預先設定的賠償**：NDA 裡避免約定違約金條款
+- [ ] **不偏向單方**：救濟條款對雙方一體適用（雙向 NDA 中）
+
+#### 9. 要標記的問題條款
+- [ ] **沒有禁止招攬**：NDA 不該有禁止招攬員工的條款
+- [ ] **沒有競業禁止**：NDA 不該有競業禁止條款
+- [ ] **沒有排他性**：NDA 不該限制任何一方與他人進行類似的討論
+- [ ] **沒有 standstill**：NDA 不該有 standstill 或類似的限制條款（M&amp;A 情境除外）
+- [ ] **沒有 residuals 條款**（或範圍很窄）：如果有 residuals 條款，應限於個人在不借助輔助的記憶中保留的資訊，而且不得適用於營業秘密或專利資訊
+- [ ] **沒有 IP 轉讓或授權**：NDA 不該授予任何智慧財產權
+- [ ] **沒有稽核權**：在標準 NDA 中並不常見
+
+#### 10. 準據法與管轄
+- [ ] **合理的管轄區**：成熟的商業司法管轄區
+- [ ] **一致**：準據法和管轄應該在相同或相關的司法管轄區
+- [ ] **沒有強制仲裁**（標準 NDA 中）：NDA 爭議一般偏好訴訟
+
+### 步驟 4：分類
+
+根據篩查結果，指定一個分類：
+
+#### GREEN -- 標準核准
+
+以下**全部**都必須成立：
+- NDA 是雙向的（或方向適當的單向）
+- 所有標準例外條款都有
+- 期間在標準範圍內（1-3 年，存續 2-5 年）
+- 沒有禁止招攬、競業禁止或排他性條款
+- 沒有 residuals 條款，或 residuals 條款範圍很窄
+- 準據法管轄區合理
+- 標準救濟（沒有約定違約金）
+- 允許的揭露對象包括員工、承包商和顧問
+- 返還/銷毀條款包含法律/合規的保留例外
+- 機密資訊的定義範圍合理
+
+**轉派**：依標準授權核准，不需要法務審閱。
+- **動作**：依標準授權直接簽署
+
+#### YELLOW -- 需要法務審閱
+
+出現以下**一項或多項**，但 NDA 本質上沒有問題：
+- 機密資訊的定義比偏好的更寬，但不算不合理
+- 期間比標準長，但在市場範圍內（例如合約期間 5 年、存續 7 年）
+- 缺少一項標準例外條款，可以輕易補上
+- 有 residuals 條款，但範圍窄到只限於不借助輔助的記憶
+- 準據法在可接受但非偏好的管轄區
+- 雙向 NDA 中有輕微的不對稱（例如一方允許的揭露對象稍微更廣）
+- 有標示要求，但做得到
+- 返還/銷毀沒有明確的保留例外（可能隱含存在，但應該補上）
+- 不尋常但無害的條款（例如有潛在違約時的通知義務）
+
+**轉派**：把具體問題標記後交給法務審閱。法務通常可以用小幅 redline 一次審閱就解決。
+- **動作**：法務通常可以一次審閱就解決
+
+#### RED -- 有重大問題
+
+出現以下**一項或多項**：
+- **該雙向卻是單向**（或方向與關係不符）
+- **缺少關鍵例外條款**（尤其是獨立開發或法律強制）
+- NDA 裡夾帶**禁止招攬或競業禁止條款**
+- 沒有適當業務背景的**排他性或 standstill 條款**
+- **不合理的期間**（10 年以上，或沒有營業秘密理由卻是永久）
+- **過度寬泛的定義**，可能涵蓋公開資訊或獨立開發的資料
+- **寬鬆的 residuals 條款**，實質上等於授權使用機密資訊
+- NDA 裡藏著 **IP 轉讓或授權**
+- **約定違約金或懲罰性條款**
+- 範圍或通知要求不合理的**稽核權**
+- 有強制仲裁的**極不利管轄區**
+- **文件其實不是 NDA**（含有實質商業條款、排他性，或保密以外的其他義務）
+
+**轉派**：需要完整法務審查。不要簽。要談判、用組織的標準格式 NDA 反提案，或直接拒絕。
+- **動作**：不要簽，需要談判或反提案
+
+### 步驟 5：產出 Triage 報告
+
+輸出結構化報告：
+
+```
+## NDA Triage Report
+
+**Classification**: [GREEN / YELLOW / RED]
+**Parties**: [party names]
+**Type**: [Mutual / Unilateral (disclosing) / Unilateral (receiving)]
+**Term**: [duration]
+**Governing Law**: [jurisdiction]
+**Review Basis**: [Playbook / Default Standards]
+
+## Screening Results
+
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| Mutual Obligations | [PASS/FLAG/FAIL] | [details] |
+| Definition Scope | [PASS/FLAG/FAIL] | [details] |
+| Term | [PASS/FLAG/FAIL] | [details] |
+| Standard Carveouts | [PASS/FLAG/FAIL] | [details] |
+| [etc.] | | |
+
+## Issues Found
+
+### [Issue 1 -- YELLOW/RED]
+**What**: [description]
+**Risk**: [what could go wrong]
+**Suggested Fix**: [specific language or approach]
+
+[Repeat for each issue]
+
+## Recommendation
+
+[Specific next step: approve, send for review with specific notes, or reject/counter]
+
+## Next Steps
+
+1. [Action item 1]
+2. [Action item 2]
+```
+
+### 步驟 6：轉派建議
+
+依分類，建議適當的下一步：
+
+| 分類 | 建議動作 | 一般時程 |
+|---|---|---|
+| GREEN | 核准並依授權轉去簽署 | 當天 |
+| YELLOW | 送給指定審閱者，並標記具體問題 | 1-2 個工作天 |
+| RED | 請法務完整審查，準備反提案或標準格式 | 3-5 個工作天 |
+
+對 YELLOW 和 RED 的分類：
+- 指出該審閱的具體人員或角色（如果組織有定義轉派規則）
+- 附上簡短的問題摘要，讓審閱者能快速掌握重點
+- 如果組織有標準格式 NDA，對 RED 的 NDA 建議把它當反提案送出
+
+## 常見 NDA 問題與標準立場
+
+### 問題：機密資訊定義過度寬泛
+**標準立場**：機密資訊應限於與所述目的相關而揭露的非公開資訊，並有明確的排除項目。
+**Redline 做法**：把定義縮窄成有標示或指明為機密的資訊，或依資訊的性質和揭露情況，一般理性的人都會認為是機密的資訊。
+
+### 問題：缺少獨立開發例外條款
+**標準立場**：必須包含例外條款，涵蓋沒有參考或使用揭露方機密資訊而獨立開發的資訊。
+**缺少的風險**：可能引發主張，說內部開發的產品或功能源自對方的機密資訊。
+**Redline 做法**：加上標準的獨立開發例外條款。
+
+### 問題：禁止招攬員工
+**標準立場**：禁止招攬條款不屬於 NDA。它們適合放在僱傭合約、M&amp;A 合約或特定的商業合約裡。
+**Redline 做法**：整條刪掉。如果對方堅持，就限縮為針對性的招攬（不含一般招募），並設定短期限（12 個月）。
+
+### 問題：寬鬆的 Residuals 條款
+**標準立場**：抗拒 residuals 條款。如果非要不可，限定為：(a) 有授權存取的個人在不借助輔助的記憶中保留的一般想法、概念、know-how 或技術；(b) 明確排除營業秘密和可取得專利的資訊；(c) 不授予任何 IP 授權。
+**範圍過寬的風險**：實質上等於授權對方為任何目的使用揭露方的機密資訊。
+
+### 問題：永久的保密義務
+**標準立場**：從揭露或終止起算 2-5 年，以較晚者為準。營業秘密可以在仍屬營業秘密期間內受保護。
+**Redline 做法**：把永久義務換成明確的期間。提供營業秘密例外，讓符合資格的資訊享有更長的保護。
+
+## 備註
+
+- 如果文件其實不是 NDA（例如標示為 NDA 但含有實質商業條款），立刻標記為 RED，並建議改做完整合約審查
+- 對於屬於較大合約一部分的 NDA（例如 MSA 裡的保密條款），要註明較大的合約背景可能影響分析
+- 一定要註明這只是篩查工具，使用者不確定的任何項目都應由法務審閱</pre></section><section><h2>英文原文</h2><pre>---
+name: triage-nda
+description: Rapidly triage an incoming NDA and classify it as GREEN (standard approval), YELLOW (counsel review), or RED (full legal review). Use when a new NDA arrives from sales or business development, when screening for embedded non-solicits, non-competes, or missing carveouts, or when deciding whether an NDA can be signed under standard delegation.
+argument-hint: &quot;&lt;NDA file or text&gt;&quot;
+---
+
+# /triage-nda -- NDA Pre-Screening
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Triage the NDA: @$1
+
+Rapidly triage incoming NDAs against standard screening criteria. Classify the NDA for routing: standard approval, counsel review, or full legal review.
+
+**Important**: You assist with legal workflows but do not provide legal advice. All analysis should be reviewed by qualified legal professionals before being relied upon.
+
+## Invocation
+
+```
+/triage-nda
+```
+
+## Workflow
+
+### Step 1: Accept the NDA
+
+Accept the NDA in any format:
+- **File upload**: PDF, DOCX, or other document format
+- **URL**: Link to the NDA in a document system
+- **Pasted text**: NDA text pasted directly
+
+If no NDA is provided, prompt the user to supply one.
+
+### Step 2: Load NDA Playbook
+
+Look for NDA screening criteria in local settings (e.g., `legal.local.md`).
+
+The NDA playbook should define:
+- Mutual vs. unilateral requirements
+- Acceptable term lengths
+- Required carveouts
+- Prohibited provisions
+- Organization-specific requirements
+
+**If no NDA playbook is configured:**
+- Proceed with reasonable market-standard defaults
+- Note clearly that defaults are being used
+- Defaults applied:
+  - Mutual obligations required (unless the organization is only disclosing)
+  - Term: 2-3 years standard, up to 5 years for trade secrets
+  - Standard carveouts required: independently developed, publicly available, rightfully received from third party, required by law
+  - No non-solicitation or non-compete provisions
+  - No residuals clause (or narrowly scoped if present)
+  - Governing law in a reasonable commercial jurisdiction
+
+### Step 3: Quick Screen
+
+Evaluate the NDA against each screening criterion systematically.
+
+#### 1. Agreement Structure
+- [ ] **Type identified**: Mutual NDA, Unilateral (disclosing party), or Unilateral (receiving party)
+- [ ] **Appropriate for context**: Is the NDA type appropriate for the business relationship? (e.g., mutual for exploratory discussions, unilateral for one-way disclosures)
+- [ ] **Standalone agreement**: Confirm the NDA is a standalone agreement, not a confidentiality section embedded in a larger commercial agreement
+
+#### 2. Definition of Confidential Information
+- [ ] **Reasonable scope**: Not overbroad (avoid &quot;all information of any kind whether or not marked as confidential&quot;)
+- [ ] **Marking requirements**: If marking is required, is it workable? (Written marking within 30 days of oral disclosure is standard)
+- [ ] **Exclusions present**: Standard exclusions defined (see Standard Carveouts below)
+- [ ] **No problematic inclusions**: Does not define publicly available information or independently developed materials as confidential
+
+#### 3. Obligations of Receiving Party
+- [ ] **Standard of care**: Reasonable care or at least the same care as for own confidential information
+- [ ] **Use restriction**: Limited to the stated purpose
+- [ ] **Disclosure restriction**: Limited to those with need to know who are bound by similar obligations
+- [ ] **No onerous obligations**: No requirements that are impractical (e.g., encrypting all communications, maintaining physical logs)
+
+#### 4. Standard Carveouts
+All of the following carveouts should be present:
+- [ ] **Public knowledge**: Information that is or becomes publicly available through no fault of the receiving party
+- [ ] **Prior possession**: Information already known to the receiving party before disclosure
+- [ ] **Independent development**: Information independently developed without use of or reference to confidential information
+- [ ] **Third-party receipt**: Information rightfully received from a third party without restriction
+- [ ] **Legal compulsion**: Right to disclose when required by law, regulation, or legal process (with notice to the disclosing party where legally permitted)
+
+#### 5. Permitted Disclosures
+- [ ] **Employees**: Can share with employees who need to know
+- [ ] **Contractors/advisors**: Can share with contractors, advisors, and professional consultants under similar confidentiality obligations
+- [ ] **Affiliates**: Can share with affiliates (if needed for the business purpose)
+- [ ] **Legal/regulatory**: Can disclose as required by law or regulation
+
+#### 6. Term and Duration
+- [ ] **Agreement term**: Reasonable period for the business relationship (1-3 years is standard)
+- [ ] **Confidentiality survival**: Obligations survive for a reasonable period after termination (2-5 years is standard; trade secrets may be longer)
+- [ ] **Not perpetual**: Avoid indefinite or perpetual confidentiality obligations (exception: trade secrets, which may warrant longer protection)
+
+#### 7. Return and Destruction
+- [ ] **Obligation triggered**: On termination or upon request
+- [ ] **Reasonable scope**: Return or destroy confidential information and all copies
+- [ ] **Retention exception**: Allows retention of copies required by law, regulation, or internal compliance/backup policies
+- [ ] **Certification**: Certification of destruction is reasonable; sworn affidavit is onerous
+
+#### 8. Remedies
+- [ ] **Injunctive relief**: Acknowledgment that breach may cause irreparable harm and equitable relief may be appropriate is standard
+- [ ] **No pre-determined damages**: Avoid liquidated damages clauses in NDAs
+- [ ] **Not one-sided**: Remedies provisions apply equally to both parties (in mutual NDAs)
+
+#### 9. Problematic Provisions to Flag
+- [ ] **No non-solicitation**: NDA should not contain employee non-solicitation provisions
+- [ ] **No non-compete**: NDA should not contain non-compete provisions
+- [ ] **No exclusivity**: NDA should not restrict either party from entering similar discussions with others
+- [ ] **No standstill**: NDA should not contain standstill or similar restrictive provisions (unless M&amp;A context)
+- [ ] **No residuals clause** (or narrowly scoped): If a residuals clause is present, it should be limited to information retained in unaided memory of individuals and should not apply to trade secrets or patented information
+- [ ] **No IP assignment or license**: NDA should not grant any intellectual property rights
+- [ ] **No audit rights**: Unusual in standard NDAs
+
+#### 10. Governing Law and Jurisdiction
+- [ ] **Reasonable jurisdiction**: A well-established commercial jurisdiction
+- [ ] **Consistent**: Governing law and jurisdiction should be in the same or related jurisdictions
+- [ ] **No mandatory arbitration** (in standard NDAs): Litigation is generally preferred for NDA disputes
+
+### Step 4: Classify
+
+Based on the screening results, assign a classification:
+
+#### GREEN -- Standard Approval
+
+**All** of the following must be true:
+- NDA is mutual (or unilateral in the appropriate direction)
+- All standard carveouts are present
+- Term is within standard range (1-3 years, survival 2-5 years)
+- No non-solicitation, non-compete, or exclusivity provisions
+- No residuals clause, or residuals clause is narrowly scoped
+- Reasonable governing law jurisdiction
+- Standard remedies (no liquidated damages)
+- Permitted disclosures include employees, contractors, and advisors
+- Return/destruction provisions include retention exception for legal/compliance
+- Definition of confidential information is reasonably scoped
+
+**Routing**: Approve via standard delegation of authority. No counsel review required.
+- **Action**: Proceed to signature with standard delegation of authority
+
+#### YELLOW -- Counsel Review Needed
+
+**One or more** of the following are present, but the NDA is not fundamentally problematic:
+- Definition of confidential information is broader than preferred but not unreasonable
+- Term is longer than standard but within market range (e.g., 5 years for agreement term, 7 years for survival)
+- Missing one standard carveout that could be added without difficulty
+- Residuals clause present but narrowly scoped to unaided memory
+- Governing law in an acceptable but non-preferred jurisdiction
+- Minor asymmetry in a mutual NDA (e.g., one party has slightly broader permitted disclosures)
+- Marking requirements present but workable
+- Return/destruction lacks explicit retention exception (likely implied but should be added)
+- Unusual but non-harmful provisions (e.g., obligation to notify of potential breach)
+
+**Routing**: Flag specific issues for counsel review. Counsel can likely resolve with minor redlines in a single review pass.
+- **Action**: Counsel can likely resolve in a single review pass
+
+#### RED -- Significant Issues
+
+**One or more** of the following are present:
+- **Unilateral when mutual is required** (or wrong direction for the relationship)
+- **Missing critical carveouts** (especially independent development or legal compulsion)
+- **Non-solicitation or non-compete provisions** embedded in the NDA
+- **Exclusivity or standstill provisions** without appropriate business context
+- **Unreasonable term** (10+ years, or perpetual without trade secret justification)
+- **Overbroad definition** that could capture public information or independently developed materials
+- **Broad residuals clause** that effectively creates a license to use confidential information
+- **IP assignment or license grant** hidden in the NDA
+- **Liquidated damages or penalty provisions**
+- **Audit rights** without reasonable scope or notice requirements
+- **Highly unfavorable jurisdiction** with mandatory arbitration
+- **The document is not actually an NDA** (contains substantive commercial terms, exclusivity, or other obligations beyond confidentiality)
+
+**Routing**: Full legal review required. Do not sign. Requires negotiation, counterproposal with the organization&#x27;s standard form NDA, or rejection.
+- **Action**: Do not sign; requires negotiation or counterproposal
+
+### Step 5: Generate Triage Report
+
+Output a structured report:
+
+```
+## NDA Triage Report
+
+**Classification**: [GREEN / YELLOW / RED]
+**Parties**: [party names]
+**Type**: [Mutual / Unilateral (disclosing) / Unilateral (receiving)]
+**Term**: [duration]
+**Governing Law**: [jurisdiction]
+**Review Basis**: [Playbook / Default Standards]
+
+## Screening Results
+
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| Mutual Obligations | [PASS/FLAG/FAIL] | [details] |
+| Definition Scope | [PASS/FLAG/FAIL] | [details] |
+| Term | [PASS/FLAG/FAIL] | [details] |
+| Standard Carveouts | [PASS/FLAG/FAIL] | [details] |
+| [etc.] | | |
+
+## Issues Found
+
+### [Issue 1 -- YELLOW/RED]
+**What**: [description]
+**Risk**: [what could go wrong]
+**Suggested Fix**: [specific language or approach]
+
+[Repeat for each issue]
+
+## Recommendation
+
+[Specific next step: approve, send for review with specific notes, or reject/counter]
+
+## Next Steps
+
+1. [Action item 1]
+2. [Action item 2]
+```
+
+### Step 6: Routing Suggestion
+
+Based on the classification, recommend the appropriate next step:
+
+| Classification | Recommended Action | Typical Timeline |
+|---|---|---|
+| GREEN | Approve and route for signature per delegation of authority | Same day |
+| YELLOW | Send to designated reviewer with specific issues flagged | 1-2 business days |
+| RED | Engage counsel for full review; prepare counterproposal or standard form | 3-5 business days |
+
+For YELLOW and RED classifications:
+- Identify the specific person or role that should review (if the organization has defined routing rules)
+- Include a brief summary of issues suitable for the reviewer to quickly understand the key points
+- If the organization has a standard form NDA, recommend sending it as a counterproposal for RED-classified NDAs
+
+## Common NDA Issues and Standard Positions
+
+### Issue: Overbroad Definition of Confidential Information
+**Standard position**: Confidential information should be limited to non-public information disclosed in connection with the stated purpose, with clear exclusions.
+**Redline approach**: Narrow the definition to information that is marked or identified as confidential, or that a reasonable person would understand to be confidential given the nature of the information and circumstances of disclosure.
+
+### Issue: Missing Independent Development Carveout
+**Standard position**: Must include a carveout for information independently developed without reference to or use of the disclosing party&#x27;s confidential information.
+**Risk if missing**: Could create claims that internally-developed products or features were derived from the counterparty&#x27;s confidential information.
+**Redline approach**: Add standard independent development carveout.
+
+### Issue: Non-Solicitation of Employees
+**Standard position**: Non-solicitation provisions do not belong in NDAs. They are appropriate in employment agreements, M&amp;A agreements, or specific commercial agreements.
+**Redline approach**: Delete the provision entirely. If the counterparty insists, limit to targeted solicitation (not general recruitment) and set a short term (12 months).
+
+### Issue: Broad Residuals Clause
+**Standard position**: Resist residuals clauses. If required, limit to: (a) general ideas, concepts, know-how, or techniques retained in the unaided memory of individuals who had authorized access; (b) explicitly exclude trade secrets and patentable information; (c) does not grant any IP license.
+**Risk if too broad**: Effectively grants a license to use the disclosing party&#x27;s confidential information for any purpose.
+
+### Issue: Perpetual Confidentiality Obligation
+**Standard position**: 2-5 years from disclosure or termination, whichever is later. Trade secrets may warrant protection for as long as they remain trade secrets.
+**Redline approach**: Replace perpetual obligation with a defined term. Offer a trade secret carveout for longer protection of qualifying information.
+
+## Notes
+
+- If the document is not actually an NDA (e.g., it&#x27;s labeled as an NDA but contains substantive commercial terms), flag this immediately as a RED and recommend full contract review instead
+- For NDAs that are part of a larger agreement (e.g., confidentiality section in an MSA), note that the broader agreement context may affect the analysis
+- Always note that this is a screening tool and counsel should review any items the user is uncertain about</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

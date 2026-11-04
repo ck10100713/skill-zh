@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>milestone-review｜Skill 寫法圖鑑</title>
+<meta name="description" content="審查 milestone 的完成度、品質和風險，給出 go/no-go 建議">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>milestone-review</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/milestone-review/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">審查 milestone 的完成度、品質和風險，給出 go/no-go 建議</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: milestone-review
+description: &quot;Milestone 進度審查：完成度、品質指標、風險，並給出 go/no-go 建議。用在檢查點或截止日前。&quot;
+argument-hint: &quot;[milestone-name|current] [--review full|lean|solo]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys review_mode,automation,workflow`
+
+上面已經解析好了，直接用；`--review` 在這次執行會覆蓋 `review_mode`。沒有
+這個區塊的話，用 `.claude/docs/config-resolution.md` 裡的預設值。
+
+# Milestone Review
+
+
+
+## Insufficient input — check this before producing any report
+
+**如果這個 skill 需要的輸入不存在，答案就是「跑不起來」，
+不是一份填好的報告。** 先檢查，檢查沒過就停下來。
+
+1. 列出這個 skill 會讀的輸入（資料檔、先前的報告、profiler 輸出、
+   測試結果、registry、原始碼）。
+2. 對每一項，記錄 `FOUND` 或 `ABSENT` — 不是「假設存在」。
+3. 如果某個章節需要的任何輸入是 ABSENT，那個章節就是
+   **`NOT ASSESSED — NO DATA`**。不要估算它、不要從
+   相鄰的產出物去推斷它，也不要把一個強制要填的格子留給
+   下一個讀範本的人去填。
+4. 如果**每一個**必要的輸入都是 ABSENT，就停下來，並把
+   **`NOT ASSESSED — NO DATA`** 當成整份判定回報，點名缺了什麼，
+   以及哪個 skill 會產生它。
+
+**`NOT ASSESSED` 的判定是一種成功。** 當沒有資料時，它就是對
+「資料怎麼說？」正確又有用的答案。這條規定要防的失誤很具體：
+判定列舉裡沒有「跑不起來」狀態的報告，會產生
+**假的乾淨通過** — 在沒有資產也沒有標準的專案上，資產稽核回傳 COMPLIANT；
+或者效能分析在零 profiler 資料、也從來沒設過預算的情況下，回報「&gt;99% headroom against
+a 16.67ms budget」。
+
+**沒有證據，不等於證據不存在。** 因為沒有檔案可掃，所以沒找到任何
+符合項目的掃描，什麼都沒驗證。要說清楚到底是這兩者中的哪一個 — 讀的人
+光看綠色結果是分辨不出來的。
+
+---
+
+## Phase 0: Parse Arguments
+
+擷取 milestone 名稱（`current` 或指定的名稱）。
+
+完整的檢查模式見 `.claude/docs/director-gates.md`。各個 gate 的定義放在 `.claude/docs/director-gates/[gate-id].md` — 被派出的 agent 會自己讀它的 gate 檔；不要在父 session 裡讀。
+
+
+每一次 `AskUserQuestion` 呼叫都遵循 `.claude/docs/automation-modes.md`
+（collaborative 一律問 · guided 只問重大的 · autonomous 只記錄然後繼續；
+`automation_always_ask` 的類別一律要問）。
+
+---
+
+## Phase 1: Load Milestone Data
+
+如果 `production/milestones/` 裡有 milestone 定義，就讀它。如果
+參數是 `current`，就用最近修改過的 milestone 檔。
+
+&gt; **沒有任何 skill 會寫 `production/milestones/`** — 定義是從
+&gt; `.claude/docs/templates/milestone-definition.md` 手寫的，所以大部分專案
+&gt; 都沒有。當目錄不存在或是空的，就講出來，並只依 sprint 報告來審查；
+&gt; 不要捏造定義。用 `current` 時要小心：
+&gt; 這個 skill 會把自己的輸出寫成 `[milestone-name]-review.md`，所以
+&gt; 最近修改的符合項目可能是之前的*審查*，不是定義。
+&gt; 挑選時要跳過以 `-review.md` 結尾的檔案。
+
+從 `production/sprints/` 蒐集這個 milestone 範圍內各個 sprint 的報告。先確立分母（用 glob 找出來，計數 **N**），然後
+掃描 milestone 審查真正會彙總的那些章節，而不是把每份
+報告整份讀完：
+
+```
+Grep pattern=&quot;^## (Sprint Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)&quot; glob=&quot;production/sprints/sprint-*.md&quot; output_mode=&quot;content&quot; -A 12
+```
+
+&gt; **這些候選項是 `/sprint-plan` 產出的標題**（`## Sprint Goal`，
+&gt; 不是 `## Goal`）— 不是 milestone 審查可能預期的那些。只符合一個真實標題的 pattern，
+&gt; 仍然會回傳非零的計數，所以下面「零符合」的退路
+&gt; 永遠不會觸發，審查就只彙總了每份報告的一小部分，卻回報
+&gt; 涵蓋完整。
+
+當某份 sprint 報告被掃描到的章節指向它們自己以外的地方，
+或它什麼都沒符合時，就整份讀它 — 零符合的報告是在範本之前寫的，
+必須讀，絕對不能默默從 milestone 的歷史裡丟掉。
+回報任何沒有貢獻內容的 sprint：默默漏掉一個 sprint 的 milestone 摘要，
+會同時低估工作量和延誤。
+
+**Blocked story** — 傳給 PR-MILESTONE 的 Blocked 表格和 blocked story 數量 —
+不在 sprint 報告被掃描的章節裡。去它們被記錄的地方讀：
+`production/sprint-status.yaml` 裡 `status: blocked` 的 story
+（連同它們的 `blocker` 欄位），而對那個 sprint 以外的 story，用一次 grep：
+
+```
+Grep pattern=&quot;^&gt; \*\*Status\*\*: Blocked|BLOCKED:&quot; glob=&quot;production/epics/**/story-*.md&quot; output_mode=&quot;content&quot;
+```
+
+每個 blocked story 都放進 Blocked 表格，歸在它 epic 資料夾所實作的 feature 底下，
+並附上它的 blocker（yaml 的 `blocker` 欄位或 story 的 `BLOCKED:`
+備註）。沒有 story 檔也沒有 `sprint-status.yaml` 時，Blocked 表格和
+blocked story 數量就是 `NOT ASSESSED — NO DATA`，不是零。
+
+---
+
+## Phase 2: Scan Codebase Health
+
+- 掃描代表工作未完成的 `TODO`、`FIXME`、`HACK` 標記
+- 從 `production/qa/bugs/` 依嚴重度計算 Quality Metrics 的未解 bug 數（對 `**Severity**` 和 `**Status**` 行做一次 grep，就像 `/bug-triage` 做的）；沒有 bug 檔的話，bug 那幾行是 `NOT ASSESSED — NO DATA`，不是零
+- 如果 `production/risk-register/` 的風險登記冊存在就檢查它（從 `.claude/docs/templates/risk-register-entry.md` 手寫；沒有 skill 會寫它，所以不存在是正常的 — 註明這點，不要默默跳過風險評估）
+
+---
+
+## Phase 3: Generate the Milestone Review
+
+```markdown
+# Milestone Review: [Milestone Name]
+
+## Overview
+- **Target Date**: [Date]
+- **Current Date**: [Today]
+- **Days Remaining**: [N]
+- **Sprints Completed**: [X/Y]
+
+## Feature Completeness
+
+### Fully Complete
+Only a feature whose Status is `Complete` goes here or counts toward the completion percentage; a Deferred feature stays in its denominator, named with the milestone it moved to.
+
+| Feature | Acceptance Criteria | Test Status |
+|---------|-------------------|-------------|
+
+### Partially Complete
+| Feature | % Done | Remaining Work | Risk to Milestone |
+|---------|--------|---------------|------------------|
+
+### Blocked
+A started feature whose stories are Blocked goes here, not under Partially
+Complete — name the blocker, so the review says why it stalled, not only that
+the count moved.
+
+| Feature | Blocked Stories | Blocker | Next Action / Owner |
+|---------|----------------|---------|---------------------|
+
+### Not Started
+| Feature | Priority | Can Cut? | Impact of Cutting |
+|---------|----------|----------|------------------|
+
+## Quality Metrics
+- **Open S1 Bugs**: [N] -- [List]
+- **Open S2 Bugs**: [N]
+- **Open S3 Bugs**: [N]
+- **Test Coverage**: [X%]
+- **Performance**: [Within budget? Details]
+
+## Code Health
+- **TODO count**: [N across codebase]
+- **FIXME count**: [N]
+- **HACK count**: [N]
+- **Technical debt items**: [List critical ones]
+
+## Risk Assessment
+| Risk | Status | Impact if Realized | Mitigation Status |
+|------|--------|-------------------|------------------|
+
+## Velocity Analysis
+- **Planned vs Completed** (across all sprints): [X/Y tasks = Z%]
+- **Trend**: [Improving / Stable / Declining]
+- **Adjusted estimate for remaining work**: [Days needed at current velocity]
+
+## Scope Recommendations
+### Protect (Must ship with milestone)
+- [Feature and why]
+
+### At Risk (May need to cut or simplify)
+- [Feature and risk]
+
+### Cut Candidates (Can defer without compromising milestone)
+- [Feature and impact of cutting]
+
+## Go/No-Go Assessment
+
+**Recommendation**: [NOT ASSESSED / GO / CONDITIONAL GO / NO-GO]
+
+**Conditions** (if conditional):
+- [Condition 1 that must be met]
+- [Condition 2 that must be met]
+
+**Rationale**: [Explanation of the recommendation]
+
+## Action Items
+| # | Action | Owner | Deadline |
+|---|--------|-------|----------|
+```
+
+---
+
+## Phase 3b: Producer Risk Assessment
+
+**Review mode 檢查** — 在派出 PR-MILESTONE 之前套用：
+- `solo` → 跳過。註明：「PR-MILESTONE skipped — Solo mode.」呈現 Go/No-Go 章節，不附 producer 判定。
+- `lean` → 跳過（它不是 PHASE-GATE）。註明：「PR-MILESTONE skipped — Lean mode.」呈現 Go/No-Go 章節，不附 producer 判定。
+- `full` → 照常派出。
+
+在產生 Go/No-Go 建議之前，用 `Agent` 派出 `producer`，使用 gate **PR-MILESTONE**（`.claude/docs/director-gates/pr-milestone.md`）。
+
+傳入：milestone 名稱和目標日期、目前的完成百分比、blocked story 數量、sprint 報告裡的 velocity 資料（如果有的話）、可砍項目清單。
+
+把 producer 的評估以行內方式呈現在 Go/No-Go 章節裡。producer 的判定（ON TRACK / AT RISK / OFF TRACK）會影響整體建議。
+
+如果是 OFF TRACK，在產生建議之前用 `AskUserQuestion`：
+- Prompt: &quot;Producer verdict: OFF TRACK. The milestone is in jeopardy. This review will recommend NO-GO. How do you want to proceed?&quot;
+- Options:
+  - `[A] Accept NO-GO — generate the full review with that recommendation`
+  - `[B] Override to CONDITIONAL GO — I&#x27;ll document the accepted risks myself`
+  - `[C] Stop — I want to address blockers before generating the review`
+
+如果是 AT RISK，用 `AskUserQuestion`：
+- Prompt: &quot;Producer verdict: AT RISK. Milestone may slip. How should the Go/No-Go section be framed?&quot;
+- Options:
+  - `[A] CONDITIONAL GO — include producer&#x27;s conditions in the review`
+  - `[B] NO-GO — conditions cannot be met in time`
+  - `[C] GO — I accept the risk and want to proceed`
+
+如果是 NOT ASSESSED：點名缺少的輸入 — 它不是 ON TRACK，而且絕對不要在它上面建議 GO。補上輸入並重跑 PR-MILESTONE，或建議 NOT ASSESSED — 或是審查本身的發現需要時，建議 CONDITIONAL GO / NO-GO（排序見 `.claude/docs/director-gates.md`）。
+
+不准在 OFF TRACK 的判定上發出 GO；只有在使用者明確選了上面的 [B] 時，才能發出 CONDITIONAL GO。
+
+---
+
+## Phase 4: Save Review
+
+把審查呈現給使用者。
+
+問：「May I write this to `production/milestones/[milestone-name]-review.md`?」
+
+使用者答應就寫檔，目錄不存在的話先建立。Verdict: **COMPLETE** — milestone review saved.
+
+如果不答應，就在這裡停下來。Verdict: **BLOCKED** — user declined write.
+
+---
+
+## Phase 5: Next Steps
+
+- 如果這個 milestone 標記了某個開發階段的邊界，就執行 `/gate-check` 取得正式的 phase gate 判定。
+- 依上面的範圍建議執行 `/sprint-plan`，調整下一個 sprint（在沒有 sprint 的 `workflow: minimal`，改調整 brief 的 build order）。</pre></section><section><h2>英文原文</h2><pre>---
+name: milestone-review
+description: &quot;Milestone progress review — completeness, quality metrics, risk, go/no-go recommendation. At checkpoints or before a deadline.&quot;
+argument-hint: &quot;[milestone-name|current] [--review full|lean|solo]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash &quot;*/.claude/skills/milestone-review/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys review_mode,automation,workflow`
+
+Resolved above — use as-is; `--review` overrides `review_mode` for this run. No
+block → defaults in `.claude/docs/config-resolution.md`.
+
+# Milestone Review
+
+
+
+## Insufficient input — check this before producing any report
+
+**If the inputs this skill needs do not exist, the answer is &quot;could not run&quot; —
+not a filled-in report.** Check first, and stop if the check fails.
+
+1. List the inputs this skill reads (data files, prior reports, profiler output,
+   test results, registries, source code).
+2. For each, record `FOUND` or `ABSENT` — not &quot;assumed present&quot;.
+3. If any input required for a section is ABSENT, that section is
+   **`NOT ASSESSED — NO DATA`**. Do not estimate it, do not infer it from an
+   adjacent artifact, and do not leave a mandated cell to be filled by whoever
+   reads the template next.
+4. If **every** required input is ABSENT, stop and report
+   **`NOT ASSESSED — NO DATA`** as the whole verdict, naming what was missing and
+   which skill produces it.
+
+**A verdict of `NOT ASSESSED` is a success.** It is the correct, useful answer to
+&quot;what does the data say?&quot; when there is no data. The failure mode this prevents is
+specific: a report whose verdict enum has no &quot;could not run&quot; state produces
+**false clean passes** — an asset audit returning COMPLIANT on a project with no
+assets and no standards, or a performance profile reporting &quot;&gt;99% headroom against
+a 16.67ms budget&quot; with zero profiler data and no budget ever set.
+
+**Absence of evidence is never evidence of absence.** A scan that finds no
+matches because there are no files to scan has not verified anything. Say which of
+the two happened — a reader cannot tell from a green result.
+
+---
+
+## Phase 0: Parse Arguments
+
+Extract the milestone name (`current` or a specific name).
+
+See `.claude/docs/director-gates.md` for the full check pattern. Individual gate definitions live in `.claude/docs/director-gates/[gate-id].md` — the spawned agent reads its own gate file; do not read it in the parent session.
+
+
+Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+---
+
+## Phase 1: Load Milestone Data
+
+Read the milestone definition from `production/milestones/` if it exists. If the
+argument is `current`, use the most recently modified milestone file.
+
+&gt; **No skill writes `production/milestones/`** — definitions are authored by hand
+&gt; from `.claude/docs/templates/milestone-definition.md`, so most projects have
+&gt; none. When the directory is absent or empty, say so and review against the
+&gt; sprint reports alone; do not fabricate a definition. Take care with `current`:
+&gt; this skill writes its own output as `[milestone-name]-review.md`, so a
+&gt; most-recently-modified match can be a previous *review* rather than a
+&gt; definition. Skip files ending `-review.md` when selecting.
+
+Gather the sprint reports for sprints within this milestone from
+`production/sprints/`. Establish the denominator (glob them, count **N**), then
+scan the sections a milestone review actually aggregates rather than reading each
+report whole:
+
+```
+Grep pattern=&quot;^## (Sprint Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)&quot; glob=&quot;production/sprints/sprint-*.md&quot; output_mode=&quot;content&quot; -A 12
+```
+
+&gt; **These alternates are the headings `/sprint-plan` emits** (`## Sprint Goal`,
+&gt; not `## Goal`) — not what a milestone review might expect. A pattern that
+&gt; matches only one real heading still returns a non-zero count, so the
+&gt; zero-match escape hatch below never fires and the review aggregates a fraction
+&gt; of each report while reporting full coverage.
+
+Full-read a single sprint report when its scanned sections point outside
+themselves, or when it matched nothing — a zero-match report predates the
+template and must be read, never silently dropped from the milestone&#x27;s history.
+Report any sprint that contributed nothing: a milestone summary that quietly
+omits a sprint understates the work and the slippage both.
+
+**Blocked stories** — the Blocked table and the blocked story count passed to
+PR-MILESTONE — are not in the sprint reports&#x27; scanned sections. Read them where
+they are recorded: the `status: blocked` stories in `production/sprint-status.yaml`
+(with their `blocker` field) and, for stories outside that sprint, one grep:
+
+```
+Grep pattern=&quot;^&gt; \*\*Status\*\*: Blocked|BLOCKED:&quot; glob=&quot;production/epics/**/story-*.md&quot; output_mode=&quot;content&quot;
+```
+
+Each blocked story goes in the Blocked table under the feature its epic folder
+implements, with its blocker (the yaml `blocker` field or the story&#x27;s `BLOCKED:`
+note). With no story files and no `sprint-status.yaml`, the Blocked table and the
+blocked story count are `NOT ASSESSED — NO DATA`, not zero.
+
+---
+
+## Phase 2: Scan Codebase Health
+
+- Scan for `TODO`, `FIXME`, `HACK` markers that indicate incomplete work
+- Count open bugs by severity for Quality Metrics from `production/qa/bugs/` (one grep of the `**Severity**` and `**Status**` lines, as `/bug-triage` does); with no bug files, the bug lines are `NOT ASSESSED — NO DATA`, not zero
+- Check the risk register at `production/risk-register/` if it exists (hand-authored from `.claude/docs/templates/risk-register-entry.md`; no skill writes it, so absence is normal — note it rather than skipping risk assessment silently)
+
+---
+
+## Phase 3: Generate the Milestone Review
+
+```markdown
+# Milestone Review: [Milestone Name]
+
+## Overview
+- **Target Date**: [Date]
+- **Current Date**: [Today]
+- **Days Remaining**: [N]
+- **Sprints Completed**: [X/Y]
+
+## Feature Completeness
+
+### Fully Complete
+Only a feature whose Status is `Complete` goes here or counts toward the completion percentage; a Deferred feature stays in its denominator, named with the milestone it moved to.
+
+| Feature | Acceptance Criteria | Test Status |
+|---------|-------------------|-------------|
+
+### Partially Complete
+| Feature | % Done | Remaining Work | Risk to Milestone |
+|---------|--------|---------------|------------------|
+
+### Blocked
+A started feature whose stories are Blocked goes here, not under Partially
+Complete — name the blocker, so the review says why it stalled, not only that
+the count moved.
+
+| Feature | Blocked Stories | Blocker | Next Action / Owner |
+|---------|----------------|---------|---------------------|
+
+### Not Started
+| Feature | Priority | Can Cut? | Impact of Cutting |
+|---------|----------|----------|------------------|
+
+## Quality Metrics
+- **Open S1 Bugs**: [N] -- [List]
+- **Open S2 Bugs**: [N]
+- **Open S3 Bugs**: [N]
+- **Test Coverage**: [X%]
+- **Performance**: [Within budget? Details]
+
+## Code Health
+- **TODO count**: [N across codebase]
+- **FIXME count**: [N]
+- **HACK count**: [N]
+- **Technical debt items**: [List critical ones]
+
+## Risk Assessment
+| Risk | Status | Impact if Realized | Mitigation Status |
+|------|--------|-------------------|------------------|
+
+## Velocity Analysis
+- **Planned vs Completed** (across all sprints): [X/Y tasks = Z%]
+- **Trend**: [Improving / Stable / Declining]
+- **Adjusted estimate for remaining work**: [Days needed at current velocity]
+
+## Scope Recommendations
+### Protect (Must ship with milestone)
+- [Feature and why]
+
+### At Risk (May need to cut or simplify)
+- [Feature and risk]
+
+### Cut Candidates (Can defer without compromising milestone)
+- [Feature and impact of cutting]
+
+## Go/No-Go Assessment
+
+**Recommendation**: [NOT ASSESSED / GO / CONDITIONAL GO / NO-GO]
+
+**Conditions** (if conditional):
+- [Condition 1 that must be met]
+- [Condition 2 that must be met]
+
+**Rationale**: [Explanation of the recommendation]
+
+## Action Items
+| # | Action | Owner | Deadline |
+|---|--------|-------|----------|
+```
+
+---
+
+## Phase 3b: Producer Risk Assessment
+
+**Review mode check** — apply before spawning PR-MILESTONE:
+- `solo` → skip. Note: &quot;PR-MILESTONE skipped — Solo mode.&quot; Present the Go/No-Go section without a producer verdict.
+- `lean` → skip (not a PHASE-GATE). Note: &quot;PR-MILESTONE skipped — Lean mode.&quot; Present the Go/No-Go section without a producer verdict.
+- `full` → spawn as normal.
+
+Before generating the Go/No-Go recommendation, spawn `producer` via `Agent` using gate **PR-MILESTONE** (`.claude/docs/director-gates/pr-milestone.md`).
+
+Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
+
+Present the producer&#x27;s assessment inline within the Go/No-Go section. The producer&#x27;s verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation.
+
+If OFF TRACK, use `AskUserQuestion` before generating the recommendation:
+- Prompt: &quot;Producer verdict: OFF TRACK. The milestone is in jeopardy. This review will recommend NO-GO. How do you want to proceed?&quot;
+- Options:
+  - `[A] Accept NO-GO — generate the full review with that recommendation`
+  - `[B] Override to CONDITIONAL GO — I&#x27;ll document the accepted risks myself`
+  - `[C] Stop — I want to address blockers before generating the review`
+
+If AT RISK, use `AskUserQuestion`:
+- Prompt: &quot;Producer verdict: AT RISK. Milestone may slip. How should the Go/No-Go section be framed?&quot;
+- Options:
+  - `[A] CONDITIONAL GO — include producer&#x27;s conditions in the review`
+  - `[B] NO-GO — conditions cannot be met in time`
+  - `[C] GO — I accept the risk and want to proceed`
+
+If NOT ASSESSED: name the missing input — it is not ON TRACK, and never recommend GO on it. Supply the input and re-run PR-MILESTONE, or recommend NOT ASSESSED — or CONDITIONAL GO / NO-GO where the review&#x27;s own findings call for one (the rank in `.claude/docs/director-gates.md`).
+
+Do not issue a GO against an OFF TRACK verdict; issue CONDITIONAL GO only if the user explicitly selects [B] above.
+
+---
+
+## Phase 4: Save Review
+
+Present the review to the user.
+
+Ask: &quot;May I write this to `production/milestones/[milestone-name]-review.md`?&quot;
+
+If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — milestone review saved.
+
+If no, stop here. Verdict: **BLOCKED** — user declined write.
+
+---
+
+## Phase 5: Next Steps
+
+- Run `/gate-check` for a formal phase gate verdict if this milestone marks a development phase boundary.
+- Run `/sprint-plan` to adjust the next sprint based on the scope recommendations above (at `workflow: minimal`, which has no sprints, adjust the brief&#x27;s build order instead).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

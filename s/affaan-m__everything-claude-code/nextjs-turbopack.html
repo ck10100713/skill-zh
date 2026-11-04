@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nextjs-turbopack｜Skill 寫法圖鑑</title>
+<meta name="description" content="Next.js 16+ 與 Turbopack 的開發慣例，含 proxy.ts 檔名變更">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>nextjs-turbopack</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/nextjs-turbopack/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Next.js 16+ 與 Turbopack 的開發慣例，含 proxy.ts 檔名變更</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: nextjs-turbopack
+description: Next.js 16+ 與 Turbopack 的指引：增量式 Rust 打包、檔案系統快取、更快的 dev 啟動和 HMR、Turbopack 對 webpack 的取捨，以及 middleware.ts 改名為 proxy.ts 的檔名變更。開發或除錯 Next.js 16+ 應用、診斷 dev 啟動或熱更新太慢、在打包工具之間做選擇，或審查 middleware/proxy 檔案命名時使用。
+metadata:
+  origin: ECC
+---
+
+# Next.js and Turbopack
+
+Next.js 16+ 在本機開發時預設使用 Turbopack：一個用 Rust 寫的增量式打包工具，大幅加快 dev 啟動和熱更新。
+
+## When to Use
+
+- **Turbopack（預設的 dev）**：日常開發用。冷啟動和 HMR 更快，在大型應用上尤其明顯。
+- **Webpack（舊版 dev）**：只有在碰到 Turbopack 的 bug，或 dev 時依賴只有 webpack 才有的 plugin 時才用。用 `--webpack` 停用 Turbopack（依你的 Next.js 版本也可能是 `--no-turbopack`；請查你那個版本的文件）。
+- **正式環境**：正式環境的建置行為（`next build`）依 Next.js 版本，可能用 Turbopack 或 webpack；請查你那個版本的官方 Next.js 文件。
+
+使用時機：開發或除錯 Next.js 16+ 應用、診斷 dev 啟動或 HMR 太慢，或最佳化正式環境的 bundle。
+
+## How It Works
+
+- **Turbopack**：Next.js dev 用的增量式打包工具。使用檔案系統快取，重啟快很多（例如在大型專案上快 5 到 14 倍）。
+- **dev 的預設值**：從 Next.js 16 開始，除非停用，否則 `next dev` 會用 Turbopack 執行。
+- **檔案系統快取**：重啟時重用先前的工作；快取通常在 `.next` 底下；基本使用不需要額外設定。
+- **Bundle Analyzer（Next.js 16.1+）**：實驗性的 Bundle Analyzer，用來檢查輸出並找出很重的相依；透過設定或實驗性旗標啟用（請查你那個版本的 Next.js 文件）。
+
+## Examples
+
+### Commands
+
+```bash
+next dev
+next build
+next start
+```
+
+### Usage
+
+用 `next dev` 搭配 Turbopack 做本機開發。用 Bundle Analyzer（見 Next.js 文件）來最佳化 code-splitting 並削減很大的相依。盡量偏好 App Router 和 server component。
+
+## Middleware File Naming
+
+Next.js 16 引入 `proxy.ts` 作為 middleware 的檔名，取代舊的 `middleware.ts` 慣例：
+
+- **Next.js 16+**：在專案根目錄用 `proxy.ts`
+- **Next.js 16 之前**：在專案根目錄用 `middleware.ts`
+
+檔名的變更和 **Next.js 版本**有關，和用哪個打包工具（Turbopack 還是 webpack）無關。一定要查你正在審查的那個版本的官方文件。
+
+**不要在 Next.js 16 專案裡，把 `proxy.ts` 標成命名錯誤或遺失的 middleware 檔案。** 那個檔案是正確而且刻意這樣取的。建議改名成 `middleware.ts` 會讓 middleware 無法執行。
+
+參考：[Next.js proxy 文件](https://nextjs.org/docs/app/getting-started/proxy)
+
+## Best Practices
+
+- 維持在較新的 Next.js 16.x，才能有穩定的 Turbopack 和快取行為。
+- 如果 dev 很慢，確認你用的是 Turbopack（預設），而且快取沒有被不必要地清掉。
+- 正式環境的 bundle 大小有問題時，用你那個版本的官方 Next.js bundle 分析工具。</pre></section><section><h2>英文原文</h2><pre>---
+name: nextjs-turbopack
+description: Next.js 16+ and Turbopack guidance — incremental Rust bundling, file-system caching, faster dev startup and HMR, Turbopack vs webpack tradeoffs, and the middleware.ts to proxy.ts filename change. Use when developing or debugging Next.js 16+ apps, diagnosing slow dev startup or hot reload, choosing between bundlers, or reviewing middleware/proxy file naming.
+metadata:
+  origin: ECC
+---
+
+# Next.js and Turbopack
+
+Next.js 16+ uses Turbopack by default for local development: an incremental bundler written in Rust that significantly speeds up dev startup and hot updates.
+
+## When to Use
+
+- **Turbopack (default dev)**: Use for day-to-day development. Faster cold start and HMR, especially in large apps.
+- **Webpack (legacy dev)**: Use only if you hit a Turbopack bug or rely on a webpack-only plugin in dev. Disable with `--webpack` (or `--no-turbopack` depending on your Next.js version; check the docs for your release).
+- **Production**: Production build behavior (`next build`) may use Turbopack or webpack depending on Next.js version; check the official Next.js docs for your version.
+
+Use when: developing or debugging Next.js 16+ apps, diagnosing slow dev startup or HMR, or optimizing production bundles.
+
+## How It Works
+
+- **Turbopack**: Incremental bundler for Next.js dev. Uses file-system caching so restarts are much faster (e.g. 5–14x on large projects).
+- **Default in dev**: From Next.js 16, `next dev` runs with Turbopack unless disabled.
+- **File-system caching**: Restarts reuse previous work; cache is typically under `.next`; no extra config needed for basic use.
+- **Bundle Analyzer (Next.js 16.1+)**: Experimental Bundle Analyzer to inspect output and find heavy dependencies; enable via config or experimental flag (see Next.js docs for your version).
+
+## Examples
+
+### Commands
+
+```bash
+next dev
+next build
+next start
+```
+
+### Usage
+
+Run `next dev` for local development with Turbopack. Use the Bundle Analyzer (see Next.js docs) to optimize code-splitting and trim large dependencies. Prefer App Router and server components where possible.
+
+## Middleware File Naming
+
+Next.js 16 introduced `proxy.ts` as the middleware filename, replacing the older `middleware.ts` convention:
+
+- **Next.js 16+**: use `proxy.ts` at the project root
+- **Pre-Next.js 16**: use `middleware.ts` at the project root
+
+The filename change is tied to the **Next.js version**, not to which bundler (Turbopack or webpack) is in use. Always check the official docs for the version you are reviewing.
+
+**Do not flag `proxy.ts` as a misnamed or missing middleware file in Next.js 16 projects.** The file is correct and intentional. Suggesting a rename to `middleware.ts` will break middleware execution.
+
+Reference: [Next.js proxy docs](https://nextjs.org/docs/app/getting-started/proxy)
+
+## Best Practices
+
+- Stay on a recent Next.js 16.x for stable Turbopack and caching behavior.
+- If dev is slow, ensure you&#x27;re on Turbopack (default) and that the cache isn&#x27;t being cleared unnecessarily.
+- For production bundle size issues, use the official Next.js bundle analysis tooling for your version.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

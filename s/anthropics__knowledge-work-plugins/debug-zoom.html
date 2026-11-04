@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debug-zoom｜Skill 寫法圖鑑</title>
+<meta name="description" content="隔離 Zoom 整合的故障層，排出假設並導向對應參考資料">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>debug-zoom</h1>
+<p class="meta">Anthropic ｜ 除錯與調查 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/partner-built/zoom-plugin/skills/debug-zoom/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">隔離 Zoom 整合的故障層，排出假設並導向對應參考資料</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: debug-zoom
+description: 隔離故障點並導向對應的 Zoom 參考資料，來除錯壞掉的 Zoom 整合。當 auth、API、webhook、SDK 或 MCP 行為出問題，而你需要一份依可能性排序的假設清單和驗證步驟時使用。
+argument-hint: &quot;&lt;symptoms, error, or failing flow&gt;&quot;
+---
+
+# /debug-zoom
+
+&gt; 如果看到不熟悉的佔位符，或需要確認目前連接了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+除錯 Zoom 的 auth、API、webhook、SDK 或 MCP 問題，不用在整套文件裡繞來繞去。
+
+## 用法
+
+```text
+/debug-zoom $ARGUMENTS
+```
+
+## 流程
+
+1. 找出出問題的那一層：auth、API request、webhook、SDK 初始化、media/session 行為，或 MCP transport。
+2. 只要最少的缺漏證據：確切的錯誤、平台、request/response、事件 payload，或程式路徑。
+3. 提出 2 到 4 個合理的原因，依可能性排序。
+4. 導向 `skills/` 裡最相關的深入參考。
+5. 給一份簡短的驗證計畫，讓使用者能確認修好了。
+
+## 輸出
+
+- 最可能出問題的那一層
+- 依可能性排序的假設
+- 針對性的修復步驟
+- 驗證檢查清單
+- 相關的 skill 連結
+
+## 相關 skill
+
+- [debug-zoom-integration](../debug-zoom-integration/SKILL.md)
+- [setup-zoom-oauth](../setup-zoom-oauth/SKILL.md)
+- [design-mcp-workflow](../design-mcp-workflow/SKILL.md)</pre></section><section><h2>英文原文</h2><pre>---
+name: debug-zoom
+description: Debug a broken Zoom integration by isolating the failure point and routing into the right Zoom references. Use when auth, API, webhook, SDK, or MCP behavior is failing and you need a ranked hypothesis list plus verification steps.
+argument-hint: &quot;&lt;symptoms, error, or failing flow&gt;&quot;
+---
+
+# /debug-zoom
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Debug Zoom auth, API, webhook, SDK, or MCP issues without wandering through the entire docs set.
+
+## Usage
+
+```text
+/debug-zoom $ARGUMENTS
+```
+
+## Workflow
+
+1. Identify the failing layer: auth, API request, webhook, SDK init, media/session behavior, or MCP transport.
+2. Ask for the minimum missing evidence: exact error, platform, request/response, event payload, or code path.
+3. Produce 2-4 plausible causes ranked by likelihood.
+4. Route to the most relevant deep references in `skills/`.
+5. Give a short verification plan so the user can confirm the fix.
+
+## Output
+
+- Most likely failure layer
+- Ranked hypotheses
+- Targeted fix steps
+- Verification checklist
+- Relevant skill links
+
+## Related Skills
+
+- [debug-zoom-integration](../debug-zoom-integration/SKILL.md)
+- [setup-zoom-oauth](../setup-zoom-oauth/SKILL.md)
+- [design-mcp-workflow](../design-mcp-workflow/SKILL.md)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

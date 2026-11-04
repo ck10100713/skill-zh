@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>merger-model｜Skill 寫法圖鑑</title>
+<meta name="description" content="建立併購的增益稀釋分析，含備考 EPS 和綜效敏感度">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>merger-model</h1>
+<p class="meta">Anthropic ｜ 金融與投資 ｜ <a href="https://github.com/anthropics/financial-services/blob/main/plugins/vertical-plugins/investment-banking/skills/merger-model/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">建立併購的增益稀釋分析，含備考 EPS 和綜效敏感度</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: merger-model
+description: 為併購交易建立增益／稀釋（accretion/dilution）分析。建模備考 EPS 影響、綜效敏感度和購買價格分攤。在評估潛在收購、為 pitch 準備併購後果分析、或就交易條款提供建議時使用。觸發詞包括「merger model」、「accretion dilution」、「M&amp;A model」、「pro forma EPS」、「merger consequences」、「deal impact analysis」。
+---
+
+# 併購模型
+
+## 工作流程
+
+### 步驟 1：蒐集輸入
+
+**收購方：**
+- 公司名稱、目前股價、流通在外股數
+- LTM 和 NTM EPS（GAAP 與調整後）
+- P/E 倍數
+- 稅前負債成本、稅率
+- 資產負債表上的現金、既有負債
+
+**目標公司：**
+- 公司名稱、目前股價、流通在外股數（若為上市公司）
+- LTM 和 NTM EPS 或淨利
+- 企業價值或股權價值
+
+**交易條款：**
+- 每股報價（或相對目前股價的溢價）
+- 對價組合：% 現金 vs. % 股票
+- 為現金部分籌資所新增的負債
+- 預期綜效（營收與成本）和逐步實現時程
+- 交易費用與融資成本
+- 預期交割日
+
+### 步驟 2：購買價格分析
+
+| 項目 | 數值 |
+|------|-------|
+| 每股報價 | |
+| 相對目前股價的溢價 | |
+| 股權價值 | |
+| 加：承擔的淨負債 | |
+| 企業價值 | |
+| 隱含 EV / EBITDA | |
+| 隱含 P/E | |
+
+### 步驟 3：資金來源與用途
+
+| 來源 | $ | 用途 | $ |
+|---------|---|------|---|
+| 新增負債 | | 股權購買價格 | |
+| 手上現金 | | 為目標公司債務再融資 | |
+| 新發行股權 | | 交易費用 | |
+| | | 融資費用 | |
+| **合計** | | **合計** | |
+
+### 步驟 4：備考 EPS（增益／稀釋）
+
+逐年計算（第 1 到 3 年）：
+
+| | 獨立 | 備考 | 增益/(稀釋) |
+|---|-----------|-----------|---------------------|
+| 收購方淨利 | | | |
+| 目標公司淨利 | | | |
+| 綜效（稅後） | | | |
+| 放棄的現金利息（稅後） | | | |
+| 新增負債利息（稅後） | | | |
+| 無形資產攤銷（稅後） | | | |
+| 備考淨利 | | | |
+| 備考股數 | | | |
+| **備考 EPS** | | | |
+| **增益 / (稀釋) %** | | | |
+
+### 步驟 5：敏感度分析
+
+**增益/稀釋 vs. 綜效與報價溢價：**
+
+| | $0M syn | $25M syn | $50M syn | $75M syn | $100M syn |
+|---|---------|----------|----------|----------|-----------|
+| 15% 溢價 | | | | | |
+| 20% 溢價 | | | | | |
+| 25% 溢價 | | | | | |
+| 30% 溢價 | | | | | |
+
+**增益/稀釋 vs. 現金/股票組合：**
+
+| | 100% 現金 | 75/25 | 50/50 | 25/75 | 100% 股票 |
+|---|-----------|-------|-------|-------|------------|
+| 第 1 年 | | | | | |
+| 第 2 年 | | | | | |
+
+### 步驟 6：損益兩平綜效
+
+計算讓交易在第 1 年 EPS 持平所需的最低綜效。
+
+### 步驟 7：輸出
+
+- Excel 活頁簿，包含：
+  - 假設分頁
+  - 資金來源與用途
+  - 備考損益表
+  - 增益/稀釋摘要
+  - 敏感度表
+  - 損益兩平分析
+- 給 pitch book 的一頁併購後果摘要
+
+## 重要注意事項
+
+- 相關時，一定要同時呈現 GAAP 和調整後（現金）EPS
+- 股票交易：用收購方目前股價計算換股比例，並註明新股造成的稀釋
+- 要包含購買價格分攤，商譽和無形資產攤銷會影響 GAAP EPS
+- 綜效逐步實現很關鍵，第 1 年通常只有 run-rate 綜效的 25 到 50%
+- 別忘了使用掉的現金所放棄的利息收入，以及新增負債的利息費用
+- 綜效和利息調整的稅率應該與收購方的邊際稅率一致</pre></section><section><h2>英文原文</h2><pre>---
+name: merger-model
+description: Build accretion/dilution analysis for M&amp;A transactions. Models pro forma EPS impact, synergy sensitivities, and purchase price allocation. Use when evaluating a potential acquisition, preparing merger consequences analysis for a pitch, or advising on deal terms. Triggers on &quot;merger model&quot;, &quot;accretion dilution&quot;, &quot;M&amp;A model&quot;, &quot;pro forma EPS&quot;, &quot;merger consequences&quot;, or &quot;deal impact analysis&quot;.
+---
+
+# Merger Model
+
+## Workflow
+
+### Step 1: Gather Inputs
+
+**Acquirer:**
+- Company name, current share price, shares outstanding
+- LTM and NTM EPS (GAAP and adjusted)
+- P/E multiple
+- Pre-tax cost of debt, tax rate
+- Cash on balance sheet, existing debt
+
+**Target:**
+- Company name, current share price, shares outstanding (if public)
+- LTM and NTM EPS or net income
+- Enterprise value or equity value
+
+**Deal Terms:**
+- Offer price per share (or premium to current)
+- Consideration mix: % cash vs. % stock
+- New debt raised to fund cash portion
+- Expected synergies (revenue and cost) and phase-in timeline
+- Transaction fees and financing costs
+- Expected close date
+
+### Step 2: Purchase Price Analysis
+
+| Item | Value |
+|------|-------|
+| Offer price per share | |
+| Premium to current | |
+| Equity value | |
+| Plus: net debt assumed | |
+| Enterprise value | |
+| EV / EBITDA implied | |
+| P/E implied | |
+
+### Step 3: Sources &amp; Uses
+
+| Sources | $ | Uses | $ |
+|---------|---|------|---|
+| New debt | | Equity purchase price | |
+| Cash on hand | | Refinance target debt | |
+| New equity issued | | Transaction fees | |
+| | | Financing fees | |
+| **Total** | | **Total** | |
+
+### Step 4: Pro Forma EPS (Accretion / Dilution)
+
+Calculate year-by-year (Year 1-3):
+
+| | Standalone | Pro Forma | Accretion/(Dilution) |
+|---|-----------|-----------|---------------------|
+| Acquirer net income | | | |
+| Target net income | | | |
+| Synergies (after tax) | | | |
+| Foregone interest on cash (after tax) | | | |
+| New debt interest (after tax) | | | |
+| Intangible amortization (after tax) | | | |
+| Pro forma net income | | | |
+| Pro forma shares | | | |
+| **Pro forma EPS** | | | |
+| **Accretion / (Dilution) %** | | | |
+
+### Step 5: Sensitivity Analysis
+
+**Accretion/Dilution vs. Synergies and Offer Premium:**
+
+| | $0M syn | $25M syn | $50M syn | $75M syn | $100M syn |
+|---|---------|----------|----------|----------|-----------|
+| 15% premium | | | | | |
+| 20% premium | | | | | |
+| 25% premium | | | | | |
+| 30% premium | | | | | |
+
+**Accretion/Dilution vs. Cash/Stock Mix:**
+
+| | 100% cash | 75/25 | 50/50 | 25/75 | 100% stock |
+|---|-----------|-------|-------|-------|------------|
+| Year 1 | | | | | |
+| Year 2 | | | | | |
+
+### Step 6: Breakeven Synergies
+
+Calculate the minimum synergies needed for the deal to be EPS-neutral in Year 1.
+
+### Step 7: Output
+
+- Excel workbook with:
+  - Assumptions tab
+  - Sources &amp; uses
+  - Pro forma income statement
+  - Accretion/dilution summary
+  - Sensitivity tables
+  - Breakeven analysis
+- One-page merger consequences summary for pitch book
+
+## Important Notes
+
+- Always show both GAAP and adjusted (cash) EPS where relevant
+- Stock deals: use acquirer&#x27;s current price for exchange ratio, note dilution from new shares
+- Include purchase price allocation — goodwill and intangible amortization matter for GAAP EPS
+- Synergy phase-in is critical — Year 1 is often only 25-50% of run-rate synergies
+- Don&#x27;t forget foregone interest income on cash used and new interest expense on debt raised
+- Tax rate on synergies and interest adjustments should match the acquirer&#x27;s marginal rate</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>blender-motion-state-inspection｜Skill 寫法圖鑑</title>
+<meta name="description" content="先抽出 Blender 骨骼、朝向和接觸數據，再檢查角色動畫對不對">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>blender-motion-state-inspection</h1>
+<p class="meta">affaan-m ｜ 遊戲開發 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/blender-motion-state-inspection/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">先抽出 Blender 骨骼、朝向和接觸數據，再檢查角色動畫對不對</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: blender-motion-state-inspection
+description: 檢查 Blender 角色、rig、姿勢、動畫 retargeting、地面接觸、朝向，或模型與動作是否對齊，而且光靠截圖不夠用的時候，使用這個 skill。
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Blender Motion State Inspection
+
+## 何時使用
+
+- Blender 角色在動畫裡看起來扭曲、鏡像、被壓扁、偏移，或腳在滑動。
+- 使用者問匯入的 avatar、armature 或 retarget 過的動作，是否符合預期的姿勢。
+- 你需要把渲染出來的證據，跟結構化的事實（例如骨骼、邊界框、接觸、朝向向量）做比較。
+- 某個工作流程取決於判斷一個模型是角色、道具、代理網格、控制 rig，還是壞掉的匯入。
+
+## 核心原則
+
+不要只靠截圖來判斷有動畫的 3D 資產。截圖是 review 的證據，但它們會隱藏座標軸慣例、骨骼名稱、物件縮放、局部變換、有 parent 的網格、材質槽，以及逐格的接觸狀態。
+
+先擷取結構化的 Blender 狀態，再用 viewport 截圖或渲染圖，來確認這些事實所暗示的結果。
+
+## 運作方式
+
+1. 在判斷動作之前，先建立乾淨的場景和資產基準線。
+2. 用 exporter，或在 Blender 自己的直譯器內執行 Blender Python，從 Blender 擷取結構化的事實。
+3. 取樣最可能暴露接觸、朝向、縮放和 retargeting 錯誤的那些影格。
+4. 把量測到的事實，跟使用者預期的姿勢、方向、地平面和渲染目標做比較。
+5. 回傳一份簡潔的報告，把已確認的事實、可能的原因和必要的修正分開。
+
+## 檢查流程
+
+1. 盤點場景。
+   - 列出網格、armature、empty、相機、燈光、modifier、parent 關係和隱藏的物件。
+   - 判斷 avatar 之前，先把角色網格跟輔助/代理幾何分開。
+   - 記錄物件空間和世界空間的邊界框。
+
+2. 辨識骨架。
+   - 擷取 armature 名稱、pose bone、骨骼的 head/tail、roll、parent 鏈、constraint，以及 rest pose 的座標軸。
+   - 對應語意上的骨骼，例如髖部、脊椎、頸部、頭部、肩膀、手肘、手、大腿、膝蓋、腳踝和腳。
+   - 標出缺少的左/右成對骨骼，以及不尋常的命名方式。
+
+3. 判斷前方、上方和側邊的座標軸。
+   - 同時使用骨盆、脊椎、肩膀、髖部、頭部和腳；不要只靠單一網格法線。
+   - 把 armature 的局部座標軸，跟世界座標軸及匯入檔案的慣例（例如 glTF 的 Y-up 對 Blender 的 Z-up）做比較。
+   - 當臉部/頭部/腳的方向跟 root 的移動方向衝突時，標出可能鏡像或反向的匯入。
+
+4. 取樣動畫影格。
+   - 檢查第一格、中間、接觸、騰空和極端姿勢的影格。
+   - 記錄 root 位置、root 朝向、骨盆高度、軀幹傾斜、四肢方向、腳離地距離和網格邊界。
+   - 長或快的動作，要在翻轉、落地、轉身、碰撞和地板接觸附近取樣得更密。
+
+5. 在怪罪 retargeting 之前，先檢查模型的完整性。
+   - 套用動畫之前，先確認乾淨的基準形狀。
+   - 保留原本的網格、材質、armature 和 skinning，除非使用者明確要求修復。
+   - 把無法解釋的球狀團塊、巨大的代理網格或被壓扁的身體，視為匯入/選取問題，除非證明不是。
+
+6. 診斷接觸和動作的問題。
+   - 穿透地面：逐格比較最低的腳或鞋子頂點與地板高度。
+   - 腳滑：比較腳著地的各格中，腳的世界位置。
+   - 腿交叉：比較左/右大腿、膝蓋、腳踝和腳的左右順序。
+   - 扭轉損壞：把骨骼的擺動方向，跟繞著肢體軸的 roll/twist 分開比較。
+   - 縮放漂移：把有動畫的網格邊界，跟乾淨基準線的邊界做比較。
+
+7. 先報告事實，再講意見。
+   - 包含影格編號、物件名稱、骨骼名稱、世界座標和閾值。
+   - 把已確認的失敗，跟視覺上的懷疑分開。
+   - 要等結構化的狀態解釋了該看什麼之後，才附上截圖。
+
+## 建議的報告格式
+
+```markdown
+## Blender Motion Inspection
+
+### Scene Inventory
+- Character candidates:
+- Armatures:
+- Helper/proxy objects:
+- Cameras/lights:
+
+### Orientation
+- World up:
+- Character forward:
+- Root heading:
+- Mirrored/backwards risk:
+
+### Baseline Integrity
+- Clean mesh bounds:
+- Animated mesh bounds:
+- Materials/skin preserved:
+- Suspicious non-character meshes:
+
+### Frame Findings
+| Frame | Finding | Evidence |
+| --- | --- | --- |
+| 1 | Clean baseline pose | hips/spine/feet aligned |
+| 96 | Foot penetrates floor | left_foot min_z = -0.04 |
+
+### Verdict
+- Pass/fail:
+- Required fix:
+- Render readiness:
+```
+
+## 範例
+
+### 腳滑的走路循環
+
+情境：retarget 過的角色在走路循環中看起來像在溜冰，但正面的鏡頭角度讓腳的接觸很難判斷。
+
+套用這個流程：
+- 盤點場景：角色網格 `HeroBody`、armature `HeroRig`、地面 `Floor`，沒有隱藏的代理網格。
+- 辨識骨架：語意上的腳是 `foot.L` 和 `foot.R`；髖部是 `pelvis`；root 骨骼是 `root`。
+- 取樣動畫影格：在腳著地的時刻前後，檢查第 1、18、24、30、42 和 48 格。
+- 診斷接觸和動作的問題：比較腳著地各格中，腳在世界空間的位置。
+
+擷取到的事實：
+
+| Frame | Fact | Evidence |
+| --- | --- | --- |
+| 18 | 左腳著地 | `foot.L min_z = 0.004`，腳尖和腳跟都靠近地板 |
+| 24 | 左腳著地時在滑動 | 六格之間 `foot.L x = 0.21 -&gt; 0.28` |
+| 30 | 骨盆持續向前移動 | `pelvis y = 1.14 -&gt; 1.31` |
+
+結論：渲染就緒度不通過。這個動作需要清理 foot-lock，或檢視 retargeting 的 constraint；身體網格不需要改比例。
+
+### 反向匯入的角色
+
+情境：角色在靜止影格裡看起來正確，但動畫往預期行進方向的反方向移動。
+
+套用這個流程：
+- 判斷前方、上方和側邊的座標軸：比較頭部、胸部、腳和 root 的移動。
+- 取樣動畫影格：檢查第 1 格和行進路徑的中點。
+- 先報告事實，再講意見：把 root 的朝向和模型面對的方向分開列出。
+
+擷取到的事實：
+
+| Frame | Fact | Evidence |
+| --- | --- | --- |
+| 1 | 角色的臉朝向世界的 `-Y` | 從 `neck` 到 `head` 的頭/胸向量，解出來是 `-Y` |
+| 72 | Root 往世界的 `+Y` 移動 | `root y = 0.0 -&gt; 2.8` |
+| 72 | 腳在視覺上朝前，跟行進方向相反 | 腳趾骨骼指向 `-Y`，而位移是 `+Y` |
+
+結論：很可能是反向匯入，或 retargeting 的前方座標軸對應不一致。在編輯動畫曲線之前，先修正匯入/retarget 的座標軸對應。
+
+## 實用閾值
+
+- 除非場景的單位縮放另有設定，否則假設 Blender 預設的公尺單位。
+- 除非地板是軟的或刻意風格化，否則超過 1 到 2 公分的穿透地面都算看得出來。
+- 突然超過 5% 的縮放變化，很可能是 rig、constraint 或變換繼承的問題。
+- 在騰空倒立的動作中，左/右腳踝的左右順序翻轉，就算之後恢復了，也要視為腿交叉的風險。
+- 除非來源動作包含瞬間轉身，否則 root 朝向每格跳超過 30 度都很可疑。
+
+## 反面模式
+
+- 除非任務明確是網格修復，否則不要為了硬湊姿勢而修改身體比例。
+- 記錄乾淨的基準線之前，不要把它 bake 掉。
+- 不要拿單一個渲染鏡頭角度，當成姿勢正確的證明。
+- 在記錄下它們為什麼不屬於角色之前，不要刪除輔助物件。
+- 沒有同時檢查頭部、腳、軀幹和 root 的移動之前，不要假設 avatar 面向 +Y、-Y、+X 或 -X。
+
+## 工具備註
+
+如果有 Blender 狀態 exporter，優先用包含網格、armature、pose bone、材質、接觸、邊界框和取樣動畫影格的 JSON。如果沒有 exporter，就透過 Blender 本身執行一支小小的 Blender Python script，例如 `blender --background scene.blend --python collect_motion_state.py`，因為 `bpy` 在一般的系統 Python 直譯器裡沒辦法用。</pre></section><section><h2>英文原文</h2><pre>---
+name: blender-motion-state-inspection
+description: Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground contact, facing direction, or model-vs-motion alignment where screenshots alone are not enough.
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Blender Motion State Inspection
+
+## When to Use
+
+- A Blender character looks twisted, mirrored, flattened, offset, or foot-sliding in an animation.
+- A user asks whether an imported avatar, armature, or retargeted motion matches an expected pose.
+- You need to compare rendered evidence with structured facts such as bones, bounding boxes, contacts, and facing vectors.
+- A workflow depends on deciding whether a model is a character, prop, proxy mesh, control rig, or broken import.
+
+## Core Principle
+
+Do not judge animated 3D assets only from screenshots. Screenshots are review evidence, but they hide axis conventions, bone names, object scale, local transforms, parented meshes, material slots, and frame-by-frame contact state.
+
+First extract structured Blender state, then use viewport screenshots or renders to confirm what the facts imply.
+
+## How It Works
+
+1. Establish the clean scene and asset baseline before judging motion.
+2. Extract structured facts from Blender using an exporter or Blender Python run inside Blender&#x27;s own interpreter.
+3. Sample the frames most likely to expose contact, orientation, scale, and retargeting errors.
+4. Compare the measured facts against the user&#x27;s expected pose, direction, ground plane, and render goal.
+5. Return a concise report that separates confirmed facts, likely causes, and required fixes.
+
+## Inspection Workflow
+
+1. Inventory the scene.
+   - List meshes, armatures, empties, cameras, lights, modifiers, parent relationships, and hidden objects.
+   - Separate character meshes from helper/proxy geometry before judging the avatar.
+   - Record object-space and world-space bounding boxes.
+
+2. Identify the skeleton.
+   - Capture armature names, pose bones, bone heads/tails, roll, parent chains, constraints, and rest-pose axes.
+   - Map semantic bones such as hips, spine, neck, head, shoulders, elbows, hands, thighs, knees, ankles, and feet.
+   - Flag missing left/right pairs and unusual naming schemes.
+
+3. Determine forward, up, and side axes.
+   - Use the pelvis, spine, shoulders, hips, head, and feet together; do not rely on a single mesh normal.
+   - Compare local armature axes with world axes and imported file conventions such as glTF Y-up vs Blender Z-up.
+   - Mark likely mirrored or backwards imports when face/head/feet direction conflicts with root motion.
+
+4. Sample animation frames.
+   - Inspect first, middle, contact, airborne, and extreme frames.
+   - Record root location, root heading, pelvis height, torso lean, limb directions, foot clearance, and mesh bounds.
+   - For long or fast motion, sample more densely around flips, landings, turns, collisions, and floor contacts.
+
+5. Check model integrity before retargeting blame.
+   - Confirm the clean baseline shape before applying animation.
+   - Preserve original mesh, materials, armature, and skinning unless the user explicitly asks for repair.
+   - Treat unexplained sphere-like blobs, giant proxy meshes, or crushed bodies as import/selection issues until proven otherwise.
+
+6. Diagnose contact and motion issues.
+   - Ground penetration: compare lowest foot or shoe vertices with floor height per frame.
+   - Foot sliding: compare foot world positions across planted frames.
+   - Leg crossover: compare left/right thigh, knee, ankle, and foot side ordering.
+   - Twist damage: compare bone swing direction separately from roll/twist around the limb axis.
+   - Scale drift: compare animated mesh bounds against the clean baseline bounds.
+
+7. Report facts before opinions.
+   - Include frame numbers, object names, bone names, world coordinates, and thresholds.
+   - Separate confirmed failures from visual suspicions.
+   - Attach screenshots only after the structured state explains what to look for.
+
+## Recommended Report Shape
+
+```markdown
+## Blender Motion Inspection
+
+### Scene Inventory
+- Character candidates:
+- Armatures:
+- Helper/proxy objects:
+- Cameras/lights:
+
+### Orientation
+- World up:
+- Character forward:
+- Root heading:
+- Mirrored/backwards risk:
+
+### Baseline Integrity
+- Clean mesh bounds:
+- Animated mesh bounds:
+- Materials/skin preserved:
+- Suspicious non-character meshes:
+
+### Frame Findings
+| Frame | Finding | Evidence |
+| --- | --- | --- |
+| 1 | Clean baseline pose | hips/spine/feet aligned |
+| 96 | Foot penetrates floor | left_foot min_z = -0.04 |
+
+### Verdict
+- Pass/fail:
+- Required fix:
+- Render readiness:
+```
+
+## Examples
+
+### Walk Cycle With Foot Sliding
+
+Scenario: a retargeted character appears to skate during a walk cycle, but the front camera angle makes the foot contact hard to judge.
+
+Apply the workflow:
+- Inventory the scene: character mesh `HeroBody`, armature `HeroRig`, ground plane `Floor`, no hidden proxy meshes.
+- Identify the skeleton: semantic feet are `foot.L` and `foot.R`; hips are `pelvis`; root bone is `root`.
+- Sample animation frames: inspect frames 1, 18, 24, 30, 42, and 48 around planted-foot moments.
+- Diagnose contact and motion issues: compare world-space foot locations during planted frames.
+
+Extracted facts:
+
+| Frame | Fact | Evidence |
+| --- | --- | --- |
+| 18 | Left foot is planted | `foot.L min_z = 0.004`, toe and heel both near floor |
+| 24 | Left foot slides while planted | `foot.L x = 0.21 -&gt; 0.28` over six frames |
+| 30 | Pelvis keeps moving forward | `pelvis y = 1.14 -&gt; 1.31` |
+
+Verdict: fail for render readiness. The motion needs foot-lock cleanup or retargeting constraint review; the body mesh does not need proportion changes.
+
+### Backwards Imported Character
+
+Scenario: a character looks correct in a still frame, but the animation moves opposite the expected travel direction.
+
+Apply the workflow:
+- Determine forward, up, and side axes: compare head, chest, feet, and root motion.
+- Sample animation frames: inspect frame 1 and the midpoint of the travel path.
+- Report facts before opinions: include the root heading and model-facing direction separately.
+
+Extracted facts:
+
+| Frame | Fact | Evidence |
+| --- | --- | --- |
+| 1 | Character face points toward world `-Y` | head/chest vector from `neck` to `head` resolves to `-Y` |
+| 72 | Root motion travels toward world `+Y` | `root y = 0.0 -&gt; 2.8` |
+| 72 | Feet remain visually forward-facing opposite travel | toe bones point `-Y` while displacement is `+Y` |
+
+Verdict: likely backwards import or retargeting forward-axis mismatch. Fix the import/retarget axis mapping before editing animation curves.
+
+## Practical Thresholds
+
+- Assume Blender&#x27;s default meter-scale units unless the scene unit scale says otherwise.
+- Treat ground penetration above 1-2 cm as visible unless the floor is soft or intentionally stylized.
+- Treat a sudden scale change above 5% as a likely rig, constraint, or transform inheritance problem.
+- Treat left/right ankle side-order flips during airborne inverted motion as leg crossover risk even if it recovers later.
+- Treat root heading jumps above 30 degrees per frame as suspicious unless the source motion includes a snap turn.
+
+## Anti-Patterns
+
+- Do not modify body proportions to force pose matching unless the task is explicitly mesh repair.
+- Do not bake away the clean baseline before recording it.
+- Do not use one rendered camera angle as proof that a pose is correct.
+- Do not delete helper objects until you have recorded why they are not part of the character.
+- Do not assume an avatar faces +Y, -Y, +X, or -X without checking head, feet, torso, and root motion together.
+
+## Tooling Notes
+
+If a Blender state exporter is available, prefer JSON that includes meshes, armatures, pose bones, materials, contacts, bounding boxes, and sampled animation frames. If no exporter exists, run a small Blender Python script through Blender itself, for example `blender --background scene.blend --python collect_motion_state.py`, because `bpy` is not available in a normal system Python interpreter.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

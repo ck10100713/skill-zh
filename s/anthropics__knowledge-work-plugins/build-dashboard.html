@@ -1,0 +1,1872 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build-dashboard｜Skill 寫法圖鑑</title>
+<meta name="description" content="建置帶圖表、篩選器和表格的獨立互動式 HTML dashboard">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>build-dashboard</h1>
+<p class="meta">Anthropic ｜ 資料與分析 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/data/skills/build-dashboard/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">建置帶圖表、篩選器和表格的獨立互動式 HTML dashboard</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: build-dashboard
+description: 建置帶有圖表、篩選器和表格的互動式 HTML dashboard。當要做有 KPI 卡片的主管總覽、把查詢結果變成可分享的獨立報告、建立團隊監控快照，或需要在一個能用瀏覽器開啟的檔案裡放多張帶篩選器的圖表時使用。
+argument-hint: &quot;&lt;description&gt; [data source]&quot;
+---
+
+# /build-dashboard - 建置互動式 Dashboard
+
+&gt; 如果看到不熟的 placeholder，或需要確認目前連了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+建置一個獨立的互動式 HTML dashboard，包含圖表、篩選器、表格和專業的樣式。直接在瀏覽器開啟就能用，不需要 server 或任何相依套件。
+
+## 用法
+
+```
+/build-dashboard &lt;dashboard 的描述&gt; [資料來源]
+```
+
+## 工作流程
+
+### 1. 了解 Dashboard 的需求
+
+要確認：
+
+- **目的**：主管總覽、營運監控、深入分析、團隊報告
+- **使用者**：誰會用這個 dashboard？
+- **關鍵指標**：哪些數字最重要？
+- **維度**：使用者應該能依什麼來篩選或切分？
+- **資料來源**：即時查詢、貼上的資料、CSV 檔，或範例資料
+
+### 2. 取得資料
+
+**如果有連線 data warehouse：**
+1. 查詢需要的資料
+2. 把結果以 JSON 的形式嵌進 HTML 檔
+
+**如果資料是貼上或上傳的：**
+1. 解析並清理資料
+2. 以 JSON 嵌進 dashboard
+
+**如果只有描述、沒有資料：**
+1. 建立一份符合所述 schema 的擬真範例資料集
+2. 在 dashboard 上註明用的是範例資料
+3. 提供換成真實資料的說明
+
+### 3. 設計 Dashboard 版面
+
+依循標準的 dashboard 版面模式：
+
+```
+┌──────────────────────────────────────────────────┐
+│  Dashboard 標題                      [篩選器 ▼]  │
+├────────────┬────────────┬────────────┬───────────┤
+│  KPI Card  │  KPI Card  │  KPI Card  │ KPI Card  │
+├────────────┴────────────┼────────────┴───────────┤
+│                         │                        │
+│    主要圖表              │   次要圖表              │
+│    （最大區塊）          │                        │
+│                         │                        │
+├─────────────────────────┴────────────────────────┤
+│                                                  │
+│    明細表格（可排序、可捲動）                     │
+│                                                  │
+└──────────────────────────────────────────────────┘
+```
+
+**版面要配合內容調整：**
+- 最上面放 2 到 4 張 KPI 卡片，顯示重點數字
+- 中間放 1 到 3 張圖表，呈現趨勢和拆解
+- 底部可選擇放明細表格，給往下鑽取的資料
+- 篩選器依複雜度放在標題列或側邊欄
+
+### 4. 建置 HTML Dashboard
+
+用下面的基本模板產生單一的獨立 HTML 檔。這個檔案包含：
+
+**結構（HTML）：**
+- 語意化的 HTML5 版面
+- 用 CSS Grid 或 Flexbox 做的響應式網格
+- 篩選控制項（下拉選單、日期選擇器、切換開關）
+- 帶數值和標籤的 KPI 卡片
+- 圖表容器
+- 表頭可排序的資料表
+
+**樣式（CSS）：**
+- 專業的配色（乾淨的白與灰，資料用強調色）
+- 卡片式版面，搭配輕微陰影
+- 一致的字體排印（用系統字型，載入快）
+- 能適應不同螢幕尺寸的響應式設計
+- 適合列印的樣式
+
+**互動（JavaScript）：**
+- 用 Chart.js 做互動式圖表（透過 CDN 引入）
+- 篩選下拉選單會同時更新所有圖表和表格
+- 可排序的表格欄位
+- 圖表上的 hover 提示
+- 數字格式化（千分位、貨幣、百分比）
+
+**資料（嵌入的 JSON）：**
+- 所有資料直接以 JavaScript 變數嵌在 HTML 裡
+- 不需要抓取外部資料
+- Dashboard 完全可以離線運作
+
+### 5. 實作圖表類型
+
+所有圖表都用 Chart.js。常見的 dashboard 圖表模式：
+
+- **折線圖**：時間序列趨勢
+- **長條圖**：類別比較
+- **甜甜圈圖**：組成比例（類別少於 6 個時）
+- **堆疊長條圖**：組成隨時間的變化
+- **混合圖（長條加折線）**：用量疊上比率
+
+每種圖表類型都用下面的 Chart.js 整合模式。
+
+### 6. 加上互動
+
+下拉篩選、日期區間篩選、組合篩選邏輯、可排序表格和圖表更新，都用下面的篩選與互動實作模式。
+
+### 7. 儲存並開啟
+
+1. 把 dashboard 存成 HTML 檔，檔名要有描述性（例如 `sales_dashboard.html`）
+2. 用使用者預設的瀏覽器開啟
+3. 確認顯示正確
+4. 提供更新資料或客製化的說明
+
+---
+
+## 基本模板
+
+每個 dashboard 都遵循這個結構：
+
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Dashboard Title&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chart.js@4.5.1&quot; integrity=&quot;sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0&quot; integrity=&quot;sha384-cVMg8E3QFwTvGCDuK+ET4PD341jF3W8nO1auiXfuZNQkzbUUiBGLsIQUE+b1mxws&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        /* Dashboard 樣式放這裡 */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;dashboard-container&quot;&gt;
+        &lt;header class=&quot;dashboard-header&quot;&gt;
+            &lt;h1&gt;Dashboard Title&lt;/h1&gt;
+            &lt;div class=&quot;filters&quot;&gt;
+                &lt;!-- 篩選控制項 --&gt;
+            &lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;section class=&quot;kpi-row&quot;&gt;
+            &lt;!-- KPI 卡片 --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;chart-row&quot;&gt;
+            &lt;!-- 圖表容器 --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;table-section&quot;&gt;
+            &lt;!-- 資料表 --&gt;
+        &lt;/section&gt;
+
+        &lt;footer class=&quot;dashboard-footer&quot;&gt;
+            &lt;span&gt;Data as of: &lt;span id=&quot;data-date&quot;&gt;&lt;/span&gt;&lt;/span&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // 嵌入的資料
+        const DATA = [];
+
+        // Dashboard 邏輯
+        class Dashboard {
+            constructor(data) {
+                this.rawData = data;
+                this.filteredData = data;
+                this.charts = {};
+                this.init();
+            }
+
+            init() {
+                this.setupFilters();
+                this.renderKPIs();
+                this.renderCharts();
+                this.renderTable();
+            }
+
+            applyFilters() {
+                // 篩選邏輯
+                this.filteredData = this.rawData.filter(row =&gt; {
+                    // 套用每個啟用中的篩選器
+                    return true; // 佔位用
+                });
+                this.renderKPIs();
+                this.updateCharts();
+                this.renderTable();
+            }
+
+            // ... 每個區塊各自的 method
+        }
+
+        const dashboard = new Dashboard(DATA);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+```
+
+## KPI 卡片模式
+
+```html
+&lt;div class=&quot;kpi-card&quot;&gt;
+    &lt;div class=&quot;kpi-label&quot;&gt;Total Revenue&lt;/div&gt;
+    &lt;div class=&quot;kpi-value&quot; id=&quot;kpi-revenue&quot;&gt;$0&lt;/div&gt;
+    &lt;div class=&quot;kpi-change positive&quot; id=&quot;kpi-revenue-change&quot;&gt;+0%&lt;/div&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function renderKPI(elementId, value, previousValue, format = &#x27;number&#x27;) {
+    const el = document.getElementById(elementId);
+    const changeEl = document.getElementById(elementId + &#x27;-change&#x27;);
+
+    // 格式化數值
+    el.textContent = formatValue(value, format);
+
+    // 計算並顯示變化
+    if (previousValue &amp;&amp; previousValue !== 0) {
+        const pctChange = ((value - previousValue) / previousValue) * 100;
+        const sign = pctChange &gt;= 0 ? &#x27;+&#x27; : &#x27;&#x27;;
+        changeEl.textContent = `${sign}${pctChange.toFixed(1)}% vs prior period`;
+        changeEl.className = `kpi-change ${pctChange &gt;= 0 ? &#x27;positive&#x27; : &#x27;negative&#x27;}`;
+    }
+}
+
+function formatValue(value, format) {
+    switch (format) {
+        case &#x27;currency&#x27;:
+            if (value &gt;= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `$${(value / 1e3).toFixed(1)}K`;
+            return `$${value.toFixed(0)}`;
+        case &#x27;percent&#x27;:
+            return `${value.toFixed(1)}%`;
+        case &#x27;number&#x27;:
+            if (value &gt;= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+            return value.toLocaleString();
+        default:
+            return value.toString();
+    }
+}
+```
+
+## Chart.js 整合
+
+### 圖表容器模式
+
+```html
+&lt;div class=&quot;chart-container&quot;&gt;
+    &lt;h3 class=&quot;chart-title&quot;&gt;Monthly Revenue Trend&lt;/h3&gt;
+    &lt;canvas id=&quot;revenue-chart&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+```
+
+### 折線圖
+
+```javascript
+function createLineChart(canvasId, labels, datasets) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    return new Chart(ctx, {
+        type: &#x27;line&#x27;,
+        data: {
+            labels: labels,
+            datasets: datasets.map((ds, i) =&gt; ({
+                label: ds.label,
+                data: ds.data,
+                borderColor: COLORS[i % COLORS.length],
+                backgroundColor: COLORS[i % COLORS.length] + &#x27;20&#x27;,
+                borderWidth: 2,
+                fill: ds.fill || false,
+                tension: 0.3,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: &#x27;index&#x27;,
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: &#x27;top&#x27;,
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${formatValue(context.parsed.y, &#x27;currency&#x27;)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatValue(value, &#x27;currency&#x27;);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+```
+
+### 長條圖
+
+```javascript
+function createBarChart(canvasId, labels, data, options = {}) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    const isHorizontal = options.horizontal || labels.length &gt; 8;
+
+    return new Chart(ctx, {
+        type: &#x27;bar&#x27;,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: options.label || &#x27;Value&#x27;,
+                data: data,
+                backgroundColor: options.colors || COLORS.map(c =&gt; c + &#x27;CC&#x27;),
+                borderColor: options.colors || COLORS,
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: isHorizontal ? &#x27;y&#x27; : &#x27;x&#x27;,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatValue(context.parsed[isHorizontal ? &#x27;x&#x27; : &#x27;y&#x27;], options.format || &#x27;number&#x27;);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { display: isHorizontal },
+                    ticks: isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || &#x27;number&#x27;);
+                        }
+                    } : {}
+                },
+                y: {
+                    beginAtZero: !isHorizontal,
+                    grid: { display: !isHorizontal },
+                    ticks: !isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || &#x27;number&#x27;);
+                        }
+                    } : {}
+                }
+            }
+        }
+    });
+}
+```
+
+### 甜甜圈圖
+
+```javascript
+function createDoughnutChart(canvasId, labels, data) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    return new Chart(ctx, {
+        type: &#x27;doughnut&#x27;,
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: COLORS.map(c =&gt; c + &#x27;CC&#x27;),
+                borderColor: &#x27;#ffffff&#x27;,
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: &#x27;60%&#x27;,
+            plugins: {
+                legend: {
+                    position: &#x27;right&#x27;,
+                    labels: { usePointStyle: true, padding: 15 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) =&gt; a + b, 0);
+                            const pct = ((context.parsed / total) * 100).toFixed(1);
+                            return `${context.label}: ${formatValue(context.parsed, &#x27;number&#x27;)} (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+```
+
+### 篩選變更時更新圖表
+
+```javascript
+function updateChart(chart, newLabels, newData) {
+    chart.data.labels = newLabels;
+
+    if (Array.isArray(newData[0])) {
+        // 多個資料集
+        newData.forEach((data, i) =&gt; {
+            chart.data.datasets[i].data = data;
+        });
+    } else {
+        chart.data.datasets[0].data = newData;
+    }
+
+    chart.update(&#x27;none&#x27;); // &#x27;none&#x27; 會停用動畫，立即更新
+}
+```
+
+## 篩選與互動實作
+
+### 下拉篩選
+
+```html
+&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label for=&quot;filter-region&quot;&gt;Region&lt;/label&gt;
+    &lt;select id=&quot;filter-region&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+        &lt;option value=&quot;all&quot;&gt;All Regions&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function populateFilter(selectId, data, field) {
+    const select = document.getElementById(selectId);
+    const values = [...new Set(data.map(d =&gt; d[field]))].sort();
+
+    // 保留「All」選項，再加入不重複的值
+    values.forEach(val =&gt; {
+        const option = document.createElement(&#x27;option&#x27;);
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+    });
+}
+
+function getFilterValue(selectId) {
+    const val = document.getElementById(selectId).value;
+    return val === &#x27;all&#x27; ? null : val;
+}
+```
+
+### 日期區間篩選
+
+```html
+&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label&gt;Date Range&lt;/label&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-start&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+    &lt;span&gt;to&lt;/span&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-end&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function filterByDateRange(data, dateField, startDate, endDate) {
+    return data.filter(row =&gt; {
+        const rowDate = new Date(row[dateField]);
+        if (startDate &amp;&amp; rowDate &lt; new Date(startDate)) return false;
+        if (endDate &amp;&amp; rowDate &gt; new Date(endDate)) return false;
+        return true;
+    });
+}
+```
+
+### 組合篩選邏輯
+
+```javascript
+applyFilters() {
+    const region = getFilterValue(&#x27;filter-region&#x27;);
+    const category = getFilterValue(&#x27;filter-category&#x27;);
+    const startDate = document.getElementById(&#x27;filter-date-start&#x27;).value;
+    const endDate = document.getElementById(&#x27;filter-date-end&#x27;).value;
+
+    this.filteredData = this.rawData.filter(row =&gt; {
+        if (region &amp;&amp; row.region !== region) return false;
+        if (category &amp;&amp; row.category !== category) return false;
+        if (startDate &amp;&amp; row.date &lt; startDate) return false;
+        if (endDate &amp;&amp; row.date &gt; endDate) return false;
+        return true;
+    });
+
+    this.renderKPIs();
+    this.updateCharts();
+    this.renderTable();
+}
+```
+
+### 可排序表格
+
+```javascript
+function renderTable(containerId, data, columns) {
+    const container = document.getElementById(containerId);
+    let sortCol = null;
+    let sortDir = &#x27;desc&#x27;;
+
+    function render(sortedData) {
+        let html = &#x27;&lt;table class=&quot;data-table&quot;&gt;&#x27;;
+
+        // 表頭
+        html += &#x27;&lt;thead&gt;&lt;tr&gt;&#x27;;
+        columns.forEach(col =&gt; {
+            const arrow = sortCol === col.field
+                ? (sortDir === &#x27;asc&#x27; ? &#x27; ▲&#x27; : &#x27; ▼&#x27;)
+                : &#x27;&#x27;;
+            html += `&lt;th onclick=&quot;sortTable(&#x27;${col.field}&#x27;)&quot; style=&quot;cursor:pointer&quot;&gt;${col.label}${arrow}&lt;/th&gt;`;
+        });
+        html += &#x27;&lt;/tr&gt;&lt;/thead&gt;&#x27;;
+
+        // 表身
+        html += &#x27;&lt;tbody&gt;&#x27;;
+        sortedData.forEach(row =&gt; {
+            html += &#x27;&lt;tr&gt;&#x27;;
+            columns.forEach(col =&gt; {
+                const value = col.format ? formatValue(row[col.field], col.format) : row[col.field];
+                html += `&lt;td&gt;${value}&lt;/td&gt;`;
+            });
+            html += &#x27;&lt;/tr&gt;&#x27;;
+        });
+        html += &#x27;&lt;/tbody&gt;&lt;/table&gt;&#x27;;
+
+        container.innerHTML = html;
+    }
+
+    window.sortTable = function(field) {
+        if (sortCol === field) {
+            sortDir = sortDir === &#x27;asc&#x27; ? &#x27;desc&#x27; : &#x27;asc&#x27;;
+        } else {
+            sortCol = field;
+            sortDir = &#x27;desc&#x27;;
+        }
+        const sorted = [...data].sort((a, b) =&gt; {
+            const aVal = a[field], bVal = b[field];
+            const cmp = aVal &lt; bVal ? -1 : aVal &gt; bVal ? 1 : 0;
+            return sortDir === &#x27;asc&#x27; ? cmp : -cmp;
+        });
+        render(sorted);
+    };
+
+    render(data);
+}
+```
+
+## Dashboard 的 CSS 樣式
+
+### 色彩系統
+
+```css
+:root {
+    /* 背景層 */
+    --bg-primary: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-header: #1a1a2e;
+
+    /* 文字 */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-on-dark: #ffffff;
+
+    /* 資料用的強調色 */
+    --color-1: #4C72B0;
+    --color-2: #DD8452;
+    --color-3: #55A868;
+    --color-4: #C44E52;
+    --color-5: #8172B3;
+    --color-6: #937860;
+
+    /* 狀態色 */
+    --positive: #28a745;
+    --negative: #dc3545;
+    --neutral: #6c757d;
+
+    /* 間距 */
+    --gap: 16px;
+    --radius: 8px;
+}
+```
+
+### 版面
+
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--gap);
+}
+
+.dashboard-header {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    margin-bottom: var(--gap);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dashboard-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+```
+
+### KPI 卡片
+
+```css
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.kpi-change {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kpi-change.positive { color: var(--positive); }
+.kpi-change.negative { color: var(--negative); }
+```
+
+### 圖表容器
+
+```css
+.chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.chart-container h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.chart-container canvas {
+    max-height: 300px;
+}
+```
+
+### 篩選器
+
+```css
+.filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-group select,
+.filter-group input[type=&quot;date&quot;] {
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-on-dark);
+    font-size: 13px;
+}
+
+.filter-group select option {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+}
+```
+
+### 資料表
+
+```css
+.table-section {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.data-table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #dee2e6;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.data-table thead th:hover {
+    color: var(--text-primary);
+    background: #f8f9fa;
+}
+
+.data-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+```
+
+### 響應式設計
+
+```css
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media print {
+    body { background: white; }
+    .dashboard-container { max-width: none; }
+    .filters { display: none; }
+    .chart-container { break-inside: avoid; }
+    .kpi-card { border: 1px solid #dee2e6; box-shadow: none; }
+}
+```
+
+## 大型資料集的效能考量
+
+### 資料量指引
+
+| 資料量 | 做法 |
+|---|---|
+| &lt;1,000 筆 | 直接嵌進 HTML。互動功能完整。 |
+| 1,000 - 10,000 筆 | 嵌進 HTML。圖表可能需要先預先聚合。 |
+| 10,000 - 100,000 筆 | 在 server 端預先聚合，只嵌入聚合後的資料。 |
+| &gt;100,000 筆 | 不適合做成 client-side dashboard。改用 BI 工具或分頁。 |
+
+### 預先聚合模式
+
+不要嵌入原始資料再到瀏覽器裡聚合：
+
+```javascript
+// 不要：嵌入 50,000 筆原始資料
+const RAW_DATA = [/* 50,000 rows */];
+
+// 要：先預先聚合再嵌入
+const CHART_DATA = {
+    monthly_revenue: [
+        { month: &#x27;2024-01&#x27;, revenue: 150000, orders: 1200 },
+        { month: &#x27;2024-02&#x27;, revenue: 165000, orders: 1350 },
+        // ... 12 筆，而不是 50,000 筆
+    ],
+    top_products: [
+        { product: &#x27;Widget A&#x27;, revenue: 45000 },
+        // ... 10 筆
+    ],
+    kpis: {
+        total_revenue: 1980000,
+        total_orders: 15600,
+        avg_order_value: 127,
+    }
+};
+```
+
+### 圖表效能
+
+- 折線圖每個 series 限制在 500 個資料點以內（必要時降低取樣）
+- 長條圖限制在 50 個類別以內
+- 散布圖上限 1,000 個點（更大的資料集用取樣）
+- 圖表很多的 dashboard 要停用動畫：Chart.js options 裡設 `animation: false`
+- 篩選觸發的更新用 `Chart.update(&#x27;none&#x27;)`，不要用 `Chart.update()`
+
+### DOM 效能
+
+- 資料表可見的列數限制在 100 到 200 列，更多就加分頁
+- 用 `requestAnimationFrame` 協調圖表更新
+- 篩選變更時不要重建整個 DOM，只更新有變的元素
+
+```javascript
+// 有效率的表格分頁
+function renderTablePage(data, page, pageSize = 50) {
+    const start = page * pageSize;
+    const end = Math.min(start + pageSize, data.length);
+    const pageData = data.slice(start, end);
+    // 只渲染 pageData
+    // 顯示分頁控制項：「Showing 1-50 of 2,340」
+}
+```
+
+## 範例
+
+```
+/build-dashboard 做一個月銷售 dashboard，要有營收趨勢、熱銷產品和各區域拆解。資料在 orders 表。
+```
+
+```
+/build-dashboard 這是我們的客服工單資料 [貼上 CSV]。做一個 dashboard，顯示各優先級的數量、回應時間趨勢和解決率。
+```
+
+```
+/build-dashboard 幫 SaaS 公司做一個主管 dashboard 範本，顯示 MRR、流失率、新客戶和 NPS。用範例資料。
+```
+
+## 小提醒
+
+- Dashboard 是完全獨立的 HTML 檔，直接把檔案寄給任何人就能分享
+- 要做即時 dashboard 的話，考慮改接 BI 工具。這些 dashboard 只是某個時間點的快照
+- 可以要求「dark mode」或「presentation mode」來換不同的樣式
+- 可以指定配色來配合你的品牌</pre></section><section><h2>英文原文</h2><pre>---
+name: build-dashboard
+description: Build an interactive HTML dashboard with charts, filters, and tables. Use when creating an executive overview with KPI cards, turning query results into a shareable self-contained report, building a team monitoring snapshot, or needing multiple charts with filters in one browser-openable file.
+argument-hint: &quot;&lt;description&gt; [data source]&quot;
+---
+
+# /build-dashboard - Build Interactive Dashboards
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Build a self-contained interactive HTML dashboard with charts, filters, tables, and professional styling. Opens directly in a browser -- no server or dependencies required.
+
+## Usage
+
+```
+/build-dashboard &lt;description of dashboard&gt; [data source]
+```
+
+## Workflow
+
+### 1. Understand the Dashboard Requirements
+
+Determine:
+
+- **Purpose**: Executive overview, operational monitoring, deep-dive analysis, team reporting
+- **Audience**: Who will use this dashboard?
+- **Key metrics**: What numbers matter most?
+- **Dimensions**: What should users be able to filter or slice by?
+- **Data source**: Live query, pasted data, CSV file, or sample data
+
+### 2. Gather the Data
+
+**If data warehouse is connected:**
+1. Query the necessary data
+2. Embed the results as JSON within the HTML file
+
+**If data is pasted or uploaded:**
+1. Parse and clean the data
+2. Embed as JSON in the dashboard
+
+**If working from a description without data:**
+1. Create a realistic sample dataset matching the described schema
+2. Note in the dashboard that it uses sample data
+3. Provide instructions for swapping in real data
+
+### 3. Design the Dashboard Layout
+
+Follow a standard dashboard layout pattern:
+
+```
+┌──────────────────────────────────────────────────┐
+│  Dashboard Title                    [Filters ▼]  │
+├────────────┬────────────┬────────────┬───────────┤
+│  KPI Card  │  KPI Card  │  KPI Card  │ KPI Card  │
+├────────────┴────────────┼────────────┴───────────┤
+│                         │                        │
+│    Primary Chart        │   Secondary Chart      │
+│    (largest area)       │                        │
+│                         │                        │
+├─────────────────────────┴────────────────────────┤
+│                                                  │
+│    Detail Table (sortable, scrollable)           │
+│                                                  │
+└──────────────────────────────────────────────────┘
+```
+
+**Adapt the layout to the content:**
+- 2-4 KPI cards at the top for headline numbers
+- 1-3 charts in the middle section for trends and breakdowns
+- Optional detail table at the bottom for drill-down data
+- Filters in the header or sidebar depending on complexity
+
+### 4. Build the HTML Dashboard
+
+Generate a single self-contained HTML file using the base template below. The file includes:
+
+**Structure (HTML):**
+- Semantic HTML5 layout
+- Responsive grid using CSS Grid or Flexbox
+- Filter controls (dropdowns, date pickers, toggles)
+- KPI cards with values and labels
+- Chart containers
+- Data table with sortable headers
+
+**Styling (CSS):**
+- Professional color scheme (clean whites, grays, with accent colors for data)
+- Card-based layout with subtle shadows
+- Consistent typography (system fonts for fast loading)
+- Responsive design that works on different screen sizes
+- Print-friendly styles
+
+**Interactivity (JavaScript):**
+- Chart.js for interactive charts (included via CDN)
+- Filter dropdowns that update all charts and tables simultaneously
+- Sortable table columns
+- Hover tooltips on charts
+- Number formatting (commas, currency, percentages)
+
+**Data (embedded JSON):**
+- All data embedded directly in the HTML as JavaScript variables
+- No external data fetches required
+- Dashboard works completely offline
+
+### 5. Implement Chart Types
+
+Use Chart.js for all charts. Common dashboard chart patterns:
+
+- **Line chart**: Time series trends
+- **Bar chart**: Category comparisons
+- **Doughnut chart**: Composition (when &lt;6 categories)
+- **Stacked bar**: Composition over time
+- **Mixed (bar + line)**: Volume with rate overlay
+
+Use the Chart.js integration patterns below for each chart type.
+
+### 6. Add Interactivity
+
+Use the filter and interactivity implementation patterns below for dropdown filters, date range filters, combined filter logic, sortable tables, and chart updates.
+
+### 7. Save and Open
+
+1. Save the dashboard as an HTML file with a descriptive name (e.g., `sales_dashboard.html`)
+2. Open it in the user&#x27;s default browser
+3. Confirm it renders correctly
+4. Provide instructions for updating data or customizing
+
+---
+
+## Base Template
+
+Every dashboard follows this structure:
+
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Dashboard Title&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chart.js@4.5.1&quot; integrity=&quot;sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0&quot; integrity=&quot;sha384-cVMg8E3QFwTvGCDuK+ET4PD341jF3W8nO1auiXfuZNQkzbUUiBGLsIQUE+b1mxws&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        /* Dashboard styles go here */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;dashboard-container&quot;&gt;
+        &lt;header class=&quot;dashboard-header&quot;&gt;
+            &lt;h1&gt;Dashboard Title&lt;/h1&gt;
+            &lt;div class=&quot;filters&quot;&gt;
+                &lt;!-- Filter controls --&gt;
+            &lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;section class=&quot;kpi-row&quot;&gt;
+            &lt;!-- KPI cards --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;chart-row&quot;&gt;
+            &lt;!-- Chart containers --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;table-section&quot;&gt;
+            &lt;!-- Data table --&gt;
+        &lt;/section&gt;
+
+        &lt;footer class=&quot;dashboard-footer&quot;&gt;
+            &lt;span&gt;Data as of: &lt;span id=&quot;data-date&quot;&gt;&lt;/span&gt;&lt;/span&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Embedded data
+        const DATA = [];
+
+        // Dashboard logic
+        class Dashboard {
+            constructor(data) {
+                this.rawData = data;
+                this.filteredData = data;
+                this.charts = {};
+                this.init();
+            }
+
+            init() {
+                this.setupFilters();
+                this.renderKPIs();
+                this.renderCharts();
+                this.renderTable();
+            }
+
+            applyFilters() {
+                // Filter logic
+                this.filteredData = this.rawData.filter(row =&gt; {
+                    // Apply each active filter
+                    return true; // placeholder
+                });
+                this.renderKPIs();
+                this.updateCharts();
+                this.renderTable();
+            }
+
+            // ... methods for each section
+        }
+
+        const dashboard = new Dashboard(DATA);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+```
+
+## KPI Card Pattern
+
+```html
+&lt;div class=&quot;kpi-card&quot;&gt;
+    &lt;div class=&quot;kpi-label&quot;&gt;Total Revenue&lt;/div&gt;
+    &lt;div class=&quot;kpi-value&quot; id=&quot;kpi-revenue&quot;&gt;$0&lt;/div&gt;
+    &lt;div class=&quot;kpi-change positive&quot; id=&quot;kpi-revenue-change&quot;&gt;+0%&lt;/div&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function renderKPI(elementId, value, previousValue, format = &#x27;number&#x27;) {
+    const el = document.getElementById(elementId);
+    const changeEl = document.getElementById(elementId + &#x27;-change&#x27;);
+
+    // Format the value
+    el.textContent = formatValue(value, format);
+
+    // Calculate and display change
+    if (previousValue &amp;&amp; previousValue !== 0) {
+        const pctChange = ((value - previousValue) / previousValue) * 100;
+        const sign = pctChange &gt;= 0 ? &#x27;+&#x27; : &#x27;&#x27;;
+        changeEl.textContent = `${sign}${pctChange.toFixed(1)}% vs prior period`;
+        changeEl.className = `kpi-change ${pctChange &gt;= 0 ? &#x27;positive&#x27; : &#x27;negative&#x27;}`;
+    }
+}
+
+function formatValue(value, format) {
+    switch (format) {
+        case &#x27;currency&#x27;:
+            if (value &gt;= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `$${(value / 1e3).toFixed(1)}K`;
+            return `$${value.toFixed(0)}`;
+        case &#x27;percent&#x27;:
+            return `${value.toFixed(1)}%`;
+        case &#x27;number&#x27;:
+            if (value &gt;= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+            return value.toLocaleString();
+        default:
+            return value.toString();
+    }
+}
+```
+
+## Chart.js Integration
+
+### Chart Container Pattern
+
+```html
+&lt;div class=&quot;chart-container&quot;&gt;
+    &lt;h3 class=&quot;chart-title&quot;&gt;Monthly Revenue Trend&lt;/h3&gt;
+    &lt;canvas id=&quot;revenue-chart&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+```
+
+### Line Chart
+
+```javascript
+function createLineChart(canvasId, labels, datasets) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    return new Chart(ctx, {
+        type: &#x27;line&#x27;,
+        data: {
+            labels: labels,
+            datasets: datasets.map((ds, i) =&gt; ({
+                label: ds.label,
+                data: ds.data,
+                borderColor: COLORS[i % COLORS.length],
+                backgroundColor: COLORS[i % COLORS.length] + &#x27;20&#x27;,
+                borderWidth: 2,
+                fill: ds.fill || false,
+                tension: 0.3,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: &#x27;index&#x27;,
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: &#x27;top&#x27;,
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${formatValue(context.parsed.y, &#x27;currency&#x27;)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatValue(value, &#x27;currency&#x27;);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+```
+
+### Bar Chart
+
+```javascript
+function createBarChart(canvasId, labels, data, options = {}) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    const isHorizontal = options.horizontal || labels.length &gt; 8;
+
+    return new Chart(ctx, {
+        type: &#x27;bar&#x27;,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: options.label || &#x27;Value&#x27;,
+                data: data,
+                backgroundColor: options.colors || COLORS.map(c =&gt; c + &#x27;CC&#x27;),
+                borderColor: options.colors || COLORS,
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: isHorizontal ? &#x27;y&#x27; : &#x27;x&#x27;,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatValue(context.parsed[isHorizontal ? &#x27;x&#x27; : &#x27;y&#x27;], options.format || &#x27;number&#x27;);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { display: isHorizontal },
+                    ticks: isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || &#x27;number&#x27;);
+                        }
+                    } : {}
+                },
+                y: {
+                    beginAtZero: !isHorizontal,
+                    grid: { display: !isHorizontal },
+                    ticks: !isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || &#x27;number&#x27;);
+                        }
+                    } : {}
+                }
+            }
+        }
+    });
+}
+```
+
+### Doughnut Chart
+
+```javascript
+function createDoughnutChart(canvasId, labels, data) {
+    const ctx = document.getElementById(canvasId).getContext(&#x27;2d&#x27;);
+    return new Chart(ctx, {
+        type: &#x27;doughnut&#x27;,
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: COLORS.map(c =&gt; c + &#x27;CC&#x27;),
+                borderColor: &#x27;#ffffff&#x27;,
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: &#x27;60%&#x27;,
+            plugins: {
+                legend: {
+                    position: &#x27;right&#x27;,
+                    labels: { usePointStyle: true, padding: 15 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) =&gt; a + b, 0);
+                            const pct = ((context.parsed / total) * 100).toFixed(1);
+                            return `${context.label}: ${formatValue(context.parsed, &#x27;number&#x27;)} (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+```
+
+### Updating Charts on Filter Change
+
+```javascript
+function updateChart(chart, newLabels, newData) {
+    chart.data.labels = newLabels;
+
+    if (Array.isArray(newData[0])) {
+        // Multiple datasets
+        newData.forEach((data, i) =&gt; {
+            chart.data.datasets[i].data = data;
+        });
+    } else {
+        chart.data.datasets[0].data = newData;
+    }
+
+    chart.update(&#x27;none&#x27;); // &#x27;none&#x27; disables animation for instant update
+}
+```
+
+## Filter and Interactivity Implementation
+
+### Dropdown Filter
+
+```html
+&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label for=&quot;filter-region&quot;&gt;Region&lt;/label&gt;
+    &lt;select id=&quot;filter-region&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+        &lt;option value=&quot;all&quot;&gt;All Regions&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function populateFilter(selectId, data, field) {
+    const select = document.getElementById(selectId);
+    const values = [...new Set(data.map(d =&gt; d[field]))].sort();
+
+    // Keep the &quot;All&quot; option, add unique values
+    values.forEach(val =&gt; {
+        const option = document.createElement(&#x27;option&#x27;);
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+    });
+}
+
+function getFilterValue(selectId) {
+    const val = document.getElementById(selectId).value;
+    return val === &#x27;all&#x27; ? null : val;
+}
+```
+
+### Date Range Filter
+
+```html
+&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label&gt;Date Range&lt;/label&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-start&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+    &lt;span&gt;to&lt;/span&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-end&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+&lt;/div&gt;
+```
+
+```javascript
+function filterByDateRange(data, dateField, startDate, endDate) {
+    return data.filter(row =&gt; {
+        const rowDate = new Date(row[dateField]);
+        if (startDate &amp;&amp; rowDate &lt; new Date(startDate)) return false;
+        if (endDate &amp;&amp; rowDate &gt; new Date(endDate)) return false;
+        return true;
+    });
+}
+```
+
+### Combined Filter Logic
+
+```javascript
+applyFilters() {
+    const region = getFilterValue(&#x27;filter-region&#x27;);
+    const category = getFilterValue(&#x27;filter-category&#x27;);
+    const startDate = document.getElementById(&#x27;filter-date-start&#x27;).value;
+    const endDate = document.getElementById(&#x27;filter-date-end&#x27;).value;
+
+    this.filteredData = this.rawData.filter(row =&gt; {
+        if (region &amp;&amp; row.region !== region) return false;
+        if (category &amp;&amp; row.category !== category) return false;
+        if (startDate &amp;&amp; row.date &lt; startDate) return false;
+        if (endDate &amp;&amp; row.date &gt; endDate) return false;
+        return true;
+    });
+
+    this.renderKPIs();
+    this.updateCharts();
+    this.renderTable();
+}
+```
+
+### Sortable Table
+
+```javascript
+function renderTable(containerId, data, columns) {
+    const container = document.getElementById(containerId);
+    let sortCol = null;
+    let sortDir = &#x27;desc&#x27;;
+
+    function render(sortedData) {
+        let html = &#x27;&lt;table class=&quot;data-table&quot;&gt;&#x27;;
+
+        // Header
+        html += &#x27;&lt;thead&gt;&lt;tr&gt;&#x27;;
+        columns.forEach(col =&gt; {
+            const arrow = sortCol === col.field
+                ? (sortDir === &#x27;asc&#x27; ? &#x27; ▲&#x27; : &#x27; ▼&#x27;)
+                : &#x27;&#x27;;
+            html += `&lt;th onclick=&quot;sortTable(&#x27;${col.field}&#x27;)&quot; style=&quot;cursor:pointer&quot;&gt;${col.label}${arrow}&lt;/th&gt;`;
+        });
+        html += &#x27;&lt;/tr&gt;&lt;/thead&gt;&#x27;;
+
+        // Body
+        html += &#x27;&lt;tbody&gt;&#x27;;
+        sortedData.forEach(row =&gt; {
+            html += &#x27;&lt;tr&gt;&#x27;;
+            columns.forEach(col =&gt; {
+                const value = col.format ? formatValue(row[col.field], col.format) : row[col.field];
+                html += `&lt;td&gt;${value}&lt;/td&gt;`;
+            });
+            html += &#x27;&lt;/tr&gt;&#x27;;
+        });
+        html += &#x27;&lt;/tbody&gt;&lt;/table&gt;&#x27;;
+
+        container.innerHTML = html;
+    }
+
+    window.sortTable = function(field) {
+        if (sortCol === field) {
+            sortDir = sortDir === &#x27;asc&#x27; ? &#x27;desc&#x27; : &#x27;asc&#x27;;
+        } else {
+            sortCol = field;
+            sortDir = &#x27;desc&#x27;;
+        }
+        const sorted = [...data].sort((a, b) =&gt; {
+            const aVal = a[field], bVal = b[field];
+            const cmp = aVal &lt; bVal ? -1 : aVal &gt; bVal ? 1 : 0;
+            return sortDir === &#x27;asc&#x27; ? cmp : -cmp;
+        });
+        render(sorted);
+    };
+
+    render(data);
+}
+```
+
+## CSS Styling for Dashboards
+
+### Color System
+
+```css
+:root {
+    /* Background layers */
+    --bg-primary: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-header: #1a1a2e;
+
+    /* Text */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-on-dark: #ffffff;
+
+    /* Accent colors for data */
+    --color-1: #4C72B0;
+    --color-2: #DD8452;
+    --color-3: #55A868;
+    --color-4: #C44E52;
+    --color-5: #8172B3;
+    --color-6: #937860;
+
+    /* Status colors */
+    --positive: #28a745;
+    --negative: #dc3545;
+    --neutral: #6c757d;
+
+    /* Spacing */
+    --gap: 16px;
+    --radius: 8px;
+}
+```
+
+### Layout
+
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--gap);
+}
+
+.dashboard-header {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    margin-bottom: var(--gap);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dashboard-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+```
+
+### KPI Cards
+
+```css
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.kpi-change {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kpi-change.positive { color: var(--positive); }
+.kpi-change.negative { color: var(--negative); }
+```
+
+### Chart Containers
+
+```css
+.chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.chart-container h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.chart-container canvas {
+    max-height: 300px;
+}
+```
+
+### Filters
+
+```css
+.filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-group select,
+.filter-group input[type=&quot;date&quot;] {
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-on-dark);
+    font-size: 13px;
+}
+
+.filter-group select option {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+}
+```
+
+### Data Table
+
+```css
+.table-section {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.data-table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #dee2e6;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.data-table thead th:hover {
+    color: var(--text-primary);
+    background: #f8f9fa;
+}
+
+.data-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+```
+
+### Responsive Design
+
+```css
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media print {
+    body { background: white; }
+    .dashboard-container { max-width: none; }
+    .filters { display: none; }
+    .chart-container { break-inside: avoid; }
+    .kpi-card { border: 1px solid #dee2e6; box-shadow: none; }
+}
+```
+
+## Performance Considerations for Large Datasets
+
+### Data Size Guidelines
+
+| Data Size | Approach |
+|---|---|
+| &lt;1,000 rows | Embed directly in HTML. Full interactivity. |
+| 1,000 - 10,000 rows | Embed in HTML. May need to pre-aggregate for charts. |
+| 10,000 - 100,000 rows | Pre-aggregate server-side. Embed only aggregated data. |
+| &gt;100,000 rows | Not suitable for client-side dashboard. Use a BI tool or paginate. |
+
+### Pre-Aggregation Pattern
+
+Instead of embedding raw data and aggregating in the browser:
+
+```javascript
+// DON&#x27;T: embed 50,000 raw rows
+const RAW_DATA = [/* 50,000 rows */];
+
+// DO: pre-aggregate before embedding
+const CHART_DATA = {
+    monthly_revenue: [
+        { month: &#x27;2024-01&#x27;, revenue: 150000, orders: 1200 },
+        { month: &#x27;2024-02&#x27;, revenue: 165000, orders: 1350 },
+        // ... 12 rows instead of 50,000
+    ],
+    top_products: [
+        { product: &#x27;Widget A&#x27;, revenue: 45000 },
+        // ... 10 rows
+    ],
+    kpis: {
+        total_revenue: 1980000,
+        total_orders: 15600,
+        avg_order_value: 127,
+    }
+};
+```
+
+### Chart Performance
+
+- Limit line charts to &lt;500 data points per series (downsample if needed)
+- Limit bar charts to &lt;50 categories
+- For scatter plots, cap at 1,000 points (use sampling for larger datasets)
+- Disable animations for dashboards with many charts: `animation: false` in Chart.js options
+- Use `Chart.update(&#x27;none&#x27;)` instead of `Chart.update()` for filter-triggered updates
+
+### DOM Performance
+
+- Limit data tables to 100-200 visible rows. Add pagination for more.
+- Use `requestAnimationFrame` for coordinated chart updates
+- Avoid rebuilding the entire DOM on filter change -- update only changed elements
+
+```javascript
+// Efficient table pagination
+function renderTablePage(data, page, pageSize = 50) {
+    const start = page * pageSize;
+    const end = Math.min(start + pageSize, data.length);
+    const pageData = data.slice(start, end);
+    // Render only pageData
+    // Show pagination controls: &quot;Showing 1-50 of 2,340&quot;
+}
+```
+
+## Examples
+
+```
+/build-dashboard Monthly sales dashboard with revenue trend, top products, and regional breakdown. Data is in the orders table.
+```
+
+```
+/build-dashboard Here&#x27;s our support ticket data [pastes CSV]. Build a dashboard showing volume by priority, response time trends, and resolution rates.
+```
+
+```
+/build-dashboard Create a template executive dashboard for a SaaS company showing MRR, churn, new customers, and NPS. Use sample data.
+```
+
+## Tips
+
+- Dashboards are fully self-contained HTML files -- share them with anyone by sending the file
+- For real-time dashboards, consider connecting to a BI tool instead. These dashboards are point-in-time snapshots
+- Request &quot;dark mode&quot; or &quot;presentation mode&quot; for different styling
+- You can request a specific color scheme to match your brand</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

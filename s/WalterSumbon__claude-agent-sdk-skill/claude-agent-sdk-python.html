@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude-agent-sdk-python｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 搭配 Claude Agent SDK 建構 AI agent 的指南">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>claude-agent-sdk-python</h1>
+<p class="meta">WalterSumbon ｜ Agent 與工作流 ｜ <a href="https://github.com/WalterSumbon/claude-agent-sdk-skill/blob/main/skills/claude-agent-sdk-python/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用 Python 搭配 Claude Agent SDK 建構 AI agent 的指南</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: claude-agent-sdk-python
+description: &gt;
+  用 Python 搭配 Claude Agent SDK 建構 AI agent 的專家指引。
+  當使用者用 Python 寫 SDK 程式碼、import claude_agent_sdk、使用 query()、
+  ClaudeSDKClient、ClaudeAgentOptions、AgentDefinition、建立自訂的 @tool 函式、
+  設定 hook、整合 MCP server、管理 session，或是在 Python 裡除錯 SDK 問題時使用。
+  也會在這些字串出現時觸發：&quot;claude_agent_sdk&quot;、&quot;ClaudeAgentOptions&quot;、&quot;from claude_agent_sdk import&quot;、
+  &quot;pip install claude-agent-sdk&quot;、&quot;asyncio.run&quot;，或是 &quot;async for message in query&quot;。
+---
+
+# Claude Agent SDK — Python Guide
+
+用 Python 搭配 Claude Agent SDK 建構 AI agent 的 production 級指引。
+
+&gt; **命名**：Claude Code SDK 已改名為 Claude Agent SDK（v0.1.0 起）。
+&gt; 套件：`pip install claude-agent-sdk` · Import：`from claude_agent_sdk import ...`
+
+## Message Types
+
+所有訊息類型，供型別檢查和 `isinstance()` 檢查使用：
+
+```python
+from claude_agent_sdk import (
+    AssistantMessage,     # Claude 的文字／工具回應
+    ResultMessage,        # 最終結果，帶有 subtype（success/error/cancelled）
+    SystemMessage,        # 系統事件（session_id 等）
+    UserMessage,          # 使用者的 prompt
+    ToolUseMessage,       # 工具呼叫請求
+    ToolResultMessage,    # 工具執行結果
+)
+```
+
+## Quick Reference — Two Interaction Modes
+
+### 1. `query()` — Stateless, One-Shot
+
+最適合：獨立任務、自動化 script、CI pipeline。
+
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, ResultMessage
+
+async def main():
+    async for message in query(
+        prompt=&quot;Review utils.py for bugs. Fix any issues you find.&quot;,
+        options=ClaudeAgentOptions(
+            allowed_tools=[&quot;Read&quot;, &quot;Edit&quot;, &quot;Glob&quot;],
+            permission_mode=&quot;acceptEdits&quot;,
+        ),
+    ):
+        if isinstance(message, AssistantMessage):
+            for block in message.content:
+                if hasattr(block, &quot;text&quot;):
+                    print(block.text)
+                elif hasattr(block, &quot;name&quot;):
+                    print(f&quot;Tool: {block.name}&quot;)
+        elif isinstance(message, ResultMessage):
+            print(f&quot;Done: {message.subtype}&quot;)
+
+asyncio.run(main())
+```
+
+### 2. `ClaudeSDKClient` — Stateful, Multi-Turn
+
+最適合：對話、追問、互動式應用。
+
+```python
+from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions
+
+async with ClaudeSDKClient(
+    options=ClaudeAgentOptions(
+        allowed_tools=[&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+        permission_mode=&quot;acceptEdits&quot;,
+    )
+) as client:
+    await client.query(&quot;Analyze the codebase structure&quot;)
+    async for msg in client.receive_messages():
+        print(msg)
+    # 保留 context 繼續對話
+    await client.query(&quot;Now refactor the largest file you found&quot;)
+    async for msg in client.receive_messages():
+        print(msg)
+```
+
+## ClaudeAgentOptions — Complete Configuration
+
+所有選項都是選填。主要欄位：
+
+| 欄位 | 型別 | 說明 |
+|-------|------|-------------|
+| `allowed_tools` | `list[str] \| None` | Claude 可以使用的工具。見下方 Built-in Tools。 |
+| `disallowed_tools` | `list[str] \| None` | 明確封鎖特定工具。 |
+| `permission_mode` | `&quot;default&quot; \| &quot;acceptEdits&quot; \| &quot;bypassPermissions&quot;` | 權限策略。 |
+| `system_prompt` | `str \| dict \| None` | 自訂指示。要用 CC 預設的話，用 `{&quot;type&quot;: &quot;preset&quot;, &quot;preset&quot;: &quot;claude_code&quot;}`。 |
+| `model` | `str \| None` | 例如 `&quot;sonnet&quot;`、`&quot;opus&quot;`、`&quot;haiku&quot;`，或完整的 model 字串。 |
+| `cwd` | `str \| Path \| None` | agent 的工作目錄。 |
+| `max_turns` | `int \| None` | agentic 迴圈的最大迭代次數。 |
+| `setting_sources` | `list[Literal[&quot;user&quot;, &quot;project&quot;]] \| None` | 用 `[&quot;user&quot;, &quot;project&quot;]` 從檔案系統載入 Skills/CLAUDE.md。 |
+| `mcp_servers` | `dict \| None` | MCP server 設定。 |
+| `agents` | `dict[str, AgentDefinition] \| None` | 具名的 subagent 定義。 |
+| `hooks` | `dict \| None` | 生命週期 hook 的 callback。 |
+
+### Built-in Tools
+
+給 `allowed_tools` 用的工具名稱：
+
+- **檔案操作**：`Read`、`Write`、`Edit`、`MultiEdit`
+- **搜尋**：`Glob`、`Grep`
+- **執行**：`Bash`
+- **網路**：`WebSearch`、`WebFetch`
+- **委派**：`Task`（subagent 必要）
+- **Skills**：`Skill`（需要 `setting_sources`）
+
+## Custom Tools via SDK MCP Server
+
+不需要另外的 MCP server 行程，就能定義行程內（in-process）的工具：
+
+```python
+from claude_agent_sdk import tool, create_sdk_mcp_server, ClaudeAgentOptions
+
+@tool(&quot;search_orders&quot;, &quot;Search orders by customer ID&quot;, {&quot;customer_id&quot;: str, &quot;status&quot;: str})
+async def search_orders(args):
+    results = await db.query_orders(args[&quot;customer_id&quot;], args.get(&quot;status&quot;))
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: json.dumps(results)}]}
+
+@tool(&quot;send_email&quot;, &quot;Send an email notification&quot;, {&quot;to&quot;: str, &quot;subject&quot;: str, &quot;body&quot;: str})
+async def send_email(args):
+    await email_service.send(args[&quot;to&quot;], args[&quot;subject&quot;], args[&quot;body&quot;])
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: f&quot;Email sent to {args[&#x27;to&#x27;]}&quot;}]}
+
+server = create_sdk_mcp_server(name=&quot;business-tools&quot;, tools=[search_orders, send_email])
+
+options = ClaudeAgentOptions(
+    mcp_servers={&quot;biz&quot;: server},
+    allowed_tools=[&quot;mcp__biz__search_orders&quot;, &quot;mcp__biz__send_email&quot;],
+)
+```
+
+**工具命名慣例**：MCP 工具的存取名稱是 `mcp__&lt;server-name&gt;__&lt;tool-name&gt;`。
+
+## Subagents
+
+把專門的任務委派給隔離的 agent，它們有自己的 context 和工具權限：
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions, AgentDefinition
+
+async for message in query(
+    prompt=&quot;Review auth module for security issues, then write tests&quot;,
+    options=ClaudeAgentOptions(
+        allowed_tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;, &quot;Task&quot;],  # Task 是必要的
+        agents={
+            &quot;security-reviewer&quot;: AgentDefinition(
+                description=&quot;Security specialist. Use for vulnerability analysis.&quot;,
+                prompt=&quot;You are a security expert. Analyze code for OWASP Top 10...&quot;,
+                tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+                model=&quot;opus&quot;,
+            ),
+            &quot;test-writer&quot;: AgentDefinition(
+                description=&quot;Test specialist. Use to generate test suites.&quot;,
+                prompt=&quot;You are a testing expert. Write comprehensive unit tests...&quot;,
+                tools=[&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+                model=&quot;sonnet&quot;,
+            ),
+        },
+    ),
+):
+    print(message)
+```
+
+動態產生 agent 的 **Factory 模式**：
+
+```python
+def create_reviewer(language: str) -&gt; AgentDefinition:
+    return AgentDefinition(
+        description=f&quot;{language} code review specialist&quot;,
+        prompt=f&quot;You are an expert {language} developer...&quot;,
+        tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+        model=&quot;opus&quot; if language in [&quot;rust&quot;, &quot;c++&quot;] else &quot;sonnet&quot;,
+    )
+```
+
+## Hooks — Lifecycle Callbacks
+
+可用的事件：`PreToolUse`、`PostToolUse`、`Stop`、`SessionStart`、`SessionEnd`、`UserPromptSubmit`。
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher
+
+async def block_dangerous_commands(input_data, tool_use_id, context):
+    &quot;&quot;&quot;Block destructive bash commands.&quot;&quot;&quot;
+    if input_data.get(&quot;tool_name&quot;) == &quot;Bash&quot;:
+        cmd = input_data.get(&quot;tool_input&quot;, {}).get(&quot;command&quot;, &quot;&quot;)
+        if any(danger in cmd for danger in [&quot;rm -rf /&quot;, &quot;DROP TABLE&quot;, &quot;mkfs&quot;]):
+            return {
+                &quot;hookSpecificOutput&quot;: {
+                    &quot;hookEventName&quot;: &quot;PreToolUse&quot;,
+                    &quot;permissionDecision&quot;: &quot;deny&quot;,
+                    &quot;permissionDecisionReason&quot;: f&quot;Blocked dangerous command: {cmd}&quot;,
+                }
+            }
+    return {}
+
+async def audit_log(input_data, tool_use_id, context):
+    &quot;&quot;&quot;Log all tool usage for auditing.&quot;&quot;&quot;
+    with open(&quot;audit.log&quot;, &quot;a&quot;) as f:
+        f.write(f&quot;{input_data.get(&#x27;tool_name&#x27;)}: {input_data.get(&#x27;tool_input&#x27;)}\n&quot;)
+    return {}
+
+options = ClaudeAgentOptions(
+    hooks={
+        &quot;PreToolUse&quot;: [
+            HookMatcher(matcher=&quot;Bash&quot;, hooks=[block_dangerous_commands]),
+            HookMatcher(matcher=&quot;.*&quot;, hooks=[audit_log]),
+        ]
+    }
+)
+```
+
+## MCP Integration (External Servers)
+
+```python
+options = ClaudeAgentOptions(
+    mcp_servers={
+        &quot;github&quot;: {
+            &quot;type&quot;: &quot;stdio&quot;,
+            &quot;command&quot;: &quot;npx&quot;,
+            &quot;args&quot;: [&quot;-y&quot;, &quot;@modelcontextprotocol/server-github&quot;],
+            &quot;env&quot;: {&quot;GITHUB_TOKEN&quot;: os.getenv(&quot;GITHUB_TOKEN&quot;)},
+        },
+        &quot;postgres&quot;: {
+            &quot;type&quot;: &quot;stdio&quot;,
+            &quot;command&quot;: &quot;docker&quot;,
+            &quot;args&quot;: [&quot;run&quot;, &quot;mcp-postgres-server&quot;],
+            &quot;env&quot;: {&quot;DATABASE_URL&quot;: os.getenv(&quot;DATABASE_URL&quot;)},
+        },
+    },
+    allowed_tools=[&quot;mcp__github&quot;, &quot;mcp__postgres&quot;],
+)
+```
+
+同一份設定裡可以混用 SDK MCP server（行程內）和外部 MCP server。
+
+## Using Skills in the SDK
+
+Skills 是以檔案系統為基礎，必須明確啟用：
+
+```python
+options = ClaudeAgentOptions(
+    cwd=&quot;/path/to/project&quot;,
+    setting_sources=[&quot;user&quot;, &quot;project&quot;],  # 必要：從檔案系統載入 Skills
+    allowed_tools=[&quot;Skill&quot;, &quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+)
+```
+
+**常見錯誤**：忘了 `setting_sources`。沒有它，就算 `allowed_tools` 裡有 `&quot;Skill&quot;`，Skills 也不會被發現。
+
+Skill 的位置：
+- **Project**：`.claude/skills/*/SKILL.md`（透過 git 共用）
+- **User**：`~/.claude/skills/*/SKILL.md`（個人的，跨專案）
+
+注意：SKILL.md frontmatter 裡的 `allowed-tools` 欄位**只在 Claude Code CLI 有效**，在 SDK 裡無效。要控制工具存取，請用 `ClaudeAgentOptions` 裡的 `allowed_tools`。
+
+## Sessions and Conversation Management
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+session_id = None
+
+# 第一次互動：抓取 session_id
+async for message in query(
+    prompt=&quot;Review this codebase and identify the top 3 issues&quot;,
+    options=ClaudeAgentOptions(allowed_tools=[&quot;Read&quot;, &quot;Glob&quot;, &quot;Grep&quot;]),
+):
+    if message.type == &quot;system&quot; and hasattr(message, &quot;session_id&quot;):
+        session_id = message.session_id
+    print(message)
+
+# 帶著 context 接續
+async for message in query(
+    prompt=&quot;Now fix issue #1 that you found&quot;,
+    options=ClaudeAgentOptions(
+        session_id=session_id,
+        allowed_tools=[&quot;Read&quot;, &quot;Edit&quot;, &quot;Bash&quot;],
+        permission_mode=&quot;acceptEdits&quot;,
+    ),
+):
+    print(message)
+```
+
+## System Prompt Configuration
+
+```python
+# 1. 自訂 system prompt（v0.1.0+ 的預設：精簡 prompt）
+options = ClaudeAgentOptions(system_prompt=&quot;You are a senior Python engineer...&quot;)
+
+# 2. Claude Code 完整的 system prompt（需要主動選用）
+options = ClaudeAgentOptions(
+    system_prompt={&quot;type&quot;: &quot;preset&quot;, &quot;preset&quot;: &quot;claude_code&quot;}
+)
+
+# 3. 沒有 system prompt：SDK 預設（精簡）
+options = ClaudeAgentOptions()  # 使用內建的精簡 prompt
+```
+
+**v0.1.0 的破壞性變更**：SDK 預設不再載入 Claude Code 的 system prompt。如果你需要舊的行為，要明確設定 `preset: &quot;claude_code&quot;`。
+
+## Authentication
+
+```bash
+# Direct API (default)
+export ANTHROPIC_API_KEY=your-api-key
+
+# Amazon Bedrock
+export CLAUDE_CODE_USE_BEDROCK=1
+# + configure AWS credentials
+
+# Google Vertex AI
+export CLAUDE_CODE_USE_VERTEX=1
+# + configure GCP credentials
+
+# Microsoft Azure AI Foundry
+export CLAUDE_CODE_USE_FOUNDRY=1
+# + configure Azure credentials
+```
+
+## Common Patterns
+
+### Batch Processing (Parallel Agents)
+
+```python
+import asyncio
+
+async def process_file(filepath: str):
+    async for msg in query(
+        prompt=f&quot;Review {filepath} for security issues&quot;,
+        options=ClaudeAgentOptions(
+            allowed_tools=[&quot;Read&quot;, &quot;Grep&quot;],
+            max_turns=50,
+        ),
+    ):
+        if isinstance(msg, ResultMessage):
+            return msg.result
+
+results = await asyncio.gather(
+    process_file(&quot;auth.py&quot;),
+    process_file(&quot;payments.py&quot;),
+    process_file(&quot;users.py&quot;),
+)
+```
+
+### Structured Output Collection
+
+```python
+messages = []
+async for msg in query(prompt=&quot;Analyze this codebase&quot;, options=options):
+    messages.append(msg)
+
+# 擷取最終結果
+result = next((m for m in reversed(messages) if hasattr(m, &quot;result&quot;)), None)
+```
+
+### Error Handling
+
+可用的例外類型：
+- `CLINotFoundError`：在 PATH 裡找不到 Claude Code CLI 執行檔
+- `CLIConnectionError`：無法連接到 CLI 行程
+- 也可能拋出標準的 Python 例外（例如 `asyncio.TimeoutError`）
+
+```python
+from claude_agent_sdk import CLINotFoundError, CLIConnectionError
+
+try:
+    async for msg in query(prompt=&quot;...&quot;, options=options):
+        print(msg)
+except CLINotFoundError:
+    print(&quot;Claude Code CLI not found. Install: curl -fsSL https://claude.ai/install.sh | bash&quot;)
+except CLIConnectionError as e:
+    print(f&quot;Connection error: {e}&quot;)
+```
+
+## Migration from Claude Code SDK (&lt; v0.1.0)
+
+主要變更：
+1. `ClaudeCodeOptions` → `ClaudeAgentOptions`
+2. System prompt 預設不再載入 Claude Code 的 prompt
+3. `setting_sources` 必須明確設定（以前是自動載入）
+4. Import 路徑不變（`claude_agent_sdk`），但類別名稱變了
+
+## Best Practices
+
+1. **最小權限原則**：只給 agent 真正需要的工具。
+2. **自動化用 `permission_mode=&quot;acceptEdits&quot;`**，互動使用用 `&quot;default&quot;`。
+3. **自訂工具優先用 SDK MCP server**，不要用外部的：開銷較小，也比較好除錯。
+4. **專門的任務用 subagent**：隔離 context，並依任務套用合適的 model。
+5. **加 hook 來確保安全**：在 production 封鎖危險指令並稽核工具使用。
+6. **設定 `max_turns`**，防止 agent 在 production 環境失控。
+7. **用 `cwd`** 把 agent 限定在特定目錄。
+8. **從 system 訊息抓取 `session_id`**，如果你需要對話的連續性。
+
+&gt; 常見問題的排解，見 `references/troubleshooting.md`。
+
+## Official Resources
+
+- Overview: https://platform.claude.com/docs/en/agent-sdk/overview
+- Quickstart: https://platform.claude.com/docs/en/agent-sdk/quickstart
+- Python reference: https://platform.claude.com/docs/en/agent-sdk/python
+- Migration guide: https://platform.claude.com/docs/en/agent-sdk/migration-guide
+- Python SDK repo: https://github.com/anthropics/claude-agent-sdk-python
+- Demo agents: https://github.com/anthropics/claude-agent-sdk-demos
+- Cookbook: https://platform.claude.com/cookbook</pre></section><section><h2>英文原文</h2><pre>---
+name: claude-agent-sdk-python
+description: &gt;
+  Expert guidance for building AI agents with the Claude Agent SDK in Python.
+  Use when the user writes Python code with the SDK, imports claude_agent_sdk, uses query(),
+  ClaudeSDKClient, ClaudeAgentOptions, AgentDefinition, creates custom @tool functions,
+  sets up hooks, integrates MCP servers, manages sessions, or debugs SDK issues in Python.
+  Also triggers on: &quot;claude_agent_sdk&quot;, &quot;ClaudeAgentOptions&quot;, &quot;from claude_agent_sdk import&quot;,
+  &quot;pip install claude-agent-sdk&quot;, &quot;asyncio.run&quot;, or &quot;async for message in query&quot;.
+---
+
+# Claude Agent SDK — Python Guide
+
+Production guidance for building AI agents with the Claude Agent SDK in Python.
+
+&gt; **Naming**: The Claude Code SDK was renamed to the Claude Agent SDK (v0.1.0+).
+&gt; Package: `pip install claude-agent-sdk` · Import: `from claude_agent_sdk import ...`
+
+## Message Types
+
+All message types for type checking and `isinstance()` checks:
+
+```python
+from claude_agent_sdk import (
+    AssistantMessage,     # Claude&#x27;s text/tool responses
+    ResultMessage,        # Final result with subtype (success/error/cancelled)
+    SystemMessage,        # System events (session_id, etc.)
+    UserMessage,          # User prompts
+    ToolUseMessage,       # Tool invocation requests
+    ToolResultMessage,    # Tool execution results
+)
+```
+
+## Quick Reference — Two Interaction Modes
+
+### 1. `query()` — Stateless, One-Shot
+
+Best for: independent tasks, automation scripts, CI pipelines.
+
+```python
+import asyncio
+from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, ResultMessage
+
+async def main():
+    async for message in query(
+        prompt=&quot;Review utils.py for bugs. Fix any issues you find.&quot;,
+        options=ClaudeAgentOptions(
+            allowed_tools=[&quot;Read&quot;, &quot;Edit&quot;, &quot;Glob&quot;],
+            permission_mode=&quot;acceptEdits&quot;,
+        ),
+    ):
+        if isinstance(message, AssistantMessage):
+            for block in message.content:
+                if hasattr(block, &quot;text&quot;):
+                    print(block.text)
+                elif hasattr(block, &quot;name&quot;):
+                    print(f&quot;Tool: {block.name}&quot;)
+        elif isinstance(message, ResultMessage):
+            print(f&quot;Done: {message.subtype}&quot;)
+
+asyncio.run(main())
+```
+
+### 2. `ClaudeSDKClient` — Stateful, Multi-Turn
+
+Best for: conversations, follow-up questions, interactive apps.
+
+```python
+from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions
+
+async with ClaudeSDKClient(
+    options=ClaudeAgentOptions(
+        allowed_tools=[&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+        permission_mode=&quot;acceptEdits&quot;,
+    )
+) as client:
+    await client.query(&quot;Analyze the codebase structure&quot;)
+    async for msg in client.receive_messages():
+        print(msg)
+    # Continue the conversation with context preserved
+    await client.query(&quot;Now refactor the largest file you found&quot;)
+    async for msg in client.receive_messages():
+        print(msg)
+```
+
+## ClaudeAgentOptions — Complete Configuration
+
+All options are optional. Key fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `allowed_tools` | `list[str] \| None` | Tools Claude can use. See Built-in Tools below. |
+| `disallowed_tools` | `list[str] \| None` | Explicitly block specific tools. |
+| `permission_mode` | `&quot;default&quot; \| &quot;acceptEdits&quot; \| &quot;bypassPermissions&quot;` | Permission strategy. |
+| `system_prompt` | `str \| dict \| None` | Custom instructions. Use `{&quot;type&quot;: &quot;preset&quot;, &quot;preset&quot;: &quot;claude_code&quot;}` for CC default. |
+| `model` | `str \| None` | e.g. `&quot;sonnet&quot;`, `&quot;opus&quot;`, `&quot;haiku&quot;`, or full model string. |
+| `cwd` | `str \| Path \| None` | Working directory for the agent. |
+| `max_turns` | `int \| None` | Maximum agentic loop iterations. |
+| `setting_sources` | `list[Literal[&quot;user&quot;, &quot;project&quot;]] \| None` | `[&quot;user&quot;, &quot;project&quot;]` to load Skills/CLAUDE.md from filesystem. |
+| `mcp_servers` | `dict \| None` | MCP server configurations. |
+| `agents` | `dict[str, AgentDefinition] \| None` | Named subagent definitions. |
+| `hooks` | `dict \| None` | Lifecycle hook callbacks. |
+
+### Built-in Tools
+
+Tool names for `allowed_tools`:
+
+- **File ops**: `Read`, `Write`, `Edit`, `MultiEdit`
+- **Search**: `Glob`, `Grep`
+- **Execution**: `Bash`
+- **Web**: `WebSearch`, `WebFetch`
+- **Delegation**: `Task` (required for subagents)
+- **Skills**: `Skill` (requires `setting_sources`)
+
+## Custom Tools via SDK MCP Server
+
+Define in-process tools without a separate MCP server process:
+
+```python
+from claude_agent_sdk import tool, create_sdk_mcp_server, ClaudeAgentOptions
+
+@tool(&quot;search_orders&quot;, &quot;Search orders by customer ID&quot;, {&quot;customer_id&quot;: str, &quot;status&quot;: str})
+async def search_orders(args):
+    results = await db.query_orders(args[&quot;customer_id&quot;], args.get(&quot;status&quot;))
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: json.dumps(results)}]}
+
+@tool(&quot;send_email&quot;, &quot;Send an email notification&quot;, {&quot;to&quot;: str, &quot;subject&quot;: str, &quot;body&quot;: str})
+async def send_email(args):
+    await email_service.send(args[&quot;to&quot;], args[&quot;subject&quot;], args[&quot;body&quot;])
+    return {&quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: f&quot;Email sent to {args[&#x27;to&#x27;]}&quot;}]}
+
+server = create_sdk_mcp_server(name=&quot;business-tools&quot;, tools=[search_orders, send_email])
+
+options = ClaudeAgentOptions(
+    mcp_servers={&quot;biz&quot;: server},
+    allowed_tools=[&quot;mcp__biz__search_orders&quot;, &quot;mcp__biz__send_email&quot;],
+)
+```
+
+**Tool naming convention**: MCP tools are accessed as `mcp__&lt;server-name&gt;__&lt;tool-name&gt;`.
+
+## Subagents
+
+Delegate specialized tasks to isolated agents with their own context and tool permissions:
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions, AgentDefinition
+
+async for message in query(
+    prompt=&quot;Review auth module for security issues, then write tests&quot;,
+    options=ClaudeAgentOptions(
+        allowed_tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;, &quot;Task&quot;],  # Task is required
+        agents={
+            &quot;security-reviewer&quot;: AgentDefinition(
+                description=&quot;Security specialist. Use for vulnerability analysis.&quot;,
+                prompt=&quot;You are a security expert. Analyze code for OWASP Top 10...&quot;,
+                tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+                model=&quot;opus&quot;,
+            ),
+            &quot;test-writer&quot;: AgentDefinition(
+                description=&quot;Test specialist. Use to generate test suites.&quot;,
+                prompt=&quot;You are a testing expert. Write comprehensive unit tests...&quot;,
+                tools=[&quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+                model=&quot;sonnet&quot;,
+            ),
+        },
+    ),
+):
+    print(message)
+```
+
+**Factory pattern** for dynamic agents:
+
+```python
+def create_reviewer(language: str) -&gt; AgentDefinition:
+    return AgentDefinition(
+        description=f&quot;{language} code review specialist&quot;,
+        prompt=f&quot;You are an expert {language} developer...&quot;,
+        tools=[&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],
+        model=&quot;opus&quot; if language in [&quot;rust&quot;, &quot;c++&quot;] else &quot;sonnet&quot;,
+    )
+```
+
+## Hooks — Lifecycle Callbacks
+
+Available events: `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`, `SessionEnd`, `UserPromptSubmit`.
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher
+
+async def block_dangerous_commands(input_data, tool_use_id, context):
+    &quot;&quot;&quot;Block destructive bash commands.&quot;&quot;&quot;
+    if input_data.get(&quot;tool_name&quot;) == &quot;Bash&quot;:
+        cmd = input_data.get(&quot;tool_input&quot;, {}).get(&quot;command&quot;, &quot;&quot;)
+        if any(danger in cmd for danger in [&quot;rm -rf /&quot;, &quot;DROP TABLE&quot;, &quot;mkfs&quot;]):
+            return {
+                &quot;hookSpecificOutput&quot;: {
+                    &quot;hookEventName&quot;: &quot;PreToolUse&quot;,
+                    &quot;permissionDecision&quot;: &quot;deny&quot;,
+                    &quot;permissionDecisionReason&quot;: f&quot;Blocked dangerous command: {cmd}&quot;,
+                }
+            }
+    return {}
+
+async def audit_log(input_data, tool_use_id, context):
+    &quot;&quot;&quot;Log all tool usage for auditing.&quot;&quot;&quot;
+    with open(&quot;audit.log&quot;, &quot;a&quot;) as f:
+        f.write(f&quot;{input_data.get(&#x27;tool_name&#x27;)}: {input_data.get(&#x27;tool_input&#x27;)}\n&quot;)
+    return {}
+
+options = ClaudeAgentOptions(
+    hooks={
+        &quot;PreToolUse&quot;: [
+            HookMatcher(matcher=&quot;Bash&quot;, hooks=[block_dangerous_commands]),
+            HookMatcher(matcher=&quot;.*&quot;, hooks=[audit_log]),
+        ]
+    }
+)
+```
+
+## MCP Integration (External Servers)
+
+```python
+options = ClaudeAgentOptions(
+    mcp_servers={
+        &quot;github&quot;: {
+            &quot;type&quot;: &quot;stdio&quot;,
+            &quot;command&quot;: &quot;npx&quot;,
+            &quot;args&quot;: [&quot;-y&quot;, &quot;@modelcontextprotocol/server-github&quot;],
+            &quot;env&quot;: {&quot;GITHUB_TOKEN&quot;: os.getenv(&quot;GITHUB_TOKEN&quot;)},
+        },
+        &quot;postgres&quot;: {
+            &quot;type&quot;: &quot;stdio&quot;,
+            &quot;command&quot;: &quot;docker&quot;,
+            &quot;args&quot;: [&quot;run&quot;, &quot;mcp-postgres-server&quot;],
+            &quot;env&quot;: {&quot;DATABASE_URL&quot;: os.getenv(&quot;DATABASE_URL&quot;)},
+        },
+    },
+    allowed_tools=[&quot;mcp__github&quot;, &quot;mcp__postgres&quot;],
+)
+```
+
+You can mix SDK MCP servers (in-process) and external MCP servers in the same config.
+
+## Using Skills in the SDK
+
+Skills are filesystem-based and must be explicitly enabled:
+
+```python
+options = ClaudeAgentOptions(
+    cwd=&quot;/path/to/project&quot;,
+    setting_sources=[&quot;user&quot;, &quot;project&quot;],  # REQUIRED — loads Skills from filesystem
+    allowed_tools=[&quot;Skill&quot;, &quot;Read&quot;, &quot;Write&quot;, &quot;Bash&quot;],
+)
+```
+
+**Common mistake**: forgetting `setting_sources`. Without it, Skills won&#x27;t be discovered even if `&quot;Skill&quot;` is in `allowed_tools`.
+
+Skill locations:
+- **Project**: `.claude/skills/*/SKILL.md` (shared via git)
+- **User**: `~/.claude/skills/*/SKILL.md` (personal, cross-project)
+
+Note: The `allowed-tools` field in SKILL.md frontmatter **only works in Claude Code CLI**, not in the SDK. Use `allowed_tools` in `ClaudeAgentOptions` to control tool access.
+
+## Sessions and Conversation Management
+
+```python
+from claude_agent_sdk import query, ClaudeAgentOptions
+
+session_id = None
+
+# First interaction — capture session_id
+async for message in query(
+    prompt=&quot;Review this codebase and identify the top 3 issues&quot;,
+    options=ClaudeAgentOptions(allowed_tools=[&quot;Read&quot;, &quot;Glob&quot;, &quot;Grep&quot;]),
+):
+    if message.type == &quot;system&quot; and hasattr(message, &quot;session_id&quot;):
+        session_id = message.session_id
+    print(message)
+
+# Resume with context
+async for message in query(
+    prompt=&quot;Now fix issue #1 that you found&quot;,
+    options=ClaudeAgentOptions(
+        session_id=session_id,
+        allowed_tools=[&quot;Read&quot;, &quot;Edit&quot;, &quot;Bash&quot;],
+        permission_mode=&quot;acceptEdits&quot;,
+    ),
+):
+    print(message)
+```
+
+## System Prompt Configuration
+
+```python
+# 1. Custom system prompt (v0.1.0+ default: minimal prompt)
+options = ClaudeAgentOptions(system_prompt=&quot;You are a senior Python engineer...&quot;)
+
+# 2. Claude Code&#x27;s full system prompt (opt-in)
+options = ClaudeAgentOptions(
+    system_prompt={&quot;type&quot;: &quot;preset&quot;, &quot;preset&quot;: &quot;claude_code&quot;}
+)
+
+# 3. No system prompt — SDK default (minimal)
+options = ClaudeAgentOptions()  # uses minimal built-in prompt
+```
+
+**Breaking change in v0.1.0**: The SDK no longer loads Claude Code&#x27;s system prompt by default. If you need the old behavior, explicitly set `preset: &quot;claude_code&quot;`.
+
+## Authentication
+
+```bash
+# Direct API (default)
+export ANTHROPIC_API_KEY=your-api-key
+
+# Amazon Bedrock
+export CLAUDE_CODE_USE_BEDROCK=1
+# + configure AWS credentials
+
+# Google Vertex AI
+export CLAUDE_CODE_USE_VERTEX=1
+# + configure GCP credentials
+
+# Microsoft Azure AI Foundry
+export CLAUDE_CODE_USE_FOUNDRY=1
+# + configure Azure credentials
+```
+
+## Common Patterns
+
+### Batch Processing (Parallel Agents)
+
+```python
+import asyncio
+
+async def process_file(filepath: str):
+    async for msg in query(
+        prompt=f&quot;Review {filepath} for security issues&quot;,
+        options=ClaudeAgentOptions(
+            allowed_tools=[&quot;Read&quot;, &quot;Grep&quot;],
+            max_turns=50,
+        ),
+    ):
+        if isinstance(msg, ResultMessage):
+            return msg.result
+
+results = await asyncio.gather(
+    process_file(&quot;auth.py&quot;),
+    process_file(&quot;payments.py&quot;),
+    process_file(&quot;users.py&quot;),
+)
+```
+
+### Structured Output Collection
+
+```python
+messages = []
+async for msg in query(prompt=&quot;Analyze this codebase&quot;, options=options):
+    messages.append(msg)
+
+# Extract final result
+result = next((m for m in reversed(messages) if hasattr(m, &quot;result&quot;)), None)
+```
+
+### Error Handling
+
+Available exception types:
+- `CLINotFoundError` — Claude Code CLI binary not found in PATH
+- `CLIConnectionError` — Failed to connect to CLI process
+- Standard Python exceptions (e.g., `asyncio.TimeoutError`) may also be raised
+
+```python
+from claude_agent_sdk import CLINotFoundError, CLIConnectionError
+
+try:
+    async for msg in query(prompt=&quot;...&quot;, options=options):
+        print(msg)
+except CLINotFoundError:
+    print(&quot;Claude Code CLI not found. Install: curl -fsSL https://claude.ai/install.sh | bash&quot;)
+except CLIConnectionError as e:
+    print(f&quot;Connection error: {e}&quot;)
+```
+
+## Migration from Claude Code SDK (&lt; v0.1.0)
+
+Key changes:
+1. `ClaudeCodeOptions` → `ClaudeAgentOptions`
+2. System prompt no longer loads Claude Code&#x27;s prompt by default
+3. `setting_sources` must be explicitly set (was auto-loaded before)
+4. Import path unchanged (`claude_agent_sdk`), but class names changed
+
+## Best Practices
+
+1. **Principle of least privilege**: Only grant tools the agent actually needs.
+2. **Use `permission_mode=&quot;acceptEdits&quot;` for automation**, `&quot;default&quot;` for interactive use.
+3. **Prefer SDK MCP servers** over external ones for custom tools — less overhead, easier debugging.
+4. **Use subagents for specialized tasks** — isolate context and apply the right model per task.
+5. **Add hooks for safety** — block dangerous commands and audit tool usage in production.
+6. **Set `max_turns`** to prevent runaway agents in production environments.
+7. **Use `cwd`** to scope the agent to a specific directory.
+8. **Capture `session_id`** from system messages if you need conversation continuity.
+
+&gt; For troubleshooting common issues, see `references/troubleshooting.md`.
+
+## Official Resources
+
+- Overview: https://platform.claude.com/docs/en/agent-sdk/overview
+- Quickstart: https://platform.claude.com/docs/en/agent-sdk/quickstart
+- Python reference: https://platform.claude.com/docs/en/agent-sdk/python
+- Migration guide: https://platform.claude.com/docs/en/agent-sdk/migration-guide
+- Python SDK repo: https://github.com/anthropics/claude-agent-sdk-python
+- Demo agents: https://github.com/anthropics/claude-agent-sdk-demos
+- Cookbook: https://platform.claude.com/cookbook</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>plankton-code-quality｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Plankton hook 在每次編輯時自動格式化、lint，並讓 Claude 修違規">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>plankton-code-quality</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/plankton-code-quality/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Plankton hook 在每次編輯時自動格式化、lint，並讓 Claude 修違規</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: plankton-code-quality
+description: &quot;用 Plankton 在寫入當下強制程式碼品質：透過 hook 在每次檔案編輯時自動格式化、lint，並用 Claude 驅動的修復。設定檔案編輯時的格式化、lint 或自動修復 hook 時使用。&quot;
+metadata:
+  origin: community
+---
+
+# Plankton Code Quality Skill
+
+Plankton（作者：@alxfazio）的整合參考，它是 Claude Code 的寫入當下程式碼品質強制系統。Plankton 透過 PostToolUse hook，在每次檔案編輯時跑 formatter 和 linter，然後啟動 Claude 子程序去修 agent 沒抓到的違規。
+
+## 何時使用
+
+- 你想要每次編輯檔案都自動格式化和 lint（不是只在 commit 時才做）
+- 你需要防範 agent 去改 linter 設定來讓檢查通過，而不是去修程式碼
+- 你想要分層的模型路由來做修復（簡單的風格問題用 Haiku，邏輯用 Sonnet，型別用 Opus）
+- 你同時用多種語言（Python、TypeScript、Shell、YAML、JSON、TOML、Markdown、Dockerfile）
+
+## 運作方式
+
+### 三階段架構
+
+每次 Claude Code 編輯或寫入檔案時，Plankton 的 `multi_linter.sh` PostToolUse hook 都會執行：
+
+```
+Phase 1: Auto-Format (Silent)
+├─ Runs formatters (ruff format, biome, shfmt, taplo, markdownlint)
+├─ Fixes 40-50% of issues silently
+└─ No output to main agent
+
+Phase 2: Collect Violations (JSON)
+├─ Runs linters and collects unfixable violations
+├─ Returns structured JSON: {line, column, code, message, linter}
+└─ Still no output to main agent
+
+Phase 3: Delegate + Verify
+├─ Spawns claude -p subprocess with violations JSON
+├─ Routes to model tier based on violation complexity:
+│   ├─ Haiku: formatting, imports, style (E/W/F codes) — 120s timeout
+│   ├─ Sonnet: complexity, refactoring (C901, PLR codes, oxlint complexity) — 300s timeout
+│   └─ Opus: type system, deep reasoning (unresolved-attribute) — 600s timeout
+├─ Re-runs Phase 1+2 to verify fixes
+└─ Exit 0 if clean, Exit 2 if violations remain (reported to main agent)
+```
+
+### 主 agent 看得到什麼
+
+| 情境 | Agent 看到 | Hook exit |
+|----------|-----------|-----------|
+| 沒有違規 | 什麼都沒有 | 0 |
+| 全部被子程序修好 | 什麼都沒有 | 0 |
+| 子程序跑完後仍有違規 | `[hook] N violation(s) remain` | 2 |
+| 建議性訊息（重複、舊工具） | `[hook:advisory] ...` | 0 |
+
+主 agent 只會看到子程序修不掉的問題。大部分的品質問題都是在背後悄悄解決的。
+
+### 設定保護（防範鑽規則漏洞）
+
+LLM 會去改 `.ruff.toml` 或 `biome.json` 把規則關掉，而不是修程式碼。Plankton 用三層擋下這種行為：
+
+1. **PreToolUse hook**：`protect_linter_configs.sh` 在編輯發生之前，就擋下對所有 linter 設定檔的修改
+2. **Stop hook**：`stop_config_guardian.sh` 在 session 結束時，用 `git diff` 偵測設定檔的變動
+3. **受保護檔案清單**：`.ruff.toml`、`biome.json`、`.shellcheckrc`、`.yamllint`、`.hadolint.yaml` 等等
+
+### 強制使用的套件管理工具
+
+Bash 上的 PreToolUse hook 會擋下舊的套件管理工具：
+- `pip`、`pip3`、`poetry`、`pipenv` → 擋下（改用 `uv`）
+- `npm`、`yarn`、`pnpm` → 擋下（改用 `bun`）
+- 允許的例外：`npm audit`、`npm view`、`npm publish`
+
+## 設定
+
+### 快速開始
+
+&gt; **注意：** Plankton 需要從它的 repo 手動安裝。安裝前請先檢查程式碼。
+
+```bash
+# 安裝核心依賴
+brew install jaq ruff uv
+
+# 安裝 Python linter
+uv sync --all-extras
+
+# 啟動 Claude Code，hook 會自動啟用
+claude
+```
+
+沒有安裝指令，也不用設定 plugin。你在 Plankton 目錄裡執行 Claude Code 時，會自動載入 `.claude/settings.json` 裡的 hook。
+
+### 整合到各個專案
+
+要在你自己的專案裡使用 Plankton 的 hook：
+
+1. 把 `.claude/hooks/` 目錄複製到你的專案
+2. 複製 `.claude/settings.json` 的 hook 設定
+3. 複製 linter 的設定檔（`.ruff.toml`、`biome.json` 等）
+4. 安裝你用到的語言所需的 linter
+
+### 各語言的依賴
+
+| 語言 | 必要 | 選用 |
+|----------|----------|----------|
+| Python | `ruff`, `uv` | `ty` (types), `vulture` (dead code), `bandit` (security) |
+| TypeScript/JS | `biome`；用 `complexity` 時需要 `oxlint` (&gt;= 1.37.0) | `semgrep`, `knip` (dead exports) |
+| Shell | `shellcheck`, `shfmt` | — |
+| YAML | `yamllint` | — |
+| Markdown | `markdownlint-cli2` | — |
+| Dockerfile | `hadolint` (&gt;= 2.12.0) | — |
+| TOML | `taplo` | — |
+| JSON | `jaq` | — |
+
+## 搭配 ECC
+
+### 互補，不重疊
+
+| 關注點 | ECC | Plankton |
+|---------|-----|----------|
+| 程式碼品質強制 | PostToolUse hook（Prettier、tsc） | PostToolUse hook（20 幾種 linter + 子程序修復） |
+| 安全掃描 | AgentShield、security-reviewer agent | Bandit (Python)、Semgrep (TypeScript) |
+| 設定保護 | — | PreToolUse 擋下 + Stop hook 偵測 |
+| 套件管理工具 | 偵測 + 設定 | 強制使用（擋下舊的 PM） |
+| CI 整合 | — | 給 git 用的 pre-commit hook |
+| 模型路由 | 手動（`/model opus`） | 自動（違規複雜度 → 層級） |
+
+### 建議的組合
+
+1. 安裝 ECC 當作你的 plugin（agents、skills、commands、rules）
+2. 加上 Plankton 的 hook 做寫入當下的品質強制
+3. 用 AgentShield 做安全稽核
+4. 用 ECC 的 verification-loop 當作 PR 之前的最後一道關卡
+
+### 避免 Hook 衝突
+
+如果同時跑 ECC 和 Plankton 的 hook：
+- ECC 的 Prettier hook 和 Plankton 的 biome formatter，在 JS/TS 檔案上可能會衝突
+- 解法：用 Plankton 的時候，把 ECC 的 Prettier PostToolUse hook 關掉（Plankton 的 biome 比較完整）
+- 兩者可以在不同的檔案類型上並存（ECC 處理 Plankton 沒涵蓋的部分）
+
+## 設定參考
+
+Plankton 的 `.claude/hooks/config.json` 控制所有行為：
+
+```json
+{
+  &quot;languages&quot;: {
+    &quot;python&quot;: true,
+    &quot;shell&quot;: true,
+    &quot;yaml&quot;: true,
+    &quot;json&quot;: true,
+    &quot;toml&quot;: true,
+    &quot;dockerfile&quot;: true,
+    &quot;markdown&quot;: true,
+    &quot;typescript&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;js_runtime&quot;: &quot;auto&quot;,
+      &quot;biome_nursery&quot;: &quot;warn&quot;,
+      &quot;semgrep&quot;: true
+    }
+  },
+  &quot;phases&quot;: {
+    &quot;auto_format&quot;: true,
+    &quot;subprocess_delegation&quot;: true
+  },
+  &quot;subprocess&quot;: {
+    &quot;tiers&quot;: {
+      &quot;haiku&quot;:  { &quot;timeout&quot;: 120, &quot;max_turns&quot;: 10 },
+      &quot;sonnet&quot;: { &quot;timeout&quot;: 300, &quot;max_turns&quot;: 10 },
+      &quot;opus&quot;:   { &quot;timeout&quot;: 600, &quot;max_turns&quot;: 15 }
+    },
+    &quot;volume_threshold&quot;: 5
+  }
+}
+```
+
+**重要設定：**
+- 把你沒用到的語言關掉，hook 會跑得比較快
+- `volume_threshold`：違規數量超過這個值，就會自動升級到更高的模型層級
+- `subprocess_delegation: false`：完全跳過 Phase 3（只回報違規）
+
+## 環境變數覆寫
+
+| 變數 | 用途 |
+|----------|---------|
+| `HOOK_SKIP_SUBPROCESS=1` | 跳過 Phase 3，直接回報違規 |
+| `HOOK_SUBPROCESS_TIMEOUT=N` | 覆寫各層級的 timeout |
+| `HOOK_DEBUG_MODEL=1` | 記錄模型選擇的決策 |
+| `HOOK_SKIP_PM=1` | 繞過套件管理工具的強制規則 |
+
+## 參考資料
+
+- Plankton（作者：@alxfazio）
+- Plankton REFERENCE.md：完整的架構文件（作者：@alxfazio）
+- Plankton SETUP.md：詳細的安裝指南（作者：@alxfazio）
+
+## ECC v1.8 新增內容
+
+### 可直接複製的 Hook Profile
+
+設定嚴格的品質行為：
+
+```bash
+export ECC_HOOK_PROFILE=strict
+export ECC_QUALITY_GATE_FIX=true
+export ECC_QUALITY_GATE_STRICT=true
+```
+
+### 語言 Gate 對照表
+
+- TypeScript/JavaScript：優先用 Biome，Prettier 當後備
+- Python：Ruff format/check
+- Go：gofmt
+
+### 設定檔竄改防護
+
+執行品質強制時，如果在同一輪迭代裡改了設定檔，要標記出來：
+
+- `biome.json`、`.eslintrc*`、`prettier.config*`、`tsconfig.json`、`pyproject.toml`
+
+如果設定檔是為了壓掉違規而改的，merge 之前必須經過明確的 review。
+
+### CI 整合模式
+
+CI 裡用的指令要跟本機 hook 一樣：
+
+1. 執行 formatter 檢查
+2. 執行 lint/type 檢查
+3. strict 模式下盡早失敗
+4. 發佈修復摘要
+
+### 健康指標
+
+追蹤：
+- 被 gate 標記的編輯次數
+- 平均修復時間
+- 依類別統計的重複違規
+- 因為 gate 失敗而被擋下的 merge
+
+---
+
+## Gabe 的補充：oxlint complexity + ratchet 上限 (JS/TS)
+
+補上上面模型路由表在 JS/TS 方面的缺口。Python 的複雜度（ruff C901、PLR）已經會路由到 Sonnet。JS/TS 卻沒有預設開啟的對應規則。
+
+### 使用 oxlint 時，把它的 `complexity` 規則打開
+
+oxlint 的 `complexity` 規則（來源：eslint 的 `complexity` 規則移植而來）屬於 &quot;restriction&quot; 類別，oxlint 預設不會啟用，必須手動打開。已對照 [Oxlint&#x27;s complexity rule](https://oxc.rs/docs/guide/usage/linter/rules/eslint/complexity)（2026-08-27）驗證：預設選項是 `max: 20`。這條規則在 oxlint &gt;= 1.37.0 才可用。
+
+這個 skill 的「各語言的依賴」表，對 TypeScript/JS 整體而言仍把 `oxlint` 列為選用。採用 `complexity` 規則時，要用 oxlint &gt;= 1.37.0，並把它當成必要依賴。把這條規則加進專案已經在用的、受支援的 oxlint 設定檔（`.oxlintrc.json`、`.oxlintrc.jsonc`、`oxlint.config.ts` 或 `oxlint.config.mts`）。如果都沒有，就建立一個；不要在同一個目錄裡建立第二份設定檔。
+
+在選定初始要強制的上限之前，先量測程式碼庫目前最糟的複雜度分數。下面的樣板是刻意不完整的：在 commit `&quot;error&quot;` gate 之前，要把 `&lt;MEASURED_CEILING&gt;` 換成那個分數，必要時再加一點餘裕。Oxlint 預設的 20 是長期目標，不是適用於所有專案的安全起始上限。
+
+```json
+{
+  &quot;rules&quot;: {
+    &quot;complexity&quot;: [&quot;error&quot;, { &quot;max&quot;: &quot;&lt;MEASURED_CEILING&gt;&quot; }]
+  }
+}
+```
+
+執行 oxlint 之前要先把佔位符換掉；在 repo 量測完成之前，它不是有效的數值門檻。真實的程式碼庫要怎麼設定上限，請見下面的 ratchet 段落。
+
+### 模型路由那一列
+
+把 oxlint 的 `complexity` 違規，加到 Phase 3 子程序表中現有 Python 項目的同一列：
+
+```
+├─ Sonnet: complexity, refactoring (C901, PLR codes, oxlint complexity), 300s timeout
+```
+
+跟 Python 的 C901/PLR 同一層級。不管哪種語言，複雜度違規都是重構的工作，語言不會改變模型層級。
+
+### Ratchet 上限技巧
+
+來源：[Hunk PR #861](https://github.com/modem-dev/hunk/pull/861)（2026-08-26 merge，是透過 GitHub API 對照該 PR 自己的 diff 和描述驗證的，不是憑記憶轉述）。Hunk 在 `.oxlintrc.json` 裡用 `&quot;error&quot;, { &quot;max&quot;: 80 }` 打開了 oxlint 的 `complexity` 規則。當時他們自己最糟的分數是 78（`App`），其次是 76（`validateFileViewLayout`）。引用 PR 內文：「This is intentionally an initial regression ceiling rather than the long-term target... so 80 adds enforcement without grandfathering or suppressions. The ceiling can be ratcheted downward as existing hotspots are simplified.」還有：「A global ceiling does not prevent a function below 80 from growing toward it.」
+
+這個技巧，照那個 PR 實際的做法：
+
+1. 量測程式碼庫目前最糟的複雜度分數（規則觸發時，oxlint 會回報）。
+2. 把強制執行的上限設成至少跟那個最糟分數一樣高，不要設成 oxlint 自己預設的 20。必要時加一點餘裕，這樣初次啟用時，才不會因為還沒修的分數而讓 CI 失敗（hunk 在最糟 78 的情況下用了 80）。
+3. 把它以 `&quot;error&quot;` commit 進去，接到現有的 lint CI 步驟。從第一個 commit 起，這就是真正的 gate，不是建議。
+4. 絕對不要 grandfather。上限是全域的。今天分數 40 的函式不能豁免，它之後仍然不能越過上限。這才是重點：抓的是成長，不只是今天最糟的那幾個。
+5. 絕對不要整批壓掉。不准用逐檔或逐函式的 disable 註解讓違規消失。要嘛修好，要嘛讓它保持在上限以下。
+6. 每次有被標記的熱點被重構到上限以下，就對整個程式碼庫重新量測全域最大值。只把上限手動降到仍然至少跟其餘每個函式分數一樣高的值（再加上任何刻意保留的餘裕）。這是手動步驟，要當成獨立的 commit 去做，不是自動化的。上限就是這樣隨著時間往 linter 真正的預設值 20 靠近，而不是永遠停在程式碼庫最糟的分數。
+
+有一點要老實說：那個 PR 本身是在一個 commit 裡，直接從「規則關閉」跳到 `&quot;error&quot;` 強制執行。它沒有先經過只回報或只警告的階段。如果團隊從來沒量過自己最糟的分數，又不想要 CI 突然失敗，先把規則設成 `&quot;warn&quot;` 跑一輪 CI，再改成 `&quot;error&quot;`，是合理的分階段做法，但那個分階段的步驟是 Gabe 自己審慎的做法，並不是在 hunk 的 PR 裡驗證過的東西。如果你採用了，要講清楚，不要把它歸給原始來源。</pre></section><section><h2>英文原文</h2><pre>---
+name: plankton-code-quality
+description: &quot;Write-time code quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes on every file edit via hooks. Use when setting up write-time formatting, linting, or auto-fix hooks on file edits.&quot;
+metadata:
+  origin: community
+---
+
+# Plankton Code Quality Skill
+
+Integration reference for Plankton (credit: @alxfazio), a write-time code quality enforcement system for Claude Code. Plankton runs formatters and linters on every file edit via PostToolUse hooks, then spawns Claude subprocesses to fix violations the agent didn&#x27;t catch.
+
+## When to Use
+
+- You want automatic formatting and linting on every file edit (not just at commit time)
+- You need defense against agents modifying linter configs to pass instead of fixing code
+- You want tiered model routing for fixes (Haiku for simple style, Sonnet for logic, Opus for types)
+- You work with multiple languages (Python, TypeScript, Shell, YAML, JSON, TOML, Markdown, Dockerfile)
+
+## How It Works
+
+### Three-Phase Architecture
+
+Every time Claude Code edits or writes a file, Plankton&#x27;s `multi_linter.sh` PostToolUse hook runs:
+
+```
+Phase 1: Auto-Format (Silent)
+├─ Runs formatters (ruff format, biome, shfmt, taplo, markdownlint)
+├─ Fixes 40-50% of issues silently
+└─ No output to main agent
+
+Phase 2: Collect Violations (JSON)
+├─ Runs linters and collects unfixable violations
+├─ Returns structured JSON: {line, column, code, message, linter}
+└─ Still no output to main agent
+
+Phase 3: Delegate + Verify
+├─ Spawns claude -p subprocess with violations JSON
+├─ Routes to model tier based on violation complexity:
+│   ├─ Haiku: formatting, imports, style (E/W/F codes) — 120s timeout
+│   ├─ Sonnet: complexity, refactoring (C901, PLR codes, oxlint complexity) — 300s timeout
+│   └─ Opus: type system, deep reasoning (unresolved-attribute) — 600s timeout
+├─ Re-runs Phase 1+2 to verify fixes
+└─ Exit 0 if clean, Exit 2 if violations remain (reported to main agent)
+```
+
+### What the Main Agent Sees
+
+| Scenario | Agent sees | Hook exit |
+|----------|-----------|-----------|
+| No violations | Nothing | 0 |
+| All fixed by subprocess | Nothing | 0 |
+| Violations remain after subprocess | `[hook] N violation(s) remain` | 2 |
+| Advisory (duplicates, old tooling) | `[hook:advisory] ...` | 0 |
+
+The main agent only sees issues the subprocess couldn&#x27;t fix. Most quality problems are resolved transparently.
+
+### Config Protection (Defense Against Rule-Gaming)
+
+LLMs will modify `.ruff.toml` or `biome.json` to disable rules rather than fix code. Plankton blocks this with three layers:
+
+1. **PreToolUse hook** — `protect_linter_configs.sh` blocks edits to all linter configs before they happen
+2. **Stop hook** — `stop_config_guardian.sh` detects config changes via `git diff` at session end
+3. **Protected files list** — `.ruff.toml`, `biome.json`, `.shellcheckrc`, `.yamllint`, `.hadolint.yaml`, and more
+
+### Package Manager Enforcement
+
+A PreToolUse hook on Bash blocks legacy package managers:
+- `pip`, `pip3`, `poetry`, `pipenv` → Blocked (use `uv`)
+- `npm`, `yarn`, `pnpm` → Blocked (use `bun`)
+- Allowed exceptions: `npm audit`, `npm view`, `npm publish`
+
+## Setup
+
+### Quick Start
+
+&gt; **Note:** Plankton requires manual installation from its repository. Review the code before installing.
+
+```bash
+# Install core dependencies
+brew install jaq ruff uv
+
+# Install Python linters
+uv sync --all-extras
+
+# Start Claude Code — hooks activate automatically
+claude
+```
+
+No install command, no plugin config. The hooks in `.claude/settings.json` are picked up automatically when you run Claude Code in the Plankton directory.
+
+### Per-Project Integration
+
+To use Plankton hooks in your own project:
+
+1. Copy `.claude/hooks/` directory to your project
+2. Copy `.claude/settings.json` hook configuration
+3. Copy linter config files (`.ruff.toml`, `biome.json`, etc.)
+4. Install the linters for your languages
+
+### Language-Specific Dependencies
+
+| Language | Required | Optional |
+|----------|----------|----------|
+| Python | `ruff`, `uv` | `ty` (types), `vulture` (dead code), `bandit` (security) |
+| TypeScript/JS | `biome`; `oxlint` (&gt;= 1.37.0) when using `complexity` | `semgrep`, `knip` (dead exports) |
+| Shell | `shellcheck`, `shfmt` | — |
+| YAML | `yamllint` | — |
+| Markdown | `markdownlint-cli2` | — |
+| Dockerfile | `hadolint` (&gt;= 2.12.0) | — |
+| TOML | `taplo` | — |
+| JSON | `jaq` | — |
+
+## Pairing with ECC
+
+### Complementary, Not Overlapping
+
+| Concern | ECC | Plankton |
+|---------|-----|----------|
+| Code quality enforcement | PostToolUse hooks (Prettier, tsc) | PostToolUse hooks (20+ linters + subprocess fixes) |
+| Security scanning | AgentShield, security-reviewer agent | Bandit (Python), Semgrep (TypeScript) |
+| Config protection | — | PreToolUse blocks + Stop hook detection |
+| Package manager | Detection + setup | Enforcement (blocks legacy PMs) |
+| CI integration | — | Pre-commit hooks for git |
+| Model routing | Manual (`/model opus`) | Automatic (violation complexity → tier) |
+
+### Recommended Combination
+
+1. Install ECC as your plugin (agents, skills, commands, rules)
+2. Add Plankton hooks for write-time quality enforcement
+3. Use AgentShield for security audits
+4. Use ECC&#x27;s verification-loop as a final gate before PRs
+
+### Avoiding Hook Conflicts
+
+If running both ECC and Plankton hooks:
+- ECC&#x27;s Prettier hook and Plankton&#x27;s biome formatter may conflict on JS/TS files
+- Resolution: disable ECC&#x27;s Prettier PostToolUse hook when using Plankton (Plankton&#x27;s biome is more comprehensive)
+- Both can coexist on different file types (ECC handles what Plankton doesn&#x27;t cover)
+
+## Configuration Reference
+
+Plankton&#x27;s `.claude/hooks/config.json` controls all behavior:
+
+```json
+{
+  &quot;languages&quot;: {
+    &quot;python&quot;: true,
+    &quot;shell&quot;: true,
+    &quot;yaml&quot;: true,
+    &quot;json&quot;: true,
+    &quot;toml&quot;: true,
+    &quot;dockerfile&quot;: true,
+    &quot;markdown&quot;: true,
+    &quot;typescript&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;js_runtime&quot;: &quot;auto&quot;,
+      &quot;biome_nursery&quot;: &quot;warn&quot;,
+      &quot;semgrep&quot;: true
+    }
+  },
+  &quot;phases&quot;: {
+    &quot;auto_format&quot;: true,
+    &quot;subprocess_delegation&quot;: true
+  },
+  &quot;subprocess&quot;: {
+    &quot;tiers&quot;: {
+      &quot;haiku&quot;:  { &quot;timeout&quot;: 120, &quot;max_turns&quot;: 10 },
+      &quot;sonnet&quot;: { &quot;timeout&quot;: 300, &quot;max_turns&quot;: 10 },
+      &quot;opus&quot;:   { &quot;timeout&quot;: 600, &quot;max_turns&quot;: 15 }
+    },
+    &quot;volume_threshold&quot;: 5
+  }
+}
+```
+
+**Key settings:**
+- Disable languages you don&#x27;t use to speed up hooks
+- `volume_threshold` — violations &gt; this count auto-escalate to a higher model tier
+- `subprocess_delegation: false` — skip Phase 3 entirely (just report violations)
+
+## Environment Overrides
+
+| Variable | Purpose |
+|----------|---------|
+| `HOOK_SKIP_SUBPROCESS=1` | Skip Phase 3, report violations directly |
+| `HOOK_SUBPROCESS_TIMEOUT=N` | Override tier timeout |
+| `HOOK_DEBUG_MODEL=1` | Log model selection decisions |
+| `HOOK_SKIP_PM=1` | Bypass package manager enforcement |
+
+## References
+
+- Plankton (credit: @alxfazio)
+- Plankton REFERENCE.md — Full architecture documentation (credit: @alxfazio)
+- Plankton SETUP.md — Detailed installation guide (credit: @alxfazio)
+
+## ECC v1.8 Additions
+
+### Copyable Hook Profile
+
+Set strict quality behavior:
+
+```bash
+export ECC_HOOK_PROFILE=strict
+export ECC_QUALITY_GATE_FIX=true
+export ECC_QUALITY_GATE_STRICT=true
+```
+
+### Language Gate Table
+
+- TypeScript/JavaScript: Biome preferred, Prettier fallback
+- Python: Ruff format/check
+- Go: gofmt
+
+### Config Tamper Guard
+
+During quality enforcement, flag changes to config files in same iteration:
+
+- `biome.json`, `.eslintrc*`, `prettier.config*`, `tsconfig.json`, `pyproject.toml`
+
+If config is changed to suppress violations, require explicit review before merge.
+
+### CI Integration Pattern
+
+Use the same commands in CI as local hooks:
+
+1. run formatter checks
+2. run lint/type checks
+3. fail fast on strict mode
+4. publish remediation summary
+
+### Health Metrics
+
+Track:
+- edits flagged by gates
+- average remediation time
+- repeat violations by category
+- merge blocks due to gate failures
+
+---
+
+## Gabe&#x27;s addition: oxlint complexity + ratchet ceiling (JS/TS)
+
+Closes the JS/TS gap in the model-routing table above. Python complexity (ruff C901,
+PLR) already routes to Sonnet. JS/TS had no equivalent rule turned on by default.
+
+### Turn on oxlint&#x27;s `complexity` rule when using it
+
+oxlint&#x27;s `complexity` rule (source: eslint&#x27;s `complexity` rule, ported) lives in the
+&quot;restriction&quot; category, which oxlint does not enable by default. It must be turned on
+by hand. Verified against [Oxlint&#x27;s complexity rule](https://oxc.rs/docs/guide/usage/linter/rules/eslint/complexity)
+(2026-08-27): default option is `max: 20`. The rule is available in oxlint &gt;= 1.37.0.
+
+The skill&#x27;s Language-Specific Dependencies table keeps `oxlint` optional for TypeScript/JS
+generally. When adopting the `complexity` rule, use oxlint &gt;= 1.37.0 and treat it as a
+required dependency. Add the rule to the supported oxlint configuration the project already
+uses (`.oxlintrc.json`, `.oxlintrc.jsonc`, `oxlint.config.ts`, or `oxlint.config.mts`). If
+none exists, create one; do not create a second configuration file in the same directory.
+
+Measure the codebase&#x27;s current worst complexity score before choosing the initial enforced
+ceiling. The template below is intentionally incomplete: replace `&lt;MEASURED_CEILING&gt;` with
+that score, optionally plus a small amount of headroom, before committing the `&quot;error&quot;` gate.
+Oxlint&#x27;s default of 20 is a long-term target, not a safe universal starting ceiling.
+
+```json
+{
+  &quot;rules&quot;: {
+    &quot;complexity&quot;: [&quot;error&quot;, { &quot;max&quot;: &quot;&lt;MEASURED_CEILING&gt;&quot; }]
+  }
+}
+```
+
+Replace the placeholder before running oxlint; it is not a valid numeric threshold until the
+repository has been measured. See the ratchet section below for how the ceiling gets set on
+a real codebase.
+
+### Model-routing row
+
+Add oxlint `complexity` violations to the same row as the existing Python entry in the
+Phase 3 subprocess table:
+
+```
+├─ Sonnet: complexity, refactoring (C901, PLR codes, oxlint complexity), 300s timeout
+```
+
+Same tier as Python&#x27;s C901/PLR. A complexity violation is a refactoring job either way,
+language does not change the model tier.
+
+### The ratchet-ceiling technique
+
+Source: [Hunk PR #861](https://github.com/modem-dev/hunk/pull/861) (merged 2026-08-26, verified against
+the PR&#x27;s own diff and description via the GitHub API, not paraphrased from memory). Hunk
+turned on oxlint&#x27;s `complexity` rule with `&quot;error&quot;, { &quot;max&quot;: 80 }` in `.oxlintrc.json`.
+Their own worst score at the time was 78 (`App`), next was 76
+(`validateFileViewLayout`). From the PR body: &quot;This is intentionally an initial
+regression ceiling rather than the long-term target... so 80 adds enforcement without
+grandfathering or suppressions. The ceiling can be ratcheted downward as existing
+hotspots are simplified.&quot; And: &quot;A global ceiling does not prevent a function below 80
+from growing toward it.&quot;
+
+The technique, as actually run in that PR:
+
+1. Measure the current worst complexity score in the codebase (oxlint reports it when
+   the rule fires).
+2. Set the ENFORCED ceiling to a value at least as high as that worst score, not to
+   oxlint&#x27;s own default of 20. Add a small amount of headroom if needed so the initial
+   enable does not fail CI on a score you have not fixed yet (hunk used 80 against a
+   worst of 78).
+3. Commit that as `&quot;error&quot;`, wired into the existing lint CI step. This is a real gate
+   from the first commit, not a suggestion.
+4. Never grandfather. The ceiling is global. A function sitting at 40 today is not
+   exempt, it still cannot cross the ceiling later. That is the whole point: catch
+   growth, not just today&#x27;s worst offenders.
+5. Never blanket-suppress. No per-file or per-function disable comments to make a
+   violation go away. Fix it or leave it under the ceiling.
+6. Each time a flagged hotspot is refactored below the ceiling, re-measure the global
+   maximum across the whole codebase. Lower the ceiling by hand only to a value that
+   remains at least as high as every remaining function&#x27;s score (plus any deliberate
+   headroom). This is a manual step done as its own commit, not automated. It is how the
+   ceiling moves toward the linter&#x27;s real default of 20 over time instead of sitting at
+   the codebase&#x27;s worst score forever.
+
+One caveat, stated plainly: the PR itself went straight from &quot;rule off&quot; to `&quot;error&quot;`
+enforcement in one commit. It did not stage through a report-only or warn-only phase
+first. Starting with the rule set to `&quot;warn&quot;` for one CI run before flipping it to
+`&quot;error&quot;` is a reasonable staging step if a team has never measured its own worst score
+and does not want a surprise CI failure, but that staging step is Gabe&#x27;s own prudent
+practice, not something verified in hunk&#x27;s PR. Say so if you use it, do not attribute it
+to the source.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

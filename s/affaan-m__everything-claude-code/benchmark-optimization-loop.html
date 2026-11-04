@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>benchmark-optimization-loop｜Skill 寫法圖鑑</title>
+<meta name="description" content="把「讓它變快」變成有基準線、正確性關卡的實測最佳化迴圈">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>benchmark-optimization-loop</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/benchmark-optimization-loop/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把「讓它變快」變成有基準線、正確性關卡的實測最佳化迴圈</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: benchmark-optimization-loop
+description: 把「讓它變快」的要求，轉成有界限、可量測的最佳化迴圈：先量基準線，產生每個只驗證一個假設的變體，用正確性關卡對每個變體做 benchmark，再把最快且安全的變體升級，並附上可重現的指令。被要求加速某個東西、嘗試很多變體、做遞迴最佳化、對延遲/吞吐量/成本做 benchmark，或靠重複量測的測試挑出最佳實作時使用。
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Benchmark Optimization Loop
+
+用這個 skill 把「讓它快 20 倍」或「嘗試 50 輪遞迴最佳化」
+轉成有界限、可量測、而且真的能改善系統的迴圈。
+
+## 必要的基準線
+
+這些東西沒齊之前，不要開始最佳化：
+
+- 要最佳化的操作；
+- 必須維持通過的正確性關卡；
+- 指標：實際耗時、p95 延遲、每秒列數、每次執行的成本、記憶體、錯誤率；
+- 目前的基準線；
+- 搜尋預算：最多幾個變體、最長時間、最高花費、最大的資料影響。
+
+如果使用者要求不切實際的目標，保留那份企圖心，但要讓迴圈
+有界限、可量測。
+
+## 迴圈
+
+1. 量測基準線。
+2. 依證據找出瓶頸。
+3. 產生變體，每個變體只驗證一個假設。
+4. 用相同形狀的輸入執行這些變體。
+5. 淘汰在正確性、安全性或可重現性上失敗的變體。
+6. 升級最快且安全的變體。
+7. 把勝出的路徑寫成 script、指令、測試、設定或文件固定下來。
+8. 重跑基準線和勝出者，確認差異。
+
+## 變體表
+
+像這樣追蹤變體：
+
+```text
+Variant | Hypothesis | Command | Time | Correct? | Notes
+baseline | current path | npm run job | 120s | yes | stable
+batch-500 | fewer round trips | npm run job -- --batch 500 | 42s | yes | winner
+parallel-8 | more workers | npm run job -- --workers 8 | 31s | no | rate limited
+```
+
+## 遞迴搜尋
+
+遞迴或超參數的工作：
+
+- 把每次執行都持久化到帳本裡；
+- 跟前一個被接受的勝出者比較，不要只跟上一次執行比；
+- 保留一個 holdout 或重放檢查；
+- 當改善幅度落在雜訊範圍內、正確性失敗、成本超出
+  預算，或搜尋開始改動超過它能解釋的變數數量時，就停下來。
+
+除非搜尋空間真的窮舉過了，否則要用「實測最佳的安全變體」這種說法，不要說「全域最佳解」。
+
+## 升級關卡
+
+變體要通過以下條件，才能成為新的預設值：
+
+- 正確性測試通過；
+- 效能差異已重複驗證或已有解釋；
+- 回復的方式很明確；
+- 這個修改已經寫進版本控制或持久的 runbook；
+- 最後的摘要包含確切的指令和量測數據。</pre></section><section><h2>英文原文</h2><pre>---
+name: benchmark-optimization-loop
+description: Convert &#x27;make it faster&#x27; requests into a bounded measured optimization loop — baseline first, generate one-hypothesis variants, benchmark each against a correctness gate, and promote the fastest safe variant with reproducible commands. Use when asked to speed something up, try many variants, run recursive optimization, benchmark latency/throughput/cost, or pick the best implementation by repeated measured tests.
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Benchmark Optimization Loop
+
+Use this skill to convert &quot;make it 20x faster&quot; or &quot;try 50 recursive
+optimizations&quot; into a bounded measured loop that can actually improve a system.
+
+## Required Baseline
+
+Do not optimize until these exist:
+
+- the operation being optimized;
+- the correctness gate that must stay green;
+- the metric: wall time, p95 latency, rows/sec, cost/run, memory, error rate;
+- the current baseline;
+- the search budget: max variants, max time, max spend, max data impact.
+
+If the user asks for an unrealistic target, keep the ambition but make the loop
+bounded and measurable.
+
+## Loop
+
+1. Measure the baseline.
+2. Identify bottlenecks from evidence.
+3. Generate variants that test one hypothesis each.
+4. Run variants with the same input shape.
+5. Reject variants that fail correctness, safety, or reproducibility.
+6. Promote the fastest safe variant.
+7. Codify the winning path in a script, command, test, config, or doc.
+8. Rerun the baseline and winner to confirm the delta.
+
+## Variant Table
+
+Track variants like this:
+
+```text
+Variant | Hypothesis | Command | Time | Correct? | Notes
+baseline | current path | npm run job | 120s | yes | stable
+batch-500 | fewer round trips | npm run job -- --batch 500 | 42s | yes | winner
+parallel-8 | more workers | npm run job -- --workers 8 | 31s | no | rate limited
+```
+
+## Recursive Search
+
+For recursive or hyperparameter work:
+
+- persist every run to a ledger;
+- compare against the prior accepted winner, not only the previous run;
+- keep a holdout or replay check;
+- stop when improvement is within noise, correctness fails, cost exceeds the
+  budget, or the search starts changing more variables than it can explain.
+
+Use phrases like &quot;best measured safe variant&quot; instead of &quot;global optimum&quot; unless
+the search space was actually exhaustive.
+
+## Promotion Gate
+
+A variant cannot become the new default until:
+
+- correctness tests pass;
+- the performance delta is repeated or explained;
+- rollback is obvious;
+- the change is encoded in source control or a durable runbook;
+- the final summary includes exact commands and measurements.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

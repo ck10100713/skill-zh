@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swiftui-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="SwiftUI 狀態管理、view 組合、導航和效能最佳化模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>swiftui-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/swiftui-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">SwiftUI 狀態管理、view 組合、導航和效能最佳化模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: swiftui-patterns
+description: SwiftUI 架構模式、用 @Observable 管理狀態、view 組合、導航、效能最佳化，以及現代 iOS/macOS UI 的最佳實務。建構或 review SwiftUI view、@Observable 狀態、導航或渲染效能時使用。
+---
+
+# SwiftUI Patterns
+
+在 Apple 平台上打造宣告式、高效能使用者介面的現代 SwiftUI 模式。涵蓋 Observation framework、view 組合、型別安全導航和效能最佳化。
+
+## 何時啟用
+
+- 建構 SwiftUI view 並管理狀態（`@State`、`@Observable`、`@Binding`）
+- 用 `NavigationStack` 設計導航流程
+- 規劃 view model 和資料流
+- 為清單和複雜版面最佳化渲染效能
+- 在 SwiftUI 中使用環境值和依賴注入
+
+## 狀態管理
+
+### Property Wrapper 的選擇
+
+選最簡單、夠用的 wrapper：
+
+| Wrapper | 使用情境 |
+|---------|----------|
+| `@State` | view 本地的值型別（開關、表單欄位、sheet 的呈現） |
+| `@Binding` | 對父層 `@State` 的雙向參照 |
+| `@Observable` class + `@State` | 擁有多個屬性、由該 view 持有的 model |
+| `@Observable` class（不加 wrapper） | 從父層傳進來的唯讀參照 |
+| `@Bindable` | 對 `@Observable` 屬性的雙向綁定 |
+| `@Environment` | 透過 `.environment()` 注入的共享相依項 |
+
+### @Observable ViewModel
+
+用 `@Observable`（不要用 `ObservableObject`），它追蹤屬性層級的變更，所以 SwiftUI 只會重新渲染讀取了變更屬性的 view：
+
+```swift
+@Observable
+final class ItemListViewModel {
+    private(set) var items: [Item] = []
+    private(set) var isLoading = false
+    var searchText = &quot;&quot;
+
+    private let repository: any ItemRepository
+
+    init(repository: any ItemRepository = DefaultItemRepository()) {
+        self.repository = repository
+    }
+
+    func load() async {
+        isLoading = true
+        defer { isLoading = false }
+        items = (try? await repository.fetchAll()) ?? []
+    }
+}
+```
+
+### 使用 ViewModel 的 View
+
+```swift
+struct ItemListView: View {
+    @State private var viewModel: ItemListViewModel
+
+    init(viewModel: ItemListViewModel = ItemListViewModel()) {
+        _viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        List(viewModel.items) { item in
+            ItemRow(item: item)
+        }
+        .searchable(text: $viewModel.searchText)
+        .overlay { if viewModel.isLoading { ProgressView() } }
+        .task { await viewModel.load() }
+    }
+}
+```
+
+### Environment 注入
+
+用 `@Environment` 取代 `@EnvironmentObject`：
+
+```swift
+// Inject
+ContentView()
+    .environment(authManager)
+
+// Consume
+struct ProfileView: View {
+    @Environment(AuthManager.self) private var auth
+
+    var body: some View {
+        Text(auth.currentUser?.name ?? &quot;Guest&quot;)
+    }
+}
+```
+
+## View 組合
+
+### 抽出子 view 以限制失效範圍
+
+把 view 拆成小而聚焦的 struct。狀態改變時，只有讀取該狀態的子 view 會重新渲染：
+
+```swift
+struct OrderView: View {
+    @State private var viewModel = OrderViewModel()
+
+    var body: some View {
+        VStack {
+            OrderHeader(title: viewModel.title)
+            OrderItemList(items: viewModel.items)
+            OrderTotal(total: viewModel.total)
+        }
+    }
+}
+```
+
+### 用 ViewModifier 重複使用樣式
+
+```swift
+struct CardModifier: ViewModifier {
+    func body(content: Content) -&gt; some View {
+        content
+            .padding()
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+extension View {
+    func cardStyle() -&gt; some View {
+        modifier(CardModifier())
+    }
+}
+```
+
+## 導航
+
+### 型別安全的 NavigationStack
+
+用 `NavigationStack` 搭配 `NavigationPath`，做程式化、型別安全的路由：
+
+```swift
+@Observable
+final class Router {
+    var path = NavigationPath()
+
+    func navigate(to destination: Destination) {
+        path.append(destination)
+    }
+
+    func popToRoot() {
+        path = NavigationPath()
+    }
+}
+
+enum Destination: Hashable {
+    case detail(Item.ID)
+    case settings
+    case profile(User.ID)
+}
+
+struct RootView: View {
+    @State private var router = Router()
+
+    var body: some View {
+        NavigationStack(path: $router.path) {
+            HomeView()
+                .navigationDestination(for: Destination.self) { dest in
+                    switch dest {
+                    case .detail(let id): ItemDetailView(itemID: id)
+                    case .settings: SettingsView()
+                    case .profile(let id): ProfileView(userID: id)
+                    }
+                }
+        }
+        .environment(router)
+    }
+}
+```
+
+## 效能
+
+### 大型集合用 Lazy 容器
+
+`LazyVStack` 和 `LazyHStack` 只在 view 可見時才建立它們：
+
+```swift
+ScrollView {
+    LazyVStack(spacing: 8) {
+        ForEach(items) { item in
+            ItemRow(item: item)
+        }
+    }
+}
+```
+
+### 穩定的識別碼
+
+`ForEach` 一律使用穩定、唯一的 ID，避免使用陣列索引：
+
+```swift
+// Use Identifiable conformance or explicit id
+ForEach(items, id: \.stableID) { item in
+    ItemRow(item: item)
+}
+```
+
+### 避免在 body 裡做昂貴的工作
+
+- 絕對不要在 `body` 裡做 I/O、網路呼叫或繁重運算
+- 非同步工作用 `.task {}`，view 消失時它會自動取消
+- 在捲動 view 裡，`.sensoryFeedback()` 和 `.geometryGroup()` 要節制使用
+- 清單裡盡量減少 `.shadow()`、`.blur()` 和 `.mask()`，它們會觸發離屏渲染
+
+### Equatable Conformance
+
+body 很昂貴的 view，讓它遵循 `Equatable`，跳過不必要的重新渲染：
+
+```swift
+struct ExpensiveChartView: View, Equatable {
+    let dataPoints: [DataPoint] // DataPoint must conform to Equatable
+
+    static func == (lhs: Self, rhs: Self) -&gt; Bool {
+        lhs.dataPoints == rhs.dataPoints
+    }
+
+    var body: some View {
+        // Complex chart rendering
+    }
+}
+```
+
+## Preview
+
+用 `#Preview` 巨集搭配內嵌的 mock 資料，加快迭代：
+
+```swift
+#Preview(&quot;Empty state&quot;) {
+    ItemListView(viewModel: ItemListViewModel(repository: EmptyMockRepository()))
+}
+
+#Preview(&quot;Loaded&quot;) {
+    ItemListView(viewModel: ItemListViewModel(repository: PopulatedMockRepository()))
+}
+```
+
+## 要避免的反模式
+
+- 在新程式碼裡用 `ObservableObject` / `@Published` / `@StateObject` / `@EnvironmentObject`：改遷移到 `@Observable`
+- 直接在 `body` 或 `init` 裡做非同步工作：改用 `.task {}` 或明確的 load 方法
+- 在不擁有資料的子 view 裡，用 `@State` 建立 view model：改成從父層傳入
+- 使用 `AnyView` 型別抹除：條件式 view 優先用 `@ViewBuilder` 或 `Group`
+- 在 actor 之間傳遞資料時，忽略 `Sendable` 的要求
+
+## 參考
+
+actor 為基礎的持久化模式，請見 skill：`swift-actor-persistence`。
+以 protocol 為基礎的依賴注入，以及用 Swift Testing 做測試，請見 skill：`swift-protocol-di-testing`。</pre></section><section><h2>英文原文</h2><pre>---
+name: swiftui-patterns
+description: SwiftUI architecture patterns, state management with @Observable, view composition, navigation, performance optimization, and modern iOS/macOS UI best practices. Use when building or reviewing SwiftUI views, @Observable state, navigation, or render performance.
+---
+
+# SwiftUI Patterns
+
+Modern SwiftUI patterns for building declarative, performant user interfaces on Apple platforms. Covers the Observation framework, view composition, type-safe navigation, and performance optimization.
+
+## When to Activate
+
+- Building SwiftUI views and managing state (`@State`, `@Observable`, `@Binding`)
+- Designing navigation flows with `NavigationStack`
+- Structuring view models and data flow
+- Optimizing rendering performance for lists and complex layouts
+- Working with environment values and dependency injection in SwiftUI
+
+## State Management
+
+### Property Wrapper Selection
+
+Choose the simplest wrapper that fits:
+
+| Wrapper | Use Case |
+|---------|----------|
+| `@State` | View-local value types (toggles, form fields, sheet presentation) |
+| `@Binding` | Two-way reference to parent&#x27;s `@State` |
+| `@Observable` class + `@State` | Owned model with multiple properties |
+| `@Observable` class (no wrapper) | Read-only reference passed from parent |
+| `@Bindable` | Two-way binding to an `@Observable` property |
+| `@Environment` | Shared dependencies injected via `.environment()` |
+
+### @Observable ViewModel
+
+Use `@Observable` (not `ObservableObject`) — it tracks property-level changes so SwiftUI only re-renders views that read the changed property:
+
+```swift
+@Observable
+final class ItemListViewModel {
+    private(set) var items: [Item] = []
+    private(set) var isLoading = false
+    var searchText = &quot;&quot;
+
+    private let repository: any ItemRepository
+
+    init(repository: any ItemRepository = DefaultItemRepository()) {
+        self.repository = repository
+    }
+
+    func load() async {
+        isLoading = true
+        defer { isLoading = false }
+        items = (try? await repository.fetchAll()) ?? []
+    }
+}
+```
+
+### View Consuming the ViewModel
+
+```swift
+struct ItemListView: View {
+    @State private var viewModel: ItemListViewModel
+
+    init(viewModel: ItemListViewModel = ItemListViewModel()) {
+        _viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        List(viewModel.items) { item in
+            ItemRow(item: item)
+        }
+        .searchable(text: $viewModel.searchText)
+        .overlay { if viewModel.isLoading { ProgressView() } }
+        .task { await viewModel.load() }
+    }
+}
+```
+
+### Environment Injection
+
+Replace `@EnvironmentObject` with `@Environment`:
+
+```swift
+// Inject
+ContentView()
+    .environment(authManager)
+
+// Consume
+struct ProfileView: View {
+    @Environment(AuthManager.self) private var auth
+
+    var body: some View {
+        Text(auth.currentUser?.name ?? &quot;Guest&quot;)
+    }
+}
+```
+
+## View Composition
+
+### Extract Subviews to Limit Invalidation
+
+Break views into small, focused structs. When state changes, only the subview reading that state re-renders:
+
+```swift
+struct OrderView: View {
+    @State private var viewModel = OrderViewModel()
+
+    var body: some View {
+        VStack {
+            OrderHeader(title: viewModel.title)
+            OrderItemList(items: viewModel.items)
+            OrderTotal(total: viewModel.total)
+        }
+    }
+}
+```
+
+### ViewModifier for Reusable Styling
+
+```swift
+struct CardModifier: ViewModifier {
+    func body(content: Content) -&gt; some View {
+        content
+            .padding()
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+extension View {
+    func cardStyle() -&gt; some View {
+        modifier(CardModifier())
+    }
+}
+```
+
+## Navigation
+
+### Type-Safe NavigationStack
+
+Use `NavigationStack` with `NavigationPath` for programmatic, type-safe routing:
+
+```swift
+@Observable
+final class Router {
+    var path = NavigationPath()
+
+    func navigate(to destination: Destination) {
+        path.append(destination)
+    }
+
+    func popToRoot() {
+        path = NavigationPath()
+    }
+}
+
+enum Destination: Hashable {
+    case detail(Item.ID)
+    case settings
+    case profile(User.ID)
+}
+
+struct RootView: View {
+    @State private var router = Router()
+
+    var body: some View {
+        NavigationStack(path: $router.path) {
+            HomeView()
+                .navigationDestination(for: Destination.self) { dest in
+                    switch dest {
+                    case .detail(let id): ItemDetailView(itemID: id)
+                    case .settings: SettingsView()
+                    case .profile(let id): ProfileView(userID: id)
+                    }
+                }
+        }
+        .environment(router)
+    }
+}
+```
+
+## Performance
+
+### Use Lazy Containers for Large Collections
+
+`LazyVStack` and `LazyHStack` create views only when visible:
+
+```swift
+ScrollView {
+    LazyVStack(spacing: 8) {
+        ForEach(items) { item in
+            ItemRow(item: item)
+        }
+    }
+}
+```
+
+### Stable Identifiers
+
+Always use stable, unique IDs in `ForEach` — avoid using array indices:
+
+```swift
+// Use Identifiable conformance or explicit id
+ForEach(items, id: \.stableID) { item in
+    ItemRow(item: item)
+}
+```
+
+### Avoid Expensive Work in body
+
+- Never perform I/O, network calls, or heavy computation inside `body`
+- Use `.task {}` for async work — it cancels automatically when the view disappears
+- Use `.sensoryFeedback()` and `.geometryGroup()` sparingly in scroll views
+- Minimize `.shadow()`, `.blur()`, and `.mask()` in lists — they trigger offscreen rendering
+
+### Equatable Conformance
+
+For views with expensive bodies, conform to `Equatable` to skip unnecessary re-renders:
+
+```swift
+struct ExpensiveChartView: View, Equatable {
+    let dataPoints: [DataPoint] // DataPoint must conform to Equatable
+
+    static func == (lhs: Self, rhs: Self) -&gt; Bool {
+        lhs.dataPoints == rhs.dataPoints
+    }
+
+    var body: some View {
+        // Complex chart rendering
+    }
+}
+```
+
+## Previews
+
+Use `#Preview` macro with inline mock data for fast iteration:
+
+```swift
+#Preview(&quot;Empty state&quot;) {
+    ItemListView(viewModel: ItemListViewModel(repository: EmptyMockRepository()))
+}
+
+#Preview(&quot;Loaded&quot;) {
+    ItemListView(viewModel: ItemListViewModel(repository: PopulatedMockRepository()))
+}
+```
+
+## Anti-Patterns to Avoid
+
+- Using `ObservableObject` / `@Published` / `@StateObject` / `@EnvironmentObject` in new code — migrate to `@Observable`
+- Putting async work directly in `body` or `init` — use `.task {}` or explicit load methods
+- Creating view models as `@State` inside child views that don&#x27;t own the data — pass from parent instead
+- Using `AnyView` type erasure — prefer `@ViewBuilder` or `Group` for conditional views
+- Ignoring `Sendable` requirements when passing data to/from actors
+
+## References
+
+See skill: `swift-actor-persistence` for actor-based persistence patterns.
+See skill: `swift-protocol-di-testing` for protocol-based DI and testing with Swift Testing.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

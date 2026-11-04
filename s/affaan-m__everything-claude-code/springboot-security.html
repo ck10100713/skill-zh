@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>springboot-security｜Skill 寫法圖鑑</title>
+<meta name="description" content="Spring Boot 的驗證授權、輸入驗證、CSRF 與 rate limiting 實務">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>springboot-security</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/springboot-security/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Spring Boot 的驗證授權、輸入驗證、CSRF 與 rate limiting 實務</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: springboot-security
+description: Java Spring Boot 服務中，Spring Security 在驗證/授權、輸入驗證、CSRF、secret、header、rate limiting 和相依套件安全上的最佳實務。Review Spring Security 的驗證/授權、輸入驗證、CSRF、secret、header 或 rate limiting 時使用。
+metadata:
+  origin: ECC
+---
+
+# Spring Boot 安全 Review
+
+新增驗證、處理輸入、建立 endpoint 或處理 secret 時使用。
+
+## 何時啟用
+
+- 新增驗證（JWT、OAuth2、以 session 為基礎）
+- 實作授權（@PreAuthorize、角色型存取）
+- 驗證使用者輸入（Bean Validation、自訂 validator）
+- 設定 CORS、CSRF 或安全 header
+- 管理 secret（Vault、環境變數）
+- 新增 rate limiting 或暴力破解防護
+- 掃描相依套件的 CVE
+
+## 驗證
+
+- 優先用無狀態的 JWT，或帶撤銷清單的 opaque token
+- session 用 `httpOnly`、`Secure`、`SameSite=Strict` 的 cookie
+- 用 `OncePerRequestFilter` 或 resource server 驗證 token
+
+```java
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+  private final JwtService jwtService;
+
+  public JwtAuthFilter(JwtService jwtService) {
+    this.jwtService = jwtService;
+  }
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
+    String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (header != null &amp;&amp; header.startsWith(&quot;Bearer &quot;)) {
+      String token = header.substring(7);
+      Authentication auth = jwtService.authenticate(token);
+      SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+    chain.doFilter(request, response);
+  }
+}
+```
+
+## 授權
+
+- 啟用方法層級的安全：`@EnableMethodSecurity`
+- 用 `@PreAuthorize(&quot;hasRole(&#x27;ADMIN&#x27;)&quot;)` 或 `@PreAuthorize(&quot;@authz.canEdit(#id)&quot;)`
+- 預設拒絕；只開放必要的 scope
+
+```java
+@RestController
+@RequestMapping(&quot;/api/admin&quot;)
+public class AdminController {
+
+  @PreAuthorize(&quot;hasRole(&#x27;ADMIN&#x27;)&quot;)
+  @GetMapping(&quot;/users&quot;)
+  public List&lt;UserDto&gt; listUsers() {
+    return userService.findAll();
+  }
+
+  @PreAuthorize(&quot;@authz.isOwner(#id, authentication)&quot;)
+  @DeleteMapping(&quot;/users/{id}&quot;)
+  public ResponseEntity&lt;Void&gt; deleteUser(@PathVariable Long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+}
+```
+
+## 輸入驗證
+
+- 在 controller 上用 Bean Validation 搭配 `@Valid`
+- 在 DTO 上加約束：`@NotBlank`、`@Email`、`@Size`、自訂 validator
+- 渲染之前，用白名單清理任何 HTML
+
+```java
+// BAD: No validation
+@PostMapping(&quot;/users&quot;)
+public User createUser(@RequestBody UserDto dto) {
+  return userService.create(dto);
+}
+
+// GOOD: Validated DTO
+public record CreateUserDto(
+    @NotBlank @Size(max = 100) String name,
+    @NotBlank @Email String email,
+    @NotNull @Min(0) @Max(150) Integer age
+) {}
+
+@PostMapping(&quot;/users&quot;)
+public ResponseEntity&lt;UserDto&gt; createUser(@Valid @RequestBody CreateUserDto dto) {
+  return ResponseEntity.status(HttpStatus.CREATED)
+      .body(userService.create(dto));
+}
+```
+
+## 防止 SQL Injection
+
+- 用 Spring Data repository 或參數化查詢
+- 原生查詢用 `:param` 綁定；絕對不要串接字串
+
+```java
+// BAD: String concatenation in native query
+@Query(value = &quot;SELECT * FROM users WHERE name = &#x27;&quot; + name + &quot;&#x27;&quot;, nativeQuery = true)
+
+// GOOD: Parameterized native query
+@Query(value = &quot;SELECT * FROM users WHERE name = :name&quot;, nativeQuery = true)
+List&lt;User&gt; findByName(@Param(&quot;name&quot;) String name);
+
+// GOOD: Spring Data derived query (auto-parameterized)
+List&lt;User&gt; findByEmailAndActiveTrue(String email);
+```
+
+## 密碼編碼
+
+- 密碼一律用 BCrypt 或 Argon2 做雜湊，絕對不要存明文
+- 用 `PasswordEncoder` bean，不要手動做雜湊
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+  return new BCryptPasswordEncoder(12); // cost factor 12
+}
+
+// In service
+public User register(CreateUserDto dto) {
+  String hashedPassword = passwordEncoder.encode(dto.password());
+  return userRepository.save(new User(dto.email(), hashedPassword));
+}
+```
+
+## CSRF 防護
+
+- 瀏覽器 session 的應用程式要保持 CSRF 啟用；在表單/header 裡帶 token
+- 純 API 搭配 Bearer token 時，停用 CSRF，改靠無狀態驗證
+
+```java
+http
+  .csrf(csrf -&gt; csrf.disable())
+  .sessionManagement(sm -&gt; sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+```
+
+## Secret 管理
+
+- 原始碼裡不放 secret；從環境變數或 vault 載入
+- 讓 `application.yml` 不含憑證；用 placeholder
+- 定期輪替 token 和資料庫憑證
+
+```yaml
+# BAD: Hardcoded in application.yml
+spring:
+  datasource:
+    password: mySecretPassword123
+
+# GOOD: Environment variable placeholder
+spring:
+  datasource:
+    password: ${DB_PASSWORD}
+
+# GOOD: Spring Cloud Vault integration
+spring:
+  cloud:
+    vault:
+      uri: https://vault.example.com
+      token: ${VAULT_TOKEN}
+```
+
+## 安全 Header
+
+```java
+http
+  .headers(headers -&gt; headers
+    .contentSecurityPolicy(csp -&gt; csp
+      .policyDirectives(&quot;default-src &#x27;self&#x27;&quot;))
+    .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+    .xssProtection(Customizer.withDefaults())
+    .referrerPolicy(rp -&gt; rp.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)));
+```
+
+## CORS 設定
+
+- 在 security filter 層級設定 CORS，不要每個 controller 各設一次
+- 限制允許的 origin，正式環境絕對不要用 `*`
+
+```java
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+  CorsConfiguration config = new CorsConfiguration();
+  config.setAllowedOrigins(List.of(&quot;https://app.example.com&quot;));
+  config.setAllowedMethods(List.of(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;));
+  config.setAllowedHeaders(List.of(&quot;Authorization&quot;, &quot;Content-Type&quot;));
+  config.setAllowCredentials(true);
+  config.setMaxAge(3600L);
+
+  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  source.registerCorsConfiguration(&quot;/api/**&quot;, config);
+  return source;
+}
+
+// In SecurityFilterChain:
+http.cors(cors -&gt; cors.configurationSource(corsConfigurationSource()));
+```
+
+## Rate Limiting
+
+- 在昂貴的 endpoint 上套用 Bucket4j 或閘道層級的限制
+- 對突發流量記錄並告警；回傳 429 並附上重試提示
+
+```java
+// Using Bucket4j for per-endpoint rate limiting
+@Component
+public class RateLimitFilter extends OncePerRequestFilter {
+  private final Map&lt;String, Bucket&gt; buckets = new ConcurrentHashMap&lt;&gt;();
+
+  private Bucket createBucket() {
+    return Bucket.builder()
+        .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
+        .build();
+  }
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
+    String clientIp = request.getRemoteAddr();
+    Bucket bucket = buckets.computeIfAbsent(clientIp, k -&gt; createBucket());
+
+    if (bucket.tryConsume(1)) {
+      chain.doFilter(request, response);
+    } else {
+      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+      response.getWriter().write(&quot;{\&quot;error\&quot;: \&quot;Rate limit exceeded\&quot;}&quot;);
+    }
+  }
+}
+```
+
+## 相依套件安全
+
+- 在 CI 裡執行 OWASP Dependency Check / Snyk
+- 讓 Spring Boot 和 Spring Security 維持在受支援的版本
+- 遇到已知 CVE 就讓 build 失敗
+
+## 日誌與個資
+
+- 絕對不要記錄 secret、token、密碼或完整的卡號（PAN）資料
+- 遮蔽敏感欄位；使用結構化的 JSON 日誌
+
+## 檔案上傳
+
+- 驗證大小、content type 和副檔名
+- 存放在 web root 之外；需要的話要掃描
+
+## 發布前檢查清單
+
+- [ ] 驗證 token 有被驗證，也正確過期
+- [ ] 每個敏感路徑都有授權防護
+- [ ] 所有輸入都經過驗證和清理
+- [ ] 沒有字串串接的 SQL
+- [ ] CSRF 的做法符合應用程式類型
+- [ ] Secret 都外部化；沒有任何被 commit
+- [ ] 已設定安全 header
+- [ ] API 有 rate limiting
+- [ ] 相依套件已掃描，而且是最新的
+- [ ] 日誌裡沒有敏感資料
+
+**記住**：預設拒絕、驗證輸入、最小權限，並且先以安全的設定為優先。</pre></section><section><h2>英文原文</h2><pre>---
+name: springboot-security
+description: Spring Security best practices for authn/authz, validation, CSRF, secrets, headers, rate limiting, and dependency security in Java Spring Boot services. Use when reviewing Spring Security authn/authz, validation, CSRF, secrets, headers, or rate limiting.
+metadata:
+  origin: ECC
+---
+
+# Spring Boot Security Review
+
+Use when adding auth, handling input, creating endpoints, or dealing with secrets.
+
+## When to Activate
+
+- Adding authentication (JWT, OAuth2, session-based)
+- Implementing authorization (@PreAuthorize, role-based access)
+- Validating user input (Bean Validation, custom validators)
+- Configuring CORS, CSRF, or security headers
+- Managing secrets (Vault, environment variables)
+- Adding rate limiting or brute-force protection
+- Scanning dependencies for CVEs
+
+## Authentication
+
+- Prefer stateless JWT or opaque tokens with revocation list
+- Use `httpOnly`, `Secure`, `SameSite=Strict` cookies for sessions
+- Validate tokens with `OncePerRequestFilter` or resource server
+
+```java
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+  private final JwtService jwtService;
+
+  public JwtAuthFilter(JwtService jwtService) {
+    this.jwtService = jwtService;
+  }
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
+    String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (header != null &amp;&amp; header.startsWith(&quot;Bearer &quot;)) {
+      String token = header.substring(7);
+      Authentication auth = jwtService.authenticate(token);
+      SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+    chain.doFilter(request, response);
+  }
+}
+```
+
+## Authorization
+
+- Enable method security: `@EnableMethodSecurity`
+- Use `@PreAuthorize(&quot;hasRole(&#x27;ADMIN&#x27;)&quot;)` or `@PreAuthorize(&quot;@authz.canEdit(#id)&quot;)`
+- Deny by default; expose only required scopes
+
+```java
+@RestController
+@RequestMapping(&quot;/api/admin&quot;)
+public class AdminController {
+
+  @PreAuthorize(&quot;hasRole(&#x27;ADMIN&#x27;)&quot;)
+  @GetMapping(&quot;/users&quot;)
+  public List&lt;UserDto&gt; listUsers() {
+    return userService.findAll();
+  }
+
+  @PreAuthorize(&quot;@authz.isOwner(#id, authentication)&quot;)
+  @DeleteMapping(&quot;/users/{id}&quot;)
+  public ResponseEntity&lt;Void&gt; deleteUser(@PathVariable Long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+}
+```
+
+## Input Validation
+
+- Use Bean Validation with `@Valid` on controllers
+- Apply constraints on DTOs: `@NotBlank`, `@Email`, `@Size`, custom validators
+- Sanitize any HTML with a whitelist before rendering
+
+```java
+// BAD: No validation
+@PostMapping(&quot;/users&quot;)
+public User createUser(@RequestBody UserDto dto) {
+  return userService.create(dto);
+}
+
+// GOOD: Validated DTO
+public record CreateUserDto(
+    @NotBlank @Size(max = 100) String name,
+    @NotBlank @Email String email,
+    @NotNull @Min(0) @Max(150) Integer age
+) {}
+
+@PostMapping(&quot;/users&quot;)
+public ResponseEntity&lt;UserDto&gt; createUser(@Valid @RequestBody CreateUserDto dto) {
+  return ResponseEntity.status(HttpStatus.CREATED)
+      .body(userService.create(dto));
+}
+```
+
+## SQL Injection Prevention
+
+- Use Spring Data repositories or parameterized queries
+- For native queries, use `:param` bindings; never concatenate strings
+
+```java
+// BAD: String concatenation in native query
+@Query(value = &quot;SELECT * FROM users WHERE name = &#x27;&quot; + name + &quot;&#x27;&quot;, nativeQuery = true)
+
+// GOOD: Parameterized native query
+@Query(value = &quot;SELECT * FROM users WHERE name = :name&quot;, nativeQuery = true)
+List&lt;User&gt; findByName(@Param(&quot;name&quot;) String name);
+
+// GOOD: Spring Data derived query (auto-parameterized)
+List&lt;User&gt; findByEmailAndActiveTrue(String email);
+```
+
+## Password Encoding
+
+- Always hash passwords with BCrypt or Argon2 — never store plaintext
+- Use `PasswordEncoder` bean, not manual hashing
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+  return new BCryptPasswordEncoder(12); // cost factor 12
+}
+
+// In service
+public User register(CreateUserDto dto) {
+  String hashedPassword = passwordEncoder.encode(dto.password());
+  return userRepository.save(new User(dto.email(), hashedPassword));
+}
+```
+
+## CSRF Protection
+
+- For browser session apps, keep CSRF enabled; include token in forms/headers
+- For pure APIs with Bearer tokens, disable CSRF and rely on stateless auth
+
+```java
+http
+  .csrf(csrf -&gt; csrf.disable())
+  .sessionManagement(sm -&gt; sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+```
+
+## Secrets Management
+
+- No secrets in source; load from env or vault
+- Keep `application.yml` free of credentials; use placeholders
+- Rotate tokens and DB credentials regularly
+
+```yaml
+# BAD: Hardcoded in application.yml
+spring:
+  datasource:
+    password: mySecretPassword123
+
+# GOOD: Environment variable placeholder
+spring:
+  datasource:
+    password: ${DB_PASSWORD}
+
+# GOOD: Spring Cloud Vault integration
+spring:
+  cloud:
+    vault:
+      uri: https://vault.example.com
+      token: ${VAULT_TOKEN}
+```
+
+## Security Headers
+
+```java
+http
+  .headers(headers -&gt; headers
+    .contentSecurityPolicy(csp -&gt; csp
+      .policyDirectives(&quot;default-src &#x27;self&#x27;&quot;))
+    .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+    .xssProtection(Customizer.withDefaults())
+    .referrerPolicy(rp -&gt; rp.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)));
+```
+
+## CORS Configuration
+
+- Configure CORS at the security filter level, not per-controller
+- Restrict allowed origins — never use `*` in production
+
+```java
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+  CorsConfiguration config = new CorsConfiguration();
+  config.setAllowedOrigins(List.of(&quot;https://app.example.com&quot;));
+  config.setAllowedMethods(List.of(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;));
+  config.setAllowedHeaders(List.of(&quot;Authorization&quot;, &quot;Content-Type&quot;));
+  config.setAllowCredentials(true);
+  config.setMaxAge(3600L);
+
+  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  source.registerCorsConfiguration(&quot;/api/**&quot;, config);
+  return source;
+}
+
+// In SecurityFilterChain:
+http.cors(cors -&gt; cors.configurationSource(corsConfigurationSource()));
+```
+
+## Rate Limiting
+
+- Apply Bucket4j or gateway-level limits on expensive endpoints
+- Log and alert on bursts; return 429 with retry hints
+
+```java
+// Using Bucket4j for per-endpoint rate limiting
+@Component
+public class RateLimitFilter extends OncePerRequestFilter {
+  private final Map&lt;String, Bucket&gt; buckets = new ConcurrentHashMap&lt;&gt;();
+
+  private Bucket createBucket() {
+    return Bucket.builder()
+        .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
+        .build();
+  }
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
+    String clientIp = request.getRemoteAddr();
+    Bucket bucket = buckets.computeIfAbsent(clientIp, k -&gt; createBucket());
+
+    if (bucket.tryConsume(1)) {
+      chain.doFilter(request, response);
+    } else {
+      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+      response.getWriter().write(&quot;{\&quot;error\&quot;: \&quot;Rate limit exceeded\&quot;}&quot;);
+    }
+  }
+}
+```
+
+## Dependency Security
+
+- Run OWASP Dependency Check / Snyk in CI
+- Keep Spring Boot and Spring Security on supported versions
+- Fail builds on known CVEs
+
+## Logging and PII
+
+- Never log secrets, tokens, passwords, or full PAN data
+- Redact sensitive fields; use structured JSON logging
+
+## File Uploads
+
+- Validate size, content type, and extension
+- Store outside web root; scan if required
+
+## Checklist Before Release
+
+- [ ] Auth tokens validated and expired correctly
+- [ ] Authorization guards on every sensitive path
+- [ ] All inputs validated and sanitized
+- [ ] No string-concatenated SQL
+- [ ] CSRF posture correct for app type
+- [ ] Secrets externalized; none committed
+- [ ] Security headers configured
+- [ ] Rate limiting on APIs
+- [ ] Dependencies scanned and up to date
+- [ ] Logs free of sensitive data
+
+**Remember**: Deny by default, validate inputs, least privilege, and secure-by-configuration first.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

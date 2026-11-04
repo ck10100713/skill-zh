@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>changelog｜Skill 寫法圖鑑</title>
+<meta name="description" content="從 git commit 和 sprint 資料產生內部版與玩家版 changelog">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>changelog</h1>
+<p class="meta">Donchitos ｜ 部署與發布 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/changelog/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">從 git commit 和 sprint 資料產生內部版與玩家版 changelog</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: changelog
+description: &quot;從 git commit 和 sprint 資料自動產生 changelog，分內部版和玩家版。&quot;
+argument-hint: &quot;[version|sprint-number]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/changelog/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(git log *), Bash(git tag --list*), Bash(git rev-parse *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**Automation mode**：解析 `modes.automation`（`project.local.yaml` →
+`project.yaml` → 預設 `collaborative`）。每一次 `AskUserQuestion` 呼叫和
+每一次檔案寫入都要遵守 `.claude/docs/automation-modes.md`
+（collaborative 一律詢問 · guided 只問重大事項 · autonomous 記錄後直接往下走；
+屬於 `automation_always_ask` 的類別一律要問）。
+
+# Changelog
+
+## Recent History
+
+最近的 commit：
+
+!`git log --oneline -30 2&gt;/dev/null || true`
+
+最近的 tag（由新到舊）：
+
+!`git tag --list --sort=-v:refname 2&gt;/dev/null | head -5`
+
+## 來源檢查：信任上面的歷史之前先做
+
+**上面的 commit 可能不屬於這款遊戲。** 這個 skill 的歷史區塊是在內文執行*之前*
+自動解析的，所以讀取已經發生了，這個檢查管的是那份輸出能不能用，不是有沒有去抓。
+
+1. 讀上面注入的 commit 標題。**如果一個都沒有（log 是空的，或 git 不能用），就跳過這個檢查**：
+   沒有東西可以分類，Phase 1 的沒有歷史分支就是正確的停法。
+2. **逐一分類**：**Game**（機制、內容、平衡、美術、音訊、
+   UI，或這些東西的 bug）、**Framework / maintenance**（標題提到 skill、
+   hook、agent、測試計畫、CI，或框架自己的文件），或是 **Unclear**，
+   而 Unclear 一律當成 Framework。
+3. 依數量決定：
+   - **至少有一個 Game commit** → 只用那些繼續，並說明用了
+     幾個、總共幾個。
+   - **零個 Game commit** → 停下來，用下面的訊息。
+
+&gt; **逐個 commit 過濾；repo 裡有維護工作，不代表它是錯的 repo。**
+&gt; 用這個框架的每個專案都會累積動到 hook、CI 和
+&gt; skill 的 commit，遊戲 repo *就是*框架 repo，所以遇到它們就停，
+&gt; 幾乎每個真實專案都會觸發。真正的傷害是這些 commit 變成發行文案，
+&gt; 把它們排除就能精準防止這件事。
+&gt;
+&gt; 這條規則刻意跟 `/patch-notes` 的保持一致，兩者讀
+&gt; 同一份歷史、給不同的讀者，不能對「這是誰的歷史」有不同判斷。要改就兩邊一起改。
+
+真正的錯誤歷史訊號是另一種：Game commit 提到的產品，
+`design/` 和 code root（`src/`、`Assets/` 或 `Source/`）從來沒提過。
+如果看到這種情況，就停。
+
+如果範圍內**沒有任何** commit 是這款遊戲的，就直說並停下：
+
+&gt; &quot;The git history in this repo does not appear to belong to [game]: 0 of the [N]
+&gt; recent commits are Game commits. The recent
+&gt; commits describe [what they actually describe]. I cannot generate a changelog
+&gt; from it — point me at the right history, or supply the change list directly.&quot;
+
+Verdict: **BLOCKED** — stop here without generating a changelog.
+
+**為什麼這是硬性停止，不是警告。** 框架內部的 commit 被當成玩家文案
+來寫，讀起來就像真的變更：一個 session-hook 的 timeout 會變成 *&quot;Fixed an
+issue where progress from your last session could be lost on launch&quot;*，
+而那款遊戲**根本沒有存檔系統**。那段文案流暢、可信，而且完全是假的。
+讀的人分不出差別；只有這個檢查分得出來。
+
+**不要把前言存在當成證據。** 有注入輸出，只代表指令跑了，
+絕對不代表它的主題是你的遊戲。
+
+---
+
+這兩個區塊都是在這個 skill 執行前解析好的。把它們當作 Phase 2 的起點，
+不要重跑同樣的指令。
+
+---
+
+## Phase 1: 解析參數
+
+從參數讀目標版本或 sprint 編號。有給版本的話，用對應的 git tag。有給 sprint 編號的話，用 sprint 的日期範圍。
+
+確認 repository 已初始化：跑 `git rev-parse --is-inside-work-tree` 確認 git 可用。如果不是 git repo，告知使用者並優雅地中止。
+
+**如果沒有歷史可讀**（不是 git repository，或還沒有任何 commit）：
+
+&gt; &quot;No git history found. A changelog is built from commits — commit the work
+&gt; first, or supply the change list directly.&quot;
+
+Verdict: **BLOCKED** — stop here without generating a changelog.
+
+---
+
+## Phase 2: 蒐集變更資料
+
+讀上一個 tag 或 release 之後的 git log：
+
+```
+git log --oneline [last-tag]..HEAD
+```
+
+如果沒有 tag，要明確限定範圍：`git log --oneline -n 100`。不要
+退回去讀完整的 log：在成熟的 repo 上，為了涵蓋一次 release 的 changelog，那是幾千行，
+而且最舊的那些最不相關。
+如果 100 個 commit 追溯得不夠遠，就說出來，並要求使用者給起始 ref，
+不要盲目擴大範圍。
+
+讀 `production/sprints/` 裡相關期間的 sprint 報告，了解計畫中的工作和變更背後的 context。
+
+讀 `design/gdd/` 裡已完成的設計文件，找這段期間實作的新功能。按章節讀：用 Grep 工具（pattern `^#`、content mode）找出需要的標題，再用 offset 和 limit 讀那幾段範圍。
+
+---
+
+## Phase 3: 分類變更
+
+把每個變更歸到下列其中一個類別：
+
+- **New Features**：全新的遊戲系統、模式或內容
+- **Improvements**：既有功能的強化、UX 改善、效能提升
+- **Bug Fixes**：修正壞掉的行為
+- **Balance Changes**：遊戲數值、難度、經濟的調校
+- **Technical Debt / Refactoring**：遊戲程式碼的重構和清理，而且不改變玩家看到的任何東西，也就是 commit 說的是重構、清理或整理，沒有提到任何修正、功能或調校。只放內部 changelog；絕對不放玩家版
+- **Known Issues**：團隊知道但還沒解決的問題
+- **Miscellaneous**：不符合上面類別的變更，或是訊息太模糊、無法有把握分類的 commit
+
+每個 commit 都要檢查訊息裡有沒有 task ID 或 story 參照
+（例如 `[STORY-123]`、`TR-`、`#NNN` 或類似的東西）。數出沒有任何 task 參照的 commit，
+並把這個數字放進 Phase 4 的 Metrics 章節：`Commits without task reference: [N]`。
+
+---
+
+## Phase 4: 產生內部 Changelog
+
+```markdown
+# Internal Changelog: [Version]
+Date: [Date]
+Sprint(s): [Sprint numbers covered]
+Commits: [Count] ([first-hash]..[last-hash])
+
+## New Features
+- [Feature Name] -- [Technical description, affected systems]
+  - Commits: [hash1], [hash2]
+  - Owner: [who implemented it]
+  - Design doc: [link if applicable]
+
+## Improvements
+- [Improvement] -- [What changed technically and why]
+  - Commits: [hashes]
+  - Owner: [who]
+
+## Bug Fixes
+- [BUG-ID] [Description of bug and root cause]
+  - Fix: [What was changed]
+  - Commits: [hashes]
+  - Owner: [who]
+
+## Balance Changes
+- [What was tuned] -- [Old value -&gt; New value] -- [Design intent]
+  - Owner: [who]
+
+## Technical Debt / Refactoring
+- [What was cleaned up and why]
+  - Commits: [hashes]
+
+## Miscellaneous
+- [Change that didn&#x27;t fit other categories, or vague commit message]
+  - Commits: [hashes]
+
+## Known Issues
+- [Issue description] -- [Severity] -- [ETA for fix if known]
+
+## Metrics
+- Total commits: [N]
+- Files changed: [N]
+- Lines added: [N]
+- Lines removed: [N]
+- Commits without task reference: [N]
+```
+
+---
+
+## Phase 5: 產生玩家版 Changelog
+
+```markdown
+# What is New in [Version]
+
+## New Features
+- **[Feature Name]**: [Player-friendly description of what they can now do
+  and why it is exciting. Focus on the experience, not the implementation.]
+
+## Improvements
+- **[What improved]**: [How this makes the game better for the player.
+  Be specific but avoid jargon.]
+
+## Bug Fixes
+- Fixed an issue where [describe what the player experienced, not what was
+  wrong in the code]
+- Fixed [player-visible symptom]
+
+## Balance Changes
+- [What changed in player-understandable terms and the design intent.
+  Example: &quot;Healing potions now restore 50 HP (up from 30) -- we felt
+  players needed more recovery options in late-game encounters.&quot;]
+
+## Known Issues
+- We are aware of [issue description in player terms] and are working on a
+  fix. [Workaround if one exists.]
+
+---
+Thank you for playing! Your feedback helps us make the game better.
+Report issues at [link].
+```
+
+---
+
+## Phase 6: 輸出
+
+把兩份 changelog 都輸出給使用者。內部 changelog 是主要的工作文件。玩家版 changelog 在審閱後就可以貼到社群上。
+
+---
+
+## Phase 7: 提議寫入檔案
+
+呈現完 changelog 之後，問使用者：
+
+&gt; &quot;May I write this changelog to `docs/CHANGELOG.md`?
+&gt; [A] Yes, append this entry (recommended if the file already exists)
+&gt; [B] Yes, overwrite the file entirely
+&gt; [C] No — I&#x27;ll copy it manually&quot;
+
+- 問之前先檢查 `docs/CHANGELOG.md` 是否存在。如果存在，預設推薦
+  **[A] append**。
+- 使用者選 [A]：把新的內部 changelog 條目附加到現有檔案的最上面
+  （最新的條目在最前面）。
+- 使用者選 [B]：用新的 changelog 覆寫整個檔案。
+- 使用者選 [C]：停在這裡，不寫入。
+
+寫入成功後：Verdict: **CHANGELOG WRITTEN** — changelog saved to `docs/CHANGELOG.md`.
+使用者拒絕的話：Verdict: **COMPLETE** — changelog generated.
+
+---
+
+## Phase 7: 下一步
+
+- 用 `/patch-notes [version]` 產生一份有排版、可存檔的公開發行版本。
+- 對外發布 changelog 之前，先用 `/release-checklist`。
+
+### 準則
+
+- 絕對不要在玩家版 changelog 裡洩漏內部程式碼參照、檔案路徑或開發者名字
+- 把相關的變更歸在一起，不要一個一個列 commit
+- 如果 commit 訊息不清楚，去看相關的檔案和 sprint 資料找 context
+- 平衡變更一定要附上設計理由，不能只放數字
+- Known issues 要誠實，玩家會欣賞透明
+- 如果 git 歷史很亂（merge commit、revert、fixup commit），就整理成通順的敘述，不要一個 commit 一個 commit 照字面列</pre></section><section><h2>英文原文</h2><pre>---
+name: changelog
+description: &quot;Auto-generate a changelog from git commits and sprint data. Internal and player-facing versions.&quot;
+argument-hint: &quot;[version|sprint-number]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/changelog/../../hooks/yaml-helper.sh&quot; resolve_config *), Bash(git log *), Bash(git tag --list*), Bash(git rev-parse *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
+`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+every file write follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+# Changelog
+
+## Recent History
+
+Recent commits:
+
+!`git log --oneline -30 2&gt;/dev/null || true`
+
+Recent tags (newest first):
+
+!`git tag --list --sort=-v:refname 2&gt;/dev/null | head -5`
+
+## Provenance check — before trusting the history above
+
+**The commits above may not belong to this game.** This skill&#x27;s history blocks are
+auto-resolved *before* the body runs, so the read has already happened — what this
+check governs is whether that output is usable, not whether it is fetched.
+
+1. Read the injected commit subjects above. **If there are none — the log is
+   empty or git is unavailable — skip this check**: there is nothing to
+   classify, and Phase 1&#x27;s no-history branch is the right stop.
+2. **Classify each one** as **Game** (mechanics, content, balance, art, audio,
+   UI, or a bug in those), **Framework / maintenance** (subjects naming skills,
+   hooks, agents, the test plan, CI, or the framework&#x27;s own docs), or **Unclear**
+   — and treat Unclear as Framework.
+3. Decide from the counts:
+   - **At least one Game commit** → proceed using only those, and state how many
+     of how many you used.
+   - **Zero Game commits** → stop, using the message below.
+
+&gt; **Filter per commit; a repo containing maintenance work is not a wrong repo.**
+&gt; Every project on this framework accumulates commits touching hooks, CI and
+&gt; skills — the game repo *is* the framework repo, so stopping on them would fire
+&gt; on virtually every real project. The harm is those commits becoming release copy,
+&gt; and excluding them prevents that precisely.
+&gt;
+&gt; This rule is kept identical to `/patch-notes`&#x27; on purpose — the two read the
+&gt; same history for different audiences, and they must not disagree about whose
+&gt; history it is. Change both together.
+
+The genuine wrong-history signal is different: Game commits naming a product that
+`design/` and the code root (`src/`, `Assets/` or `Source/`) never mention. If you
+see that, stop.
+
+If **no** commit in the range is this game&#x27;s, say so and stop:
+
+&gt; &quot;The git history in this repo does not appear to belong to [game]: 0 of the [N]
+&gt; recent commits are Game commits. The recent
+&gt; commits describe [what they actually describe]. I cannot generate a changelog
+&gt; from it — point me at the right history, or supply the change list directly.&quot;
+
+Verdict: **BLOCKED** — stop here without generating a changelog.
+
+**Why this is a hard stop, not a warning.** Framework-internal commits rendered
+as player copy read as real changes: a session-hook timeout becomes *&quot;Fixed an
+issue where progress from your last session could be lost on launch&quot;* in a game
+with **no save system**. That copy is fluent, plausible, and entirely false. A
+reader cannot tell the difference; only this check can.
+
+**Do not treat the preamble&#x27;s existence as evidence.** Injected output means the
+command ran, never that its subject is your game.
+
+---
+
+Both blocks are resolved before this skill runs. Use them as the starting point
+for Phase 2 rather than re-running the same commands.
+
+---
+
+## Phase 1: Parse Arguments
+
+Read the argument for the target version or sprint number. If a version is given, use the corresponding git tag. If a sprint number is given, use the sprint date range.
+
+Verify the repository is initialized: run `git rev-parse --is-inside-work-tree` to confirm git is available. If not a git repo, inform the user and abort gracefully.
+
+**If there is no history to read** — not a git repository, or no commits yet:
+
+&gt; &quot;No git history found. A changelog is built from commits — commit the work
+&gt; first, or supply the change list directly.&quot;
+
+Verdict: **BLOCKED** — stop here without generating a changelog.
+
+---
+
+## Phase 2: Gather Change Data
+
+Read the git log since the last tag or release:
+
+```
+git log --oneline [last-tag]..HEAD
+```
+
+If no tags exist, bound the range explicitly — `git log --oneline -n 100`. Do not
+fall back to the full log: on an established repo that is thousands of lines for
+a changelog covering one release, and the oldest of them are the least relevant.
+If 100 commits does not reach far enough back, say so and ask for a start ref
+rather than widening blindly.
+
+Read sprint reports from `production/sprints/` for the relevant period to understand planned work and context behind changes.
+
+Read completed design documents from `design/gdd/` for any new features implemented during this period. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+
+---
+
+## Phase 3: Categorize Changes
+
+Categorize every change into one of these categories:
+
+- **New Features**: Entirely new gameplay systems, modes, or content
+- **Improvements**: Enhancements to existing features, UX improvements, performance gains
+- **Bug Fixes**: Corrections to broken behavior
+- **Balance Changes**: Tuning of gameplay values, difficulty, economy
+- **Technical Debt / Refactoring**: Refactors and cleanup of the game&#x27;s code that change nothing the player sees — a commit that says it refactors, cleans up or tidies, and names no fix, feature or tuning. Internal changelog only; never in the player-facing one
+- **Known Issues**: Issues the team is aware of but have not yet resolved
+- **Miscellaneous**: Changes that do not fit the above categories, or commits whose messages are too vague to classify confidently
+
+For each commit, check whether the message contains a task ID or story reference
+(e.g. `[STORY-123]`, `TR-`, `#NNN`, or similar). Count commits that lack any task reference
+and include this count in the Phase 4 Metrics section as: `Commits without task reference: [N]`.
+
+---
+
+## Phase 4: Generate Internal Changelog
+
+```markdown
+# Internal Changelog: [Version]
+Date: [Date]
+Sprint(s): [Sprint numbers covered]
+Commits: [Count] ([first-hash]..[last-hash])
+
+## New Features
+- [Feature Name] -- [Technical description, affected systems]
+  - Commits: [hash1], [hash2]
+  - Owner: [who implemented it]
+  - Design doc: [link if applicable]
+
+## Improvements
+- [Improvement] -- [What changed technically and why]
+  - Commits: [hashes]
+  - Owner: [who]
+
+## Bug Fixes
+- [BUG-ID] [Description of bug and root cause]
+  - Fix: [What was changed]
+  - Commits: [hashes]
+  - Owner: [who]
+
+## Balance Changes
+- [What was tuned] -- [Old value -&gt; New value] -- [Design intent]
+  - Owner: [who]
+
+## Technical Debt / Refactoring
+- [What was cleaned up and why]
+  - Commits: [hashes]
+
+## Miscellaneous
+- [Change that didn&#x27;t fit other categories, or vague commit message]
+  - Commits: [hashes]
+
+## Known Issues
+- [Issue description] -- [Severity] -- [ETA for fix if known]
+
+## Metrics
+- Total commits: [N]
+- Files changed: [N]
+- Lines added: [N]
+- Lines removed: [N]
+- Commits without task reference: [N]
+```
+
+---
+
+## Phase 5: Generate Player-Facing Changelog
+
+```markdown
+# What is New in [Version]
+
+## New Features
+- **[Feature Name]**: [Player-friendly description of what they can now do
+  and why it is exciting. Focus on the experience, not the implementation.]
+
+## Improvements
+- **[What improved]**: [How this makes the game better for the player.
+  Be specific but avoid jargon.]
+
+## Bug Fixes
+- Fixed an issue where [describe what the player experienced, not what was
+  wrong in the code]
+- Fixed [player-visible symptom]
+
+## Balance Changes
+- [What changed in player-understandable terms and the design intent.
+  Example: &quot;Healing potions now restore 50 HP (up from 30) -- we felt
+  players needed more recovery options in late-game encounters.&quot;]
+
+## Known Issues
+- We are aware of [issue description in player terms] and are working on a
+  fix. [Workaround if one exists.]
+
+---
+Thank you for playing! Your feedback helps us make the game better.
+Report issues at [link].
+```
+
+---
+
+## Phase 6: Output
+
+Output both changelogs to the user. The internal changelog is the primary working document. The player-facing changelog is ready for community posting after review.
+
+---
+
+## Phase 7: Offer File Write
+
+After presenting the changelogs, ask the user:
+
+&gt; &quot;May I write this changelog to `docs/CHANGELOG.md`?
+&gt; [A] Yes, append this entry (recommended if the file already exists)
+&gt; [B] Yes, overwrite the file entirely
+&gt; [C] No — I&#x27;ll copy it manually&quot;
+
+- Check whether `docs/CHANGELOG.md` exists before asking. If it does, default the
+  recommendation to **[A] append**.
+- If the user selects [A]: append the new internal changelog entry to the top of
+  the existing file (newest entries first).
+- If the user selects [B]: overwrite the file with the new changelog.
+- If the user selects [C]: stop here without writing.
+
+After a successful write: Verdict: **CHANGELOG WRITTEN** — changelog saved to `docs/CHANGELOG.md`.
+If the user declines: Verdict: **COMPLETE** — changelog generated.
+
+---
+
+## Phase 7: Next Steps
+
+- Use `/patch-notes [version]` to generate a styled, saved version for public release.
+- Use `/release-checklist` before publishing the changelog externally.
+
+### Guidelines
+
+- Never expose internal code references, file paths, or developer names in the player-facing changelog
+- Group related changes together rather than listing individual commits
+- If a commit message is unclear, check the associated files and sprint data for context
+- Balance changes should always include the design reasoning, not just the numbers
+- Known issues should be honest — players appreciate transparency
+- If the git history is messy (merge commits, reverts, fixup commits), clean up the narrative rather than listing every commit literally</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

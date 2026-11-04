@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>incident-response｜Skill 寫法圖鑑</title>
+<meta name="description" content="事件應變：分級研判、發狀態更新、寫無究責 postmortem">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>incident-response</h1>
+<p class="meta">Anthropic ｜ 除錯與調查 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/engineering/skills/incident-response/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">事件應變：分級研判、發狀態更新、寫無究責 postmortem</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: incident-response
+description: 執行事件應變流程：分級研判、對外溝通、撰寫 postmortem。當說「we have an incident」、「production is down」、有警報需要判斷嚴重程度、事件進行中要發狀態更新，或是事件解決後要寫無究責 postmortem 時觸發。
+argument-hint: &quot;&lt;incident description or alert&gt;&quot;
+---
+
+# /incident-response
+
+&gt; 如果看到不認識的佔位符，或需要確認目前連了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+從發現事件一路管理到 postmortem。
+
+## 用法
+
+```
+/incident-response $ARGUMENTS
+```
+
+## 模式
+
+```
+/incident-response new [description]     # 開始一個新事件
+/incident-response update [status]       # 發佈狀態更新
+/incident-response postmortem            # 根據事件資料產生 postmortem
+```
+
+如果沒指定模式，就問事件目前在哪個階段。
+
+## 運作方式
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    INCIDENT RESPONSE                               │
+├─────────────────────────────────────────────────────────────────┤
+│  Phase 1: TRIAGE（分級研判）                                      │
+│  ✓ 評估嚴重程度（SEV1-4）                                       │
+│  ✓ 找出受影響的系統和使用者                                     │
+│  ✓ 指派角色（IC、對外溝通、處理人員）                           │
+│                                                                    │
+│  Phase 2: COMMUNICATE（溝通）                                      │
+│  ✓ 擬內部狀態更新                                                │
+│  ✓ 擬客戶溝通內容（如有需要）                                   │
+│  ✓ 建立 war room 並訂定更新頻率                                  │
+│                                                                    │
+│  Phase 3: MITIGATE（緩解）                                         │
+│  ✓ 記錄已採取的緩解步驟                                          │
+│  ✓ 追蹤事件時間軸                                                │
+│  ✓ 確認已解決                                                    │
+│                                                                    │
+│  Phase 4: POSTMORTEM（事後檢討）                                   │
+│  ✓ 無究責的 postmortem 文件                                      │
+│  ✓ 重建時間軸                                                    │
+│  ✓ 根本原因分析（5 whys）                                        │
+│  ✓ 附負責人的行動項目                                            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 嚴重程度分級
+
+| 等級 | 標準 | 回應時間 |
+|-------|----------|---------------|
+| SEV1 | 服務掛了，所有使用者受影響 | 立即，全員投入 |
+| SEV2 | 主要功能降級，許多使用者受影響 | 15 分鐘內 |
+| SEV3 | 次要功能有問題，部分使用者受影響 | 1 小時內 |
+| SEV4 | 外觀或低影響的問題 | 下一個工作日 |
+
+## 溝通指引
+
+定期提供清楚、以事實為主的更新。內容包括：現在發生什麼事、誰受影響、我們在做什麼、下次更新是什麼時候。
+
+## 輸出：狀態更新
+
+```markdown
+## Incident Update: [標題]
+**Severity:** SEV[1-4] | **Status:** Investigating | Identified | Monitoring | Resolved
+**Impact:** [誰或什麼受到影響]
+**Last Updated:** [時間戳]
+
+### Current Status
+[目前掌握的資訊]
+
+### Actions Taken
+- [動作 1]
+- [動作 2]
+
+### Next Steps
+- [接下來要做什麼，以及預計時間]
+
+### Timeline
+| Time | Event |
+|------|-------|
+| [HH:MM] | [事件] |
+```
+
+## 輸出：Postmortem
+
+```markdown
+## Postmortem: [事件標題]
+**Date:** [日期] | **Duration:** [X 小時] | **Severity:** SEV[X]
+**Authors:** [姓名] | **Status:** Draft
+
+### Summary
+[2-3 句白話摘要]
+
+### Impact
+- [受影響的使用者]
+- [影響持續時間]
+- [如果能量化，寫對業務的影響]
+
+### Timeline
+| Time (UTC) | Event |
+|------------|-------|
+| [HH:MM] | [事件] |
+
+### Root Cause
+[詳細說明是什麼造成這次事件]
+
+### 5 Whys
+1. Why did [症狀]? → [因為……]
+2. Why did [原因 1]? → [因為……]
+3. Why did [原因 2]? → [因為……]
+4. Why did [原因 3]? → [因為……]
+5. Why did [原因 4]? → [根本原因]
+
+### What Went Well
+- [有效的做法]
+
+### What Went Poorly
+- [沒效的做法]
+
+### Action Items
+| Action | Owner | Priority | Due Date |
+|--------|-------|----------|----------|
+| [行動] | [負責人] | P0/P1/P2 | [日期] |
+
+### Lessons Learned
+[給團隊的重點心得]
+```
+
+## 如果有連上 Connector
+
+如果有連上 **~~monitoring**：
+- 拉警報細節和指標
+- 顯示受影響指標的圖表
+
+如果有連上 **~~incident management**：
+- 在 PagerDuty/Opsgenie 建立或更新事件
+- 呼叫值班的處理人員
+
+如果有連上 **~~chat**：
+- 把狀態更新發到事件頻道
+- 建立 war room 頻道
+
+## 小提醒
+
+1. **馬上開始寫**：不要等資訊齊全，邊了解邊更新。
+2. **更新只講事實**：我們知道什麼、做了什麼、接下來要做什麼。不要猜測。
+3. **Postmortem 是無究責的**：焦點放在系統和流程，不是個人。</pre></section><section><h2>英文原文</h2><pre>---
+name: incident-response
+description: Run an incident response workflow — triage, communicate, and write postmortem. Trigger with &quot;we have an incident&quot;, &quot;production is down&quot;, an alert that needs severity assessment, a status update mid-incident, or when writing a blameless postmortem after resolution.
+argument-hint: &quot;&lt;incident description or alert&gt;&quot;
+---
+
+# /incident-response
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Manage an incident from detection through postmortem.
+
+## Usage
+
+```
+/incident-response $ARGUMENTS
+```
+
+## Modes
+
+```
+/incident-response new [description]     # Start a new incident
+/incident-response update [status]       # Post a status update
+/incident-response postmortem            # Generate postmortem from incident data
+```
+
+If no mode is specified, ask what phase the incident is in.
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    INCIDENT RESPONSE                               │
+├─────────────────────────────────────────────────────────────────┤
+│  Phase 1: TRIAGE                                                  │
+│  ✓ Assess severity (SEV1-4)                                     │
+│  ✓ Identify affected systems and users                          │
+│  ✓ Assign roles (IC, comms, responders)                         │
+│                                                                    │
+│  Phase 2: COMMUNICATE                                              │
+│  ✓ Draft internal status update                                  │
+│  ✓ Draft customer communication (if needed)                     │
+│  ✓ Set up war room and cadence                                   │
+│                                                                    │
+│  Phase 3: MITIGATE                                                 │
+│  ✓ Document mitigation steps taken                               │
+│  ✓ Track timeline of events                                      │
+│  ✓ Confirm resolution                                            │
+│                                                                    │
+│  Phase 4: POSTMORTEM                                               │
+│  ✓ Blameless postmortem document                                 │
+│  ✓ Timeline reconstruction                                       │
+│  ✓ Root cause analysis (5 whys)                                  │
+│  ✓ Action items with owners                                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Severity Classification
+
+| Level | Criteria | Response Time |
+|-------|----------|---------------|
+| SEV1 | Service down, all users affected | Immediate, all-hands |
+| SEV2 | Major feature degraded, many users affected | Within 15 min |
+| SEV3 | Minor feature issue, some users affected | Within 1 hour |
+| SEV4 | Cosmetic or low-impact issue | Next business day |
+
+## Communication Guidance
+
+Provide clear, factual updates at regular cadence. Include: what&#x27;s happening, who&#x27;s affected, what we&#x27;re doing, when the next update is.
+
+## Output — Status Update
+
+```markdown
+## Incident Update: [Title]
+**Severity:** SEV[1-4] | **Status:** Investigating | Identified | Monitoring | Resolved
+**Impact:** [Who/what is affected]
+**Last Updated:** [Timestamp]
+
+### Current Status
+[What we know now]
+
+### Actions Taken
+- [Action 1]
+- [Action 2]
+
+### Next Steps
+- [What&#x27;s happening next and ETA]
+
+### Timeline
+| Time | Event |
+|------|-------|
+| [HH:MM] | [Event] |
+```
+
+## Output — Postmortem
+
+```markdown
+## Postmortem: [Incident Title]
+**Date:** [Date] | **Duration:** [X hours] | **Severity:** SEV[X]
+**Authors:** [Names] | **Status:** Draft
+
+### Summary
+[2-3 sentence plain-language summary]
+
+### Impact
+- [Users affected]
+- [Duration of impact]
+- [Business impact if quantifiable]
+
+### Timeline
+| Time (UTC) | Event |
+|------------|-------|
+| [HH:MM] | [Event] |
+
+### Root Cause
+[Detailed explanation of what caused the incident]
+
+### 5 Whys
+1. Why did [symptom]? → [Because...]
+2. Why did [cause 1]? → [Because...]
+3. Why did [cause 2]? → [Because...]
+4. Why did [cause 3]? → [Because...]
+5. Why did [cause 4]? → [Root cause]
+
+### What Went Well
+- [Things that worked]
+
+### What Went Poorly
+- [Things that didn&#x27;t work]
+
+### Action Items
+| Action | Owner | Priority | Due Date |
+|--------|-------|----------|----------|
+| [Action] | [Person] | P0/P1/P2 | [Date] |
+
+### Lessons Learned
+[Key takeaways for the team]
+```
+
+## If Connectors Available
+
+If **~~monitoring** is connected:
+- Pull alert details and metrics
+- Show graphs of affected metrics
+
+If **~~incident management** is connected:
+- Create or update incident in PagerDuty/Opsgenie
+- Page on-call responders
+
+If **~~chat** is connected:
+- Post status updates to incident channel
+- Create war room channel
+
+## Tips
+
+1. **Start writing immediately** — Don&#x27;t wait for complete information. Update as you learn more.
+2. **Keep updates factual** — What we know, what we&#x27;ve done, what&#x27;s next. No speculation.
+3. **Postmortems are blameless** — Focus on systems and processes, not individuals.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

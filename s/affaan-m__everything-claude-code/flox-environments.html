@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flox-environments｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Flox 建立可重現、跨平台的開發環境，鎖定套件版本">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>flox-environments</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/flox-environments/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Flox 建立可重現、跨平台的開發環境，鎖定套件版本</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: flox-environments
+description: &quot;用 Flox（以 Nix 為基礎的宣告式環境管理工具）建立可重現、跨平台（macOS/Linux）的開發環境。適用於設定專案工具鏈、安裝系統層級依賴（編譯器、資料庫、原生函式庫）、為團隊鎖定確切的套件版本、新人 onboarding、跑本機服務（PostgreSQL、Redis、Kafka），或解決「在我電腦上明明可以」的問題，也包含需要在專案範圍內裝工具、又不想用 sudo 的 agent / vibe-coding 場景。使用者提到 .flox/、manifest.toml、flox activate 或 FloxHub 時也適用。&quot;
+metadata:
+  origin: Flox
+---
+
+# Flox Environments
+
+Flox 用一份 TOML manifest 定義可重現的開發環境。團隊裡每個人拿到的套件、工具、設定都一模一樣，macOS 和 Linux 通用，不需要容器或 VM。底層是 Nix，可用的套件超過 150,000 個。
+
+## When to Activate
+
+使用者碰到環境管理問題就用這個 skill，就算他沒提到 Flox 也一樣。符合下面這些情況，Flox 就是對的工具：
+
+- 專案除了語言本身的依賴，還需要**系統層級的套件**（編譯器、資料庫、CLI 工具）
+- **可重現性很重要**：設定要在隊友的電腦、CI、或是剛重灌的筆電上表現一致
+- 使用者需要**多個工具共存**，例如 Python 3.11 + PostgreSQL 16 + Redis + Node.js 放在同一個環境
+- 需要**跨平台支援**（同一份設定同時跑 macOS 和 Linux）
+- **AI agent 需要自己裝工具**：Flox 讓 agent 在專案範圍的環境裡加套件，不用 sudo、不污染系統、也不會被 sandbox 限制擋住
+
+如果使用者只需要單一語言的 runtime、沒有系統依賴，一般的工具（單用 nvm、pyenv、rustup）可能就夠了。如果需要完整的作業系統層級隔離，容器可能更合適。Flox 卡在中間那個甜蜜點：宣告式、可重現，又沒有容器的額外負擔。
+
+**前置條件：** 要先裝好 Flox，macOS、Linux、Docker 的安裝方式見 [flox.dev/docs](https://flox.dev/docs/install-flox/install/)。
+
+## Core Concepts
+
+Flox 環境定義在 `.flox/env/manifest.toml`，用 `flox activate` 啟用。manifest 會宣告套件、環境變數、設定用的 hook 和 shell 設定，也就是在任何地方重現這個環境所需的一切。
+
+**關鍵路徑：**
+- `.flox/env/manifest.toml`：環境定義（要 commit）
+- `$FLOX_ENV`：已安裝套件的 runtime 路徑（像 `/usr`，裡面有 `bin/`、`lib/`、`include/`）
+- `$FLOX_ENV_CACHE`：持久的本機儲存空間，放快取、venv、資料（重建環境後仍然保留）
+- `$FLOX_ENV_PROJECT`：專案根目錄（`.flox/` 所在的位置）
+
+## Essential Commands
+
+```bash
+flox init                       # 建立新環境
+flox search &lt;package&gt; [--all]   # 搜尋套件
+flox show &lt;package&gt;             # 顯示可用版本
+flox install &lt;package&gt;          # 加一個套件
+flox list                       # 列出已安裝的套件
+flox activate                   # 進入環境
+flox activate -- &lt;cmd&gt;          # 在環境裡跑一個指令，不開 subshell
+flox edit                       # 互動式編輯 manifest
+```
+
+## Manifest Structure
+
+```toml
+# .flox/env/manifest.toml
+
+[install]
+# 要安裝的套件，環境的核心
+ripgrep.pkg-path = &quot;ripgrep&quot;
+jq.pkg-path = &quot;jq&quot;
+
+[vars]
+# 靜態環境變數
+DATABASE_URL = &quot;postgres://localhost:5432/myapp&quot;
+
+[hook]
+# 非互動式的設定腳本（每次 activate 都會跑）
+on-activate = &quot;&quot;&quot;
+  echo &quot;Environment ready&quot;
+&quot;&quot;&quot;
+
+[profile]
+# shell function 和 alias（互動式 shell 可用）
+common = &quot;&quot;&quot;
+  alias dev=&quot;npm run dev&quot;
+&quot;&quot;&quot;
+
+[options]
+# 支援的平台
+systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;, &quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+## Package Installation Patterns
+
+### Basic Installation
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+python.pkg-path = &quot;python311&quot;
+rustup.pkg-path = &quot;rustup&quot;
+```
+
+### Version Pinning
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+nodejs.version = &quot;^20.0&quot;          # Semver 範圍：最新的 20.x
+
+postgres.pkg-path = &quot;postgresql&quot;
+postgres.version = &quot;16.2&quot;         # 精確版本
+```
+
+### Platform-Specific Packages
+
+```toml
+[install]
+# 只有 Linux 用的工具
+valgrind.pkg-path = &quot;valgrind&quot;
+valgrind.systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;]
+
+# macOS frameworks
+Security.pkg-path = &quot;darwin.apple_sdk.frameworks.Security&quot;
+Security.systems = [&quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+
+# macOS 上的 GNU 工具（BSD 預設版本行為不同的地方）
+coreutils.pkg-path = &quot;coreutils&quot;
+coreutils.systems = [&quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+### Resolving Package Conflicts
+
+兩個套件裝了同名的 binary 時，用 `priority`（數字小的贏）：
+
+```toml
+[install]
+gcc.pkg-path = &quot;gcc12&quot;
+gcc.priority = 3
+
+clang.pkg-path = &quot;clang_18&quot;
+clang.priority = 5               # 檔案衝突時 gcc 贏
+```
+
+用 `pkg-group` 把需要一起解析版本的套件分成一組：
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+python.pkg-group = &quot;python-stack&quot;
+
+pip.pkg-path = &quot;python311Packages.pip&quot;
+pip.pkg-group = &quot;python-stack&quot;    # 跟 python 一起解析
+```
+
+## Language-Specific Recipes
+
+### Python with uv
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+uv.pkg-path = &quot;uv&quot;
+
+[vars]
+UV_CACHE_DIR = &quot;$FLOX_ENV_CACHE/uv-cache&quot;
+PIP_CACHE_DIR = &quot;$FLOX_ENV_CACHE/pip-cache&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  venv=&quot;$FLOX_ENV_CACHE/venv&quot;
+  if [ ! -d &quot;$venv&quot; ]; then
+    uv venv &quot;$venv&quot; --python python3
+  fi
+  if [ -f &quot;$venv/bin/activate&quot; ]; then
+    source &quot;$venv/bin/activate&quot;
+  fi
+
+  if [ -f requirements.txt ] &amp;&amp; [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install --python &quot;$venv/bin/python&quot; -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+```
+
+### Node.js
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+nodejs.version = &quot;^20.0&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ -f package.json ] &amp;&amp; [ ! -d node_modules ]; then
+    npm install --silent
+  fi
+&quot;&quot;&quot;
+```
+
+### Rust
+
+```toml
+[install]
+rustup.pkg-path = &quot;rustup&quot;
+pkg-config.pkg-path = &quot;pkg-config&quot;
+openssl.pkg-path = &quot;openssl&quot;
+
+[vars]
+RUSTUP_HOME = &quot;$FLOX_ENV_CACHE/rustup&quot;
+CARGO_HOME = &quot;$FLOX_ENV_CACHE/cargo&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  export PATH=&quot;$CARGO_HOME/bin:$PATH&quot;
+&quot;&quot;&quot;
+```
+
+### Go
+
+```toml
+[install]
+go.pkg-path = &quot;go&quot;
+gopls.pkg-path = &quot;gopls&quot;
+delve.pkg-path = &quot;delve&quot;
+
+[vars]
+GOPATH = &quot;$FLOX_ENV_CACHE/go&quot;
+GOBIN = &quot;$FLOX_ENV_CACHE/go/bin&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  export PATH=&quot;$GOBIN:$PATH&quot;
+&quot;&quot;&quot;
+```
+
+### C/C++
+
+```toml
+[install]
+gcc.pkg-path = &quot;gcc13&quot;
+gcc.pkg-group = &quot;compilers&quot;
+
+# 重要：只裝 gcc 不會提供 libstdc++ 的 header，要另外裝 gcc-unwrapped
+gcc-unwrapped.pkg-path = &quot;gcc-unwrapped&quot;
+gcc-unwrapped.pkg-group = &quot;libraries&quot;
+
+cmake.pkg-path = &quot;cmake&quot;
+cmake.pkg-group = &quot;build&quot;
+
+gnumake.pkg-path = &quot;gnumake&quot;
+gnumake.pkg-group = &quot;build&quot;
+
+gdb.pkg-path = &quot;gdb&quot;
+gdb.systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;]
+```
+
+## Hooks and Profile
+
+### Hooks — Non-Interactive Setup
+
+Hook 每次 activate 都會跑，要保持快速而且冪等（idempotent）。經驗法則：**要自動發生的事放 `[hook]`，要讓使用者自己打指令的放 `[profile]`。**
+
+```toml
+[hook]
+on-activate = &quot;&quot;&quot;
+  setup_database() {
+    if [ ! -d &quot;$FLOX_ENV_CACHE/pgdata&quot; ]; then
+      initdb -D &quot;$FLOX_ENV_CACHE/pgdata&quot; --no-locale --encoding=UTF8
+    fi
+  }
+  setup_database
+&quot;&quot;&quot;
+```
+
+### Profile — Interactive Shell Configuration
+
+Profile 裡的程式碼在使用者的 shell session 裡可以直接用。
+
+```toml
+[profile]
+common = &quot;&quot;&quot;
+  dev() { npm run dev; }
+  test() { npm run test -- &quot;$@&quot;; }
+&quot;&quot;&quot;
+```
+
+## Anti-Patterns
+
+### Absolute Paths
+
+```toml
+# BAD：換一台機器就壞
+[vars]
+PROJECT_DIR = &quot;/home/alice/projects/myapp&quot;
+
+# GOOD：用 Flox 的環境變數
+[vars]
+PROJECT_DIR = &quot;$FLOX_ENV_PROJECT&quot;
+```
+
+### Using exit in Hooks
+
+```toml
+# BAD：會把 shell 殺掉
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f config.json ]; then
+    echo &quot;Missing config&quot;
+    exit 1
+  fi
+&quot;&quot;&quot;
+
+# GOOD：用 return 離開 hook，不要用 exit
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f config.json ]; then
+    echo &quot;Missing config — run setup first&quot;
+    return 1
+  fi
+&quot;&quot;&quot;
+```
+
+### Storing Secrets in Manifest
+
+```toml
+# BAD：manifest 會被 commit 進 git
+[vars]
+API_KEY = &quot;&lt;set-at-runtime&gt;&quot;
+
+# GOOD：參照外部設定，或在執行時傳入
+# 用法：API_KEY=&quot;&lt;your-api-key&gt;&quot; flox activate
+[vars]
+API_KEY = &quot;${API_KEY:-}&quot;
+```
+
+### Slow Hooks Without Idempotency Guards
+
+```toml
+# BAD：每次 activate 都重裝
+[hook]
+on-activate = &quot;&quot;&quot;
+  pip install -r requirements.txt
+&quot;&quot;&quot;
+
+# GOOD：裝過就跳過
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+```
+
+### Putting User Commands in Hooks
+
+```toml
+# BAD：hook 裡的 function 在互動式 shell 裡用不到
+[hook]
+on-activate = &quot;&quot;&quot;
+  deploy() { kubectl apply -f k8s/; }
+&quot;&quot;&quot;
+
+# GOOD：給使用者呼叫的 function 用 [profile]
+[profile]
+common = &quot;&quot;&quot;
+  deploy() { kubectl apply -f k8s/; }
+&quot;&quot;&quot;
+```
+
+## Full-Stack Example
+
+一個 Python API 加 PostgreSQL 的完整環境：
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+uv.pkg-path = &quot;uv&quot;
+postgresql.pkg-path = &quot;postgresql_16&quot;
+redis.pkg-path = &quot;redis&quot;
+jq.pkg-path = &quot;jq&quot;
+curl.pkg-path = &quot;curl&quot;
+
+[vars]
+UV_CACHE_DIR = &quot;$FLOX_ENV_CACHE/uv-cache&quot;
+DATABASE_URL = &quot;postgres://localhost:5432/myapp&quot;
+REDIS_URL = &quot;redis://localhost:6379&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -d &quot;$FLOX_ENV_CACHE/pgdata&quot; ]; then
+    initdb -D &quot;$FLOX_ENV_CACHE/pgdata&quot; --no-locale --encoding=UTF8
+  fi
+
+  venv=&quot;$FLOX_ENV_CACHE/venv&quot;
+  if [ ! -d &quot;$venv&quot; ]; then
+    uv venv &quot;$venv&quot; --python python3
+  fi
+  if [ -f &quot;$venv/bin/activate&quot; ]; then
+    source &quot;$venv/bin/activate&quot;
+  fi
+
+  if [ -f requirements.txt ] &amp;&amp; [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install --python &quot;$venv/bin/python&quot; -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  serve() { uvicorn app.main:app --reload --host 0.0.0.0 --port 8000; }
+  migrate() { alembic upgrade head; }
+&quot;&quot;&quot;
+
+[services]
+postgres.command = &quot;postgres -D $FLOX_ENV_CACHE/pgdata -k $FLOX_ENV_CACHE&quot;
+redis.command = &quot;redis-server --port 6379 --daemonize no&quot;
+
+[options]
+systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;, &quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+連同服務一起啟用：`flox activate --start-services`
+
+## Environment Sharing
+
+Flox 環境跟 git 是原生搭配的。把 `.flox/` 目錄 commit 進去，每個協作者拿到的環境都一樣：
+
+```bash
+git add .flox/
+git commit -m &quot;Add Flox environment&quot;
+# 隊友只要執行：
+git clone &lt;repo&gt; &amp;&amp; cd &lt;repo&gt; &amp;&amp; flox activate
+```
+
+要在多個專案之間共用基底環境，就 push 到 FloxHub：
+
+```bash
+flox push                         # 把環境 push 到 FloxHub
+flox activate -r owner/env-name   # 在任何地方啟用遠端環境
+```
+
+用 `[include]` 組合環境：
+
+```toml
+[include]
+base.floxhub = &quot;myorg/python-base&quot;
+
+[install]
+# 在 base 之上加專案專屬的東西
+fastapi.pkg-path = &quot;python311Packages.fastapi&quot;
+```
+
+## AI-Assisted and Vibe Coding
+
+Flox 很適合 AI 輔助開發和 vibe coding 的工作流程。AI agent 需要目前環境裡沒有的工具（編譯器、資料庫、linter、CLI 小工具）時，可以直接加進專案的 Flox manifest，不用 sudo、不會污染系統套件，也不會撞到 sandbox 限制。
+
+**為什麼這對 agent 很重要：**
+- **不需要 sudo**：`flox install` 完全在 user space 運作，agent 不用提權就能加套件
+- **限定在專案範圍**：套件只裝進專案環境，不是全域，所以不同專案可以用不同版本而不衝突
+- **對 sandbox 友善**：在 sandbox 或受限環境裡跑的 agent，照樣能透過 Flox 裝到需要的工具
+- **可還原**：每個改動都記錄在 `manifest.toml`，不要的套件可以乾淨移除，不留系統殘渣
+- **可重現**：agent 設好的環境會 commit 進 git，每個人拿到的都一樣
+
+**Agent 工作流程模式：**
+
+```bash
+# Agent 發現自己需要某個工具（例如處理 JSON 要用 jq）
+flox search jq                    # 確認套件存在
+flox install jq                   # 裝進專案環境
+
+# 或是想要更多控制，就直接編輯 manifest
+tmp_manifest=&quot;$(mktemp)&quot;
+flox list -c &gt; &quot;$tmp_manifest&quot;
+# 把套件加進 [install] 區段，然後套用
+flox edit -f &quot;$tmp_manifest&quot;
+
+# 在有該工具的環境下跑指令
+flox activate -- jq &#x27;.results[]&#x27; data.json
+```
+
+所以只要是 Claude Code 或其他 AI agent 需要臨時準備專案工具的工作流程，Flox 都很合適。
+
+## Debugging
+
+```bash
+flox list -c                      # 顯示原始 manifest
+flox activate -- which python     # 檢查解析到哪個 binary
+flox activate -- env | grep FLOX  # 看 Flox 的環境變數
+flox search &lt;package&gt; --all       # 範圍更廣的套件搜尋（區分大小寫）
+```
+
+**常見問題：**
+- **找不到套件：** 搜尋區分大小寫，試試 `flox search --all`
+- **套件之間檔案衝突：** 在該贏的那個套件上加 `priority`
+- **Hook 失敗：** 用 `return` 不要用 `exit`；用 `${FLOX_ENV_CACHE:-}` 做保護
+- **依賴過期：** 刪掉 `$FLOX_ENV_CACHE/.deps_installed` 這個標記檔
+
+## Related Skills
+
+下面這些 skill 屬於 [Flox Claude Code plugin](https://github.com/flox/flox-skills)，整合得更深：
+
+- **flox**：環境、服務與資料庫、build 與打包、容器、FloxHub 發佈、環境組合與分享，以及 CUDA/GPU 開發
+- **floxify**：偵測既有 repo 的 runtime、服務和 build 工具，把它導入 Flox
+- **flox-debug**：當套件解析不到預期版本時，診斷 catalog 解析問題
+
+更多資訊與安裝請見 [flox.dev/docs](https://flox.dev/docs/install-flox/install/)</pre></section><section><h2>英文原文</h2><pre>---
+name: flox-environments
+description: &quot;Create reproducible, cross-platform (macOS/Linux) development environments with Flox, a declarative Nix-based environment manager. Use when setting up project toolchains, installing system-level dependencies (compilers, databases, native libs), pinning exact package versions for a team, onboarding developers, running local services (PostgreSQL, Redis, Kafka), or solving &#x27;works on my machine&#x27; problems — including agent/vibe-coding setups that need project-scoped tools without sudo. Also use when the user mentions .flox/, manifest.toml, flox activate, or FloxHub.&quot;
+metadata:
+  origin: Flox
+---
+
+# Flox Environments
+
+Flox creates reproducible development environments defined in a single TOML manifest. Every developer on the team gets identical packages, tools, and configuration — across macOS and Linux — without containers or VMs. Built on Nix with access to over 150,000 packages.
+
+## When to Activate
+
+Use this skill when the user has an environment management problem — even if they haven&#x27;t mentioned Flox. Flox is the right tool when:
+
+- The project needs **system-level packages** (compilers, databases, CLI tools) alongside language-specific dependencies
+- **Reproducibility matters** — the setup should work identically on a teammate&#x27;s machine, in CI, or on a fresh laptop
+- The user needs **multiple tools to coexist** — e.g., Python 3.11 + PostgreSQL 16 + Redis + Node.js in one environment
+- **Cross-platform support** is needed (macOS and Linux from the same config)
+- **AI agents need to install tools** — Flox lets agents add packages to a project-scoped environment without sudo, system pollution, or sandbox restrictions
+
+If the user just needs a single language runtime with no system dependencies, standard tooling (nvm, pyenv, rustup alone) may suffice. If they need full OS-level isolation, containers might be more appropriate. Flox sits in the sweet spot: declarative, reproducible environments without container overhead.
+
+**Prerequisite:** Flox must be installed first — see [flox.dev/docs](https://flox.dev/docs/install-flox/install/) for macOS, Linux, and Docker.
+
+## Core Concepts
+
+Flox environments are defined in `.flox/env/manifest.toml` and activated with `flox activate`. The manifest declares packages, environment variables, setup hooks, and shell configuration — everything needed to reproduce the environment anywhere.
+
+**Key paths:**
+- `.flox/env/manifest.toml` — Environment definition (commit this)
+- `$FLOX_ENV` — Runtime path to installed packages (like `/usr` — contains `bin/`, `lib/`, `include/`)
+- `$FLOX_ENV_CACHE` — Persistent local storage for caches, venvs, data (survives rebuilds)
+- `$FLOX_ENV_PROJECT` — Project root directory (where `.flox/` lives)
+
+## Essential Commands
+
+```bash
+flox init                       # Create new environment
+flox search &lt;package&gt; [--all]   # Search for packages
+flox show &lt;package&gt;             # Show available versions
+flox install &lt;package&gt;          # Add a package
+flox list                       # List installed packages
+flox activate                   # Enter environment
+flox activate -- &lt;cmd&gt;          # Run a command in the environment without a subshell
+flox edit                       # Edit manifest interactively
+```
+
+## Manifest Structure
+
+```toml
+# .flox/env/manifest.toml
+
+[install]
+# Packages to install — the core of the environment
+ripgrep.pkg-path = &quot;ripgrep&quot;
+jq.pkg-path = &quot;jq&quot;
+
+[vars]
+# Static environment variables
+DATABASE_URL = &quot;postgres://localhost:5432/myapp&quot;
+
+[hook]
+# Non-interactive setup scripts (run every activation)
+on-activate = &quot;&quot;&quot;
+  echo &quot;Environment ready&quot;
+&quot;&quot;&quot;
+
+[profile]
+# Shell functions and aliases (available in interactive shell)
+common = &quot;&quot;&quot;
+  alias dev=&quot;npm run dev&quot;
+&quot;&quot;&quot;
+
+[options]
+# Supported platforms
+systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;, &quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+## Package Installation Patterns
+
+### Basic Installation
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+python.pkg-path = &quot;python311&quot;
+rustup.pkg-path = &quot;rustup&quot;
+```
+
+### Version Pinning
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+nodejs.version = &quot;^20.0&quot;          # Semver range: latest 20.x
+
+postgres.pkg-path = &quot;postgresql&quot;
+postgres.version = &quot;16.2&quot;         # Exact version
+```
+
+### Platform-Specific Packages
+
+```toml
+[install]
+# Linux-only tools
+valgrind.pkg-path = &quot;valgrind&quot;
+valgrind.systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;]
+
+# macOS frameworks
+Security.pkg-path = &quot;darwin.apple_sdk.frameworks.Security&quot;
+Security.systems = [&quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+
+# GNU tools on macOS (where BSD defaults differ)
+coreutils.pkg-path = &quot;coreutils&quot;
+coreutils.systems = [&quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+### Resolving Package Conflicts
+
+When two packages install the same binary, use `priority` (lower number wins):
+
+```toml
+[install]
+gcc.pkg-path = &quot;gcc12&quot;
+gcc.priority = 3
+
+clang.pkg-path = &quot;clang_18&quot;
+clang.priority = 5               # gcc wins file conflicts
+```
+
+Use `pkg-group` to group packages that should resolve versions together:
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+python.pkg-group = &quot;python-stack&quot;
+
+pip.pkg-path = &quot;python311Packages.pip&quot;
+pip.pkg-group = &quot;python-stack&quot;    # Resolves together with python
+```
+
+## Language-Specific Recipes
+
+### Python with uv
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+uv.pkg-path = &quot;uv&quot;
+
+[vars]
+UV_CACHE_DIR = &quot;$FLOX_ENV_CACHE/uv-cache&quot;
+PIP_CACHE_DIR = &quot;$FLOX_ENV_CACHE/pip-cache&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  venv=&quot;$FLOX_ENV_CACHE/venv&quot;
+  if [ ! -d &quot;$venv&quot; ]; then
+    uv venv &quot;$venv&quot; --python python3
+  fi
+  if [ -f &quot;$venv/bin/activate&quot; ]; then
+    source &quot;$venv/bin/activate&quot;
+  fi
+
+  if [ -f requirements.txt ] &amp;&amp; [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install --python &quot;$venv/bin/python&quot; -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+```
+
+### Node.js
+
+```toml
+[install]
+nodejs.pkg-path = &quot;nodejs&quot;
+nodejs.version = &quot;^20.0&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ -f package.json ] &amp;&amp; [ ! -d node_modules ]; then
+    npm install --silent
+  fi
+&quot;&quot;&quot;
+```
+
+### Rust
+
+```toml
+[install]
+rustup.pkg-path = &quot;rustup&quot;
+pkg-config.pkg-path = &quot;pkg-config&quot;
+openssl.pkg-path = &quot;openssl&quot;
+
+[vars]
+RUSTUP_HOME = &quot;$FLOX_ENV_CACHE/rustup&quot;
+CARGO_HOME = &quot;$FLOX_ENV_CACHE/cargo&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  export PATH=&quot;$CARGO_HOME/bin:$PATH&quot;
+&quot;&quot;&quot;
+```
+
+### Go
+
+```toml
+[install]
+go.pkg-path = &quot;go&quot;
+gopls.pkg-path = &quot;gopls&quot;
+delve.pkg-path = &quot;delve&quot;
+
+[vars]
+GOPATH = &quot;$FLOX_ENV_CACHE/go&quot;
+GOBIN = &quot;$FLOX_ENV_CACHE/go/bin&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  export PATH=&quot;$GOBIN:$PATH&quot;
+&quot;&quot;&quot;
+```
+
+### C/C++
+
+```toml
+[install]
+gcc.pkg-path = &quot;gcc13&quot;
+gcc.pkg-group = &quot;compilers&quot;
+
+# IMPORTANT: gcc alone doesn&#x27;t expose libstdc++ headers — you need gcc-unwrapped
+gcc-unwrapped.pkg-path = &quot;gcc-unwrapped&quot;
+gcc-unwrapped.pkg-group = &quot;libraries&quot;
+
+cmake.pkg-path = &quot;cmake&quot;
+cmake.pkg-group = &quot;build&quot;
+
+gnumake.pkg-path = &quot;gnumake&quot;
+gnumake.pkg-group = &quot;build&quot;
+
+gdb.pkg-path = &quot;gdb&quot;
+gdb.systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;]
+```
+
+## Hooks and Profile
+
+### Hooks — Non-Interactive Setup
+
+Hooks run on every activation. Keep them fast and idempotent. Rule of thumb: **if it should happen automatically, put it in `[hook]`; if the user should be able to type it, put it in `[profile]`.**
+
+```toml
+[hook]
+on-activate = &quot;&quot;&quot;
+  setup_database() {
+    if [ ! -d &quot;$FLOX_ENV_CACHE/pgdata&quot; ]; then
+      initdb -D &quot;$FLOX_ENV_CACHE/pgdata&quot; --no-locale --encoding=UTF8
+    fi
+  }
+  setup_database
+&quot;&quot;&quot;
+```
+
+### Profile — Interactive Shell Configuration
+
+Profile code is available in the user&#x27;s shell session.
+
+```toml
+[profile]
+common = &quot;&quot;&quot;
+  dev() { npm run dev; }
+  test() { npm run test -- &quot;$@&quot;; }
+&quot;&quot;&quot;
+```
+
+## Anti-Patterns
+
+### Absolute Paths
+
+```toml
+# BAD — breaks on other machines
+[vars]
+PROJECT_DIR = &quot;/home/alice/projects/myapp&quot;
+
+# GOOD — use Flox environment variables
+[vars]
+PROJECT_DIR = &quot;$FLOX_ENV_PROJECT&quot;
+```
+
+### Using exit in Hooks
+
+```toml
+# BAD — kills the shell
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f config.json ]; then
+    echo &quot;Missing config&quot;
+    exit 1
+  fi
+&quot;&quot;&quot;
+
+# GOOD — return from hook, don&#x27;t exit
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f config.json ]; then
+    echo &quot;Missing config — run setup first&quot;
+    return 1
+  fi
+&quot;&quot;&quot;
+```
+
+### Storing Secrets in Manifest
+
+```toml
+# BAD — manifest is committed to git
+[vars]
+API_KEY = &quot;&lt;set-at-runtime&gt;&quot;
+
+# GOOD — reference external config or pass at runtime
+# Use: API_KEY=&quot;&lt;your-api-key&gt;&quot; flox activate
+[vars]
+API_KEY = &quot;${API_KEY:-}&quot;
+```
+
+### Slow Hooks Without Idempotency Guards
+
+```toml
+# BAD — reinstalls every activation
+[hook]
+on-activate = &quot;&quot;&quot;
+  pip install -r requirements.txt
+&quot;&quot;&quot;
+
+# GOOD — skip if already installed
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+```
+
+### Putting User Commands in Hooks
+
+```toml
+# BAD — hook functions aren&#x27;t available in the interactive shell
+[hook]
+on-activate = &quot;&quot;&quot;
+  deploy() { kubectl apply -f k8s/; }
+&quot;&quot;&quot;
+
+# GOOD — use [profile] for user-invokable functions
+[profile]
+common = &quot;&quot;&quot;
+  deploy() { kubectl apply -f k8s/; }
+&quot;&quot;&quot;
+```
+
+## Full-Stack Example
+
+A complete environment for a Python API with PostgreSQL:
+
+```toml
+[install]
+python.pkg-path = &quot;python311&quot;
+uv.pkg-path = &quot;uv&quot;
+postgresql.pkg-path = &quot;postgresql_16&quot;
+redis.pkg-path = &quot;redis&quot;
+jq.pkg-path = &quot;jq&quot;
+curl.pkg-path = &quot;curl&quot;
+
+[vars]
+UV_CACHE_DIR = &quot;$FLOX_ENV_CACHE/uv-cache&quot;
+DATABASE_URL = &quot;postgres://localhost:5432/myapp&quot;
+REDIS_URL = &quot;redis://localhost:6379&quot;
+
+[hook]
+on-activate = &quot;&quot;&quot;
+  if [ ! -d &quot;$FLOX_ENV_CACHE/pgdata&quot; ]; then
+    initdb -D &quot;$FLOX_ENV_CACHE/pgdata&quot; --no-locale --encoding=UTF8
+  fi
+
+  venv=&quot;$FLOX_ENV_CACHE/venv&quot;
+  if [ ! -d &quot;$venv&quot; ]; then
+    uv venv &quot;$venv&quot; --python python3
+  fi
+  if [ -f &quot;$venv/bin/activate&quot; ]; then
+    source &quot;$venv/bin/activate&quot;
+  fi
+
+  if [ -f requirements.txt ] &amp;&amp; [ ! -f &quot;$FLOX_ENV_CACHE/.deps_installed&quot; ]; then
+    uv pip install --python &quot;$venv/bin/python&quot; -r requirements.txt --quiet
+    touch &quot;$FLOX_ENV_CACHE/.deps_installed&quot;
+  fi
+&quot;&quot;&quot;
+
+[profile]
+common = &quot;&quot;&quot;
+  serve() { uvicorn app.main:app --reload --host 0.0.0.0 --port 8000; }
+  migrate() { alembic upgrade head; }
+&quot;&quot;&quot;
+
+[services]
+postgres.command = &quot;postgres -D $FLOX_ENV_CACHE/pgdata -k $FLOX_ENV_CACHE&quot;
+redis.command = &quot;redis-server --port 6379 --daemonize no&quot;
+
+[options]
+systems = [&quot;x86_64-linux&quot;, &quot;aarch64-linux&quot;, &quot;x86_64-darwin&quot;, &quot;aarch64-darwin&quot;]
+```
+
+Activate with services: `flox activate --start-services`
+
+## Environment Sharing
+
+Flox environments are git-native. Commit the `.flox/` directory and every collaborator gets the same environment:
+
+```bash
+git add .flox/
+git commit -m &quot;Add Flox environment&quot;
+# Teammates just run:
+git clone &lt;repo&gt; &amp;&amp; cd &lt;repo&gt; &amp;&amp; flox activate
+```
+
+For reusable base environments across projects, push to FloxHub:
+
+```bash
+flox push                         # Push environment to FloxHub
+flox activate -r owner/env-name   # Activate remote environment anywhere
+```
+
+Compose environments with `[include]`:
+
+```toml
+[include]
+base.floxhub = &quot;myorg/python-base&quot;
+
+[install]
+# Project-specific additions on top of base
+fastapi.pkg-path = &quot;python311Packages.fastapi&quot;
+```
+
+## AI-Assisted and Vibe Coding
+
+Flox is ideal for AI-assisted development and vibe coding workflows. When an AI agent needs a tool that isn&#x27;t available in the current environment — a compiler, a database, a linter, a CLI utility — it can add it to the project&#x27;s Flox manifest without requiring sudo access, polluting system packages, or hitting sandbox restrictions.
+
+**Why this matters for agents:**
+- **No sudo required** — `flox install` works entirely in user space, so agents can add packages without elevated permissions
+- **Project-scoped** — packages are installed into the project environment only, not globally, so different projects can have different versions without conflict
+- **Sandbox-friendly** — agents running in sandboxed or restricted environments can still install the tools they need through Flox
+- **Reversible** — every change is captured in `manifest.toml`, so unwanted packages can be removed cleanly with no system residue
+- **Reproducible** — when an agent sets up an environment, that exact setup is committed to git and works for everyone
+
+**Agent workflow pattern:**
+
+```bash
+# Agent discovers it needs a tool (e.g., jq for JSON processing)
+flox search jq                    # Verify the package exists
+flox install jq                   # Install into project environment
+
+# Or for more control, edit the manifest directly
+tmp_manifest=&quot;$(mktemp)&quot;
+flox list -c &gt; &quot;$tmp_manifest&quot;
+# Add the package to [install] section, then apply
+flox edit -f &quot;$tmp_manifest&quot;
+
+# Run a command with the tool available
+flox activate -- jq &#x27;.results[]&#x27; data.json
+```
+
+This makes Flox a natural fit for any workflow where Claude Code or other AI agents need to bootstrap project tooling on the fly.
+
+## Debugging
+
+```bash
+flox list -c                      # Show raw manifest
+flox activate -- which python     # Check which binary resolves
+flox activate -- env | grep FLOX  # See Flox environment variables
+flox search &lt;package&gt; --all       # Broader package search (case-sensitive)
+```
+
+**Common issues:**
+- **Package not found:** Search is case-sensitive — try `flox search --all`
+- **File conflicts between packages:** Add `priority` to the package that should win
+- **Hook failures:** Use `return` not `exit`; guard with `${FLOX_ENV_CACHE:-}`
+- **Stale dependencies:** Delete the `$FLOX_ENV_CACHE/.deps_installed` flag file
+
+## Related Skills
+
+The following skills are available as part of the [Flox Claude Code plugin](https://github.com/flox/flox-skills) for deeper integration:
+
+- **flox** — Environments, services and databases, builds and packaging, containers, FloxHub publishing, environment composition and sharing, and CUDA/GPU development
+- **floxify** — Onboard an existing repo to Flox by detecting its runtimes, services, and build tools
+- **flox-debug** — Diagnose catalog resolution problems when a package won&#x27;t resolve to the expected version
+
+Learn more and install at [flox.dev/docs](https://flox.dev/docs/install-flox/install/)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

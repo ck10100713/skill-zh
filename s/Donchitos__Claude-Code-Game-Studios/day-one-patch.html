@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>day-one-patch｜Skill 寫法圖鑑</title>
+<meta name="description" content="規劃上線首日 patch：限縮範圍、QA 把關、先備好 rollback">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>day-one-patch</h1>
+<p class="meta">Donchitos ｜ 部署與發布 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/day-one-patch/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">規劃上線首日 patch：限縮範圍、QA 把關、先備好 rollback</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: day-one-patch
+description: &quot;首日上線 patch：針對 gold master 之後發現的已知問題做集中修正。含 QA gate 和 rollback 的迷你 sprint。&quot;
+argument-hint: &quot;[scope: known-bugs | cert-feedback | all]&quot;
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion
+model: sonnet
+---
+
+# Day-One Patch
+
+每款上市的遊戲都有首日 patch。在上線日之前先規劃好，才不會
+亂成一團。這個 skill 把 patch 的範圍限縮在安全又必要的東西，
+用輕量的 QA 把關，並確保在任何東西出貨之前就有 rollback 計畫。
+它是一個迷你 sprint，不是 hotfix，也不是完整的 sprint。
+
+**何時執行：**
+- gold master build 鎖定之後（cert 通過，或 launch candidate 已打 tag）
+- 有已知 bug，但風險太高、不適合在 gold master 處理
+- cert 回饋要求送件後做小幅修正
+- 發行 gate 通過之後，上市前的 playtest 又浮出必修的問題
+
+**首日 patch 的範圍規則：**
+- 只放修起來安全的 P1/P2 bug
+- 不加新功能，只修 bug
+- 不重構，只做最小可行的改動
+- 任何需要超過 4 小時開發時間的修正，都歸到 patch 1.1，不是首日
+
+**輸出：** `production/releases/day-one-patch-[version].md`
+
+---
+
+## Phase 1: 載入發行 Context
+
+讀：
+- `project.yaml` 的 `project.stage`（退回 `production/stage.txt`）：確認專案在 Release 階段
+- `production/gate-checks/` 裡最新的檔案：讀發行 gate 的 verdict
+- `production/qa/bugs/*.md`：載入所有 Status 是 Open 或 Fixed — Pending Verification 的 bug
+- `production/sprints/` 最新的：了解出貨了什麼
+- 最新的 `production/security/security-audit-*.md`：檢查有沒有任何未解決的安全項目
+
+如果解析出來的階段（project.yaml → stage.txt）不是 `Release` 或 `Polish`：
+&gt; &quot;Day-one patch prep is for Release-stage projects. Current stage: [stage]. This skill is not appropriate until you are approaching launch.&quot;
+
+**檢查前提，不要假設。** 這整個 skill 建立在「有一份已經通過發行 gate 的
+gold master」之上，這個前提正是它可以用輕量 QA、
+而不是完整 QA 的理由。所以要驗證，不要從階段的值去推論：
+
+- **`production/gate-checks/` 裡沒有檔案**，或沒有任何一份記錄發行 gate 的
+  verdict：回報 `Release gate: NOT ASSESSED — no gate-check record found`。
+  不要默默繼續。要明白說出下面縮減的 QA 範圍，是靠一個
+  沒人找得到的 gate 撐腰的，並問是要先跑 `/gate-check`，還是
+  改走完整的 QA 繼續。
+- **最近一份紀錄是 FAIL、CONCERNS 或 NOT ASSESSED**：點名並停下。
+  在一個從沒通過 gate 的 build 上做首日 patch，就不是首日 patch；
+  那是遲到的發行 gate，而且範圍框在錯的變更上。
+- 光靠 `project.stage: Release` **不能**證明這件事。階段只是
+  對專案在哪裡的一個宣稱；gate 紀錄才是它配得上那個位置的證據。
+
+---
+
+## Phase 2: 框定 Patch 範圍
+
+### Step 2a：分類哪些開著的 bug 要放進 patch
+
+每個開著的 bug 都要評估：
+
+| Criterion | Include in day-one? |
+|-----------|-------------------|
+| S1 or S2 severity | Yes — must include if safe to fix |
+| P1 priority | Yes |
+| Fix estimated &lt; 4 hours | Yes |
+| Fix requires architecture change | No — defer to 1.1 |
+| Fix introduces new code paths | No — too risky |
+| Fix is data/config only (no code change) | Yes — very low risk |
+| Cert feedback requirement | Yes — required for platform approval |
+| S3/S4 severity | Only if trivial config fix; otherwise defer |
+
+### Step 2b：把 patch 範圍呈現給使用者
+
+用 `AskUserQuestion`：
+- Prompt: &quot;Based on open bugs and cert feedback, here is the proposed day-one patch scope. Does this look right?&quot;
+- 顯示：納入的 bug 表（ID、嚴重度、描述、預估工時）
+- 顯示：延後的 bug 表（ID、嚴重度、延後的原因）
+- 選項：`[A] Approve this scope` / `[B] Adjust — I want to add or remove items` / `[C] No day-one patch needed`
+
+選 [C]：輸出 &quot;No day-one patch required. Proceed to `/launch-checklist`.&quot; 然後停。
+
+### Step 2c：檢查總範圍
+
+加總預估工時。如果總計超過 1 天的工作量：
+&gt; &quot;⚠️ Patch scope is [N hours] — this exceeds a safe day-one window. Consider deferring lower-priority items to patch 1.1. A bloated day-one patch introduces more risk than it removes.&quot;
+
+用 `AskUserQuestion` 確認是繼續還是縮小範圍。
+
+---
+
+## Phase 3: Rollback 計畫
+
+在寫任何程式碼之前，先定義 rollback 程序。這點沒得商量。
+
+用 `Agent` spawn `release-manager`。請他們產出一份 rollback 計畫，涵蓋：
+- 在每個目標平台上怎麼還原成 gold master build
+- 平台特有的 rollback 限制（有些平台沒辦法回退 cert 過的 build）
+- 誰負責觸發 rollback
+- 如果發生 rollback，需要哪些玩家溝通
+
+呈現 rollback 計畫。問：&quot;May I write this rollback plan to `production/releases/rollback-plan-[version].md`?&quot;
+
+rollback 計畫沒寫好之前，不准進 Phase 4。
+
+---
+
+## Phase 4: 實作修正
+
+核准範圍內的每個程式碼修正，都 spawn 一個聚焦的實作迴圈：
+
+1. 用 `Agent` spawn `lead-programmer`，給它：
+   - bug 報告（精確的重現步驟，如果知道的話還有根本原因）
+   - 限制：只做最小可行的修正，不要順手清理
+   - 受影響的檔案（來自 bug 報告的 Technical Context 章節）
+
+   它對每個 bug 回傳最小修正，以及會動到的檔案，
+   不寫任何東西。
+
+2. 對整組問一次：&quot;May I apply these fixes? [BUG-ID → files, one
+   line each]&quot;。沒有這個核准，不准改任何程式碼。
+
+3. 回答 yes 的話，把每個核准的修正交回給 `lead-programmer`（帶著它的計畫發一個新的 `Agent` 呼叫）去實作，
+   並用 `project.yaml` 的 `commands.test` 跑有針對性的測試，
+   runner 允許的話縮小到受影響的 suite，絕對不要憑記憶寫 runner 指令。如果 `commands.test` 沒設定，就說出來，
+   並替那個 bug 記錄 `Tests: NOT RUN — commands.test unset`。
+
+4. 用 `Agent` spawn `qa-tester` 來驗證：修正之後 bug 還會重現嗎？
+
+只改 config/data 的修正：直接改（不需要 programmer agent）。先問，要點名檔案和變更：&quot;May I edit `[config file]` — `[key]`: [old value] → [new value]?&quot; 確認值有變，並重跑任何相關的 smoke test。
+
+---
+
+## Phase 5: Patch QA Gate
+
+這是輕量的 QA，不是完整的 `/team-qa`。patch 在發行 gate 時已經通過 QA；我們只是重新驗證有改動的地方。
+
+用 `Agent` spawn `qa-lead`，給它：
+- 所有改動檔案的清單
+- 所有修好的 bug 清單（附 Phase 4 的驗證狀態）
+- 受影響系統的 smoke check 範圍
+
+請 qa-lead 判斷：**有針對性的 smoke check 就夠了，還是有任何修正動到需要更廣泛 regression 的系統？**
+
+執行需要的 QA 範圍：
+- **有針對性的 smoke check**：跑 `/smoke-check`（它不接受系統參數）
+- **更廣泛的 regression**：用 `project.yaml` 的 `commands.test`，跑引擎測試根目錄裡受影響系統的測試（Godot 是 `tests/unit/` 和 `tests/integration/`、Unity 是 `Assets/Tests/`、Unreal 是 `Source/&lt;Module&gt;/Private/Tests/`，見 `.claude/docs/directory-structure.md`），runner 允許的話縮小到受影響的 suite，絕對不要憑記憶寫 runner 指令。如果 `commands.test` 沒設定，更廣泛的 regression 就是 NOT ASSESSED；要說出來。
+
+QA verdict 必須是 PASS 或 PASS WITH WARNINGS 才能繼續。如果是 FAIL：把失敗的那個修正排出首日 patch，延到 1.1。
+
+**如果 QA verdict 是 `NOT ASSESSED`，那不算通過。** `/smoke-check` 在測試套件從沒跑過時
+會回傳它：沒有 build、沒有 runner，或是沒人確認過的結果。
+不要在它之上繼續，也不要把它重新解讀成 PASS WITH WARNINGS：warnings
+的意思是有人看過、看到一些小問題，而這個的意思是沒人看過。
+要嘛取得結果（verdict 會指出什麼能讓它可以跑），要嘛把
+修正延到 1.1。首日 patch 會送到每一個首日買遊戲的玩家手上，
+對沒驗證過的改動來說，那是最糟的受眾。
+
+---
+
+## Phase 6: 產生 Patch 紀錄
+
+```markdown
+# Day-One Patch: [Game Name] v[version]
+
+**Date prepared**: [date]
+**Target release**: [launch date or &quot;day of launch&quot;]
+**Base build**: [gold master tag or commit]
+**Patch build**: [patch tag or commit]
+
+---
+
+## Patch Notes (Internal)
+
+### Bugs Fixed
+| BUG-ID | Severity | Description | Fix summary |
+|--------|----------|-------------|-------------|
+| BUG-NNNN | S[1-4] | [description] | [one-line fix] |
+
+### Deferred to 1.1
+| BUG-ID | Severity | Description | Reason deferred |
+|--------|----------|-------------|-----------------|
+| BUG-NNNN | S[1-4] | [description] | [reason] |
+
+---
+
+## QA Sign-Off
+
+**QA scope**: [Targeted smoke / Broader regression]
+**Verdict**: [PASS / PASS WITH WARNINGS / NOT ASSESSED]
+**QA lead**: qa-lead agent
+**Date**: [date]
+**Warnings (if any)**: [list or &quot;None&quot;]
+**Not assessed (if any)**: [what could not be checked, and why — or &quot;None&quot;]
+
+---
+
+## Rollback Plan
+
+See: `production/releases/rollback-plan-[version].md`
+
+**Trigger condition**: If [N] or more S1 bugs are reported within [X] hours of launch, execute rollback.
+**Rollback owner**: [user / producer]
+
+---
+
+## Approvals Required Before Deploy
+
+- [ ] lead-programmer: all fixes reviewed
+- [ ] qa-lead: QA gate PASS confirmed
+- [ ] producer: deployment timing approved
+- [ ] release-manager: platform submission confirmed
+
+---
+
+## Player-Facing Patch Notes
+
+[Draft for community-manager to review before publishing]
+
+[list player-facing changes in plain language]
+```
+
+問：&quot;May I write this patch record to `production/releases/day-one-patch-[version].md`?&quot;
+
+---
+
+## Phase 7: 下一步
+
+patch 紀錄寫好之後：
+
+1. 跑 `/patch-notes`，產生 patch notes 的玩家版
+2. patch 上線之後，每個修好的 bug 都跑 `/bug-report verify [BUG-ID]`
+3. 每個驗證過的修正都跑 `/bug-report close [BUG-ID]`
+4. 上線後 48–72 小時，用 `/retrospective [milestone-name]` 排一次上線後檢討，針對 `production/milestones/` 裡的上線 milestone
+
+**如果 patch 之後仍有任何 S1 bug 還開著：**
+&gt; &quot;⚠️ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions — if they occur at scale, rollback may be preferable to a follow-up patch.&quot;
+
+用 `AskUserQuestion`：
+- Prompt: &quot;Day-one patch complete. What&#x27;s next?&quot;
+- 選項：
+  - `[A] Run /patch-notes — generate player-facing patch notes`
+  - `[B] Run /bug-report to log any issues found post-deploy`
+  - `[C] Stop here`
+
+---
+
+## 協作協定
+
+- **守住範圍就是一切**：抗拒 scope creep；每多加一項，風險就多一分
+- **永遠先有 rollback 計畫**：沒有 rollback 計畫的 patch 就是不負責任
+- **延後不等於遺忘**：每個延後的 bug 都列在紀錄的
+  &quot;Deferred to 1.1&quot; 表裡；之後跑 `/bug-triage`，把它們排進 1.1 sprint
+  （如果專案沒有 sprint 計畫，像預設的 minimal workflow，就排進 brief 的 build order）
+- **玩家溝通是 patch 的一部分**：`/patch-notes` 是必要的輸出，不是選用</pre></section><section><h2>英文原文</h2><pre>---
+name: day-one-patch
+description: &quot;Day-one launch patch — focused fix for known issues found after gold master. Mini-sprint with QA gate and rollback.&quot;
+argument-hint: &quot;[scope: known-bugs | cert-feedback | all]&quot;
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion
+model: sonnet
+---
+
+# Day-One Patch
+
+Every shipped game has a day-one patch. Planning it before launch day prevents
+chaos. This skill scopes the patch to only what is safe and necessary, gates it
+through a lightweight QA pass, and ensures a rollback plan exists before anything
+ships. It is a mini-sprint — not a hotfix, not a full sprint.
+
+**When to run:**
+- After the gold master build is locked (cert approved or launch candidate tagged)
+- When known bugs exist that are too risky to address in the gold master
+- When cert feedback requires minor fixes post-submission
+- When a pre-launch playtest surfaces must-fix issues after the release gate passed
+
+**Day-one patch scope rules:**
+- Only P1/P2 bugs that are SAFE to fix quickly
+- No new features — this is fix-only
+- No refactoring — minimum viable change
+- Any fix that requires more than 4 hours of dev time belongs in patch 1.1, not day-one
+
+**Output:** `production/releases/day-one-patch-[version].md`
+
+---
+
+## Phase 1: Load Release Context
+
+Read:
+- `project.stage` in `project.yaml` (fallback `production/stage.txt`) — confirm project is in Release stage
+- The most recent file in `production/gate-checks/` — read the release gate verdict
+- `production/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
+- `production/sprints/` most recent — understand what shipped
+- `production/security/security-audit-*.md` most recent — check for any open security items
+
+If the resolved stage (project.yaml → stage.txt) is not `Release` or `Polish`:
+&gt; &quot;Day-one patch prep is for Release-stage projects. Current stage: [stage]. This skill is not appropriate until you are approaching launch.&quot;
+
+**Check the premise, do not assume it.** This whole skill rests on there being a
+gold master that already passed a release gate — that premise is what justifies
+its lightweight QA pass instead of a full one. So verify it rather than inferring
+it from the stage value:
+
+- **No file in `production/gate-checks/`**, or none recording a release-gate
+  verdict: report `Release gate: NOT ASSESSED — no gate-check record found`. Do
+  not proceed silently. Say plainly that the reduced QA scope below is justified
+  by a gate nobody can find, and ask whether to run `/gate-check` first or
+  proceed with a full QA pass instead.
+- **The most recent record is FAIL, CONCERNS or NOT ASSESSED**: name it and stop.
+  A day-one patch on top of a build that never passed its gate is not a day-one
+  patch; it is the release gate, arriving late and scoped to the wrong changes.
+- `project.stage: Release` on its own does **not** establish this. The stage is a
+  claim about where the project is; the gate record is the evidence that it earned
+  the position.
+
+---
+
+## Phase 2: Scope the Patch
+
+### Step 2a — Classify open bugs for patch inclusion
+
+For each open bug, evaluate:
+
+| Criterion | Include in day-one? |
+|-----------|-------------------|
+| S1 or S2 severity | Yes — must include if safe to fix |
+| P1 priority | Yes |
+| Fix estimated &lt; 4 hours | Yes |
+| Fix requires architecture change | No — defer to 1.1 |
+| Fix introduces new code paths | No — too risky |
+| Fix is data/config only (no code change) | Yes — very low risk |
+| Cert feedback requirement | Yes — required for platform approval |
+| S3/S4 severity | Only if trivial config fix; otherwise defer |
+
+### Step 2b — Present patch scope to user
+
+Use `AskUserQuestion`:
+- Prompt: &quot;Based on open bugs and cert feedback, here is the proposed day-one patch scope. Does this look right?&quot;
+- Show: table of included bugs (ID, severity, description, estimated effort)
+- Show: table of deferred bugs (ID, severity, reason deferred)
+- Options: `[A] Approve this scope` / `[B] Adjust — I want to add or remove items` / `[C] No day-one patch needed`
+
+If [C]: output &quot;No day-one patch required. Proceed to `/launch-checklist`.&quot; Stop.
+
+### Step 2c — Check total scope
+
+Sum estimated effort. If total exceeds 1 day of work:
+&gt; &quot;⚠️ Patch scope is [N hours] — this exceeds a safe day-one window. Consider deferring lower-priority items to patch 1.1. A bloated day-one patch introduces more risk than it removes.&quot;
+
+Use `AskUserQuestion` to confirm proceeding or reduce scope.
+
+---
+
+## Phase 3: Rollback Plan
+
+Before any code is written, define the rollback procedure. This is non-negotiable.
+
+Spawn `release-manager` via `Agent`. Ask them to produce a rollback plan covering:
+- How to revert to the gold master build on each target platform
+- Platform-specific rollback constraints (some platforms cannot roll back cert builds)
+- Who is responsible for triggering the rollback
+- What player communication is required if a rollback occurs
+
+Present the rollback plan. Ask: &quot;May I write this rollback plan to `production/releases/rollback-plan-[version].md`?&quot;
+
+Do not proceed to Phase 4 until the rollback plan is written.
+
+---
+
+## Phase 4: Implement Fixes
+
+For each code fix in the approved scope, spawn a focused implementation loop:
+
+1. Spawn `lead-programmer` via `Agent` with:
+   - The bug report (exact reproduction steps and root cause if known)
+   - The constraint: minimum viable fix only, no cleanup
+   - The affected files (from bug report Technical Context section)
+
+   It returns, for each bug, the minimal fix and the files it would change —
+   writing nothing.
+
+2. Ask once, for the whole set: &quot;May I apply these fixes? [BUG-ID → files, one
+   line each]&quot;. No code changes before this approval.
+
+3. On yes, hand each approved fix back to `lead-programmer` (a new `Agent` call
+   carrying its plan) to implement it and run targeted tests with `commands.test`
+   from `project.yaml`, narrowed to the affected suite where the runner allows —
+   never a runner line written from memory. If `commands.test` is unset, say so
+   and record `Tests: NOT RUN — commands.test unset` for that bug.
+
+4. Spawn `qa-tester` via `Agent` to verify: does the bug reproduce after the fix?
+
+For config/data-only fixes: make the change directly (no programmer agent needed). First ask, naming the file and the change: &quot;May I edit `[config file]` — `[key]`: [old value] → [new value]?&quot; Confirm the value changed and re-run any relevant smoke test.
+
+---
+
+## Phase 5: Patch QA Gate
+
+This is a lightweight QA pass — not a full `/team-qa`. The patch is already QA-approved from the release gate; we are only re-verifying the changed areas.
+
+Spawn `qa-lead` via `Agent` with:
+- List of all changed files
+- List of bugs fixed (with verification status from Phase 4)
+- The smoke check scope for the affected systems
+
+Ask qa-lead to determine: **Is a targeted smoke check sufficient, or do any fixes touch systems that require a broader regression?**
+
+Run the required QA scope:
+- **Targeted smoke check** — run `/smoke-check` (it takes no system argument)
+- **Broader regression** — run the affected systems&#x27; tests in the engine&#x27;s test root (`tests/unit/` and `tests/integration/` Godot, `Assets/Tests/` Unity, `Source/&lt;Module&gt;/Private/Tests/` Unreal — `.claude/docs/directory-structure.md`) with `commands.test` from `project.yaml`, narrowed to the affected suites where the runner allows — never a runner line written from memory. If `commands.test` is unset, the broader regression is NOT ASSESSED; say so.
+
+QA verdict must be PASS or PASS WITH WARNINGS before proceeding. If FAIL: scope the failing fix out of the day-one patch and defer to 1.1.
+
+**If the QA verdict is `NOT ASSESSED`, that is not a pass.** `/smoke-check` returns
+it when the suite never ran — no build, no runner, or a result nobody confirmed.
+Do not proceed on it and do not re-read it as PASS WITH WARNINGS: the warnings
+value means somebody looked and saw something minor, and this means nobody looked.
+Either obtain the result (the verdict names what would make it runnable) or defer
+the fix to 1.1. A day-one patch ships to every player who buys the game on day
+one, which is the worst possible audience for an unverified change.
+
+---
+
+## Phase 6: Generate Patch Record
+
+```markdown
+# Day-One Patch: [Game Name] v[version]
+
+**Date prepared**: [date]
+**Target release**: [launch date or &quot;day of launch&quot;]
+**Base build**: [gold master tag or commit]
+**Patch build**: [patch tag or commit]
+
+---
+
+## Patch Notes (Internal)
+
+### Bugs Fixed
+| BUG-ID | Severity | Description | Fix summary |
+|--------|----------|-------------|-------------|
+| BUG-NNNN | S[1-4] | [description] | [one-line fix] |
+
+### Deferred to 1.1
+| BUG-ID | Severity | Description | Reason deferred |
+|--------|----------|-------------|-----------------|
+| BUG-NNNN | S[1-4] | [description] | [reason] |
+
+---
+
+## QA Sign-Off
+
+**QA scope**: [Targeted smoke / Broader regression]
+**Verdict**: [PASS / PASS WITH WARNINGS / NOT ASSESSED]
+**QA lead**: qa-lead agent
+**Date**: [date]
+**Warnings (if any)**: [list or &quot;None&quot;]
+**Not assessed (if any)**: [what could not be checked, and why — or &quot;None&quot;]
+
+---
+
+## Rollback Plan
+
+See: `production/releases/rollback-plan-[version].md`
+
+**Trigger condition**: If [N] or more S1 bugs are reported within [X] hours of launch, execute rollback.
+**Rollback owner**: [user / producer]
+
+---
+
+## Approvals Required Before Deploy
+
+- [ ] lead-programmer: all fixes reviewed
+- [ ] qa-lead: QA gate PASS confirmed
+- [ ] producer: deployment timing approved
+- [ ] release-manager: platform submission confirmed
+
+---
+
+## Player-Facing Patch Notes
+
+[Draft for community-manager to review before publishing]
+
+[list player-facing changes in plain language]
+```
+
+Ask: &quot;May I write this patch record to `production/releases/day-one-patch-[version].md`?&quot;
+
+---
+
+## Phase 7: Next Steps
+
+After the patch record is written:
+
+1. Run `/patch-notes` to generate the player-facing version of the patch notes
+2. Run `/bug-report verify [BUG-ID]` for each fixed bug after the patch is live
+3. Run `/bug-report close [BUG-ID]` for each verified fix
+4. Schedule a post-launch review 48–72 hours after launch using `/retrospective [milestone-name]` for the launch milestone in `production/milestones/`
+
+**If any S1 bugs remain open after the patch:**
+&gt; &quot;⚠️ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions — if they occur at scale, rollback may be preferable to a follow-up patch.&quot;
+
+Use `AskUserQuestion`:
+- Prompt: &quot;Day-one patch complete. What&#x27;s next?&quot;
+- Options:
+  - `[A] Run /patch-notes — generate player-facing patch notes`
+  - `[B] Run /bug-report to log any issues found post-deploy`
+  - `[C] Stop here`
+
+---
+
+## Collaborative Protocol
+
+- **Scope discipline is everything** — resist scope creep; every addition increases risk
+- **Rollback plan first, always** — a patch without a rollback plan is irresponsible
+- **Deferred is not forgotten** — every deferred bug is listed in the record&#x27;s
+  &quot;Deferred to 1.1&quot; table; run `/bug-triage` afterwards to schedule them into the 1.1 sprint
+  (if the project has no sprint plan, as on the default minimal workflow, into the brief&#x27;s build order)
+- **Player communication is part of the patch** — `/patch-notes` is a required output, not optional</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

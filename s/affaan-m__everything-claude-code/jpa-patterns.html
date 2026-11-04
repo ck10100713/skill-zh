@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jpa-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Spring Boot 的 JPA/Hibernate 寫法，涵蓋 entity、N+1、交易、分頁跟連線池">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>jpa-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/jpa-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Spring Boot 的 JPA/Hibernate 寫法，涵蓋 entity、N+1、交易、分頁跟連線池</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: jpa-patterns
+description: Spring Boot 中的 JPA/Hibernate 模式，涵蓋 entity 設計、關聯、查詢最佳化、交易、稽核、索引、分頁和連線池。設計 JPA entity 或關聯，或需要修正 Hibernate 查詢、交易或 N+1 問題時使用。
+metadata:
+  origin: ECC
+---
+
+# JPA/Hibernate Patterns
+
+用於 Spring Boot 中的資料建模、repository 和效能調校。
+
+## When to Activate
+
+- 設計 JPA entity 與資料表對應
+- 定義關聯（@OneToMany、@ManyToOne、@ManyToMany）
+- 最佳化查詢（避免 N+1、fetch 策略、projection）
+- 設定交易、稽核或軟刪除
+- 設定分頁、排序或自訂 repository 方法
+- 調校連線池（HikariCP）或二級快取
+
+## Entity Design
+
+```java
+@Entity
+@Table(name = &quot;markets&quot;, indexes = {
+  @Index(name = &quot;idx_markets_slug&quot;, columnList = &quot;slug&quot;, unique = true)
+})
+@EntityListeners(AuditingEntityListener.class)
+public class MarketEntity {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false, length = 200)
+  private String name;
+
+  @Column(nullable = false, unique = true, length = 120)
+  private String slug;
+
+  @Enumerated(EnumType.STRING)
+  private MarketStatus status = MarketStatus.ACTIVE;
+
+  @CreatedDate private Instant createdAt;
+  @LastModifiedDate private Instant updatedAt;
+}
+```
+
+啟用稽核：
+```java
+@Configuration
+@EnableJpaAuditing
+class JpaConfig {}
+```
+
+## Relationships and N+1 Prevention
+
+```java
+@OneToMany(mappedBy = &quot;market&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+private List&lt;PositionEntity&gt; positions = new ArrayList&lt;&gt;();
+```
+
+- 預設用 lazy loading；需要時在查詢裡用 `JOIN FETCH`
+- 集合上避免用 `EAGER`；讀取路徑用 DTO projection
+
+```java
+@Query(&quot;select m from MarketEntity m left join fetch m.positions where m.id = :id&quot;)
+Optional&lt;MarketEntity&gt; findWithPositions(@Param(&quot;id&quot;) Long id);
+```
+
+## Repository Patterns
+
+```java
+public interface MarketRepository extends JpaRepository&lt;MarketEntity, Long&gt; {
+  Optional&lt;MarketEntity&gt; findBySlug(String slug);
+
+  @Query(&quot;select m from MarketEntity m where m.status = :status&quot;)
+  Page&lt;MarketEntity&gt; findByStatus(@Param(&quot;status&quot;) MarketStatus status, Pageable pageable);
+}
+```
+
+- 輕量查詢用 projection：
+```java
+public interface MarketSummary {
+  Long getId();
+  String getName();
+  MarketStatus getStatus();
+}
+Page&lt;MarketSummary&gt; findAllBy(Pageable pageable);
+```
+
+## Transactions
+
+- service 方法加上 `@Transactional`
+- 讀取路徑用 `@Transactional(readOnly = true)` 來最佳化
+- 謹慎選擇 propagation；避免長時間執行的交易
+
+```java
+@Transactional
+public Market updateStatus(Long id, MarketStatus status) {
+  MarketEntity entity = repo.findById(id)
+      .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Market&quot;));
+  entity.setStatus(status);
+  return Market.from(entity);
+}
+```
+
+## Pagination
+
+```java
+PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(&quot;createdAt&quot;).descending());
+Page&lt;MarketEntity&gt; markets = repo.findByStatus(MarketStatus.ACTIVE, page);
+```
+
+類似 cursor 的分頁，要在 JPQL 裡加上 `id &gt; :lastId` 並搭配排序。
+
+## Indexing and Performance
+
+- 為常用的過濾條件加索引（`status`、`slug`、外鍵）
+- 使用符合查詢模式的複合索引（`status, created_at`）
+- 避免 `select *`；只 project 需要的欄位
+- 用 `saveAll` 和 `hibernate.jdbc.batch_size` 做批次寫入
+
+## Connection Pooling (HikariCP)
+
+建議的屬性：
+```
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.validation-timeout=5000
+```
+
+PostgreSQL 處理 LOB 時，要加上：
+```
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+```
+
+## Caching
+
+- 一級快取是每個 EntityManager 各自一份；避免讓 entity 跨交易存活
+- 讀取量大的 entity，可以謹慎考慮二級快取；要驗證驅逐策略
+
+## Migrations
+
+- 用 Flyway 或 Liquibase；正式環境絕對不要依賴 Hibernate 的自動 DDL
+- migration 要保持冪等且只加不減；沒有計畫就不要刪欄位
+
+## Testing Data Access
+
+- 優先用 `@DataJpaTest` 搭配 Testcontainers 來貼近正式環境
+- 用 log 斷言 SQL 效率：設定 `logging.level.org.hibernate.SQL=DEBUG` 和 `logging.level.org.hibernate.orm.jdbc.bind=TRACE` 來看參數值
+
+**記住**：entity 要精簡、查詢要有意圖、交易要短。用 fetch 策略和 projection 避免 N+1，並針對你的讀寫路徑建立索引。</pre></section><section><h2>英文原文</h2><pre>---
+name: jpa-patterns
+description: JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, auditing, indexing, pagination, and pooling in Spring Boot. Use when designing JPA entities or relationships, or when a Hibernate query, transaction, or N+1 problem needs fixing.
+metadata:
+  origin: ECC
+---
+
+# JPA/Hibernate Patterns
+
+Use for data modeling, repositories, and performance tuning in Spring Boot.
+
+## When to Activate
+
+- Designing JPA entities and table mappings
+- Defining relationships (@OneToMany, @ManyToOne, @ManyToMany)
+- Optimizing queries (N+1 prevention, fetch strategies, projections)
+- Configuring transactions, auditing, or soft deletes
+- Setting up pagination, sorting, or custom repository methods
+- Tuning connection pooling (HikariCP) or second-level caching
+
+## Entity Design
+
+```java
+@Entity
+@Table(name = &quot;markets&quot;, indexes = {
+  @Index(name = &quot;idx_markets_slug&quot;, columnList = &quot;slug&quot;, unique = true)
+})
+@EntityListeners(AuditingEntityListener.class)
+public class MarketEntity {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false, length = 200)
+  private String name;
+
+  @Column(nullable = false, unique = true, length = 120)
+  private String slug;
+
+  @Enumerated(EnumType.STRING)
+  private MarketStatus status = MarketStatus.ACTIVE;
+
+  @CreatedDate private Instant createdAt;
+  @LastModifiedDate private Instant updatedAt;
+}
+```
+
+Enable auditing:
+```java
+@Configuration
+@EnableJpaAuditing
+class JpaConfig {}
+```
+
+## Relationships and N+1 Prevention
+
+```java
+@OneToMany(mappedBy = &quot;market&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+private List&lt;PositionEntity&gt; positions = new ArrayList&lt;&gt;();
+```
+
+- Default to lazy loading; use `JOIN FETCH` in queries when needed
+- Avoid `EAGER` on collections; use DTO projections for read paths
+
+```java
+@Query(&quot;select m from MarketEntity m left join fetch m.positions where m.id = :id&quot;)
+Optional&lt;MarketEntity&gt; findWithPositions(@Param(&quot;id&quot;) Long id);
+```
+
+## Repository Patterns
+
+```java
+public interface MarketRepository extends JpaRepository&lt;MarketEntity, Long&gt; {
+  Optional&lt;MarketEntity&gt; findBySlug(String slug);
+
+  @Query(&quot;select m from MarketEntity m where m.status = :status&quot;)
+  Page&lt;MarketEntity&gt; findByStatus(@Param(&quot;status&quot;) MarketStatus status, Pageable pageable);
+}
+```
+
+- Use projections for lightweight queries:
+```java
+public interface MarketSummary {
+  Long getId();
+  String getName();
+  MarketStatus getStatus();
+}
+Page&lt;MarketSummary&gt; findAllBy(Pageable pageable);
+```
+
+## Transactions
+
+- Annotate service methods with `@Transactional`
+- Use `@Transactional(readOnly = true)` for read paths to optimize
+- Choose propagation carefully; avoid long-running transactions
+
+```java
+@Transactional
+public Market updateStatus(Long id, MarketStatus status) {
+  MarketEntity entity = repo.findById(id)
+      .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Market&quot;));
+  entity.setStatus(status);
+  return Market.from(entity);
+}
+```
+
+## Pagination
+
+```java
+PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by(&quot;createdAt&quot;).descending());
+Page&lt;MarketEntity&gt; markets = repo.findByStatus(MarketStatus.ACTIVE, page);
+```
+
+For cursor-like pagination, include `id &gt; :lastId` in JPQL with ordering.
+
+## Indexing and Performance
+
+- Add indexes for common filters (`status`, `slug`, foreign keys)
+- Use composite indexes matching query patterns (`status, created_at`)
+- Avoid `select *`; project only needed columns
+- Batch writes with `saveAll` and `hibernate.jdbc.batch_size`
+
+## Connection Pooling (HikariCP)
+
+Recommended properties:
+```
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.validation-timeout=5000
+```
+
+For PostgreSQL LOB handling, add:
+```
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+```
+
+## Caching
+
+- 1st-level cache is per EntityManager; avoid keeping entities across transactions
+- For read-heavy entities, consider second-level cache cautiously; validate eviction strategy
+
+## Migrations
+
+- Use Flyway or Liquibase; never rely on Hibernate auto DDL in production
+- Keep migrations idempotent and additive; avoid dropping columns without plan
+
+## Testing Data Access
+
+- Prefer `@DataJpaTest` with Testcontainers to mirror production
+- Assert SQL efficiency using logs: set `logging.level.org.hibernate.SQL=DEBUG` and `logging.level.org.hibernate.orm.jdbc.bind=TRACE` for parameter values
+
+**Remember**: Keep entities lean, queries intentional, and transactions short. Prevent N+1 with fetch strategies and projections, and index for your read/write paths.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-comply｜Skill 寫法圖鑑</title>
+<meta name="description" content="量測 agent 到底有沒有遵守 skill、規則和定義">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>skill-comply</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/skill-comply/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">量測 agent 到底有沒有遵守 skill、規則和定義</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: skill-comply
+description: 視覺化呈現 skill、規則和 agent 定義到底有沒有被遵守：自動產生 3 種 prompt 嚴格程度的情境、執行 agent、將行為序列分類，並回報帶有完整 tool call 時間軸的遵守率。想檢查 agent 是否真的遵循被給予的 skill、規則和定義，而不是假設它們有遵守時使用。
+metadata:
+  origin: ECC
+tools: Read, Bash
+---
+
+# skill-comply：自動化遵守度量測
+
+衡量 coding agent 是否真的遵循 skill、規則或 agent 定義，做法是：
+1. 從任何 .md 檔自動產生預期的行為序列（規格）
+2. 自動產生 prompt 嚴格程度遞減的情境（支持 → 中立 → 對立）
+3. 執行 `claude -p`，並透過 stream-json 擷取 tool call 軌跡
+4. 用 LLM（不是 regex）把 tool call 對照規格步驟分類
+5. 以確定性的方式檢查時間先後順序
+6. 產生獨立完整的報告，包含規格、prompt 和時間軸
+
+## 支援的目標
+
+- **Skill**（`skills/*/SKILL.md`）：像 search-first、TDD 指南這類工作流程 skill
+- **規則**（`rules/common/*.md`）：像 testing.md、security.md、git-workflow.md 這類強制規則
+- **Agent 定義**（`agents/*.md`）：檢查 agent 在預期時機有沒有被呼叫（尚不支援驗證內部工作流程）
+
+## 何時啟用
+
+- 使用者執行 `/skill-comply &lt;path&gt;`
+- 使用者問「這條規則真的有被遵守嗎？」
+- 新增規則/skill 之後，驗證 agent 的遵守度
+- 作為品質維護的一部分，定期執行
+
+## 使用方式
+
+```bash
+# Full run
+uv run python -m scripts.run ~/.claude/rules/common/testing.md
+
+# Dry run (no cost, spec + scenarios only)
+uv run python -m scripts.run --dry-run ~/.claude/skills/search-first/SKILL.md
+
+# Custom models
+uv run python -m scripts.run --gen-model haiku --model sonnet &lt;path&gt;
+```
+
+## 關鍵概念：Prompt 獨立性
+
+衡量即使 prompt 沒有明確支持，skill/規則是否仍被遵守。
+
+## 報告內容
+
+報告是獨立完整的，包含：
+1. 預期的行為序列（自動產生的規格）
+2. 情境 prompt（每個嚴格程度下問了什麼）
+3. 每個情境的遵守分數
+4. 帶有 LLM 分類標籤的 tool call 時間軸
+
+### 進階（選用）
+
+熟悉 hook 的使用者，報告還會針對遵守度低的步驟，附上 hook 升級建議。這只是參考資訊，主要價值是遵守度本身的可見性。</pre></section><section><h2>英文原文</h2><pre>---
+name: skill-comply
+description: Visualize whether skills, rules, and agent definitions are actually followed — auto-generates scenarios at 3 prompt strictness levels, runs agents, classifies behavioral sequences, and reports compliance rates with full tool call timelines. Use when checking whether agents actually follow the skills, rules, and definitions they were given, rather than assuming they do.
+metadata:
+  origin: ECC
+tools: Read, Bash
+---
+
+# skill-comply: Automated Compliance Measurement
+
+Measures whether coding agents actually follow skills, rules, or agent definitions by:
+1. Auto-generating expected behavioral sequences (specs) from any .md file
+2. Auto-generating scenarios with decreasing prompt strictness (supportive → neutral → competing)
+3. Running `claude -p` and capturing tool call traces via stream-json
+4. Classifying tool calls against spec steps using LLM (not regex)
+5. Checking temporal ordering deterministically
+6. Generating self-contained reports with spec, prompts, and timelines
+
+## Supported Targets
+
+- **Skills** (`skills/*/SKILL.md`): Workflow skills like search-first, TDD guides
+- **Rules** (`rules/common/*.md`): Mandatory rules like testing.md, security.md, git-workflow.md
+- **Agent definitions** (`agents/*.md`): Whether an agent gets invoked when expected (internal workflow verification not yet supported)
+
+## When to Activate
+
+- User runs `/skill-comply &lt;path&gt;`
+- User asks &quot;is this rule actually being followed?&quot;
+- After adding new rules/skills, to verify agent compliance
+- Periodically as part of quality maintenance
+
+## Usage
+
+```bash
+# Full run
+uv run python -m scripts.run ~/.claude/rules/common/testing.md
+
+# Dry run (no cost, spec + scenarios only)
+uv run python -m scripts.run --dry-run ~/.claude/skills/search-first/SKILL.md
+
+# Custom models
+uv run python -m scripts.run --gen-model haiku --model sonnet &lt;path&gt;
+```
+
+## Key Concept: Prompt Independence
+
+Measures whether a skill/rule is followed even when the prompt doesn&#x27;t explicitly support it.
+
+## Report Contents
+
+Reports are self-contained and include:
+1. Expected behavioral sequence (auto-generated spec)
+2. Scenario prompts (what was asked at each strictness level)
+3. Compliance scores per scenario
+4. Tool call timelines with LLM classification labels
+
+### Advanced (optional)
+
+For users familiar with hooks, reports also include hook promotion recommendations for steps with low compliance. This is informational — the main value is the compliance visibility itself.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

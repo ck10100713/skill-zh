@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-sc-newsvendor｜Skill 寫法圖鑑</title>
+<meta name="description" content="用臨界比率算出單期需求不確定時的最佳訂購量">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-sc-newsvendor</h1>
+<p class="meta">asgard-ai-platform ｜ 商業與營運 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-sc-newsvendor/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用臨界比率算出單期需求不確定時的最佳訂購量</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-sc-newsvendor&quot;
+description: &quot;解報童問題（newsvendor problem），處理需求不確定下的單期訂購決策。當使用者需要決定易腐商品、季節性商品或一次性採購的最佳訂購量時就用這個 skill，即使他們說的是「這一季要訂多少」「易腐庫存」或「單期訂購」。&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;newsvendor&quot;, &quot;inventory&quot;, &quot;demand-uncertainty&quot;]
+---
+
+# Newsvendor Model
+
+## Overview
+
+Newsvendor 模型用來決定單一銷售期、需求不確定時的最佳訂購量。它要在過剩成本（Co = 成本 - 殘值）和缺貨成本（Cu = 售價 - 成本）之間取得平衡。最佳 Q* 滿足：P(D ≤ Q*) = Cu / (Cu + Co)，也就是所謂的臨界比率（critical ratio）解。
+
+## When to Use
+
+**觸發條件：**
+- 一次性或季節性的採購決策（時尚商品、節慶商品、活動門票）
+- 沒有機會補貨的易腐商品
+- 在還看不到需求之前，先設定初始備貨水準
+
+**不適用的情況：**
+- 需求穩定、持續補貨的情況（改用 EOQ）
+- 可以接受延後交貨（backorder）、需求會順延到下一期時（用多期模型）
+
+## Algorithm
+
+```
+IRON LAW: The Critical Ratio Determines Optimal Service Level
+Q* = F⁻¹(Cu / (Cu + Co)) where F⁻¹ is the inverse demand CDF.
+If margin is high relative to cost (Cu &gt;&gt; Co), order MORE (high service level).
+If margin is low relative to excess cost (Co &gt;&gt; Cu), order LESS (low service level).
+The optimal solution almost NEVER equals expected demand.
+```
+
+### Phase 1: Input Validation
+定義：單位成本（c）、售價（p）、殘值（v）、需求分布（平均 μ、標準差 σ）。計算：Cu = p - c，Co = c - v。
+**Gate：** p &gt; c &gt; v（有獲利，且過剩成本為正），需求分布已經估計出來。
+
+### Phase 2: Core Algorithm
+1. 臨界比率：CR = Cu / (Cu + Co) = (p - c) / (p - v)
+2. 如果需求 ~ Normal(μ, σ)：Q* = μ + z(CR) × σ，其中 z(CR) 是 CR 對應的標準常態分布反函數值
+3. 期望利潤 = Cu × E[min(Q,D)] - Co × E[max(Q-D, 0)]
+4. 期望銷售量 = μ - σ × L(z)，其中 L(z) 是標準損失函數（standard loss function）
+
+### Phase 3: Verification
+檢查：Q* &gt; 0，CR 介於 0 和 1 之間，而且依 CR 大於或小於 0.5，Q* 要相對應地高於或低於 μ。
+**Gate：** Q* 相對於平均需求的方向正確。
+
+### Phase 4: Output
+回傳最佳訂購量，附上利潤分析。
+
+## Output Format
+
+```json
+{
+  &quot;optimal_quantity&quot;: 130,
+  &quot;critical_ratio&quot;: 0.71,
+  &quot;expected_profit&quot;: 2800,
+  &quot;expected_leftover&quot;: 15,
+  &quot;expected_stockout_probability&quot;: 0.29,
+  &quot;metadata&quot;: {&quot;price&quot;: 50, &quot;cost&quot;: 20, &quot;salvage&quot;: 5, &quot;demand_mean&quot;: 100, &quot;demand_std&quot;: 30}
+}
+```
+
+## Examples
+
+### Sample I/O
+**輸入：** p=$50, c=$20, v=$5, D~Normal(100, 30)
+**預期結果：** Cu=30, Co=15, CR=30/45=0.667, z=0.43, Q*=100+0.43×30=113 單位。
+
+### Edge Cases
+| 輸入 | 預期結果 | 原因 |
+|-------|----------|-----|
+| v = 0（全額損失） | Q* 較低，偏保守 | 過剩成本高，把訂購量往下推 |
+| p &gt;&gt; c（高毛利） | Q* 遠高於平均值 | 值得冒著過剩的風險，避免損失銷售 |
+| σ = 0（需求確定） | Q* 剛好等於 μ | 沒有不確定性，需求多少就訂多少 |
+
+## Gotchas
+
+- **分布的選擇很重要**：常態分布會出現負需求。平均值低的品項要用 Poisson 或截斷常態分布（truncated normal）。變異係數（CV）高時用 lognormal。
+- **需求估計**：最難的是估 μ 和 σ。可以用歷史資料、專家判斷，或是用早期銷售訊號做貝氏更新（Bayesian updating）。
+- **風險趨避**：Newsvendor 模型是風險中立的。風險趨避的決策者相對於 Q* 會系統性地少訂，要針對這種行為偏誤做調整。
+- **多產品限制**：多個產品共用預算限制時，要解帶限制的 newsvendor（Lagrangian relaxation）。
+- **殘值假設**：模型假設所有過剩的貨都能以 v 的價格處理掉。如果處理要花錢（v &lt; 0），模型仍然成立，但 Q* 會再往下掉。
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/newsvendor.py` | 計算 newsvendor 最佳訂購量、期望利潤和滿足率（fill rate） | `python scripts/newsvendor.py --help` |
+
+執行 `python scripts/newsvendor.py --verify` 可以跑內建的基本檢查測試。
+
+## References
+
+- 多產品帶限制的 newsvendor，請見 `references/constrained-newsvendor.md`
+- 需求分布的配適，請見 `references/demand-fitting.md`</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-sc-newsvendor&quot;
+description: &quot;Solve the newsvendor problem for single-period ordering decisions under uncertain demand. Use this skill when the user needs to determine optimal order quantity for perishable goods, seasonal products, or one-time purchase decisions — even if they say &#x27;how much to order for this season&#x27;, &#x27;perishable inventory&#x27;, or &#x27;single-period ordering&#x27;.&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;newsvendor&quot;, &quot;inventory&quot;, &quot;demand-uncertainty&quot;]
+---
+
+# Newsvendor Model
+
+## Overview
+
+The newsvendor model determines optimal order quantity for a single selling period with uncertain demand. Balances overage cost (Co = cost - salvage) against underage cost (Cu = price - cost). Optimal Q* satisfies: P(D ≤ Q*) = Cu / (Cu + Co). Known as the critical ratio solution.
+
+## When to Use
+
+**Trigger conditions:**
+- One-time or seasonal purchasing decisions (fashion, holiday goods, event tickets)
+- Perishable products with no restocking opportunity
+- Setting initial stocking levels before demand is observed
+
+**When NOT to use:**
+- For continuous replenishment with stable demand (use EOQ)
+- When backorders are acceptable and demand carries over (multi-period models)
+
+## Algorithm
+
+```
+IRON LAW: The Critical Ratio Determines Optimal Service Level
+Q* = F⁻¹(Cu / (Cu + Co)) where F⁻¹ is the inverse demand CDF.
+If margin is high relative to cost (Cu &gt;&gt; Co), order MORE (high service level).
+If margin is low relative to excess cost (Co &gt;&gt; Cu), order LESS (low service level).
+The optimal solution almost NEVER equals expected demand.
+```
+
+### Phase 1: Input Validation
+Define: unit cost (c), selling price (p), salvage value (v), demand distribution (mean μ, std σ). Compute: Cu = p - c, Co = c - v.
+**Gate:** p &gt; c &gt; v (profitable with positive overage cost), demand distribution estimated.
+
+### Phase 2: Core Algorithm
+1. Critical ratio: CR = Cu / (Cu + Co) = (p - c) / (p - v)
+2. If demand ~ Normal(μ, σ): Q* = μ + z(CR) × σ where z(CR) = inverse normal CDF at CR
+3. Expected profit = Cu × E[min(Q,D)] - Co × E[max(Q-D, 0)]
+4. Expected units sold = μ - σ × L(z) where L(z) is the standard loss function
+
+### Phase 3: Verification
+Check: Q* &gt; 0, CR between 0 and 1, Q* is above or below μ depending on whether CR &gt; or &lt; 0.5.
+**Gate:** Q* directionally correct relative to mean demand.
+
+### Phase 4: Output
+Return optimal order quantity with profit analysis.
+
+## Output Format
+
+```json
+{
+  &quot;optimal_quantity&quot;: 130,
+  &quot;critical_ratio&quot;: 0.71,
+  &quot;expected_profit&quot;: 2800,
+  &quot;expected_leftover&quot;: 15,
+  &quot;expected_stockout_probability&quot;: 0.29,
+  &quot;metadata&quot;: {&quot;price&quot;: 50, &quot;cost&quot;: 20, &quot;salvage&quot;: 5, &quot;demand_mean&quot;: 100, &quot;demand_std&quot;: 30}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** p=$50, c=$20, v=$5, D~Normal(100, 30)
+**Expected:** Cu=30, Co=15, CR=30/45=0.667, z=0.43, Q*=100+0.43×30=113 units.
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| v = 0 (total loss) | Lower Q*, conservative | High overage cost pushes order down |
+| p &gt;&gt; c (high margin) | Q* well above mean | Worth risking excess to avoid lost sales |
+| σ = 0 (certain demand) | Q* = μ exactly | No uncertainty, order exactly demand |
+
+## Gotchas
+
+- **Distribution choice matters**: Normal allows negative demand. For low-mean items, use Poisson or truncated normal. For high CV, use lognormal.
+- **Demand estimation**: The hardest part is estimating μ and σ. Use historical data, expert judgment, or Bayesian updating from early sales signals.
+- **Risk aversion**: The newsvendor model is risk-neutral. Risk-averse decision makers systematically under-order relative to Q*. Adjust for behavioral bias.
+- **Multi-product constraints**: With a shared budget constraint across products, solve the constrained newsvendor (Lagrangian relaxation).
+- **Salvage value assumption**: Assumes all excess can be salvaged at v. If disposal has a cost (v &lt; 0), the model still works but Q* drops further.
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/newsvendor.py` | Compute newsvendor optimal quantity, expected profit, and fill rate | `python scripts/newsvendor.py --help` |
+
+Run `python scripts/newsvendor.py --verify` to execute built-in sanity tests.
+
+## References
+
+- For multi-product constrained newsvendor, see `references/constrained-newsvendor.md`
+- For demand distribution fitting, see `references/demand-fitting.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

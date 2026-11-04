@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>webhooks｜Skill 寫法圖鑑</title>
+<meta name="description" content="接收 Zoom webhook 事件，含簽章驗證、訂閱與重試處理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>webhooks</h1>
+<p class="meta">Anthropic ｜ Agent 與工作流 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/partner-built/zoom-plugin/skills/webhooks/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">接收 Zoom webhook 事件，含簽章驗證、訂閱與重試處理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: setup-zoom-webhooks
+description: Zoom webhook 的參考 skill。導向事件驅動的工作流程之後，在實作訂閱、簽章驗證、遞送處理、重試或事件類型選擇時使用。
+triggers:
+  - &quot;zoom webhook&quot;
+  - &quot;webhook signature&quot;
+  - &quot;x-zm-signature&quot;
+  - &quot;event subscription&quot;
+  - &quot;recording completed webhook&quot;
+---
+
+# /setup-zoom-webhooks
+
+透過 HTTP 遞送 Zoom 事件的背景參考。優先用工作流程 skill，再用這個檔案查驗證、訂閱和遞送的細節。
+
+## 先決條件
+
+- 啟用了 Event Subscriptions 的 Zoom app
+- 接收 webhook 的 HTTPS endpoint
+- 用於驗證的 webhook secret token
+
+&gt; **需要驗證方面的協助？** OAuth 設定請看 **[zoom-oauth](../oauth/SKILL.md)** skill。
+
+## Quick Start
+
+```javascript
+// Express.js webhook handler
+const crypto = require(&#x27;crypto&#x27;);
+
+// 擷取原始 body 供簽章驗證用（避免重新序列化 JSON）。
+app.use(require(&#x27;express&#x27;).json({
+  verify: (req, _res, buf) =&gt; { req.rawBody = buf; }
+}));
+
+app.post(&#x27;/webhook&#x27;, (req, res) =&gt; {
+  // 驗證 webhook 簽章
+  const signature = req.headers[&#x27;x-zm-signature&#x27;];
+  const timestamp = req.headers[&#x27;x-zm-request-timestamp&#x27;];
+  const body = req.rawBody ? req.rawBody.toString(&#x27;utf8&#x27;) : JSON.stringify(req.body);
+  const payload = `v0:${timestamp}:${body}`;
+  const hash = crypto.createHmac(&#x27;sha256&#x27;, WEBHOOK_SECRET)
+    .update(payload).digest(&#x27;hex&#x27;);
+  
+  if (signature !== `v0=${hash}`) {
+    return res.status(401).send(&#x27;Invalid signature&#x27;);
+  }
+
+  // 處理事件
+  const { event, payload } = req.body;
+  console.log(`Received: ${event}`);
+  
+  res.status(200).send();
+});
+```
+
+## 常見事件
+
+| 事件 | 說明 |
+|-------|-------------|
+| `meeting.started` | 會議已開始 |
+| `meeting.ended` | 會議已結束 |
+| `meeting.participant_joined` | 參與者加入會議 |
+| `recording.completed` | 雲端錄影已就緒 |
+| `user.created` | 新增使用者 |
+
+## 詳細參考
+
+- **[references/events.md](references/events.md)** - 完整的事件類型參考
+- **[references/verification.md](references/verification.md)** - Webhook URL 驗證
+- **[references/subscriptions.md](references/subscriptions.md)** - 事件訂閱 API
+
+## 疑難排解
+
+- **[RUNBOOK.md](RUNBOOK.md)** - 深入除錯之前的 5 分鐘 preflight 檢查
+- **[troubleshooting/common-issues.md](troubleshooting/common-issues.md)** - 簽章驗證、重試、URL 驗證
+
+## 範例 Repo
+
+### 官方（Zoom 出品）
+
+| 類型 | Repository | Stars |
+|------|------------|-------|
+| Node.js | [webhook-sample](https://github.com/zoom/webhook-sample) | 34 |
+| PostgreSQL | [webhook-to-postgres](https://github.com/zoom/webhook-to-postgres) | 5 |
+| Go/Fiber | [Go-Webhooks](https://github.com/zoom/Go-Webhooks) | - |
+| Header Auth | [zoom-webhook-verification-headers](https://github.com/zoom/zoom-webhook-verification-headers) | - |
+
+### 社群
+
+| 語言 | Repository | 說明 |
+|----------|------------|-------------|
+| Laravel | [binary-cats/laravel-webhooks](https://github.com/binary-cats/laravel-webhooks) | Laravel webhook handler |
+| AWS Lambda | [splunk/zoom-webhook-to-hec](https://github.com/splunk/zoom-webhook-to-hec) | 送到 Splunk HEC 的 serverless |
+| Node.js | [Will4950/zoom-webhook-listener](https://github.com/Will4950/zoom-webhook-listener) | Webhook 轉發器 |
+| Express+Redis | [ojusave/eventSubscriptionPlayground](https://github.com/ojusave/eventSubscriptionPlayground) | Socket.io + Redis |
+
+### 多語言範例（作者 tanchunsiong）
+
+| 語言 | Repository |
+|----------|------------|
+| Node.js | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-NodeJS](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-NodeJS) |
+| C# | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-ASP.NET-Core-C-](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-ASP.NET-Core-C-) |
+| Java | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Java-Spring-Boot](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Java-Spring-Boot) |
+| Python | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Python](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Python) |
+| PHP | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-PHP](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-PHP) |
+
+**完整清單**：見 [general/references/community-repos.md](../general/references/community-repos.md)
+
+## 資源
+
+- **Webhook 文件**：https://developers.zoom.us/docs/api/webhooks/
+- **事件參考**：https://developers.zoom.us/docs/api/rest/reference/zoom-api/events/
+- **開發者論壇**：https://devforum.zoom.us/
+
+## 環境變數
+
+- 標準化的 `.env` key，以及每個值要去哪裡找，請看 [references/environment-variables.md](references/environment-variables.md)。</pre></section><section><h2>英文原文</h2><pre>---
+name: setup-zoom-webhooks
+description: Reference skill for Zoom webhooks. Use after routing to an event-driven workflow when implementing subscriptions, signature verification, delivery handling, retries, or event-type selection.
+triggers:
+  - &quot;zoom webhook&quot;
+  - &quot;webhook signature&quot;
+  - &quot;x-zm-signature&quot;
+  - &quot;event subscription&quot;
+  - &quot;recording completed webhook&quot;
+---
+
+# /setup-zoom-webhooks
+
+Background reference for Zoom event delivery over HTTP. Prefer workflow skills first, then use this file for verification, subscription, and delivery details.
+
+## Prerequisites
+
+- Zoom app with Event Subscriptions enabled
+- HTTPS endpoint to receive webhooks
+- Webhook secret token for verification
+
+&gt; **Need help with authentication?** See the **[zoom-oauth](../oauth/SKILL.md)** skill for OAuth setup.
+
+## Quick Start
+
+```javascript
+// Express.js webhook handler
+const crypto = require(&#x27;crypto&#x27;);
+
+// Capture raw body for signature verification (avoid re-serializing JSON).
+app.use(require(&#x27;express&#x27;).json({
+  verify: (req, _res, buf) =&gt; { req.rawBody = buf; }
+}));
+
+app.post(&#x27;/webhook&#x27;, (req, res) =&gt; {
+  // Verify webhook signature
+  const signature = req.headers[&#x27;x-zm-signature&#x27;];
+  const timestamp = req.headers[&#x27;x-zm-request-timestamp&#x27;];
+  const body = req.rawBody ? req.rawBody.toString(&#x27;utf8&#x27;) : JSON.stringify(req.body);
+  const payload = `v0:${timestamp}:${body}`;
+  const hash = crypto.createHmac(&#x27;sha256&#x27;, WEBHOOK_SECRET)
+    .update(payload).digest(&#x27;hex&#x27;);
+  
+  if (signature !== `v0=${hash}`) {
+    return res.status(401).send(&#x27;Invalid signature&#x27;);
+  }
+
+  // Handle event
+  const { event, payload } = req.body;
+  console.log(`Received: ${event}`);
+  
+  res.status(200).send();
+});
+```
+
+## Common Events
+
+| Event | Description |
+|-------|-------------|
+| `meeting.started` | Meeting has started |
+| `meeting.ended` | Meeting has ended |
+| `meeting.participant_joined` | Participant joined meeting |
+| `recording.completed` | Cloud recording ready |
+| `user.created` | New user added |
+
+## Detailed References
+
+- **[references/events.md](references/events.md)** - Complete event types reference
+- **[references/verification.md](references/verification.md)** - Webhook URL validation
+- **[references/subscriptions.md](references/subscriptions.md)** - Event subscriptions API
+
+## Troubleshooting
+
+- **[RUNBOOK.md](RUNBOOK.md)** - 5-minute preflight checks before deep debugging
+- **[troubleshooting/common-issues.md](troubleshooting/common-issues.md)** - Signature verification, retries, URL validation
+
+## Sample Repositories
+
+### Official (by Zoom)
+
+| Type | Repository | Stars |
+|------|------------|-------|
+| Node.js | [webhook-sample](https://github.com/zoom/webhook-sample) | 34 |
+| PostgreSQL | [webhook-to-postgres](https://github.com/zoom/webhook-to-postgres) | 5 |
+| Go/Fiber | [Go-Webhooks](https://github.com/zoom/Go-Webhooks) | - |
+| Header Auth | [zoom-webhook-verification-headers](https://github.com/zoom/zoom-webhook-verification-headers) | - |
+
+### Community
+
+| Language | Repository | Description |
+|----------|------------|-------------|
+| Laravel | [binary-cats/laravel-webhooks](https://github.com/binary-cats/laravel-webhooks) | Laravel webhook handler |
+| AWS Lambda | [splunk/zoom-webhook-to-hec](https://github.com/splunk/zoom-webhook-to-hec) | Serverless to Splunk HEC |
+| Node.js | [Will4950/zoom-webhook-listener](https://github.com/Will4950/zoom-webhook-listener) | Webhook forwarder |
+| Express+Redis | [ojusave/eventSubscriptionPlayground](https://github.com/ojusave/eventSubscriptionPlayground) | Socket.io + Redis |
+
+### Multi-Language Samples (by tanchunsiong)
+
+| Language | Repository |
+|----------|------------|
+| Node.js | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-NodeJS](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-NodeJS) |
+| C# | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-ASP.NET-Core-C-](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-ASP.NET-Core-C-) |
+| Java | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Java-Spring-Boot](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Java-Spring-Boot) |
+| Python | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Python](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-Python) |
+| PHP | [Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-PHP](https://github.com/tanchunsiong/Zoom-Webhook-Signature-OAuth-and-REST-API-Development-Sample-In-PHP) |
+
+**Full list**: See [general/references/community-repos.md](../general/references/community-repos.md)
+
+## Resources
+
+- **Webhook docs**: https://developers.zoom.us/docs/api/webhooks/
+- **Event reference**: https://developers.zoom.us/docs/api/rest/reference/zoom-api/events/
+- **Developer forum**: https://devforum.zoom.us/
+
+## Environment Variables
+
+- See [references/environment-variables.md](references/environment-variables.md) for standardized `.env` keys and where to find each value.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nav-tieout｜Skill 寫法圖鑑</title>
+<meta name="description" content="重算 LP 資本帳戶，把對帳單核對到基金 NAV 資料包">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>nav-tieout</h1>
+<p class="meta">Anthropic ｜ 金融與投資 ｜ <a href="https://github.com/anthropics/financial-services/blob/main/plugins/agent-plugins/statement-auditor/skills/nav-tieout/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">重算 LP 資本帳戶，把對帳單核對到基金 NAV 資料包</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: nav-tieout
+description: 把 LP 對帳單核對到基金的 NAV 資料包：用 NAV 組成項目重新計算該 LP 的資本帳戶，並標出任何對不上的項目。在發送 LP 對帳單之前使用。
+---
+
+# NAV 核對
+
+給定一份產生出來的 LP 對帳單和該期間的 NAV 資料包（透過 nav MCP），獨立重新計算該 LP 的資本帳戶，並逐項比較。
+
+&gt; **產生出來的對帳單是被測試的對象。** NAV 資料包才是真實的來源。
+
+## 重新計算 LP 資本帳戶
+
+```
+Beginning capital (prior statement ending)
+  + Contributions (capital calls paid this period)
+  − Distributions (cash + in-kind)
+  + Allocated net income / (loss)
+      = LP% × (realized + unrealized P&amp;L − management fee − fund expenses)
+  − Carried interest allocation (if crystallized this period)
+Ending capital
+```
+
+每個輸入都從 NAV 資料包取得：LP 出資承諾比例、基金層級的損益組成、費用合計、waterfall 輸出。
+
+## 比較
+
+對對帳單上的每一項，與你重新計算的值比較。容許範圍：`0.01`。每一筆不吻合的項目，都要註明是哪個輸入造成的（例如「allocated P&amp;L differs — statement used 12.40% ownership, NAV pack shows 12.38% after the Q1 transfer」）。
+
+## 額外檢查
+
+- 這份對帳單的期末資本 = 下一期草稿的期初資本（如果有的話）。
+- 所有 LP 的期末資本加總 = 基金 NAV（四捨五入內）。
+- 出資承諾、未出資和可召回的數字，與出資承諾登記冊一致。
+
+## 輸出
+
+每一項的通過／不通過、重新計算的值與對帳單上的值並列，以及一份標記清單。不要編輯對帳單，由發布人員在審閱後依標記處理。</pre></section><section><h2>英文原文</h2><pre>---
+name: nav-tieout
+description: Tie an LP statement to the fund&#x27;s NAV pack — recompute the LP&#x27;s capital account from the NAV components and flag any line that doesn&#x27;t agree. Use before LP statements are distributed.
+---
+
+# NAV tie-out
+
+Given a generated LP statement and the period&#x27;s NAV pack (via the nav MCP), independently recompute the LP&#x27;s capital account and compare line by line.
+
+&gt; **The generated statement is the thing under test.** The NAV pack is the source of truth.
+
+## Recompute the LP capital account
+
+```
+Beginning capital (prior statement ending)
+  + Contributions (capital calls paid this period)
+  − Distributions (cash + in-kind)
+  + Allocated net income / (loss)
+      = LP% × (realized + unrealized P&amp;L − management fee − fund expenses)
+  − Carried interest allocation (if crystallized this period)
+Ending capital
+```
+
+Pull each input from the NAV pack: LP commitment %, fund-level P&amp;L components, fee and expense totals, waterfall outputs.
+
+## Compare
+
+For each line on the statement, compare to your recomputed value. Tolerance: `0.01`. For each mismatch, note which input drives it (e.g., &quot;allocated P&amp;L differs — statement used 12.40% ownership, NAV pack shows 12.38% after the Q1 transfer&quot;).
+
+## Additional checks
+
+- Ending capital on this statement = beginning capital on next period&#x27;s draft (if available).
+- Sum of all LP ending capitals = fund NAV (within rounding).
+- Commitment, unfunded, and recallable figures agree to the commitment register.
+
+## Output
+
+A pass/fail per line, the recomputed values alongside the statement values, and a list of flags. Do not edit the statement — the publisher acts on the flags after review.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

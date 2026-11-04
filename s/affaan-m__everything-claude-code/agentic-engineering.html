@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agentic-engineering｜Skill 寫法圖鑑</title>
+<meta name="description" content="先定 eval 再動手，拆解任務並依複雜度分配模型的 agent 工程做法">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agentic-engineering</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agentic-engineering/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">先定 eval 再動手，拆解任務並依複雜度分配模型的 agent 工程做法</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agentic-engineering
+description: 以 agentic engineer 的方式工作：先寫 eval 再執行、拆解任務，並依成本選擇模型。規劃或執行會由 agent 從頭做到尾的工程工作時使用。
+metadata:
+  origin: ECC
+---
+
+# Agentic Engineering
+
+用在由 AI agent 做大部分實作、人類負責把關品質和風險控管的工程工作流程。
+
+## 運作原則
+
+1. 執行之前先定義完成條件。
+2. 把工作拆成 agent 大小的單元。
+3. 依任務複雜度選模型等級。
+4. 用 eval 和回歸檢查來衡量。
+
+## Eval 優先迴圈
+
+1. 定義能力 eval 和回歸 eval。
+2. 跑基準線，記下失敗特徵。
+3. 執行實作。
+4. 重跑 eval，比較差異。
+
+## 任務拆解
+
+套用 15 分鐘單元規則：
+- 每個單元都應該能獨立驗證
+- 每個單元都應該只有一個主要風險
+- 每個單元都應該有明確的完成條件
+
+## 模型選擇
+
+- Haiku：分類、樣板轉換、範圍很窄的修改
+- Sonnet：實作和重構
+- Opus：架構、根因分析、跨多個檔案的不變條件
+
+## Session 策略
+
+- 緊密耦合的單元，繼續用同一個 session。
+- 大的階段轉換之後，開新的 session。
+- 里程碑完成後再 compact，不要在積極除錯的時候 compact。
+
+## AI 產生的程式碼的 Review 重點
+
+優先看：
+- 不變條件和 edge case
+- 錯誤邊界
+- 安全和授權的假設
+- 隱藏的耦合和上線風險
+
+如果自動化的 format/lint 已經在管風格，就不要把 review 的力氣浪費在純風格的爭論上。
+
+## 比對資料之前，先解讀工具結果
+
+處理文件讀取和處理迴圈時，要依序檢查三個邊界：
+
+1. 檢查工具或傳輸層的外層封包，看有沒有錯誤或結果不明的狀況。
+2. 解碼回應，並依該工具文件記載的約定檢查操作狀態。外層的成功旗標或
+   有 payload，都不能證明所要求的操作成功了。狀態可能在結構化內容、
+   解碼後的文字或其他有文件記載的欄位裡；`result.ok` 不是通用的 MCP
+   欄位。缺少或無法辨識的狀態，一律視為未知。
+3. 確認操作成功之後，才驗證文件的形狀並比對它的欄位。操作失敗不等於
+   文件識別碼不符。
+
+要保留操作名稱、有的話的 request/correlation ID、相關的狀態和錯誤細節，
+以及診斷所需的原始回應。記錄或分享之前，要遮蔽 secret 和私人文件資料。
+不要用後面一個回應的形狀去重建缺少的回應。
+
+### 可移植的分類範例
+
+下面的 adapter 用的是**示意用的讀取工具約定**，不是 MCP schema：
+`isError` 是必要的布林值；為 false 時，`result.ok` 是必要的操作
+狀態。成功的讀取會回傳 `result.document`，裡面有字串型別的 `id`；失敗的
+讀取可能帶有 `result.error`。請把這個 adapter 換成實際工具的
+約定，包含它有文件記載的解碼和文件驗證規則。
+
+```javascript
+function decodeRead(response) {
+  if (!response || typeof response.isError !== &#x27;boolean&#x27;) {
+    return { kind: &#x27;unknown_response&#x27; };
+  }
+  if (response.isError) return { kind: &#x27;tool_error&#x27; };
+
+  const result = response.result;
+  if (result?.ok === false) {
+    return { kind: &#x27;operation_error&#x27;, error: result.error };
+  }
+  if (result?.ok !== true) return { kind: &#x27;unknown_response&#x27; };
+
+  const document = result.document;
+  if (!document || typeof document.id !== &#x27;string&#x27;) {
+    return { kind: &#x27;invalid_document&#x27; };
+  }
+  return { kind: &#x27;document&#x27;, document };
+}
+
+function inspectRead(response, expectedId, decode = decodeRead) {
+  const outcome = decode(response);
+  if (outcome.kind !== &#x27;document&#x27;) return outcome;
+
+  return outcome.document.id === expectedId
+    ? { kind: &#x27;match&#x27;, document: outcome.document }
+    : { kind: &#x27;field_mismatch&#x27;, actualId: outcome.document.id, expectedId };
+}
+```
+
+合成的評估案例（不是重現任何歷史事故）：
+
+| 在這個示意約定下的輸入 | 預期的分類 |
+| --- | --- |
+| `isError: true` | `tool_error`；不做欄位比對 |
+| `isError: false`、`result.ok: false`、維護中的錯誤、沒有文件 | `operation_error`；保留維護的細節，不算不符 |
+| `isError: false`、缺少操作狀態 | `unknown_response`；不做欄位比對 |
+| 確認成功、缺少文件或 ID 不是字串 | `invalid_document`；不做欄位比對 |
+| 確認成功、有效文件且 ID 符合預期 | `match` |
+| 確認成功、有效文件但 ID 不同 | `field_mismatch` |
+
+分類本身不授權寫入或重試。暫時性的維護仍然是帶著自己證據的操作失敗；
+要依工具文件記載的復原政策處理。文件記載的全服務維護失敗，應該讓整批
+作業停下來，而不是對每一列都重複同樣的請求；單一的授權錯誤，
+不能證明是全服務維護。如果寫入逾時或結果不明，
+要保留這個不確定性，並透過有文件記載的狀態/回讀機制先對帳，再考慮
+重試。絕對不要只因為讀取失敗或回傳的欄位不同，就推論寫入失敗、重複寫入，
+或覆蓋文件。
+
+## 成本紀律
+
+每個任務都要追蹤：
+- 模型
+- token 估計值
+- 重試次數
+- 實際耗時
+- 成功或失敗
+
+只有在較低等級的模型因明確的推理缺口而失敗時，才升級模型等級。</pre></section><section><h2>英文原文</h2><pre>---
+name: agentic-engineering
+description: Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing. Use when planning or executing engineering work that agents will carry out end to end.
+metadata:
+  origin: ECC
+---
+
+# Agentic Engineering
+
+Use this skill for engineering workflows where AI agents perform most implementation work and humans enforce quality and risk controls.
+
+## Operating Principles
+
+1. Define completion criteria before execution.
+2. Decompose work into agent-sized units.
+3. Route model tiers by task complexity.
+4. Measure with evals and regression checks.
+
+## Eval-First Loop
+
+1. Define capability eval and regression eval.
+2. Run baseline and capture failure signatures.
+3. Execute implementation.
+4. Re-run evals and compare deltas.
+
+## Task Decomposition
+
+Apply the 15-minute unit rule:
+- each unit should be independently verifiable
+- each unit should have a single dominant risk
+- each unit should expose a clear done condition
+
+## Model Routing
+
+- Haiku: classification, boilerplate transforms, narrow edits
+- Sonnet: implementation and refactors
+- Opus: architecture, root-cause analysis, multi-file invariants
+
+## Session Strategy
+
+- Continue session for closely-coupled units.
+- Start fresh session after major phase transitions.
+- Compact after milestone completion, not during active debugging.
+
+## Review Focus for AI-Generated Code
+
+Prioritize:
+- invariants and edge cases
+- error boundaries
+- security and auth assumptions
+- hidden coupling and rollout risk
+
+Do not waste review cycles on style-only disagreements when automated format/lint already enforce style.
+
+## Interpret Tool Results Before Comparing Data
+
+For document reads and processing loops, check three boundaries in order:
+
+1. Check the tool/transport envelope for an error or an indeterminate outcome.
+2. Decode the response and check operation status using that tool&#x27;s documented
+   contract. An outer success flag or a present payload does not establish that
+   the requested operation succeeded. Status may live in structured content,
+   decoded text, or another documented field; `result.ok` is not a universal MCP
+   field. Missing or unrecognized status stays unknown.
+3. Only after confirmed operation success, validate the document shape and compare
+   its fields. An operation failure is not a document identity mismatch.
+
+Keep the operation name, request/correlation ID when available, relevant status
+and error details, and the original response needed for diagnosis. Redact secrets
+and private document data before logging or sharing. Do not reconstruct missing
+responses from a later response&#x27;s shape.
+
+### Portable Classification Example
+
+The adapter below uses an **illustrative read-tool contract**, not an MCP schema:
+`isError` is a required boolean; when false, `result.ok` is a required operation
+status. A successful read returns `result.document` with a string `id`; a failed
+read may carry `result.error`. Replace this adapter with the actual tool&#x27;s
+contract, including its documented decoding and document validation rules.
+
+```javascript
+function decodeRead(response) {
+  if (!response || typeof response.isError !== &#x27;boolean&#x27;) {
+    return { kind: &#x27;unknown_response&#x27; };
+  }
+  if (response.isError) return { kind: &#x27;tool_error&#x27; };
+
+  const result = response.result;
+  if (result?.ok === false) {
+    return { kind: &#x27;operation_error&#x27;, error: result.error };
+  }
+  if (result?.ok !== true) return { kind: &#x27;unknown_response&#x27; };
+
+  const document = result.document;
+  if (!document || typeof document.id !== &#x27;string&#x27;) {
+    return { kind: &#x27;invalid_document&#x27; };
+  }
+  return { kind: &#x27;document&#x27;, document };
+}
+
+function inspectRead(response, expectedId, decode = decodeRead) {
+  const outcome = decode(response);
+  if (outcome.kind !== &#x27;document&#x27;) return outcome;
+
+  return outcome.document.id === expectedId
+    ? { kind: &#x27;match&#x27;, document: outcome.document }
+    : { kind: &#x27;field_mismatch&#x27;, actualId: outcome.document.id, expectedId };
+}
+```
+
+Synthetic evaluation cases (not a reproduction of any historical incident):
+
+| Input under this illustrative contract | Expected classification |
+| --- | --- |
+| `isError: true` | `tool_error`; no field comparison |
+| `isError: false`, `result.ok: false`, maintenance error, no document | `operation_error`; preserve maintenance details, no mismatch |
+| `isError: false`, missing operation status | `unknown_response`; no field comparison |
+| Confirmed success, missing document or non-string ID | `invalid_document`; no field comparison |
+| Confirmed success, valid document with expected ID | `match` |
+| Confirmed success, valid document with a different ID | `field_mismatch` |
+
+Classification does not authorize a write or retry. Temporary maintenance remains
+an operation failure with its own evidence; follow the tool&#x27;s documented recovery
+policy. A documented service-wide maintenance failure should stop a batch rather
+than trigger the same request for every row; a lone authorization error does not
+establish service-wide maintenance. If a write times out or its outcome is unknown,
+preserve that uncertainty
+and reconcile using a documented status/read-back mechanism before considering a
+retry. Never infer that a write failed, repeat it, or overwrite a document solely
+because a read failed or a returned field differs.
+
+## Cost Discipline
+
+Track per task:
+- model
+- token estimate
+- retries
+- wall-clock time
+- success/failure
+
+Escalate model tier only when lower tier fails with a clear reasoning gap.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

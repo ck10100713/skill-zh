@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>golang-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="慣用的 Go 模式：錯誤處理、並行、interface 設計與效能">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>golang-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/golang-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">慣用的 Go 模式：錯誤處理、並行、interface 設計與效能</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: golang-patterns
+description: 慣用的 Go 模式、最佳實務與慣例，用來打造穩健、有效率、好維護的 Go 應用程式。寫或 review Go 程式碼，而且對慣用的結構或慣例有疑問時使用。
+metadata:
+  origin: ECC
+---
+
+# Go Development Patterns
+
+慣用的 Go 模式與最佳實務，用來打造穩健、有效率、好維護的應用程式。
+
+## When to Activate
+
+- 寫新的 Go 程式碼
+- review Go 程式碼
+- 重構既有的 Go 程式碼
+- 設計 Go 的 package/module
+
+## Core Principles
+
+### 1. Simplicity and Clarity
+
+Go 重視簡單，不重視耍聰明。程式碼應該一目了然、容易閱讀。
+
+```go
+// Good：清楚而直接
+func GetUser(id string) (*User, error) {
+    user, err := db.FindUser(id)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;get user %s: %w&quot;, id, err)
+    }
+    return user, nil
+}
+
+// Bad：太過耍聰明
+func GetUser(id string) (*User, error) {
+    return func() (*User, error) {
+        if u, e := db.FindUser(id); e == nil {
+            return u, nil
+        } else {
+            return nil, e
+        }
+    }()
+}
+```
+
+### 2. Make the Zero Value Useful
+
+設計型別時，要讓它的 zero value 不用初始化就能直接使用。
+
+```go
+// Good：zero value 有用
+type Counter struct {
+    mu    sync.Mutex
+    count int // zero value 是 0，可以直接用
+}
+
+func (c *Counter) Inc() {
+    c.mu.Lock()
+    c.count++
+    c.mu.Unlock()
+}
+
+// Good：bytes.Buffer 用 zero value 就能運作
+var buf bytes.Buffer
+buf.WriteString(&quot;hello&quot;)
+
+// Bad：需要初始化
+type BadCounter struct {
+    counts map[string]int // nil map 會 panic
+}
+```
+
+### 3. Accept Interfaces, Return Structs
+
+函式應該接受 interface 參數，並回傳具體型別。
+
+```go
+// Good：接受 interface，回傳具體型別
+func ProcessData(r io.Reader) (*Result, error) {
+    data, err := io.ReadAll(r)
+    if err != nil {
+        return nil, err
+    }
+    return &amp;Result{Data: data}, nil
+}
+
+// Bad：回傳 interface（無謂地隱藏實作細節）
+func ProcessData(r io.Reader) (io.Reader, error) {
+    // ...
+}
+```
+
+## Error Handling Patterns
+
+### Error Wrapping with Context
+
+```go
+// Good：用 context 包裝 error
+func LoadConfig(path string) (*Config, error) {
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;load config %s: %w&quot;, path, err)
+    }
+
+    var cfg Config
+    if err := json.Unmarshal(data, &amp;cfg); err != nil {
+        return nil, fmt.Errorf(&quot;parse config %s: %w&quot;, path, err)
+    }
+
+    return &amp;cfg, nil
+}
+```
+
+### Custom Error Types
+
+```go
+// 定義領域專屬的 error
+type ValidationError struct {
+    Field   string
+    Message string
+}
+
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf(&quot;validation failed on %s: %s&quot;, e.Field, e.Message)
+}
+
+// 常見情況用 sentinel error
+var (
+    ErrNotFound     = errors.New(&quot;resource not found&quot;)
+    ErrUnauthorized = errors.New(&quot;unauthorized&quot;)
+    ErrInvalidInput = errors.New(&quot;invalid input&quot;)
+)
+```
+
+### Error Checking with errors.Is and errors.As
+
+```go
+func HandleError(err error) {
+    // 檢查特定的 error
+    if errors.Is(err, sql.ErrNoRows) {
+        log.Println(&quot;No records found&quot;)
+        return
+    }
+
+    // 檢查 error 的型別
+    var validationErr *ValidationError
+    if errors.As(err, &amp;validationErr) {
+        log.Printf(&quot;Validation error on field %s: %s&quot;,
+            validationErr.Field, validationErr.Message)
+        return
+    }
+
+    // 未知的 error
+    log.Printf(&quot;Unexpected error: %v&quot;, err)
+}
+```
+
+### Never Ignore Errors
+
+```go
+// Bad：用空白識別字忽略 error
+result, _ := doSomething()
+
+// Good：處理它，或明確寫下為什麼可以安全地忽略
+result, err := doSomething()
+if err != nil {
+    return err
+}
+
+// 可以接受：error 真的無關緊要時（很少見）
+_ = writer.Close() // 盡力清理，error 已在別處記錄
+```
+
+## Concurrency Patterns
+
+### Worker Pool
+
+```go
+func WorkerPool(jobs &lt;-chan Job, results chan&lt;- Result, numWorkers int) {
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; numWorkers; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            for job := range jobs {
+                results &lt;- process(job)
+            }
+        }()
+    }
+
+    wg.Wait()
+    close(results)
+}
+```
+
+### Context for Cancellation and Timeouts
+
+```go
+func FetchWithTimeout(ctx context.Context, url string) ([]byte, error) {
+    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+    defer cancel()
+
+    req, err := http.NewRequestWithContext(ctx, &quot;GET&quot;, url, nil)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;create request: %w&quot;, err)
+    }
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;fetch %s: %w&quot;, url, err)
+    }
+    defer resp.Body.Close()
+
+    return io.ReadAll(resp.Body)
+}
+```
+
+### Graceful Shutdown
+
+```go
+func GracefulShutdown(server *http.Server) {
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    &lt;-quit
+    log.Println(&quot;Shutting down server...&quot;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := server.Shutdown(ctx); err != nil {
+        log.Fatalf(&quot;Server forced to shutdown: %v&quot;, err)
+    }
+
+    log.Println(&quot;Server exited&quot;)
+}
+```
+
+### errgroup for Coordinated Goroutines
+
+```go
+import &quot;golang.org/x/sync/errgroup&quot;
+
+func FetchAll(ctx context.Context, urls []string) ([][]byte, error) {
+    g, ctx := errgroup.WithContext(ctx)
+    results := make([][]byte, len(urls))
+
+    for i, url := range urls {
+        i, url := i, url // 捕捉迴圈變數
+        g.Go(func() error {
+            data, err := FetchWithTimeout(ctx, url)
+            if err != nil {
+                return err
+            }
+            results[i] = data
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+    return results, nil
+}
+```
+
+### Avoiding Goroutine Leaks
+
+```go
+// Bad：context 被取消時 goroutine 會洩漏
+func leakyFetch(ctx context.Context, url string) &lt;-chan []byte {
+    ch := make(chan []byte)
+    go func() {
+        data, _ := fetch(url)
+        ch &lt;- data // 沒有接收者就會永遠卡住
+    }()
+    return ch
+}
+
+// Good：正確處理取消
+func safeFetch(ctx context.Context, url string) &lt;-chan []byte {
+    ch := make(chan []byte, 1) // 有 buffer 的 channel
+    go func() {
+        data, err := fetch(url)
+        if err != nil {
+            return
+        }
+        select {
+        case ch &lt;- data:
+        case &lt;-ctx.Done():
+        }
+    }()
+    return ch
+}
+```
+
+## Interface Design
+
+### Small, Focused Interfaces
+
+```go
+// Good：單一方法的 interface
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+type Closer interface {
+    Close() error
+}
+
+// 需要時再組合 interface
+type ReadWriteCloser interface {
+    Reader
+    Writer
+    Closer
+}
+```
+
+### Define Interfaces Where They&#x27;re Used
+
+```go
+// 放在使用端的 package，不是提供端
+package service
+
+// UserStore 定義這個 service 需要什麼
+type UserStore interface {
+    GetUser(id string) (*User, error)
+    SaveUser(user *User) error
+}
+
+type Service struct {
+    store UserStore
+}
+
+// 具體實作可以放在另一個 package
+// 它不需要知道這個 interface 的存在
+```
+
+### Optional Behavior with Type Assertions
+
+```go
+type Flusher interface {
+    Flush() error
+}
+
+func WriteAndFlush(w io.Writer, data []byte) error {
+    if _, err := w.Write(data); err != nil {
+        return err
+    }
+
+    // 如果支援就 Flush
+    if f, ok := w.(Flusher); ok {
+        return f.Flush()
+    }
+    return nil
+}
+```
+
+## Package Organization
+
+### Standard Project Layout
+
+```text
+myproject/
+├── cmd/
+│   └── myapp/
+│       └── main.go           # 進入點
+├── internal/
+│   ├── handler/              # HTTP handler
+│   ├── service/              # 商業邏輯
+│   ├── repository/           # 資料存取
+│   └── config/               # 設定
+├── pkg/
+│   └── client/               # 公開的 API client
+├── api/
+│   └── v1/                   # API 定義（proto、OpenAPI）
+├── testdata/                 # 測試 fixture
+├── go.mod
+├── go.sum
+└── Makefile
+```
+
+### Package Naming
+
+```go
+// Good：簡短、小寫、沒有底線
+package http
+package json
+package user
+
+// Bad：冗長、大小寫混用，或是多餘
+package httpHandler
+package json_parser
+package userService // 多餘的 &#x27;Service&#x27; 後綴
+```
+
+### Avoid Package-Level State
+
+```go
+// Bad：全域的可變狀態
+var db *sql.DB
+
+func init() {
+    db, _ = sql.Open(&quot;postgres&quot;, os.Getenv(&quot;DATABASE_URL&quot;))
+}
+
+// Good：依賴注入
+type Server struct {
+    db *sql.DB
+}
+
+func NewServer(db *sql.DB) *Server {
+    return &amp;Server{db: db}
+}
+```
+
+## Struct Design
+
+### Functional Options Pattern
+
+```go
+type Server struct {
+    addr    string
+    timeout time.Duration
+    logger  *log.Logger
+}
+
+type Option func(*Server)
+
+func WithTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.timeout = d
+    }
+}
+
+func WithLogger(l *log.Logger) Option {
+    return func(s *Server) {
+        s.logger = l
+    }
+}
+
+func NewServer(addr string, opts ...Option) *Server {
+    s := &amp;Server{
+        addr:    addr,
+        timeout: 30 * time.Second, // 預設值
+        logger:  log.Default(),    // 預設值
+    }
+    for _, opt := range opts {
+        opt(s)
+    }
+    return s
+}
+
+// 用法
+server := NewServer(&quot;:8080&quot;,
+    WithTimeout(60*time.Second),
+    WithLogger(customLogger),
+)
+```
+
+### Embedding for Composition
+
+```go
+type Logger struct {
+    prefix string
+}
+
+func (l *Logger) Log(msg string) {
+    fmt.Printf(&quot;[%s] %s\n&quot;, l.prefix, msg)
+}
+
+type Server struct {
+    *Logger // 嵌入：Server 會擁有 Log 方法
+    addr    string
+}
+
+func NewServer(addr string) *Server {
+    return &amp;Server{
+        Logger: &amp;Logger{prefix: &quot;SERVER&quot;},
+        addr:   addr,
+    }
+}
+
+// 用法
+s := NewServer(&quot;:8080&quot;)
+s.Log(&quot;Starting...&quot;) // 呼叫被嵌入的 Logger.Log
+```
+
+## Memory and Performance
+
+### Preallocate Slices When Size is Known
+
+```go
+// Bad：slice 會成長很多次
+func processItems(items []Item) []Result {
+    var results []Result
+    for _, item := range items {
+        results = append(results, process(item))
+    }
+    return results
+}
+
+// Good：只配置一次
+func processItems(items []Item) []Result {
+    results := make([]Result, 0, len(items))
+    for _, item := range items {
+        results = append(results, process(item))
+    }
+    return results
+}
+```
+
+### Use sync.Pool for Frequent Allocations
+
+```go
+var bufferPool = sync.Pool{
+    New: func() interface{} {
+        return new(bytes.Buffer)
+    },
+}
+
+func ProcessRequest(data []byte) []byte {
+    buf := bufferPool.Get().(*bytes.Buffer)
+    defer func() {
+        buf.Reset()
+        bufferPool.Put(buf)
+    }()
+
+    buf.Write(data)
+    // 處理...
+
+    // buf.Bytes() 會別名到池裡的 buffer，而 deferred 的 Put 會把它
+    // 交給下一個 Get。回傳前要先複製，否則呼叫端會跟重用產生 race。
+    return bytes.Clone(buf.Bytes()) // Go 1.20+；否則用 append([]byte(nil), buf.Bytes()...)
+}
+```
+
+絕對不要在 `Put` 之後，還回傳或保留池化 buffer 的 `buf.Bytes()`：要先複製，或是讓呼叫端傳入一個 `io.Writer`，這樣就不用複製。
+
+### Avoid String Concatenation in Loops
+
+```go
+// Bad：會產生很多字串配置
+func join(parts []string) string {
+    var result string
+    for _, p := range parts {
+        result += p + &quot;,&quot;
+    }
+    return result
+}
+
+// Good：用 strings.Builder 只配置一次
+func join(parts []string) string {
+    var sb strings.Builder
+    for i, p := range parts {
+        if i &gt; 0 {
+            sb.WriteString(&quot;,&quot;)
+        }
+        sb.WriteString(p)
+    }
+    return sb.String()
+}
+
+// Best：用標準函式庫
+func join(parts []string) string {
+    return strings.Join(parts, &quot;,&quot;)
+}
+```
+
+## Go Tooling Integration
+
+### Essential Commands
+
+```bash
+# Build 和執行
+go build ./...
+go run ./cmd/myapp
+
+# 測試
+go test ./...
+go test -race ./...
+go test -cover ./...
+
+# 靜態分析
+go vet ./...
+staticcheck ./...
+golangci-lint run
+
+# Module 管理
+go mod tidy
+go mod verify
+
+# 格式化
+gofmt -w .
+goimports -w .
+```
+
+### Recommended Linter Configuration (.golangci.yml)
+
+```yaml
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+    - unparam
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  govet:
+    enable:
+      - shadow
+
+issues:
+  exclude-use-default: false
+```
+
+## Quick Reference: Go Idioms
+
+| Idiom | Description |
+|-------|-------------|
+| Accept interfaces, return structs | 函式接受 interface 參數，回傳具體型別 |
+| Errors are values | 把 error 當作一等公民的值，不是例外 |
+| Don&#x27;t communicate by sharing memory | 用 channel 協調 goroutine 之間的工作 |
+| Make the zero value useful | 型別不需要明確初始化就能運作 |
+| A little copying is better than a little dependency | 避免不必要的外部依賴 |
+| Clear is better than clever | 可讀性優先於耍聰明 |
+| gofmt is no one&#x27;s favorite but everyone&#x27;s friend | 一律用 gofmt/goimports 格式化 |
+| Return early | 先處理 error，讓正常路徑不縮排 |
+
+## Anti-Patterns to Avoid
+
+```go
+// Bad：長函式裡用 naked return
+func process() (result int, err error) {
+    // ... 50 行 ...
+    return // 到底回傳了什麼？
+}
+
+// Bad：用 panic 做流程控制
+func GetUser(id string) *User {
+    user, err := db.Find(id)
+    if err != nil {
+        panic(err) // 不要這樣做
+    }
+    return user
+}
+
+// Bad：把 context 放進 struct 傳遞
+type Request struct {
+    ctx context.Context // Context 應該是第一個參數
+    ID  string
+}
+
+// Good：Context 當作第一個參數
+func ProcessRequest(ctx context.Context, id string) error {
+    // ...
+}
+
+// Bad：混用 value receiver 和 pointer receiver
+type Counter struct{ n int }
+func (c Counter) Value() int { return c.n }    // Value receiver
+func (c *Counter) Increment() { c.n++ }        // Pointer receiver
+// 選一種風格，並保持一致
+```
+
+**Remember**：Go 程式碼應該以最好的方式保持無聊：可預測、一致、容易理解。有疑慮的時候，就保持簡單。</pre></section><section><h2>英文原文</h2><pre>---
+name: golang-patterns
+description: Idiomatic Go patterns, best practices, and conventions for building robust, efficient, and maintainable Go applications. Use when writing or reviewing Go code and idiomatic structure or conventions are in question.
+metadata:
+  origin: ECC
+---
+
+# Go Development Patterns
+
+Idiomatic Go patterns and best practices for building robust, efficient, and maintainable applications.
+
+## When to Activate
+
+- Writing new Go code
+- Reviewing Go code
+- Refactoring existing Go code
+- Designing Go packages/modules
+
+## Core Principles
+
+### 1. Simplicity and Clarity
+
+Go favors simplicity over cleverness. Code should be obvious and easy to read.
+
+```go
+// Good: Clear and direct
+func GetUser(id string) (*User, error) {
+    user, err := db.FindUser(id)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;get user %s: %w&quot;, id, err)
+    }
+    return user, nil
+}
+
+// Bad: Overly clever
+func GetUser(id string) (*User, error) {
+    return func() (*User, error) {
+        if u, e := db.FindUser(id); e == nil {
+            return u, nil
+        } else {
+            return nil, e
+        }
+    }()
+}
+```
+
+### 2. Make the Zero Value Useful
+
+Design types so their zero value is immediately usable without initialization.
+
+```go
+// Good: Zero value is useful
+type Counter struct {
+    mu    sync.Mutex
+    count int // zero value is 0, ready to use
+}
+
+func (c *Counter) Inc() {
+    c.mu.Lock()
+    c.count++
+    c.mu.Unlock()
+}
+
+// Good: bytes.Buffer works with zero value
+var buf bytes.Buffer
+buf.WriteString(&quot;hello&quot;)
+
+// Bad: Requires initialization
+type BadCounter struct {
+    counts map[string]int // nil map will panic
+}
+```
+
+### 3. Accept Interfaces, Return Structs
+
+Functions should accept interface parameters and return concrete types.
+
+```go
+// Good: Accepts interface, returns concrete type
+func ProcessData(r io.Reader) (*Result, error) {
+    data, err := io.ReadAll(r)
+    if err != nil {
+        return nil, err
+    }
+    return &amp;Result{Data: data}, nil
+}
+
+// Bad: Returns interface (hides implementation details unnecessarily)
+func ProcessData(r io.Reader) (io.Reader, error) {
+    // ...
+}
+```
+
+## Error Handling Patterns
+
+### Error Wrapping with Context
+
+```go
+// Good: Wrap errors with context
+func LoadConfig(path string) (*Config, error) {
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;load config %s: %w&quot;, path, err)
+    }
+
+    var cfg Config
+    if err := json.Unmarshal(data, &amp;cfg); err != nil {
+        return nil, fmt.Errorf(&quot;parse config %s: %w&quot;, path, err)
+    }
+
+    return &amp;cfg, nil
+}
+```
+
+### Custom Error Types
+
+```go
+// Define domain-specific errors
+type ValidationError struct {
+    Field   string
+    Message string
+}
+
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf(&quot;validation failed on %s: %s&quot;, e.Field, e.Message)
+}
+
+// Sentinel errors for common cases
+var (
+    ErrNotFound     = errors.New(&quot;resource not found&quot;)
+    ErrUnauthorized = errors.New(&quot;unauthorized&quot;)
+    ErrInvalidInput = errors.New(&quot;invalid input&quot;)
+)
+```
+
+### Error Checking with errors.Is and errors.As
+
+```go
+func HandleError(err error) {
+    // Check for specific error
+    if errors.Is(err, sql.ErrNoRows) {
+        log.Println(&quot;No records found&quot;)
+        return
+    }
+
+    // Check for error type
+    var validationErr *ValidationError
+    if errors.As(err, &amp;validationErr) {
+        log.Printf(&quot;Validation error on field %s: %s&quot;,
+            validationErr.Field, validationErr.Message)
+        return
+    }
+
+    // Unknown error
+    log.Printf(&quot;Unexpected error: %v&quot;, err)
+}
+```
+
+### Never Ignore Errors
+
+```go
+// Bad: Ignoring error with blank identifier
+result, _ := doSomething()
+
+// Good: Handle or explicitly document why it&#x27;s safe to ignore
+result, err := doSomething()
+if err != nil {
+    return err
+}
+
+// Acceptable: When error truly doesn&#x27;t matter (rare)
+_ = writer.Close() // Best-effort cleanup, error logged elsewhere
+```
+
+## Concurrency Patterns
+
+### Worker Pool
+
+```go
+func WorkerPool(jobs &lt;-chan Job, results chan&lt;- Result, numWorkers int) {
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; numWorkers; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            for job := range jobs {
+                results &lt;- process(job)
+            }
+        }()
+    }
+
+    wg.Wait()
+    close(results)
+}
+```
+
+### Context for Cancellation and Timeouts
+
+```go
+func FetchWithTimeout(ctx context.Context, url string) ([]byte, error) {
+    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+    defer cancel()
+
+    req, err := http.NewRequestWithContext(ctx, &quot;GET&quot;, url, nil)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;create request: %w&quot;, err)
+    }
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf(&quot;fetch %s: %w&quot;, url, err)
+    }
+    defer resp.Body.Close()
+
+    return io.ReadAll(resp.Body)
+}
+```
+
+### Graceful Shutdown
+
+```go
+func GracefulShutdown(server *http.Server) {
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    &lt;-quit
+    log.Println(&quot;Shutting down server...&quot;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := server.Shutdown(ctx); err != nil {
+        log.Fatalf(&quot;Server forced to shutdown: %v&quot;, err)
+    }
+
+    log.Println(&quot;Server exited&quot;)
+}
+```
+
+### errgroup for Coordinated Goroutines
+
+```go
+import &quot;golang.org/x/sync/errgroup&quot;
+
+func FetchAll(ctx context.Context, urls []string) ([][]byte, error) {
+    g, ctx := errgroup.WithContext(ctx)
+    results := make([][]byte, len(urls))
+
+    for i, url := range urls {
+        i, url := i, url // Capture loop variables
+        g.Go(func() error {
+            data, err := FetchWithTimeout(ctx, url)
+            if err != nil {
+                return err
+            }
+            results[i] = data
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+    return results, nil
+}
+```
+
+### Avoiding Goroutine Leaks
+
+```go
+// Bad: Goroutine leak if context is cancelled
+func leakyFetch(ctx context.Context, url string) &lt;-chan []byte {
+    ch := make(chan []byte)
+    go func() {
+        data, _ := fetch(url)
+        ch &lt;- data // Blocks forever if no receiver
+    }()
+    return ch
+}
+
+// Good: Properly handles cancellation
+func safeFetch(ctx context.Context, url string) &lt;-chan []byte {
+    ch := make(chan []byte, 1) // Buffered channel
+    go func() {
+        data, err := fetch(url)
+        if err != nil {
+            return
+        }
+        select {
+        case ch &lt;- data:
+        case &lt;-ctx.Done():
+        }
+    }()
+    return ch
+}
+```
+
+## Interface Design
+
+### Small, Focused Interfaces
+
+```go
+// Good: Single-method interfaces
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+type Closer interface {
+    Close() error
+}
+
+// Compose interfaces as needed
+type ReadWriteCloser interface {
+    Reader
+    Writer
+    Closer
+}
+```
+
+### Define Interfaces Where They&#x27;re Used
+
+```go
+// In the consumer package, not the provider
+package service
+
+// UserStore defines what this service needs
+type UserStore interface {
+    GetUser(id string) (*User, error)
+    SaveUser(user *User) error
+}
+
+type Service struct {
+    store UserStore
+}
+
+// Concrete implementation can be in another package
+// It doesn&#x27;t need to know about this interface
+```
+
+### Optional Behavior with Type Assertions
+
+```go
+type Flusher interface {
+    Flush() error
+}
+
+func WriteAndFlush(w io.Writer, data []byte) error {
+    if _, err := w.Write(data); err != nil {
+        return err
+    }
+
+    // Flush if supported
+    if f, ok := w.(Flusher); ok {
+        return f.Flush()
+    }
+    return nil
+}
+```
+
+## Package Organization
+
+### Standard Project Layout
+
+```text
+myproject/
+├── cmd/
+│   └── myapp/
+│       └── main.go           # Entry point
+├── internal/
+│   ├── handler/              # HTTP handlers
+│   ├── service/              # Business logic
+│   ├── repository/           # Data access
+│   └── config/               # Configuration
+├── pkg/
+│   └── client/               # Public API client
+├── api/
+│   └── v1/                   # API definitions (proto, OpenAPI)
+├── testdata/                 # Test fixtures
+├── go.mod
+├── go.sum
+└── Makefile
+```
+
+### Package Naming
+
+```go
+// Good: Short, lowercase, no underscores
+package http
+package json
+package user
+
+// Bad: Verbose, mixed case, or redundant
+package httpHandler
+package json_parser
+package userService // Redundant &#x27;Service&#x27; suffix
+```
+
+### Avoid Package-Level State
+
+```go
+// Bad: Global mutable state
+var db *sql.DB
+
+func init() {
+    db, _ = sql.Open(&quot;postgres&quot;, os.Getenv(&quot;DATABASE_URL&quot;))
+}
+
+// Good: Dependency injection
+type Server struct {
+    db *sql.DB
+}
+
+func NewServer(db *sql.DB) *Server {
+    return &amp;Server{db: db}
+}
+```
+
+## Struct Design
+
+### Functional Options Pattern
+
+```go
+type Server struct {
+    addr    string
+    timeout time.Duration
+    logger  *log.Logger
+}
+
+type Option func(*Server)
+
+func WithTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.timeout = d
+    }
+}
+
+func WithLogger(l *log.Logger) Option {
+    return func(s *Server) {
+        s.logger = l
+    }
+}
+
+func NewServer(addr string, opts ...Option) *Server {
+    s := &amp;Server{
+        addr:    addr,
+        timeout: 30 * time.Second, // default
+        logger:  log.Default(),    // default
+    }
+    for _, opt := range opts {
+        opt(s)
+    }
+    return s
+}
+
+// Usage
+server := NewServer(&quot;:8080&quot;,
+    WithTimeout(60*time.Second),
+    WithLogger(customLogger),
+)
+```
+
+### Embedding for Composition
+
+```go
+type Logger struct {
+    prefix string
+}
+
+func (l *Logger) Log(msg string) {
+    fmt.Printf(&quot;[%s] %s\n&quot;, l.prefix, msg)
+}
+
+type Server struct {
+    *Logger // Embedding - Server gets Log method
+    addr    string
+}
+
+func NewServer(addr string) *Server {
+    return &amp;Server{
+        Logger: &amp;Logger{prefix: &quot;SERVER&quot;},
+        addr:   addr,
+    }
+}
+
+// Usage
+s := NewServer(&quot;:8080&quot;)
+s.Log(&quot;Starting...&quot;) // Calls embedded Logger.Log
+```
+
+## Memory and Performance
+
+### Preallocate Slices When Size is Known
+
+```go
+// Bad: Grows slice multiple times
+func processItems(items []Item) []Result {
+    var results []Result
+    for _, item := range items {
+        results = append(results, process(item))
+    }
+    return results
+}
+
+// Good: Single allocation
+func processItems(items []Item) []Result {
+    results := make([]Result, 0, len(items))
+    for _, item := range items {
+        results = append(results, process(item))
+    }
+    return results
+}
+```
+
+### Use sync.Pool for Frequent Allocations
+
+```go
+var bufferPool = sync.Pool{
+    New: func() interface{} {
+        return new(bytes.Buffer)
+    },
+}
+
+func ProcessRequest(data []byte) []byte {
+    buf := bufferPool.Get().(*bytes.Buffer)
+    defer func() {
+        buf.Reset()
+        bufferPool.Put(buf)
+    }()
+
+    buf.Write(data)
+    // Process...
+
+    // buf.Bytes() aliases the pooled buffer, which the deferred Put hands
+    // to the next Get. Copy before returning, or callers race with reuse.
+    return bytes.Clone(buf.Bytes()) // Go 1.20+; else append([]byte(nil), buf.Bytes()...)
+}
+```
+
+Never return or retain `buf.Bytes()` from a pooled buffer past `Put`: copy it, or let the caller pass in an `io.Writer` so no copy is needed.
+
+### Avoid String Concatenation in Loops
+
+```go
+// Bad: Creates many string allocations
+func join(parts []string) string {
+    var result string
+    for _, p := range parts {
+        result += p + &quot;,&quot;
+    }
+    return result
+}
+
+// Good: Single allocation with strings.Builder
+func join(parts []string) string {
+    var sb strings.Builder
+    for i, p := range parts {
+        if i &gt; 0 {
+            sb.WriteString(&quot;,&quot;)
+        }
+        sb.WriteString(p)
+    }
+    return sb.String()
+}
+
+// Best: Use standard library
+func join(parts []string) string {
+    return strings.Join(parts, &quot;,&quot;)
+}
+```
+
+## Go Tooling Integration
+
+### Essential Commands
+
+```bash
+# Build and run
+go build ./...
+go run ./cmd/myapp
+
+# Testing
+go test ./...
+go test -race ./...
+go test -cover ./...
+
+# Static analysis
+go vet ./...
+staticcheck ./...
+golangci-lint run
+
+# Module management
+go mod tidy
+go mod verify
+
+# Formatting
+gofmt -w .
+goimports -w .
+```
+
+### Recommended Linter Configuration (.golangci.yml)
+
+```yaml
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+    - unparam
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  govet:
+    enable:
+      - shadow
+
+issues:
+  exclude-use-default: false
+```
+
+## Quick Reference: Go Idioms
+
+| Idiom | Description |
+|-------|-------------|
+| Accept interfaces, return structs | Functions accept interface params, return concrete types |
+| Errors are values | Treat errors as first-class values, not exceptions |
+| Don&#x27;t communicate by sharing memory | Use channels for coordination between goroutines |
+| Make the zero value useful | Types should work without explicit initialization |
+| A little copying is better than a little dependency | Avoid unnecessary external dependencies |
+| Clear is better than clever | Prioritize readability over cleverness |
+| gofmt is no one&#x27;s favorite but everyone&#x27;s friend | Always format with gofmt/goimports |
+| Return early | Handle errors first, keep happy path unindented |
+
+## Anti-Patterns to Avoid
+
+```go
+// Bad: Naked returns in long functions
+func process() (result int, err error) {
+    // ... 50 lines ...
+    return // What is being returned?
+}
+
+// Bad: Using panic for control flow
+func GetUser(id string) *User {
+    user, err := db.Find(id)
+    if err != nil {
+        panic(err) // Don&#x27;t do this
+    }
+    return user
+}
+
+// Bad: Passing context in struct
+type Request struct {
+    ctx context.Context // Context should be first param
+    ID  string
+}
+
+// Good: Context as first parameter
+func ProcessRequest(ctx context.Context, id string) error {
+    // ...
+}
+
+// Bad: Mixing value and pointer receivers
+type Counter struct{ n int }
+func (c Counter) Value() int { return c.n }    // Value receiver
+func (c *Counter) Increment() { c.n++ }        // Pointer receiver
+// Pick one style and be consistent
+```
+
+**Remember**: Go code should be boring in the best way - predictable, consistent, and easy to understand. When in doubt, keep it simple.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-introspection-debugging｜Skill 寫法圖鑑</title>
+<meta name="description" content="agent 失敗時用擷取、診斷、受控恢復的流程自我除錯">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agent-introspection-debugging</h1>
+<p class="meta">affaan-m ｜ 除錯與調查 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agent-introspection-debugging/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">agent 失敗時用擷取、診斷、受控恢復的流程自我除錯</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agent-introspection-debugging
+description: 針對 AI agent 失敗的結構化自我除錯工作流程，包含擷取、診斷、受控恢復和自省報告。當 agent 執行失敗，而你需要的是可重現的診斷，不是重試時使用。
+metadata:
+  origin: ECC
+---
+
+# Agent Introspection Debugging
+
+當 agent 的執行一直失敗、消耗 token 卻沒有進展、在同樣的工具上打轉，或是偏離原本的任務時，使用這個 skill。
+
+這是一個工作流程 skill，不是隱藏的 runtime。它教 agent 在升級給人類之前，先有系統地替自己除錯。
+
+## When to Activate
+
+- 達到最大工具呼叫次數／迴圈上限的失敗
+- 重複重試卻沒有往前進展
+- Context 成長或 prompt 漂移，開始降低輸出品質
+- 檔案系統或環境狀態和預期不符
+- 工具失敗，很可能透過診斷加上更小的修正動作就能恢復
+
+## Scope Boundaries
+
+在這些情況啟用這個 skill：
+- 在盲目重試之前先擷取失敗狀態
+- 診斷常見的 agent 專屬失敗模式
+- 套用受控的恢復動作
+- 產出結構化、人類可讀的除錯報告
+
+不要把這個 skill 當作以下情況的主要依據：
+- 改完程式碼之後的功能驗證；用 `verification-loop`
+- 已經有範圍更窄的 ECC skill 時的框架專屬除錯
+- 目前的 harness 無法自動強制執行的 runtime 承諾
+
+## Four-Phase Loop
+
+### Phase 1: Failure Capture
+
+在嘗試恢復之前，先精確記錄失敗。
+
+擷取：
+- 錯誤類型、訊息，以及可取得時的 stack trace
+- 最後一段有意義的工具呼叫序列
+- agent 當時想做什麼
+- 目前的 context 壓力：重複的 prompt、過大的貼上日誌、重複的計畫，或是失控的筆記
+- 目前的環境假設：cwd、branch、相關服務的狀態、預期的檔案
+
+最低限度的擷取範本：
+
+```markdown
+## Failure Capture
+- Session / task:
+- Goal in progress:
+- Error:
+- Last successful step:
+- Last failed tool / command:
+- Repeated pattern seen:
+- Environment assumptions to verify:
+```
+
+### Phase 2: Root-Cause Diagnosis
+
+在改動任何東西之前，先把失敗對應到已知的模式。
+
+| 模式 | 可能的原因 | 檢查 |
+| --- | --- | --- |
+| 最大工具呼叫次數／重複同一個指令 | 迴圈，或沒有出口的觀察路徑 | 檢查最近 N 次工具呼叫有沒有重複 |
+| Context 溢出／推理品質下降 | 無限制的筆記、重複的計畫、過大的日誌 | 檢查最近的 context 有沒有重複和低訊號的大量內容 |
+| `ECONNREFUSED` / timeout | 服務不可用或 port 錯誤 | 驗證服務健康狀態、URL 和 port 的假設 |
+| `429` / 額度耗盡 | 重試風暴或缺少 backoff | 計算重複呼叫的次數，檢查重試的間隔 |
+| 寫入後檔案不見／過時的 diff | race、錯的 cwd，或 branch 漂移 | 重新檢查路徑、cwd、git status 和檔案是否真的存在 |
+| 「修好」之後測試仍然失敗 | 假設錯了 | 隔離出確切失敗的測試，重新推導 bug |
+
+診斷的問題：
+- 這是邏輯失敗、狀態失敗、環境失敗，還是政策失敗？
+- agent 是不是忘了真正的目標，開始去優化錯的子任務？
+- 這個失敗是確定性的還是暫時的？
+- 能驗證這個診斷的、最小又可回復的動作是什麼？
+
+### Phase 3: Contained Recovery
+
+用能改變診斷面的最小動作來恢復。
+
+安全的恢復動作：
+- 停止重複重試，重新陳述假設
+- 修剪低訊號的 context，只保留目前的目標、阻礙和證據
+- 重新檢查實際的檔案系統／branch／行程狀態
+- 把任務縮小到一個失敗的指令、一個檔案，或一個測試
+- 從臆測式的推理，切換到直接觀察
+- 當失敗風險高，或是被外部因素卡住時，升級給人類
+
+不要宣稱沒有根據的自動修復動作，像是「重設 agent 狀態」或「更新 harness 設定」，除非你真的在目前的環境裡用實際的工具在做這些事。
+
+受控恢復的檢查清單：
+
+```markdown
+## Recovery Action
+- Diagnosis chosen:
+- Smallest action taken:
+- Why this is safe:
+- What evidence would prove the fix worked:
+```
+
+### Phase 4: Introspection Report
+
+用一份報告結尾，讓下一個 agent 或人類能看懂這次恢復。
+
+```markdown
+## Agent Self-Debug Report
+- Session / task:
+- Failure:
+- Root cause:
+- Recovery action:
+- Result: success | partial | blocked
+- Token / time burn risk:
+- Follow-up needed:
+- Preventive change to encode later:
+```
+
+## Recovery Heuristics
+
+依這個順序優先採用這些介入方式：
+
+1. 用一句話重新陳述真正的目標。
+2. 驗證世界的狀態，不要相信記憶。
+3. 縮小失敗的範圍。
+4. 執行一個有鑑別力的檢查。
+5. 然後才重試。
+
+不好的模式：
+- 用稍微不同的措辭，把同一個動作重試三次
+
+好的模式：
+- 擷取失敗
+- 分類模式
+- 執行一個直接的檢查
+- 只有在檢查支持時才改變計畫
+
+## Integration with ECC
+
+- 如果有改過程式碼，恢復之後用 `verification-loop`。
+- 當失敗模式值得變成直覺或之後的 skill 時，用 `continuous-learning-v2`。
+- 當問題不是技術失敗，而是決策不明確時，用 `council`。
+- 如果失敗來自衝突的本機狀態或 repo 漂移，用 `workspace-surface-audit`。
+
+## Output Standard
+
+當這個 skill 啟用時，不要只用「我修好了」結尾。
+
+一定要提供：
+- 失敗模式
+- 根本原因的假設
+- 恢復動作
+- 證明情況現在已經變好、或仍然被卡住的證據</pre></section><section><h2>英文原文</h2><pre>---
+name: agent-introspection-debugging
+description: Structured self-debugging workflow for AI agent failures using capture, diagnosis, contained recovery, and introspection reports. Use when an agent run fails and you need a reproducible diagnosis instead of a retry.
+metadata:
+  origin: ECC
+---
+
+# Agent Introspection Debugging
+
+Use this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.
+
+This is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before escalating to a human.
+
+## When to Activate
+
+- Maximum tool call / loop-limit failures
+- Repeated retries with no forward progress
+- Context growth or prompt drift that starts degrading output quality
+- File-system or environment state mismatch between expectation and reality
+- Tool failures that are likely recoverable with diagnosis and a smaller corrective action
+
+## Scope Boundaries
+
+Activate this skill for:
+- capturing failure state before retrying blindly
+- diagnosing common agent-specific failure patterns
+- applying contained recovery actions
+- producing a structured human-readable debug report
+
+Do not use this skill as the primary source for:
+- feature verification after code changes; use `verification-loop`
+- framework-specific debugging when a narrower ECC skill already exists
+- runtime promises the current harness cannot enforce automatically
+
+## Four-Phase Loop
+
+### Phase 1: Failure Capture
+
+Before trying to recover, record the failure precisely.
+
+Capture:
+- error type, message, and stack trace when available
+- last meaningful tool call sequence
+- what the agent was trying to do
+- current context pressure: repeated prompts, oversized pasted logs, duplicated plans, or runaway notes
+- current environment assumptions: cwd, branch, relevant service state, expected files
+
+Minimum capture template:
+
+```markdown
+## Failure Capture
+- Session / task:
+- Goal in progress:
+- Error:
+- Last successful step:
+- Last failed tool / command:
+- Repeated pattern seen:
+- Environment assumptions to verify:
+```
+
+### Phase 2: Root-Cause Diagnosis
+
+Match the failure to a known pattern before changing anything.
+
+| Pattern | Likely Cause | Check |
+| --- | --- | --- |
+| Maximum tool calls / repeated same command | loop or no-exit observer path | inspect the last N tool calls for repetition |
+| Context overflow / degraded reasoning | unbounded notes, repeated plans, oversized logs | inspect recent context for duplication and low-signal bulk |
+| `ECONNREFUSED` / timeout | service unavailable or wrong port | verify service health, URL, and port assumptions |
+| `429` / quota exhaustion | retry storm or missing backoff | count repeated calls and inspect retry spacing |
+| file missing after write / stale diff | race, wrong cwd, or branch drift | re-check path, cwd, git status, and actual file existence |
+| tests still failing after “fix” | wrong hypothesis | isolate the exact failing test and re-derive the bug |
+
+Diagnosis questions:
+- is this a logic failure, state failure, environment failure, or policy failure?
+- did the agent lose the real objective and start optimizing the wrong subtask?
+- is the failure deterministic or transient?
+- what is the smallest reversible action that would validate the diagnosis?
+
+### Phase 3: Contained Recovery
+
+Recover with the smallest action that changes the diagnosis surface.
+
+Safe recovery actions:
+- stop repeated retries and restate the hypothesis
+- trim low-signal context and keep only the active goal, blockers, and evidence
+- re-check the actual filesystem / branch / process state
+- narrow the task to one failing command, one file, or one test
+- switch from speculative reasoning to direct observation
+- escalate to a human when the failure is high-risk or externally blocked
+
+Do not claim unsupported auto-healing actions like “reset agent state” or “update harness config” unless you are actually doing them through real tools in the current environment.
+
+Contained recovery checklist:
+
+```markdown
+## Recovery Action
+- Diagnosis chosen:
+- Smallest action taken:
+- Why this is safe:
+- What evidence would prove the fix worked:
+```
+
+### Phase 4: Introspection Report
+
+End with a report that makes the recovery legible to the next agent or human.
+
+```markdown
+## Agent Self-Debug Report
+- Session / task:
+- Failure:
+- Root cause:
+- Recovery action:
+- Result: success | partial | blocked
+- Token / time burn risk:
+- Follow-up needed:
+- Preventive change to encode later:
+```
+
+## Recovery Heuristics
+
+Prefer these interventions in order:
+
+1. Restate the real objective in one sentence.
+2. Verify the world state instead of trusting memory.
+3. Shrink the failing scope.
+4. Run one discriminating check.
+5. Only then retry.
+
+Bad pattern:
+- retrying the same action three times with slightly different wording
+
+Good pattern:
+- capture failure
+- classify the pattern
+- run one direct check
+- change the plan only if the check supports it
+
+## Integration with ECC
+
+- Use `verification-loop` after recovery if code was changed.
+- Use `continuous-learning-v2` when the failure pattern is worth turning into an instinct or later skill.
+- Use `council` when the issue is not technical failure but decision ambiguity.
+- Use `workspace-surface-audit` if the failure came from conflicting local state or repo drift.
+
+## Output Standard
+
+When this skill is active, do not end with “I fixed it” alone.
+
+Always provide:
+- the failure pattern
+- the root-cause hypothesis
+- the recovery action
+- the evidence that the situation is now better or still blocked</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

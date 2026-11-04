@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>database-migrations｜Skill 寫法圖鑑</title>
+<meta name="description" content="安全可回復的 schema migration，涵蓋零停機改名、concurrent index 和分批 backfill">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>database-migrations</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/database-migrations/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">安全可回復的 schema migration，涵蓋零停機改名、concurrent index 和分批 backfill</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: database-migrations
+description: &quot;安全、可回復的資料庫 migration 模式：production 只往前（forward-only）的變更、用 expand-contract 做零停機改名、concurrent index、分批 backfill，以及 PostgreSQL、Prisma、Drizzle、Kysely、Django 和 golang-migrate 各工具的工作流程。當要寫 schema 或資料 migration、對大型資料表加欄位或 index、規劃 rollback，或準備零停機 deploy 時使用。&quot;
+metadata:
+  origin: ECC
+---
+
+# 資料庫 Migration 模式
+
+給 production 系統用的、安全且可回復的資料庫 schema 變更。
+
+## 何時啟用
+
+- 建立或修改資料庫的資料表
+- 新增/移除欄位或 index
+- 執行資料 migration（backfill、轉換）
+- 規劃零停機的 schema 變更
+- 為新專案設定 migration 工具
+
+## 核心原則
+
+1. **每個變更都是一個 migration**，絕不手動修改 production 資料庫
+2. **migration 在 production 只往前走**，rollback 用新的往前 migration 來做
+3. **schema 和資料 migration 要分開**，絕不在同一個 migration 裡混用 DDL 和 DML
+4. **用 production 規模的資料測試 migration**，在 100 筆資料上沒問題的 migration，在 1,000 萬筆上可能會鎖表
+5. **migration 一旦 deploy 就不可變**，絕不修改已經在 production 跑過的 migration
+
+## Migration 安全檢查清單
+
+套用任何 migration 之前：
+
+- [ ] migration 同時有 UP 和 DOWN（或明確標示為不可逆）
+- [ ] 大型資料表上沒有整張表的鎖（用 concurrent 操作）
+- [ ] 新欄位有預設值或可為 null（絕不要加沒有預設值的 NOT NULL）
+- [ ] index 是用 concurrent 方式建立（對既有的資料表，不要跟 CREATE TABLE 寫在一起）
+- [ ] 資料 backfill 是獨立於 schema 變更之外的 migration
+- [ ] 已經對 production 資料的副本測試過
+- [ ] 已經記錄 rollback 計畫
+
+## PostgreSQL 模式
+
+### 安全地新增欄位
+
+```sql
+-- GOOD: Nullable column, no lock
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+
+-- GOOD: Column with default (Postgres 11+ is instant, no rewrite)
+ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+
+-- BAD: NOT NULL without default on existing table (requires full rewrite)
+ALTER TABLE users ADD COLUMN role TEXT NOT NULL;
+-- This locks the table and rewrites every row
+```
+
+### 不停機新增 Index
+
+```sql
+-- BAD: Blocks writes on large tables
+CREATE INDEX idx_users_email ON users (email);
+
+-- GOOD: Non-blocking, allows concurrent writes
+CREATE INDEX CONCURRENTLY idx_users_email ON users (email);
+
+-- Note: CONCURRENTLY cannot run inside a transaction block
+-- Most migration tools need special handling for this
+```
+
+### 欄位改名（零停機）
+
+絕對不要在 production 直接改名。用 expand-contract 模式：
+
+```sql
+-- Step 1: Add new column (migration 001)
+ALTER TABLE users ADD COLUMN display_name TEXT;
+
+-- Step 2: Backfill data (migration 002, data migration)
+UPDATE users SET display_name = username WHERE display_name IS NULL;
+
+-- Step 3: Update application code to read/write both columns
+-- Deploy application changes
+
+-- Step 4: Stop writing to old column, drop it (migration 003)
+ALTER TABLE users DROP COLUMN username;
+```
+
+### 安全地移除欄位
+
+```sql
+-- Step 1: Remove all application references to the column
+-- Step 2: Deploy application without the column reference
+-- Step 3: Drop column in next migration
+ALTER TABLE orders DROP COLUMN legacy_status;
+
+-- For Django: use SeparateDatabaseAndState to remove from model
+-- without generating DROP COLUMN (then drop in next migration)
+```
+
+### 大型資料 Migration
+
+```sql
+-- BAD: Updates all rows in one transaction (locks table)
+UPDATE users SET normalized_email = LOWER(email);
+
+-- GOOD: Batch update with progress
+DO $$
+DECLARE
+  batch_size INT := 10000;
+  rows_updated INT;
+BEGIN
+  LOOP
+    UPDATE users
+    SET normalized_email = LOWER(email)
+    WHERE id IN (
+      SELECT id FROM users
+      WHERE normalized_email IS NULL
+      LIMIT batch_size
+      FOR UPDATE SKIP LOCKED
+    );
+    GET DIAGNOSTICS rows_updated = ROW_COUNT;
+    RAISE NOTICE &#x27;Updated % rows&#x27;, rows_updated;
+    EXIT WHEN rows_updated = 0;
+    COMMIT;
+  END LOOP;
+END $$;
+```
+
+## Prisma（TypeScript/Node.js）
+
+### 工作流程
+
+```bash
+# Create migration from schema changes
+npx prisma migrate dev --name add_user_avatar
+
+# Apply pending migrations in production
+npx prisma migrate deploy
+
+# Reset database (dev only)
+npx prisma migrate reset
+
+# Generate client after schema changes
+npx prisma generate
+```
+
+### Schema 範例
+
+```prisma
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map(&quot;avatar_url&quot;)
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+  updatedAt DateTime @updatedAt @map(&quot;updated_at&quot;)
+  orders    Order[]
+
+  @@map(&quot;users&quot;)
+  @@index([email])
+}
+```
+
+### 自訂 SQL Migration
+
+用在 Prisma 表達不出來的操作（concurrent index、資料 backfill）：
+
+```bash
+# Create empty migration, then edit the SQL manually
+npx prisma migrate dev --create-only --name add_email_index
+```
+
+```sql
+-- migrations/20240115_add_email_index/migration.sql
+-- Prisma cannot generate CONCURRENTLY, so we write it manually
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users (email);
+```
+
+## Drizzle（TypeScript/Node.js）
+
+### 工作流程
+
+```bash
+# Generate migration from schema changes
+npx drizzle-kit generate
+
+# Apply migrations
+npx drizzle-kit migrate
+
+# Push schema directly (dev only, no migration file)
+npx drizzle-kit push
+```
+
+### Schema 範例
+
+```typescript
+import { pgTable, text, timestamp, uuid, boolean } from &quot;drizzle-orm/pg-core&quot;;
+
+export const users = pgTable(&quot;users&quot;, {
+  id: uuid(&quot;id&quot;).primaryKey().defaultRandom(),
+  email: text(&quot;email&quot;).notNull().unique(),
+  name: text(&quot;name&quot;),
+  isActive: boolean(&quot;is_active&quot;).notNull().default(true),
+  createdAt: timestamp(&quot;created_at&quot;).notNull().defaultNow(),
+  updatedAt: timestamp(&quot;updated_at&quot;).notNull().defaultNow(),
+});
+```
+
+## Kysely（TypeScript/Node.js）
+
+### 工作流程（kysely-ctl）
+
+```bash
+# Initialize config file (kysely.config.ts)
+kysely init
+
+# Create a new migration file
+kysely migrate make add_user_avatar
+
+# Apply all pending migrations
+kysely migrate latest
+
+# Rollback last migration
+kysely migrate down
+
+# Show migration status
+kysely migrate list
+```
+
+### Migration 檔案
+
+```typescript
+// migrations/2024_01_15_001_create_user_profile.ts
+import { type Kysely, sql } from &#x27;kysely&#x27;
+
+// IMPORTANT: Always use Kysely&lt;any&gt;, not your typed DB interface.
+// Migrations are frozen in time and must not depend on current schema types.
+export async function up(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema
+    .createTable(&#x27;user_profile&#x27;)
+    .addColumn(&#x27;id&#x27;, &#x27;serial&#x27;, (col) =&gt; col.primaryKey())
+    .addColumn(&#x27;email&#x27;, &#x27;varchar(255)&#x27;, (col) =&gt; col.notNull().unique())
+    .addColumn(&#x27;avatar_url&#x27;, &#x27;text&#x27;)
+    .addColumn(&#x27;created_at&#x27;, &#x27;timestamp&#x27;, (col) =&gt;
+      col.defaultTo(sql`now()`).notNull()
+    )
+    .execute()
+
+  await db.schema
+    .createIndex(&#x27;idx_user_profile_avatar&#x27;)
+    .on(&#x27;user_profile&#x27;)
+    .column(&#x27;avatar_url&#x27;)
+    .execute()
+}
+
+export async function down(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema.dropTable(&#x27;user_profile&#x27;).execute()
+}
+```
+
+### 用程式執行的 Migrator
+
+```typescript
+import { Migrator, FileMigrationProvider } from &#x27;kysely&#x27;
+import { promises as fs } from &#x27;fs&#x27;
+import * as path from &#x27;path&#x27;
+// ESM only — CJS can use __dirname directly
+import { fileURLToPath } from &#x27;url&#x27;
+const migrationFolder = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  &#x27;./migrations&#x27;,
+)
+
+// `db` is your Kysely&lt;any&gt; database instance
+const migrator = new Migrator({
+  db,
+  provider: new FileMigrationProvider({
+    fs,
+    path,
+    migrationFolder,
+  }),
+  // WARNING: Only enable in development. Disables timestamp-ordering
+  // validation, which can cause schema drift between environments.
+  // allowUnorderedMigrations: true,
+})
+
+const { error, results } = await migrator.migrateToLatest()
+
+results?.forEach((it) =&gt; {
+  if (it.status === &#x27;Success&#x27;) {
+    console.log(`migration &quot;${it.migrationName}&quot; executed successfully`)
+  } else if (it.status === &#x27;Error&#x27;) {
+    console.error(`failed to execute migration &quot;${it.migrationName}&quot;`)
+  }
+})
+
+if (error) {
+  console.error(&#x27;migration failed&#x27;, error)
+  process.exit(1)
+}
+```
+
+## Django（Python）
+
+### 工作流程
+
+```bash
+# Generate migration from model changes
+python manage.py makemigrations
+
+# Apply migrations
+python manage.py migrate
+
+# Show migration status
+python manage.py showmigrations
+
+# Generate empty migration for custom SQL
+python manage.py makemigrations --empty app_name -n description
+```
+
+### 資料 Migration
+
+```python
+from django.db import migrations
+
+def backfill_display_names(apps, schema_editor):
+    User = apps.get_model(&quot;accounts&quot;, &quot;User&quot;)
+    batch_size = 5000
+    users = User.objects.filter(display_name=&quot;&quot;)
+    while users.exists():
+        batch = list(users[:batch_size])
+        for user in batch:
+            user.display_name = user.username
+        User.objects.bulk_update(batch, [&quot;display_name&quot;], batch_size=batch_size)
+
+def reverse_backfill(apps, schema_editor):
+    pass  # Data migration, no reverse needed
+
+class Migration(migrations.Migration):
+    dependencies = [(&quot;accounts&quot;, &quot;0015_add_display_name&quot;)]
+
+    operations = [
+        migrations.RunPython(backfill_display_names, reverse_backfill),
+    ]
+```
+
+### SeparateDatabaseAndState
+
+從 Django model 移除欄位，但不立刻從資料庫刪掉它：
+
+```python
+class Migration(migrations.Migration):
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(model_name=&quot;user&quot;, name=&quot;legacy_field&quot;),
+            ],
+            database_operations=[],  # Don&#x27;t touch the DB yet
+        ),
+    ]
+```
+
+## golang-migrate（Go）
+
+### 工作流程
+
+```bash
+# Create migration pair
+migrate create -ext sql -dir migrations -seq add_user_avatar
+
+# Apply all pending migrations
+migrate -path migrations -database &quot;$DATABASE_URL&quot; up
+
+# Rollback last migration
+migrate -path migrations -database &quot;$DATABASE_URL&quot; down 1
+
+# Force version (fix dirty state)
+migrate -path migrations -database &quot;$DATABASE_URL&quot; force VERSION
+```
+
+### Migration 檔案
+
+```sql
+-- migrations/000003_add_user_avatar.up.sql
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+CREATE INDEX CONCURRENTLY idx_users_avatar ON users (avatar_url) WHERE avatar_url IS NOT NULL;
+
+-- migrations/000003_add_user_avatar.down.sql
+DROP INDEX IF EXISTS idx_users_avatar;
+ALTER TABLE users DROP COLUMN IF EXISTS avatar_url;
+```
+
+## 零停機 Migration 策略
+
+對關鍵的 production 變更，照 expand-contract 模式：
+
+```
+Phase 1: EXPAND
+  - Add new column/table (nullable or with default)
+  - Deploy: app writes to BOTH old and new
+  - Backfill existing data
+
+Phase 2: MIGRATE
+  - Deploy: app reads from NEW, writes to BOTH
+  - Verify data consistency
+
+Phase 3: CONTRACT
+  - Deploy: app only uses NEW
+  - Drop old column/table in separate migration
+```
+
+### 時程範例
+
+```
+Day 1: Migration adds new_status column (nullable)
+Day 1: Deploy app v2 — writes to both status and new_status
+Day 2: Run backfill migration for existing rows
+Day 3: Deploy app v3 — reads from new_status only
+Day 7: Migration drops old status column
+```
+
+## 反模式
+
+| 反模式 | 為什麼會失敗 | 更好的做法 |
+|-------------|-------------|-----------------|
+| 在 production 手動下 SQL | 沒有稽核軌跡，無法重現 | 一律用 migration 檔案 |
+| 修改已 deploy 的 migration | 造成各環境之間漂移 | 改成建立新的 migration |
+| 沒有預設值的 NOT NULL | 鎖表、重寫所有資料列 | 先加 nullable，backfill，再加限制 |
+| 在大型資料表上內嵌建立 index | 建立期間阻擋寫入 | CREATE INDEX CONCURRENTLY |
+| schema + 資料放在同一個 migration | 難以 rollback、transaction 太長 | 分成不同的 migration |
+| 移除程式碼之前就刪欄位 | 應用程式因為缺欄位而出錯 | 先移除程式碼，下次 deploy 再刪欄位 |</pre></section><section><h2>英文原文</h2><pre>---
+name: database-migrations
+description: &quot;Safe, reversible database migration patterns: forward-only production changes, expand-contract zero-downtime renames, concurrent indexes, batched backfills, and per-tool workflows for PostgreSQL, Prisma, Drizzle, Kysely, Django, and golang-migrate. Use when writing a schema or data migration, adding a column or index to a large table, planning a rollback, or preparing a zero-downtime deploy.&quot;
+metadata:
+  origin: ECC
+---
+
+# Database Migration Patterns
+
+Safe, reversible database schema changes for production systems.
+
+## When to Activate
+
+- Creating or altering database tables
+- Adding/removing columns or indexes
+- Running data migrations (backfill, transform)
+- Planning zero-downtime schema changes
+- Setting up migration tooling for a new project
+
+## Core Principles
+
+1. **Every change is a migration** — never alter production databases manually
+2. **Migrations are forward-only in production** — rollbacks use new forward migrations
+3. **Schema and data migrations are separate** — never mix DDL and DML in one migration
+4. **Test migrations against production-sized data** — a migration that works on 100 rows may lock on 10M
+5. **Migrations are immutable once deployed** — never edit a migration that has run in production
+
+## Migration Safety Checklist
+
+Before applying any migration:
+
+- [ ] Migration has both UP and DOWN (or is explicitly marked irreversible)
+- [ ] No full table locks on large tables (use concurrent operations)
+- [ ] New columns have defaults or are nullable (never add NOT NULL without default)
+- [ ] Indexes created concurrently (not inline with CREATE TABLE for existing tables)
+- [ ] Data backfill is a separate migration from schema change
+- [ ] Tested against a copy of production data
+- [ ] Rollback plan documented
+
+## PostgreSQL Patterns
+
+### Adding a Column Safely
+
+```sql
+-- GOOD: Nullable column, no lock
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+
+-- GOOD: Column with default (Postgres 11+ is instant, no rewrite)
+ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+
+-- BAD: NOT NULL without default on existing table (requires full rewrite)
+ALTER TABLE users ADD COLUMN role TEXT NOT NULL;
+-- This locks the table and rewrites every row
+```
+
+### Adding an Index Without Downtime
+
+```sql
+-- BAD: Blocks writes on large tables
+CREATE INDEX idx_users_email ON users (email);
+
+-- GOOD: Non-blocking, allows concurrent writes
+CREATE INDEX CONCURRENTLY idx_users_email ON users (email);
+
+-- Note: CONCURRENTLY cannot run inside a transaction block
+-- Most migration tools need special handling for this
+```
+
+### Renaming a Column (Zero-Downtime)
+
+Never rename directly in production. Use the expand-contract pattern:
+
+```sql
+-- Step 1: Add new column (migration 001)
+ALTER TABLE users ADD COLUMN display_name TEXT;
+
+-- Step 2: Backfill data (migration 002, data migration)
+UPDATE users SET display_name = username WHERE display_name IS NULL;
+
+-- Step 3: Update application code to read/write both columns
+-- Deploy application changes
+
+-- Step 4: Stop writing to old column, drop it (migration 003)
+ALTER TABLE users DROP COLUMN username;
+```
+
+### Removing a Column Safely
+
+```sql
+-- Step 1: Remove all application references to the column
+-- Step 2: Deploy application without the column reference
+-- Step 3: Drop column in next migration
+ALTER TABLE orders DROP COLUMN legacy_status;
+
+-- For Django: use SeparateDatabaseAndState to remove from model
+-- without generating DROP COLUMN (then drop in next migration)
+```
+
+### Large Data Migrations
+
+```sql
+-- BAD: Updates all rows in one transaction (locks table)
+UPDATE users SET normalized_email = LOWER(email);
+
+-- GOOD: Batch update with progress
+DO $$
+DECLARE
+  batch_size INT := 10000;
+  rows_updated INT;
+BEGIN
+  LOOP
+    UPDATE users
+    SET normalized_email = LOWER(email)
+    WHERE id IN (
+      SELECT id FROM users
+      WHERE normalized_email IS NULL
+      LIMIT batch_size
+      FOR UPDATE SKIP LOCKED
+    );
+    GET DIAGNOSTICS rows_updated = ROW_COUNT;
+    RAISE NOTICE &#x27;Updated % rows&#x27;, rows_updated;
+    EXIT WHEN rows_updated = 0;
+    COMMIT;
+  END LOOP;
+END $$;
+```
+
+## Prisma (TypeScript/Node.js)
+
+### Workflow
+
+```bash
+# Create migration from schema changes
+npx prisma migrate dev --name add_user_avatar
+
+# Apply pending migrations in production
+npx prisma migrate deploy
+
+# Reset database (dev only)
+npx prisma migrate reset
+
+# Generate client after schema changes
+npx prisma generate
+```
+
+### Schema Example
+
+```prisma
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map(&quot;avatar_url&quot;)
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+  updatedAt DateTime @updatedAt @map(&quot;updated_at&quot;)
+  orders    Order[]
+
+  @@map(&quot;users&quot;)
+  @@index([email])
+}
+```
+
+### Custom SQL Migration
+
+For operations Prisma cannot express (concurrent indexes, data backfills):
+
+```bash
+# Create empty migration, then edit the SQL manually
+npx prisma migrate dev --create-only --name add_email_index
+```
+
+```sql
+-- migrations/20240115_add_email_index/migration.sql
+-- Prisma cannot generate CONCURRENTLY, so we write it manually
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users (email);
+```
+
+## Drizzle (TypeScript/Node.js)
+
+### Workflow
+
+```bash
+# Generate migration from schema changes
+npx drizzle-kit generate
+
+# Apply migrations
+npx drizzle-kit migrate
+
+# Push schema directly (dev only, no migration file)
+npx drizzle-kit push
+```
+
+### Schema Example
+
+```typescript
+import { pgTable, text, timestamp, uuid, boolean } from &quot;drizzle-orm/pg-core&quot;;
+
+export const users = pgTable(&quot;users&quot;, {
+  id: uuid(&quot;id&quot;).primaryKey().defaultRandom(),
+  email: text(&quot;email&quot;).notNull().unique(),
+  name: text(&quot;name&quot;),
+  isActive: boolean(&quot;is_active&quot;).notNull().default(true),
+  createdAt: timestamp(&quot;created_at&quot;).notNull().defaultNow(),
+  updatedAt: timestamp(&quot;updated_at&quot;).notNull().defaultNow(),
+});
+```
+
+## Kysely (TypeScript/Node.js)
+
+### Workflow (kysely-ctl)
+
+```bash
+# Initialize config file (kysely.config.ts)
+kysely init
+
+# Create a new migration file
+kysely migrate make add_user_avatar
+
+# Apply all pending migrations
+kysely migrate latest
+
+# Rollback last migration
+kysely migrate down
+
+# Show migration status
+kysely migrate list
+```
+
+### Migration File
+
+```typescript
+// migrations/2024_01_15_001_create_user_profile.ts
+import { type Kysely, sql } from &#x27;kysely&#x27;
+
+// IMPORTANT: Always use Kysely&lt;any&gt;, not your typed DB interface.
+// Migrations are frozen in time and must not depend on current schema types.
+export async function up(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema
+    .createTable(&#x27;user_profile&#x27;)
+    .addColumn(&#x27;id&#x27;, &#x27;serial&#x27;, (col) =&gt; col.primaryKey())
+    .addColumn(&#x27;email&#x27;, &#x27;varchar(255)&#x27;, (col) =&gt; col.notNull().unique())
+    .addColumn(&#x27;avatar_url&#x27;, &#x27;text&#x27;)
+    .addColumn(&#x27;created_at&#x27;, &#x27;timestamp&#x27;, (col) =&gt;
+      col.defaultTo(sql`now()`).notNull()
+    )
+    .execute()
+
+  await db.schema
+    .createIndex(&#x27;idx_user_profile_avatar&#x27;)
+    .on(&#x27;user_profile&#x27;)
+    .column(&#x27;avatar_url&#x27;)
+    .execute()
+}
+
+export async function down(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema.dropTable(&#x27;user_profile&#x27;).execute()
+}
+```
+
+### Programmatic Migrator
+
+```typescript
+import { Migrator, FileMigrationProvider } from &#x27;kysely&#x27;
+import { promises as fs } from &#x27;fs&#x27;
+import * as path from &#x27;path&#x27;
+// ESM only — CJS can use __dirname directly
+import { fileURLToPath } from &#x27;url&#x27;
+const migrationFolder = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  &#x27;./migrations&#x27;,
+)
+
+// `db` is your Kysely&lt;any&gt; database instance
+const migrator = new Migrator({
+  db,
+  provider: new FileMigrationProvider({
+    fs,
+    path,
+    migrationFolder,
+  }),
+  // WARNING: Only enable in development. Disables timestamp-ordering
+  // validation, which can cause schema drift between environments.
+  // allowUnorderedMigrations: true,
+})
+
+const { error, results } = await migrator.migrateToLatest()
+
+results?.forEach((it) =&gt; {
+  if (it.status === &#x27;Success&#x27;) {
+    console.log(`migration &quot;${it.migrationName}&quot; executed successfully`)
+  } else if (it.status === &#x27;Error&#x27;) {
+    console.error(`failed to execute migration &quot;${it.migrationName}&quot;`)
+  }
+})
+
+if (error) {
+  console.error(&#x27;migration failed&#x27;, error)
+  process.exit(1)
+}
+```
+
+## Django (Python)
+
+### Workflow
+
+```bash
+# Generate migration from model changes
+python manage.py makemigrations
+
+# Apply migrations
+python manage.py migrate
+
+# Show migration status
+python manage.py showmigrations
+
+# Generate empty migration for custom SQL
+python manage.py makemigrations --empty app_name -n description
+```
+
+### Data Migration
+
+```python
+from django.db import migrations
+
+def backfill_display_names(apps, schema_editor):
+    User = apps.get_model(&quot;accounts&quot;, &quot;User&quot;)
+    batch_size = 5000
+    users = User.objects.filter(display_name=&quot;&quot;)
+    while users.exists():
+        batch = list(users[:batch_size])
+        for user in batch:
+            user.display_name = user.username
+        User.objects.bulk_update(batch, [&quot;display_name&quot;], batch_size=batch_size)
+
+def reverse_backfill(apps, schema_editor):
+    pass  # Data migration, no reverse needed
+
+class Migration(migrations.Migration):
+    dependencies = [(&quot;accounts&quot;, &quot;0015_add_display_name&quot;)]
+
+    operations = [
+        migrations.RunPython(backfill_display_names, reverse_backfill),
+    ]
+```
+
+### SeparateDatabaseAndState
+
+Remove a column from the Django model without dropping it from the database immediately:
+
+```python
+class Migration(migrations.Migration):
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(model_name=&quot;user&quot;, name=&quot;legacy_field&quot;),
+            ],
+            database_operations=[],  # Don&#x27;t touch the DB yet
+        ),
+    ]
+```
+
+## golang-migrate (Go)
+
+### Workflow
+
+```bash
+# Create migration pair
+migrate create -ext sql -dir migrations -seq add_user_avatar
+
+# Apply all pending migrations
+migrate -path migrations -database &quot;$DATABASE_URL&quot; up
+
+# Rollback last migration
+migrate -path migrations -database &quot;$DATABASE_URL&quot; down 1
+
+# Force version (fix dirty state)
+migrate -path migrations -database &quot;$DATABASE_URL&quot; force VERSION
+```
+
+### Migration Files
+
+```sql
+-- migrations/000003_add_user_avatar.up.sql
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+CREATE INDEX CONCURRENTLY idx_users_avatar ON users (avatar_url) WHERE avatar_url IS NOT NULL;
+
+-- migrations/000003_add_user_avatar.down.sql
+DROP INDEX IF EXISTS idx_users_avatar;
+ALTER TABLE users DROP COLUMN IF EXISTS avatar_url;
+```
+
+## Zero-Downtime Migration Strategy
+
+For critical production changes, follow the expand-contract pattern:
+
+```
+Phase 1: EXPAND
+  - Add new column/table (nullable or with default)
+  - Deploy: app writes to BOTH old and new
+  - Backfill existing data
+
+Phase 2: MIGRATE
+  - Deploy: app reads from NEW, writes to BOTH
+  - Verify data consistency
+
+Phase 3: CONTRACT
+  - Deploy: app only uses NEW
+  - Drop old column/table in separate migration
+```
+
+### Timeline Example
+
+```
+Day 1: Migration adds new_status column (nullable)
+Day 1: Deploy app v2 — writes to both status and new_status
+Day 2: Run backfill migration for existing rows
+Day 3: Deploy app v3 — reads from new_status only
+Day 7: Migration drops old status column
+```
+
+## Anti-Patterns
+
+| Anti-Pattern | Why It Fails | Better Approach |
+|-------------|-------------|-----------------|
+| Manual SQL in production | No audit trail, unrepeatable | Always use migration files |
+| Editing deployed migrations | Causes drift between environments | Create new migration instead |
+| NOT NULL without default | Locks table, rewrites all rows | Add nullable, backfill, then add constraint |
+| Inline index on large table | Blocks writes during build | CREATE INDEX CONCURRENTLY |
+| Schema + data in one migration | Hard to rollback, long transactions | Separate migrations |
+| Dropping column before removing code | Application errors on missing column | Remove code first, drop column next deploy |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

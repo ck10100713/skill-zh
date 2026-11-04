@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agentic-os｜Skill 寫法圖鑑</title>
+<meta name="description" content="把 Claude Code 當持久作業系統，用 kernel、專家 agent 和檔案記憶建多 agent 系統">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>agentic-os</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/agentic-os/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把 Claude Code 當持久作業系統，用 kernel、專家 agent 和檔案記憶建多 agent 系統</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: agentic-os
+description: 在 Claude Code 上建構持久的多 agent 作業系統。涵蓋 kernel 架構、專家 agent、slash command、以檔案為基礎的記憶、排程自動化，以及不靠外部資料庫的狀態管理。想在 Claude Code 上建一個有自己的記憶、指令和排程的持久多 agent 系統時使用。
+metadata:
+  origin: ECC
+---
+
+# Agentic OS
+
+把 Claude Code 當成持久的 runtime / 作業系統，而不是聊天 session。這個 skill 把正式環境 agentic 設定所用的架構整理成規範：一份把任務分派給專家 agent 的 kernel 設定、持久的檔案式記憶、排程自動化，以及 JSON/markdown 資料層。
+
+## 何時啟用
+
+- 在 Claude Code 裡建構多 agent 工作流程
+- 設定能撐過 session 重啟的持久 Claude Code 自動化
+- 為重複性任務建立「個人 OS」或「agentic OS」
+- 使用者說「agentic OS」「personal OS」「multi-agent」「agent coordinator」「persistent agent」
+- 規劃長期進行、context 必須跨 session 保留下來的專案
+
+## 架構概覽
+
+Agentic OS 有四層。每一層都是專案根目錄下的一個資料夾。
+
+```
+project-root/
+├── CLAUDE.md          # Kernel：身分、路由規則、agent 登錄表
+├── agents/            # 專家 agent 的定義（markdown prompt）
+├── .claude/commands/  # Slash command：面向使用者的 CLI
+├── scripts/           # Daemon script：排程或事件驅動的任務
+└── data/              # 狀態：JSON/markdown 檔案系統，不用外部 DB
+```
+
+### 各層的職責
+
+| 層 | 用途 | 持久化方式 |
+|---|---|---|
+| Kernel（`CLAUDE.md`） | 身分、路由、模型政策、agent 登錄表 | 由 Git 追蹤 |
+| Agents（`agents/`） | 有限定工具和記憶範圍的專家身分 | 由 Git 追蹤 |
+| Commands（`.claude/commands/`） | 面向使用者的 slash command（`/daily-sync`、`/outreach`） | 由 Git 追蹤 |
+| Scripts（`scripts/`） | 由 cron 或 webhook 觸發的 Python/JS daemon | 由 Git 追蹤 |
+| State（`data/`） | 只增不減的 log、專案狀態、決策紀錄 | Git 忽略或追蹤 |
+
+## Kernel
+
+`CLAUDE.md` 就是 kernel。它扮演 COO / orchestrator 的角色。Claude 在 session 開始時讀它，並用它來分派工作。
+
+### Kernel 結構
+
+```markdown
+# CLAUDE.md - Agentic OS Kernel
+
+## Identity
+你是 [project-name] 的 COO。你負責把任務分派給專家 agent。
+你絕對不直接寫程式。你把工作委派給對的 agent，再綜合結果。
+
+## Agent Registry
+
+| Agent | Role | Trigger |
+|---|---|---|
+| @dev | 程式碼、架構、除錯 | 使用者說 &quot;build&quot;、&quot;fix&quot;、&quot;refactor&quot; |
+| @writer | 文件、內容、電子郵件 | 使用者說 &quot;write&quot;、&quot;draft&quot;、&quot;blog&quot; |
+| @researcher | 研究、分析、事實查核 | 使用者說 &quot;research&quot;、&quot;analyze&quot;、&quot;compare&quot; |
+| @ops | DevOps、部署、基礎設施 | 使用者說 &quot;deploy&quot;、&quot;CI&quot;、&quot;server&quot; |
+
+## Routing Rules
+1. 解析使用者請求中的意圖關鍵字
+2. 對照 Agent Registry 的 trigger 欄
+3. 從 `agents/&lt;name&gt;.md` 載入對應的 agent 檔案
+4. 帶著完整 context 交接執行
+5. 綜合結果，呈現給使用者
+
+## Model Policies
+- 預設模型：用 repo 或 harness 的預設值。
+- @dev 任務：複雜的架構優先用推理能力較強的模型。
+- @researcher 任務：用設定好、具研究能力的模型，以及核准的搜尋工具。
+- 成本上限：超過專案設定的花費門檻之前先警告。
+```
+
+### 關鍵原則
+
+Kernel 應該**小而宣告式**。路由邏輯寫在純 markdown 表格裡，不寫在程式碼裡。這讓系統不用 debug 就能檢視和修改。
+
+## 專家 Agent
+
+每個 agent 都是 `agents/` 裡獨立的 markdown 檔案。Claude 分派任務時，會載入相關的 agent 檔案。
+
+### Agent 定義格式
+
+```markdown
+# @dev - Software Engineer
+
+## Identity
+你是資深軟體工程師。你寫乾淨、有測試、達正式環境水準的程式碼。
+你偏好簡單的解法。需求模糊的時候，你會提出釐清問題。
+
+## Memory Scope
+- 讀 `data/projects/&lt;current-project&gt;.md` 取得 context
+- 讀 `data/decisions/` 取得架構決策
+- 把執行 log 附加到 `data/logs/&lt;date&gt;-@dev.md`
+
+## Tool Access
+- 專案根目錄內的完整檔案系統存取
+- Git 操作（status、diff、commit、branch）
+- 測試執行器存取
+- `.claude/mcp.json` 裡設定的 MCP server
+
+## Constraints
+- 新功能一定要寫測試
+- 絕對不直接 commit 到 `main`；用 feature branch
+- 優先修改既有檔案，不要新建檔案
+- 盡可能讓函式維持在 50 行以內
+```
+
+### 多 Agent 協作模式
+
+任務橫跨多個 agent 時，kernel 會依序或平行地執行它們：
+
+```
+User: &quot;Build a landing page and write the launch blog post&quot;
+
+Kernel routing:
+1. @dev - &quot;Build a landing page with [requirements]&quot;
+2. @writer - &quot;Write a launch blog post for [product] using the landing page copy&quot;
+3. Kernel 把兩份輸出綜合成一個統一的回應
+```
+
+要平行執行，可以用 Claude Code 的背景任務功能，或用 shell script 帶著特定的 agent context 去呼叫 Claude Code。
+
+## Command 與每日工作流程
+
+Slash command 是 `.claude/commands/` 裡的 markdown 檔案。它們定義可重複使用的工作流程。
+
+### Command 結構
+
+```markdown
+# /daily-sync
+
+執行早晨簡報：
+
+1. 讀 `data/logs/last-sync.md` 取得 context
+2. 檢查專案狀態：`git status`、待處理的 PR、CI 健康狀況
+3. 檢視 `data/inbox/` 裡有沒有新任務或需要做的決定
+4. 產生阻礙、優先順序和下一步動作的摘要
+5. 把簡報附加到 `data/logs/daily/&lt;date&gt;.md`
+```
+
+### 標準 Command 組合
+
+| Command | 用途 |
+|---|---|
+| `/daily-sync` | 早晨簡報：狀態、阻礙、優先順序 |
+| `/outreach` | 執行開發信流程（電子郵件、LinkedIn 等） |
+| `/research &lt;topic&gt;` | 附引用追蹤的深入研究 |
+| `/apply-jobs` | 針對目標職位調整履歷和求職信 |
+| `/analytics` | 從 Stripe、GitHub 或自訂來源取得指標 |
+| `/interview-prep` | 產生字卡或模擬面試題 |
+| `/decision &lt;topic&gt;` | 記錄一個決策，含優缺點和選定的路線 |
+
+### 啟用 Command
+
+把 command 檔案放在 `.claude/commands/&lt;command-name&gt;.md`。Claude Code 會自動發現它們。使用者用 `/&lt;command-name&gt;` 來呼叫。
+
+## 持久記憶
+
+記憶是以檔案為基礎的。沒有向量資料庫、沒有 Redis、沒有 PostgreSQL。`data/` 裡的 JSON 和 markdown 檔案就是資料庫。
+
+### 記憶目錄結構
+
+```
+data/
+├── daily-logs/         # 只增不減的每日活動 log
+├── projects/           # 每個專案的 context 檔案
+├── decisions/          # 架構和商業決策（ADR 格式）
+├── inbox/              # 等著分流的新任務或想法
+├── contacts/           # 人、公司、關係筆記
+└── templates/          # 可重複使用的 prompt 和格式
+```
+
+### 每日 Log 格式
+
+```markdown
+# 2026-04-22 - Daily Log
+
+## Sessions
+- 09:00 - Session 1：重構 auth 模組（@dev）
+- 11:30 - Session 2：起草投資人更新（@writer）
+
+## Decisions
+- 從 JWT 改成 session cookie（見 `data/decisions/2026-04-22-auth.md`）
+
+## Blockers
+- 等廠商給 API key（2026-04-24 追蹤）
+
+## Next Actions
+- [ ] Merge auth 重構的 PR
+- [ ] 送出投資人更新給人 review
+```
+
+### 自動反思模式
+
+每個 session 結束時，kernel 會附加一段反思：
+
+```markdown
+## Reflection - Session 3
+- 有效的：平行執行 agent 省了 20 分鐘
+- 無效的：@researcher 碰到付費牆的來源，需要更好的來源排序
+- 要改的：在研究筆記加上 `source-tier` 欄位（A/B/C 可信度）
+```
+
+這會形成一個回饋迴圈，不用改程式碼就能讓系統隨時間變好。
+
+## 排程自動化
+
+Agentic OS 的任務用外部 cron 排程執行，不用 Claude Code 內建的 cron（session 結束它就掛了）。
+
+### macOS：LaunchAgent
+
+```xml
+&lt;!-- ~/Library/LaunchAgents/com.agentic.daily-sync.plist --&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; ...&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;com.agentic.daily-sync&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/claude&lt;/string&gt;
+        &lt;string&gt;--cwd&lt;/string&gt;
+        &lt;string&gt;/path/to/project&lt;/string&gt;
+        &lt;string&gt;--command&lt;/string&gt;
+        &lt;string&gt;/daily-sync&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;StartCalendarInterval&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;Hour&lt;/key&gt;
+        &lt;integer&gt;8&lt;/integer&gt;
+        &lt;key&gt;Minute&lt;/key&gt;
+        &lt;integer&gt;0&lt;/integer&gt;
+    &lt;/dict&gt;
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/tmp/agentic-daily-sync.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+```
+
+### Linux：systemd Timer
+
+```ini
+# ~/.config/systemd/user/agentic-daily-sync.service
+[Unit]
+Description=Agentic OS Daily Sync
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/claude --cwd /path/to/project --command /daily-sync
+```
+
+```ini
+# ~/.config/systemd/user/agentic-daily-sync.timer
+[Unit]
+Description=Run daily sync every morning
+
+[Timer]
+OnCalendar=*-*-* 8:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+### 跨平台：pm2
+
+```bash
+# ecosystem.config.js
+module.exports = {
+  apps: [{
+    name: &#x27;agentic-daily-sync&#x27;,
+    script: &#x27;claude&#x27;,
+    args: &#x27;--cwd /path/to/project --command /daily-sync&#x27;,
+    cron_restart: &#x27;0 8 * * *&#x27;,
+    autorestart: false
+  }]
+};
+```
+
+## 資料層
+
+資料層就是你的檔案系統。結構化資料用 JSON，敘述性內容用 markdown。
+
+### 結構化狀態用 JSON
+
+```json
+// data/projects/website-v2.json
+{
+  &quot;name&quot;: &quot;Website v2&quot;,
+  &quot;status&quot;: &quot;in-progress&quot;,
+  &quot;milestone&quot;: &quot;beta-launch&quot;,
+  &quot;agents_involved&quot;: [&quot;@dev&quot;, &quot;@writer&quot;],
+  &quot;files&quot;: {
+    &quot;spec&quot;: &quot;docs/website-v2-spec.md&quot;,
+    &quot;design&quot;: &quot;designs/website-v2.fig&quot;
+  },
+  &quot;metrics&quot;: {
+    &quot;commits&quot;: 47,
+    &quot;last_session&quot;: &quot;2026-04-22T11:30:00Z&quot;
+  }
+}
+```
+
+### 敘述性內容用 Markdown
+
+凡是給人看的東西都用 markdown：決策、log、研究筆記、聯絡人紀錄。
+
+### Schema 演進
+
+絕對不要重新命名既有欄位。新增欄位，並把舊的標成已棄用：
+
+```json
+{
+  &quot;name&quot;: &quot;Website v2&quot;,
+  &quot;status&quot;: &quot;in-progress&quot;,
+  &quot;milestone&quot;: &quot;beta-launch&quot;,
+  &quot;_deprecated_priority&quot;: &quot;high&quot;,
+  &quot;priority_v2&quot;: { &quot;level&quot;: &quot;high&quot;, &quot;rationale&quot;: &quot;Blocks investor demo&quot; }
+}
+```
+
+這樣不用 migration script，歷史資料也能保持可讀。
+
+## 反面模式
+
+### 單體式的單一 Agent
+
+```markdown
+# BAD - 一個 agent 包辦所有事
+你是全端開發者、作家、研究員，也是 DevOps 工程師。
+```
+
+拆成專家 agent。路由交給 kernel 處理。
+
+### 無狀態的 Session
+
+```markdown
+# BAD - session 之間沒有記憶
+每次 Claude Code 開啟都從頭開始。
+```
+
+一定要在 session 開始時讀 `data/`，結束時寫回去。
+
+### 寫死的憑證
+
+```markdown
+# BAD - API key 放在 agent 檔案或 CLAUDE.md 裡
+你的 OpenAI API key 是 sk-xxxxxxxx
+```
+
+用環境變數，或由 script 載入的 `.env` 檔案。Agent 參照 `process.env.API_KEY`。
+
+### 簡單狀態卻用外部資料庫
+
+```markdown
+# BAD - 單人使用者的 agentic OS 卻用 PostgreSQL
+```
+
+在有多個並行使用者或好幾 GB 的資料之前，都用 JSON/markdown 檔案。
+
+### 過度設計的路由
+
+```markdown
+# BAD - 路由邏輯寫在程式碼裡，不是 markdown 表格
+if (intent.includes(&#x27;deploy&#x27;)) { agent = opsAgent; }
+```
+
+路由要宣告式地寫在 `CLAUDE.md` 的 markdown 表格裡。這樣可檢視、可修改、可 debug。
+
+## 最佳實務
+
+- [ ] `CLAUDE.md` 在 200 行以內，能放進 context window
+- [ ] 每個 agent 檔案在 100 行以內，專注單一領域
+- [ ] 敏感的 log 在 `data/` 裡用 git 忽略，決策和規格用 git 追蹤
+- [ ] Command 用祈使句命名：`/daily-sync`，不是 `/run-daily-sync`
+- [ ] Log 只增不減；絕對不要修改過去的每日 log
+- [ ] 每個 agent 都有 `Memory Scope` 段落，定義它讀哪些檔案
+- [ ] 每個 session 結束時都寫反思
+- [ ] 排程任務用外部 cron（LaunchAgent、systemd、pm2），不用 Claude Code 的 session cron
+- [ ] 成本追蹤：把每個 session 的 API 花費記在 `data/logs/&lt;date&gt;-costs.json`
+- [ ] 一個專案 = 一個 Agentic OS。不要讓不相關的專案共用同一份 `CLAUDE.md`。</pre></section><section><h2>英文原文</h2><pre>---
+name: agentic-os
+description: Build persistent multi-agent operating systems on Claude Code. Covers kernel architecture, specialist agents, slash commands, file-based memory, scheduled automation, and state management without external databases. Use when building a persistent multi-agent system on Claude Code with its own memory, commands, and scheduling.
+metadata:
+  origin: ECC
+---
+
+# Agentic OS
+
+Treat Claude Code as a persistent runtime / operating system rather than a chat session. This skill codifies the architecture used by production agentic setups: a kernel config that routes tasks to specialist agents, persistent file-based memory, scheduled automation, and a JSON/markdown data layer.
+
+## When to Activate
+
+- Building a multi-agent workflow inside Claude Code
+- Setting up persistent Claude Code automation that survives session restarts
+- Creating a &quot;personal OS&quot; or &quot;agentic OS&quot; for recurring tasks
+- User says &quot;agentic OS&quot;, &quot;personal OS&quot;, &quot;multi-agent&quot;, &quot;agent coordinator&quot;, &quot;persistent agent&quot;
+- Structuring long-running projects where context must survive across sessions
+
+## Architecture Overview
+
+The Agentic OS has four layers. Each layer is a directory in your project root.
+
+```
+project-root/
+├── CLAUDE.md          # Kernel: identity, routing rules, agent registry
+├── agents/            # Specialist agent definitions (markdown prompts)
+├── .claude/commands/  # Slash commands: user-facing CLI
+├── scripts/           # Daemon scripts: scheduled or event-driven tasks
+└── data/              # State: JSON/markdown filesystem, no external DB
+```
+
+### Layer Responsibilities
+
+| Layer | Purpose | Persistence |
+|---|---|---|
+| Kernel (`CLAUDE.md`) | Identity, routing, model policies, agent registry | Git-tracked |
+| Agents (`agents/`) | Specialist identities with scoped tools and memory | Git-tracked |
+| Commands (`.claude/commands/`) | User-facing slash commands (`/daily-sync`, `/outreach`) | Git-tracked |
+| Scripts (`scripts/`) | Python/JS daemons triggered by cron or webhooks | Git-tracked |
+| State (`data/`) | Append-only logs, project state, decision records | Git-ignored or tracked |
+
+## The Kernel
+
+`CLAUDE.md` is the kernel. It acts as the COO / orchestrator. Claude reads it at session start and uses it to route work.
+
+### Kernel Structure
+
+```markdown
+# CLAUDE.md - Agentic OS Kernel
+
+## Identity
+You are the COO of [project-name]. You route tasks to specialist agents.
+You never write code directly. You delegate to the right agent and synthesize results.
+
+## Agent Registry
+
+| Agent | Role | Trigger |
+|---|---|---|
+| @dev | Code, architecture, debugging | User says &quot;build&quot;, &quot;fix&quot;, &quot;refactor&quot; |
+| @writer | Documentation, content, emails | User says &quot;write&quot;, &quot;draft&quot;, &quot;blog&quot; |
+| @researcher | Research, analysis, fact-checking | User says &quot;research&quot;, &quot;analyze&quot;, &quot;compare&quot; |
+| @ops | DevOps, deployment, infrastructure | User says &quot;deploy&quot;, &quot;CI&quot;, &quot;server&quot; |
+
+## Routing Rules
+1. Parse the user request for intent keywords
+2. Match to the Agent Registry trigger column
+3. Load the corresponding agent file from `agents/&lt;name&gt;.md`
+4. Hand off execution with full context
+5. Synthesize and present the result back to the user
+
+## Model Policies
+- Default model: use the repository or harness default.
+- @dev tasks: prefer a higher-reasoning model for complex architecture.
+- @researcher tasks: use the configured research-capable model and approved search tools.
+- Cost ceiling: warn before exceeding the project&#x27;s configured spend threshold.
+```
+
+### Key Principle
+
+The kernel should be **small and declarative**. Routing logic lives in plain markdown tables, not code. This makes the system inspectable and editable without debugging.
+
+## Specialist Agents
+
+Each agent is a standalone markdown file in `agents/`. Claude loads the relevant agent file when routing a task.
+
+### Agent Definition Format
+
+```markdown
+# @dev - Software Engineer
+
+## Identity
+You are a senior software engineer. You write clean, tested, production-grade code.
+You prefer simple solutions. You ask clarifying questions when requirements are ambiguous.
+
+## Memory Scope
+- Read `data/projects/&lt;current-project&gt;.md` for context
+- Read `data/decisions/` for architectural decisions
+- Append execution logs to `data/logs/&lt;date&gt;-@dev.md`
+
+## Tool Access
+- Full filesystem access within project root
+- Git operations (status, diff, commit, branch)
+- Test runner access
+- MCP servers as configured in `.claude/mcp.json`
+
+## Constraints
+- Always write tests for new features
+- Never commit directly to `main`; use feature branches
+- Prefer editing existing files over creating new ones
+- Keep functions under 50 lines when possible
+```
+
+### Multi-Agent Collaboration Pattern
+
+When a task spans multiple agents, the kernel runs them sequentially or in parallel:
+
+```
+User: &quot;Build a landing page and write the launch blog post&quot;
+
+Kernel routing:
+1. @dev - &quot;Build a landing page with [requirements]&quot;
+2. @writer - &quot;Write a launch blog post for [product] using the landing page copy&quot;
+3. Kernel synthesizes both outputs into a unified response
+```
+
+For parallel execution, use Claude Code&#x27;s background task capability or shell scripts that invoke Claude Code with specific agent contexts.
+
+## Commands and Daily Workflows
+
+Slash commands are markdown files in `.claude/commands/`. They define reusable workflows.
+
+### Command Structure
+
+```markdown
+# /daily-sync
+
+Run the morning briefing:
+
+1. Read `data/logs/last-sync.md` for context
+2. Check project status: `git status`, pending PRs, CI health
+3. Review `data/inbox/` for new tasks or decisions needed
+4. Generate a summary of blockers, priorities, and next actions
+5. Append the briefing to `data/logs/daily/&lt;date&gt;.md`
+```
+
+### Standard Command Set
+
+| Command | Purpose |
+|---|---|
+| `/daily-sync` | Morning briefing: status, blockers, priorities |
+| `/outreach` | Run outreach workflow (email, LinkedIn, etc.) |
+| `/research &lt;topic&gt;` | Deep research with citation tracking |
+| `/apply-jobs` | Tailor resume + cover letter for a target role |
+| `/analytics` | Pull metrics from Stripe, GitHub, or custom sources |
+| `/interview-prep` | Generate flashcards or mock interview questions |
+| `/decision &lt;topic&gt;` | Log a decision with pros/cons and chosen path |
+
+### Activating Commands
+
+Place command files in `.claude/commands/&lt;command-name&gt;.md`. Claude Code auto-discovers them. Users invoke them with `/&lt;command-name&gt;`.
+
+## Persistent Memory
+
+Memory is file-based. No vector DB, no Redis, no PostgreSQL. JSON and markdown files in `data/` are the database.
+
+### Memory Directory Structure
+
+```
+data/
+├── daily-logs/         # Append-only daily activity logs
+├── projects/           # Per-project context files
+├── decisions/          # Architectural and business decisions (ADR format)
+├── inbox/              # New tasks or ideas awaiting triage
+├── contacts/           # People, companies, relationship notes
+└── templates/          # Reusable prompts and formats
+```
+
+### Daily Log Format
+
+```markdown
+# 2026-04-22 - Daily Log
+
+## Sessions
+- 09:00 - Session 1: Refactored auth module (@dev)
+- 11:30 - Session 2: Drafted investor update (@writer)
+
+## Decisions
+- Switched from JWT to session cookies (see `data/decisions/2026-04-22-auth.md`)
+
+## Blockers
+- Waiting on API key from vendor (follow up 2026-04-24)
+
+## Next Actions
+- [ ] Merge auth refactor PR
+- [ ] Send investor update for review
+```
+
+### Auto-Reflection Pattern
+
+At the end of each session, the kernel appends a reflection:
+
+```markdown
+## Reflection - Session 3
+- What worked: Parallel agent execution saved 20 minutes
+- What didn&#x27;t: @researcher hit a paywalled source, need better source ranking
+- What to change: Add `source-tier` field to research notes (A/B/C credibility)
+```
+
+This creates a feedback loop that improves the system over time without code changes.
+
+## Scheduled Automation
+
+Agentic OS tasks run on a schedule using external cron, not Claude Code&#x27;s built-in cron (which dies when the session ends).
+
+### macOS: LaunchAgent
+
+```xml
+&lt;!-- ~/Library/LaunchAgents/com.agentic.daily-sync.plist --&gt;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; ...&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;com.agentic.daily-sync&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/claude&lt;/string&gt;
+        &lt;string&gt;--cwd&lt;/string&gt;
+        &lt;string&gt;/path/to/project&lt;/string&gt;
+        &lt;string&gt;--command&lt;/string&gt;
+        &lt;string&gt;/daily-sync&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;StartCalendarInterval&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;Hour&lt;/key&gt;
+        &lt;integer&gt;8&lt;/integer&gt;
+        &lt;key&gt;Minute&lt;/key&gt;
+        &lt;integer&gt;0&lt;/integer&gt;
+    &lt;/dict&gt;
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/tmp/agentic-daily-sync.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+```
+
+### Linux: systemd Timer
+
+```ini
+# ~/.config/systemd/user/agentic-daily-sync.service
+[Unit]
+Description=Agentic OS Daily Sync
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/claude --cwd /path/to/project --command /daily-sync
+```
+
+```ini
+# ~/.config/systemd/user/agentic-daily-sync.timer
+[Unit]
+Description=Run daily sync every morning
+
+[Timer]
+OnCalendar=*-*-* 8:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+### Cross-Platform: pm2
+
+```bash
+# ecosystem.config.js
+module.exports = {
+  apps: [{
+    name: &#x27;agentic-daily-sync&#x27;,
+    script: &#x27;claude&#x27;,
+    args: &#x27;--cwd /path/to/project --command /daily-sync&#x27;,
+    cron_restart: &#x27;0 8 * * *&#x27;,
+    autorestart: false
+  }]
+};
+```
+
+## Data Layer
+
+The data layer is your filesystem. Use JSON for structured data and markdown for narrative content.
+
+### JSON for Structured State
+
+```json
+// data/projects/website-v2.json
+{
+  &quot;name&quot;: &quot;Website v2&quot;,
+  &quot;status&quot;: &quot;in-progress&quot;,
+  &quot;milestone&quot;: &quot;beta-launch&quot;,
+  &quot;agents_involved&quot;: [&quot;@dev&quot;, &quot;@writer&quot;],
+  &quot;files&quot;: {
+    &quot;spec&quot;: &quot;docs/website-v2-spec.md&quot;,
+    &quot;design&quot;: &quot;designs/website-v2.fig&quot;
+  },
+  &quot;metrics&quot;: {
+    &quot;commits&quot;: 47,
+    &quot;last_session&quot;: &quot;2026-04-22T11:30:00Z&quot;
+  }
+}
+```
+
+### Markdown for Narrative
+
+Use markdown for anything a human reads: decisions, logs, research notes, contact records.
+
+### Schema Evolution
+
+Never rename existing fields. Add new fields and mark old ones deprecated:
+
+```json
+{
+  &quot;name&quot;: &quot;Website v2&quot;,
+  &quot;status&quot;: &quot;in-progress&quot;,
+  &quot;milestone&quot;: &quot;beta-launch&quot;,
+  &quot;_deprecated_priority&quot;: &quot;high&quot;,
+  &quot;priority_v2&quot;: { &quot;level&quot;: &quot;high&quot;, &quot;rationale&quot;: &quot;Blocks investor demo&quot; }
+}
+```
+
+This keeps historical data readable without migration scripts.
+
+## Anti-Patterns
+
+### Monolithic Single Agent
+
+```markdown
+# BAD - One agent does everything
+You are a full-stack developer, writer, researcher, and DevOps engineer.
+```
+
+Split into specialist agents. The kernel handles routing.
+
+### Stateless Sessions
+
+```markdown
+# BAD - No memory between sessions
+Starting fresh every time Claude Code opens.
+```
+
+Always read `data/` at session start and write back at session end.
+
+### Hardcoded Credentials
+
+```markdown
+# BAD - API keys in agent files or CLAUDE.md
+Your OpenAI API key is sk-xxxxxxxx
+```
+
+Use environment variables or a `.env` file loaded by scripts. Agents reference `process.env.API_KEY`.
+
+### External Database for Simple State
+
+```markdown
+# BAD - PostgreSQL for a solo user&#x27;s agentic OS
+```
+
+Use JSON/markdown files until you have multiple concurrent users or GBs of data.
+
+### Over-Engineered Routing
+
+```markdown
+# BAD - Routing logic in code instead of markdown tables
+if (intent.includes(&#x27;deploy&#x27;)) { agent = opsAgent; }
+```
+
+Keep routing declarative in `CLAUDE.md` markdown tables. It is inspectable, editable, and debuggable.
+
+## Best Practices
+
+- [ ] `CLAUDE.md` is under 200 lines and fits in context window
+- [ ] Each agent file is under 100 lines and focused on one domain
+- [ ] `data/` is git-ignored for sensitive logs, git-tracked for decisions and specs
+- [ ] Commands use imperative names: `/daily-sync`, not `/run-daily-sync`
+- [ ] Logs are append-only; never edit past daily logs
+- [ ] Every agent has a `Memory Scope` section defining what files it reads
+- [ ] Reflections are written at the end of every session
+- [ ] Scheduled tasks use external cron (LaunchAgent, systemd, pm2), not Claude Code&#x27;s session cron
+- [ ] Cost tracking: log API spend per session in `data/logs/&lt;date&gt;-costs.json`
+- [ ] One project = one Agentic OS. Do not share a single `CLAUDE.md` across unrelated projects.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

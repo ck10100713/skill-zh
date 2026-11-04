@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>quarkus-security｜Skill 寫法圖鑑</title>
+<meta name="description" content="Quarkus 的 JWT／OIDC 驗證、RBAC、輸入驗證與 secret 管理加固">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>quarkus-security</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/quarkus-security/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Quarkus 的 JWT／OIDC 驗證、RBAC、輸入驗證與 secret 管理加固</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: quarkus-security
+description: &quot;Quarkus 安全實作模式：JWT 與 OIDC 驗證、@RolesAllowed RBAC 與 SecurityIdentity 檢查、Bean Validation 與自訂 validator、參數化 Panache 查詢、BCrypt 密碼雜湊、CORS 與安全標頭、rate limiting、稽核 logging、Vault 或環境變數管理 secret，以及依賴套件 CVE 掃描。新增驗證或授權、驗證輸入、管理 secret 或加固 Quarkus 應用程式時使用。&quot;
+metadata:
+  origin: ECC
+---
+
+# Quarkus 安全審查
+
+用驗證、授權和輸入驗證來保護 Quarkus 應用程式的最佳實踐。
+
+## 何時啟用
+
+- 新增驗證（JWT、OIDC、Basic Auth）
+- 用 @RolesAllowed 或 SecurityIdentity 實作授權
+- 驗證使用者輸入（Bean Validation、自訂 validator）
+- 設定 CORS 或安全標頭
+- 管理 secret（Vault、環境變數、config source）
+- 新增 rate limiting 或暴力破解防護
+- 掃描依賴套件的 CVE
+- 處理 MicroProfile JWT 或 SmallRye JWT
+
+## 驗證
+
+### JWT 驗證
+
+```java
+// 用 JWT 保護的 resource
+@Path(&quot;/api/protected&quot;)
+@Authenticated
+public class ProtectedResource {
+
+  @Inject
+  JsonWebToken jwt;
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @GET
+  public Response getData() {
+    String username = jwt.getName();
+    Set&lt;String&gt; roles = jwt.getGroups();
+    return Response.ok(Map.of(
+        &quot;username&quot;, username,
+        &quot;roles&quot;, roles,
+        &quot;principal&quot;, securityIdentity.getPrincipal().getName()
+    )).build();
+  }
+}
+```
+
+設定（application.properties）：
+```properties
+mp.jwt.verify.publickey.location=publicKey.pem
+mp.jwt.verify.issuer=https://auth.example.com
+
+# OIDC
+quarkus.oidc.auth-server-url=https://auth.example.com/realms/myrealm
+quarkus.oidc.client-id=backend-service
+quarkus.oidc.credentials.secret=${OIDC_SECRET}
+```
+
+### 自訂驗證 Filter
+
+```java
+@Provider
+@Priority(Priorities.AUTHENTICATION)
+public class CustomAuthFilter implements ContainerRequestFilter {
+
+  @Inject
+  SecurityIdentity identity;
+
+  @Override
+  public void filter(ContainerRequestContext requestContext) {
+    String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+    // header 不存在或格式錯誤就立刻拒絕
+    if (authHeader == null || !authHeader.startsWith(&quot;Bearer &quot;)) {
+      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+      return;
+    }
+
+    String token = authHeader.substring(7);
+    if (!validateToken(token)) {
+      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+    }
+  }
+
+  private boolean validateToken(String token) {
+    // Token 驗證邏輯
+    return true;
+  }
+}
+```
+
+## 授權
+
+### 角色式存取控制
+
+```java
+@Path(&quot;/api/admin&quot;)
+@RolesAllowed(&quot;ADMIN&quot;)
+public class AdminResource {
+
+  @GET
+  @Path(&quot;/users&quot;)
+  public List&lt;UserDto&gt; listUsers() {
+    return userService.findAll();
+  }
+
+  @DELETE
+  @Path(&quot;/users/{id}&quot;)
+  @RolesAllowed({&quot;ADMIN&quot;, &quot;SUPER_ADMIN&quot;})
+  public Response deleteUser(@PathParam(&quot;id&quot;) Long id) {
+    userService.delete(id);
+    return Response.noContent().build();
+  }
+}
+
+@Path(&quot;/api/users&quot;)
+public class UserResource {
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @GET
+  @Path(&quot;/{id}&quot;)
+  @RolesAllowed(&quot;USER&quot;)
+  public Response getUser(@PathParam(&quot;id&quot;) Long id) {
+    // 檢查擁有者
+    if (!securityIdentity.hasRole(&quot;ADMIN&quot;) &amp;&amp;
+        !isOwner(id, securityIdentity.getPrincipal().getName())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    return Response.ok(userService.findById(id)).build();
+  }
+
+  private boolean isOwner(Long userId, String username) {
+    return userService.isOwner(userId, username);
+  }
+}
+```
+
+### 程式化安全
+
+```java
+@ApplicationScoped
+public class SecurityService {
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  public boolean canAccessResource(Long resourceId) {
+    if (securityIdentity.isAnonymous()) {
+      return false;
+    }
+
+    if (securityIdentity.hasRole(&quot;ADMIN&quot;)) {
+      return true;
+    }
+
+    String userId = securityIdentity.getPrincipal().getName();
+    return resourceRepository.isOwner(resourceId, userId);
+  }
+}
+```
+
+## 輸入驗證
+
+### Bean Validation
+
+```java
+// BAD: 沒有驗證
+@POST
+public Response createUser(UserDto dto) {
+  return Response.ok(userService.create(dto)).build();
+}
+
+// GOOD: 有驗證的 DTO
+public record CreateUserDto(
+    @NotBlank @Size(max = 100) String name,
+    @NotBlank @Email String email,
+    @NotNull @Min(18) @Max(150) Integer age,
+    @Pattern(regexp = &quot;^\\+?[1-9]\\d{1,14}$&quot;) String phone
+) {}
+
+@POST
+@Path(&quot;/users&quot;)
+public Response createUser(@Valid CreateUserDto dto) {
+  User user = userService.create(dto);
+  return Response.status(Response.Status.CREATED).entity(user).build();
+}
+```
+
+### 自訂 Validator
+
+```java
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = UsernameValidator.class)
+public @interface ValidUsername {
+  String message() default &quot;Invalid username format&quot;;
+  Class&lt;?&gt;[] groups() default {};
+  Class&lt;? extends Payload&gt;[] payload() default {};
+}
+
+public class UsernameValidator implements ConstraintValidator&lt;ValidUsername, String&gt; {
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    if (value == null) return false;
+    return value.matches(&quot;^[a-zA-Z0-9_-]{3,20}$&quot;);
+  }
+}
+
+// 使用方式
+public record CreateUserDto(
+    @ValidUsername String username,
+    @NotBlank @Email String email
+) {}
+```
+
+## 防止 SQL Injection
+
+### Panache Active Record（預設安全）
+
+```java
+// GOOD: 用 Panache 做參數化查詢
+List&lt;User&gt; users = User.list(&quot;email = ?1 and active = ?2&quot;, email, true);
+
+Optional&lt;User&gt; user = User.find(&quot;username&quot;, username).firstResultOptional();
+
+// GOOD: 具名參數
+List&lt;User&gt; users = User.list(&quot;email = :email and age &gt; :minAge&quot;,
+    Parameters.with(&quot;email&quot;, email).and(&quot;minAge&quot;, 18));
+```
+
+### Native Query（要用參數）
+
+```java
+// BAD: 字串串接
+@Query(value = &quot;SELECT * FROM users WHERE name = &#x27;&quot; + name + &quot;&#x27;&quot;, nativeQuery = true)
+
+// GOOD: 參數化的 native query
+@Entity
+public class User extends PanacheEntity {
+  public static List&lt;User&gt; findByEmailNative(String email) {
+    return getEntityManager()
+        .createNativeQuery(&quot;SELECT * FROM users WHERE email = :email&quot;, User.class)
+        .setParameter(&quot;email&quot;, email)
+        .getResultList();
+  }
+}
+```
+
+## 密碼雜湊
+
+```java
+@ApplicationScoped
+public class PasswordService {
+
+  public String hash(String plainPassword) {
+    return BcryptUtil.bcryptHash(plainPassword);
+  }
+
+  public boolean verify(String plainPassword, String hashedPassword) {
+    return BcryptUtil.matches(plainPassword, hashedPassword);
+  }
+}
+
+// 在 service 裡
+@ApplicationScoped
+public class UserService {
+  @Inject
+  PasswordService passwordService;
+
+  @Transactional
+  public User register(CreateUserDto dto) {
+    String hashedPassword = passwordService.hash(dto.password());
+    User user = new User();
+    user.email = dto.email();
+    user.password = hashedPassword;
+    user.persist();
+    return user;
+  }
+
+  public boolean authenticate(String email, String password) {
+    return User.find(&quot;email&quot;, email)
+        .firstResultOptional()
+        .map(u -&gt; passwordService.verify(password, u.password))
+        .orElse(false);
+  }
+}
+```
+
+## CORS 設定
+
+```properties
+# application.properties
+quarkus.http.cors=true
+quarkus.http.cors.origins=https://app.example.com,https://admin.example.com
+quarkus.http.cors.methods=GET,POST,PUT,DELETE
+quarkus.http.cors.headers=accept,authorization,content-type,x-requested-with
+quarkus.http.cors.exposed-headers=Content-Disposition
+quarkus.http.cors.access-control-max-age=24H
+quarkus.http.cors.access-control-allow-credentials=true
+```
+
+## Secret 管理
+
+```properties
+# application.properties - 這裡不放任何 secret
+
+# 使用環境變數
+quarkus.datasource.username=${DB_USER}
+quarkus.datasource.password=${DB_PASSWORD}
+quarkus.oidc.credentials.secret=${OIDC_CLIENT_SECRET}
+
+# 或使用 Vault
+quarkus.vault.url=https://vault.example.com
+quarkus.vault.authentication.kubernetes.role=my-role
+```
+
+### HashiCorp Vault 整合
+
+```java
+@ApplicationScoped
+public class SecretService {
+
+  @ConfigProperty(name = &quot;api-key&quot;)
+  String apiKey; // 從 Vault 取得
+
+  public String getSecret(String key) {
+    return ConfigProvider.getConfig().getValue(key, String.class);
+  }
+}
+```
+
+## Rate Limiting
+
+**安全注意事項**：絕對不要直接使用 `X-Forwarded-For`，客戶端可以偽造它。
+可以的話，用 servlet request 取得的實際遠端位址，
+或已驗證的身分（API key、JWT subject）。
+
+```java
+@ApplicationScoped
+public class RateLimitFilter implements ContainerRequestFilter {
+  private final Map&lt;String, RateLimiter&gt; limiters = new ConcurrentHashMap&lt;&gt;();
+
+  @Inject
+  HttpServletRequest servletRequest;
+
+  @Override
+  public void filter(ContainerRequestContext requestContext) {
+    String clientId = getClientIdentifier();
+    RateLimiter limiter = limiters.computeIfAbsent(clientId,
+        k -&gt; RateLimiter.create(100.0)); // 每秒 100 個請求
+
+    if (!limiter.tryAcquire()) {
+      requestContext.abortWith(
+          Response.status(429)
+              .entity(Map.of(&quot;error&quot;, &quot;Too many requests&quot;))
+              .build()
+      );
+    }
+  }
+
+  private String getClientIdentifier() {
+    // 使用容器提供的遠端位址（不是 X-Forwarded-For）。
+    // 如果在可信任的 proxy 後面，設定 quarkus.http.proxy.proxy-address-forwarding=true
+    // 這樣 getRemoteAddr() 才會回傳真正的客戶端 IP。
+    return servletRequest.getRemoteAddr();
+  }
+}
+```
+
+## 安全標頭
+
+```java
+@Provider
+public class SecurityHeadersFilter implements ContainerResponseFilter {
+
+  @Override
+  public void filter(ContainerRequestContext request, ContainerResponseContext response) {
+    MultivaluedMap&lt;String, Object&gt; headers = response.getHeaders();
+
+    // 防止 clickjacking
+    headers.putSingle(&quot;X-Frame-Options&quot;, &quot;DENY&quot;);
+
+    // XSS 防護
+    headers.putSingle(&quot;X-Content-Type-Options&quot;, &quot;nosniff&quot;);
+    headers.putSingle(&quot;X-XSS-Protection&quot;, &quot;1; mode=block&quot;);
+
+    // HSTS
+    headers.putSingle(&quot;Strict-Transport-Security&quot;, &quot;max-age=31536000; includeSubDomains&quot;);
+
+    // CSP：script-src 避免用 &#x27;unsafe-inline&#x27;，因為它會抵銷 XSS 防護；
+    // 改用 nonce 或 hash。CSS 框架需要時，style-src 可以接受 &#x27;unsafe-inline&#x27;，
+    // 但能用 nonce 就優先用 nonce。
+    headers.putSingle(&quot;Content-Security-Policy&quot;,
+        &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;&quot;);
+  }
+}
+```
+
+## 稽核 Logging
+
+```java
+@ApplicationScoped
+public class AuditService {
+  private static final Logger LOG = Logger.getLogger(AuditService.class);
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  public void logAccess(String resource, String action) {
+    String user = securityIdentity.isAnonymous()
+        ? &quot;anonymous&quot;
+        : securityIdentity.getPrincipal().getName();
+
+    LOG.infof(&quot;AUDIT: user=%s action=%s resource=%s timestamp=%s&quot;,
+        user, action, resource, Instant.now());
+  }
+}
+
+// 在 resource 裡使用
+@Path(&quot;/api/sensitive&quot;)
+public class SensitiveResource {
+  @Inject
+  AuditService auditService;
+
+  @GET
+  @RolesAllowed(&quot;ADMIN&quot;)
+  public Response getData() {
+    auditService.logAccess(&quot;sensitive-data&quot;, &quot;READ&quot;);
+    return Response.ok(data).build();
+  }
+}
+```
+
+## 依賴套件安全掃描
+
+```bash
+# Maven
+mvn org.owasp:dependency-check-maven:check
+
+# Gradle
+./gradlew dependencyCheckAnalyze
+
+# 檢查 Quarkus extension
+quarkus extension list --installable
+```
+
+## 最佳實踐
+
+- production 一律用 HTTPS
+- 無狀態驗證啟用 JWT 或 OIDC
+- 宣告式授權用 `@RolesAllowed`
+- 用 Bean Validation 驗證所有輸入
+- 密碼用 BCrypt 雜湊（絕對不要存明文）
+- secret 存放在 Vault 或環境變數
+- 用參數化查詢防止 SQL injection
+- 所有回應都加上安全標頭
+- 對公開 endpoint 實作 rate limiting
+- 稽核敏感操作
+- 依賴套件保持更新，並掃描 CVE
+- 程式化檢查用 SecurityIdentity
+- 設定適當的 CORS 政策
+- 測試驗證和授權的路徑</pre></section><section><h2>英文原文</h2><pre>---
+name: quarkus-security
+description: &quot;Quarkus security implementation patterns: JWT and OIDC authentication, @RolesAllowed RBAC and SecurityIdentity checks, Bean Validation and custom validators, parameterized Panache queries, BCrypt password hashing, CORS and security headers, rate limiting, audit logging, Vault or environment-variable secrets, and dependency CVE scanning. Use when adding authentication or authorization, validating input, managing secrets, or hardening a Quarkus application.&quot;
+metadata:
+  origin: ECC
+---
+
+# Quarkus Security Review
+
+Best practices for securing Quarkus applications with authentication, authorization, and input validation.
+
+## When to Activate
+
+- Adding authentication (JWT, OIDC, Basic Auth)
+- Implementing authorization with @RolesAllowed or SecurityIdentity
+- Validating user input (Bean Validation, custom validators)
+- Configuring CORS or security headers
+- Managing secrets (Vault, environment variables, config sources)
+- Adding rate limiting or brute-force protection
+- Scanning dependencies for CVEs
+- Working with MicroProfile JWT or SmallRye JWT
+
+## Authentication
+
+### JWT Authentication
+
+```java
+// Resource protected with JWT
+@Path(&quot;/api/protected&quot;)
+@Authenticated
+public class ProtectedResource {
+
+  @Inject
+  JsonWebToken jwt;
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @GET
+  public Response getData() {
+    String username = jwt.getName();
+    Set&lt;String&gt; roles = jwt.getGroups();
+    return Response.ok(Map.of(
+        &quot;username&quot;, username,
+        &quot;roles&quot;, roles,
+        &quot;principal&quot;, securityIdentity.getPrincipal().getName()
+    )).build();
+  }
+}
+```
+
+Configuration (application.properties):
+```properties
+mp.jwt.verify.publickey.location=publicKey.pem
+mp.jwt.verify.issuer=https://auth.example.com
+
+# OIDC
+quarkus.oidc.auth-server-url=https://auth.example.com/realms/myrealm
+quarkus.oidc.client-id=backend-service
+quarkus.oidc.credentials.secret=${OIDC_SECRET}
+```
+
+### Custom Authentication Filter
+
+```java
+@Provider
+@Priority(Priorities.AUTHENTICATION)
+public class CustomAuthFilter implements ContainerRequestFilter {
+
+  @Inject
+  SecurityIdentity identity;
+
+  @Override
+  public void filter(ContainerRequestContext requestContext) {
+    String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+    // Reject immediately if header is absent or malformed
+    if (authHeader == null || !authHeader.startsWith(&quot;Bearer &quot;)) {
+      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+      return;
+    }
+
+    String token = authHeader.substring(7);
+    if (!validateToken(token)) {
+      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+    }
+  }
+
+  private boolean validateToken(String token) {
+    // Token validation logic
+    return true;
+  }
+}
+```
+
+## Authorization
+
+### Role-Based Access Control
+
+```java
+@Path(&quot;/api/admin&quot;)
+@RolesAllowed(&quot;ADMIN&quot;)
+public class AdminResource {
+
+  @GET
+  @Path(&quot;/users&quot;)
+  public List&lt;UserDto&gt; listUsers() {
+    return userService.findAll();
+  }
+
+  @DELETE
+  @Path(&quot;/users/{id}&quot;)
+  @RolesAllowed({&quot;ADMIN&quot;, &quot;SUPER_ADMIN&quot;})
+  public Response deleteUser(@PathParam(&quot;id&quot;) Long id) {
+    userService.delete(id);
+    return Response.noContent().build();
+  }
+}
+
+@Path(&quot;/api/users&quot;)
+public class UserResource {
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @GET
+  @Path(&quot;/{id}&quot;)
+  @RolesAllowed(&quot;USER&quot;)
+  public Response getUser(@PathParam(&quot;id&quot;) Long id) {
+    // Check ownership
+    if (!securityIdentity.hasRole(&quot;ADMIN&quot;) &amp;&amp;
+        !isOwner(id, securityIdentity.getPrincipal().getName())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    return Response.ok(userService.findById(id)).build();
+  }
+
+  private boolean isOwner(Long userId, String username) {
+    return userService.isOwner(userId, username);
+  }
+}
+```
+
+### Programmatic Security
+
+```java
+@ApplicationScoped
+public class SecurityService {
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  public boolean canAccessResource(Long resourceId) {
+    if (securityIdentity.isAnonymous()) {
+      return false;
+    }
+
+    if (securityIdentity.hasRole(&quot;ADMIN&quot;)) {
+      return true;
+    }
+
+    String userId = securityIdentity.getPrincipal().getName();
+    return resourceRepository.isOwner(resourceId, userId);
+  }
+}
+```
+
+## Input Validation
+
+### Bean Validation
+
+```java
+// BAD: No validation
+@POST
+public Response createUser(UserDto dto) {
+  return Response.ok(userService.create(dto)).build();
+}
+
+// GOOD: Validated DTO
+public record CreateUserDto(
+    @NotBlank @Size(max = 100) String name,
+    @NotBlank @Email String email,
+    @NotNull @Min(18) @Max(150) Integer age,
+    @Pattern(regexp = &quot;^\\+?[1-9]\\d{1,14}$&quot;) String phone
+) {}
+
+@POST
+@Path(&quot;/users&quot;)
+public Response createUser(@Valid CreateUserDto dto) {
+  User user = userService.create(dto);
+  return Response.status(Response.Status.CREATED).entity(user).build();
+}
+```
+
+### Custom Validators
+
+```java
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = UsernameValidator.class)
+public @interface ValidUsername {
+  String message() default &quot;Invalid username format&quot;;
+  Class&lt;?&gt;[] groups() default {};
+  Class&lt;? extends Payload&gt;[] payload() default {};
+}
+
+public class UsernameValidator implements ConstraintValidator&lt;ValidUsername, String&gt; {
+  @Override
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+    if (value == null) return false;
+    return value.matches(&quot;^[a-zA-Z0-9_-]{3,20}$&quot;);
+  }
+}
+
+// Usage
+public record CreateUserDto(
+    @ValidUsername String username,
+    @NotBlank @Email String email
+) {}
+```
+
+## SQL Injection Prevention
+
+### Panache Active Record (Safe by Default)
+
+```java
+// GOOD: Parameterized queries with Panache
+List&lt;User&gt; users = User.list(&quot;email = ?1 and active = ?2&quot;, email, true);
+
+Optional&lt;User&gt; user = User.find(&quot;username&quot;, username).firstResultOptional();
+
+// GOOD: Named parameters
+List&lt;User&gt; users = User.list(&quot;email = :email and age &gt; :minAge&quot;,
+    Parameters.with(&quot;email&quot;, email).and(&quot;minAge&quot;, 18));
+```
+
+### Native Queries (Use Parameters)
+
+```java
+// BAD: String concatenation
+@Query(value = &quot;SELECT * FROM users WHERE name = &#x27;&quot; + name + &quot;&#x27;&quot;, nativeQuery = true)
+
+// GOOD: Parameterized native query
+@Entity
+public class User extends PanacheEntity {
+  public static List&lt;User&gt; findByEmailNative(String email) {
+    return getEntityManager()
+        .createNativeQuery(&quot;SELECT * FROM users WHERE email = :email&quot;, User.class)
+        .setParameter(&quot;email&quot;, email)
+        .getResultList();
+  }
+}
+```
+
+## Password Hashing
+
+```java
+@ApplicationScoped
+public class PasswordService {
+
+  public String hash(String plainPassword) {
+    return BcryptUtil.bcryptHash(plainPassword);
+  }
+
+  public boolean verify(String plainPassword, String hashedPassword) {
+    return BcryptUtil.matches(plainPassword, hashedPassword);
+  }
+}
+
+// In service
+@ApplicationScoped
+public class UserService {
+  @Inject
+  PasswordService passwordService;
+
+  @Transactional
+  public User register(CreateUserDto dto) {
+    String hashedPassword = passwordService.hash(dto.password());
+    User user = new User();
+    user.email = dto.email();
+    user.password = hashedPassword;
+    user.persist();
+    return user;
+  }
+
+  public boolean authenticate(String email, String password) {
+    return User.find(&quot;email&quot;, email)
+        .firstResultOptional()
+        .map(u -&gt; passwordService.verify(password, u.password))
+        .orElse(false);
+  }
+}
+```
+
+## CORS Configuration
+
+```properties
+# application.properties
+quarkus.http.cors=true
+quarkus.http.cors.origins=https://app.example.com,https://admin.example.com
+quarkus.http.cors.methods=GET,POST,PUT,DELETE
+quarkus.http.cors.headers=accept,authorization,content-type,x-requested-with
+quarkus.http.cors.exposed-headers=Content-Disposition
+quarkus.http.cors.access-control-max-age=24H
+quarkus.http.cors.access-control-allow-credentials=true
+```
+
+## Secrets Management
+
+```properties
+# application.properties - NO SECRETS HERE
+
+# Use environment variables
+quarkus.datasource.username=${DB_USER}
+quarkus.datasource.password=${DB_PASSWORD}
+quarkus.oidc.credentials.secret=${OIDC_CLIENT_SECRET}
+
+# Or use Vault
+quarkus.vault.url=https://vault.example.com
+quarkus.vault.authentication.kubernetes.role=my-role
+```
+
+### HashiCorp Vault Integration
+
+```java
+@ApplicationScoped
+public class SecretService {
+
+  @ConfigProperty(name = &quot;api-key&quot;)
+  String apiKey; // Fetched from Vault
+
+  public String getSecret(String key) {
+    return ConfigProvider.getConfig().getValue(key, String.class);
+  }
+}
+```
+
+## Rate Limiting
+
+**Security Note**: Never use `X-Forwarded-For` directly — clients can spoof it.
+Use the actual remote address from the servlet request, or an authenticated
+identity (API key, JWT subject) when available.
+
+```java
+@ApplicationScoped
+public class RateLimitFilter implements ContainerRequestFilter {
+  private final Map&lt;String, RateLimiter&gt; limiters = new ConcurrentHashMap&lt;&gt;();
+
+  @Inject
+  HttpServletRequest servletRequest;
+
+  @Override
+  public void filter(ContainerRequestContext requestContext) {
+    String clientId = getClientIdentifier();
+    RateLimiter limiter = limiters.computeIfAbsent(clientId,
+        k -&gt; RateLimiter.create(100.0)); // 100 requests per second
+
+    if (!limiter.tryAcquire()) {
+      requestContext.abortWith(
+          Response.status(429)
+              .entity(Map.of(&quot;error&quot;, &quot;Too many requests&quot;))
+              .build()
+      );
+    }
+  }
+
+  private String getClientIdentifier() {
+    // Use the container-provided remote address (not X-Forwarded-For).
+    // If behind a trusted proxy, configure quarkus.http.proxy.proxy-address-forwarding=true
+    // so getRemoteAddr() returns the real client IP.
+    return servletRequest.getRemoteAddr();
+  }
+}
+```
+
+## Security Headers
+
+```java
+@Provider
+public class SecurityHeadersFilter implements ContainerResponseFilter {
+
+  @Override
+  public void filter(ContainerRequestContext request, ContainerResponseContext response) {
+    MultivaluedMap&lt;String, Object&gt; headers = response.getHeaders();
+
+    // Prevent clickjacking
+    headers.putSingle(&quot;X-Frame-Options&quot;, &quot;DENY&quot;);
+
+    // XSS protection
+    headers.putSingle(&quot;X-Content-Type-Options&quot;, &quot;nosniff&quot;);
+    headers.putSingle(&quot;X-XSS-Protection&quot;, &quot;1; mode=block&quot;);
+
+    // HSTS
+    headers.putSingle(&quot;Strict-Transport-Security&quot;, &quot;max-age=31536000; includeSubDomains&quot;);
+
+    // CSP — avoid &#x27;unsafe-inline&#x27; for script-src as it negates XSS protection;
+    // use nonces or hashes instead. &#x27;unsafe-inline&#x27; for style-src is acceptable
+    // when CSS frameworks require it, but prefer nonces where possible.
+    headers.putSingle(&quot;Content-Security-Policy&quot;,
+        &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;&quot;);
+  }
+}
+```
+
+## Audit Logging
+
+```java
+@ApplicationScoped
+public class AuditService {
+  private static final Logger LOG = Logger.getLogger(AuditService.class);
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  public void logAccess(String resource, String action) {
+    String user = securityIdentity.isAnonymous()
+        ? &quot;anonymous&quot;
+        : securityIdentity.getPrincipal().getName();
+
+    LOG.infof(&quot;AUDIT: user=%s action=%s resource=%s timestamp=%s&quot;,
+        user, action, resource, Instant.now());
+  }
+}
+
+// Usage in resource
+@Path(&quot;/api/sensitive&quot;)
+public class SensitiveResource {
+  @Inject
+  AuditService auditService;
+
+  @GET
+  @RolesAllowed(&quot;ADMIN&quot;)
+  public Response getData() {
+    auditService.logAccess(&quot;sensitive-data&quot;, &quot;READ&quot;);
+    return Response.ok(data).build();
+  }
+}
+```
+
+## Dependency Security Scanning
+
+```bash
+# Maven
+mvn org.owasp:dependency-check-maven:check
+
+# Gradle
+./gradlew dependencyCheckAnalyze
+
+# Check Quarkus extensions
+quarkus extension list --installable
+```
+
+## Best Practices
+
+- Always use HTTPS in production
+- Enable JWT or OIDC for stateless authentication
+- Use `@RolesAllowed` for declarative authorization
+- Validate all input with Bean Validation
+- Hash passwords with BCrypt (never plaintext)
+- Store secrets in Vault or environment variables
+- Use parameterized queries to prevent SQL injection
+- Add security headers to all responses
+- Implement rate limiting for public endpoints
+- Audit sensitive operations
+- Keep dependencies updated and scan for CVEs
+- Use SecurityIdentity for programmatic checks
+- Set appropriate CORS policies
+- Test authentication and authorization paths</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

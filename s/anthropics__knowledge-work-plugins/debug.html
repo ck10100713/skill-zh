@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debug｜Skill 寫法圖鑑</title>
+<meta name="description" content="結構化除錯流程，從重現、隔離、診斷一路到修復並建議補測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>debug</h1>
+<p class="meta">Anthropic ｜ 除錯與調查 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/engineering/skills/debug/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">結構化除錯流程，從重現、隔離、診斷一路到修復並建議補測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: debug
+description: 結構化的除錯流程：重現、隔離、診斷、修復。用錯誤訊息或 stack trace 觸發，或像是「staging 正常但 prod 壞掉」「deploy 之後有東西壞了」，或行為跟預期不符、原因又不明顯的時候。
+argument-hint: &quot;&lt;error message or problem description&gt;&quot;
+---
+
+# /debug
+
+&gt; 如果看到不熟悉的佔位符，或需要確認目前連接了哪些工具，請看 [CONNECTORS.md](../../CONNECTORS.md)。
+
+進行一場結構化的除錯，有系統地找出並修復問題。
+
+## 用法
+
+```
+/debug $ARGUMENTS
+```
+
+## 運作方式
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       DEBUG                                        │
+├─────────────────────────────────────────────────────────────────┤
+│  步驟 1：REPRODUCE（重現）                                         │
+│  ✓ 搞清楚預期行為和實際行為                                       │
+│  ✓ 找出確切的重現步驟                                             │
+│  ✓ 判斷範圍（什麼時候開始的？誰受影響？）                         │
+│                                                                    │
+│  步驟 2：ISOLATE（隔離）                                           │
+│  ✓ 縮小到特定的元件、服務或程式路徑                               │
+│  ✓ 檢查最近的變更（deploy、設定變更、相依套件）                   │
+│  ✓ 檢視 log 和錯誤訊息                                            │
+│                                                                    │
+│  步驟 3：DIAGNOSE（診斷）                                          │
+│  ✓ 提出假設並驗證                                                 │
+│  ✓ 追蹤程式路徑                                                   │
+│  ✓ 找出根本原因（不只是症狀）                                     │
+│                                                                    │
+│  步驟 4：FIX（修復）                                               │
+│  ✓ 提出修法並說明                                                 │
+│  ✓ 考慮副作用和邊界情況                                           │
+│  ✓ 建議防止 regression 的測試                                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 我需要你提供什麼
+
+跟我說說問題。下面任何一項都有幫助：
+- 錯誤訊息或 stack trace
+- 重現步驟
+- 最近改了什麼
+- Log 或截圖
+- 預期行為 vs. 實際行為
+
+## 輸出
+
+```markdown
+## Debug Report: [Issue Summary]
+
+### Reproduction
+- **Expected**: [What should happen]
+- **Actual**: [What happens instead]
+- **Steps**: [How to reproduce]
+
+### Root Cause
+[Explanation of why the bug occurs]
+
+### Fix
+[Code changes or configuration fixes needed]
+
+### Prevention
+- [Test to add]
+- [Guard to put in place]
+```
+
+## 如果有連接 connector
+
+如果有連接 **~~monitoring**：
+- 拉出問題發生前後的 log、錯誤率和指標
+- 顯示可能相關的近期 deploy 和設定變更
+
+如果有連接 **~~source control**：
+- 找出最近動到受影響程式路徑的 commit 和 PR
+- 檢查問題是否跟某個特定變更有關
+
+如果有連接 **~~project tracker**：
+- 搜尋相關的 bug 回報或已知問題
+- 找到原因後，為修復建立 ticket
+
+## 小提醒
+
+1. **錯誤訊息要原封不動貼上**：不要改寫。確切的文字很重要。
+2. **說明改了什麼**：最近的 deploy、相依套件更新和設定變更是頭號嫌疑犯。
+3. **附上脈絡**：「staging 正常但 prod 不行」或「只影響大 payload」可以很快縮小範圍。</pre></section><section><h2>英文原文</h2><pre>---
+name: debug
+description: Structured debugging session — reproduce, isolate, diagnose, and fix. Trigger with an error message or stack trace, &quot;this works in staging but not prod&quot;, &quot;something broke after the deploy&quot;, or when behavior diverges from expected and the cause isn&#x27;t obvious.
+argument-hint: &quot;&lt;error message or problem description&gt;&quot;
+---
+
+# /debug
+
+&gt; If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
+
+Run a structured debugging session to find and fix issues systematically.
+
+## Usage
+
+```
+/debug $ARGUMENTS
+```
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       DEBUG                                        │
+├─────────────────────────────────────────────────────────────────┤
+│  Step 1: REPRODUCE                                                │
+│  ✓ Understand the expected vs. actual behavior                   │
+│  ✓ Identify exact reproduction steps                             │
+│  ✓ Determine scope (when did it start? who is affected?)        │
+│                                                                    │
+│  Step 2: ISOLATE                                                   │
+│  ✓ Narrow down the component, service, or code path             │
+│  ✓ Check recent changes (deploys, config changes, dependencies) │
+│  ✓ Review logs and error messages                                │
+│                                                                    │
+│  Step 3: DIAGNOSE                                                  │
+│  ✓ Form hypotheses and test them                                 │
+│  ✓ Trace the code path                                           │
+│  ✓ Identify root cause (not just symptoms)                      │
+│                                                                    │
+│  Step 4: FIX                                                       │
+│  ✓ Propose a fix with explanation                                │
+│  ✓ Consider side effects and edge cases                          │
+│  ✓ Suggest tests to prevent regression                           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## What I Need From You
+
+Tell me about the problem. Any of these help:
+- Error message or stack trace
+- Steps to reproduce
+- What changed recently
+- Logs or screenshots
+- Expected vs. actual behavior
+
+## Output
+
+```markdown
+## Debug Report: [Issue Summary]
+
+### Reproduction
+- **Expected**: [What should happen]
+- **Actual**: [What happens instead]
+- **Steps**: [How to reproduce]
+
+### Root Cause
+[Explanation of why the bug occurs]
+
+### Fix
+[Code changes or configuration fixes needed]
+
+### Prevention
+- [Test to add]
+- [Guard to put in place]
+```
+
+## If Connectors Available
+
+If **~~monitoring** is connected:
+- Pull logs, error rates, and metrics around the time of the issue
+- Show recent deploys and config changes that may correlate
+
+If **~~source control** is connected:
+- Identify recent commits and PRs that touched affected code paths
+- Check if the issue correlates with a specific change
+
+If **~~project tracker** is connected:
+- Search for related bug reports or known issues
+- Create a ticket for the fix once identified
+
+## Tips
+
+1. **Share error messages exactly** — Don&#x27;t paraphrase. The exact text matters.
+2. **Mention what changed** — Recent deploys, dependency updates, and config changes are top suspects.
+3. **Include context** — &quot;This works in staging but not prod&quot; or &quot;Only affects large payloads&quot; narrows things fast.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>uncloud｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 uc CLI 管理 Uncloud 叢集：部署服務、Caddy ingress 與擴縮容">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>uncloud</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/uncloud/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 uc CLI 管理 Uncloud 叢集：部署服務、Caddy ingress 與擴縮容</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: uncloud
+description: 管理 Uncloud 叢集時使用：部署服務、設定 Caddy ingress、為非叢集裝置新增靜態 proxy 路由、發布 port、擴縮容、查看 log，或用 `uc` CLI 管理機器和 volume。
+metadata:
+  origin: ECC
+---
+
+# Uncloud 叢集管理
+
+`uc` CLI 的參考資料。它是一個去中心化的自架平台，使用 Docker 容器、WireGuard mesh 網路和 Caddy 反向代理。
+
+## 何時啟用
+
+在操作 Uncloud 叢集時使用這個 skill，特別是在這些情況：
+- 用 `uc machine` 初始化或加入機器
+- 用 `uc deploy` 從 Compose 檔部署服務
+- 透過 Uncloud 發布 HTTP、HTTPS、TCP 或 UDP port
+- 用 `x-caddy`、`x-ports` 或 `--caddyfile` 設定 Caddy ingress
+- 把外部區域網路的裝置路由到叢集的 proxy
+- 查看 log、服務狀態、volume、DNS 或機器配置
+
+## 運作方式
+
+Uncloud 在由 WireGuard mesh 連起來的對等機器上跑 Docker 服務。每台機器都是對等的叢集成員；服務在 overlay 網路上互相通訊，Caddy 以 global 方式執行，負責終結對外的 HTTP/HTTPS 流量。Compose 檔可以使用 Uncloud 的擴充功能來做 ingress、配置和產生 Caddy 設定，而 `uc` CLI 負責映像檔分發、排程、擴縮容、log 和叢集狀態。
+
+## 範例
+
+```bash
+uc machine init user@host --name machine-1
+uc service run --name web -p app.example.com:8080/https nginx:latest
+uc deploy
+```
+
+## 核心概念
+
+- **沒有中央控制平面**：所有機器都是由 WireGuard 連接的對等節點
+- **Caddy** 以 global 服務的形式跑在每台機器上；自動從 Let&#x27;s Encrypt 取得 TLS
+- **Overlay 網路**：服務預設透過 `10.210.0.0/16` 通訊；mesh 內部有提供 DNS
+- **Caddyfile 是自動產生的**：絕對不要直接編輯它；改用 `x-caddy` / `--caddyfile`
+
+---
+
+## CLI 速查
+
+### Machines
+
+| 指令 | 用途 |
+|---------|---------|
+| `uc machine init user@host` | 初始化第一台機器 / 新叢集 |
+| `uc machine add user@host` | 把機器加入現有叢集 |
+| `uc machine ls` | 列出機器 |
+| `uc machine update NAME --public-ip IP` | 更新給 ingress 用的公開 IP |
+| `uc machine rm NAME` | 移除機器 |
+
+`init` 的主要 flag：`--name`、`--network 10.210.0.0/16`、`--no-caddy`、`--no-dns`、`--public-ip auto\|IP\|none`
+
+### Services
+
+| 指令 | 用途 |
+|---------|---------|
+| `uc service ls` / `uc ls` | 列出服務 |
+| `uc service run IMAGE` | 執行單一容器服務 |
+| `uc deploy` | 從 `compose.yaml` 部署 |
+| `uc deploy --no-build` | 部署已經 push 的映像檔，不重新 build |
+| `uc deploy --recreate` | 強制重新建立服務 |
+| `uc scale SERVICE N` | 設定 replica 數量 |
+| `uc service logs SERVICE` | 查看 log |
+| `uc service exec SERVICE` | 進入容器的 shell |
+| `uc service inspect SERVICE` | 詳細資訊 |
+| `uc service rm SERVICE` | 移除服務（保留具名 volume） |
+| `uc ps` | 叢集內所有容器 |
+
+### Images
+
+```bash
+uc image push myapp:latest                    # Push local image to all machines
+uc image push myapp:latest -m machine1,machine2  # Push to specific machines
+uc images                                     # List images in cluster
+```
+
+### Volumes
+
+```bash
+uc volume ls                  # All volumes
+uc volume ls -m machine1      # On specific machine
+uc volume create NAME -m MACHINE
+uc volume rm NAME
+```
+
+### Caddy
+
+```bash
+uc caddy config    # Show current generated Caddyfile (read-only)
+uc caddy deploy    # Deploy/upgrade Caddy across cluster
+```
+
+### DNS 與 Context
+
+```bash
+uc dns show        # Show reserved *.uncld.dev domain
+uc dns reserve     # Reserve a new domain
+uc ctx ls          # List cluster contexts
+uc ctx use prod    # Switch context
+```
+
+---
+
+## Port 發布
+
+### HTTP/HTTPS（透過 Caddy 反向代理）
+
+```
+-p [hostname:]container_port[/protocol]
+```
+
+| 範例 | 意義 |
+|---------|---------|
+| `-p 8080/https` | HTTPS，自動使用 `service-name.cluster-domain` 當 hostname |
+| `-p app.example.com:8080/https` | HTTPS，使用自訂 hostname |
+| `-p 8080/http` | 只有 HTTP，沒有 TLS |
+
+### TCP/UDP（綁定在主機上，繞過 Caddy）
+
+```
+-p [host_ip:]host_port:container_port[/protocol]@host
+```
+
+| 範例 | 意義 |
+|---------|---------|
+| `-p 5432:5432@host` | 所有介面上的 TCP 5432 |
+| `-p 127.0.0.1:5432:5432@host` | TCP 5432，只限 loopback |
+| `-p 53:5353/udp@host` | UDP |
+
+---
+
+## Compose 檔擴充
+
+Uncloud 在 Docker Compose 之上加了這些擴充：
+
+### `x-ports`：用網域發布 port
+
+```yaml
+services:
+  app:
+    image: app:latest
+    x-ports:
+      - example.com:8000/https
+      - www.example.com:8000/https
+      - api.example.com:9000/https
+```
+
+### `x-caddy`：服務專屬的自訂 Caddy 設定
+
+```yaml
+services:
+  app:
+    image: app:latest
+    x-caddy: |
+      example.com {
+        redir https://www.example.com{uri} permanent
+      }
+      www.example.com {
+        reverse_proxy {{upstreams 8000}} {
+          import common_proxy
+        }
+        basic_auth /admin/* {
+          admin $2a$14$...
+        }
+      }
+```
+
+`x-caddy` 裡可以用的範本函式：
+- `{{upstreams [service] [port]}}`：健康的容器 IP
+- `{{.Name}}`：服務名稱
+- `{{.Upstreams}}`：所有服務 → IP 的對照表
+
+### `x-machines`：配置限制
+
+```yaml
+services:
+  db:
+    image: postgres:18
+    x-machines: db-machine          # Single machine name
+  app:
+    image: app:latest
+    x-machines:
+      - machine-1
+      - machine-2
+```
+
+### 完整的多服務範例
+
+```yaml
+services:
+  api:
+    build: ./api
+    x-ports:
+      - api.example.com:3000/https
+    environment:
+      DATABASE_URL: postgres://db:5432/mydb
+
+  web:
+    build: ./web
+    x-ports:
+      - example.com:8000/https
+      - www.example.com:8000/https
+    environment:
+      API_URL: http://api:3000
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    x-machines: db-machine
+
+volumes:
+  db-data:
+```
+
+---
+
+## 路由到外部（非叢集）裝置
+
+要透過 Caddy 對外開放一個外部裝置（例如 BMC、NAS、路由器的管理介面），又不想跑真正的容器：
+
+**1. 建立 Caddyfile 片段**（例如 `~/device.caddyfile`）：
+
+```caddyfile
+https://device.example.com {
+    reverse_proxy https://192.168.1.x {
+        transport http {
+            tls_insecure_skip_verify   # needed for self-signed BMC certs
+        }
+    }
+    log
+}
+```
+
+如果上游是明文：`reverse_proxy http://192.168.1.x:port`
+
+**2. 用一個什麼都不做的容器，註冊成具名服務：**
+
+```bash
+uc service run \
+  --name device-bmc \
+  --caddyfile ~/device.caddyfile \
+  registry.k8s.io/pause:3.9
+```
+
+`pause` 是最精簡的 no-op 容器：它什麼都不做，但讓 Uncloud 有一個服務項目可以掛上 Caddyfile。
+
+**3. 驗證：**
+
+```bash
+uc caddy config   # device.example.com block should appear
+```
+
+&gt; `--caddyfile` 不能跟非 `@host` 的已發布 port 一起使用。
+
+**DNS 小技巧：** 設一筆萬用字元記錄（`*.yourdomain.com → cluster-public-ip`），任何新的子網域都能立刻生效，每個服務都不用再改 DNS。
+
+---
+
+## 服務 DNS（內部）
+
+叢集內的服務可以用名稱互相解析：
+
+| DNS 名稱 | 解析到 |
+|----------|------------|
+| `service-name` | 任何健康的容器 |
+| `service-name.internal` | 同上 |
+| `rr.service-name.internal` | Round-robin |
+| `nearest.service-name.internal` | 優先同一台機器上的 |
+
+---
+
+## 擴縮容與 Global 服務
+
+```bash
+uc scale web 5    # 5 replicas (spread across machines)
+uc scale web 1    # Scale down
+```
+
+```yaml
+services:
+  caddy:
+    deploy:
+      mode: global   # One container on every machine
+```
+
+---
+
+## 映像檔 Tag 範本（在 compose.yaml 裡）
+
+```yaml
+image: myapp:{{gitdate &quot;20060102&quot;}}.{{gitsha 7}}
+image: myapp:{{gitsha 7}}.${GITHUB_RUN_ID:-local}
+```
+
+| 函式 | 輸出 |
+|----------|--------|
+| `{{gitsha N}}` | commit SHA 的前 N 個字元 |
+| `{{gitdate &quot;format&quot;}}` | 用 Go 格式表示的 git commit 日期 |
+| `{{date &quot;format&quot;}}` | 目前日期 |
+
+---
+
+## 常見工作流
+
+**從原始碼部署：**
+```bash
+uc deploy                          # Build + push + deploy
+uc build --push &amp;&amp; uc deploy --no-build   # Separate steps
+```
+
+**檢查服務：**
+```bash
+uc inspect web
+uc logs -f web
+uc logs --since 1h web
+uc exec web                        # Opens shell
+uc exec web /bin/sh -c &quot;env&quot;       # Run specific command
+```
+
+**零停機部署**會自動發生；Uncloud 會等健康檢查通過之後，才終止舊的容器。
+
+**強制重新建立：**
+```bash
+uc deploy --recreate
+```
+
+---
+
+## 常見錯誤
+
+| 錯誤 | 修正 |
+|---------|-----|
+| 直接編輯 Caddyfile | 在 compose 裡用 `x-caddy`，或在 `uc service run` 上用 `--caddyfile` |
+| 代理使用自簽憑證的 HTTPS 上游 | 加上 `transport http { tls_insecure_skip_verify }` |
+| `uc caddy config` 沒有顯示使用者定義的區塊 | 連不到 Caddy 的 admin socket：檢查 `uc inspect caddy` 和 `uc logs caddy` |
+| 服務從容器裡連不到外部區域網路 IP | 確認 Caddy 容器所在的主機能路由到目標網路 |
+| `uc service rm` 之後 volume 不見了 | 具名 volume 會保留；只有匿名 volume 會被自動移除 |</pre></section><section><h2>英文原文</h2><pre>---
+name: uncloud
+description: Use when managing an Uncloud cluster — deploying services, configuring Caddy ingress, adding static proxy routes for non-cluster devices, publishing ports, scaling, inspecting logs, or managing machines and volumes with the `uc` CLI.
+metadata:
+  origin: ECC
+---
+
+# Uncloud Cluster Management
+
+Reference for the `uc` CLI — a decentralised self-hosting platform using Docker containers, WireGuard mesh networking, and Caddy reverse proxy.
+
+## When to Activate
+
+Use this skill when working with Uncloud clusters, especially when:
+- Bootstrapping or joining machines with `uc machine`
+- Deploying services from Compose files with `uc deploy`
+- Publishing HTTP, HTTPS, TCP, or UDP ports through Uncloud
+- Configuring Caddy ingress with `x-caddy`, `x-ports`, or `--caddyfile`
+- Routing external LAN devices through the cluster proxy
+- Inspecting logs, service state, volumes, DNS, or machine placement
+
+## How It Works
+
+Uncloud runs Docker services across peer machines connected by a WireGuard mesh. Each machine is an equal cluster member; services communicate on the overlay network and Caddy runs globally to terminate public HTTP/HTTPS traffic. Compose files can use Uncloud extensions for ingress, placement, and generated Caddy configuration, while the `uc` CLI handles image distribution, scheduling, scaling, logs, and cluster state.
+
+## Examples
+
+```bash
+uc machine init user@host --name machine-1
+uc service run --name web -p app.example.com:8080/https nginx:latest
+uc deploy
+```
+
+## Core Concepts
+
+- **No central control plane** — all machines are equal peers connected by WireGuard
+- **Caddy** runs as a global service on every machine; auto-obtains TLS from Let&#x27;s Encrypt
+- **Overlay network** — services communicate via `10.210.0.0/16` by default; DNS provided inside the mesh
+- **Caddyfile is autogenerated** — never edit it directly; use `x-caddy` / `--caddyfile` instead
+
+---
+
+## CLI Quick Reference
+
+### Machines
+
+| Command | Purpose |
+|---------|---------|
+| `uc machine init user@host` | Bootstrap first machine / new cluster |
+| `uc machine add user@host` | Join machine to existing cluster |
+| `uc machine ls` | List machines |
+| `uc machine update NAME --public-ip IP` | Update public IP for ingress |
+| `uc machine rm NAME` | Remove machine |
+
+Key `init` flags: `--name`, `--network 10.210.0.0/16`, `--no-caddy`, `--no-dns`, `--public-ip auto\|IP\|none`
+
+### Services
+
+| Command | Purpose |
+|---------|---------|
+| `uc service ls` / `uc ls` | List services |
+| `uc service run IMAGE` | Run a single container service |
+| `uc deploy` | Deploy from `compose.yaml` |
+| `uc deploy --no-build` | Deploy already-pushed images without rebuilding |
+| `uc deploy --recreate` | Force service recreation |
+| `uc scale SERVICE N` | Set replica count |
+| `uc service logs SERVICE` | View logs |
+| `uc service exec SERVICE` | Shell into container |
+| `uc service inspect SERVICE` | Detailed info |
+| `uc service rm SERVICE` | Remove service (keeps named volumes) |
+| `uc ps` | All containers across cluster |
+
+### Images
+
+```bash
+uc image push myapp:latest                    # Push local image to all machines
+uc image push myapp:latest -m machine1,machine2  # Push to specific machines
+uc images                                     # List images in cluster
+```
+
+### Volumes
+
+```bash
+uc volume ls                  # All volumes
+uc volume ls -m machine1      # On specific machine
+uc volume create NAME -m MACHINE
+uc volume rm NAME
+```
+
+### Caddy
+
+```bash
+uc caddy config    # Show current generated Caddyfile (read-only)
+uc caddy deploy    # Deploy/upgrade Caddy across cluster
+```
+
+### DNS &amp; Context
+
+```bash
+uc dns show        # Show reserved *.uncld.dev domain
+uc dns reserve     # Reserve a new domain
+uc ctx ls          # List cluster contexts
+uc ctx use prod    # Switch context
+```
+
+---
+
+## Port Publishing
+
+### HTTP/HTTPS (via Caddy reverse proxy)
+
+```
+-p [hostname:]container_port[/protocol]
+```
+
+| Example | Meaning |
+|---------|---------|
+| `-p 8080/https` | HTTPS with auto `service-name.cluster-domain` hostname |
+| `-p app.example.com:8080/https` | HTTPS with custom hostname |
+| `-p 8080/http` | HTTP only, no TLS |
+
+### TCP/UDP (host-bound, bypasses Caddy)
+
+```
+-p [host_ip:]host_port:container_port[/protocol]@host
+```
+
+| Example | Meaning |
+|---------|---------|
+| `-p 5432:5432@host` | TCP 5432 on all interfaces |
+| `-p 127.0.0.1:5432:5432@host` | TCP 5432 loopback only |
+| `-p 53:5353/udp@host` | UDP |
+
+---
+
+## Compose File Extensions
+
+Uncloud adds these extensions on top of Docker Compose:
+
+### `x-ports` — publish ports with domains
+
+```yaml
+services:
+  app:
+    image: app:latest
+    x-ports:
+      - example.com:8000/https
+      - www.example.com:8000/https
+      - api.example.com:9000/https
+```
+
+### `x-caddy` — custom Caddy config for service
+
+```yaml
+services:
+  app:
+    image: app:latest
+    x-caddy: |
+      example.com {
+        redir https://www.example.com{uri} permanent
+      }
+      www.example.com {
+        reverse_proxy {{upstreams 8000}} {
+          import common_proxy
+        }
+        basic_auth /admin/* {
+          admin $2a$14$...
+        }
+      }
+```
+
+Template functions available inside `x-caddy`:
+- `{{upstreams [service] [port]}}` — healthy container IPs
+- `{{.Name}}` — service name
+- `{{.Upstreams}}` — map of all services → IPs
+
+### `x-machines` — placement constraints
+
+```yaml
+services:
+  db:
+    image: postgres:18
+    x-machines: db-machine          # Single machine name
+  app:
+    image: app:latest
+    x-machines:
+      - machine-1
+      - machine-2
+```
+
+### Full multi-service example
+
+```yaml
+services:
+  api:
+    build: ./api
+    x-ports:
+      - api.example.com:3000/https
+    environment:
+      DATABASE_URL: postgres://db:5432/mydb
+
+  web:
+    build: ./web
+    x-ports:
+      - example.com:8000/https
+      - www.example.com:8000/https
+    environment:
+      API_URL: http://api:3000
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    x-machines: db-machine
+
+volumes:
+  db-data:
+```
+
+---
+
+## Routing to External (Non-Cluster) Devices
+
+To expose an external device (e.g. BMC, NAS, router UI) via Caddy without running a real container:
+
+**1. Create a Caddyfile snippet** (e.g. `~/device.caddyfile`):
+
+```caddyfile
+https://device.example.com {
+    reverse_proxy https://192.168.1.x {
+        transport http {
+            tls_insecure_skip_verify   # needed for self-signed BMC certs
+        }
+    }
+    log
+}
+```
+
+For plaintext upstream: `reverse_proxy http://192.168.1.x:port`
+
+**2. Register as a named service with no-op container:**
+
+```bash
+uc service run \
+  --name device-bmc \
+  --caddyfile ~/device.caddyfile \
+  registry.k8s.io/pause:3.9
+```
+
+`pause` is a minimal no-op container — it does nothing, but gives Uncloud a service entry to attach the Caddyfile to.
+
+**3. Verify:**
+
+```bash
+uc caddy config   # device.example.com block should appear
+```
+
+&gt; `--caddyfile` cannot be combined with non-`@host` published ports.
+
+**DNS tip:** A wildcard record (`*.yourdomain.com → cluster-public-ip`) means any new subdomain works immediately — no DNS change needed per service.
+
+---
+
+## Service DNS (Internal)
+
+Services inside the cluster resolve each other by name:
+
+| DNS name | Resolves to |
+|----------|------------|
+| `service-name` | Any healthy container |
+| `service-name.internal` | Same |
+| `rr.service-name.internal` | Round-robin |
+| `nearest.service-name.internal` | Machine-local first |
+
+---
+
+## Scaling &amp; Global Services
+
+```bash
+uc scale web 5    # 5 replicas (spread across machines)
+uc scale web 1    # Scale down
+```
+
+```yaml
+services:
+  caddy:
+    deploy:
+      mode: global   # One container on every machine
+```
+
+---
+
+## Image Tag Templates (in compose.yaml)
+
+```yaml
+image: myapp:{{gitdate &quot;20060102&quot;}}.{{gitsha 7}}
+image: myapp:{{gitsha 7}}.${GITHUB_RUN_ID:-local}
+```
+
+| Function | Output |
+|----------|--------|
+| `{{gitsha N}}` | First N chars of commit SHA |
+| `{{gitdate &quot;format&quot;}}` | Git commit date in Go format |
+| `{{date &quot;format&quot;}}` | Current date |
+
+---
+
+## Common Workflows
+
+**Deploy from source:**
+```bash
+uc deploy                          # Build + push + deploy
+uc build --push &amp;&amp; uc deploy --no-build   # Separate steps
+```
+
+**Inspect a service:**
+```bash
+uc inspect web
+uc logs -f web
+uc logs --since 1h web
+uc exec web                        # Opens shell
+uc exec web /bin/sh -c &quot;env&quot;       # Run specific command
+```
+
+**Zero-downtime deploys** happen automatically; Uncloud waits for health checks before terminating old containers.
+
+**Force recreate:**
+```bash
+uc deploy --recreate
+```
+
+---
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Editing the Caddyfile directly | Use `x-caddy` in compose or `--caddyfile` on `uc service run` |
+| Proxying an HTTPS upstream with self-signed cert | Add `transport http { tls_insecure_skip_verify }` |
+| `uc caddy config` shows no user-defined blocks | Caddy admin socket unreachable — check `uc inspect caddy` and `uc logs caddy` |
+| Service can&#x27;t reach external LAN IP from container | Verify Caddy container&#x27;s host can route to target network |
+| Volumes lost after `uc service rm` | Named volumes persist; only anonymous volumes are auto-removed |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

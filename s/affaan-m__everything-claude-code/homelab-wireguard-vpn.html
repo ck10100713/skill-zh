@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>homelab-wireguard-vpn｜Skill 寫法圖鑑</title>
+<meta name="description" content="架設 WireGuard VPN 從外面連回家用網路，含金鑰跟 split tunnel">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>homelab-wireguard-vpn</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/homelab-wireguard-vpn/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">架設 WireGuard VPN 從外面連回家用網路，含金鑰跟 split tunnel</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: homelab-wireguard-vpn
+description: WireGuard VPN 伺服器設定、peer 設定、金鑰產生、split tunnel 與 full tunnel 路由的選擇，以及從手機和筆電 client 遠端存取家用網路。要設定 WireGuard 來遠端存取家用網路，或要在 split 與 full tunnel 路由之間做決定時使用。
+metadata:
+  origin: community
+---
+
+# Homelab WireGuard VPN
+
+WireGuard 是快速又現代的 VPN 協定。遠端存取家用網路選它就對了，
+設定比 OpenVPN 簡單，速度也比大多數替代方案快。
+
+所有設定範例都是常見的配置。套用到你的系統之前，每條指令都要自己檢查，
+尤其是 iptables 的轉發規則和金鑰檔案的權限，
+而且要在維護時段進行變更。
+
+## When to Use
+
+- 在 Raspberry Pi、Linux 主機、pfSense 或 router 上設定 WireGuard 伺服器
+- 產生 WireGuard 金鑰對，並撰寫 peer 設定檔
+- 設定手機或筆電對家用網路的遠端存取
+- 解釋 split tunnel（只路由家裡的流量）與 full tunnel（路由所有流量）
+- 排查連不起來的 WireGuard 連線
+- 為多個 client 自動產生 peer 設定
+
+## How WireGuard Works
+
+```
+Your phone (WireGuard client)
+    │
+    │  Encrypted UDP tunnel (port 51820)
+    │
+Your home router (WireGuard server — needs a public IP or DDNS)
+    │
+    Your home network (192.168.1.0/24, NAS, Pi, etc.)
+
+Every device has a keypair (public + private key).
+The server knows each client&#x27;s public key.
+The client knows the server&#x27;s public key + endpoint (IP:port).
+Traffic is encrypted end-to-end with no central server or certificate authority.
+```
+
+## Server Setup (Linux)
+
+```bash
+# Install WireGuard
+sudo apt update &amp;&amp; sudo apt install wireguard -y
+
+# Generate server keypair — create files with private permissions from the start
+sudo mkdir -p /etc/wireguard
+sudo sh -c &#x27;umask 077; wg genkey &gt; /etc/wireguard/server_private.key&#x27;
+sudo sh -c &#x27;wg pubkey &lt; /etc/wireguard/server_private.key &gt; /etc/wireguard/server_public.key&#x27;
+
+# Write server config — substitute the actual private key value
+# Do not store private keys in version control or share them
+sudo tee /etc/wireguard/wg0.conf &lt;&lt; &#x27;EOF&#x27;
+[Interface]
+Address = 10.8.0.1/24              # VPN subnet — server gets .1
+ListenPort = 51820
+PrivateKey = &lt;paste_server_private_key_here&gt;
+
+# Scoped forwarding rules: allow VPN traffic in/out, not a blanket FORWARD ACCEPT
+PostUp   = iptables -A FORWARD -i wg0 -o eth0 -j ACCEPT
+PostUp   = iptables -A FORWARD -i eth0 -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+PostUp   = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -o eth0 -j ACCEPT
+PostDown = iptables -D FORWARD -i eth0 -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+# Phone — replace with the actual phone public key
+PublicKey = &lt;phone_public_key&gt;
+AllowedIPs = 10.8.0.2/32
+
+[Peer]
+# Laptop — replace with the actual laptop public key
+PublicKey = &lt;laptop_public_key&gt;
+AllowedIPs = 10.8.0.3/32
+EOF
+sudo chmod 600 /etc/wireguard/wg0.conf
+
+# Replace eth0 with your actual outbound interface name
+# Check with: ip route show default
+
+# Enable IP forwarding (required for routing traffic through the server)
+echo &quot;net.ipv4.ip_forward=1&quot; | sudo tee /etc/sysctl.d/99-wireguard.conf
+sudo sysctl --system
+
+# Start WireGuard and enable on boot
+sudo wg-quick up wg0
+sudo systemctl enable wg-quick@wg0
+```
+
+## Client Configuration
+
+```bash
+# Generate a unique keypair for each client device
+# Run on the client, or on the server and transfer the private key securely — never in plaintext
+umask 077
+wg genkey | tee phone_private.key | wg pubkey &gt; phone_public.key
+
+# Client config file (phone_wg0.conf):
+[Interface]
+PrivateKey = &lt;phone_private_key&gt;
+Address = 10.8.0.2/32
+DNS = 192.168.1.2                  # Optional: use Pi-hole for DNS over the tunnel
+
+[Peer]
+PublicKey = &lt;server_public_key&gt;
+Endpoint = your-home-ip.ddns.net:51820  # Your public IP or DDNS hostname
+AllowedIPs = 192.168.1.0/24            # Split tunnel: only home network traffic
+# AllowedIPs = 0.0.0.0/0, ::/0        # Full tunnel: all traffic through VPN
+
+PersistentKeepalive = 25              # Keep NAT hole open (required for mobile clients)
+```
+
+## Split Tunnel vs Full Tunnel
+
+```
+# Split tunnel: AllowedIPs = 192.168.1.0/24
+  Only traffic destined for your home network goes through the VPN.
+  Internet traffic (YouTube, Spotify) goes directly — better performance on mobile.
+  Best for: &quot;I just want to reach my NAS and Pi from anywhere.&quot;
+
+# Full tunnel: AllowedIPs = 0.0.0.0/0, ::/0
+  ALL traffic goes through your home internet connection.
+  Useful for: piggybacking home DNS/Pi-hole ad blocking.
+  Downside: home upload speed becomes your bottleneck everywhere.
+
+# Multi-subnet split tunnel (most common homelab use case):
+  AllowedIPs = 192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 10.8.0.0/24
+  Routes all your VLANs through the tunnel; internet stays direct.
+```
+
+## Key Generation and Peer Management
+
+```python
+import subprocess
+
+def generate_keypair() -&gt; tuple[str, str]:
+    &quot;&quot;&quot;Generate a WireGuard keypair. Returns (private_key, public_key).&quot;&quot;&quot;
+    private = subprocess.check_output([&quot;wg&quot;, &quot;genkey&quot;]).decode().strip()
+    public = subprocess.run(
+        [&quot;wg&quot;, &quot;pubkey&quot;], input=private.encode(), capture_output=True
+    ).stdout.decode().strip()
+    return private, public
+
+def generate_preshared_key() -&gt; str:
+    return subprocess.check_output([&quot;wg&quot;, &quot;genpsk&quot;]).decode().strip()
+
+def build_client_config(
+    client_private_key: str,
+    client_vpn_ip: str,       # e.g. &quot;10.8.0.3&quot;
+    server_public_key: str,
+    server_endpoint: str,     # e.g. &quot;home.example.com:51820&quot;
+    allowed_ips: str = &quot;192.168.1.0/24&quot;,
+    dns: str = &quot;&quot;,
+) -&gt; str:
+    dns_line = f&quot;DNS = {dns}\n&quot; if dns else &quot;&quot;
+    return f&quot;&quot;&quot;[Interface]
+PrivateKey = {client_private_key}
+Address = {client_vpn_ip}/32
+{dns_line}
+[Peer]
+PublicKey = {server_public_key}
+Endpoint = {server_endpoint}
+AllowedIPs = {allowed_ips}
+PersistentKeepalive = 25
+&quot;&quot;&quot;
+
+def build_server_peer_block(
+    client_public_key: str,
+    client_vpn_ip: str,
+    comment: str = &quot;&quot;,
+) -&gt; str:
+    comment_line = f&quot;# {comment}\n&quot; if comment else &quot;&quot;
+    return f&quot;&quot;&quot;
+{comment_line}[Peer]
+PublicKey = {client_public_key}
+AllowedIPs = {client_vpn_ip}/32
+&quot;&quot;&quot;
+```
+
+私鑰絕對不要進版本控制。如果你要用這支 script，金鑰內容要寫到
+權限 600 的檔案，而且絕對不要 log 或 print 出來。
+
+## pfSense / OPNsense WireGuard
+
+```
+# pfSense: VPN → WireGuard → Add Tunnel
+  Interface Keys: Generate (creates keypair automatically)
+  Listen Port: 51820
+  Interface Address: 10.8.0.1/24
+
+# Add Peer (one per client):
+  Public Key: &lt;client public key&gt;
+  Allowed IPs: 10.8.0.2/32
+
+# Assign the WireGuard interface:
+  Interfaces → Assignments → Add (select wg0)
+  Enable interface, no IP needed (it is set in the tunnel config)
+
+# Firewall rules:
+  WAN → Allow UDP port 51820 inbound (so clients can reach the server)
+  WireGuard interface → Allow traffic to LAN networks you want reachable
+```
+
+## DDNS (Dynamic DNS) for Home Servers
+
+大多數家用網路是動態 IP。用 DDNS，這樣 IP 變了之後，
+VPN endpoint 還是連得到。
+
+```bash
+# Option 1: Cloudflare DDNS — store credentials in a secrets file, not inline
+# docker-compose entry using an env file:
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    env_file: ./ddns.env   # store zone_id and token here, not in compose
+    restart: unless-stopped
+
+# ddns.env (chmod 600, not committed to git):
+# SETTINGS_CLOUDFLARE_ZONE_ID=your_zone_id
+# SETTINGS_CLOUDFLARE_TOKEN=your_api_token
+
+# Option 2: DuckDNS (free, simple)
+  Sign up at duckdns.org → get a token and subdomain (myhome.duckdns.org)
+  Store token in /etc/ddns.env (mode 600), then use a small root-owned script:
+
+  # /usr/local/bin/update-duckdns
+  #!/bin/sh
+  set -eu
+  . /etc/ddns.env
+  curl --fail --silent --show-error --max-time 10 \
+    --get &quot;https://www.duckdns.org/update&quot; \
+    --data-urlencode &quot;domains=myhome&quot; \
+    --data-urlencode &quot;token=${DUCKDNS_TOKEN}&quot; \
+    --data-urlencode &quot;ip=&quot;
+
+  # Cron job:
+  */5 * * * * /usr/local/bin/update-duckdns &gt;/dev/null 2&gt;&amp;1
+```
+
+## Troubleshooting
+
+```bash
+# Check WireGuard status and last handshake
+sudo wg show
+
+# If &quot;latest handshake&quot; is never or very old, the tunnel is not connected.
+# Check:
+# 1. Is UDP port 51820 open on the router/firewall?
+sudo ufw status  # or check pfSense/UniFi firewall rules
+
+# 2. Is the server public key in the client config correct?
+sudo wg show wg0 public-key   # Compare to what is in the client config
+
+# 3. Is IP forwarding enabled on the server?
+cat /proc/sys/net/ipv4/ip_forward  # Should be 1
+
+# 4. Does the client AllowedIPs cover the IP you are trying to reach?
+# If AllowedIPs = 192.168.1.0/24 and you are trying to reach 192.168.3.5, it will not route.
+
+# Check kernel logs for WireGuard errors
+dmesg | grep wireguard
+
+# Restart WireGuard
+sudo wg-quick down wg0 &amp;&amp; sudo wg-quick up wg0
+```
+
+## Anti-Patterns
+
+```
+# BAD: Storing private keys in version control or sharing them
+# Private keys are equivalent to passwords — never commit them to git
+
+# BAD: Using AllowedIPs = 0.0.0.0/0 on mobile without considering the impact
+# Full tunnel routes all mobile traffic through your home upload — usually slow
+
+# BAD: Not setting PersistentKeepalive on mobile clients
+# Mobile clients behind NAT drop idle tunnels without it
+
+# BAD: Opening port 51820 in the firewall but forgetting IP forwarding on the server
+# Tunnel connects but no traffic routes — confusing to debug
+
+# BAD: Sharing a keypair across multiple client devices
+# Each device must have its own unique keypair — shared keys break the security model
+
+# BAD: Using a broad &quot;FORWARD ACCEPT&quot; iptables rule
+# Scope forwarding rules to the wg0 interface and direction only
+```
+
+## Best Practices
+
+- 每個 client 裝置都產生獨立的金鑰對，絕對不要重複使用金鑰
+- 手機用 split tunnel（`AllowedIPs = &lt;home subnets&gt;`）
+- 所有手機 client 都設定 `PersistentKeepalive = 25`
+- 如果 ISP 配的是動態 IP，就用 DDNS；憑證放在 env 檔，不要寫在行內
+- 用有限定範圍的 iptables 轉發規則（只放行 wg0 的 inbound），不要用全面的 FORWARD ACCEPT
+- 在 client 設定裡把 Pi-hole 的 IP 加進 `DNS =`，這樣走 VPN 也能擋廣告
+- 定期輪替伺服器的金鑰對，並更新所有 client 設定
+
+## Related Skills
+
+- homelab-network-setup
+- homelab-vlan-segmentation
+- homelab-pihole-dns</pre></section><section><h2>英文原文</h2><pre>---
+name: homelab-wireguard-vpn
+description: WireGuard VPN server setup, peer configuration, key generation, split tunneling vs full tunnel routing, and remote access to a home network from mobile and laptop clients. Use when setting up WireGuard for remote access to a home network, or deciding between split and full tunnel routing.
+metadata:
+  origin: community
+---
+
+# Homelab WireGuard VPN
+
+WireGuard is a fast, modern VPN protocol. It is the right choice for remote access to a
+home network — simpler to configure than OpenVPN and faster than most alternatives.
+
+All configuration examples show common setups. Review each command — especially the
+iptables forwarding rules and key file permissions — before applying them to your
+system, and make changes in a maintenance window.
+
+## When to Use
+
+- Setting up WireGuard server on a Raspberry Pi, Linux host, pfSense, or router
+- Generating WireGuard keypairs and writing peer config files
+- Configuring remote access from a phone or laptop to a home network
+- Explaining split tunneling (route only home traffic) vs full tunnel (route all traffic)
+- Troubleshooting WireGuard connections that will not come up
+- Automating peer configuration generation for multiple clients
+
+## How WireGuard Works
+
+```
+Your phone (WireGuard client)
+    │
+    │  Encrypted UDP tunnel (port 51820)
+    │
+Your home router (WireGuard server — needs a public IP or DDNS)
+    │
+    Your home network (192.168.1.0/24, NAS, Pi, etc.)
+
+Every device has a keypair (public + private key).
+The server knows each client&#x27;s public key.
+The client knows the server&#x27;s public key + endpoint (IP:port).
+Traffic is encrypted end-to-end with no central server or certificate authority.
+```
+
+## Server Setup (Linux)
+
+```bash
+# Install WireGuard
+sudo apt update &amp;&amp; sudo apt install wireguard -y
+
+# Generate server keypair — create files with private permissions from the start
+sudo mkdir -p /etc/wireguard
+sudo sh -c &#x27;umask 077; wg genkey &gt; /etc/wireguard/server_private.key&#x27;
+sudo sh -c &#x27;wg pubkey &lt; /etc/wireguard/server_private.key &gt; /etc/wireguard/server_public.key&#x27;
+
+# Write server config — substitute the actual private key value
+# Do not store private keys in version control or share them
+sudo tee /etc/wireguard/wg0.conf &lt;&lt; &#x27;EOF&#x27;
+[Interface]
+Address = 10.8.0.1/24              # VPN subnet — server gets .1
+ListenPort = 51820
+PrivateKey = &lt;paste_server_private_key_here&gt;
+
+# Scoped forwarding rules: allow VPN traffic in/out, not a blanket FORWARD ACCEPT
+PostUp   = iptables -A FORWARD -i wg0 -o eth0 -j ACCEPT
+PostUp   = iptables -A FORWARD -i eth0 -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+PostUp   = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -o eth0 -j ACCEPT
+PostDown = iptables -D FORWARD -i eth0 -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+# Phone — replace with the actual phone public key
+PublicKey = &lt;phone_public_key&gt;
+AllowedIPs = 10.8.0.2/32
+
+[Peer]
+# Laptop — replace with the actual laptop public key
+PublicKey = &lt;laptop_public_key&gt;
+AllowedIPs = 10.8.0.3/32
+EOF
+sudo chmod 600 /etc/wireguard/wg0.conf
+
+# Replace eth0 with your actual outbound interface name
+# Check with: ip route show default
+
+# Enable IP forwarding (required for routing traffic through the server)
+echo &quot;net.ipv4.ip_forward=1&quot; | sudo tee /etc/sysctl.d/99-wireguard.conf
+sudo sysctl --system
+
+# Start WireGuard and enable on boot
+sudo wg-quick up wg0
+sudo systemctl enable wg-quick@wg0
+```
+
+## Client Configuration
+
+```bash
+# Generate a unique keypair for each client device
+# Run on the client, or on the server and transfer the private key securely — never in plaintext
+umask 077
+wg genkey | tee phone_private.key | wg pubkey &gt; phone_public.key
+
+# Client config file (phone_wg0.conf):
+[Interface]
+PrivateKey = &lt;phone_private_key&gt;
+Address = 10.8.0.2/32
+DNS = 192.168.1.2                  # Optional: use Pi-hole for DNS over the tunnel
+
+[Peer]
+PublicKey = &lt;server_public_key&gt;
+Endpoint = your-home-ip.ddns.net:51820  # Your public IP or DDNS hostname
+AllowedIPs = 192.168.1.0/24            # Split tunnel: only home network traffic
+# AllowedIPs = 0.0.0.0/0, ::/0        # Full tunnel: all traffic through VPN
+
+PersistentKeepalive = 25              # Keep NAT hole open (required for mobile clients)
+```
+
+## Split Tunnel vs Full Tunnel
+
+```
+# Split tunnel: AllowedIPs = 192.168.1.0/24
+  Only traffic destined for your home network goes through the VPN.
+  Internet traffic (YouTube, Spotify) goes directly — better performance on mobile.
+  Best for: &quot;I just want to reach my NAS and Pi from anywhere.&quot;
+
+# Full tunnel: AllowedIPs = 0.0.0.0/0, ::/0
+  ALL traffic goes through your home internet connection.
+  Useful for: piggybacking home DNS/Pi-hole ad blocking.
+  Downside: home upload speed becomes your bottleneck everywhere.
+
+# Multi-subnet split tunnel (most common homelab use case):
+  AllowedIPs = 192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24, 10.8.0.0/24
+  Routes all your VLANs through the tunnel; internet stays direct.
+```
+
+## Key Generation and Peer Management
+
+```python
+import subprocess
+
+def generate_keypair() -&gt; tuple[str, str]:
+    &quot;&quot;&quot;Generate a WireGuard keypair. Returns (private_key, public_key).&quot;&quot;&quot;
+    private = subprocess.check_output([&quot;wg&quot;, &quot;genkey&quot;]).decode().strip()
+    public = subprocess.run(
+        [&quot;wg&quot;, &quot;pubkey&quot;], input=private.encode(), capture_output=True
+    ).stdout.decode().strip()
+    return private, public
+
+def generate_preshared_key() -&gt; str:
+    return subprocess.check_output([&quot;wg&quot;, &quot;genpsk&quot;]).decode().strip()
+
+def build_client_config(
+    client_private_key: str,
+    client_vpn_ip: str,       # e.g. &quot;10.8.0.3&quot;
+    server_public_key: str,
+    server_endpoint: str,     # e.g. &quot;home.example.com:51820&quot;
+    allowed_ips: str = &quot;192.168.1.0/24&quot;,
+    dns: str = &quot;&quot;,
+) -&gt; str:
+    dns_line = f&quot;DNS = {dns}\n&quot; if dns else &quot;&quot;
+    return f&quot;&quot;&quot;[Interface]
+PrivateKey = {client_private_key}
+Address = {client_vpn_ip}/32
+{dns_line}
+[Peer]
+PublicKey = {server_public_key}
+Endpoint = {server_endpoint}
+AllowedIPs = {allowed_ips}
+PersistentKeepalive = 25
+&quot;&quot;&quot;
+
+def build_server_peer_block(
+    client_public_key: str,
+    client_vpn_ip: str,
+    comment: str = &quot;&quot;,
+) -&gt; str:
+    comment_line = f&quot;# {comment}\n&quot; if comment else &quot;&quot;
+    return f&quot;&quot;&quot;
+{comment_line}[Peer]
+PublicKey = {client_public_key}
+AllowedIPs = {client_vpn_ip}/32
+&quot;&quot;&quot;
+```
+
+Keep private keys out of source control. If you use this script, write key material
+to files with mode 600 and never log or print it.
+
+## pfSense / OPNsense WireGuard
+
+```
+# pfSense: VPN → WireGuard → Add Tunnel
+  Interface Keys: Generate (creates keypair automatically)
+  Listen Port: 51820
+  Interface Address: 10.8.0.1/24
+
+# Add Peer (one per client):
+  Public Key: &lt;client public key&gt;
+  Allowed IPs: 10.8.0.2/32
+
+# Assign the WireGuard interface:
+  Interfaces → Assignments → Add (select wg0)
+  Enable interface, no IP needed (it is set in the tunnel config)
+
+# Firewall rules:
+  WAN → Allow UDP port 51820 inbound (so clients can reach the server)
+  WireGuard interface → Allow traffic to LAN networks you want reachable
+```
+
+## DDNS (Dynamic DNS) for Home Servers
+
+Most home internet connections have a dynamic IP. Use DDNS so your VPN endpoint
+stays reachable after an IP change.
+
+```bash
+# Option 1: Cloudflare DDNS — store credentials in a secrets file, not inline
+# docker-compose entry using an env file:
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    env_file: ./ddns.env   # store zone_id and token here, not in compose
+    restart: unless-stopped
+
+# ddns.env (chmod 600, not committed to git):
+# SETTINGS_CLOUDFLARE_ZONE_ID=your_zone_id
+# SETTINGS_CLOUDFLARE_TOKEN=your_api_token
+
+# Option 2: DuckDNS (free, simple)
+  Sign up at duckdns.org → get a token and subdomain (myhome.duckdns.org)
+  Store token in /etc/ddns.env (mode 600), then use a small root-owned script:
+
+  # /usr/local/bin/update-duckdns
+  #!/bin/sh
+  set -eu
+  . /etc/ddns.env
+  curl --fail --silent --show-error --max-time 10 \
+    --get &quot;https://www.duckdns.org/update&quot; \
+    --data-urlencode &quot;domains=myhome&quot; \
+    --data-urlencode &quot;token=${DUCKDNS_TOKEN}&quot; \
+    --data-urlencode &quot;ip=&quot;
+
+  # Cron job:
+  */5 * * * * /usr/local/bin/update-duckdns &gt;/dev/null 2&gt;&amp;1
+```
+
+## Troubleshooting
+
+```bash
+# Check WireGuard status and last handshake
+sudo wg show
+
+# If &quot;latest handshake&quot; is never or very old, the tunnel is not connected.
+# Check:
+# 1. Is UDP port 51820 open on the router/firewall?
+sudo ufw status  # or check pfSense/UniFi firewall rules
+
+# 2. Is the server public key in the client config correct?
+sudo wg show wg0 public-key   # Compare to what is in the client config
+
+# 3. Is IP forwarding enabled on the server?
+cat /proc/sys/net/ipv4/ip_forward  # Should be 1
+
+# 4. Does the client AllowedIPs cover the IP you are trying to reach?
+# If AllowedIPs = 192.168.1.0/24 and you are trying to reach 192.168.3.5, it will not route.
+
+# Check kernel logs for WireGuard errors
+dmesg | grep wireguard
+
+# Restart WireGuard
+sudo wg-quick down wg0 &amp;&amp; sudo wg-quick up wg0
+```
+
+## Anti-Patterns
+
+```
+# BAD: Storing private keys in version control or sharing them
+# Private keys are equivalent to passwords — never commit them to git
+
+# BAD: Using AllowedIPs = 0.0.0.0/0 on mobile without considering the impact
+# Full tunnel routes all mobile traffic through your home upload — usually slow
+
+# BAD: Not setting PersistentKeepalive on mobile clients
+# Mobile clients behind NAT drop idle tunnels without it
+
+# BAD: Opening port 51820 in the firewall but forgetting IP forwarding on the server
+# Tunnel connects but no traffic routes — confusing to debug
+
+# BAD: Sharing a keypair across multiple client devices
+# Each device must have its own unique keypair — shared keys break the security model
+
+# BAD: Using a broad &quot;FORWARD ACCEPT&quot; iptables rule
+# Scope forwarding rules to the wg0 interface and direction only
+```
+
+## Best Practices
+
+- Generate a unique keypair per client device — never reuse keys
+- Use split tunneling (`AllowedIPs = &lt;home subnets&gt;`) for mobile
+- Set `PersistentKeepalive = 25` on all mobile clients
+- Use DDNS if your ISP assigns a dynamic IP; store credentials in env files, not inline
+- Use scoped iptables forwarding rules (inbound on wg0 only) rather than a blanket FORWARD ACCEPT
+- Add Pi-hole&#x27;s IP as `DNS =` in client configs to get ad blocking over the VPN
+- Rotate the server keypair periodically and update all client configs
+
+## Related Skills
+
+- homelab-network-setup
+- homelab-vlan-segmentation
+- homelab-pihole-dns</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

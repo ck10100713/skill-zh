@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hotfix｜Skill 寫法圖鑑</title>
+<meta name="description" content="繞過 sprint 的緊急修復流程，開 hotfix branch 並留稽核紀錄">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>hotfix</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/hotfix/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">繞過 sprint 的緊急修復流程，開 hotfix branch 並留稽核紀錄</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: hotfix
+description: &quot;繞過一般 sprint 流程的緊急修復：開 hotfix branch、追蹤核准、驗證 backport、留下完整稽核軌跡。&quot;
+argument-hint: &quot;[bug-id or description]&quot;
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(git rev-parse *), Bash(git tag --list*), Bash(git branch --list *)
+model: sonnet
+---
+
+# Hotfix
+
+&gt; **只能明確叫用**：這個 skill 只有在使用者明確用 `/hotfix` 要求時才能執行。不准依脈絡比對自動叫用。
+
+## Phase 1: Assess Severity
+
+讀 bug 描述或 ID。依 `/bug-triage` 的量表評估嚴重度：
+
+- **S1 (Critical)**：當機、資料遺失，或整個功能失效 — 遊戲無法繼續（安全問題依其影響來評級）
+- **S2 (High)**：主要功能壞了，但遊戲還能玩
+- **S3 或更低**：功能降級但有 workaround，或只是外觀問題 — 適用一般 bug 修復流程
+
+用 `AskUserQuestion` 確認：
+- Prompt: &quot;I&#x27;ve assessed this as **[assessed severity]** — [brief rationale]. Confirm severity to proceed:&quot;
+- Options:
+  - `[A] S1 (Critical) — crash, data loss, or complete feature failure`
+  - `[B] S2 (High) — major feature broken, game still playable`
+  - `[C] S3 or lower — redirect to normal bug fix workflow`
+
+選 [C]：停下來。Verdict: **REDIRECTED** — S3 以下請用一般 bug 修復流程。
+
+---
+
+## Phase 2: Create Hotfix Record
+
+起草 hotfix 紀錄：
+
+```markdown
+## Hotfix: [Short Description]
+Date: [Date]
+Severity: [S1/S2]
+Reporter: [Who found it]
+Status: IN PROGRESS
+
+### Problem
+[Clear description of what is broken and the player impact]
+
+### Root Cause
+[To be filled during investigation]
+
+### Fix
+[To be filled during implementation]
+
+### Testing
+[What was tested and how]
+
+### Approvals
+- [ ] Fix reviewed by lead-programmer
+- [ ] Regression test passed (qa-tester)
+- [ ] Release approved (producer)
+
+### Rollback Plan
+[How to revert if the fix causes new issues]
+```
+
+問：「May I write this to `production/hotfixes/hotfix-[date]-[short-name].md`?」
+
+使用者答應就寫檔，目錄不存在的話先建立。
+
+---
+
+## Phase 3: Create Hotfix Branch
+
+檢查這是不是 git repository：
+
+`Bash: git rev-parse --is-inside-work-tree 2&gt;/dev/null`
+
+如果這個指令失敗或回傳空的：註明「Not a git repository — create the branch manually.」並跳過建立 branch。
+
+`[base-ref]` 是 bug 所在的那個 release。Release 是 `main`（trunk）上的 tag，
+所以它就是那個 release 的 tag（`git tag --list`；最新的通常就是
+上線中的 build）— 或者它的 `release/*` branch，如果有為了穩定那個
+release 而切出來的話（`git branch --list &#x27;release/*&#x27;`）。絕對不是 `main` 的最新 head：它可能帶有
+還沒發佈的工作。
+
+如果檢查通過，建立 branch 之前先用 `AskUserQuestion`：
+- Prompt: &quot;Ready to create hotfix branch &#x27;hotfix/[short-name]&#x27; from [base-ref]?&quot;
+- Options:
+  - `[A] Yes — create branch`
+  - `[B] Use a different base ref — I&#x27;ll specify it`
+  - `[C] Skip — I&#x27;ll create the branch myself`
+
+只有使用者選 [A] 才執行 `git checkout -b hotfix/[short-name] [base-ref]`。選 [B]：請使用者提供 base ref，然後用那個 ref 執行指令。選 [C]：跳過建立 branch，直接進 Phase 4。
+
+---
+
+## Phase 4: Investigate and Propose
+
+找出根本原因。起草最小的修復：哪些檔案要改、改了什麼、以及刻意不動什麼。不准在 hotfix 裡順便 refactor、清理或加功能。
+
+呈現根本原因和提議的修復，然後問：「May I implement this fix?」在這個核准之前不准修改任何程式碼 — 緊急流程要靠「在變更出現*之前*就核准」來換取它的稽核軌跡，而不是事後補。
+
+---
+
+## Phase 4b: Implement (only after approval)
+
+實作核准過的最小變更。驗證修復的方式，是用 `project.yaml` 裡的 `commands.test` 針對受影響的系統跑目標測試（runner 允許的話，縮小到受影響的 suite）— 絕對不要憑記憶寫 runner 指令，那樣會漏掉 engine 需要的旗標（gdUnit4 沒有 `--remote-debug tcp://127.0.0.1:0` 就會卡住）。檢查相鄰系統有沒有 regression。如果 `commands.test` 沒設，或沒有測試涵蓋受影響的系統，就講出來，並在 hotfix 紀錄的 Testing 章節記下 `Tests: NOT RUN — [reason]`；Phase 5b 的 QA gate 就負責驗證。
+
+用根本原因、修復細節和測試結果更新 hotfix 紀錄。
+
+---
+
+## Phase 5: Collect Approvals
+
+用 `Agent` 工具平行請求簽核：
+
+- `subagent_type: lead-programmer` — 審查修復的正確性和副作用
+- `subagent_type: qa-tester` — 對受影響的系統跑目標 regression 測試
+- `subagent_type: producer` — 核准部署時機和溝通計畫
+
+三個都必須回傳 APPROVE 才能繼續。只要有任何一個回傳 CONCERNS 或 REJECT，就不准 deploy — 把問題攤出來，先解決它。
+
+---
+
+## Phase 5b: QA Re-Entry Gate
+
+核准之後，判斷 deploy hotfix 之前需要多大的 QA 範圍。用 `Agent` 派出 `qa-lead`，帶上：
+- hotfix 描述和受影響的系統
+- Phase 5 的 regression 測試結果
+- 所有會碰到被改檔案的系統清單（用 Grep 找呼叫端）
+
+問 qa-lead：**完整的 smoke check 夠了嗎？還是這個修復需要針對性的 team-qa？**
+
+套用判定：
+- **Smoke check 夠了** — 對 hotfix build 跑 `/smoke-check`。如果是 PASS 或
+  PASS WITH WARNINGS，進 Phase 6（把警告帶進 hotfix 紀錄）。
+  如果是 **FAIL**，不准 deploy：帶著失敗的檢查回到 Phase 4，在那裡讓
+  修訂後的修復取得核准，實作它（Phase 4b），然後重跑 Phase 5 的
+  核准 — 包含 qa-tester 的 regression 測試 — 以及這個 QA 步驟。讓 smoke suite 壞掉的 hotfix
+  是第二次事故，不是修復。
+- **需要針對性的 QA** — 跑 `/team-qa feature: [affected-system]`，範圍只限變更過的系統。如果 QA 回傳 APPROVED 或 APPROVED WITH CONDITIONS，進 Phase 6；如果是 NOT APPROVED 或 BLOCKED，就當成上面的 smoke-check FAIL 處理。
+- **需要完整 QA** — 動到核心系統的 S1 修復，可能需要完整的 `/team-qa sprint`。這會延後 deploy，但能防止壞 patch。
+
+**如果 QA 步驟回傳 `NOT ASSESSED`，代表這個 gate 沒有執行 — 視為未達成，
+不是已達成。** `/smoke-check` 在 suite 從來沒執行時會回傳它，
+`/team-qa` 則是在某個週期沒有產生任何已執行的證據時。**NOT ASSESSED 的結果
+不是通過** — 不管是哪個 skill — 而在時間壓力下，
+寬鬆的解讀會讓人覺得合理，
+這正是為什麼要把它寫在這裡。要嘛取得缺少的結果 —
+判定會寫出要怎樣才能跑 — 要嘛明確把決定交給
+producer，當成「決定 deploy 一個未驗證的 hotfix」，而不是
+當成默默放行的 gate。把那個決定記在 hotfix 紀錄的 Testing 章節 — 誰決定的、為什麼。
+
+不准跳過這個 gate。讓別的東西壞掉的 hotfix，比原本的 bug 更糟。
+
+---
+
+## Phase 6: Update Bug Status and Deploy
+
+&gt; **STOP — deploy 一律需要明確核准，沒有例外。** 合併 hotfix 並替 patch release 打 tag，
+&gt; 是這個 skill 裡唯一不可逆的動作，所以即使建立 branch（可逆）已經有 gate，
+&gt; 這裡還是要加 gate。在任何
+&gt; merge、tag 或 deploy 之前，用 `AskUserQuestion`：
+&gt;
+&gt; - Prompt: &quot;Hotfix validated and approved. Merge to [targets], tag [patch tag]
+&gt;   and deploy?&quot; — `[targets]` 是 `main`，再加上該 release 的 `release/*` branch
+&gt;   （只有它有的時候）
+&gt; - Options: `[A] Yes — merge and deploy` / `[B] Merge to main only — hold
+&gt;   the release` / `[C] Stop here`
+&gt;
+&gt; 不管 `modes.automation` 是什麼都一樣，包括 `autonomous`。緊急流程
+&gt; 正是沒經過審查的不可逆步驟最容易出現、也最難挽回的地方。
+
+選 `[A]`：把 hotfix branch merge 到 `main`，如果該 release 有 `release/*`
+branch 也 merge 過去；在修好的 build 上替 patch release 打 tag（下一個 patch 版本，例如
+`v1.2.0` → `v1.2.1`）— 有 `release/*` branch 的話就是它的 head，
+沒有就是 hotfix branch 的 head — 然後 deploy 那個 tag，不是 `main` 的
+head。選 `[B]`：只 merge 到 `main` — 不 merge release branch、不打 tag、不
+deploy。選 `[C]`：停下來 — 不 merge、不打 tag、不 deploy，也不更新 bug 檔；
+hotfix 紀錄的 Status 維持 IN PROGRESS，並且把這點講出來。
+
+&gt; **Backport 除非你去驗證，否則就是沒驗證。** frontmatter 宣稱了
+&gt; 「backport verified」。merge 之後，確認修復有出現在 `main`（trunk）上
+&gt; — 如果該 release 有 `release/*` branch，也要確認它上面有 — 並說明
+&gt; 結果。沒 backport 的 hotfix，代表這個 bug 會在下一個從 `main` 打 tag 的
+&gt; release 回來，這是最常見的 hotfix regression。
+
+如果有原本的 bug 檔就更新它 — 用編號在 `production/qa/bugs/`
+裡找，就像 `/bug-report verify` 做的那樣。先問：「May I update
+`production/qa/bugs/[bug file]` with the fix record below and set its Status to
+`Fixed — Pending Verification`?」
+
+```markdown
+## Fix Record
+**Fixed in**: hotfix/[branch-name] — [commit hash or description]
+**Fixed date**: [date]
+**Status**: Fixed — Pending Verification
+```
+
+在 bug 檔的標頭設定 `**Status**: Fixed — Pending Verification`。
+
+輸出 deploy 摘要。標題依 Phase 6 的答案而定 — 選 `[A]` 就是 `Hotfix
+Deployed: [short-name]`，選 `[B]` 就是 `Hotfix Merged to main — release held:
+[short-name]` — 而選 `[B]` 時結尾那行要省略 Tag，因為沒有建立：
+
+```
+## Hotfix Deployed: [short-name]
+
+**Severity**: [S1/S2]
+**Root cause**: [one line]
+**Fix**: [one line]
+**QA gate**: [Smoke check PASS / Team-QA APPROVED / NOT ASSESSED — [why, and whose
+             explicit decision it was to deploy anyway]]
+**Approvals**: lead-programmer ✓ / qa-tester ✓ / producer ✓
+**Backport**: [verified present on `main` (and the `release/*` branch, if the
+              release has one) — or NOT VERIFIED, with what was not checked]
+**Rollback plan**: [from Phase 2 record]
+
+Merge to: [targets] · Tag: [patch tag]
+Next: /bug-report verify [BUG-ID] after deploy to confirm resolution
+```
+
+### Rules
+- hotfix 必須是修這個問題的最小變更 — 不清理、不 refactor
+- 每個 hotfix 在 deploy 之前都必須先寫好 rollback 計畫
+- hotfix branch 從它要修的那個 release 開始 — 它的 tag，或者它的 `release/*`
+  branch（如果有的話）— 並 merge 到 `main`（trunk），而且只有在
+  `release/*` branch 存在時才 merge 到它；patch release 要打 tag
+- 所有 hotfix 都需要在 48 小時內做事後檢討
+- 如果修復複雜到需要超過 4 小時，升級給 `technical-director`
+
+---
+
+## Phase 7: Post-Deploy Verification
+
+deploy 之後，跑 `/bug-report verify [BUG-ID]`，確認修復在已 deploy 的 build 中解決了問題。
+
+如果是 VERIFIED FIXED：跑 `/bug-report close [BUG-ID]` 正式結案。
+如果是 STILL PRESENT：hotfix 失敗了 — 立刻重新開啟、評估 rollback，並升級處理。
+如果是 CANNOT VERIFY：修復未經確認 — 不要關閉 bug；在已 deploy 的 build 裡照它的重現步驟玩一遍，然後再跑一次 `/bug-report verify [BUG-ID]`，並回答它的手動遊玩問題來定案。
+
+安排 48 小時內的事後檢討。`/retrospective` 檢討的是
+sprint 或 milestone，不是事故：用
+`.claude/docs/templates/incident-response.md` 記錄這次檢討，並在下一次
+`/retrospective` 提出其中的教訓。
+
+使用 `AskUserQuestion`：
+- Prompt: &quot;Hotfix complete. What&#x27;s the next step?&quot;
+- Options:
+  - `[A] Run /smoke-check to verify the fix`
+  - `[B] Run /patch-notes to document this hotfix`
+  - `[C] Stop here`</pre></section><section><h2>英文原文</h2><pre>---
+name: hotfix
+description: &quot;Emergency fix bypassing normal sprint process — hotfix branch, approvals tracked, backport verified, full audit trail.&quot;
+argument-hint: &quot;[bug-id or description]&quot;
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Agent, AskUserQuestion, Bash(git rev-parse *), Bash(git tag --list*), Bash(git branch --list *)
+model: sonnet
+---
+
+# Hotfix
+
+&gt; **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/hotfix`. Do not auto-invoke based on context matching.
+
+## Phase 1: Assess Severity
+
+Read the bug description or ID. Assess severity on `/bug-triage`&#x27;s scale:
+
+- **S1 (Critical)**: Crash, data loss, or complete feature failure — the game cannot proceed (rate a security issue by that impact)
+- **S2 (High)**: Major feature broken, but the game is still playable
+- **S3 or lower**: Feature degraded with a workaround, or cosmetic — normal bug fix workflow applies
+
+Confirm with `AskUserQuestion`:
+- Prompt: &quot;I&#x27;ve assessed this as **[assessed severity]** — [brief rationale]. Confirm severity to proceed:&quot;
+- Options:
+  - `[A] S1 (Critical) — crash, data loss, or complete feature failure`
+  - `[B] S2 (High) — major feature broken, game still playable`
+  - `[C] S3 or lower — redirect to normal bug fix workflow`
+
+If [C]: stop. Verdict: **REDIRECTED** — use the normal bug fix workflow for S3 and below.
+
+---
+
+## Phase 2: Create Hotfix Record
+
+Draft the hotfix record:
+
+```markdown
+## Hotfix: [Short Description]
+Date: [Date]
+Severity: [S1/S2]
+Reporter: [Who found it]
+Status: IN PROGRESS
+
+### Problem
+[Clear description of what is broken and the player impact]
+
+### Root Cause
+[To be filled during investigation]
+
+### Fix
+[To be filled during implementation]
+
+### Testing
+[What was tested and how]
+
+### Approvals
+- [ ] Fix reviewed by lead-programmer
+- [ ] Regression test passed (qa-tester)
+- [ ] Release approved (producer)
+
+### Rollback Plan
+[How to revert if the fix causes new issues]
+```
+
+Ask: &quot;May I write this to `production/hotfixes/hotfix-[date]-[short-name].md`?&quot;
+
+If yes, write the file, creating the directory if needed.
+
+---
+
+## Phase 3: Create Hotfix Branch
+
+Check whether this is a git repository:
+
+`Bash: git rev-parse --is-inside-work-tree 2&gt;/dev/null`
+
+If this command fails or returns empty: note &quot;Not a git repository — create the branch manually.&quot; and skip branch creation.
+
+`[base-ref]` is the release the bug is in. Releases are tags on `main` (the
+trunk), so it is that release&#x27;s tag (`git tag --list`; the newest is usually
+the live build) — or its `release/*` branch, if one was cut to stabilise that
+release (`git branch --list &#x27;release/*&#x27;`). Never the head of `main`: it may carry
+work that has not shipped.
+
+If the check passes, use `AskUserQuestion` before creating the branch:
+- Prompt: &quot;Ready to create hotfix branch &#x27;hotfix/[short-name]&#x27; from [base-ref]?&quot;
+- Options:
+  - `[A] Yes — create branch`
+  - `[B] Use a different base ref — I&#x27;ll specify it`
+  - `[C] Skip — I&#x27;ll create the branch myself`
+
+Only run `git checkout -b hotfix/[short-name] [base-ref]` if user selects [A]. If [B]: ask the user for the base ref, then run the command with that ref. If [C]: skip branch creation and proceed to Phase 4.
+
+---
+
+## Phase 4: Investigate and Propose
+
+Find the root cause. Draft the minimal fix: which files change, what the change does, and what it deliberately leaves alone. Do NOT refactor, clean up, or add features alongside the hotfix.
+
+Present the root cause and proposed fix, then ask: &quot;May I implement this fix?&quot; Do not modify any code before this approval — an emergency flow earns its audit trail by approving the change *before* it exists, not after.
+
+---
+
+## Phase 4b: Implement (only after approval)
+
+Implement the approved minimal change. Validate the fix by running targeted tests for the affected system, with `commands.test` from `project.yaml` (narrowed to the affected suite where the runner allows) — never a runner line written from memory, which drops the flags the engine needs (gdUnit4 hangs without `--remote-debug tcp://127.0.0.1:0`). Check for regressions in adjacent systems. If `commands.test` is unset, or no test covers the affected system, say so and record `Tests: NOT RUN — [reason]` in the hotfix record&#x27;s Testing section; the Phase 5b QA gate then carries the verification.
+
+Update the hotfix record with root cause, fix details, and test results.
+
+---
+
+## Phase 5: Collect Approvals
+
+Use the `Agent` tool to request sign-off in parallel:
+
+- `subagent_type: lead-programmer` — Review the fix for correctness and side effects
+- `subagent_type: qa-tester` — Run targeted regression tests on the affected system
+- `subagent_type: producer` — Approve deployment timing and communication plan
+
+All three must return APPROVE before proceeding. If any returns CONCERNS or REJECT, do not deploy — surface the issue and resolve it first.
+
+---
+
+## Phase 5b: QA Re-Entry Gate
+
+After approvals, determine the QA scope required before deploying the hotfix. Spawn `qa-lead` via `Agent` with:
+- The hotfix description and affected system
+- The regression test results from Phase 5
+- A list of all systems that touch the changed files (use Grep to find callers)
+
+Ask qa-lead: **Is a full smoke check sufficient, or does this fix require a targeted team-qa pass?**
+
+Apply the verdict:
+- **Smoke check sufficient** — run `/smoke-check` against the hotfix build. If PASS or
+  PASS WITH WARNINGS, proceed to Phase 6 (carry the warnings into the hotfix record).
+  If **FAIL**, do not deploy: return to Phase 4 with the failing checks, get the
+  revised fix approved there, implement it (Phase 4b), then re-run Phase 5&#x27;s
+  approvals — qa-tester&#x27;s regression run among them — and this QA step. A hotfix
+  that breaks the smoke suite is a second incident, not a fix.
+- **Targeted QA pass required** — run `/team-qa feature: [affected-system]` scoped to the changed system only. If QA returns APPROVED or APPROVED WITH CONDITIONS, proceed to Phase 6; if NOT APPROVED or BLOCKED, handle it as a smoke-check FAIL above.
+- **Full QA required** — S1 fixes that touch core systems may require a full `/team-qa sprint`. This delays deployment but prevents a bad patch.
+
+**If the QA step returns `NOT ASSESSED`, the gate did not run — treat it as unmet,
+not as met.** `/smoke-check` returns it when the suite never executed and
+`/team-qa` when a cycle produced no executed evidence. **A NOT ASSESSED result is
+not a pass** — from either skill — and under time pressure the permissive reading
+is the one that will feel reasonable,
+which is exactly why it is written down here. Either obtain the missing result —
+the verdict names what would make it runnable — or take the decision to the
+producer explicitly, as a decision to deploy an unverified hotfix rather than as a
+gate that quietly cleared. Log that decision — who made it, and why — in the
+hotfix record&#x27;s Testing section.
+
+Do not skip this gate. A hotfix that breaks something else is worse than the original bug.
+
+---
+
+## Phase 6: Update Bug Status and Deploy
+
+&gt; **STOP — deployment requires explicit approval, unconditionally.** Merging a
+&gt; hotfix and tagging the patch release is the one irreversible act in this skill,
+&gt; so it is gated even though branch creation (reversible) already is. Before any
+&gt; merge, tag, or deploy, use `AskUserQuestion`:
+&gt;
+&gt; - Prompt: &quot;Hotfix validated and approved. Merge to [targets], tag [patch tag]
+&gt;   and deploy?&quot; — `[targets]` is `main`, plus the release&#x27;s `release/*` branch
+&gt;   only if it has one
+&gt; - Options: `[A] Yes — merge and deploy` / `[B] Merge to main only — hold
+&gt;   the release` / `[C] Stop here`
+&gt;
+&gt; This holds regardless of `modes.automation`, including `autonomous`. An
+&gt; emergency process is exactly where an unreviewed irreversible step is most
+&gt; likely and least recoverable.
+
+On `[A]`: merge the hotfix branch to `main`, and to the release&#x27;s `release/*`
+branch if it has one; tag the patch release (the next patch version, e.g.
+`v1.2.0` → `v1.2.1`) on the fixed build — the `release/*` branch head if there
+is one, else the hotfix branch head — and deploy that tag, not the head of
+`main`. On `[B]`: merge to `main` only — no release-branch merge, no tag, no
+deploy. On `[C]`: stop — no merge, no tag, no deploy and no bug-file update; the
+hotfix record&#x27;s Status stays IN PROGRESS, and say so.
+
+&gt; **Backport is not verified unless you verify it.** The frontmatter advertises
+&gt; &quot;backport verified&quot;. After merging, confirm the fix is present on `main` (the
+&gt; trunk) — and on the release&#x27;s `release/*` branch, if it has one — and state
+&gt; the result. An unbackported hotfix means the bug returns in the next release
+&gt; tagged from `main`, which is the single most common hotfix regression.
+
+Update the original bug file if one exists — find it in `production/qa/bugs/`
+by its number, as `/bug-report verify` does. Ask first: &quot;May I update
+`production/qa/bugs/[bug file]` with the fix record below and set its Status to
+`Fixed — Pending Verification`?&quot;
+
+```markdown
+## Fix Record
+**Fixed in**: hotfix/[branch-name] — [commit hash or description]
+**Fixed date**: [date]
+**Status**: Fixed — Pending Verification
+```
+
+Set `**Status**: Fixed — Pending Verification` in the bug file header.
+
+Output a deployment summary. Its title follows the Phase 6 answer — `Hotfix
+Deployed: [short-name]` on `[A]`, `Hotfix Merged to main — release held:
+[short-name]` on `[B]` — and on `[B]` the closing line omits the Tag, since none
+was created:
+
+```
+## Hotfix Deployed: [short-name]
+
+**Severity**: [S1/S2]
+**Root cause**: [one line]
+**Fix**: [one line]
+**QA gate**: [Smoke check PASS / Team-QA APPROVED / NOT ASSESSED — [why, and whose
+             explicit decision it was to deploy anyway]]
+**Approvals**: lead-programmer ✓ / qa-tester ✓ / producer ✓
+**Backport**: [verified present on `main` (and the `release/*` branch, if the
+              release has one) — or NOT VERIFIED, with what was not checked]
+**Rollback plan**: [from Phase 2 record]
+
+Merge to: [targets] · Tag: [patch tag]
+Next: /bug-report verify [BUG-ID] after deploy to confirm resolution
+```
+
+### Rules
+- Hotfixes must be the MINIMUM change to fix the issue — no cleanup, no refactoring
+- Every hotfix must have a rollback plan documented before deployment
+- A hotfix branch starts from the release it fixes — its tag, or its `release/*`
+  branch if one exists — and merges to `main` (the trunk), and to that
+  `release/*` branch only if it exists; the patch release is tagged
+- All hotfixes require a post-incident review within 48 hours
+- If the fix is complex enough to need more than 4 hours, escalate to `technical-director`
+
+---
+
+## Phase 7: Post-Deploy Verification
+
+After deploying, run `/bug-report verify [BUG-ID]` to confirm the fix resolved the issue in the deployed build.
+
+If VERIFIED FIXED: run `/bug-report close [BUG-ID]` to formally close it.
+If STILL PRESENT: the hotfix failed — immediately re-open, assess rollback, and escalate.
+If CANNOT VERIFY: the fix is unconfirmed — do not close the bug; play its reproduction steps in the deployed build, then run `/bug-report verify [BUG-ID]` again and answer its manual-play question to settle it.
+
+Schedule a post-incident review within 48 hours. `/retrospective` reviews a
+sprint or milestone, not an incident: record the review with
+`.claude/docs/templates/incident-response.md`, and raise its lessons at the next
+`/retrospective`.
+
+Use `AskUserQuestion`:
+- Prompt: &quot;Hotfix complete. What&#x27;s the next step?&quot;
+- Options:
+  - `[A] Run /smoke-check to verify the fix`
+  - `[B] Run /patch-notes to document this hotfix`
+  - `[C] Stop here`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

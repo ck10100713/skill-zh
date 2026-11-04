@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laravel-verification｜Skill 寫法圖鑑</title>
+<meta name="description" content="Laravel 專案 merge 或部署前的驗證循環：lint、測試、安全與就緒檢查">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>laravel-verification</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/laravel-verification/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Laravel 專案 merge 或部署前的驗證循環：lint、測試、安全與就緒檢查</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: laravel-verification
+description: &quot;Laravel 專案的驗證循環：環境檢查、linting、靜態分析、含覆蓋率的測試、安全掃描與部署就緒檢查。在 merge 或 deploy 前驗證 Laravel 專案時使用（lint、靜態分析、測試、覆蓋率、安全）。&quot;
+metadata:
+  origin: ECC
+---
+
+# Laravel 驗證循環
+
+在開 PR 前、重大變更後與部署前執行。
+
+## 何時使用
+
+- 為 Laravel 專案開 pull request 之前
+- 大型重構或依賴升級之後
+- staging 或 production 的部署前驗證
+- 執行完整的 lint -&gt; test -&gt; security -&gt; deploy readiness 流程
+
+## 運作方式
+
+- 依序執行各階段，從環境檢查一路到部署就緒，讓每一層都建立在前一層之上。
+- 環境與 Composer 檢查是所有後續步驟的關卡，失敗就立刻停下來。
+- 跑完整測試與覆蓋率之前，linting/靜態分析要先乾淨。
+- 安全與 migration 的 review 放在測試之後，先驗證行為，再處理資料或發版步驟。
+- Build/部署就緒與 queue/scheduler 檢查是最後的關卡，任何一項失敗都擋住發版。
+
+## 階段 1：環境檢查
+
+```bash
+php -v
+composer --version
+php artisan --version
+```
+
+- 確認 `.env` 存在，且必要的 key 都有
+- production 環境確認 `APP_DEBUG=false`
+- 確認 `APP_ENV` 符合目標部署環境（`production`、`staging`）
+
+如果在本機用 Laravel Sail：
+
+```bash
+./vendor/bin/sail php -v
+./vendor/bin/sail artisan --version
+```
+
+## 階段 1.5：Composer 與 Autoload
+
+```bash
+composer validate
+composer dump-autoload -o
+```
+
+## 階段 2：Linting 與靜態分析
+
+```bash
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+```
+
+如果你的專案用 Psalm 而不是 PHPStan：
+
+```bash
+vendor/bin/psalm
+```
+
+## 階段 3：測試與覆蓋率
+
+```bash
+php artisan test
+```
+
+覆蓋率（CI）：
+
+```bash
+XDEBUG_MODE=coverage php artisan test --coverage
+```
+
+CI 範例（format -&gt; 靜態分析 -&gt; 測試）：
+
+```bash
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+XDEBUG_MODE=coverage php artisan test --coverage
+```
+
+## 階段 4：安全與依賴檢查
+
+```bash
+composer audit
+```
+
+## 階段 5：資料庫與 Migration
+
+```bash
+php artisan migrate --pretend
+php artisan migrate:status
+```
+
+- 仔細 review 具破壞性的 migration
+- 確認 migration 檔名遵循 `Y_m_d_His_*`（例如 `2025_03_14_154210_create_orders_table.php`），且清楚描述變更內容
+- 確保可以 rollback
+- 檢查 `down()` method，沒有明確備份就不要造成無法復原的資料遺失
+
+## 階段 6：Build 與部署就緒
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+- 確認 production 設定下的快取預熱能成功
+- 確認 queue worker 與 scheduler 都已設定
+- 確認目標環境中 `storage/` 與 `bootstrap/cache/` 可寫入
+
+## 階段 7：Queue 與 Scheduler 檢查
+
+```bash
+php artisan schedule:list
+php artisan queue:failed
+```
+
+如果有用 Horizon：
+
+```bash
+php artisan horizon:status
+```
+
+如果可以用 `queue:monitor`，就用它檢查積壓量，不用真的處理 job：
+
+```bash
+php artisan queue:monitor default --max=100
+```
+
+主動驗證（僅限 staging）：把一個空操作 job 派發到專用的 queue，再跑單一 worker 處理它（確認已設定非 `sync` 的 queue connection）。
+
+```bash
+php artisan tinker --execute=&quot;dispatch((new App\\Jobs\\QueueHealthcheck())-&gt;onQueue(&#x27;healthcheck&#x27;))&quot;
+php artisan queue:work --once --queue=healthcheck
+```
+
+確認該 job 產生了預期的副作用（log 紀錄、healthcheck 資料表的資料列，或 metric）。
+
+只在處理測試 job 很安全的非 production 環境執行。
+
+## 範例
+
+最小流程：
+
+```bash
+php -v
+composer --version
+php artisan --version
+composer validate
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+php artisan test
+composer audit
+php artisan migrate --pretend
+php artisan config:cache
+php artisan queue:failed
+```
+
+CI 風格的 pipeline：
+
+```bash
+composer validate
+composer dump-autoload -o
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+XDEBUG_MODE=coverage php artisan test --coverage
+composer audit
+php artisan migrate --pretend
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan schedule:list
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: laravel-verification
+description: &quot;Verification loop for Laravel projects: env checks, linting, static analysis, tests with coverage, security scans, and deployment readiness. Use when verifying a Laravel project before merge or deploy — lint, static analysis, tests, coverage, security.&quot;
+metadata:
+  origin: ECC
+---
+
+# Laravel Verification Loop
+
+Run before PRs, after major changes, and pre-deploy.
+
+## When to Use
+
+- Before opening a pull request for a Laravel project
+- After major refactors or dependency upgrades
+- Pre-deployment verification for staging or production
+- Running full lint -&gt; test -&gt; security -&gt; deploy readiness pipeline
+
+## How It Works
+
+- Run phases sequentially from environment checks through deployment readiness so each layer builds on the last.
+- Environment and Composer checks gate everything else; stop immediately if they fail.
+- Linting/static analysis should be clean before running full tests and coverage.
+- Security and migration reviews happen after tests so you verify behavior before data or release steps.
+- Build/deploy readiness and queue/scheduler checks are final gates; any failure blocks release.
+
+## Phase 1: Environment Checks
+
+```bash
+php -v
+composer --version
+php artisan --version
+```
+
+- Verify `.env` is present and required keys exist
+- Confirm `APP_DEBUG=false` for production environments
+- Confirm `APP_ENV` matches the target deployment (`production`, `staging`)
+
+If using Laravel Sail locally:
+
+```bash
+./vendor/bin/sail php -v
+./vendor/bin/sail artisan --version
+```
+
+## Phase 1.5: Composer and Autoload
+
+```bash
+composer validate
+composer dump-autoload -o
+```
+
+## Phase 2: Linting and Static Analysis
+
+```bash
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+```
+
+If your project uses Psalm instead of PHPStan:
+
+```bash
+vendor/bin/psalm
+```
+
+## Phase 3: Tests and Coverage
+
+```bash
+php artisan test
+```
+
+Coverage (CI):
+
+```bash
+XDEBUG_MODE=coverage php artisan test --coverage
+```
+
+CI example (format -&gt; static analysis -&gt; tests):
+
+```bash
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+XDEBUG_MODE=coverage php artisan test --coverage
+```
+
+## Phase 4: Security and Dependency Checks
+
+```bash
+composer audit
+```
+
+## Phase 5: Database and Migrations
+
+```bash
+php artisan migrate --pretend
+php artisan migrate:status
+```
+
+- Review destructive migrations carefully
+- Ensure migration filenames follow `Y_m_d_His_*` (e.g., `2025_03_14_154210_create_orders_table.php`) and describe the change clearly
+- Ensure rollbacks are possible
+- Verify `down()` methods and avoid irreversible data loss without explicit backups
+
+## Phase 6: Build and Deployment Readiness
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+- Ensure cache warmups succeed in production configuration
+- Verify queue workers and scheduler are configured
+- Confirm `storage/` and `bootstrap/cache/` are writable in the target environment
+
+## Phase 7: Queue and Scheduler Checks
+
+```bash
+php artisan schedule:list
+php artisan queue:failed
+```
+
+If Horizon is used:
+
+```bash
+php artisan horizon:status
+```
+
+If `queue:monitor` is available, use it to check backlog without processing jobs:
+
+```bash
+php artisan queue:monitor default --max=100
+```
+
+Active verification (staging only): dispatch a no-op job to a dedicated queue and run a single worker to process it (ensure a non-`sync` queue connection is configured).
+
+```bash
+php artisan tinker --execute=&quot;dispatch((new App\\Jobs\\QueueHealthcheck())-&gt;onQueue(&#x27;healthcheck&#x27;))&quot;
+php artisan queue:work --once --queue=healthcheck
+```
+
+Verify the job produced the expected side effect (log entry, healthcheck table row, or metric).
+
+Only run this on non-production environments where processing a test job is safe.
+
+## Examples
+
+Minimal flow:
+
+```bash
+php -v
+composer --version
+php artisan --version
+composer validate
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+php artisan test
+composer audit
+php artisan migrate --pretend
+php artisan config:cache
+php artisan queue:failed
+```
+
+CI-style pipeline:
+
+```bash
+composer validate
+composer dump-autoload -o
+vendor/bin/pint --test
+vendor/bin/phpstan analyse
+XDEBUG_MODE=coverage php artisan test --coverage
+composer audit
+php artisan migrate --pretend
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan schedule:list
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

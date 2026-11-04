@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-sc-eoq｜Skill 寫法圖鑑</title>
+<meta name="description" content="算出讓訂購加持有成本最低的經濟訂購量和再訂購點">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-sc-eoq</h1>
+<p class="meta">asgard-ai-platform ｜ 商業與營運 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-sc-eoq/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">算出讓訂購加持有成本最低的經濟訂購量和再訂購點</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-sc-eoq&quot;
+description: &quot;計算經濟訂購量（Economic Order Quantity），把總庫存成本（訂購成本 + 持有成本）壓到最低。當使用者需要決定最佳訂購量、在訂購頻率與倉儲成本之間取得平衡，或設定再訂購點時就用這個 skill，即使他們說的是「要訂多少」「最佳批量」或「庫存成本最小化」。&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;eoq&quot;, &quot;inventory&quot;, &quot;ordering&quot;]
+---
+
+# 經濟訂購量（Economic Order Quantity, EOQ）
+
+## Overview
+
+EOQ 要找出讓總庫存成本最小的訂購量，總庫存成本 = 訂購成本 + 持有成本。公式：EOQ = √(2DS/H)，其中 D = 年需求量，S = 每次訂購成本，H = 每單位每年的持有成本。前提是需求固定，而且補貨瞬間完成。
+
+## When to Use
+
+**觸發條件：**
+- 設定庫存補貨的標準訂購量
+- 在訂購頻率與倉儲成本之間取得平衡
+- 在加上安全庫存調整之前，先算出基準值
+
+**不適用的情況：**
+- 需求高度不確定時（改用 newsvendor 模型）
+- 商品會腐壞、保存期限很短
+- 數量折扣讓成本結構大幅改變
+
+## Algorithm
+
+```
+IRON LAW: EOQ Assumes CONSTANT, KNOWN Demand
+If demand is variable or uncertain, EOQ gives the wrong answer.
+Real-world application: use EOQ as a starting point, then add
+safety stock for demand variability and lead time uncertainty.
+Total cost curve is flat near EOQ — ±20% from optimal Q changes
+total cost by only ~2%.
+```
+
+### Phase 1: Input Validation
+確認：D（年需求量，單位數）、S（每次訂購的固定成本）、H（每單位每年持有成本 = 單位成本 × 持有率，通常是單位價值的 20-30%）。
+**Gate：** 所有成本都是正數，需求估計合理。
+
+### Phase 2: Core Algorithm
+1. EOQ = √(2 × D × S / H)
+2. 每年訂購次數 = D / EOQ
+3. 再訂購點 = d × L（每日需求 × 前置時間天數）
+4. 在 Q = EOQ 時，年總成本 = (D/Q × S) + (Q/2 × H)
+
+### Phase 3: Verification
+檢查：訂購成本項 ≈ 持有成本項（在 EOQ 時兩者相等），而且總成本在最低點。
+**Gate：** 訂購成本 ≈ 持有成本（±5%）。
+
+### Phase 4: Output
+回傳 EOQ，附上成本拆解和再訂購點。
+
+## Output Format
+
+```json
+{
+  &quot;eoq&quot;: 500,
+  &quot;orders_per_year&quot;: 20,
+  &quot;reorder_point&quot;: 150,
+  &quot;annual_cost&quot;: {&quot;ordering&quot;: 2000, &quot;holding&quot;: 2000, &quot;total&quot;: 4000},
+  &quot;metadata&quot;: {&quot;demand&quot;: 10000, &quot;order_cost&quot;: 100, &quot;holding_cost&quot;: 4.0}
+}
+```
+
+## Examples
+
+### Sample I/O
+**輸入：** D=10,000 單位/年，S=$100/次，H=$4/單位/年
+**預期結果：** EOQ = √(2×10000×100/4) = √500000 = 707 單位
+
+### Edge Cases
+| 輸入 | 預期結果 | 原因 |
+|-------|----------|-----|
+| S 很高、H 很低 | EOQ 很大，訂購次數少 | 把昂貴的訂購次數降到最低 |
+| S 很低、H 很高 | EOQ 很小，訂購頻繁 | 把昂貴的持有成本降到最低 |
+| D = 0 | EOQ = 0，不用訂購 | 沒有需求，就不需要訂購 |
+
+## Gotchas
+
+- **低估持有成本**：H 應該包含資金成本、倉儲、保險、過時報廢、搬運。公司常常只算倉庫租金，結果 H 被低估。
+- **成本曲線很平**：在 EOQ 附近，總成本對訂購量不敏感。把 EOQ 湊成方便的數字（整個棧板、整個貨櫃）幾乎不會多花錢。
+- **數量折扣**：在特定數量有價格門檻時，訂得比 EOQ「更多」可能反而更便宜。要比較 EOQ 和各個折扣門檻的總成本。
+- **前置時間的變異**：EOQ 只管「訂多少」，不管「何時訂」。要加安全庫存：SS = z × σ_demand × √(lead time)。
+- **多品項協調**：多個品項共用訂購成本（同一個供應商）時，要用聯合補貨模型，不要各算各的 EOQ。
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/eoq.py` | 計算經濟訂購量與成本拆解 | `python scripts/eoq.py --help` |
+
+執行 `python scripts/eoq.py --verify` 可以跑內建的基本檢查測試。
+
+## References
+
+- 含數量折扣的 EOQ，請見 `references/eoq-discounts.md`
+- 安全庫存計算，請見 algo-sc-safety-stock</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-sc-eoq&quot;
+description: &quot;Calculate Economic Order Quantity to minimize total inventory cost (ordering + holding). Use this skill when the user needs to determine optimal order size, balance ordering frequency against storage costs, or set reorder points — even if they say &#x27;how much to order&#x27;, &#x27;optimal batch size&#x27;, or &#x27;inventory cost minimization&#x27;.&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;eoq&quot;, &quot;inventory&quot;, &quot;ordering&quot;]
+---
+
+# Economic Order Quantity (EOQ)
+
+## Overview
+
+EOQ determines the order quantity that minimizes total inventory cost = ordering cost + holding cost. Formula: EOQ = √(2DS/H) where D=annual demand, S=ordering cost per order, H=holding cost per unit per year. Assumes constant demand and instantaneous replenishment.
+
+## When to Use
+
+**Trigger conditions:**
+- Setting standard order quantities for inventory replenishment
+- Balancing ordering frequency against warehousing costs
+- Baseline calculation before applying safety stock adjustments
+
+**When NOT to use:**
+- When demand is highly uncertain (use newsvendor model)
+- When products are perishable with short shelf life
+- When quantity discounts change the cost structure significantly
+
+## Algorithm
+
+```
+IRON LAW: EOQ Assumes CONSTANT, KNOWN Demand
+If demand is variable or uncertain, EOQ gives the wrong answer.
+Real-world application: use EOQ as a starting point, then add
+safety stock for demand variability and lead time uncertainty.
+Total cost curve is flat near EOQ — ±20% from optimal Q changes
+total cost by only ~2%.
+```
+
+### Phase 1: Input Validation
+Determine: D (annual demand in units), S (fixed cost per order), H (holding cost per unit per year = unit cost × holding rate, typically 20-30% of unit value).
+**Gate:** All costs positive, demand estimate reasonable.
+
+### Phase 2: Core Algorithm
+1. EOQ = √(2 × D × S / H)
+2. Number of orders per year = D / EOQ
+3. Reorder point = d × L (daily demand × lead time in days)
+4. Total annual cost = (D/Q × S) + (Q/2 × H) at Q = EOQ
+
+### Phase 3: Verification
+Check: ordering cost component ≈ holding cost component (they&#x27;re equal at EOQ). Total cost is at minimum.
+**Gate:** Ordering cost ≈ holding cost (±5%).
+
+### Phase 4: Output
+Return EOQ with cost breakdown and reorder point.
+
+## Output Format
+
+```json
+{
+  &quot;eoq&quot;: 500,
+  &quot;orders_per_year&quot;: 20,
+  &quot;reorder_point&quot;: 150,
+  &quot;annual_cost&quot;: {&quot;ordering&quot;: 2000, &quot;holding&quot;: 2000, &quot;total&quot;: 4000},
+  &quot;metadata&quot;: {&quot;demand&quot;: 10000, &quot;order_cost&quot;: 100, &quot;holding_cost&quot;: 4.0}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** D=10,000 units/year, S=$100/order, H=$4/unit/year
+**Expected:** EOQ = √(2×10000×100/4) = √500000 = 707 units
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| Very high S, low H | Large EOQ, few orders | Minimize expensive ordering |
+| Very low S, high H | Small EOQ, frequent orders | Minimize expensive holding |
+| D = 0 | EOQ = 0, no ordering | No demand, no orders needed |
+
+## Gotchas
+
+- **Holding cost underestimation**: H should include: capital cost, storage, insurance, obsolescence, handling. Companies often only count warehouse rent, understating true H.
+- **Flat cost curve**: Total cost is insensitive near EOQ. Rounding EOQ to a convenient number (full pallet, container) costs very little.
+- **Quantity discounts**: Price breaks at certain quantities may make it cheaper to order MORE than EOQ. Compare total cost at EOQ vs discount breakpoints.
+- **Lead time variability**: EOQ doesn&#x27;t address when to order, only how much. Add safety stock: SS = z × σ_demand × √(lead time).
+- **Multi-item coordination**: When multiple items share ordering costs (same supplier), use joint replenishment models, not individual EOQs.
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/eoq.py` | Compute Economic Order Quantity and cost breakdown | `python scripts/eoq.py --help` |
+
+Run `python scripts/eoq.py --verify` to execute built-in sanity tests.
+
+## References
+
+- For EOQ with quantity discounts, see `references/eoq-discounts.md`
+- For safety stock calculation, see algo-sc-safety-stock</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

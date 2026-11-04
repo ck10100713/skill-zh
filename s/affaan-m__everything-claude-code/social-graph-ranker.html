@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>social-graph-ranker｜Skill 寫法圖鑑</title>
+<meta name="description" content="用加權圖譜算橋接分數，找出最適合替你引薦的人脈">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>social-graph-ranker</h1>
+<p class="meta">affaan-m ｜ 商業與營運 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/social-graph-ranker/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用加權圖譜算橋接分數，找出最適合替你引薦的人脈</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: social-graph-ranker
+description: 用加權社交圖譜排名，找出 warm intro 管道、計算橋接分數，並分析 X 和 LinkedIn 上的人脈缺口。使用者要的是可重複使用的圖譜排名引擎本身，而不是疊在它上面的完整開發信或人脈維護流程時使用。
+metadata:
+  origin: ECC
+---
+
+# Social Graph Ranker
+
+用於人脈導向開發聯繫的標準加權圖譜排名層。
+
+使用者需要做這些事時，就用這個：
+
+- 依引薦價值為現有的共同好友或人脈排名
+- 把通往目標清單的 warm 路徑畫出來
+- 衡量一階和二階人脈的橋接價值
+- 判斷哪些目標值得請人 warm intro，哪些該直接 cold outreach
+- 想獨立於 `lead-intelligence` 或 `connections-optimizer` 之外，理解圖譜的數學
+
+## 何時單獨使用
+
+使用者主要想要排名引擎時，選這個 skill：
+
+- 「我的人脈裡誰最適合替我引薦？」
+- 「依誰能幫我連到這些人，替我的共同好友排名」
+- 「把我的圖譜對照這個 ICP」
+- 「讓我看橋接的數學」
+
+使用者真正想要的是下面這些時，不要單獨用它：
+
+- 完整的潛在客戶開發和外送序列 -&gt; 用 `lead-intelligence`
+- 修剪、重新平衡和擴展人脈 -&gt; 用 `connections-optimizer`
+
+## 輸入
+
+蒐集或推斷：
+
+- 目標人物、公司或 ICP 定義
+- 使用者目前在 X、LinkedIn 或兩者上的圖譜
+- 加權的優先項目，例如職務、產業、地區和回應度
+- 走訪深度和衰減容忍度
+
+## 核心模型
+
+給定：
+
+- `T` = 加權的目標集合
+- `M` = 你目前的共同好友 / 直接人脈
+- `d(m, t)` = 從共同好友 `m` 到目標 `t` 的最短跳數距離
+- `w(t)` = 由訊號評分得到的目標權重
+
+基本橋接分數：
+
+```text
+B(m) = Σ_{t ∈ T} w(t) · λ^(d(m,t) - 1)
+```
+
+其中：
+
+- `λ` 是衰減係數，通常是 `0.5`
+- 直接路徑貢獻完整價值
+- 每多一跳，貢獻減半
+
+二階擴展：
+
+```text
+B_ext(m) = B(m) + α · Σ_{m&#x27; ∈ N(m) \\ M} Σ_{t ∈ T} w(t) · λ^(d(m&#x27;,t))
+```
+
+其中：
+
+- `N(m) \\ M` 是這位共同好友認識、但你不認識的人的集合
+- `α` 是二階觸及的折扣，通常是 `0.3`
+
+依回應度調整的最終排名：
+
+```text
+R(m) = B_ext(m) · (1 + β · engagement(m))
+```
+
+其中：
+
+- `engagement(m)` 是正規化後的回應度或關係強度
+- `β` 是互動加成，通常是 `0.2`
+
+解讀：
+
+- 第 1 級：`R(m)` 高而且有直接橋接路徑 -&gt; 請對方 warm intro
+- 第 2 級：`R(m)` 中等而且有一跳的橋接路徑 -&gt; 有條件的引薦請求
+- 第 3 級：`R(m)` 低，或沒有可行的橋接 -&gt; 直接聯繫，或補上圖譜缺口
+
+## 評分訊號
+
+走訪圖譜之前，用對當前優先項目重要的任何因素替目標加權：
+
+- 職務或頭銜吻合度
+- 公司或產業適配度
+- 目前的活躍度和近期性
+- 地理相關性
+- 影響力或觸及範圍
+- 回應的可能性
+
+走訪之後，用這些替共同好友加權：
+
+- 通往目標集合的加權路徑數量
+- 這些路徑的直接程度
+- 回應度或過去的互動歷史
+- 幫忙引薦的情境適配度
+
+## 工作流程
+
+1. 建立加權的目標集合。
+2. 從 X、LinkedIn 或兩者拉出使用者的圖譜。
+3. 計算直接橋接分數。
+4. 替價值最高的共同好友展開二階候選人。
+5. 依 `R(m)` 排名。
+6. 回傳：
+   - 最佳的 warm intro 請求
+   - 有條件的橋接路徑
+   - 沒有 warm 路徑的圖譜缺口
+
+## 輸出格式
+
+```text
+SOCIAL GRAPH RANKING
+====================
+
+Priority Set:
+Platforms:
+Decay Model:
+
+Top Bridges
+- mutual / connection
+  base_score:
+  extended_score:
+  best_targets:
+  path_summary:
+  recommended_action:
+
+Conditional Paths
+- mutual / connection
+  reason:
+  extra hop cost:
+
+No Warm Path
+- target
+  recommendation: direct outreach / fill graph gap
+```
+
+## 相關 Skill
+
+- `lead-intelligence` 在更廣的目標探索和開發聯繫 pipeline 裡使用這個排名模型
+- `connections-optimizer` 在決定要保留、修剪或新增誰時，使用同樣的橋接邏輯
+- 起草任何引薦請求或直接聯繫之前，應該先執行 `brand-voice`
+- `x-api` 提供 X 圖譜的存取，以及選用的執行路徑</pre></section><section><h2>英文原文</h2><pre>---
+name: social-graph-ranker
+description: Weighted social-graph ranking for warm intro discovery, bridge scoring, and network gap analysis across X and LinkedIn. Use when the user wants the reusable graph-ranking engine itself, not the broader outreach or network-maintenance workflow layered on top of it.
+metadata:
+  origin: ECC
+---
+
+# Social Graph Ranker
+
+Canonical weighted graph-ranking layer for network-aware outreach.
+
+Use this when the user needs to:
+
+- rank existing mutuals or connections by intro value
+- map warm paths to a target list
+- measure bridge value across first- and second-order connections
+- decide which targets deserve warm intros versus direct cold outreach
+- understand the graph math independently from `lead-intelligence` or `connections-optimizer`
+
+## When To Use This Standalone
+
+Choose this skill when the user primarily wants the ranking engine:
+
+- &quot;who in my network is best positioned to introduce me?&quot;
+- &quot;rank my mutuals by who can get me to these people&quot;
+- &quot;map my graph against this ICP&quot;
+- &quot;show me the bridge math&quot;
+
+Do not use this by itself when the user really wants:
+
+- full lead generation and outbound sequencing -&gt; use `lead-intelligence`
+- pruning, rebalancing, and growing the network -&gt; use `connections-optimizer`
+
+## Inputs
+
+Collect or infer:
+
+- target people, companies, or ICP definition
+- the user&#x27;s current graph on X, LinkedIn, or both
+- weighting priorities such as role, industry, geography, and responsiveness
+- traversal depth and decay tolerance
+
+## Core Model
+
+Given:
+
+- `T` = weighted target set
+- `M` = your current mutuals / direct connections
+- `d(m, t)` = shortest hop distance from mutual `m` to target `t`
+- `w(t)` = target weight from signal scoring
+
+Base bridge score:
+
+```text
+B(m) = Σ_{t ∈ T} w(t) · λ^(d(m,t) - 1)
+```
+
+Where:
+
+- `λ` is the decay factor, usually `0.5`
+- a direct path contributes full value
+- each extra hop halves the contribution
+
+Second-order expansion:
+
+```text
+B_ext(m) = B(m) + α · Σ_{m&#x27; ∈ N(m) \\ M} Σ_{t ∈ T} w(t) · λ^(d(m&#x27;,t))
+```
+
+Where:
+
+- `N(m) \\ M` is the set of people the mutual knows that you do not
+- `α` discounts second-order reach, usually `0.3`
+
+Response-adjusted final ranking:
+
+```text
+R(m) = B_ext(m) · (1 + β · engagement(m))
+```
+
+Where:
+
+- `engagement(m)` is normalized responsiveness or relationship strength
+- `β` is the engagement bonus, usually `0.2`
+
+Interpretation:
+
+- Tier 1: high `R(m)` and direct bridge paths -&gt; warm intro asks
+- Tier 2: medium `R(m)` and one-hop bridge paths -&gt; conditional intro asks
+- Tier 3: low `R(m)` or no viable bridge -&gt; direct outreach or follow-gap fill
+
+## Scoring Signals
+
+Weight targets before graph traversal with whatever matters for the current priority set:
+
+- role or title alignment
+- company or industry fit
+- current activity and recency
+- geographic relevance
+- influence or reach
+- likelihood of response
+
+Weight mutuals after traversal with:
+
+- number of weighted paths into the target set
+- directness of those paths
+- responsiveness or prior interaction history
+- contextual fit for making the intro
+
+## Workflow
+
+1. Build the weighted target set.
+2. Pull the user&#x27;s graph from X, LinkedIn, or both.
+3. Compute direct bridge scores.
+4. Expand second-order candidates for the highest-value mutuals.
+5. Rank by `R(m)`.
+6. Return:
+   - best warm intro asks
+   - conditional bridge paths
+   - graph gaps where no warm path exists
+
+## Output Shape
+
+```text
+SOCIAL GRAPH RANKING
+====================
+
+Priority Set:
+Platforms:
+Decay Model:
+
+Top Bridges
+- mutual / connection
+  base_score:
+  extended_score:
+  best_targets:
+  path_summary:
+  recommended_action:
+
+Conditional Paths
+- mutual / connection
+  reason:
+  extra hop cost:
+
+No Warm Path
+- target
+  recommendation: direct outreach / fill graph gap
+```
+
+## Related Skills
+
+- `lead-intelligence` uses this ranking model inside the broader target-discovery and outreach pipeline
+- `connections-optimizer` uses the same bridge logic when deciding who to keep, prune, or add
+- `brand-voice` should run before drafting any intro request or direct outreach
+- `x-api` provides X graph access and optional execution paths</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

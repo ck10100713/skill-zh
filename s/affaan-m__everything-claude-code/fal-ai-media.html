@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fal-ai-media｜Skill 寫法圖鑑</title>
+<meta name="description" content="透過 fal.ai MCP 生成圖片、影片與音訊">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>fal-ai-media</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/fal-ai-media/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">透過 fal.ai MCP 生成圖片、影片與音訊</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: fal-ai-media
+description: 透過 fal.ai MCP 統一產生媒體：圖片、影片與音訊。涵蓋文字生圖（Nano Banana）、文字/圖片生影片（Seedance、Kling、Veo 3）、文字轉語音（CSM-1B），以及影片生音訊（ThinkSound）。在使用者想用 AI 產生圖片、影片或音訊時使用。
+metadata:
+  origin: ECC
+---
+
+# fal.ai 媒體生成
+
+&gt; **容易過時的 skill。** fal.ai 的 model ID、價格、輸入和 MCP 工具名稱
+&gt; 變動很快。在承諾某個模型、參數、輸出格式或費用之前，
+&gt; 先搜尋或抓取最新的模型 metadata。
+
+透過 MCP 使用 fal.ai 模型產生圖片、影片和音訊。
+
+## 何時啟用
+
+- 使用者想從文字 prompt 產生圖片
+- 從文字或圖片建立影片
+- 產生語音、音樂或音效
+- 任何媒體生成任務
+- 使用者說「generate image」、「create video」、「text to speech」、「make a thumbnail」或類似的話
+
+## MCP 需求
+
+必須設定好 fal.ai MCP server。加到 `~/.claude.json`：
+
+```json
+&quot;fal-ai&quot;: {
+  &quot;command&quot;: &quot;npx&quot;,
+  &quot;args&quot;: [&quot;-y&quot;, &quot;fal-ai-mcp-server&quot;],
+  &quot;env&quot;: { &quot;FAL_KEY&quot;: &quot;YOUR_FAL_KEY_HERE&quot; }
+}
+```
+
+到 [fal.ai](https://fal.ai) 取得 API key。
+
+## MCP 工具
+
+fal.ai MCP 提供這些工具：
+- `search`：用關鍵字找可用的模型
+- `find`：取得模型細節與參數
+- `generate`：用參數執行模型
+- `result`：檢查非同步生成的狀態
+- `status`：檢查 job 狀態
+- `cancel`：取消執行中的 job
+- `estimate_cost`：估算生成費用
+- `models`：列出熱門模型
+- `upload`：上傳檔案當作輸入
+
+---
+
+## 圖片生成
+
+### Nano Banana 2（快速）
+最適合：快速迭代、草稿、文字生圖、圖片編輯。
+
+```
+generate(
+  app_id: &quot;fal-ai/nano-banana-2&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a futuristic cityscape at sunset, cyberpunk style&quot;,
+    &quot;image_size&quot;: &quot;landscape_16_9&quot;,
+    &quot;num_images&quot;: 1,
+    &quot;seed&quot;: 42
+  }
+)
+```
+
+### Nano Banana Pro（高擬真）
+最適合：正式產出的圖片、寫實感、字體排印、細節豐富的 prompt。
+
+```
+generate(
+  app_id: &quot;fal-ai/nano-banana-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;professional product photo of wireless headphones on marble surface, studio lighting&quot;,
+    &quot;image_size&quot;: &quot;square&quot;,
+    &quot;num_images&quot;: 1,
+    &quot;guidance_scale&quot;: 7.5
+  }
+)
+```
+
+### 常用圖片參數
+
+| 參數 | 型別 | 選項 | 備註 |
+|-------|------|---------|-------|
+| `prompt` | string | required | 描述你想要的內容 |
+| `image_size` | string | `square`, `portrait_4_3`, `landscape_16_9`, `portrait_16_9`, `landscape_4_3` | 長寬比 |
+| `num_images` | number | 1-4 | 要產生幾張 |
+| `seed` | number | any integer | 可重現性 |
+| `guidance_scale` | number | 1-20 | 要多貼近 prompt（越高越字面） |
+
+### 圖片編輯
+用 Nano Banana 2 搭配輸入圖片，做 inpainting、outpainting 或風格轉換：
+
+```
+# First upload the source image
+upload(file_path: &quot;/path/to/image.png&quot;)
+
+# Then generate with image input
+generate(
+  app_id: &quot;fal-ai/nano-banana-2&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;same scene but in watercolor style&quot;,
+    &quot;image_url&quot;: &quot;&lt;uploaded_url&gt;&quot;,
+    &quot;image_size&quot;: &quot;landscape_16_9&quot;
+  }
+)
+```
+
+---
+
+## 影片生成
+
+### Seedance 1.0 Pro（ByteDance）
+最適合：文字生影片、動態品質高的圖片生影片。
+
+```
+generate(
+  app_id: &quot;fal-ai/seedance-1-0-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a drone flyover of a mountain lake at golden hour, cinematic&quot;,
+    &quot;duration&quot;: &quot;5s&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;,
+    &quot;seed&quot;: 42
+  }
+)
+```
+
+### Kling Video v3 Pro
+最適合：附原生音訊生成的文字/圖片生影片。
+
+```
+generate(
+  app_id: &quot;fal-ai/kling-video/v3/pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;ocean waves crashing on a rocky coast, dramatic clouds&quot;,
+    &quot;duration&quot;: &quot;5s&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;
+  }
+)
+```
+
+### Veo 3（Google DeepMind）
+最適合：帶生成音效、視覺品質高的影片。
+
+```
+generate(
+  app_id: &quot;fal-ai/veo-3&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a bustling Tokyo street market at night, neon signs, crowd noise&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;
+  }
+)
+```
+
+### 圖片生影片
+從現有的圖片開始：
+
+```
+generate(
+  app_id: &quot;fal-ai/seedance-1-0-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;camera slowly zooms out, gentle wind moves the trees&quot;,
+    &quot;image_url&quot;: &quot;&lt;uploaded_image_url&gt;&quot;,
+    &quot;duration&quot;: &quot;5s&quot;
+  }
+)
+```
+
+### 影片參數
+
+| 參數 | 型別 | 選項 | 備註 |
+|-------|------|---------|-------|
+| `prompt` | string | required | 描述影片 |
+| `duration` | string | `&quot;5s&quot;`, `&quot;10s&quot;` | 影片長度 |
+| `aspect_ratio` | string | `&quot;16:9&quot;`, `&quot;9:16&quot;`, `&quot;1:1&quot;` | 畫面比例 |
+| `seed` | number | any integer | 可重現性 |
+| `image_url` | string | URL | 圖片生影片用的來源圖片 |
+
+---
+
+## 音訊生成
+
+### CSM-1B（對話式語音）
+自然、有對話感的文字轉語音。
+
+```
+generate(
+  app_id: &quot;fal-ai/csm-1b&quot;,
+  input_data: {
+    &quot;text&quot;: &quot;Hello, welcome to the demo. Let me show you how this works.&quot;,
+    &quot;speaker_id&quot;: 0
+  }
+)
+```
+
+### ThinkSound（影片生音訊）
+從影片內容產生搭配的音訊。
+
+```
+generate(
+  app_id: &quot;fal-ai/thinksound&quot;,
+  input_data: {
+    &quot;video_url&quot;: &quot;&lt;video_url&gt;&quot;,
+    &quot;prompt&quot;: &quot;ambient forest sounds with birds chirping&quot;
+  }
+)
+```
+
+### ElevenLabs（透過 API，不用 MCP）
+要專業的語音合成，直接使用 ElevenLabs：
+
+```python
+import os
+import requests
+
+resp = requests.post(
+    &quot;https://api.elevenlabs.io/v1/text-to-speech/&lt;voice_id&gt;&quot;,
+    headers={
+        &quot;xi-api-key&quot;: os.environ[&quot;ELEVENLABS_API_KEY&quot;],
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    },
+    json={
+        &quot;text&quot;: &quot;Your text here&quot;,
+        &quot;model_id&quot;: &quot;eleven_turbo_v2_5&quot;,
+        &quot;voice_settings&quot;: {&quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.75}
+    }
+)
+with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+    f.write(resp.content)
+```
+
+### VideoDB 生成式音訊
+如果有設定 VideoDB，就用它的生成式音訊：
+
+```python
+# Voice generation
+audio = coll.generate_voice(text=&quot;Your narration here&quot;, voice=&quot;alloy&quot;)
+
+# Music generation
+music = coll.generate_music(prompt=&quot;upbeat electronic background music&quot;, duration=30)
+
+# Sound effects
+sfx = coll.generate_sound_effect(prompt=&quot;thunder crack followed by rain&quot;)
+```
+
+---
+
+## 費用估算
+
+生成之前，先檢查預估費用：
+
+```
+estimate_cost(
+  estimate_type: &quot;unit_price&quot;,
+  endpoints: {
+    &quot;fal-ai/nano-banana-pro&quot;: {
+      &quot;unit_quantity&quot;: 1
+    }
+  }
+)
+```
+
+## 模型探索
+
+為特定任務找模型：
+
+```
+search(query: &quot;text to video&quot;)
+find(endpoint_ids: [&quot;fal-ai/seedance-1-0-pro&quot;])
+models()
+```
+
+## 小技巧
+
+- 迭代 prompt 時用 `seed` 取得可重現的結果
+- prompt 迭代先用較低成本的模型（Nano Banana 2），定稿時再換成 Pro
+- 影片的 prompt 要描述清楚但精簡，聚焦在動作與場景
+- 圖片生影片比純文字生影片更能控制結果
+- 執行昂貴的影片生成之前，先檢查 `estimate_cost`
+
+## 相關 Skill
+
+- `tasteforge-video`：離線的品味萃取與模態規劃。它的
+  endpoint 候選與 request manifest 只供參考，不是已提交的
+  job 或已儲存的 Fal 工作流。TasteForge 的交接不代表授權上傳
+  或生成；請使用另外授權的 provider 工作流，並在執行前驗證
+  它目前的 endpoint schema。
+- `videodb`：影片處理、剪輯與串流
+- `video-editing`：AI 驅動的影片剪輯工作流
+- `content-engine`：社群平台的內容創作</pre></section><section><h2>英文原文</h2><pre>---
+name: fal-ai-media
+description: Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-speech (CSM-1B), and video-to-audio (ThinkSound). Use when the user wants to generate images, videos, or audio with AI.
+metadata:
+  origin: ECC
+---
+
+# fal.ai Media Generation
+
+&gt; **Drift-prone skill.** fal.ai model IDs, pricing, inputs, and MCP tool names
+&gt; change quickly. Search or fetch the current model metadata before promising a
+&gt; specific model, parameter, output format, or cost.
+
+Generate images, videos, and audio using fal.ai models via MCP.
+
+## When to Activate
+
+- User wants to generate images from text prompts
+- Creating videos from text or images
+- Generating speech, music, or sound effects
+- Any media generation task
+- User says &quot;generate image&quot;, &quot;create video&quot;, &quot;text to speech&quot;, &quot;make a thumbnail&quot;, or similar
+
+## MCP Requirement
+
+fal.ai MCP server must be configured. Add to `~/.claude.json`:
+
+```json
+&quot;fal-ai&quot;: {
+  &quot;command&quot;: &quot;npx&quot;,
+  &quot;args&quot;: [&quot;-y&quot;, &quot;fal-ai-mcp-server&quot;],
+  &quot;env&quot;: { &quot;FAL_KEY&quot;: &quot;YOUR_FAL_KEY_HERE&quot; }
+}
+```
+
+Get an API key at [fal.ai](https://fal.ai).
+
+## MCP Tools
+
+The fal.ai MCP provides these tools:
+- `search` — Find available models by keyword
+- `find` — Get model details and parameters
+- `generate` — Run a model with parameters
+- `result` — Check async generation status
+- `status` — Check job status
+- `cancel` — Cancel a running job
+- `estimate_cost` — Estimate generation cost
+- `models` — List popular models
+- `upload` — Upload files for use as inputs
+
+---
+
+## Image Generation
+
+### Nano Banana 2 (Fast)
+Best for: quick iterations, drafts, text-to-image, image editing.
+
+```
+generate(
+  app_id: &quot;fal-ai/nano-banana-2&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a futuristic cityscape at sunset, cyberpunk style&quot;,
+    &quot;image_size&quot;: &quot;landscape_16_9&quot;,
+    &quot;num_images&quot;: 1,
+    &quot;seed&quot;: 42
+  }
+)
+```
+
+### Nano Banana Pro (High Fidelity)
+Best for: production images, realism, typography, detailed prompts.
+
+```
+generate(
+  app_id: &quot;fal-ai/nano-banana-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;professional product photo of wireless headphones on marble surface, studio lighting&quot;,
+    &quot;image_size&quot;: &quot;square&quot;,
+    &quot;num_images&quot;: 1,
+    &quot;guidance_scale&quot;: 7.5
+  }
+)
+```
+
+### Common Image Parameters
+
+| Param | Type | Options | Notes |
+|-------|------|---------|-------|
+| `prompt` | string | required | Describe what you want |
+| `image_size` | string | `square`, `portrait_4_3`, `landscape_16_9`, `portrait_16_9`, `landscape_4_3` | Aspect ratio |
+| `num_images` | number | 1-4 | How many to generate |
+| `seed` | number | any integer | Reproducibility |
+| `guidance_scale` | number | 1-20 | How closely to follow the prompt (higher = more literal) |
+
+### Image Editing
+Use Nano Banana 2 with an input image for inpainting, outpainting, or style transfer:
+
+```
+# First upload the source image
+upload(file_path: &quot;/path/to/image.png&quot;)
+
+# Then generate with image input
+generate(
+  app_id: &quot;fal-ai/nano-banana-2&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;same scene but in watercolor style&quot;,
+    &quot;image_url&quot;: &quot;&lt;uploaded_url&gt;&quot;,
+    &quot;image_size&quot;: &quot;landscape_16_9&quot;
+  }
+)
+```
+
+---
+
+## Video Generation
+
+### Seedance 1.0 Pro (ByteDance)
+Best for: text-to-video, image-to-video with high motion quality.
+
+```
+generate(
+  app_id: &quot;fal-ai/seedance-1-0-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a drone flyover of a mountain lake at golden hour, cinematic&quot;,
+    &quot;duration&quot;: &quot;5s&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;,
+    &quot;seed&quot;: 42
+  }
+)
+```
+
+### Kling Video v3 Pro
+Best for: text/image-to-video with native audio generation.
+
+```
+generate(
+  app_id: &quot;fal-ai/kling-video/v3/pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;ocean waves crashing on a rocky coast, dramatic clouds&quot;,
+    &quot;duration&quot;: &quot;5s&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;
+  }
+)
+```
+
+### Veo 3 (Google DeepMind)
+Best for: video with generated sound, high visual quality.
+
+```
+generate(
+  app_id: &quot;fal-ai/veo-3&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;a bustling Tokyo street market at night, neon signs, crowd noise&quot;,
+    &quot;aspect_ratio&quot;: &quot;16:9&quot;
+  }
+)
+```
+
+### Image-to-Video
+Start from an existing image:
+
+```
+generate(
+  app_id: &quot;fal-ai/seedance-1-0-pro&quot;,
+  input_data: {
+    &quot;prompt&quot;: &quot;camera slowly zooms out, gentle wind moves the trees&quot;,
+    &quot;image_url&quot;: &quot;&lt;uploaded_image_url&gt;&quot;,
+    &quot;duration&quot;: &quot;5s&quot;
+  }
+)
+```
+
+### Video Parameters
+
+| Param | Type | Options | Notes |
+|-------|------|---------|-------|
+| `prompt` | string | required | Describe the video |
+| `duration` | string | `&quot;5s&quot;`, `&quot;10s&quot;` | Video length |
+| `aspect_ratio` | string | `&quot;16:9&quot;`, `&quot;9:16&quot;`, `&quot;1:1&quot;` | Frame ratio |
+| `seed` | number | any integer | Reproducibility |
+| `image_url` | string | URL | Source image for image-to-video |
+
+---
+
+## Audio Generation
+
+### CSM-1B (Conversational Speech)
+Text-to-speech with natural, conversational quality.
+
+```
+generate(
+  app_id: &quot;fal-ai/csm-1b&quot;,
+  input_data: {
+    &quot;text&quot;: &quot;Hello, welcome to the demo. Let me show you how this works.&quot;,
+    &quot;speaker_id&quot;: 0
+  }
+)
+```
+
+### ThinkSound (Video-to-Audio)
+Generate matching audio from video content.
+
+```
+generate(
+  app_id: &quot;fal-ai/thinksound&quot;,
+  input_data: {
+    &quot;video_url&quot;: &quot;&lt;video_url&gt;&quot;,
+    &quot;prompt&quot;: &quot;ambient forest sounds with birds chirping&quot;
+  }
+)
+```
+
+### ElevenLabs (via API, no MCP)
+For professional voice synthesis, use ElevenLabs directly:
+
+```python
+import os
+import requests
+
+resp = requests.post(
+    &quot;https://api.elevenlabs.io/v1/text-to-speech/&lt;voice_id&gt;&quot;,
+    headers={
+        &quot;xi-api-key&quot;: os.environ[&quot;ELEVENLABS_API_KEY&quot;],
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    },
+    json={
+        &quot;text&quot;: &quot;Your text here&quot;,
+        &quot;model_id&quot;: &quot;eleven_turbo_v2_5&quot;,
+        &quot;voice_settings&quot;: {&quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.75}
+    }
+)
+with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+    f.write(resp.content)
+```
+
+### VideoDB Generative Audio
+If VideoDB is configured, use its generative audio:
+
+```python
+# Voice generation
+audio = coll.generate_voice(text=&quot;Your narration here&quot;, voice=&quot;alloy&quot;)
+
+# Music generation
+music = coll.generate_music(prompt=&quot;upbeat electronic background music&quot;, duration=30)
+
+# Sound effects
+sfx = coll.generate_sound_effect(prompt=&quot;thunder crack followed by rain&quot;)
+```
+
+---
+
+## Cost Estimation
+
+Before generating, check estimated cost:
+
+```
+estimate_cost(
+  estimate_type: &quot;unit_price&quot;,
+  endpoints: {
+    &quot;fal-ai/nano-banana-pro&quot;: {
+      &quot;unit_quantity&quot;: 1
+    }
+  }
+)
+```
+
+## Model Discovery
+
+Find models for specific tasks:
+
+```
+search(query: &quot;text to video&quot;)
+find(endpoint_ids: [&quot;fal-ai/seedance-1-0-pro&quot;])
+models()
+```
+
+## Tips
+
+- Use `seed` for reproducible results when iterating on prompts
+- Start with lower-cost models (Nano Banana 2) for prompt iteration, then switch to Pro for finals
+- For video, keep prompts descriptive but concise — focus on motion and scene
+- Image-to-video produces more controlled results than pure text-to-video
+- Check `estimate_cost` before running expensive video generations
+
+## Related Skills
+
+- `tasteforge-video` — Offline taste distillation and modality planning. Its
+  endpoint candidates and request manifests are reference-only, not submitted
+  jobs or saved Fal workflows. A TasteForge handoff does not authorize upload
+  or generation; use a separately authorized provider workflow and verify its
+  current endpoint schema before executing.
+- `videodb` — Video processing, editing, and streaming
+- `video-editing` — AI-powered video editing workflows
+- `content-engine` — Content creation for social platforms</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

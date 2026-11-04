@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>inventory-planner｜Skill 寫法圖鑑</title>
+<meta name="description" content="依銷售速度算出該補什麼貨、何時補，並擬採購單和供應商信">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>inventory-planner</h1>
+<p class="meta">Anthropic ｜ 商業與營運 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/small-business/skills/inventory-planner/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">依銷售速度算出該補什麼貨、何時補，並擬採購單和供應商信</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: inventory-planner
+description: &gt;
+  根據實際賣得動的東西，算出什麼該補貨、什麼時候補：
+  從 Shopify、Square、NetSuite 或上傳的 CSV 拉出銷售歷史和現有庫存，
+  算出每個品項的 7 天和 28 天銷售速度，替每個品項推估保守的缺貨日期，
+  訂出 60 天的補貨量，並擬好涵蓋這些需求的採購單和給供應商的 email。
+  也會標出閒置的資金，包括庫存過多、滯銷庫存和零銷售速度的品項，
+  這些會報告成要清掉的滯銷品，而不是要多買的東西。
+  歷史資料足夠時會套用季節性，不夠時會明講。
+  沒有核准，不下單，也不寄 email 給任何供應商。
+  只要談到庫存就用這個：「我需要補什麼貨」、「我會不會缺貨」、
+  「這個月該訂什麼」、「濾網一直斷貨」、
+  「倉庫裡壓了多少現金」、「什麼東西賣不動」，或「幫我擬給供應商的採購單」。
+allowed-tools: Read, WebFetch
+---
+
+# Inventory Planner
+
+買賣得動的東西，在缺貨之前買，並且不再買賣不動的。
+
+庫存就是老闆已經花掉的現金。會出兩種錯：客人要的東西缺貨，以及壓著一整棧沒人要的東西。兩種問題在變成大麻煩之前，銷售歷史裡都看得出來，這個 skill 就是讀這個。
+
+## Step 1 — 取得銷售和庫存資料
+
+**首選：** 用 Shopify 取得銷售和庫存水位。Square 和 NetSuite 的做法一樣。
+
+**備援，完整支援：** 一份銷售歷史的 CSV，加上現有庫存盤點。兩個檔案，或一個檔案包含兩者。這條路徑不需要任何 connector 就能運作，產出也一樣。很多商家是拿紙板筆記盤點的，那也是正當的輸入。
+
+每個品項需要：SKU、名稱、各日期售出的數量、目前庫存、單位成本、單價、供應商，如果知道的話還要有前置時間（lead time）。缺少前置時間就問一次並記住，見 `reference/data_sources.md`。
+
+**要講明盤點是截至哪一天。** 兩週前的庫存數字，會算出差兩週的缺貨日期。
+
+## Step 2 — 計算兩個時間窗的銷售速度
+
+每個品項都要算：
+
+- **7 天速度**：過去一週每天賣幾個。抓的是現在正在發生的事。
+- **28 天速度**：四週內每天賣幾個。穩定的基準線。
+
+兩個都重要，而且兩者不一致本身就是資訊。一個品項這週賣的量是 28 天速率的三倍，不是正在爆紅，就是有一張大單，兩者要有不同的處理方式。怎麼分辨，見 `reference/velocity_and_reorder.md`。
+
+能辨識出來的一次性干擾，要從基準線排除：單一批發訂單、退回的整批貨、品項因為缺貨賣不出去的期間。**因為沒庫存而零銷售的期間，不等於零需求**，把它當成零需求，就是品項永遠訂不夠的原因。
+
+## Step 3 — 保守推估缺貨日期
+
+缺貨日期是現有庫存除以你最不信任的每日速度，也就是兩個時間窗中比較高的那個。早一點抓很便宜，晚了就會丟掉生意。
+
+然後跟前置時間比較。重要的數字不是什麼時候賣完，而是還來不來得及訂：
+
+- **已過不可回頭的點**：前置時間超過庫存可撐的天數。已經注定會缺貨。直接講明。
+- **現在就訂**：可撐的天數落在前置時間加安全緩衝之內。
+- **快訂了**：還算充裕，但要在下一個週期處理。
+- **沒問題**：不用動作。
+
+**沒有可靠銷售速度的品項，絕不要講缺貨日期。** 只有兩週歷史的新品，以及銷售曾經中斷的品項，要指名標成「歷史不足」。
+
+## Step 4 — 訂補貨量
+
+預設目標是 **60 天的庫存量加上前置時間**，依 **28 天速率**來算，不是兩者中較快的那個。庫存必須撐過從到貨那天到下一批到貨的這段時間，所以把前置時間漏掉，這個品項每個週期都剛好少那麼多天。然後再依包裝規格、最小訂購量，以及已經在途的訂單調整。
+
+兩個速率的功用不同，兩個都要寫在那一行：較高的那個說明什麼時候賣完，28 天的那個說明該買多少。拿一週的暴衝去訂 60 天的量，現金就會變成一棧貨。
+
+絕不要在沒扣掉在途庫存的情況下訂補貨量。把賣得慢的品項重複下單，是商家最後囤了三年份庫存的原因。
+
+湊到供應商的包裝規格，並說明是往哪個方向進位。每一項建議都要顯示金額，老闆是在決定現金，不是在決定數量。
+
+## Step 5 — 處理賣不動的品項
+
+零銷售速度和很慢的品項是另一份清單，用途也不同。**它們絕對不是補貨候選。**
+
+- **零銷售速度**：28 天內一個都沒賣出。報告成滯銷品，並附上卡在裡面的現金。**絕不要幫這些算可撐的天數**，沒東西在賣，就沒東西在耗，那個數字不是錯誤就是無意義。唯一的例外是老闆指名的某個旺季內的品項，它要放進附日期的觀察清單，而不是清倉清單。
+- **庫存過多**：可撐超過 120 天。報告多出來的數量和金額。
+- **滯銷庫存**：90 天沒動過。建議清倉、組合促銷或打折。
+
+把壓在這些東西裡的現金加總。這個數字通常是整份報告裡最讓人意外的，也常常是最有用的。
+
+## Step 6 — 只在歷史資料足夠時才套用季節性
+
+有至少一年的歷史，就拿即將到來的這段期間跟去年同期比較並調整。
+
+**不到一年，就講明並且不調整。** 用九個月資料硬編出來的季節係數，只是穿著西裝的猜測。改去問老闆，他們比一份很短的歷史更懂自己的旺季。兩條路徑都寫在 `reference/seasonality.md`。
+
+## Step 7 — 呈現採購清單
+
+先講總金額，和即將缺貨的品項數。然後依序是：現在就訂、快訂了、滯銷品，以及歷史太少無法判斷的。
+
+每一行都帶著背後的數字：銷售速度、可撐天數、前置時間、數量、成本。老闆看得到推理過程，一分鐘就能核准；看不到的，就得整個手動重算一遍。
+
+用共用的 artifact 樣式（`../../shared/artifact-style.md`）把採購清單輸出成 HTML artifact：依缺貨日期排序的缺貨表格，數字用等寬字體加 tabular-nums，緊急程度狀態標籤（現在就訂 / 快訂了 / 沒問題 / 已過不可回頭的點），含數量和金額總計的補貨面板，以及標出壓住多少現金的滯銷品區塊。聊天摘要還是要留，artifact 是完整的全貌，不是唯一的版本。
+
+## Step 8 — 擬採購單和供應商 email，經核准
+
+採購單會動用資金，供應商 email 會用老闆的名義寄出，所以兩者都要等明確的「好」。
+
+詢問之前，先講明供應商、品項明細和總額。供應商 email 用老闆的口吻擬，依照[共用的語氣檔案](../../shared/voice-profile.md)。**如果還沒有語氣資料，就照那個檔案的「When there is no sample」指示做**：請老闆給三封他寄給供應商的信。如果他不想給，就寫平實中性的 email，並說明這不是他的語氣。絕不要替別人的供應商關係捏造一種個性。
+
+有連上 Google Calendar 的話，提議一個固定的補貨決策時段，做成節奏比做成臨時救火有效得多。核准後的採購單文件留在這裡，這個 skill 負責管它。有連上 QuickBooks 或 NetSuite 時，把每一張的已編碼備忘（供應商、採購單號、總額、預計到貨日，以及科目、類別和專案）交給 `ap-processor`，這樣帳單送到時才能跟真實紀錄做三方比對。`ap-processor` 只讀採購單，不建立採購單。
+
+## 結尾提議
+
+用一句話收尾，講決定了什麼：總採購金額，以及即將賣完的品項。然後提議最相關的下一步，附上確切的觸發語句：當老闆想從頭到尾擬好並寄出採購單時，用「reorder」（`/restock`）。再從 router 的表裡最多多挑兩個，例如「cash forecast」（`cash-flow-snapshot`）或「pay the bills」（`/pay-the-bills`）。提議最多三個，而且老闆在這次對話裡已經拒絕過的，不要再提。
+
+## 不要做的事
+
+- **不要編造銷售速度、前置時間或缺貨日期。** 歷史太少就逐 SKU 回報，不要含糊帶過。
+- **不要把缺貨期間當成零需求。** 那是被壓抑的需求，會讓後面所有結果都偏掉。
+- **不要建議補零銷售速度的品項。** 沒有銷售代表停止購買，不是多買。
+- **訂補貨量時，不要不扣掉已在途的庫存。**
+- **沒有一年歷史就不要套用季節性。** 改問老闆。
+- **沒核准不要寄採購單或供應商 email。** 兩者不是花錢，就是花人情。
+- **不要只報數量不報金額。** 老闆是用現金在思考。
+
+## 參考檔案
+
+- `reference/data_sources.md`：Shopify、Square、NetSuite 和 CSV 路徑，以及必要欄位
+- `reference/velocity_and_reorder.md`：7/28 天的算法、干擾處理，以及補貨量的訂定
+- `reference/seasonality.md`：什麼時候調整、什麼時候問，以及怎麼說明你做了哪一種
+- `reference/po_drafting.md`：採購單結構和供應商 email 的擬稿
+- `reference/gotchas.md`：會讓暢銷品缺貨、或把現金埋進一棧貨裡的錯誤
+
+## 使用沒列出來的工具
+
+這個 skill 裡提到的 connector 是測試過的路徑，不是一道牆。如果老闆想讓這個流程用一個沒連上或沒列出來的工具，就提議 `build-connector`，它會先查 connector 目錄，沒有的話再透過 Zapier 連，絕不手刻去打原始 API。連線建好之後，那個工具就跟其他選用的 connector 一樣加入這個 skill，同樣受核准關卡的管控。</pre></section><section><h2>英文原文</h2><pre>---
+name: inventory-planner
+description: &gt;
+  Works out what to reorder and when, from what is actually selling: pulls
+  sales history and stock on hand from Shopify, Square, NetSuite, or an
+  uploaded CSV, computes 7-day and 28-day sales velocity per item, projects a
+  conservative stockout date for each, sizes a 60-day reorder quantity, and
+  drafts the purchase orders and vendor emails to cover it. Flags the money
+  sitting still too — overstock, dead stock, and zero-velocity items, reported
+  as slow movers to clear rather than things to buy more of. Seasonality is
+  applied where the history supports it and named where it does not. Nothing
+  is ordered and no vendor is emailed without approval. Reach for this
+  whenever stock comes up — &quot;what do I need to reorder,&quot; &quot;am I going to run
+  out,&quot; &quot;what should I order this month,&quot; &quot;we keep running out of filters,&quot;
+  &quot;how much cash is sitting in the warehouse,&quot; &quot;what is not moving,&quot; or &quot;draft
+  a PO for my supplier.&quot;
+allowed-tools: Read, WebFetch
+---
+
+# Inventory Planner
+
+Buy what sells, before it runs out, and stop buying what doesn&#x27;t.
+
+Stock is cash the owner already spent. Two things go wrong: running out of the item customers came for, and sitting on a pallet of something nobody wants. Both are visible in the sales history well before they become a problem, which is what this skill reads for.
+
+## Step 1 — Get sales and stock
+
+**Preferred:** Shopify for sales and inventory levels. Square and NetSuite work the same way.
+
+**Fallback, fully supported:** a CSV of sales history plus a stock-on-hand count. Two files, or one with both. This path works with zero connectors and gives the same output. Many businesses count on a clipboard, and that is a legitimate input.
+
+You need, per item: SKU, name, units sold by date, current stock on hand, unit cost, unit price, vendor, and lead time if known. Missing lead time is asked for once and remembered — see `reference/data_sources.md`.
+
+**Say what the count is as of.** A stock figure two weeks old produces a stockout date two weeks wrong.
+
+## Step 2 — Compute velocity, both windows
+
+For every item, compute:
+
+- **7-day velocity** — units per day over the last week. Catches what is happening now.
+- **28-day velocity** — units per day over four weeks. The stable baseline.
+
+Both matter, and disagreement between them is information. An item selling three times its 28-day rate this week is either trending or had one bulk order, and those need different responses. `reference/velocity_and_reorder.md` covers how to tell them apart.
+
+Exclude one-off distortions from the baseline where you can identify them: a single wholesale order, a returned batch, a stockout period where the item could not sell. **A period of zero sales because there was no stock is not zero demand**, and treating it as such is how an item gets under-ordered forever.
+
+## Step 3 — Project stockout dates, conservatively
+
+Stockout date is stock on hand divided by the daily velocity you trust least — the higher of the two windows. Being early is cheap; being late loses the sale.
+
+Then compare against lead time. The number that matters is not when it runs out, it is whether there is still time to order:
+
+- **Past the point of no return** — lead time exceeds days of cover. Already going to stock out. Say so plainly.
+- **Order now** — cover is within lead time plus a safety buffer.
+- **Order soon** — comfortable, but on the next cycle.
+- **Fine** — no action.
+
+**Never state a stockout date for an item with no reliable velocity.** New items with two weeks of history and items whose sales were interrupted get flagged as &quot;not enough history,&quot; by name.
+
+## Step 4 — Size the reorder
+
+Default target is **60 days of cover plus the lead time**, sized on the **28-day rate** — not on the faster of the two. The stock has to last from the day it lands until the next order lands, so leaving the lead time out runs the item short by exactly that many days every cycle. Then adjust for pack size, minimum order quantity, and what is already on order.
+
+The two rates do different jobs and both get named on the line: the higher one says when it runs out, the 28-day one says how much to buy. Sizing a 60-day order off a one-week spike is how cash ends up in a pallet.
+
+Never size a reorder without subtracting inbound stock. Double-ordering a slow item is how a business ends up with three years of it.
+
+Round to the vendor&#x27;s pack size and say which direction you rounded. Show the dollar cost of every recommendation — the owner is deciding about cash, not units.
+
+## Step 5 — Handle the items that are not moving
+
+Zero-velocity and very slow items are a separate list with a separate purpose. **They are never reorder candidates.**
+
+- **Zero velocity** — no units in 28 days. Report as a slow mover with the cash tied up in it. **Never compute days of cover for these** — nothing is selling, so nothing is running out, and the number is either an error or nonsense. The one exception is an item inside a season the owner has named, which goes on a dated watch list instead of the clear-out list.
+- **Overstock** — more than 120 days of cover. Report the excess units and the dollars.
+- **Dead stock** — no movement in 90 days. Suggest clearing, bundling, or discounting.
+
+Total the cash sitting in these. That figure is usually the most surprising number in the whole report and often the most useful one.
+
+## Step 6 — Apply seasonality only where history supports it
+
+With at least a year of history, compare the coming period against the same period last year and adjust.
+
+**With less than a year, say so and do not adjust.** A seasonal multiplier invented from nine months of data is a guess wearing a suit. Ask the owner instead — they know their season better than a short history does. `reference/seasonality.md` covers both paths.
+
+## Step 7 — Present the buy list
+
+Lead with the total dollar amount and the count of items about to stock out. Then: order now, order soon, slow movers, and anything with too little history to judge.
+
+Every line carries the numbers behind it — velocity, days of cover, lead time, quantity, cost. An owner who can see the reasoning approves in a minute; one who cannot rebuilds the whole thing by hand.
+
+Render the buy list as an HTML artifact using the house artifact style (`../../shared/artifact-style.md`): a stockout table sorted by stockout date with mono tabular-nums numerals, urgency status pills (order now / order soon / fine / past the point of no return), a reorder panel with quantities and dollar totals, and a slow-movers section with the cash tied up in it. The chat summary stays — the artifact is the full picture, not the only one.
+
+## Step 8 — Draft POs and vendor emails, with approval
+
+Purchase orders commit money and vendor emails go out under the owner&#x27;s name, so both wait for an explicit yes.
+
+State the vendor, the line items, and the total before asking. Draft the vendor email in the owner&#x27;s voice per [the shared voice profile](../../shared/voice-profile.md). **If no profile exists yet, follow that file&#x27;s &quot;When there is no sample&quot; instruction** — ask for three emails they have already sent a supplier. If they would rather not, write the email plain and neutral and say it is not in their voice. Never invent a personality for someone&#x27;s vendor relationship.
+
+With Google Calendar connected, offer a recurring block for the restock decision — this works far better as a rhythm than as a fire drill. Keep the approved PO document here — this skill owns it. With QuickBooks or NetSuite connected, hand `ap-processor` the coded memo for each one (vendor, PO number, total, expected date, and the account, class, and job), so the bill three-way-matches against a real record when it arrives. `ap-processor` reads POs; it does not create them.
+
+## Closing offer
+
+Close with one line on what was decided — the total buy and the items about to run out. Then offer the most relevant next step with its exact trigger phrase: &quot;reorder&quot; (`/restock`) when the owner wants the POs drafted and sent end to end. Up to two more from the router&#x27;s table, such as &quot;cash forecast&quot; (`cash-flow-snapshot`) or &quot;pay the bills&quot; (`/pay-the-bills`). Three offers at most, and never repeat one the owner already declined this session.
+
+## What not to do
+
+- **Do not invent a velocity, a lead time, or a stockout date.** Too little history is reported by SKU, not smoothed over.
+- **Do not treat an out-of-stock period as zero demand.** It is suppressed demand and it biases everything downstream.
+- **Do not recommend reordering a zero-velocity item.** No sales means stop buying, not buy more.
+- **Do not size a reorder without subtracting what is already inbound.**
+- **Do not apply seasonality without a year of history.** Ask the owner instead.
+- **Do not send a PO or a vendor email without approval.** Both spend money or spend goodwill.
+- **Do not report units without dollars.** The owner thinks in cash.
+
+## Reference files
+
+- `reference/data_sources.md` — Shopify, Square, NetSuite, and the CSV path, with required fields
+- `reference/velocity_and_reorder.md` — the 7/28-day math, distortion handling, and reorder sizing
+- `reference/seasonality.md` — when to adjust, when to ask, and how to say which you did
+- `reference/po_drafting.md` — purchase order structure and vendor email drafting
+- `reference/gotchas.md` — the mistakes that stock out a bestseller or bury cash in a pallet
+
+## Using a tool that isn&#x27;t listed
+
+The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn&#x27;t connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>healthcare-eval-harness｜Skill 寫法圖鑑</title>
+<meta name="description" content="醫療應用部署前的病人安全評估關卡，失敗就擋下部署">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>healthcare-eval-harness</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/healthcare-eval-harness/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">醫療應用部署前的病人安全評估關卡，失敗就擋下部署</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: healthcare-eval-harness
+description: 醫療應用部署用的病人安全評估 harness。針對 CDSS 準確度、PHI 外洩、臨床工作流程完整性和整合合規性的自動化測試套件。安全測試失敗就擋下部署。醫療部署必須以 CDSS 準確度、PHI 外洩和工作流程完整性的病人安全測試作為關卡時使用。
+metadata:
+  version: &quot;1.0.0&quot;
+  origin: Health1 Super Speciality Hospitals — contributed by Dr. Keyur Patel
+---
+
+# Healthcare Eval Harness — Patient Safety Verification
+
+醫療應用部署用的自動化驗證系統。只要有一個 CRITICAL 失敗，就擋下部署。病人安全沒有商量的餘地。
+
+&gt; **注意：** 範例用 Jest 當作參考的測試執行器。請依你的框架（Vitest、pytest、PHPUnit 等）調整指令，測試類別和通過門檻跟框架無關。
+
+## When to Use
+
+- 任何 EMR/EHR 應用部署之前
+- 修改 CDSS 邏輯（藥物交互作用、劑量驗證、評分）之後
+- 變更牽涉到病人資料的資料庫 schema 之後
+- 修改驗證或存取控制之後
+- 設定醫療應用的 CI/CD pipeline 時
+- 解決臨床模組的 merge 衝突之後
+
+## How It Works
+
+這個 eval harness 依序跑五個測試類別。前三個（CDSS Accuracy、PHI Exposure、Data Integrity）是 CRITICAL 關卡，要求 100% 通過，只要失敗一個就擋下部署。其餘兩個（Clinical Workflow、Integration）是 HIGH 關卡，要求 95% 以上通過。
+
+每個類別對應一個 Jest 的測試路徑 pattern。CI pipeline 用 `--bail`（第一次失敗就停）跑 CRITICAL 關卡，並用 `--coverage --coverageThreshold` 強制執行覆蓋率門檻。
+
+### Eval Categories
+
+**1. CDSS Accuracy（CRITICAL，要求 100%）**
+
+測試所有臨床決策支援的邏輯：藥物交互作用配對（兩個方向）、劑量驗證規則、臨床評分對照已發表的規格、沒有漏報、沒有默默失敗。
+
+```bash
+npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage
+```
+
+**2. PHI Exposure（CRITICAL，要求 100%）**
+
+測試受保護健康資訊（PHI）的外洩：API 錯誤回應、console 輸出、URL 參數、瀏覽器儲存、跨機構隔離、未驗證的存取、service role key 不存在。
+
+```bash
+npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci
+```
+
+**3. Data Integrity（CRITICAL，要求 100%）**
+
+測試臨床資料的安全：已鎖定的就診紀錄、稽核軌跡紀錄、cascade delete 保護、並行編輯的處理、沒有孤兒紀錄。
+
+```bash
+npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+```
+
+**4. Clinical Workflow（HIGH，要求 95% 以上）**
+
+測試端到端的流程：就診生命週期、範本渲染、用藥組合、藥物/診斷搜尋、處方 PDF、red flag 警示。
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+total=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$tmp_json&quot;)
+passed=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$tmp_json&quot;)
+if [ &quot;$total&quot; -eq 0 ]; then
+  echo &quot;No clinical tests found&quot; &gt;&amp;2
+  exit 1
+fi
+rate=$(echo &quot;scale=2; $passed * 100 / $total&quot; | bc)
+echo &quot;Clinical pass rate: ${rate}% ($passed/$total)&quot;
+```
+
+**5. Integration Compliance（HIGH，要求 95% 以上）**
+
+測試外部系統：HL7 訊息解析（v2.x）、FHIR 驗證、檢驗結果對應、格式錯誤訊息的處理。
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/integration&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+total=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$tmp_json&quot;)
+passed=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$tmp_json&quot;)
+if [ &quot;$total&quot; -eq 0 ]; then
+  echo &quot;No integration tests found&quot; &gt;&amp;2
+  exit 1
+fi
+rate=$(echo &quot;scale=2; $passed * 100 / $total&quot; | bc)
+echo &quot;Integration pass rate: ${rate}% ($passed/$total)&quot;
+```
+
+### Pass/Fail Matrix
+
+| Category | Threshold | On Failure |
+|----------|-----------|------------|
+| CDSS Accuracy | 100% | **擋下部署** |
+| PHI Exposure | 100% | **擋下部署** |
+| Data Integrity | 100% | **擋下部署** |
+| Clinical Workflow | 95%+ | 警告，經 review 後允許 |
+| Integration | 95%+ | 警告，經 review 後允許 |
+
+### CI/CD Integration
+
+```yaml
+name: Healthcare Safety Gate
+on: [push, pull_request]
+
+jobs:
+  safety-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &#x27;20&#x27;
+      - run: npm ci
+
+      # CRITICAL 關卡：要求 100%，第一次失敗就中止
+      - name: CDSS Accuracy
+        run: npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage --coverageThreshold=&#x27;{&quot;global&quot;:{&quot;branches&quot;:80,&quot;functions&quot;:80,&quot;lines&quot;:80}}&#x27;
+
+      - name: PHI Exposure Check
+        run: npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci
+
+      - name: Data Integrity
+        run: npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+
+      # HIGH 關卡：要求 95% 以上，自訂門檻檢查
+      # HIGH 關卡：要求 95% 以上
+      - name: Clinical Workflows
+        run: |
+          TMP_JSON=$(mktemp)
+          npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$TMP_JSON&quot; || true
+          TOTAL=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          PASSED=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          if [ &quot;$TOTAL&quot; -eq 0 ]; then
+            echo &quot;::error::No clinical tests found&quot;; exit 1
+          fi
+          RATE=$(echo &quot;scale=2; $PASSED * 100 / $TOTAL&quot; | bc)
+          echo &quot;Pass rate: ${RATE}% ($PASSED/$TOTAL)&quot;
+          if (( $(echo &quot;$RATE &lt; 95&quot; | bc -l) )); then
+            echo &quot;::warning::Clinical pass rate ${RATE}% below 95%&quot;
+          fi
+
+      - name: Integration Compliance
+        run: |
+          TMP_JSON=$(mktemp)
+          npx jest --testPathPattern=&#x27;tests/integration&#x27; --ci --json --outputFile=&quot;$TMP_JSON&quot; || true
+          TOTAL=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          PASSED=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          if [ &quot;$TOTAL&quot; -eq 0 ]; then
+            echo &quot;::error::No integration tests found&quot;; exit 1
+          fi
+          RATE=$(echo &quot;scale=2; $PASSED * 100 / $TOTAL&quot; | bc)
+          echo &quot;Pass rate: ${RATE}% ($PASSED/$TOTAL)&quot;
+          if (( $(echo &quot;$RATE &lt; 95&quot; | bc -l) )); then
+            echo &quot;::warning::Integration pass rate ${RATE}% below 95%&quot;
+          fi
+```
+
+### Anti-Patterns
+
+- 「因為上次有過」就跳過 CDSS 測試
+- 把 CRITICAL 的門檻設在 100% 以下
+- 對 CRITICAL 的測試套件使用 `--no-bail`
+- 在整合測試裡 mock 掉 CDSS 引擎（必須測真實的邏輯）
+- 安全關卡是紅燈時仍允許部署
+- 跑 CDSS 測試套件時沒有加 `--coverage`
+
+## Examples
+
+### Example 1: Run All Critical Gates Locally
+
+```bash
+npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage &amp;&amp; \
+npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci &amp;&amp; \
+npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+```
+
+### Example 2: Check HIGH Gate Pass Rate
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+jq &#x27;{
+  passed: (.numPassedTests // 0),
+  total: (.numTotalTests // 0),
+  rate: (if (.numTotalTests // 0) == 0 then 0 else ((.numPassedTests // 0) / (.numTotalTests // 1) * 100) end)
+}&#x27; &quot;$tmp_json&quot;
+# 預期：{ &quot;passed&quot;: 21, &quot;total&quot;: 22, &quot;rate&quot;: 95.45 }
+```
+
+### Example 3: Eval Report
+
+```
+## Healthcare Eval: 2026-03-27 [commit abc1234]
+
+### Patient Safety: PASS
+
+| Category | Tests | Pass | Fail | Status |
+|----------|-------|------|------|--------|
+| CDSS Accuracy | 39 | 39 | 0 | PASS |
+| PHI Exposure | 8 | 8 | 0 | PASS |
+| Data Integrity | 12 | 12 | 0 | PASS |
+| Clinical Workflow | 22 | 21 | 1 | 95.5% PASS |
+| Integration | 6 | 6 | 0 | PASS |
+
+### Coverage: 84% (target: 80%+)
+### Verdict: SAFE TO DEPLOY
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: healthcare-eval-harness
+description: Patient safety evaluation harness for healthcare application deployments. Automated test suites for CDSS accuracy, PHI exposure, clinical workflow integrity, and integration compliance. Blocks deployments on safety failures. Use when a healthcare deployment must be gated on patient-safety tests for CDSS accuracy, PHI exposure, and workflow integrity.
+metadata:
+  version: &quot;1.0.0&quot;
+  origin: Health1 Super Speciality Hospitals — contributed by Dr. Keyur Patel
+---
+
+# Healthcare Eval Harness — Patient Safety Verification
+
+Automated verification system for healthcare application deployments. A single CRITICAL failure blocks deployment. Patient safety is non-negotiable.
+
+&gt; **Note:** Examples use Jest as the reference test runner. Adapt commands for your framework (Vitest, pytest, PHPUnit, etc.) — the test categories and pass thresholds are framework-agnostic.
+
+## When to Use
+
+- Before any deployment of EMR/EHR applications
+- After modifying CDSS logic (drug interactions, dose validation, scoring)
+- After changing database schemas that touch patient data
+- After modifying authentication or access control
+- During CI/CD pipeline configuration for healthcare apps
+- After resolving merge conflicts in clinical modules
+
+## How It Works
+
+The eval harness runs five test categories in order. The first three (CDSS Accuracy, PHI Exposure, Data Integrity) are CRITICAL gates requiring 100% pass rate — a single failure blocks deployment. The remaining two (Clinical Workflow, Integration) are HIGH gates requiring 95%+ pass rate.
+
+Each category maps to a Jest test path pattern. The CI pipeline runs CRITICAL gates with `--bail` (stop on first failure) and enforces coverage thresholds with `--coverage --coverageThreshold`.
+
+### Eval Categories
+
+**1. CDSS Accuracy (CRITICAL — 100% required)**
+
+Tests all clinical decision support logic: drug interaction pairs (both directions), dose validation rules, clinical scoring vs published specs, no false negatives, no silent failures.
+
+```bash
+npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage
+```
+
+**2. PHI Exposure (CRITICAL — 100% required)**
+
+Tests for protected health information leaks: API error responses, console output, URL parameters, browser storage, cross-facility isolation, unauthenticated access, service role key absence.
+
+```bash
+npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci
+```
+
+**3. Data Integrity (CRITICAL — 100% required)**
+
+Tests clinical data safety: locked encounters, audit trail entries, cascade delete protection, concurrent edit handling, no orphaned records.
+
+```bash
+npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+```
+
+**4. Clinical Workflow (HIGH — 95%+ required)**
+
+Tests end-to-end flows: encounter lifecycle, template rendering, medication sets, drug/diagnosis search, prescription PDF, red flag alerts.
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+total=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$tmp_json&quot;)
+passed=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$tmp_json&quot;)
+if [ &quot;$total&quot; -eq 0 ]; then
+  echo &quot;No clinical tests found&quot; &gt;&amp;2
+  exit 1
+fi
+rate=$(echo &quot;scale=2; $passed * 100 / $total&quot; | bc)
+echo &quot;Clinical pass rate: ${rate}% ($passed/$total)&quot;
+```
+
+**5. Integration Compliance (HIGH — 95%+ required)**
+
+Tests external systems: HL7 message parsing (v2.x), FHIR validation, lab result mapping, malformed message handling.
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/integration&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+total=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$tmp_json&quot;)
+passed=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$tmp_json&quot;)
+if [ &quot;$total&quot; -eq 0 ]; then
+  echo &quot;No integration tests found&quot; &gt;&amp;2
+  exit 1
+fi
+rate=$(echo &quot;scale=2; $passed * 100 / $total&quot; | bc)
+echo &quot;Integration pass rate: ${rate}% ($passed/$total)&quot;
+```
+
+### Pass/Fail Matrix
+
+| Category | Threshold | On Failure |
+|----------|-----------|------------|
+| CDSS Accuracy | 100% | **BLOCK deployment** |
+| PHI Exposure | 100% | **BLOCK deployment** |
+| Data Integrity | 100% | **BLOCK deployment** |
+| Clinical Workflow | 95%+ | WARN, allow with review |
+| Integration | 95%+ | WARN, allow with review |
+
+### CI/CD Integration
+
+```yaml
+name: Healthcare Safety Gate
+on: [push, pull_request]
+
+jobs:
+  safety-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: &#x27;20&#x27;
+      - run: npm ci
+
+      # CRITICAL gates — 100% required, bail on first failure
+      - name: CDSS Accuracy
+        run: npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage --coverageThreshold=&#x27;{&quot;global&quot;:{&quot;branches&quot;:80,&quot;functions&quot;:80,&quot;lines&quot;:80}}&#x27;
+
+      - name: PHI Exposure Check
+        run: npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci
+
+      - name: Data Integrity
+        run: npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+
+      # HIGH gates — 95%+ required, custom threshold check
+      # HIGH gates — 95%+ required
+      - name: Clinical Workflows
+        run: |
+          TMP_JSON=$(mktemp)
+          npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$TMP_JSON&quot; || true
+          TOTAL=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          PASSED=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          if [ &quot;$TOTAL&quot; -eq 0 ]; then
+            echo &quot;::error::No clinical tests found&quot;; exit 1
+          fi
+          RATE=$(echo &quot;scale=2; $PASSED * 100 / $TOTAL&quot; | bc)
+          echo &quot;Pass rate: ${RATE}% ($PASSED/$TOTAL)&quot;
+          if (( $(echo &quot;$RATE &lt; 95&quot; | bc -l) )); then
+            echo &quot;::warning::Clinical pass rate ${RATE}% below 95%&quot;
+          fi
+
+      - name: Integration Compliance
+        run: |
+          TMP_JSON=$(mktemp)
+          npx jest --testPathPattern=&#x27;tests/integration&#x27; --ci --json --outputFile=&quot;$TMP_JSON&quot; || true
+          TOTAL=$(jq &#x27;.numTotalTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          PASSED=$(jq &#x27;.numPassedTests // 0&#x27; &quot;$TMP_JSON&quot;)
+          if [ &quot;$TOTAL&quot; -eq 0 ]; then
+            echo &quot;::error::No integration tests found&quot;; exit 1
+          fi
+          RATE=$(echo &quot;scale=2; $PASSED * 100 / $TOTAL&quot; | bc)
+          echo &quot;Pass rate: ${RATE}% ($PASSED/$TOTAL)&quot;
+          if (( $(echo &quot;$RATE &lt; 95&quot; | bc -l) )); then
+            echo &quot;::warning::Integration pass rate ${RATE}% below 95%&quot;
+          fi
+```
+
+### Anti-Patterns
+
+- Skipping CDSS tests &quot;because they passed last time&quot;
+- Setting CRITICAL thresholds below 100%
+- Using `--no-bail` on CRITICAL test suites
+- Mocking the CDSS engine in integration tests (must test real logic)
+- Allowing deployments when safety gate is red
+- Running tests without `--coverage` on CDSS suites
+
+## Examples
+
+### Example 1: Run All Critical Gates Locally
+
+```bash
+npx jest --testPathPattern=&#x27;tests/cdss&#x27; --bail --ci --coverage &amp;&amp; \
+npx jest --testPathPattern=&#x27;tests/security/phi&#x27; --bail --ci &amp;&amp; \
+npx jest --testPathPattern=&#x27;tests/data-integrity&#x27; --bail --ci
+```
+
+### Example 2: Check HIGH Gate Pass Rate
+
+```bash
+tmp_json=$(mktemp)
+npx jest --testPathPattern=&#x27;tests/clinical&#x27; --ci --json --outputFile=&quot;$tmp_json&quot; || true
+jq &#x27;{
+  passed: (.numPassedTests // 0),
+  total: (.numTotalTests // 0),
+  rate: (if (.numTotalTests // 0) == 0 then 0 else ((.numPassedTests // 0) / (.numTotalTests // 1) * 100) end)
+}&#x27; &quot;$tmp_json&quot;
+# Expected: { &quot;passed&quot;: 21, &quot;total&quot;: 22, &quot;rate&quot;: 95.45 }
+```
+
+### Example 3: Eval Report
+
+```
+## Healthcare Eval: 2026-03-27 [commit abc1234]
+
+### Patient Safety: PASS
+
+| Category | Tests | Pass | Fail | Status |
+|----------|-------|------|------|--------|
+| CDSS Accuracy | 39 | 39 | 0 | PASS |
+| PHI Exposure | 8 | 8 | 0 | PASS |
+| Data Integrity | 12 | 12 | 0 | PASS |
+| Clinical Workflow | 22 | 21 | 1 | 95.5% PASS |
+| Integration | 6 | 6 | 0 | PASS |
+
+### Coverage: 84% (target: 80%+)
+### Verdict: SAFE TO DEPLOY
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

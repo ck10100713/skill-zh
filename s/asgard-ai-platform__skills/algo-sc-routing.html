@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-sc-routing｜Skill 寫法圖鑑</title>
+<meta name="description" content="用啟發式演算法在載重限制下規劃車隊配送路線">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-sc-routing</h1>
+<p class="meta">asgard-ai-platform ｜ 商業與營運 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-sc-routing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用啟發式演算法在載重限制下規劃車隊配送路線</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-sc-routing&quot;
+description: &quot;解車輛路徑問題（vehicle routing problem），在載重與時間限制下最佳化配送路線。當使用者需要規劃配送路線、降低運輸成本或提高車隊使用率時就用這個 skill，即使他們說的是「配送路線最佳化」「車隊排程」或「最小化行駛距離」。&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;vrp&quot;, &quot;routing&quot;, &quot;logistics&quot;]
+---
+
+# Vehicle Routing Problem (VRP)
+
+## Overview
+
+VRP 要幫一整個車隊決定最佳路線，從倉庫（depot）出發服務一批客戶，讓總距離或總成本最小。它是 NP-hard，精確解只有在小規模時（&lt; 25 個節點）才做得到。實務上用啟發式演算法（Clarke-Wright savings、sweep）或元啟發式演算法（模擬退火、基因演算法）。
+
+## When to Use
+
+**觸發條件：**
+- 為一整個車隊規劃每日配送路線
+- 在載重限制下，最小化總行駛距離／時間
+- 在多輛車之間最佳化路線分配
+
+**不適用的情況：**
+- 單一車輛的路線最佳化（用 TSP solver）
+- 訂單持續進來的即時動態路徑規劃（用 online algorithm）
+
+## Algorithm
+
+```
+IRON LAW: VRP Is NP-Hard — Exact Solutions Don&#x27;t Scale
+For n customers, the solution space grows factorially. Exact methods
+(branch and bound) work for n &lt; 25. For real-world problems (50-1000+
+customers), heuristics are REQUIRED. A good heuristic solution within
+5% of optimal is far more valuable than an optimal solution that takes
+hours to compute.
+```
+
+### Phase 1: Input Validation
+收集：倉庫位置、客戶位置與需求量、車輛載重、車輛數量、時間窗（如果有）、距離／時間矩陣。
+**Gate：** 所有位置都已經地理編碼（geocode），單一客戶的需求量不超過車輛載重。
+
+### Phase 2: Core Algorithm
+**Clarke-Wright Savings 啟發式演算法：**
+1. 一開始每個客戶各自一條路線（depot → customer → depot）
+2. 計算合併每一對路線的節省量：s(i,j) = d(depot,i) + d(depot,j) - d(i,j)
+3. 把節省量由大到小排序
+4. 在載重限制允許的前提下，貪婪地合併路線
+5. 用 2-opt（交換路線內的邊）和 or-opt（在路線之間移動客戶）做改善
+
+### Phase 3: Verification
+檢查：每個客戶剛好被訪問一次、沒有車輛超載、所有路線都從 depot 出發並回到 depot。把總距離和下界（lower bound）比較。
+**Gate：** 所有限制都滿足，解在下界的 10% 以內。
+
+### Phase 4: Output
+回傳各條路線，包含順序、距離和載重。
+
+## Output Format
+
+```json
+{
+  &quot;routes&quot;: [{&quot;vehicle&quot;: 1, &quot;sequence&quot;: [&quot;depot&quot;, &quot;C3&quot;, &quot;C7&quot;, &quot;C1&quot;, &quot;depot&quot;], &quot;distance_km&quot;: 45, &quot;load&quot;: 850, &quot;capacity&quot;: 1000}],
+  &quot;summary&quot;: {&quot;total_distance_km&quot;: 180, &quot;vehicles_used&quot;: 4, &quot;utilization_avg&quot;: 0.82},
+  &quot;metadata&quot;: {&quot;customers&quot;: 30, &quot;method&quot;: &quot;clarke_wright_2opt&quot;, &quot;computation_ms&quot;: 150}
+}
+```
+
+## Examples
+
+### Sample I/O
+**輸入：** 10 個客戶，2 輛車（載重 = 500），depot 在中心
+**預期結果：** 2 條路線，各服務約 5 個客戶，用地理分群把總距離降到最小。
+
+### Edge Cases
+| 輸入 | 預期結果 | 原因 |
+|-------|----------|-----|
+| 某個客戶的需求量 &gt; 載重 | 無解，或拆分配送 | 需要用拆分配送的 VRP 變體 |
+| 所有客戶都在同一個地點 | 路線極簡，趟數受載重限制 | 距離可以忽略，趟數由載重決定 |
+| 時間窗很緊 | 需要更多車輛 | 時間限制可能讓路線無法滿載 |
+
+## Gotchas
+
+- **距離矩陣的品質**：道路距離 ≠ 歐幾里得距離。實務上的路徑規劃要用真實道路網路的距離（Google Maps、OSRM）。
+- **時間窗會增加複雜度**：VRPTW（帶時間窗的 VRP）難很多。客戶要求特定配送時段，會把路線切碎。
+- **動態 vs 靜態**：真實世界會有取消、加單和路況變化。先規劃靜態路線，但要允許動態重新最佳化。
+- **司機限制**：最長駕駛時數、休息規定和加班成本，都是基本模型裡沒有的實務限制。
+- **回到 depot**：標準 VRP 假設路線最後要回到 depot。開放式 VRP（路線結束在最後一個客戶）需要不同的建模方式。
+
+## References
+
+- Clarke-Wright 演算法的實作，請見 `references/clarke-wright.md`
+- 元啟發式方法（SA、GA），請見 `references/metaheuristics.md`</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-sc-routing&quot;
+description: &quot;Solve vehicle routing problems to optimize delivery routes under capacity and time constraints. Use this skill when the user needs to plan delivery routes, minimize transportation costs, or optimize fleet utilization — even if they say &#x27;delivery route optimization&#x27;, &#x27;fleet routing&#x27;, or &#x27;minimize driving distance&#x27;.&quot;
+metadata:
+  category: &quot;WP-41 供應鏈演算法&quot;
+  tags: [&quot;supply-chain&quot;, &quot;vrp&quot;, &quot;routing&quot;, &quot;logistics&quot;]
+---
+
+# Vehicle Routing Problem (VRP)
+
+## Overview
+
+VRP determines optimal routes for a fleet of vehicles to serve a set of customers from a depot, minimizing total distance or cost. NP-hard — exact solutions only feasible for small instances (&lt; 25 nodes). Practical solutions use heuristics (Clarke-Wright savings, sweep) or metaheuristics (simulated annealing, genetic algorithm).
+
+## When to Use
+
+**Trigger conditions:**
+- Planning daily delivery routes for a fleet of vehicles
+- Minimizing total travel distance/time under capacity constraints
+- Optimizing route assignments across multiple vehicles
+
+**When NOT to use:**
+- For single-vehicle route optimization (use TSP solvers)
+- For real-time dynamic routing with continuous order arrivals (use online algorithms)
+
+## Algorithm
+
+```
+IRON LAW: VRP Is NP-Hard — Exact Solutions Don&#x27;t Scale
+For n customers, the solution space grows factorially. Exact methods
+(branch and bound) work for n &lt; 25. For real-world problems (50-1000+
+customers), heuristics are REQUIRED. A good heuristic solution within
+5% of optimal is far more valuable than an optimal solution that takes
+hours to compute.
+```
+
+### Phase 1: Input Validation
+Collect: depot location, customer locations and demands, vehicle capacity, number of vehicles, time windows (if applicable), distance/time matrix.
+**Gate:** All locations geocoded, demand doesn&#x27;t exceed vehicle capacity per customer.
+
+### Phase 2: Core Algorithm
+**Clarke-Wright Savings Heuristic:**
+1. Start with each customer on its own route (depot → customer → depot)
+2. Compute savings for merging route pairs: s(i,j) = d(depot,i) + d(depot,j) - d(i,j)
+3. Sort savings descending
+4. Merge routes greedily if capacity constraint allows
+5. Improve with 2-opt (swap edges within routes) and or-opt (move customers between routes)
+
+### Phase 3: Verification
+Check: all customers visited exactly once, no vehicle exceeds capacity, all routes start and end at depot. Compare total distance against lower bound.
+**Gate:** All constraints satisfied, solution within 10% of lower bound.
+
+### Phase 4: Output
+Return routes with sequence, distance, and load.
+
+## Output Format
+
+```json
+{
+  &quot;routes&quot;: [{&quot;vehicle&quot;: 1, &quot;sequence&quot;: [&quot;depot&quot;, &quot;C3&quot;, &quot;C7&quot;, &quot;C1&quot;, &quot;depot&quot;], &quot;distance_km&quot;: 45, &quot;load&quot;: 850, &quot;capacity&quot;: 1000}],
+  &quot;summary&quot;: {&quot;total_distance_km&quot;: 180, &quot;vehicles_used&quot;: 4, &quot;utilization_avg&quot;: 0.82},
+  &quot;metadata&quot;: {&quot;customers&quot;: 30, &quot;method&quot;: &quot;clarke_wright_2opt&quot;, &quot;computation_ms&quot;: 150}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** 10 customers, 2 vehicles (cap=500), depot at center
+**Expected:** 2 routes, each serving ~5 customers, total distance minimized by geographic clustering.
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| One customer demand &gt; capacity | Infeasible or split delivery | Need split delivery VRP variant |
+| All customers co-located | Minimal routing, capacity-limited trips | Distance is trivial, trips determined by load |
+| Tight time windows | More vehicles needed | Time constraints may prevent full-capacity routes |
+
+## Gotchas
+
+- **Distance matrix quality**: Road distance ≠ Euclidean distance. Use actual road network distances (Google Maps, OSRM) for practical routing.
+- **Time windows add complexity**: VRPTW (VRP with Time Windows) is significantly harder. Customers requiring specific delivery windows fragment routes.
+- **Dynamic vs static**: Real-world routing has cancellations, additions, and traffic. Plan static routes but allow dynamic re-optimization.
+- **Driver constraints**: Maximum driving hours, break requirements, and overtime costs add practical constraints not in the basic model.
+- **Return to depot**: Standard VRP assumes routes return to depot. Open VRP (routes end at last customer) needs different formulation.
+
+## References
+
+- For Clarke-Wright algorithm implementation, see `references/clarke-wright.md`
+- For metaheuristic approaches (SA, GA), see `references/metaheuristics.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

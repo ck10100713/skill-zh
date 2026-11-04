@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>team-agent-orchestration｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Kanban、branch 隔離和 merge 關卡管理多個 agent 平行作業">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>team-agent-orchestration</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/team-agent-orchestration/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Kanban、branch 隔離和 merge 關卡管理多個 agent 平行作業</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: team-agent-orchestration
+description: &quot;替 agent 小隊做以團隊為單位的編排：有負責人和範圍的工作項目、agent Kanban 狀態、branch 隔離、control pane 可視性，以及 merge 關卡。跨 branch 或 worktree 平行協調多個 agent 時使用：多 agent fan-out、agent Kanban、小隊協調，或是把 agent 的產出合併成一個產品。&quot;
+metadata:
+  origin: ECC
+---
+
+# Team Agent Orchestration
+
+當 agent 是被當成一個團隊在管理，而不是單一助理時，就用這個 skill。目的是讓以團隊為單位的編排變得可靠：清楚的工作項目、明確的負責人、agent Kanban 狀態、branch 隔離、control pane 可視性，還有 merge 關卡。
+
+## 何時啟用
+
+- 任務橫跨多個 agent、工具、harness、branch 或 worktree。
+- 使用者提到團隊編排、agent Kanban、小隊、conductor、control pane、manager、桌面 app、Zellij、tmux、Hermes、Devin、Codex、Claude Code，或多 agent 工作。
+- 專案需要在人和 agent 之間共用 workflow 狀態。
+- 現有的 agent fan-out 有產出，但產出無法合併成產品。
+
+## 運作模型
+
+把每個 agent 都當成有狹窄合約的隊友：
+
+- **Owner**：對這個工作項目負責的人或 agent。
+- **Scope**：檔案、branch、工具範圍，以及禁區。
+- **State**：backlog、ready、running、review、blocked、merged 或 archived。
+- **Evidence**：測試、截圖、log、review 筆記，或 eval 報告。
+- **Merge gate**：允許整合的確切條件。
+
+## Agent Kanban
+
+當工作必須跨 session 都看得到時，就用 agent Kanban。
+
+| 欄位 | 意義 | 離開條件 |
+| --- | --- | --- |
+| Backlog | 候選的工作項目，還沒成形 | 驗收條件寫好了 |
+| Ready | 已成形、可以指派 | 已指派 owner 和 branch/worktree |
+| Running | Agent 正在作業 | 有交接產出物和變更的檔案 |
+| Review | 工作完成但還沒 merge | 測試、diff review 和風險檢查通過 |
+| Blocked | 需要外部輸入，或關卡沒過 | 阻礙有 owner 和下一步動作 |
+| Merged | 已整合進主線 | PR 已 merge，或本機 main 已更新 |
+| Archived | 不再相關 | 已記錄原因 |
+
+每張卡片都應該符合這個 schema：
+
+```json
+{
+  &quot;id&quot;: &quot;agent-card-001&quot;,
+  &quot;title&quot;: &quot;Build dynamic workflow skill&quot;,
+  &quot;owner&quot;: &quot;codex&quot;,
+  &quot;state&quot;: &quot;running&quot;,
+  &quot;branch&quot;: &quot;product/dynamic-workflow-team-orchestration&quot;,
+  &quot;worktree&quot;: &quot;.&quot;,
+  &quot;acceptance&quot;: [
+    &quot;Skill exists&quot;,
+    &quot;Tests cover required concepts&quot;,
+    &quot;Content artifact contains video and article angles&quot;
+  ],
+  &quot;merge_gate&quot;: &quot;lint, focused tests, and catalog check pass&quot;,
+  &quot;handoff&quot;: &quot;path/to/handoff.md&quot;
+}
+```
+
+## 以團隊為單位的編排流程
+
+1. **整理看板**：把模糊的野心轉成有 owner 和 merge 關卡的工作項目。
+2. **選執行模式**：單一 agent、動態 workflow 模式、dmux/tmux、worktree fan-out，或外部桌面編排器。
+3. **指派邊界**：每張卡一個 owner、明確的檔案範圍，沒有 integrator 就不准有重疊的寫入。
+4. **執行 agent**：每個 agent 都要留下證據和交接筆記，不只是程式碼。
+5. **依序 review**：先測試，再 diff review，再安全/風險檢查，最後是內容/產品的打磨。
+6. **刻意地 merge**：由一個 integrator 解決衝突，並更新 control pane 或狀態產出物。
+7. **抽出可重用的 skill**：如果卡片的模式重複出現，就把它升級成 `skills/` 裡的 skill。
+
+## Control Pane 需求
+
+一個對團隊編排有用的 control pane 應該顯示：
+
+- 進行中的工作項目，以及它們的 agent Kanban 狀態。
+- Owner、harness、branch、worktree 和最後一次 heartbeat。
+- 交接產出物、測試、截圖和 PR 的連結。
+- 依 owner 和解除阻礙的動作分組的阻礙。
+- 用關卡判斷 merge 就緒度，不是憑感覺。
+- 應該變成共用 skill 的可重用 workflow 候選。
+
+在操作者能回答這幾個問題之前，不要再加更多自動化：誰負責這個、改了什麼、哪個關卡沒過、什麼可以安全 merge？
+
+## 動態 Workflow 相容性
+
+當一張卡需要動態 workflow 模式時：
+
+- 把任務專屬的 harness 放在卡片 owner 底下。
+- 把輸入和輸出存在卡片上。
+- 從 Running 移到 Review 之前，要求先跑 eval。
+- 重複使用過之後，才把 harness 升級成共用 skill。
+
+## 要留意的失敗模式
+
+- **Agent 大雜燴**：很多 agent 在跑，卻沒有 owner 或 merge 關卡。
+- **看不見的工作**：有用的產出只存在聊天紀錄裡。
+- **看板劇場**：有 Kanban 看板，但卡片沒有驗收條件。
+- **重疊的寫入**：平行的 agent 沒有 worktree，卻編輯同一批檔案。
+- **沒有產品產出物**：流程產出了文件，卻沒有可執行或可發布的東西。
+
+## 輸出標準
+
+每一輪編排結束時要交出：
+
+- 看板 / 卡片的變更。
+- 已 merge 或待處理的 branch。
+- 測試和 eval 的證據。
+- 有 owner 和下一步動作的阻礙。
+- 新的共用 skill 候選。</pre></section><section><h2>英文原文</h2><pre>---
+name: team-agent-orchestration
+description: &quot;Run team-based orchestration for agent squads: work items with owners and scope, agent Kanban state, branch isolation, control pane visibility, and merge gates. Use when coordinating multiple agents in parallel across branches or worktrees — multi-agent fan-out, agent Kanban, squad coordination, or merging agent output into one product.&quot;
+metadata:
+  origin: ECC
+---
+
+# Team Agent Orchestration
+
+Use this skill when agents are being managed like a team rather than a single assistant. The purpose is to make team-based orchestration reliable: clear work items, explicit ownership, agent Kanban state, branch isolation, control pane visibility, and merge gates.
+
+## When To Activate
+
+- The task spans multiple agents, tools, harnesses, branches, or worktrees.
+- The user mentions team orchestration, agent Kanban, squad, conductor, control pane, manager, desktop app, Zellij, tmux, Hermes, Devin, Codex, Claude Code, or multi-agent work.
+- A project needs shared workflow state across people and agents.
+- Existing agent fan-out is producing output but not mergeable product.
+
+## Operating Model
+
+Treat every agent as a teammate with a narrow contract:
+
+- **Owner**: the person or agent accountable for the work item.
+- **Scope**: files, branch, tool surface, and forbidden areas.
+- **State**: backlog, ready, running, review, blocked, merged, or archived.
+- **Evidence**: tests, screenshots, logs, review notes, or eval reports.
+- **Merge gate**: the exact condition that allows integration.
+
+## Agent Kanban
+
+Use agent Kanban when work must be visible across sessions.
+
+| Column | Meaning | Exit Criteria |
+| --- | --- | --- |
+| Backlog | Candidate work item, not yet shaped | Acceptance criteria written |
+| Ready | Shaped and assignable | Owner and branch/worktree assigned |
+| Running | Agent is actively working | Handoff artifact and changed files exist |
+| Review | Work is complete but not merged | Tests, diff review, and risk check pass |
+| Blocked | Needs external input or failed gate | Blocker has owner and next action |
+| Merged | Integrated into mainline | PR merged or local main updated |
+| Archived | No longer relevant | Reason recorded |
+
+Each card should fit this schema:
+
+```json
+{
+  &quot;id&quot;: &quot;agent-card-001&quot;,
+  &quot;title&quot;: &quot;Build dynamic workflow skill&quot;,
+  &quot;owner&quot;: &quot;codex&quot;,
+  &quot;state&quot;: &quot;running&quot;,
+  &quot;branch&quot;: &quot;product/dynamic-workflow-team-orchestration&quot;,
+  &quot;worktree&quot;: &quot;.&quot;,
+  &quot;acceptance&quot;: [
+    &quot;Skill exists&quot;,
+    &quot;Tests cover required concepts&quot;,
+    &quot;Content artifact contains video and article angles&quot;
+  ],
+  &quot;merge_gate&quot;: &quot;lint, focused tests, and catalog check pass&quot;,
+  &quot;handoff&quot;: &quot;path/to/handoff.md&quot;
+}
+```
+
+## Team-Based Orchestration Flow
+
+1. **Shape the board**: convert fuzzy ambition into work items with owners and merge gates.
+2. **Pick execution mode**: single-agent, dynamic workflow mode, dmux/tmux, worktree fan-out, or external desktop orchestrator.
+3. **Assign boundaries**: one owner per card, clear file scope, and no overlapping writes without an integrator.
+4. **Run agents**: each agent writes evidence and handoff notes, not just code.
+5. **Review in sequence**: tests first, then diff review, then security/risk checks, then content/product polish.
+6. **Merge deliberately**: one integrator resolves conflicts and updates the control pane or status artifact.
+7. **Extract reusable skill**: if the card pattern repeats, promote it into `skills/`.
+
+## Control Pane Requirements
+
+A useful control pane for team orchestration should show:
+
+- Active work items and their agent Kanban state.
+- Owner, harness, branch, worktree, and last heartbeat.
+- Links to handoff artifacts, tests, screenshots, and PRs.
+- Blockers grouped by owner and unblock action.
+- Merge readiness by gate, not vibes.
+- Reusable workflow candidates that should become shared skills.
+
+Do not add more automation until the operator can answer: who owns this, what changed, what gate failed, and what can safely merge?
+
+## Dynamic Workflow Compatibility
+
+When a card needs dynamic workflow mode:
+
+- Put the task-local harness under the card owner.
+- Store inputs and outputs on the card.
+- Require an eval before moving from Running to Review.
+- Promote the harness to a shared skill only after repeat use.
+
+## Failure Modes To Watch
+
+- **Agent soup**: many agents running, no owner or merge gate.
+- **Invisible work**: useful output exists only in a chat transcript.
+- **Board theater**: a Kanban board exists but cards have no acceptance criteria.
+- **Overlapping writes**: parallel agents edit the same files without worktrees.
+- **No product artifact**: the process produces docs but no runnable or publishable surface.
+
+## Output Standard
+
+Finish each orchestration pass with:
+
+- Board/card changes.
+- Merged or pending branches.
+- Tests and eval evidence.
+- Blockers with owner and next action.
+- New shared skill candidates.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

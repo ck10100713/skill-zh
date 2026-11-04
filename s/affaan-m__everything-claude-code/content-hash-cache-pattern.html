@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>content-hash-cache-pattern｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 SHA-256 內容雜湊快取檔案處理結果，內容變了自動失效">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>content-hash-cache-pattern</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/content-hash-cache-pattern/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 SHA-256 內容雜湊快取檔案處理結果，內容變了自動失效</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: content-hash-cache-pattern
+description: 用 SHA-256 內容雜湊快取昂貴的檔案處理結果：與路徑無關、自動失效，並且分離服務層。適用於重複處理檔案很慢、結果應該依內容（而不是路徑）來快取和失效時。
+metadata:
+  origin: ECC
+---
+
+# Content-Hash File Cache Pattern
+
+用 SHA-256 內容雜湊當作快取 key，快取昂貴的檔案處理結果（PDF 解析、文字擷取、圖片分析）。跟以路徑為基礎的快取不同，這個做法在檔案被搬移/改名後依然有效，內容改變時會自動失效。
+
+## When to Activate
+
+- 建構檔案處理管線（PDF、圖片、文字擷取）
+- 處理成本很高，而且同樣的檔案會被重複處理
+- 需要 `--cache/--no-cache` 的 CLI 選項
+- 想在不修改現有純函式的情況下，替它們加上快取
+
+## Core Pattern
+
+### 1. Content-Hash Based Cache Key
+
+用檔案內容（不是路徑）當作快取 key：
+
+```python
+import hashlib
+from pathlib import Path
+
+_HASH_CHUNK_SIZE = 65536  # 64KB chunks for large files
+
+def compute_file_hash(path: Path) -&gt; str:
+    &quot;&quot;&quot;SHA-256 of file contents (chunked for large files).&quot;&quot;&quot;
+    if not path.is_file():
+        raise FileNotFoundError(f&quot;File not found: {path}&quot;)
+    sha256 = hashlib.sha256()
+    with open(path, &quot;rb&quot;) as f:
+        while True:
+            chunk = f.read(_HASH_CHUNK_SIZE)
+            if not chunk:
+                break
+            sha256.update(chunk)
+    return sha256.hexdigest()
+```
+
+**為什麼用內容雜湊？** 檔案改名/搬移 = 快取命中。內容改變 = 自動失效。不需要索引檔。
+
+### 2. Frozen Dataclass for Cache Entry
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True, slots=True)
+class CacheEntry:
+    file_hash: str
+    source_path: str
+    document: ExtractedDocument  # The cached result
+```
+
+### 3. File-Based Cache Storage
+
+每個快取項目存成 `{hash}.json`，用雜湊就能 O(1) 查找，不需要索引檔。
+
+```python
+import json
+from typing import Any
+
+def write_cache(cache_dir: Path, entry: CacheEntry) -&gt; None:
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / f&quot;{entry.file_hash}.json&quot;
+    data = serialize_entry(entry)
+    cache_file.write_text(json.dumps(data, ensure_ascii=False), encoding=&quot;utf-8&quot;)
+
+def read_cache(cache_dir: Path, file_hash: str) -&gt; CacheEntry | None:
+    cache_file = cache_dir / f&quot;{file_hash}.json&quot;
+    if not cache_file.is_file():
+        return None
+    try:
+        raw = cache_file.read_text(encoding=&quot;utf-8&quot;)
+        data = json.loads(raw)
+        return deserialize_entry(data)
+    except (json.JSONDecodeError, ValueError, KeyError):
+        return None  # Treat corruption as cache miss
+```
+
+### 4. Service Layer Wrapper (SRP)
+
+讓處理函式保持純粹。把快取當成獨立的服務層加上去。
+
+```python
+def extract_with_cache(
+    file_path: Path,
+    *,
+    cache_enabled: bool = True,
+    cache_dir: Path = Path(&quot;.cache&quot;),
+) -&gt; ExtractedDocument:
+    &quot;&quot;&quot;Service layer: cache check -&gt; extraction -&gt; cache write.&quot;&quot;&quot;
+    if not cache_enabled:
+        return extract_text(file_path)  # Pure function, no cache knowledge
+
+    file_hash = compute_file_hash(file_path)
+
+    # Check cache
+    cached = read_cache(cache_dir, file_hash)
+    if cached is not None:
+        logger.info(&quot;Cache hit: %s (hash=%s)&quot;, file_path.name, file_hash[:12])
+        return cached.document
+
+    # Cache miss -&gt; extract -&gt; store
+    logger.info(&quot;Cache miss: %s (hash=%s)&quot;, file_path.name, file_hash[:12])
+    doc = extract_text(file_path)
+    entry = CacheEntry(file_hash=file_hash, source_path=str(file_path), document=doc)
+    write_cache(cache_dir, entry)
+    return doc
+```
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| SHA-256 內容雜湊 | 與路徑無關，內容改變時自動失效 |
+| `{hash}.json` 檔案命名 | O(1) 查找，不需要索引檔 |
+| 服務層包裝 | SRP：擷取保持純粹，快取是獨立的關注點 |
+| 手動 JSON 序列化 | 完全掌控 frozen dataclass 的序列化 |
+| 損毀時回傳 `None` | 優雅降級，下次執行時重新處理 |
+| `cache_dir.mkdir(parents=True)` | 第一次寫入時才延遲建立目錄 |
+
+## Best Practices
+
+- **雜湊內容，不要雜湊路徑**：路徑會變，內容的身分不會變
+- 雜湊時要**分塊處理大檔案**，避免把整個檔案載入記憶體
+- **讓處理函式保持純粹**：它們不該知道任何跟快取有關的事
+- **記錄快取命中/未命中**，並用截短的雜湊方便除錯
+- **優雅處理損毀**：把無效的快取項目視為未命中，絕對不要當掉
+
+## Anti-Patterns to Avoid
+
+```python
+# BAD: Path-based caching (breaks on file move/rename)
+cache = {&quot;/path/to/file.pdf&quot;: result}
+
+# BAD: Adding cache logic inside the processing function (SRP violation)
+def extract_text(path, *, cache_enabled=False, cache_dir=None):
+    if cache_enabled:  # Now this function has two responsibilities
+        ...
+
+# BAD: Using dataclasses.asdict() with nested frozen dataclasses
+# (can cause issues with complex nested types)
+data = dataclasses.asdict(entry)  # Use manual serialization instead
+```
+
+## When to Use
+
+- 檔案處理管線（PDF 解析、OCR、文字擷取、圖片分析）
+- 受益於 `--cache/--no-cache` 選項的 CLI 工具
+- 同樣的檔案會在多次執行中重複出現的批次處理
+- 在不修改現有純函式的情況下加上快取
+
+## When NOT to Use
+
+- 必須永遠保持最新的資料（即時資料流）
+- 會變得極大的快取項目（考慮改用串流）
+- 結果取決於檔案內容以外的參數（例如不同的擷取設定）</pre></section><section><h2>英文原文</h2><pre>---
+name: content-hash-cache-pattern
+description: Cache expensive file processing results using SHA-256 content hashes — path-independent, auto-invalidating, with service layer separation. Use when repeated file processing is slow and results should be cached and invalidated by content rather than path.
+metadata:
+  origin: ECC
+---
+
+# Content-Hash File Cache Pattern
+
+Cache expensive file processing results (PDF parsing, text extraction, image analysis) using SHA-256 content hashes as cache keys. Unlike path-based caching, this approach survives file moves/renames and auto-invalidates when content changes.
+
+## When to Activate
+
+- Building file processing pipelines (PDF, images, text extraction)
+- Processing cost is high and same files are processed repeatedly
+- Need a `--cache/--no-cache` CLI option
+- Want to add caching to existing pure functions without modifying them
+
+## Core Pattern
+
+### 1. Content-Hash Based Cache Key
+
+Use file content (not path) as the cache key:
+
+```python
+import hashlib
+from pathlib import Path
+
+_HASH_CHUNK_SIZE = 65536  # 64KB chunks for large files
+
+def compute_file_hash(path: Path) -&gt; str:
+    &quot;&quot;&quot;SHA-256 of file contents (chunked for large files).&quot;&quot;&quot;
+    if not path.is_file():
+        raise FileNotFoundError(f&quot;File not found: {path}&quot;)
+    sha256 = hashlib.sha256()
+    with open(path, &quot;rb&quot;) as f:
+        while True:
+            chunk = f.read(_HASH_CHUNK_SIZE)
+            if not chunk:
+                break
+            sha256.update(chunk)
+    return sha256.hexdigest()
+```
+
+**Why content hash?** File rename/move = cache hit. Content change = automatic invalidation. No index file needed.
+
+### 2. Frozen Dataclass for Cache Entry
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True, slots=True)
+class CacheEntry:
+    file_hash: str
+    source_path: str
+    document: ExtractedDocument  # The cached result
+```
+
+### 3. File-Based Cache Storage
+
+Each cache entry is stored as `{hash}.json` — O(1) lookup by hash, no index file required.
+
+```python
+import json
+from typing import Any
+
+def write_cache(cache_dir: Path, entry: CacheEntry) -&gt; None:
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / f&quot;{entry.file_hash}.json&quot;
+    data = serialize_entry(entry)
+    cache_file.write_text(json.dumps(data, ensure_ascii=False), encoding=&quot;utf-8&quot;)
+
+def read_cache(cache_dir: Path, file_hash: str) -&gt; CacheEntry | None:
+    cache_file = cache_dir / f&quot;{file_hash}.json&quot;
+    if not cache_file.is_file():
+        return None
+    try:
+        raw = cache_file.read_text(encoding=&quot;utf-8&quot;)
+        data = json.loads(raw)
+        return deserialize_entry(data)
+    except (json.JSONDecodeError, ValueError, KeyError):
+        return None  # Treat corruption as cache miss
+```
+
+### 4. Service Layer Wrapper (SRP)
+
+Keep the processing function pure. Add caching as a separate service layer.
+
+```python
+def extract_with_cache(
+    file_path: Path,
+    *,
+    cache_enabled: bool = True,
+    cache_dir: Path = Path(&quot;.cache&quot;),
+) -&gt; ExtractedDocument:
+    &quot;&quot;&quot;Service layer: cache check -&gt; extraction -&gt; cache write.&quot;&quot;&quot;
+    if not cache_enabled:
+        return extract_text(file_path)  # Pure function, no cache knowledge
+
+    file_hash = compute_file_hash(file_path)
+
+    # Check cache
+    cached = read_cache(cache_dir, file_hash)
+    if cached is not None:
+        logger.info(&quot;Cache hit: %s (hash=%s)&quot;, file_path.name, file_hash[:12])
+        return cached.document
+
+    # Cache miss -&gt; extract -&gt; store
+    logger.info(&quot;Cache miss: %s (hash=%s)&quot;, file_path.name, file_hash[:12])
+    doc = extract_text(file_path)
+    entry = CacheEntry(file_hash=file_hash, source_path=str(file_path), document=doc)
+    write_cache(cache_dir, entry)
+    return doc
+```
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| SHA-256 content hash | Path-independent, auto-invalidates on content change |
+| `{hash}.json` file naming | O(1) lookup, no index file needed |
+| Service layer wrapper | SRP: extraction stays pure, cache is a separate concern |
+| Manual JSON serialization | Full control over frozen dataclass serialization |
+| Corruption returns `None` | Graceful degradation, re-processes on next run |
+| `cache_dir.mkdir(parents=True)` | Lazy directory creation on first write |
+
+## Best Practices
+
+- **Hash content, not paths** — paths change, content identity doesn&#x27;t
+- **Chunk large files** when hashing — avoid loading entire files into memory
+- **Keep processing functions pure** — they should know nothing about caching
+- **Log cache hit/miss** with truncated hashes for debugging
+- **Handle corruption gracefully** — treat invalid cache entries as misses, never crash
+
+## Anti-Patterns to Avoid
+
+```python
+# BAD: Path-based caching (breaks on file move/rename)
+cache = {&quot;/path/to/file.pdf&quot;: result}
+
+# BAD: Adding cache logic inside the processing function (SRP violation)
+def extract_text(path, *, cache_enabled=False, cache_dir=None):
+    if cache_enabled:  # Now this function has two responsibilities
+        ...
+
+# BAD: Using dataclasses.asdict() with nested frozen dataclasses
+# (can cause issues with complex nested types)
+data = dataclasses.asdict(entry)  # Use manual serialization instead
+```
+
+## When to Use
+
+- File processing pipelines (PDF parsing, OCR, text extraction, image analysis)
+- CLI tools that benefit from `--cache/--no-cache` options
+- Batch processing where the same files appear across runs
+- Adding caching to existing pure functions without modifying them
+
+## When NOT to Use
+
+- Data that must always be fresh (real-time feeds)
+- Cache entries that would be extremely large (consider streaming instead)
+- Results that depend on parameters beyond file content (e.g., different extraction configs)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>e2e-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="Playwright E2E 測試寫法、page object、CI 整合與 flaky 處理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>e2e-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/e2e-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Playwright E2E 測試寫法、page object、CI 整合與 flaky 處理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: e2e-testing
+description: Playwright E2E 測試模式、Page Object Model、設定、CI/CD 整合、產物管理，以及處理 flaky test 的策略。在撰寫 Playwright 測試、組織 page object，或修 CI 裡不穩的 E2E 執行時使用。
+metadata:
+  origin: ECC
+---
+
+# E2E 測試模式
+
+用來打造穩定、快速、好維護的 E2E 測試套件的完整 Playwright 模式。
+
+## 測試檔案組織
+
+```
+tests/
+├── e2e/
+│   ├── auth/
+│   │   ├── login.spec.ts
+│   │   ├── logout.spec.ts
+│   │   └── register.spec.ts
+│   ├── features/
+│   │   ├── browse.spec.ts
+│   │   ├── search.spec.ts
+│   │   └── create.spec.ts
+│   └── api/
+│       └── endpoints.spec.ts
+├── fixtures/
+│   ├── auth.ts
+│   └── data.ts
+└── playwright.config.ts
+```
+
+## Page Object Model（POM）
+
+```typescript
+import { Page, Locator } from &#x27;@playwright/test&#x27;
+
+export class ItemsPage {
+  readonly page: Page
+  readonly searchInput: Locator
+  readonly itemCards: Locator
+  readonly createButton: Locator
+
+  constructor(page: Page) {
+    this.page = page
+    this.searchInput = page.locator(&#x27;[data-testid=&quot;search-input&quot;]&#x27;)
+    this.itemCards = page.locator(&#x27;[data-testid=&quot;item-card&quot;]&#x27;)
+    this.createButton = page.locator(&#x27;[data-testid=&quot;create-btn&quot;]&#x27;)
+  }
+
+  async goto() {
+    await this.page.goto(&#x27;/items&#x27;)
+    await this.page.waitForLoadState(&#x27;networkidle&#x27;)
+  }
+
+  async search(query: string) {
+    await this.searchInput.fill(query)
+    await this.page.waitForResponse(resp =&gt; resp.url().includes(&#x27;/api/search&#x27;))
+    await this.page.waitForLoadState(&#x27;networkidle&#x27;)
+  }
+
+  async getItemCount() {
+    return await this.itemCards.count()
+  }
+}
+```
+
+## 測試結構
+
+```typescript
+import { test, expect } from &#x27;@playwright/test&#x27;
+import { ItemsPage } from &#x27;../../pages/ItemsPage&#x27;
+
+test.describe(&#x27;Item Search&#x27;, () =&gt; {
+  let itemsPage: ItemsPage
+
+  test.beforeEach(async ({ page }) =&gt; {
+    itemsPage = new ItemsPage(page)
+    await itemsPage.goto()
+  })
+
+  test(&#x27;should search by keyword&#x27;, async ({ page }) =&gt; {
+    await itemsPage.search(&#x27;test&#x27;)
+
+    const count = await itemsPage.getItemCount()
+    expect(count).toBeGreaterThan(0)
+
+    await expect(itemsPage.itemCards.first()).toContainText(/test/i)
+    await page.screenshot({ path: &#x27;artifacts/search-results.png&#x27; })
+  })
+
+  test(&#x27;should handle no results&#x27;, async ({ page }) =&gt; {
+    await itemsPage.search(&#x27;xyznonexistent123&#x27;)
+
+    await expect(page.locator(&#x27;[data-testid=&quot;no-results&quot;]&#x27;)).toBeVisible()
+    expect(await itemsPage.getItemCount()).toBe(0)
+  })
+})
+```
+
+## Playwright 設定
+
+```typescript
+import { defineConfig, devices } from &#x27;@playwright/test&#x27;
+
+export default defineConfig({
+  testDir: &#x27;./tests/e2e&#x27;,
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: [
+    [&#x27;html&#x27;, { outputFolder: &#x27;playwright-report&#x27; }],
+    [&#x27;junit&#x27;, { outputFile: &#x27;playwright-results.xml&#x27; }],
+    [&#x27;json&#x27;, { outputFile: &#x27;playwright-results.json&#x27; }]
+  ],
+  use: {
+    baseURL: process.env.BASE_URL || &#x27;http://localhost:3000&#x27;,
+    trace: &#x27;on-first-retry&#x27;,
+    screenshot: &#x27;only-on-failure&#x27;,
+    video: &#x27;retain-on-failure&#x27;,
+    actionTimeout: 10000,
+    navigationTimeout: 30000,
+  },
+  projects: [
+    { name: &#x27;chromium&#x27;, use: { ...devices[&#x27;Desktop Chrome&#x27;] } },
+    { name: &#x27;firefox&#x27;, use: { ...devices[&#x27;Desktop Firefox&#x27;] } },
+    { name: &#x27;webkit&#x27;, use: { ...devices[&#x27;Desktop Safari&#x27;] } },
+    { name: &#x27;mobile-chrome&#x27;, use: { ...devices[&#x27;Pixel 5&#x27;] } },
+  ],
+  webServer: {
+    command: &#x27;npm run dev&#x27;,
+    url: &#x27;http://localhost:3000&#x27;,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
+})
+```
+
+## Flaky 測試模式
+
+### 隔離（Quarantine）
+
+```typescript
+test(&#x27;flaky: complex search&#x27;, async ({ page }) =&gt; {
+  test.fixme(true, &#x27;Flaky - Issue #123&#x27;)
+  // test code...
+})
+
+test(&#x27;conditional skip&#x27;, async ({ page }) =&gt; {
+  test.skip(process.env.CI, &#x27;Flaky in CI - Issue #123&#x27;)
+  // test code...
+})
+```
+
+### 找出 Flaky
+
+```bash
+npx playwright test tests/search.spec.ts --repeat-each=10
+npx playwright test tests/search.spec.ts --retries=3
+```
+
+### 常見原因與修正
+
+**Race condition：**
+```typescript
+// Bad: assumes element is ready
+await page.click(&#x27;[data-testid=&quot;button&quot;]&#x27;)
+
+// Good: auto-wait locator
+await page.locator(&#x27;[data-testid=&quot;button&quot;]&#x27;).click()
+```
+
+**網路時序：**
+```typescript
+// Bad: arbitrary timeout
+await page.waitForTimeout(5000)
+
+// Good: wait for specific condition
+await page.waitForResponse(resp =&gt; resp.url().includes(&#x27;/api/data&#x27;))
+```
+
+**動畫時序：**
+```typescript
+// Bad: click during animation
+await page.click(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;)
+
+// Good: wait for stability
+await page.locator(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;).waitFor({ state: &#x27;visible&#x27; })
+await page.waitForLoadState(&#x27;networkidle&#x27;)
+await page.locator(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;).click()
+```
+
+## 產物管理
+
+### 截圖
+
+```typescript
+await page.screenshot({ path: &#x27;artifacts/after-login.png&#x27; })
+await page.screenshot({ path: &#x27;artifacts/full-page.png&#x27;, fullPage: true })
+await page.locator(&#x27;[data-testid=&quot;chart&quot;]&#x27;).screenshot({ path: &#x27;artifacts/chart.png&#x27; })
+```
+
+### Trace
+
+```typescript
+await browser.startTracing(page, {
+  path: &#x27;artifacts/trace.json&#x27;,
+  screenshots: true,
+  snapshots: true,
+})
+// ... test actions ...
+await browser.stopTracing()
+```
+
+### 影片
+
+```typescript
+// In playwright.config.ts
+use: {
+  video: &#x27;retain-on-failure&#x27;,
+  videosPath: &#x27;artifacts/videos/&#x27;
+}
+```
+
+## CI/CD 整合
+
+```yaml
+# .github/workflows/e2e.yml
+name: E2E Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+        env:
+          BASE_URL: ${{ vars.STAGING_URL }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+```
+
+## 測試報告範本
+
+```markdown
+# E2E Test Report
+
+**Date:** YYYY-MM-DD HH:MM
+**Duration:** Xm Ys
+**Status:** PASSING / FAILING
+
+## Summary
+- Total: X | Passed: Y (Z%) | Failed: A | Flaky: B | Skipped: C
+
+## Failed Tests
+
+### test-name
+**File:** `tests/e2e/feature.spec.ts:45`
+**Error:** Expected element to be visible
+**Screenshot:** artifacts/failed.png
+**Recommended Fix:** [description]
+
+## Artifacts
+- HTML Report: playwright-report/index.html
+- Screenshots: artifacts/*.png
+- Videos: artifacts/videos/*.webm
+- Traces: artifacts/*.zip
+```
+
+## 錢包 / Web3 測試
+
+```typescript
+test(&#x27;wallet connection&#x27;, async ({ page, context }) =&gt; {
+  // Mock wallet provider
+  await context.addInitScript(() =&gt; {
+    window.ethereum = {
+      isMetaMask: true,
+      request: async ({ method }) =&gt; {
+        if (method === &#x27;eth_requestAccounts&#x27;)
+          return [&#x27;0x1234567890123456789012345678901234567890&#x27;]
+        if (method === &#x27;eth_chainId&#x27;) return &#x27;0x1&#x27;
+      }
+    }
+  })
+
+  await page.goto(&#x27;/&#x27;)
+  await page.locator(&#x27;[data-testid=&quot;connect-wallet&quot;]&#x27;).click()
+  await expect(page.locator(&#x27;[data-testid=&quot;wallet-address&quot;]&#x27;)).toContainText(&#x27;0x1234&#x27;)
+})
+```
+
+## 金融 / 關鍵流程測試
+
+```typescript
+test(&#x27;trade execution&#x27;, async ({ page }) =&gt; {
+  // Skip on production — real money
+  test.skip(process.env.NODE_ENV === &#x27;production&#x27;, &#x27;Skip on production&#x27;)
+
+  await page.goto(&#x27;/markets/test-market&#x27;)
+  await page.locator(&#x27;[data-testid=&quot;position-yes&quot;]&#x27;).click()
+  await page.locator(&#x27;[data-testid=&quot;trade-amount&quot;]&#x27;).fill(&#x27;1.0&#x27;)
+
+  // Verify preview
+  const preview = page.locator(&#x27;[data-testid=&quot;trade-preview&quot;]&#x27;)
+  await expect(preview).toContainText(&#x27;1.0&#x27;)
+
+  // Confirm and wait for blockchain
+  await page.locator(&#x27;[data-testid=&quot;confirm-trade&quot;]&#x27;).click()
+  await page.waitForResponse(
+    resp =&gt; resp.url().includes(&#x27;/api/trade&#x27;) &amp;&amp; resp.status() === 200,
+    { timeout: 30000 }
+  )
+
+  await expect(page.locator(&#x27;[data-testid=&quot;trade-success&quot;]&#x27;)).toBeVisible()
+})
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: e2e-testing
+description: Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies. Use when writing Playwright tests, structuring page objects, or fixing flaky E2E runs in CI.
+metadata:
+  origin: ECC
+---
+
+# E2E Testing Patterns
+
+Comprehensive Playwright patterns for building stable, fast, and maintainable E2E test suites.
+
+## Test File Organization
+
+```
+tests/
+├── e2e/
+│   ├── auth/
+│   │   ├── login.spec.ts
+│   │   ├── logout.spec.ts
+│   │   └── register.spec.ts
+│   ├── features/
+│   │   ├── browse.spec.ts
+│   │   ├── search.spec.ts
+│   │   └── create.spec.ts
+│   └── api/
+│       └── endpoints.spec.ts
+├── fixtures/
+│   ├── auth.ts
+│   └── data.ts
+└── playwright.config.ts
+```
+
+## Page Object Model (POM)
+
+```typescript
+import { Page, Locator } from &#x27;@playwright/test&#x27;
+
+export class ItemsPage {
+  readonly page: Page
+  readonly searchInput: Locator
+  readonly itemCards: Locator
+  readonly createButton: Locator
+
+  constructor(page: Page) {
+    this.page = page
+    this.searchInput = page.locator(&#x27;[data-testid=&quot;search-input&quot;]&#x27;)
+    this.itemCards = page.locator(&#x27;[data-testid=&quot;item-card&quot;]&#x27;)
+    this.createButton = page.locator(&#x27;[data-testid=&quot;create-btn&quot;]&#x27;)
+  }
+
+  async goto() {
+    await this.page.goto(&#x27;/items&#x27;)
+    await this.page.waitForLoadState(&#x27;networkidle&#x27;)
+  }
+
+  async search(query: string) {
+    await this.searchInput.fill(query)
+    await this.page.waitForResponse(resp =&gt; resp.url().includes(&#x27;/api/search&#x27;))
+    await this.page.waitForLoadState(&#x27;networkidle&#x27;)
+  }
+
+  async getItemCount() {
+    return await this.itemCards.count()
+  }
+}
+```
+
+## Test Structure
+
+```typescript
+import { test, expect } from &#x27;@playwright/test&#x27;
+import { ItemsPage } from &#x27;../../pages/ItemsPage&#x27;
+
+test.describe(&#x27;Item Search&#x27;, () =&gt; {
+  let itemsPage: ItemsPage
+
+  test.beforeEach(async ({ page }) =&gt; {
+    itemsPage = new ItemsPage(page)
+    await itemsPage.goto()
+  })
+
+  test(&#x27;should search by keyword&#x27;, async ({ page }) =&gt; {
+    await itemsPage.search(&#x27;test&#x27;)
+
+    const count = await itemsPage.getItemCount()
+    expect(count).toBeGreaterThan(0)
+
+    await expect(itemsPage.itemCards.first()).toContainText(/test/i)
+    await page.screenshot({ path: &#x27;artifacts/search-results.png&#x27; })
+  })
+
+  test(&#x27;should handle no results&#x27;, async ({ page }) =&gt; {
+    await itemsPage.search(&#x27;xyznonexistent123&#x27;)
+
+    await expect(page.locator(&#x27;[data-testid=&quot;no-results&quot;]&#x27;)).toBeVisible()
+    expect(await itemsPage.getItemCount()).toBe(0)
+  })
+})
+```
+
+## Playwright Configuration
+
+```typescript
+import { defineConfig, devices } from &#x27;@playwright/test&#x27;
+
+export default defineConfig({
+  testDir: &#x27;./tests/e2e&#x27;,
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: [
+    [&#x27;html&#x27;, { outputFolder: &#x27;playwright-report&#x27; }],
+    [&#x27;junit&#x27;, { outputFile: &#x27;playwright-results.xml&#x27; }],
+    [&#x27;json&#x27;, { outputFile: &#x27;playwright-results.json&#x27; }]
+  ],
+  use: {
+    baseURL: process.env.BASE_URL || &#x27;http://localhost:3000&#x27;,
+    trace: &#x27;on-first-retry&#x27;,
+    screenshot: &#x27;only-on-failure&#x27;,
+    video: &#x27;retain-on-failure&#x27;,
+    actionTimeout: 10000,
+    navigationTimeout: 30000,
+  },
+  projects: [
+    { name: &#x27;chromium&#x27;, use: { ...devices[&#x27;Desktop Chrome&#x27;] } },
+    { name: &#x27;firefox&#x27;, use: { ...devices[&#x27;Desktop Firefox&#x27;] } },
+    { name: &#x27;webkit&#x27;, use: { ...devices[&#x27;Desktop Safari&#x27;] } },
+    { name: &#x27;mobile-chrome&#x27;, use: { ...devices[&#x27;Pixel 5&#x27;] } },
+  ],
+  webServer: {
+    command: &#x27;npm run dev&#x27;,
+    url: &#x27;http://localhost:3000&#x27;,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
+})
+```
+
+## Flaky Test Patterns
+
+### Quarantine
+
+```typescript
+test(&#x27;flaky: complex search&#x27;, async ({ page }) =&gt; {
+  test.fixme(true, &#x27;Flaky - Issue #123&#x27;)
+  // test code...
+})
+
+test(&#x27;conditional skip&#x27;, async ({ page }) =&gt; {
+  test.skip(process.env.CI, &#x27;Flaky in CI - Issue #123&#x27;)
+  // test code...
+})
+```
+
+### Identify Flakiness
+
+```bash
+npx playwright test tests/search.spec.ts --repeat-each=10
+npx playwright test tests/search.spec.ts --retries=3
+```
+
+### Common Causes &amp; Fixes
+
+**Race conditions:**
+```typescript
+// Bad: assumes element is ready
+await page.click(&#x27;[data-testid=&quot;button&quot;]&#x27;)
+
+// Good: auto-wait locator
+await page.locator(&#x27;[data-testid=&quot;button&quot;]&#x27;).click()
+```
+
+**Network timing:**
+```typescript
+// Bad: arbitrary timeout
+await page.waitForTimeout(5000)
+
+// Good: wait for specific condition
+await page.waitForResponse(resp =&gt; resp.url().includes(&#x27;/api/data&#x27;))
+```
+
+**Animation timing:**
+```typescript
+// Bad: click during animation
+await page.click(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;)
+
+// Good: wait for stability
+await page.locator(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;).waitFor({ state: &#x27;visible&#x27; })
+await page.waitForLoadState(&#x27;networkidle&#x27;)
+await page.locator(&#x27;[data-testid=&quot;menu-item&quot;]&#x27;).click()
+```
+
+## Artifact Management
+
+### Screenshots
+
+```typescript
+await page.screenshot({ path: &#x27;artifacts/after-login.png&#x27; })
+await page.screenshot({ path: &#x27;artifacts/full-page.png&#x27;, fullPage: true })
+await page.locator(&#x27;[data-testid=&quot;chart&quot;]&#x27;).screenshot({ path: &#x27;artifacts/chart.png&#x27; })
+```
+
+### Traces
+
+```typescript
+await browser.startTracing(page, {
+  path: &#x27;artifacts/trace.json&#x27;,
+  screenshots: true,
+  snapshots: true,
+})
+// ... test actions ...
+await browser.stopTracing()
+```
+
+### Video
+
+```typescript
+// In playwright.config.ts
+use: {
+  video: &#x27;retain-on-failure&#x27;,
+  videosPath: &#x27;artifacts/videos/&#x27;
+}
+```
+
+## CI/CD Integration
+
+```yaml
+# .github/workflows/e2e.yml
+name: E2E Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+        env:
+          BASE_URL: ${{ vars.STAGING_URL }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+```
+
+## Test Report Template
+
+```markdown
+# E2E Test Report
+
+**Date:** YYYY-MM-DD HH:MM
+**Duration:** Xm Ys
+**Status:** PASSING / FAILING
+
+## Summary
+- Total: X | Passed: Y (Z%) | Failed: A | Flaky: B | Skipped: C
+
+## Failed Tests
+
+### test-name
+**File:** `tests/e2e/feature.spec.ts:45`
+**Error:** Expected element to be visible
+**Screenshot:** artifacts/failed.png
+**Recommended Fix:** [description]
+
+## Artifacts
+- HTML Report: playwright-report/index.html
+- Screenshots: artifacts/*.png
+- Videos: artifacts/videos/*.webm
+- Traces: artifacts/*.zip
+```
+
+## Wallet / Web3 Testing
+
+```typescript
+test(&#x27;wallet connection&#x27;, async ({ page, context }) =&gt; {
+  // Mock wallet provider
+  await context.addInitScript(() =&gt; {
+    window.ethereum = {
+      isMetaMask: true,
+      request: async ({ method }) =&gt; {
+        if (method === &#x27;eth_requestAccounts&#x27;)
+          return [&#x27;0x1234567890123456789012345678901234567890&#x27;]
+        if (method === &#x27;eth_chainId&#x27;) return &#x27;0x1&#x27;
+      }
+    }
+  })
+
+  await page.goto(&#x27;/&#x27;)
+  await page.locator(&#x27;[data-testid=&quot;connect-wallet&quot;]&#x27;).click()
+  await expect(page.locator(&#x27;[data-testid=&quot;wallet-address&quot;]&#x27;)).toContainText(&#x27;0x1234&#x27;)
+})
+```
+
+## Financial / Critical Flow Testing
+
+```typescript
+test(&#x27;trade execution&#x27;, async ({ page }) =&gt; {
+  // Skip on production — real money
+  test.skip(process.env.NODE_ENV === &#x27;production&#x27;, &#x27;Skip on production&#x27;)
+
+  await page.goto(&#x27;/markets/test-market&#x27;)
+  await page.locator(&#x27;[data-testid=&quot;position-yes&quot;]&#x27;).click()
+  await page.locator(&#x27;[data-testid=&quot;trade-amount&quot;]&#x27;).fill(&#x27;1.0&#x27;)
+
+  // Verify preview
+  const preview = page.locator(&#x27;[data-testid=&quot;trade-preview&quot;]&#x27;)
+  await expect(preview).toContainText(&#x27;1.0&#x27;)
+
+  // Confirm and wait for blockchain
+  await page.locator(&#x27;[data-testid=&quot;confirm-trade&quot;]&#x27;).click()
+  await page.waitForResponse(
+    resp =&gt; resp.url().includes(&#x27;/api/trade&#x27;) &amp;&amp; resp.status() === 200,
+    { timeout: 30000 }
+  )
+
+  await expect(page.locator(&#x27;[data-testid=&quot;trade-success&quot;]&#x27;)).toBeVisible()
+})
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

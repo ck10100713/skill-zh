@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>react-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="React 18/19 的 hook、RSC 邊界、表單與狀態決策模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>react-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/react-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">React 18/19 的 hook、RSC 邊界、表單與狀態決策模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: react-patterns
+description: React 18/19 模式，包括 hook 紀律、server／client component 邊界、Suspense 加 error boundary、form action、資料抓取、狀態管理決策樹，以及無障礙優先的組合方式。寫或 review React 元件時使用。
+metadata:
+  origin: ECC
+---
+
+# React 模式
+
+道地的 React 18/19 模式，用來打造穩健、無障礙、高效能的元件樹。
+
+## 何時啟用
+
+- 寫或修改 React function component、自訂 hook 或元件樹
+- Review JSX/TSX 檔案
+- 設計狀態形狀或元件組合
+- 遷移 class component，或大量依賴 `forwardRef`／`useEffect` 的舊程式碼
+- 在區域 state、提升 state、context 和外部 store 之間做選擇
+- 處理 Server Component / Client Component（Next.js App Router、RSC）
+- 用 React 19 action 或受控 input 實作表單
+- 用 TanStack Query / SWR / RSC 串資料抓取
+
+## 核心原則
+
+### 1. Render 是 props 與 state 的純函式
+
+```tsx
+// Good: 在 render 期間推導
+function Cart({ items }: { items: CartItem[] }) {
+  const total = items.reduce((sum, i) =&gt; sum + i.price * i.qty, 0);
+  return &lt;span&gt;{formatMoney(total)}&lt;/span&gt;;
+}
+
+// Bad: 另外儲存衍生的 state
+function Cart({ items }: { items: CartItem[] }) {
+  const [total, setTotal] = useState(0);
+  useEffect(() =&gt; {
+    setTotal(items.reduce((sum, i) =&gt; sum + i.price * i.qty, 0));
+  }, [items]);
+  return &lt;span&gt;{formatMoney(total)}&lt;/span&gt;;
+}
+```
+
+在 `useEffect` 裡處理衍生 state 會多一個 render 週期、可能不同步，還會讓資料流向變得模糊。
+
+### 2. 副作用放在 render 之外
+
+Effect、mutation、網路呼叫和訂閱都放在事件處理器或 `useEffect` 裡，絕對不要放在 render 本體。
+
+### 3. 組合優於繼承
+
+React 對元件沒有繼承模型。用 `children`、render props 或元件 props 來組合。
+
+## Hook 紀律
+
+完整規則請看 [rules/react/hooks.md](../../rules/react/hooks.md)。重點：
+
+- 只能在最上層呼叫，絕對不要放在條件裡
+- 每個訂閱、interval、listener 都要清理
+- 新 state 取決於舊 state 時，用 functional updater（`setX(prev =&gt; prev + 1)`）
+- 預設立場：不要 memoize，只有 profiler 或依賴鏈證明有影響時，才加 `useMemo`／`useCallback`
+- 同一組 hook 序列出現在 2 個以上的元件時，才抽成自訂 hook
+
+## State 位置決策樹
+
+```
+只有一個元件用到？
+  -&gt; 在它裡面用 useState
+
+父層加幾個後代元件用到？
+  -&gt; 提升到最近的共同祖先
+
+跨很遠的分支使用，而且讀取頻率低（theme、auth、locale）？
+  -&gt; React Context
+
+整棵樹共享、更新頻率高？
+  -&gt; 外部 store（Zustand、Jotai、Redux Toolkit）
+
+資料來自 server？
+  -&gt; server-state 函式庫（TanStack Query、SWR、RSC fetch）
+```
+
+大多數頁面不需要 context 或全域 store。在重複提升 state 真的變得痛苦之前，先不要抽象。
+
+## Server / Client Component（RSC）
+
+```tsx
+// Server Component - 預設，async，自己絕對不會送 JS 到前端
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await db.product.findUnique({ where: { id: params.id } });
+  if (!product) notFound();
+  return &lt;ProductView product={product} /&gt;;
+}
+
+// Client Component - 用 &quot;use client&quot; 選擇加入
+&quot;use client&quot;;
+export function AddToCartButton({ productId }: { productId: string }) {
+  const [pending, startTransition] = useTransition();
+  return (
+    &lt;button
+      disabled={pending}
+      onClick={() =&gt; startTransition(() =&gt; addToCart(productId))}
+    &gt;
+      {pending ? &quot;Adding...&quot; : &quot;Add to cart&quot;}
+    &lt;/button&gt;
+  );
+}
+```
+
+邊界：
+
+- Server -&gt; Client：傳可序列化的 props 或 `children`
+- Client -&gt; Server：透過 `&lt;form action={...}&gt;` 呼叫 Server Action，或從事件處理器命令式呼叫
+- 絕對不要在 Client Component 檔案裡 `import` Server Component，改用 `children` 組合它們
+
+## Suspense 加 Error Boundary
+
+```tsx
+&lt;ErrorBoundary fallback={&lt;ErrorView /&gt;}&gt;
+  &lt;Suspense fallback={&lt;UserSkeleton /&gt;}&gt;
+    &lt;UserDetail id={id} /&gt;
+  &lt;/Suspense&gt;
+&lt;/ErrorBoundary&gt;
+```
+
+- Suspense boundary 放在靠近資料的地方，不要放在 route 根部，這樣內容可以漸進顯示
+- Error Boundary 仍然是 class API；要 hook 友善的包裝，用 `react-error-boundary`
+- boundary 只能抓到子元件 render、生命週期和 constructor 期間丟出的錯誤，抓不到事件處理器或非同步程式碼裡的
+
+## 表單
+
+### React 19 form action（新程式碼首選）
+
+```tsx
+&quot;use client&quot;;
+import { useActionState } from &quot;react&quot;;
+
+const initial = { error: null as string | null };
+
+async function updateUserAction(_prev: typeof initial, formData: FormData) {
+  &quot;use server&quot;;
+  const parsed = UserSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: &quot;Invalid input&quot; };
+  await db.user.update({ where: { id: parsed.data.id }, data: parsed.data });
+  return { error: null };
+}
+
+export function UserForm() {
+  const [state, formAction, pending] = useActionState(updateUserAction, initial);
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;input name=&quot;name&quot; required /&gt;
+      &lt;button type=&quot;submit&quot; disabled={pending}&gt;Save&lt;/button&gt;
+      {state.error &amp;&amp; &lt;p role=&quot;alert&quot;&gt;{state.error}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}
+```
+
+### 受控 input
+
+值會驅動其他 UI、每次按鍵都要格式化，或要做即時驗證時，用受控的。
+
+### 複雜表單
+
+多步驟表單、動態欄位陣列或跨欄位驗證：用函式庫（React Hook Form、TanStack Form）。複雜度超過瑣碎程度的表單還自己土炮狀態管理，是維護陷阱。
+
+## 資料抓取決策表
+
+| 需求 | 工具 |
+|---|---|
+| Next.js App Router 的每請求資料 | RSC `await fetch()` |
+| 客戶端快取加 mutation 加失效 | TanStack Query |
+| 輕量客戶端快取加重新驗證 | SWR |
+| 即時訂閱 | Server-Sent Events、WebSocket，或函式庫自己的訂閱 API |
+| 一次性、丟出去就不管 | 事件處理器裡的 `fetch()` |
+
+應用程式資料避免用 `useEffect` 加 `fetch`：有 race condition、沒有快取、沒有重試，也沒有 Suspense 整合。
+
+## 組合食譜
+
+### 用 `children` 做 slot
+
+```tsx
+&lt;Layout&gt;
+  &lt;Header /&gt;
+  &lt;Main&gt;{content}&lt;/Main&gt;
+&lt;/Layout&gt;
+```
+
+### 具名 slot
+
+```tsx
+&lt;Page header={&lt;Nav /&gt;} sidebar={&lt;Filters /&gt;}&gt;
+  &lt;Results /&gt;
+&lt;/Page&gt;
+```
+
+### Compound component（透過 Context 共享 state）
+
+```tsx
+&lt;Tabs defaultValue=&quot;profile&quot;&gt;
+  &lt;Tabs.List&gt;
+    &lt;Tabs.Trigger value=&quot;profile&quot;&gt;Profile&lt;/Tabs.Trigger&gt;
+    &lt;Tabs.Trigger value=&quot;settings&quot;&gt;Settings&lt;/Tabs.Trigger&gt;
+  &lt;/Tabs.List&gt;
+  &lt;Tabs.Panel value=&quot;profile&quot;&gt;&lt;Profile /&gt;&lt;/Tabs.Panel&gt;
+  &lt;Tabs.Panel value=&quot;settings&quot;&gt;&lt;Settings /&gt;&lt;/Tabs.Panel&gt;
+&lt;/Tabs&gt;
+```
+
+### Render prop / function-as-child
+
+當父層需要把參數傳給渲染輸出時很有用：
+
+```tsx
+&lt;DataLoader id={id}&gt;
+  {({ data, isLoading }) =&gt; isLoading ? &lt;Spinner /&gt; : &lt;UserCard user={data} /&gt;}
+&lt;/DataLoader&gt;
+```
+
+現代的替代做法：回傳同樣形狀的 hook（`useData(id)`），通常更乾淨。
+
+## 效能
+
+### `React.memo` 什麼時候真的有用
+
+只有在以下情況，才用 `React.memo` 包元件：
+
+1. 它很常重新 render
+2. 它的 props 在各次 render 間通常相同
+3. 它的 render 可量測地昂貴
+
+`React.memo` 每次 render 都會多一次相等性檢查。如果多數 render 的 props 都不同，這個檢查就純粹是負擔。
+
+### 避免 render 連鎖
+
+- 盡量把 state 往下放，不要往上提
+- 拆開 context：每個關注點一個 context，這樣 `themeContext` 變動時，不會讓 auth 的消費者重新 render
+- 外部 state 函式庫用 `useSyncExternalStore`，這是安全的 concurrent rendering 所必需的
+
+### 列表
+
+- 提供穩定的 `key` props（資料庫 id，不要用陣列 index）
+- 當可見項目數超過約 50 且每列不單純時，用 `@tanstack/react-virtual` 或 `react-window` 虛擬化長列表
+
+## 無障礙優先的組合
+
+- 先 render 語意化 HTML（`&lt;button&gt;`、`&lt;a&gt;`、`&lt;nav&gt;`、`&lt;main&gt;`），再考慮 `role` 屬性
+- 每個互動元素都必須能用鍵盤抵達
+- 表單 input 需要 label：用 `&lt;label htmlFor&gt;`，或在視覺上由圖示標示時用 `aria-label`
+- route 切換和 modal 開關時要管理 focus
+- 在元件測試裡跑 `axe`（見 [skills/react-testing](../react-testing/SKILL.md)）
+- 交叉連結：[skills/accessibility/SKILL.md](../accessibility/SKILL.md) 涵蓋 WCAG 準則和 pattern 函式庫
+
+## 路由
+
+這個 skill 與 router 無關。上面的模式適用於 React Router、TanStack Router、Next.js App Router、Remix Router。Router 專屬的模式（loader、action、巢狀 layout）請依該 router 的文件，那些是疊在 React 核心之上的框架議題。
+
+## 範圍之外（指引段落）
+
+- **Next.js 專屬**：App Router 資料載入、Route Handler、Middleware、Parallel Route，屬於另一個議題，請看 Next.js 文件
+- **React Native**：各平台專屬的模式差異大到值得另開 `react-native-patterns` skill（目前還沒有）
+- **Remix**：loader／action 慣例和 RSC 有重疊，但請依 Remix 文件
+
+## 相關
+
+- 規則：[rules/react/](../../rules/react/)：coding-style、hooks、patterns、security、testing
+- Skills：[react-performance](../react-performance/SKILL.md) 是源自 Vercel 的效能規則集，[frontend-patterns](../frontend-patterns/SKILL.md) 處理跨框架的 UI 議題，[accessibility](../accessibility/SKILL.md)，[angular-developer](../angular-developer/SKILL.md) 用於框架比較
+- Agents：`react-reviewer` 做 code review，`react-build-resolver` 處理 build／bundler 錯誤
+- 指令：`/react-review`、`/react-build`、`/react-test`
+
+## 範例
+
+### 防抖搜尋的自訂 hook
+
+```tsx
+function useDebounce&lt;T&gt;(value: T, delay = 300): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() =&gt; {
+    const id = setTimeout(() =&gt; setDebounced(value), delay);
+    return () =&gt; clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
+}
+
+function SearchBox() {
+  const [query, setQuery] = useState(&quot;&quot;);
+  const debounced = useDebounce(query, 300);
+  const { data } = useQuery({
+    queryKey: [&quot;search&quot;, debounced],
+    queryFn: () =&gt; searchApi(debounced),
+    enabled: debounced.length &gt; 0,
+  });
+  return (
+    &lt;&gt;
+      &lt;input value={query} onChange={(e) =&gt; setQuery(e.target.value)} /&gt;
+      &lt;Results items={data ?? []} /&gt;
+    &lt;/&gt;
+  );
+}
+```
+
+### 搭配 React 19 `useOptimistic` 的 Optimistic UI
+
+```tsx
+&quot;use client&quot;;
+import { useOptimistic } from &quot;react&quot;;
+
+export function MessageList({ messages }: { messages: Message[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    messages,
+    (state, newMessage: Message) =&gt; [...state, newMessage],
+  );
+
+  async function send(formData: FormData) {
+    const text = String(formData.get(&quot;text&quot;));
+    addOptimistic({ id: &quot;pending&quot;, text, sender: &quot;me&quot; });
+    await saveMessage(text);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;ul&gt;{optimistic.map((m) =&gt; &lt;li key={m.id}&gt;{m.text}&lt;/li&gt;)}&lt;/ul&gt;
+      &lt;form action={send}&gt;
+        &lt;input name=&quot;text&quot; /&gt;
+        &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/&gt;
+  );
+}
+```
+
+### 拆分 context 避免 render 連鎖
+
+```tsx
+// 兩個 context：一個很少變，一個常常變
+const ThemeContext = createContext&lt;Theme&gt;(&quot;light&quot;);
+const NotificationsContext = createContext&lt;Notification[]&gt;([]);
+
+// 只消費 ThemeContext 的元件，在通知變動時不會重新 render
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: react-patterns
+description: React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management decision trees, and accessibility-first composition. Use when writing or reviewing React components.
+metadata:
+  origin: ECC
+---
+
+# React Patterns
+
+Idiomatic React 18/19 patterns for building robust, accessible, performant component trees.
+
+## When to Activate
+
+- Writing or modifying React function components, custom hooks, or component trees
+- Reviewing JSX/TSX files
+- Designing state shape or component composition
+- Migrating class components or older `forwardRef`/`useEffect`-heavy code
+- Choosing between local state, lifted state, context, and external stores
+- Working with Server Components / Client Components (Next.js App Router, RSC)
+- Implementing forms with React 19 actions or controlled inputs
+- Wiring data fetching with TanStack Query / SWR / RSC
+
+## Core Principles
+
+### 1. Render is a Pure Function of Props and State
+
+```tsx
+// Good: derive during render
+function Cart({ items }: { items: CartItem[] }) {
+  const total = items.reduce((sum, i) =&gt; sum + i.price * i.qty, 0);
+  return &lt;span&gt;{formatMoney(total)}&lt;/span&gt;;
+}
+
+// Bad: derived state stored separately
+function Cart({ items }: { items: CartItem[] }) {
+  const [total, setTotal] = useState(0);
+  useEffect(() =&gt; {
+    setTotal(items.reduce((sum, i) =&gt; sum + i.price * i.qty, 0));
+  }, [items]);
+  return &lt;span&gt;{formatMoney(total)}&lt;/span&gt;;
+}
+```
+
+Derived state in `useEffect` adds a render cycle, can desync, and obscures the data flow.
+
+### 2. Side Effects Outside Render
+
+Effects, mutations, network calls, and subscriptions live in event handlers or `useEffect` — never in the render body.
+
+### 3. Composition Over Inheritance
+
+React has no inheritance model for components. Compose with `children`, render props, or component props.
+
+## Hooks Discipline
+
+See [rules/react/hooks.md](../../rules/react/hooks.md) for the full ruleset. Highlights:
+
+- Top-level only, never conditional
+- Cleanup every subscription, interval, listener
+- Functional updater (`setX(prev =&gt; prev + 1)`) when new state depends on old
+- Default position: do not memoize — add `useMemo`/`useCallback` only when a profiler or a dependency chain proves it matters
+- Extract a custom hook only when the same hook sequence appears in 2+ components
+
+## State Location Decision Tree
+
+```
+Used by one component?
+  -&gt; useState inside it
+
+Used by parent + a few descendants?
+  -&gt; lift to nearest common ancestor
+
+Used across distant branches AND low-frequency reads (theme, auth, locale)?
+  -&gt; React Context
+
+High-frequency updates shared across the tree?
+  -&gt; external store (Zustand, Jotai, Redux Toolkit)
+
+Derived from a server?
+  -&gt; server-state library (TanStack Query, SWR, RSC fetch)
+```
+
+Most pages do not need context or a global store. Resist abstraction until duplicated lifting becomes painful.
+
+## Server / Client Components (RSC)
+
+```tsx
+// Server Component - default, async, never ships JS for itself
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await db.product.findUnique({ where: { id: params.id } });
+  if (!product) notFound();
+  return &lt;ProductView product={product} /&gt;;
+}
+
+// Client Component - opt in with &quot;use client&quot;
+&quot;use client&quot;;
+export function AddToCartButton({ productId }: { productId: string }) {
+  const [pending, startTransition] = useTransition();
+  return (
+    &lt;button
+      disabled={pending}
+      onClick={() =&gt; startTransition(() =&gt; addToCart(productId))}
+    &gt;
+      {pending ? &quot;Adding...&quot; : &quot;Add to cart&quot;}
+    &lt;/button&gt;
+  );
+}
+```
+
+Boundaries:
+
+- Server -&gt; Client: pass serializable props or `children`
+- Client -&gt; Server: invoke Server Actions via `&lt;form action={...}&gt;` or imperatively from event handlers
+- Never `import` a Server Component from a Client Component file — compose them via `children` instead
+
+## Suspense + Error Boundaries
+
+```tsx
+&lt;ErrorBoundary fallback={&lt;ErrorView /&gt;}&gt;
+  &lt;Suspense fallback={&lt;UserSkeleton /&gt;}&gt;
+    &lt;UserDetail id={id} /&gt;
+  &lt;/Suspense&gt;
+&lt;/ErrorBoundary&gt;
+```
+
+- Place Suspense boundaries close to the data, not at the route root — progressively reveal content
+- Error Boundary remains a class API; use `react-error-boundary` for a hook-friendly wrapper
+- A boundary catches errors thrown during render, lifecycle, and constructors of its children — NOT in event handlers or async code
+
+## Forms
+
+### React 19 form actions (preferred for new code)
+
+```tsx
+&quot;use client&quot;;
+import { useActionState } from &quot;react&quot;;
+
+const initial = { error: null as string | null };
+
+async function updateUserAction(_prev: typeof initial, formData: FormData) {
+  &quot;use server&quot;;
+  const parsed = UserSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: &quot;Invalid input&quot; };
+  await db.user.update({ where: { id: parsed.data.id }, data: parsed.data });
+  return { error: null };
+}
+
+export function UserForm() {
+  const [state, formAction, pending] = useActionState(updateUserAction, initial);
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;input name=&quot;name&quot; required /&gt;
+      &lt;button type=&quot;submit&quot; disabled={pending}&gt;Save&lt;/button&gt;
+      {state.error &amp;&amp; &lt;p role=&quot;alert&quot;&gt;{state.error}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}
+```
+
+### Controlled inputs
+
+Use controlled when the value drives other UI, formats on every keystroke, or implements real-time validation.
+
+### Complex forms
+
+For multi-step forms, dynamic field arrays, or cross-field validation: use a library (React Hook Form, TanStack Form). Roll-your-own state management for forms past trivial complexity is a maintenance trap.
+
+## Data Fetching Decision Matrix
+
+| Need | Tool |
+|---|---|
+| Per-request data in Next.js App Router | RSC `await fetch()` |
+| Client-side cache + mutations + invalidation | TanStack Query |
+| Lightweight client cache + revalidation | SWR |
+| Real-time subscriptions | Server-Sent Events, WebSockets, or the lib&#x27;s subscription API |
+| One-off fire-and-forget | `fetch()` in an event handler |
+
+Avoid `useEffect` + `fetch` for application data — race conditions, no cache, no retry, no Suspense integration.
+
+## Composition Recipes
+
+### Slot via `children`
+
+```tsx
+&lt;Layout&gt;
+  &lt;Header /&gt;
+  &lt;Main&gt;{content}&lt;/Main&gt;
+&lt;/Layout&gt;
+```
+
+### Named slots
+
+```tsx
+&lt;Page header={&lt;Nav /&gt;} sidebar={&lt;Filters /&gt;}&gt;
+  &lt;Results /&gt;
+&lt;/Page&gt;
+```
+
+### Compound components (shared state via Context)
+
+```tsx
+&lt;Tabs defaultValue=&quot;profile&quot;&gt;
+  &lt;Tabs.List&gt;
+    &lt;Tabs.Trigger value=&quot;profile&quot;&gt;Profile&lt;/Tabs.Trigger&gt;
+    &lt;Tabs.Trigger value=&quot;settings&quot;&gt;Settings&lt;/Tabs.Trigger&gt;
+  &lt;/Tabs.List&gt;
+  &lt;Tabs.Panel value=&quot;profile&quot;&gt;&lt;Profile /&gt;&lt;/Tabs.Panel&gt;
+  &lt;Tabs.Panel value=&quot;settings&quot;&gt;&lt;Settings /&gt;&lt;/Tabs.Panel&gt;
+&lt;/Tabs&gt;
+```
+
+### Render prop / function-as-child
+
+Useful when the parent needs to pass parameters to the rendered output:
+
+```tsx
+&lt;DataLoader id={id}&gt;
+  {({ data, isLoading }) =&gt; isLoading ? &lt;Spinner /&gt; : &lt;UserCard user={data} /&gt;}
+&lt;/DataLoader&gt;
+```
+
+Modern alternative: a hook (`useData(id)`) returning the same shape — usually cleaner.
+
+## Performance
+
+### When `React.memo` Actually Helps
+
+Wrap a component in `React.memo` only when:
+
+1. It re-renders frequently
+2. Its props are usually the same between renders
+3. Its render is measurably expensive
+
+`React.memo` adds an equality check on every render. If props differ on most renders, the check is pure overhead.
+
+### Avoiding Render Cascades
+
+- Lift state down rather than up where possible
+- Split context: one context per concern, so a change to `themeContext` does not re-render auth consumers
+- Use `useSyncExternalStore` for external state libraries — required for safe concurrent rendering
+
+### Lists
+
+- Provide stable `key` props (database id, not array index)
+- Virtualize long lists with `@tanstack/react-virtual` or `react-window` once visible item count exceeds ~50 with non-trivial rows
+
+## Accessibility-First Composition
+
+- Always render semantic HTML (`&lt;button&gt;`, `&lt;a&gt;`, `&lt;nav&gt;`, `&lt;main&gt;`) before reaching for `role` attributes
+- Every interactive element must be reachable by keyboard
+- Form inputs need labels — `&lt;label htmlFor&gt;` or `aria-label` if visually labeled by an icon
+- Manage focus on route changes and modal open/close
+- Run `axe` in component tests (see [skills/react-testing](../react-testing/SKILL.md))
+- Cross-link: [skills/accessibility/SKILL.md](../accessibility/SKILL.md) covers WCAG criteria and pattern libraries
+
+## Routing
+
+This skill is router-agnostic. The patterns above work with React Router, TanStack Router, Next.js App Router, Remix Router. Router-specific patterns (loaders, actions, nested layouts) follow the router&#x27;s documentation — those are framework concerns layered on top of React core.
+
+## Out of Scope (Pointer Sections)
+
+- **Next.js specifics**: App Router data loading, Route Handlers, Middleware, Parallel Routes — separate concern, use Next.js docs
+- **React Native**: Platform-specific patterns differ enough to warrant a separate `react-native-patterns` skill (not present yet)
+- **Remix**: Loader/action conventions overlap with RSC but follow Remix docs
+
+## Related
+
+- Rules: [rules/react/](../../rules/react/) — coding-style, hooks, patterns, security, testing
+- Skills: [react-performance](../react-performance/SKILL.md) for the Vercel-derived performance ruleset, [frontend-patterns](../frontend-patterns/SKILL.md) for cross-framework UI concerns, [accessibility](../accessibility/SKILL.md), [angular-developer](../angular-developer/SKILL.md) for framework comparison
+- Agents: `react-reviewer` for code review, `react-build-resolver` for build/bundler errors
+- Commands: `/react-review`, `/react-build`, `/react-test`
+
+## Examples
+
+### Custom hook for debounced search
+
+```tsx
+function useDebounce&lt;T&gt;(value: T, delay = 300): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() =&gt; {
+    const id = setTimeout(() =&gt; setDebounced(value), delay);
+    return () =&gt; clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
+}
+
+function SearchBox() {
+  const [query, setQuery] = useState(&quot;&quot;);
+  const debounced = useDebounce(query, 300);
+  const { data } = useQuery({
+    queryKey: [&quot;search&quot;, debounced],
+    queryFn: () =&gt; searchApi(debounced),
+    enabled: debounced.length &gt; 0,
+  });
+  return (
+    &lt;&gt;
+      &lt;input value={query} onChange={(e) =&gt; setQuery(e.target.value)} /&gt;
+      &lt;Results items={data ?? []} /&gt;
+    &lt;/&gt;
+  );
+}
+```
+
+### Optimistic UI with React 19 `useOptimistic`
+
+```tsx
+&quot;use client&quot;;
+import { useOptimistic } from &quot;react&quot;;
+
+export function MessageList({ messages }: { messages: Message[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    messages,
+    (state, newMessage: Message) =&gt; [...state, newMessage],
+  );
+
+  async function send(formData: FormData) {
+    const text = String(formData.get(&quot;text&quot;));
+    addOptimistic({ id: &quot;pending&quot;, text, sender: &quot;me&quot; });
+    await saveMessage(text);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;ul&gt;{optimistic.map((m) =&gt; &lt;li key={m.id}&gt;{m.text}&lt;/li&gt;)}&lt;/ul&gt;
+      &lt;form action={send}&gt;
+        &lt;input name=&quot;text&quot; /&gt;
+        &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/&gt;
+  );
+}
+```
+
+### Splitting context to avoid render cascades
+
+```tsx
+// Two contexts: one rarely changes, one frequently
+const ThemeContext = createContext&lt;Theme&gt;(&quot;light&quot;);
+const NotificationsContext = createContext&lt;Notification[]&gt;([]);
+
+// A component that only consumes ThemeContext does NOT re-render when notifications change
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

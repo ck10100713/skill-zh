@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-host-compat｜Skill 寫法圖鑑</title>
+<meta name="description" content="送 skill PR 前檢查 Codex/Cursor 副本的相容性">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>skill-host-compat</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/skill-host-compat/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">送 skill PR 前檢查 Codex/Cursor 副本的相容性</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: skill-host-compat
+description: 在送出 skill PR 之前，檢查 ECC skill 的 frontmatter 是否適用 Codex/Cursor，以及有沒有 Claude 專屬的變數替換。
+origin: ECC
+---
+
+# Skill 主機相容性
+
+開 skill PR 之前，先對 `skills/` 跑一次 CI 用的同一套主機相容性檢查。這個檢查針對的是 Codex 和 Cursor 的副本，不是 Claude 專屬的執行品質。
+
+## 何時啟用
+
+- 在 `skills/` 底下新增或編輯 skill
+- 把 skill 複製到 `.agents/skills/` 或 `.cursor/skills/`
+- Review 時有人問某個 skill 能不能安全地安裝到 Codex 或 Cursor
+- CI 回報 `validate-skill-host-compat.js` 的發現
+
+## 核心概念
+
+標準版 skill 放在 `skills/`。Codex 載入 `.agents/skills/`。Cursor 載入較小的 `.cursor/skills/` 子集。CONTRIBUTING 記載這個同步是手動的。
+
+`validate-skills.js` 只檢查 `SKILL.md` 存在，以及 `name` / `description` 是可用的 YAML。`tests/ci/codex-skill-surface.test.js` 只看得到 `.agents/skills/`。這支 script 是跨目錄樹的關卡：
+
+1. Codex/Cursor 副本裡，可執行的 `bash` / `sh` / `zsh` 程式碼區塊出現 Claude 專屬的替換變數（`${CLAUDE_SESSION_ID}`、`${CLAUDE_SKILL_DIR}`、`${CLAUDE_PLUGIN_ROOT}`、`${CLAUDE_PROJECT_DIR}`、`$ARGUMENTS`）會失敗。Codex 會把這些 token 當成字面文字留著。在 Codex 副本裡，要把 `${CLAUDE_PROJECT_DIR}` 改寫成 `$(pwd)` 或明確的路徑。
+2. Codex 副本只能使用 `name`、`description`、`metadata`、`license` 和 `allowed-tools`。`origin: ECC` 可以留在標準版 `skills/` 副本上，但 Codex 副本上必須移除。
+3. 列在 `agents/openai.yaml` 裡、而且在 `skills/` 有對應目錄的 skill，必須有 `.agents/skills/&lt;name&gt;/`。Cursor 副本是選用的；有的話，`name:` 必須跟目錄名稱一致。
+4. CONTRIBUTING 檢查清單項目（When to Activate、Anti-Patterns、name 跟目錄一致、500/800 行上限）只會警告。只有加 `--strict-checklist` 才會失敗。
+
+`validate-skills.js` 的 frontmatter WARN 預設維持不變（#1663）。
+
+## 程式碼範例
+
+從 repo 根目錄：
+
+```bash
+node scripts/ci/validate-skill-host-compat.js
+```
+
+只印出數量，不失敗：
+
+```bash
+node scripts/ci/validate-skill-host-compat.js --inventory
+```
+
+把檢查清單的警告升級成失敗：
+
+```bash
+node scripts/ci/validate-skill-host-compat.js --strict-checklist
+```
+
+Slash command：
+
+```
+/skill-host-compat
+/skill-host-compat --inventory
+```
+
+## 反模式
+
+Codex 和 Cursor 的副本，必須把可執行區塊裡 Claude 專屬的替換變數解析掉。標準版中限定 Claude 範圍的範例仍然有效。POSIX 的 `$1` 和 `${1}` 參數有歧義，需要人工檢視，不會讓這道關卡失敗。這個程式碼區塊就是被禁止的寫法：
+
+```bash
+echo &quot;${CLAUDE_SESSION_ID}&quot;
+ls &quot;${CLAUDE_SKILL_DIR}&quot;
+node &quot;${CLAUDE_PLUGIN_ROOT}/scripts/setup.js&quot; $ARGUMENTS
+cd &quot;${CLAUDE_PROJECT_DIR}&quot;
+```
+
+不要在 `.agents/skills/` 底下的 Codex 副本加 `version:` 或 `origin:`。不要把 `validate-skills.js` 通過當成 Codex 安全。不要要求 `skills/` 的每個項目都要有 Cursor 副本。
+
+## 最佳實務
+
+- CONTRIBUTING 範本要求的話，標準版就保留 `origin: ECC`。
+- Codex 副本要拿掉 `origin`、`version` 和 `argument-hint`。
+- bash 區塊裡放可跨主機的指令（`npx`、`ecc` 或已解析的根目錄）。Codex 副本裡的 `${CLAUDE_PROJECT_DIR}` 要改寫成 `$(pwd)` 或明確的路徑。標準版的說明裡保留有效的 Claude 範圍寫法；在目標副本裡才解析主機變數。
+- 變更是新增 skill 時，先跑這支 script，再跑 `npm test`。
+- 用 `--inventory` 看檢查清單警告的量，又不會讓整個目錄樹失敗。
+
+## 相關 Skill
+
+- `skill-comply`：執行期的行為軌跡，不是主機可攜性
+- `skill-stocktake`：對已安裝的 `~/.claude/skills` 做整體稽核
+- `skill-scout`：建立新 skill 之前，先搜尋現有的 skill</pre></section><section><h2>英文原文</h2><pre>---
+name: skill-host-compat
+description: Lint ECC skills for Codex/Cursor-safe frontmatter and Claude-only substitutions before a skill PR.
+origin: ECC
+---
+
+# Skill Host Compatibility
+
+Run the same host-compat gate CI uses on `skills/` before opening a skill PR.
+The check is for Codex and Cursor copies, not Claude-only runtime quality.
+
+## When to Activate
+
+- Adding or editing a skill under `skills/`
+- Copying a skill into `.agents/skills/` or `.cursor/skills/`
+- A review asks whether a skill is safe to install into Codex or Cursor
+- CI reports `validate-skill-host-compat.js` findings
+
+## Core Concepts
+
+Canonical skills live in `skills/`. Codex loads `.agents/skills/`. Cursor loads a
+smaller `.cursor/skills/` subset. CONTRIBUTING documents that sync as manual.
+
+`validate-skills.js` only checks that `SKILL.md` exists and that `name` /
+`description` are usable YAML. `tests/ci/codex-skill-surface.test.js` only
+sees `.agents/skills/`. This script is the cross-tree gate:
+
+1. Claude-only substitutions in executable `bash` / `sh` / `zsh` fences
+   in Codex/Cursor projections (`${CLAUDE_SESSION_ID}`, `${CLAUDE_SKILL_DIR}`, `${CLAUDE_PLUGIN_ROOT}`,
+   `${CLAUDE_PROJECT_DIR}`, `$ARGUMENTS`) fail. Codex leaves those tokens
+   as literal text. In a Codex copy, rewrite `${CLAUDE_PROJECT_DIR}` to
+   `$(pwd)` or an explicit path.
+2. A Codex copy may only use `name`, `description`, `metadata`, `license`,
+   and `allowed-tools`. `origin: ECC` may stay on the canonical `skills/`
+   copy and must be stripped on the Codex copy.
+3. A skill listed in `agents/openai.yaml` that has a `skills/` directory must
+   have `.agents/skills/&lt;name&gt;/`. Cursor copies are optional; when present,
+   `name:` must match the directory.
+4. CONTRIBUTING checklist items (When to Activate, Anti-Patterns, name
+   matches directory, 500/800 line caps) warn. They fail only with
+   `--strict-checklist`.
+
+`validate-skills.js` frontmatter WARN default is unchanged (#1663).
+
+## Code Examples
+
+From the repo root:
+
+```bash
+node scripts/ci/validate-skill-host-compat.js
+```
+
+Print counts without failing:
+
+```bash
+node scripts/ci/validate-skill-host-compat.js --inventory
+```
+
+Promote checklist warnings:
+
+```bash
+node scripts/ci/validate-skill-host-compat.js --strict-checklist
+```
+
+Slash command:
+
+```
+/skill-host-compat
+/skill-host-compat --inventory
+```
+
+## Anti-Patterns
+
+Codex and Cursor projections must resolve Claude-only substitutions in executable blocks. Canonical Claude-scoped examples remain valid. POSIX `$1` and `${1}` parameters are ambiguous and require review rather than failing this gate. This fence is the
+forbidden pattern:
+
+```bash
+echo &quot;${CLAUDE_SESSION_ID}&quot;
+ls &quot;${CLAUDE_SKILL_DIR}&quot;
+node &quot;${CLAUDE_PLUGIN_ROOT}/scripts/setup.js&quot; $ARGUMENTS
+cd &quot;${CLAUDE_PROJECT_DIR}&quot;
+```
+
+Do not add `version:` or `origin:` to a Codex copy under `.agents/skills/`.
+Do not treat a passing `validate-skills.js` run as Codex-safe. Do not require
+every `skills/` entry to have a Cursor copy.
+
+## Best Practices
+
+- Keep canonical `origin: ECC` if the CONTRIBUTING template calls for it.
+- Drop `origin`, `version`, and `argument-hint` on the Codex copy.
+- Show host-portable commands in bash fences (`npx`, `ecc`, or a resolved
+  root). Rewrite `${CLAUDE_PROJECT_DIR}` in Codex copies to `$(pwd)` or an
+  explicit path. Keep valid Claude-scoped forms in canonical instructions; resolve host variables in the target projection.
+- Run this script before `npm test` when the change is a new skill.
+- Use `--inventory` to see checklist warning volume without failing the tree.
+
+## Related Skills
+
+- `skill-comply` — runtime behavioral traces, not host-portability
+- `skill-stocktake` — holistic audit of installed `~/.claude/skills`
+- `skill-scout` — search existing skills before creating a new one</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

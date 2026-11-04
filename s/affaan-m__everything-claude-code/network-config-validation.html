@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>network-config-validation｜Skill 寫法圖鑑</title>
+<meta name="description" content="部署前檢查路由器與交換器設定的危險指令、位址衝突與安全衛生">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>network-config-validation</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/network-config-validation/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">部署前檢查路由器與交換器設定的危險指令、位址衝突與安全衛生</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: network-config-validation
+description: 路由器和交換器設定的部署前檢查，包括危險指令、重複位址、子網路重疊、過期的參照、管理平面風險，以及 IOS 風格的安全衛生。在部署之前審查路由器或交換器設定時使用。
+metadata:
+  origin: community
+---
+
+# Network Config Validation
+
+在變更時段之前，或自動化執行碰到正式環境設備之前，用這個 skill 審查網路設定。
+
+## When to Use
+
+- 部署之前審查 Cisco IOS 或 IOS-XE 風格的設定片段。
+- 稽核由腳本或範本產生的設定。
+- 找危險指令、重複的 IP 位址或子網路重疊。
+- 檢查 ACL、route-map、prefix-list 或 line 政策是不是被參照了
+  卻沒有定義。
+- 為網路自動化建立輕量的 pre-flight 腳本。
+
+## How It Works
+
+把設定驗證當成分層的證據，不要當成完整的解析器。Regex
+檢查拿來做 pre-flight 警告很有用，但最終核准仍然需要
+網路工程師審查意圖、平台語法和回滾步驟。
+
+驗證順序：
+
+1. 破壞性指令。
+2. 憑證和管理平面的暴露。
+3. 重複的位址和重疊的子網路。
+4. 對 ACL、route-map、prefix-list 和介面的過期參照。
+5. NTP、時間戳記、遠端紀錄和 banner 這類營運衛生。
+
+## Dangerous Command Detection
+
+```python
+import re
+
+DANGEROUS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r&quot;\breload\b&quot;, re.I), &quot;reload causes downtime&quot;),
+    (re.compile(r&quot;\berase\s+(startup|nvram|flash)&quot;, re.I), &quot;erases persistent storage&quot;),
+    (re.compile(r&quot;\bformat\b&quot;, re.I), &quot;formats a device filesystem&quot;),
+    (re.compile(r&quot;\bno\s+router\s+(bgp|ospf|eigrp)\b&quot;, re.I), &quot;removes a routing process&quot;),
+    (re.compile(r&quot;\bno\s+interface\s+\S+&quot;, re.I), &quot;removes interface configuration&quot;),
+    (re.compile(r&quot;\baaa\s+new-model\b&quot;, re.I), &quot;changes authentication behavior&quot;),
+    (re.compile(r&quot;\bcrypto\s+key\s+(zeroize|generate)\b&quot;, re.I), &quot;changes device SSH keys&quot;),
+]
+
+def find_dangerous_commands(lines: list[str]) -&gt; list[dict[str, str | int]]:
+    findings = []
+    for line_number, line in enumerate(lines, start=1):
+        stripped = line.strip()
+        for pattern, reason in DANGEROUS_PATTERNS:
+            if pattern.search(stripped):
+                findings.append({
+                    &quot;line&quot;: line_number,
+                    &quot;command&quot;: stripped,
+                    &quot;reason&quot;: reason,
+                })
+    return findings
+```
+
+## Duplicate IPs And Subnet Overlaps
+
+```python
+import ipaddress
+import re
+from collections import Counter
+
+IP_ADDRESS_RE = re.compile(
+    r&quot;^\s*ip address\s+&quot;
+    r&quot;(?P&lt;ip&gt;\d{1,3}(?:\.\d{1,3}){3})\s+&quot;
+    r&quot;(?P&lt;mask&gt;\d{1,3}(?:\.\d{1,3}){3})\b&quot;,
+    re.I | re.M,
+)
+
+def extract_interfaces(config: str) -&gt; list[dict[str, str]]:
+    results = []
+    current = None
+    for line in config.splitlines():
+        if line.startswith(&quot;interface &quot;):
+            current = line.split(maxsplit=1)[1]
+            continue
+        match = IP_ADDRESS_RE.match(line)
+        if current and match:
+            ip = match.group(&quot;ip&quot;)
+            mask = match.group(&quot;mask&quot;)
+            network = ipaddress.ip_interface(f&quot;{ip}/{mask}&quot;).network
+            results.append({&quot;interface&quot;: current, &quot;ip&quot;: ip, &quot;network&quot;: str(network)})
+    return results
+
+def find_duplicate_ips(config: str) -&gt; list[str]:
+    ips = [entry[&quot;ip&quot;] for entry in extract_interfaces(config)]
+    counts = Counter(ips)
+    return sorted(ip for ip, count in counts.items() if count &gt; 1)
+
+def find_subnet_overlaps(config: str) -&gt; list[tuple[str, str]]:
+    networks = [ipaddress.ip_network(entry[&quot;network&quot;]) for entry in extract_interfaces(config)]
+    overlaps = []
+    for index, left in enumerate(networks):
+        for right in networks[index + 1:]:
+            if left.overlaps(right):
+                overlaps.append((str(left), str(right)))
+    return overlaps
+```
+
+## Management-Plane Checks
+
+依區段解析 VTY 區塊，這樣 access-class 檢查才不會跨到不相關的
+行。
+
+```python
+import re
+
+def iter_blocks(config: str, starts_with: str) -&gt; list[str]:
+    blocks = []
+    current: list[str] = []
+    for line in config.splitlines():
+        if line.startswith(starts_with):
+            if current:
+                blocks.append(&quot;\n&quot;.join(current))
+            current = [line]
+            continue
+        if current:
+            if line and not line.startswith(&quot; &quot;):
+                blocks.append(&quot;\n&quot;.join(current))
+                current = []
+            else:
+                current.append(line)
+    if current:
+        blocks.append(&quot;\n&quot;.join(current))
+    return blocks
+
+def check_vty_blocks(config: str) -&gt; list[str]:
+    issues = []
+    for block in iter_blocks(config, &quot;line vty&quot;):
+        if re.search(r&quot;transport\s+input\s+.*telnet&quot;, block, re.I):
+            issues.append(&quot;VTY allows Telnet; require SSH only.&quot;)
+        if not re.search(r&quot;\baccess-class\s+\S+\s+in\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no inbound access-class source restriction.&quot;)
+        if not re.search(r&quot;\bexec-timeout\s+\d+\s+\d+\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no explicit exec-timeout.&quot;)
+    return issues
+```
+
+## Security Hygiene Checks
+
+```python
+SECURITY_PATTERNS = [
+    (re.compile(r&quot;\bsnmp-server community\s+(public|private)\b&quot;, re.I),
+     &quot;default SNMP community configured&quot;),
+    (re.compile(r&quot;\bsnmp-server community\s+\S+&quot;, re.I),
+     &quot;SNMPv2 community string configured; prefer SNMPv3 authPriv&quot;),
+    (re.compile(r&quot;\bip ssh version 1\b&quot;, re.I),
+     &quot;SSH version 1 enabled&quot;),
+    (re.compile(r&quot;\benable password\b&quot;, re.I),
+     &quot;enable password is present; use enable secret&quot;),
+    (re.compile(r&quot;\busername\s+\S+\s+password\b&quot;, re.I),
+     &quot;local username uses password instead of secret&quot;),
+]
+
+BEST_PRACTICE_PATTERNS = [
+    (re.compile(r&quot;\bntp server\b&quot;, re.I), &quot;NTP server&quot;),
+    (re.compile(r&quot;\bservice timestamps\b&quot;, re.I), &quot;log timestamps&quot;),
+    (re.compile(r&quot;\blogging\s+\S+&quot;, re.I), &quot;logging destination or buffer&quot;),
+    (re.compile(r&quot;\bsnmp-server group\s+\S+\s+v3\s+priv\b&quot;, re.I), &quot;SNMPv3 authPriv group&quot;),
+    (re.compile(r&quot;\bbanner\s+(login|motd)\b&quot;, re.I), &quot;login banner&quot;),
+]
+
+def check_security(config: str) -&gt; list[str]:
+    return [message for pattern, message in SECURITY_PATTERNS if pattern.search(config)]
+
+def check_missing_hygiene(config: str) -&gt; list[str]:
+    return [
+        f&quot;Missing {description}&quot;
+        for pattern, description in BEST_PRACTICE_PATTERNS
+        if not pattern.search(config)
+    ]
+```
+
+## Examples
+
+### Change-Window Preflight
+
+1. 對要貼上去的確切片段執行危險指令檢查。
+2. 對完整的候選設定執行重複 IP 和子網路重疊檢查。
+3. 確認每個被參照的 ACL、route-map 和 prefix-list 都存在。
+4. 在任何管理平面變更之前，確認回滾指令和頻外存取。
+
+### Automation Preflight
+
+在 Netmiko、NAPALM、Ansible 或廠商 API 自動化推送產生的設定之前，
+把驗證當成會擋住流程的關卡。遇到危險指令和憑證要 fail closed。
+超出這次變更範圍的最佳實踐缺口，只發出警告。
+
+## Anti-Patterns
+
+- 把 regex 驗證當成設備的解析器。
+- 沒有 dry-run 的 diff，就套用產生出來的設定。
+- 把 SNMPv2 community string 當成監控的必要條件來建議。
+- 用可能意外跨越不相關區段的 regex 來檢查 VTY 區塊。
+- 用停用 ACL 來測試防火牆行為，而不是去讀計數器/紀錄。
+
+## See Also
+
+- Agent: `network-config-reviewer`
+- Agent: `network-troubleshooter`
+- Skill: `network-interface-health`</pre></section><section><h2>英文原文</h2><pre>---
+name: network-config-validation
+description: Pre-deployment checks for router and switch configuration, including dangerous commands, duplicate addresses, subnet overlaps, stale references, management-plane risk, and IOS-style security hygiene. Use when reviewing a router or switch configuration before deployment.
+metadata:
+  origin: community
+---
+
+# Network Config Validation
+
+Use this skill to review network configuration before a change window or before
+an automation run touches production devices.
+
+## When to Use
+
+- Reviewing Cisco IOS or IOS-XE style snippets before deployment.
+- Auditing generated config from scripts or templates.
+- Looking for dangerous commands, duplicate IP addresses, or subnet overlaps.
+- Checking whether ACLs, route-maps, prefix-lists, or line policies are referenced
+  but not defined.
+- Building lightweight pre-flight scripts for network automation.
+
+## How It Works
+
+Treat config validation as layered evidence, not as a complete parser. Regex
+checks are useful for pre-flight warnings, but final approval still needs a
+network engineer to review intent, platform syntax, and rollback steps.
+
+Validate in this order:
+
+1. Destructive commands.
+2. Credential and management-plane exposure.
+3. Duplicate addresses and overlapping subnets.
+4. Stale references to ACLs, route-maps, prefix-lists, and interfaces.
+5. Operational hygiene such as NTP, timestamps, remote logging, and banners.
+
+## Dangerous Command Detection
+
+```python
+import re
+
+DANGEROUS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r&quot;\breload\b&quot;, re.I), &quot;reload causes downtime&quot;),
+    (re.compile(r&quot;\berase\s+(startup|nvram|flash)&quot;, re.I), &quot;erases persistent storage&quot;),
+    (re.compile(r&quot;\bformat\b&quot;, re.I), &quot;formats a device filesystem&quot;),
+    (re.compile(r&quot;\bno\s+router\s+(bgp|ospf|eigrp)\b&quot;, re.I), &quot;removes a routing process&quot;),
+    (re.compile(r&quot;\bno\s+interface\s+\S+&quot;, re.I), &quot;removes interface configuration&quot;),
+    (re.compile(r&quot;\baaa\s+new-model\b&quot;, re.I), &quot;changes authentication behavior&quot;),
+    (re.compile(r&quot;\bcrypto\s+key\s+(zeroize|generate)\b&quot;, re.I), &quot;changes device SSH keys&quot;),
+]
+
+def find_dangerous_commands(lines: list[str]) -&gt; list[dict[str, str | int]]:
+    findings = []
+    for line_number, line in enumerate(lines, start=1):
+        stripped = line.strip()
+        for pattern, reason in DANGEROUS_PATTERNS:
+            if pattern.search(stripped):
+                findings.append({
+                    &quot;line&quot;: line_number,
+                    &quot;command&quot;: stripped,
+                    &quot;reason&quot;: reason,
+                })
+    return findings
+```
+
+## Duplicate IPs And Subnet Overlaps
+
+```python
+import ipaddress
+import re
+from collections import Counter
+
+IP_ADDRESS_RE = re.compile(
+    r&quot;^\s*ip address\s+&quot;
+    r&quot;(?P&lt;ip&gt;\d{1,3}(?:\.\d{1,3}){3})\s+&quot;
+    r&quot;(?P&lt;mask&gt;\d{1,3}(?:\.\d{1,3}){3})\b&quot;,
+    re.I | re.M,
+)
+
+def extract_interfaces(config: str) -&gt; list[dict[str, str]]:
+    results = []
+    current = None
+    for line in config.splitlines():
+        if line.startswith(&quot;interface &quot;):
+            current = line.split(maxsplit=1)[1]
+            continue
+        match = IP_ADDRESS_RE.match(line)
+        if current and match:
+            ip = match.group(&quot;ip&quot;)
+            mask = match.group(&quot;mask&quot;)
+            network = ipaddress.ip_interface(f&quot;{ip}/{mask}&quot;).network
+            results.append({&quot;interface&quot;: current, &quot;ip&quot;: ip, &quot;network&quot;: str(network)})
+    return results
+
+def find_duplicate_ips(config: str) -&gt; list[str]:
+    ips = [entry[&quot;ip&quot;] for entry in extract_interfaces(config)]
+    counts = Counter(ips)
+    return sorted(ip for ip, count in counts.items() if count &gt; 1)
+
+def find_subnet_overlaps(config: str) -&gt; list[tuple[str, str]]:
+    networks = [ipaddress.ip_network(entry[&quot;network&quot;]) for entry in extract_interfaces(config)]
+    overlaps = []
+    for index, left in enumerate(networks):
+        for right in networks[index + 1:]:
+            if left.overlaps(right):
+                overlaps.append((str(left), str(right)))
+    return overlaps
+```
+
+## Management-Plane Checks
+
+Parse VTY blocks by section so access-class checks do not spill across unrelated
+lines.
+
+```python
+import re
+
+def iter_blocks(config: str, starts_with: str) -&gt; list[str]:
+    blocks = []
+    current: list[str] = []
+    for line in config.splitlines():
+        if line.startswith(starts_with):
+            if current:
+                blocks.append(&quot;\n&quot;.join(current))
+            current = [line]
+            continue
+        if current:
+            if line and not line.startswith(&quot; &quot;):
+                blocks.append(&quot;\n&quot;.join(current))
+                current = []
+            else:
+                current.append(line)
+    if current:
+        blocks.append(&quot;\n&quot;.join(current))
+    return blocks
+
+def check_vty_blocks(config: str) -&gt; list[str]:
+    issues = []
+    for block in iter_blocks(config, &quot;line vty&quot;):
+        if re.search(r&quot;transport\s+input\s+.*telnet&quot;, block, re.I):
+            issues.append(&quot;VTY allows Telnet; require SSH only.&quot;)
+        if not re.search(r&quot;\baccess-class\s+\S+\s+in\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no inbound access-class source restriction.&quot;)
+        if not re.search(r&quot;\bexec-timeout\s+\d+\s+\d+\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no explicit exec-timeout.&quot;)
+    return issues
+```
+
+## Security Hygiene Checks
+
+```python
+SECURITY_PATTERNS = [
+    (re.compile(r&quot;\bsnmp-server community\s+(public|private)\b&quot;, re.I),
+     &quot;default SNMP community configured&quot;),
+    (re.compile(r&quot;\bsnmp-server community\s+\S+&quot;, re.I),
+     &quot;SNMPv2 community string configured; prefer SNMPv3 authPriv&quot;),
+    (re.compile(r&quot;\bip ssh version 1\b&quot;, re.I),
+     &quot;SSH version 1 enabled&quot;),
+    (re.compile(r&quot;\benable password\b&quot;, re.I),
+     &quot;enable password is present; use enable secret&quot;),
+    (re.compile(r&quot;\busername\s+\S+\s+password\b&quot;, re.I),
+     &quot;local username uses password instead of secret&quot;),
+]
+
+BEST_PRACTICE_PATTERNS = [
+    (re.compile(r&quot;\bntp server\b&quot;, re.I), &quot;NTP server&quot;),
+    (re.compile(r&quot;\bservice timestamps\b&quot;, re.I), &quot;log timestamps&quot;),
+    (re.compile(r&quot;\blogging\s+\S+&quot;, re.I), &quot;logging destination or buffer&quot;),
+    (re.compile(r&quot;\bsnmp-server group\s+\S+\s+v3\s+priv\b&quot;, re.I), &quot;SNMPv3 authPriv group&quot;),
+    (re.compile(r&quot;\bbanner\s+(login|motd)\b&quot;, re.I), &quot;login banner&quot;),
+]
+
+def check_security(config: str) -&gt; list[str]:
+    return [message for pattern, message in SECURITY_PATTERNS if pattern.search(config)]
+
+def check_missing_hygiene(config: str) -&gt; list[str]:
+    return [
+        f&quot;Missing {description}&quot;
+        for pattern, description in BEST_PRACTICE_PATTERNS
+        if not pattern.search(config)
+    ]
+```
+
+## Examples
+
+### Change-Window Preflight
+
+1. Run dangerous-command checks on the exact snippet to be pasted.
+2. Run duplicate IP and subnet overlap checks against the full candidate config.
+3. Confirm every referenced ACL, route-map, and prefix-list exists.
+4. Confirm rollback commands and out-of-band access before any management-plane
+   change.
+
+### Automation Preflight
+
+Use validation as a blocking gate before Netmiko, NAPALM, Ansible, or vendor API
+automation pushes a generated config. Fail closed on dangerous commands and
+credentials. Warn on best-practice gaps that are outside the change scope.
+
+## Anti-Patterns
+
+- Treating regex validation as a device parser.
+- Applying generated config without a dry-run diff.
+- Recommending SNMPv2 community strings as a monitoring requirement.
+- Checking VTY blocks with regex that can accidentally span unrelated sections.
+- Testing firewall behavior by disabling ACLs instead of reading counters/logs.
+
+## See Also
+
+- Agent: `network-config-reviewer`
+- Agent: `network-troubleshooter`
+- Skill: `network-interface-health`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

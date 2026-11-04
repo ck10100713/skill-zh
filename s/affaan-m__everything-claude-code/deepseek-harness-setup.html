@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>deepseek-harness-setup｜Skill 寫法圖鑑</title>
+<meta name="description" content="在 DeepSeek Harness 上安裝 ECC 的 skill 並接上 hook">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>deepseek-harness-setup</h1>
+<p class="meta">affaan-m ｜ 設定與維護 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/deepseek-harness-setup/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">在 DeepSeek Harness 上安裝 ECC 的 skill 並接上 hook</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: deepseek-harness-setup
+description: &quot;在 DeepSeek Harness（DSH）上安裝並操作 Everything Claude Code（ECC）：原生 skill 根目錄（~/.dsh/skills、.agents/skills）、用於 command hook 的 @deepseek-ai/dsh-hooks-claude-code 橋接器、bare-insert 的 patch 掛載、generator 的用法、事件支援的限制，以及更新流程。當要在 DeepSeek Harness 上設定 ECC、把 ECC hook 接進 DSH profile，或除錯為什麼 ECC 的 skill 或 hook 沒有出現在 DSH session 裡時使用。&quot;
+metadata:
+  origin: community
+---
+
+# DeepSeek Harness 設定
+
+在 DeepSeek Harness 上跑 ECC。完整指南：`docs/DEEPSEEK-HARNESS-GUIDE.md`。
+
+## 何時使用
+
+- 在 DeepSeek Harness 的安裝上安裝 ECC 的 skill 或 hook。
+- 判斷哪些 ECC 功能在 DSH 上能用、哪些不能。
+- 除錯一個沒有顯示 ECC skill、或沒有觸發 ECC hook 的 DSH session。
+
+## 運作方式
+
+1. **Skill 不需要轉換。** DSH 會從原生的 skill 根目錄讀取 `SKILL.md` 的 frontmatter（name/description）。把 ECC 的目錄連結過去一次就好：
+
+   ```bash
+   ln -s /path/to/ECC/skills/&lt;skill-name&gt; ~/.dsh/skills/&lt;skill-name&gt;
+   ```
+
+   根目錄的優先順序（專案的 `.dsh` 和 `.agents` 根目錄優先於 `~/.dsh`）：如果名稱已經存在於優先順序更高的根目錄，就跳過不連結。把佔位符換成真正的 skill 名稱；角括號不是 shell 語法。
+
+2. **Hook 要透過官方的橋接器。** 從標準的 ECC hooks 檔案產生 DSH 格式的設定：
+
+   ```bash
+   node scripts/dsh/generate-hooks-config.js --ecc-root /path/to/ECC --out ~/.dsh/ecc/hooks-dsh.json
+   ```
+
+   generator 會把工具名稱的 matcher 轉成小寫、把 `CLAUDE_PLUGIN_ROOT`/`ECC_PLUGIN_ROOT` 以行內方式加到前面（橋接器不會匯出 plugin 根目錄）、保留 timeout，並跳過 DSH 沒辦法橋接的事件：`PreCompact`、`PostToolUseFailure`、`SessionEnd`。
+
+3. **用 bare insert 掛載**，寫在 `~/.dsh/profiles/&lt;profile&gt;/cordis.patch.yml`：
+
+   ```yaml
+   - insert:
+       - id: ecc-hooks-claude-code
+         name: &quot;@deepseek-ai/dsh-hooks-claude-code&quot;
+         config:
+           configPath: /absolute/path/to/hooks-dsh.json
+   ```
+
+   這些 loader 的規則是吃過虧才學到、很花除錯時間的：頂層單純的 `- id:` 項目會被默默丟掉；對既有的非群組 id 做 `insert` 會被以「not a group」拒絕；官方的 plugin 套件不需要在 profile 的 `package.json` 裡加項目。
+
+4. **先組合驗證，再即時確認。**
+
+   ```bash
+   cd ~/.dsh &amp;&amp; dsh --profile web --dump-config &gt; /tmp/dump.yml
+   grep ecc-hooks /tmp/dump.yml
+   ```
+
+   即使 loader 丟掉或拒絕了某個項目，組合的結束狀態碼還是 0，這些問題只會報在 stderr。要確認項目的 id 有出現在 dump 裡，而且 stderr 是空的。session 第一次 edit/write/bash 時看到 GateGuard 的即時拒絕，就是橋接器已經啟用的明確訊號。
+
+## 更新
+
+`git pull` 會立刻反映到已連結的 skill；hooks 設定要用同一個 generator 指令重新產生。如果 ECC 的 checkout 搬了位置，要重新產生（路徑被嵌在每個 hook 指令裡），並重新連結 skill。
+
+## 限制
+
+| 功能 | 在 DSH 上的狀態 |
+|---------|---------------|
+| Skills | 原生探索；workflow 可能需要針對 host 調整 |
+| Hooks | 7 個橋接事件中的 5 個，共 23 個 command hook |
+| Slash commands | 不可用（這是 Claude Code 的機制）；workflow 由 skill 涵蓋 |
+| Agents | 原生派送尚未驗證；審查之後才使用標準的 prompt 指引 |
+
+這裡驗證過的設定針對的是 CLI/web profile。桌面版 profile 有獨立、由安裝擁有的 runtime，skill 的探索必須在那邊另外驗證。
+只從審查過的 ECC checkout 產生 hook；被連結的 checkout 提供它們的 runtime。</pre></section><section><h2>英文原文</h2><pre>---
+name: deepseek-harness-setup
+description: &quot;Install and operate Everything Claude Code (ECC) on the DeepSeek Harness (DSH): native skill roots (~/.dsh/skills, .agents/skills), the @deepseek-ai/dsh-hooks-claude-code bridge for command hooks, bare-insert patch mounting, generator usage, event-support limits, and update workflow. Use when setting up ECC on DeepSeek Harness, wiring ECC hooks into a DSH profile, or debugging why ECC skills or hooks do not appear in a DSH session.&quot;
+metadata:
+  origin: community
+---
+
+# DeepSeek Harness Setup
+
+Run ECC on the DeepSeek Harness. Full guide: `docs/DEEPSEEK-HARNESS-GUIDE.md`.
+
+## When to Use
+
+- Installing ECC skills or hooks on a DeepSeek Harness install.
+- Deciding which ECC surfaces work on DSH and which do not.
+- Debugging a DSH session that does not show ECC skills or does not fire ECC hooks.
+
+## How It Works
+
+1. **Skills need no conversion.** DSH reads `SKILL.md` frontmatter
+   (name/description) from native skill roots. Link the ECC catalog once:
+
+   ```bash
+   ln -s /path/to/ECC/skills/&lt;skill-name&gt; ~/.dsh/skills/&lt;skill-name&gt;
+   ```
+
+   Root priority (project `.dsh` and `.agents` roots beat `~/.dsh`): skip
+   linking skills whose names already exist in a higher-priority root.
+   Substitute real skill names for the placeholders; the angle brackets are
+   not shell syntax.
+
+2. **Hooks go through the first-party bridge.** Generate a DSH-format config
+   from the canonical ECC hooks file:
+
+   ```bash
+   node scripts/dsh/generate-hooks-config.js --ecc-root /path/to/ECC --out ~/.dsh/ecc/hooks-dsh.json
+   ```
+
+   The generator lower-cases tool-name matchers, prefixes
+   `CLAUDE_PLUGIN_ROOT`/`ECC_PLUGIN_ROOT` inline (the bridge does not export
+   the plugin root), preserves timeouts, and skips events DSH cannot bridge:
+   `PreCompact`, `PostToolUseFailure`, `SessionEnd`.
+
+3. **Mount with a bare insert** in `~/.dsh/profiles/&lt;profile&gt;/cordis.patch.yml`:
+
+   ```yaml
+   - insert:
+       - id: ecc-hooks-claude-code
+         name: &quot;@deepseek-ai/dsh-hooks-claude-code&quot;
+         config:
+           configPath: /absolute/path/to/hooks-dsh.json
+   ```
+
+   Loader rules that cost debugging time when learned the hard way:
+   a plain `- id:` top-level entry is silently dropped; `insert` under an
+   existing non-group id is rejected as &quot;not a group&quot;; first-party plugin
+   packages need no profile `package.json` entry.
+
+4. **Validate by composing, then verify live.**
+
+   ```bash
+   cd ~/.dsh &amp;&amp; dsh --profile web --dump-config &gt; /tmp/dump.yml
+   grep ecc-hooks /tmp/dump.yml
+   ```
+
+   Compose exit status stays 0 even when the loader drops or rejects an
+   entry — those problems are only reported on stderr. Confirm the entry id
+   appears in the dump and stderr is empty. A live GateGuard denial on the
+   session&#x27;s first edit/write/bash is the visible signal the bridge is
+   active.
+
+## Updating
+
+`git pull` reflects into linked skills immediately; regenerate the hooks
+config with the same generator command. If the ECC checkout moves, regenerate
+(the path is embedded in every hook command) and relink skills.
+
+## Limits
+
+| Surface | Status on DSH |
+|---------|---------------|
+| Skills | Native discovery; workflows may require host adaptation |
+| Hooks | 23 command hooks on 5 of 7 bridge events |
+| Slash commands | Not available (Claude Code mechanism); workflows covered by skills |
+| Agents | Native dispatch unverified; use canonical prompt guidance only after review |
+
+The validated setup here targets the CLI/web profile. Desktop profiles have a separate
+installation-owned runtime and skill discovery must be verified there independently.
+Generate hooks only from a reviewed ECC checkout; the linked checkout supplies their runtime.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

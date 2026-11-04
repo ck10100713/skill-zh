@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>regression-suite｜Skill 寫法圖鑑</title>
+<meta name="description" content="對照 GDD 關鍵路徑找 regression 測試的缺口，並偵測覆蓋漂移">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>regression-suite</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/regression-suite/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">對照 GDD 關鍵路徑找 regression 測試的缺口，並偵測覆蓋漂移</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: regression-suite
+description: &quot;把測試覆蓋對應到 GDD 的關鍵路徑，找出修過 bug 卻沒有 regression 測試的地方，並標記新功能造成的漂移。&quot;
+argument-hint: &quot;[update | audit | report]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash &quot;*/.claude/skills/regression-suite/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow,qa.level,system_overrides`
+
+上面已經解析好了，直接用。沒有這個區塊的話，用
+`.claude/docs/config-resolution.md` 裡的預設值。
+
+
+# Regression Suite
+
+這個 skill 確保每一個 bug 修復，背後都有一個本來就能抓到原始
+bug 的測試 — 而且讓 regression suite 隨著
+遊戲演進保持最新。它也會偵測新功能加進來時，
+沒有對應 regression 覆蓋的情況。
+
+regression suite 不是新的測試類別 — 它是一份**精選的、
+已經在 `tests/` 裡的測試清單**，合起來涵蓋遊戲的關鍵路徑
+和已知的失敗點。這個 skill 負責維護那份清單。
+
+**輸出：** `tests/regression-suite.md`
+
+**什麼時候執行：**
+- 修完 bug 之後（確認有寫 regression 測試，或找出缺口）
+- phase gate 之前 — 在 `qa.level: full`，`/gate-check` 要求要有 regression suite
+- 當成 sprint 收尾的一部分，偵測覆蓋漂移
+
+---
+
+每一次 `AskUserQuestion` 呼叫都遵循 `.claude/docs/automation-modes.md`
+（collaborative 一律問 · guided 只問重大的 · autonomous 只記錄然後繼續；
+`automation_always_ask` 的類別一律要問）。
+
+**Workflow tier**：上面解析出來的 `modes.workflow` — 除非明確設定，
+否則由 `modes.rigor` 提供 — 依 `.claude/docs/workflow-modes.md`；在 `audit` 模式下，讀每個 GDD 時，
+要逐個 system 考慮
+`workflow_overrides.system_overrides.&lt;system&gt;`。它
+決定是要對應 GDD 的關鍵路徑，還是覆蓋範圍只有 smoke — 見 Step 2c。
+
+**`qa.level`**：控制要不要產生這個 suite。
+在 `minimal`，regression suite **不產生**（回報這點然後
+停下來）；在 `standard`，在進入 Polish 階段時產生；在 `full`，在
+進入 Production 階段時產生。這是跟 `workflow` 不同的軸。
+
+## 1. Parse Arguments
+
+**提早的 `qa.level` 防護（上面解析出來的）：** 如果 `qa.level: minimal`，
+regression suite **不產生** — 回報「Regression suite not generated at
+qa.level minimal」，並在**任何掃描之前就停在這裡**，每個模式都一樣
+（`update` / `audit` / `report`）。這是 `qa.level` 軸；它跟
+Step 2c 裡 `workflow` tier 的 `minimal` 分支不一樣（那個只改變
+關鍵路徑的*來源*，不改變 suite *要不要*執行）。不要因為 `qa.level`
+就進入 Step 2c 的 `minimal` 分支。這個停止的判定是
+**NOT ASSESSED**（Section 7）— 這個等級不需要測試，而且什麼都沒掃描。
+
+**Modes：**
+- `/regression-suite update` — 掃描這個 sprint 新修的 bug，檢查
+  有沒有 regression 測試；把新測試加進 suite manifest
+- `/regression-suite audit` — 完整稽核所有 GDD 關鍵路徑 vs.
+  既有的測試覆蓋；標記沒有 regression 測試的路徑
+- `/regression-suite report` — 唯讀的狀態報告（不寫入）；適合
+  sprint 審查
+- 沒有參數 — 如果 sprint 明顯在進行中（有 sprint plan，而且有進行中的 story），就跑 `update`。如果不明確，或偵測不到進行中的 sprint，就用 `AskUserQuestion`：
+  - Prompt: &quot;No subcommand specified. Which mode do you want to run?&quot;
+  - Options:
+    - `[A] update — scan new bug fixes this sprint and add missing regression tests`
+    - `[B] audit — full audit of all GDD critical paths vs. existing test coverage`
+    - `[C] report — read-only status report (no writes)`
+
+---
+
+## 2. Load Context
+
+### Step 2a — Load existing regression suite
+
+如果 `tests/regression-suite.md` 存在就讀它。擷取：
+- 已登記的 regression 測試總數
+- 最後更新日期
+- 任何被標記成 `STALE` 或 `QUARANTINED` 的測試
+
+如果它不存在：註明「No regression suite found — will create one.」
+
+### Step 2b — Load test inventory
+
+用 Glob 找所有測試檔：
+```
+tests/unit/**/*_test.*
+tests/integration/**/*_test.*
+tests/regression/**/*
+```
+
+對每個檔案，記下 system（從目錄路徑）和檔名。
+除非為了把名稱對應到測試而需要，否則不要讀測試檔的內容。
+
+### Step 2c — Load GDD critical paths
+
+對 `audit` 模式：讀 `design/gdd/systems-index.md` 取得所有 system，然後
+依每個 system 的 workflow tier（上面解析出來的）限縮掃描範圍：
+- **`full`** — 讀 GDD，並從所有章節對應關鍵路徑。
+- **`standard`** — 同上，但從必要章節（Acceptance Criteria、Edge
+  Cases，以及 system 定義了數值規則時的 Formulas）。
+  透過 `system_overrides` 被釘在較高 tier 的 system，用它較高的 tier 來對應。
+- **`minimal`** — **跳過 GDD 關鍵路徑掃描**。改讀
+  `production/qa/smoke-*.md` 裡最新的 smoke-check 報告，並把它所涵蓋的
+  關鍵路徑當成 regression 範圍（Step 3 對照那些路徑來對應覆蓋，不是 GDD
+  驗收條件）。如果沒有 smoke 報告，就停下來，Verdict: **NOT
+  ASSESSED — no smoke report to take critical paths from** — 在 minimal 沒有它就沒有
+  關鍵路徑的來源；先執行 `/smoke-check`。
+
+（Tier 只影響 `audit` 模式；`update` 和 `report` 模式跟 tier 無關。）
+
+依章節讀每個 GDD：用 Grep 工具（pattern
+`^#`，content mode）找出你需要的標題，再用 offset 和 limit 讀那幾段範圍。在 `full`，那
+就是每個章節，分段讀，因為超過 40 KB 的整檔 Read 會被拒絕。
+
+對每個在範圍內的 MVP tier system 的 GDD，擷取：
+- Acceptance Criteria（它們定義了關鍵路徑）
+- Formulas 章節（公式必須有 regression 測試）
+- Edge Cases 章節（已知的邊界案例應該有 regression 測試）
+
+對 `update` 模式：跳過完整的 GDD 掃描。改讀目前的 sprint plan
+和 story 檔，找出這個 sprint 中 Status: Complete 的 story。
+
+### Step 2d — Load closed bugs
+
+用 Glob 找 `production/qa/bugs/*.md`，篩選出有 `Status: Closed`
+或 `Status: Fixed` 欄位的 bug。記下：
+- bug 是出在哪個 story 或 system
+- 修復描述裡有沒有提到 regression 測試
+
+---
+
+## 3. Map Coverage — Critical Paths
+
+只用於 `audit` 模式。（在 `minimal`，關鍵路徑來自 Step 2c 裡找到的 smoke-check
+報告，不是 GDD 驗收條件 — 對照那些 smoke 路徑來對應覆蓋，
+並跳過下面的 GDD 條件迴圈。）
+
+對每個 GDD 驗收條件，判斷有沒有測試存在：
+
+1. 用 Grep 在 `tests/unit/[system]/` 和 `tests/integration/[system]/` 裡找跟條件的關鍵
+   名詞/動詞有關的檔名和函式名稱
+2. 指派覆蓋狀態：
+
+| Status | Meaning |
+|--------|---------|
+| **COVERED** | A test file exists that targets this criterion&#x27;s logic |
+| **PARTIAL** | A test exists but doesn&#x27;t cover all cases (e.g. happy path only) |
+| **MISSING** | No test found for this critical path |
+| **EXEMPT** | Visual/Feel or UI criterion — not automatable by design |
+
+3. 把對應到公式或狀態機的 MISSING 項目提升為
+   **HIGH PRIORITY** 缺口 — 這些最有可能是 regression 的來源。
+
+---
+
+## 4. Map Coverage — Fixed Bugs
+
+對每個已關閉的 bug：
+
+1. 從 bug 的 metadata 擷取 system slug
+2. 用 Grep 在 `tests/unit/[system]/` 和 `tests/integration/[system]/` 裡找
+   參照了 bug ID 或那個具體失敗情境的測試
+3. 指派：
+   - **HAS REGRESSION TEST** — 找到了能抓到這個 bug 的測試
+   - **MISSING REGRESSION TEST** — bug 修好了，但沒有測試防止它再次發生
+
+對 MISSING REGRESSION TEST 的項目：
+- 把它們標記成 regression 缺口
+- 建議測試檔路徑：`tests/unit/[system]/[bug-slug]_regression_test.[ext]`
+- 註明：「Without this test, this bug can silently return in a future sprint.」
+
+---
+
+## 5. Detect Coverage Drift
+
+覆蓋漂移發生在遊戲成長了，但 regression suite 沒有跟上的時候。
+
+檢查漂移的跡象：
+- 這個 sprint 完成的 story，在 `tests/` 裡沒有對應的測試檔
+- 自從上次更新 regression suite 之後，新加進 `systems-index.md` 的系統
+- 自從上次更新 regression suite 之後，新增或修訂過的 GDD 章節
+  （如果有的話，用 Grep 看 GDD 檔案的修改線索，或者問使用者）
+- `tests/regression-suite.md` 的最後更新日期 vs. 目前日期 — 如果差距 &gt;
+  2 個 sprint，就標記為可能已經過時
+
+---
+
+## 6. Generate Report and Suite Manifest
+
+### Report format (in conversation)
+
+```
+## Regression Suite Status
+
+**Mode**: [update | audit | report]
+**Existing registered tests**: [N]
+**Test files scanned**: [N]
+
+### Critical Path Coverage (audit mode only)
+| System | Total ACs | Covered | Partial | Missing | Exempt |
+|--------|-----------|---------|---------|---------|--------|
+| [name] | [N] | [N] | [N] | [N] | [N] |
+
+**Coverage rate (non-exempt)**: [N]%
+
+### Bug Regression Coverage
+| Bug ID | System | Severity | Has Regression Test? |
+|--------|--------|----------|----------------------|
+| BUG-NNNN | [system] | S[N] | YES / NO ⚠ |
+
+**Bugs without regression tests**: [N]
+
+### Coverage Drift Indicators
+[List new systems or stories with no test coverage, or &quot;None detected.&quot;]
+
+### Recommended New Regression Tests
+| Priority | System | Suggested Test File | Covers |
+|----------|--------|---------------------|--------|
+| HIGH | [system] | `tests/unit/[system]/[slug]_regression_test.[ext]` | BUG-NNNN / AC-[N] |
+| MEDIUM | [system] | `tests/unit/[system]/[slug]_test.[ext]` | [criterion] |
+```
+
+### Suite manifest format (`tests/regression-suite.md`)
+
+&gt; **在計算覆蓋率之前，先檢查分母。** 如果 GDD
+&gt; glob 回傳**零個關鍵路徑**，或測試 glob 回傳**零個測試
+&gt; 檔**，就不要輸出百分比 — 回報
+&gt; `Coverage: NOT ASSESSED — [no GDDs found | no test files found]`，並點名是哪一邊
+&gt; 是空的，以及產生它的 skill（GDD 用 `/map-systems` 和
+&gt; `/design-system`，測試骨架用 `/test-setup`）。
+&gt;
+&gt; 用空的分母算出來的百分比，不是低分；它根本不是
+&gt; 數字。`0%` 讀起來像「量過了，而且很糟」，`100%` 讀起來像「量過了，而且完美」—
+&gt; 兩者都是在宣稱一個從來沒發生過的比較。這跟 `/scope-check` 在 Phase 4 用
+&gt; 同樣的措辭防範的缺陷是同一個：
+&gt; *「a percentage computed from no baseline items is not a small number; it is not
+&gt; a number.」*
+
+manifest 是精選的索引 — 不是測試本身，而是
+一份登記冊，記錄哪些測試在 release 之前應該一律通過：
+
+```markdown
+# Regression Suite Manifest
+
+&gt; Last Updated: [date]
+&gt; Total registered tests: [N]
+&gt; Coverage: [N]% of GDD critical paths
+
+## How to run
+
+[Engine-specific command to run all regression tests]
+
+## Registered Regression Tests
+
+### [System Name]
+
+| Test File | Test Function (if known) | Covers | Added |
+|-----------|--------------------------|--------|-------|
+| `tests/unit/[system]/[file]_test.[ext]` | `test_[scenario]` | AC-N / BUG-NNNN | [date] |
+
+## Known Gaps
+
+Tests that should exist but don&#x27;t yet:
+
+| Priority | System | Suggested Path | Covers | Reason Not Yet Written |
+|----------|--------|----------------|--------|------------------------|
+| HIGH | [system] | `tests/unit/[system]/[path]` | BUG-NNNN | Bug fixed without test |
+
+## Quarantined Tests
+
+Tests that are flaky or disabled (do not run in CI):
+
+| Test File | Function | Reason | Quarantined Since |
+|-----------|----------|--------|-------------------|
+| (none) | | | |
+```
+
+---
+
+## 7. Write Output
+
+在 `update` 或 `audit` 模式，問：「May I write/update `tests/regression-suite.md` with the current
+regression suite manifest?」
+
+對 `update` 模式：附加新條目；絕對不要移除既有條目
+（用 `Edit` 做有針對性的插入）。
+對 `audit` 模式：用更新過的覆蓋資料重寫整份 manifest。
+對 `report` 模式：什麼都不寫。
+
+寫完之後（如果有核准）：
+
+- 對每個 HIGH priority 缺口：「Consider creating the missing regression test
+  before the next sprint. Run `/test-helpers` to scaffold the test file.」
+- 如果 bug 的 regression 缺口 &gt; 0：「These bugs can silently return without regression
+  tests. The next sprint should include a story to write the missing tests.」
+- 如果偵測到覆蓋漂移：「Regression suite may be drifting. Consider
+  running `/regression-suite audit` at the next sprint boundary.」
+
+在沒有 sprint 的 `workflow: minimal`，上面三行裡把「next sprint」改說「next story」。
+
+判定，第一個符合的條件勝出：
+- **NOT ASSESSED** — Section 1 在 `qa.level: minimal` 的停止：「Regression
+  suite not generated at qa.level minimal」。這個等級不需要
+  測試；什麼都沒掃描，也沒寫入。
+- **NOT ASSESSED** — 上面的 `minimal` 停止：沒有 smoke 報告可以取得關鍵
+  路徑；點名 `/smoke-check` 作為修法。
+- **NOT ASSESSED** — 覆蓋率回傳 `Coverage: NOT ASSESSED — [reason]`（沒有 GDD 或
+  沒有測試檔）；點名原因。絕對不要在沒算出來的覆蓋率數字上
+  回報 COMPLETE。
+- **BLOCKED** — `update` 或 `audit` 模式，而且使用者拒絕寫入。
+- **COMPLETE** — `update` / `audit`：regression suite 已更新；`report`：覆蓋
+  報告已顯示（report 模式不寫任何東西）。
+
+---
+
+## Collaborative Protocol
+
+**適用於 `collaborative` 模式（預設）。** `guided` 和
+`autonomous` 模式請見 `.claude/docs/automation-modes.md` — 下面的規則
+描述的是 collaborative 模式的要求，不是通用行為。
+
+- **沒有使用者的明確核准，絕對不要從 manifest 移除既有的 regression 測試** —
+  移除一個刻意寫下來的測試，本身就是 regression 風險
+- **缺口是建議性的，不是阻擋性的** — 清楚地呈現它們，但不要阻止
+  其他工作繼續（除了 `qa.level: full`，那裡 phase gate 要求要有 regression suite）
+- **Quarantine 不是刪除** — 間歇性失敗的測試應該被
+  quarantine（在 manifest 裡註明），而不是移除；它們應該由
+  `/test-flakiness` 修好
+- **寫入前先問** — 建立或更新 manifest 之前一律先確認</pre></section><section><h2>英文原文</h2><pre>---
+name: regression-suite
+description: &quot;Map test coverage to GDD critical paths, find fixed bugs lacking regression tests, flag drift from new features.&quot;
+argument-hint: &quot;[update | audit | report]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash(bash &quot;*/.claude/skills/regression-suite/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow,qa.level,system_overrides`
+
+Resolved above — use as-is. No block → defaults in
+`.claude/docs/config-resolution.md`.
+
+
+# Regression Suite
+
+This skill ensures that every bug fix is backed by a test that would have
+caught the original bug — and that the regression suite stays current as the
+game evolves. It also detects when new features have been added without
+corresponding regression coverage.
+
+A regression suite is not a new test category — it is a **curated list of
+tests already in `tests/`** that collectively cover the game&#x27;s critical paths
+and known failure points. This skill maintains that list.
+
+**Output:** `tests/regression-suite.md`
+
+**When to run:**
+- After fixing a bug (confirm a regression test was written or identify gap)
+- Before a phase gate — at `qa.level: full`, `/gate-check` requires a regression suite
+- As part of sprint close to detect coverage drift
+
+---
+
+Every `AskUserQuestion` call follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+**Workflow tier**: `modes.workflow` as resolved above — supplied by `modes.rigor`
+unless set explicitly — per `.claude/docs/workflow-modes.md`; in `audit` mode consider
+`workflow_overrides.system_overrides.&lt;system&gt;` per system as each GDD is read. It
+sets whether GDD critical paths are mapped or coverage is smoke-only — see Step 2c.
+
+**`qa.level`**: controls whether the suite is generated at
+all. At `minimal`, the regression suite is **not generated** (report that and
+stop); at `standard`, generate it at Polish-stage entry; at `full`, at
+Production-stage entry. Distinct axis from `workflow`.
+
+## 1. Parse Arguments
+
+**Early `qa.level` guard (resolved above):** if `qa.level: minimal`, the
+regression suite is **not generated** — report &quot;Regression suite not generated at
+qa.level minimal&quot; and **STOP here, before any scan**, in every mode
+(`update` / `audit` / `report`). This is the `qa.level` axis; it is distinct from
+the `workflow`-tier `minimal` branch in Step 2c (which only changes the
+critical-path *source*, not *whether* the suite runs). Do not enter Step 2c&#x27;s
+`minimal` branch on account of `qa.level`. This stop&#x27;s verdict is
+**NOT ASSESSED** (Section 7) — tests are not required at this level, and nothing
+was scanned.
+
+**Modes:**
+- `/regression-suite update` — scan new bug fixes this sprint and check
+  for regression test presence; add new tests to the suite manifest
+- `/regression-suite audit` — full audit of all GDD critical paths vs.
+  existing test coverage; flag paths with no regression test
+- `/regression-suite report` — read-only status report (no writes); suitable
+  for sprint reviews
+- No argument — if a sprint is clearly active (sprint plan exists with in-progress stories), run `update`. If ambiguous or no active sprint is detected, use `AskUserQuestion`:
+  - Prompt: &quot;No subcommand specified. Which mode do you want to run?&quot;
+  - Options:
+    - `[A] update — scan new bug fixes this sprint and add missing regression tests`
+    - `[B] audit — full audit of all GDD critical paths vs. existing test coverage`
+    - `[C] report — read-only status report (no writes)`
+
+---
+
+## 2. Load Context
+
+### Step 2a — Load existing regression suite
+
+Read `tests/regression-suite.md` if it exists. Extract:
+- Total registered regression tests
+- Last updated date
+- Any tests flagged as `STALE` or `QUARANTINED`
+
+If it does not exist: note &quot;No regression suite found — will create one.&quot;
+
+### Step 2b — Load test inventory
+
+Glob all test files:
+```
+tests/unit/**/*_test.*
+tests/integration/**/*_test.*
+tests/regression/**/*
+```
+
+For each file, note the system (from directory path) and file name.
+Do not read test file contents unless needed for name-to-test mapping.
+
+### Step 2c — Load GDD critical paths
+
+For `audit` mode: read `design/gdd/systems-index.md` to get all systems, then
+scope the scan by each system&#x27;s workflow tier (resolved above):
+- **`full`** — read the GDD and map critical paths from all sections.
+- **`standard`** — same, from the required sections (Acceptance Criteria, Edge
+  Cases, and Formulas where the system defines numeric rules).
+  A system pinned higher via `system_overrides` is mapped at its higher tier.
+- **`minimal`** — **skip the GDD critical-path scan**. Instead read the latest
+  smoke-check report in `production/qa/smoke-*.md` and take the critical paths it
+  exercises as the regression scope (Step 3 maps coverage against those, not GDD
+  acceptance criteria). If no smoke report exists, stop with Verdict: **NOT
+  ASSESSED — no smoke report to take critical paths from** — there is no
+  critical-path source at minimal without one; run `/smoke-check` first.
+
+(Tier affects `audit` mode only; `update` and `report` modes are tier-independent.)
+
+Read each GDD by section: find the headings you need with the Grep tool (pattern
+`^#`, content mode) and Read those ranges with offset and limit. At `full` that
+is every section, read in ranges, since a whole-file Read over 40 KB is refused.
+
+For each in-scope MVP-tier system&#x27;s GDD, extract:
+- Acceptance Criteria (these define the critical paths)
+- Formulas section (formulas must have regression tests)
+- Edge Cases section (known edge cases should have regression tests)
+
+For `update` mode: skip full GDD scan. Instead read the current sprint plan
+and story files to find stories with Status: Complete this sprint.
+
+### Step 2d — Load closed bugs
+
+Glob `production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
+or `Status: Fixed` field. Note:
+- Which story or system the bug was in
+- Whether a regression test was mentioned in the fix description
+
+---
+
+## 3. Map Coverage — Critical Paths
+
+For `audit` mode only. (At `minimal` the critical paths come from the smoke-check
+report identified in Step 2c, not from GDD acceptance criteria — map coverage
+against those smoke paths and skip the GDD-criterion loop below.)
+
+For each GDD acceptance criterion, determine whether a test exists:
+
+1. Grep `tests/unit/[system]/` and `tests/integration/[system]/` for file names
+   and function names related to the criterion&#x27;s key noun/verb
+2. Assign coverage:
+
+| Status | Meaning |
+|--------|---------|
+| **COVERED** | A test file exists that targets this criterion&#x27;s logic |
+| **PARTIAL** | A test exists but doesn&#x27;t cover all cases (e.g. happy path only) |
+| **MISSING** | No test found for this critical path |
+| **EXEMPT** | Visual/Feel or UI criterion — not automatable by design |
+
+3. Elevate MISSING items that correspond to formulas or state machines to
+   **HIGH PRIORITY** gap — these are the most likely regression sources.
+
+---
+
+## 4. Map Coverage — Fixed Bugs
+
+For each closed bug:
+
+1. Extract the system slug from the bug&#x27;s metadata
+2. Grep `tests/unit/[system]/` and `tests/integration/[system]/` for a test
+   that references the bug ID or the specific failure scenario
+3. Assign:
+   - **HAS REGRESSION TEST** — a test was found that would catch this bug
+   - **MISSING REGRESSION TEST** — bug was fixed but no test guards against recurrence
+
+For MISSING REGRESSION TEST items:
+- Flag them as regression gaps
+- Suggest the test file path: `tests/unit/[system]/[bug-slug]_regression_test.[ext]`
+- Note: &quot;Without this test, this bug can silently return in a future sprint.&quot;
+
+---
+
+## 5. Detect Coverage Drift
+
+Coverage drift occurs when the game grows but the regression suite doesn&#x27;t.
+
+Check for drift indicators:
+- Stories completed this sprint with no corresponding test files in `tests/`
+- New systems added to `systems-index.md` since the last regression-suite update
+- GDD sections added or revised since the regression suite was last updated
+  (use Grep on GDD file modification hints if available, or ask the user)
+- `tests/regression-suite.md` last-updated date vs. current date — if gap &gt;
+  2 sprints, flag as likely stale
+
+---
+
+## 6. Generate Report and Suite Manifest
+
+### Report format (in conversation)
+
+```
+## Regression Suite Status
+
+**Mode**: [update | audit | report]
+**Existing registered tests**: [N]
+**Test files scanned**: [N]
+
+### Critical Path Coverage (audit mode only)
+| System | Total ACs | Covered | Partial | Missing | Exempt |
+|--------|-----------|---------|---------|---------|--------|
+| [name] | [N] | [N] | [N] | [N] | [N] |
+
+**Coverage rate (non-exempt)**: [N]%
+
+### Bug Regression Coverage
+| Bug ID | System | Severity | Has Regression Test? |
+|--------|--------|----------|----------------------|
+| BUG-NNNN | [system] | S[N] | YES / NO ⚠ |
+
+**Bugs without regression tests**: [N]
+
+### Coverage Drift Indicators
+[List new systems or stories with no test coverage, or &quot;None detected.&quot;]
+
+### Recommended New Regression Tests
+| Priority | System | Suggested Test File | Covers |
+|----------|--------|---------------------|--------|
+| HIGH | [system] | `tests/unit/[system]/[slug]_regression_test.[ext]` | BUG-NNNN / AC-[N] |
+| MEDIUM | [system] | `tests/unit/[system]/[slug]_test.[ext]` | [criterion] |
+```
+
+### Suite manifest format (`tests/regression-suite.md`)
+
+&gt; **Before computing coverage, check the denominator.** If the GDD
+&gt; glob returns **zero critical paths**, or the test globs return **zero test
+&gt; files**, do not emit a percentage — report
+&gt; `Coverage: NOT ASSESSED — [no GDDs found | no test files found]` and name which
+&gt; side was empty and the skill that produces it (`/map-systems` and
+&gt; `/design-system` for GDDs, `/test-setup` for the test scaffold).
+&gt;
+&gt; A percentage computed from an empty denominator is not a low score; it is not a
+&gt; number. `0%` reads as &quot;measured and terrible&quot; and `100%` as &quot;measured and
+&gt; perfect&quot; — both are claims about a comparison that never happened. This is the
+&gt; same defect `/scope-check` carries a Phase 4 guard against, in the same words:
+&gt; *&quot;a percentage computed from no baseline items is not a small number; it is not
+&gt; a number.&quot;*
+
+The manifest is a curated index — not the tests themselves, but a registry
+of which tests should always pass before a release:
+
+```markdown
+# Regression Suite Manifest
+
+&gt; Last Updated: [date]
+&gt; Total registered tests: [N]
+&gt; Coverage: [N]% of GDD critical paths
+
+## How to run
+
+[Engine-specific command to run all regression tests]
+
+## Registered Regression Tests
+
+### [System Name]
+
+| Test File | Test Function (if known) | Covers | Added |
+|-----------|--------------------------|--------|-------|
+| `tests/unit/[system]/[file]_test.[ext]` | `test_[scenario]` | AC-N / BUG-NNNN | [date] |
+
+## Known Gaps
+
+Tests that should exist but don&#x27;t yet:
+
+| Priority | System | Suggested Path | Covers | Reason Not Yet Written |
+|----------|--------|----------------|--------|------------------------|
+| HIGH | [system] | `tests/unit/[system]/[path]` | BUG-NNNN | Bug fixed without test |
+
+## Quarantined Tests
+
+Tests that are flaky or disabled (do not run in CI):
+
+| Test File | Function | Reason | Quarantined Since |
+|-----------|----------|--------|-------------------|
+| (none) | | | |
+```
+
+---
+
+## 7. Write Output
+
+In `update` or `audit` mode, ask: &quot;May I write/update `tests/regression-suite.md` with the current
+regression suite manifest?&quot;
+
+For `update` mode: append new entries; never remove existing entries
+(use `Edit` with targeted insertions).
+For `audit` mode: rewrite the full manifest with updated coverage data.
+For `report` mode: do not write anything.
+
+After writing (if approved):
+
+- For each HIGH priority gap: &quot;Consider creating the missing regression test
+  before the next sprint. Run `/test-helpers` to scaffold the test file.&quot;
+- If bug regression gaps &gt; 0: &quot;These bugs can silently return without regression
+  tests. The next sprint should include a story to write the missing tests.&quot;
+- If coverage drift detected: &quot;Regression suite may be drifting. Consider
+  running `/regression-suite audit` at the next sprint boundary.&quot;
+
+At `workflow: minimal`, which has no sprints, say &quot;next story&quot; for &quot;next sprint&quot; in the three lines above.
+
+Verdict, first match wins:
+- **NOT ASSESSED** — the Section 1 stop at `qa.level: minimal`: &quot;Regression
+  suite not generated at qa.level minimal&quot;. Tests are not required at this
+  level; nothing was scanned or written.
+- **NOT ASSESSED** — the `minimal` stop above: no smoke report to take critical
+  paths from; name `/smoke-check` as the fix.
+- **NOT ASSESSED** — coverage came back `Coverage: NOT ASSESSED — [reason]` (no GDDs or
+  no test files); name the reason. Never report COMPLETE over a coverage figure
+  that was not computed.
+- **BLOCKED** — `update` or `audit` mode and the user declined the write.
+- **COMPLETE** — `update` / `audit`: regression suite updated; `report`: coverage
+  report shown (report mode writes nothing).
+
+---
+
+## Collaborative Protocol
+
+**Applies in `collaborative` mode (the default).** For `guided` and
+`autonomous` modes, see `.claude/docs/automation-modes.md` — the rules below
+describe what collaborative mode requires, not universal behavior.
+
+- **Never remove existing regression tests from the manifest** without
+  explicit user approval — removing a test that was deliberately written is a
+  regression risk itself
+- **Gaps are advisory, not blocking** — surface them clearly but do not prevent
+  other work from proceeding (except at `qa.level: full`, where phase gates require the regression suite)
+- **Quarantine is not deletion** — tests with intermittent failures should be
+  quarantined (noted in manifest) but not removed; they should be fixed by
+  `/test-flakiness`
+- **Ask before writing** — always confirm before creating or updating the manifest</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

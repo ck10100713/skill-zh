@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>setup-zoom-oauth｜Skill 寫法圖鑑</title>
+<meta name="description" content="正確設定 Zoom 驗證：選 OAuth grant、規劃 scope、處理 token">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>setup-zoom-oauth</h1>
+<p class="meta">Anthropic ｜ 安全護欄 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/partner-built/zoom-plugin/skills/setup-zoom-oauth/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">正確設定 Zoom 驗證：選 OAuth grant、規劃 scope、處理 token</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: setup-zoom-oauth
+description: 正確實作 Zoom 驗證。在設定 app 憑證、選擇 OAuth grant、申請 scope、處理 token refresh，或除錯驗證失敗時使用。
+---
+
+# /setup-zoom-oauth
+
+當驗證是卡關點，或驗證的選擇會決定整個整合的樣貌時，使用這個 skill。
+
+## 範圍
+
+- App 類型選擇
+- OAuth grant 選擇
+- Scope 規劃
+- Token 交換與 refresh
+- 驗證除錯與環境假設
+
+## 工作流程
+
+1. 判斷 app 模型，以及是誰在授權給誰。
+2. 選擇正確的 grant 流程。
+3. 找出使用者流程所需的最小 scope。
+4. 定義 token 的儲存與 refresh 行為。
+5. 以上都清楚之後，才導向最深入的相關參考文件。
+
+## 主要參考
+
+- [oauth](../oauth/SKILL.md)
+- [general](../general/SKILL.md)
+- [rest-api](../rest-api/SKILL.md)
+
+## 常見錯誤
+
+- 在還沒釐清行為者和 tenant 模型之前就選了 grant
+- 在確認確切的工作流程之前就申請範圍很廣的 scope
+- 忘了 refresh token 的行為和 token 生命週期的處理
+- refresh 成功之後，還繼續用舊的 refresh token，而不是存新回傳的那個
+- 沒先檢查 app 設定，就把驗證失敗當成 API 失敗</pre></section><section><h2>英文原文</h2><pre>---
+name: setup-zoom-oauth
+description: Implement Zoom authentication correctly. Use when setting up app credentials, choosing an OAuth grant, requesting scopes, handling token refresh, or debugging auth failures.
+---
+
+# /setup-zoom-oauth
+
+Use this skill when auth is the blocker or when auth choices will shape the entire integration.
+
+## Scope
+
+- App type selection
+- OAuth grant selection
+- Scope planning
+- Token exchange and refresh
+- Auth debugging and environment assumptions
+
+## Workflow
+
+1. Determine the app model and who is authorizing whom.
+2. Choose the correct grant flow.
+3. Identify minimum scopes for the user flow.
+4. Define token storage and refresh behavior.
+5. Route into the deepest relevant reference docs only after the above is clear.
+
+## Primary References
+
+- [oauth](../oauth/SKILL.md)
+- [general](../general/SKILL.md)
+- [rest-api](../rest-api/SKILL.md)
+
+## Common Mistakes
+
+- Picking a grant before clarifying the actor and tenant model
+- Asking for broad scopes before confirming the exact workflow
+- Forgetting refresh-token behavior and token lifecycle handling
+- Reusing an old refresh token after a successful refresh instead of storing the newly returned one
+- Treating auth failures as API failures without checking app configuration first</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

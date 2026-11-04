@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>django-security｜Skill 寫法圖鑑</title>
+<meta name="description" content="Django 安全最佳實務，從認證授權到 CSRF、XSS、部署設定一次檢查">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>django-security</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/django-security/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Django 安全最佳實務，從認證授權到 CSRF、XSS、部署設定一次檢查</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: django-security
+description: Django 安全最佳實務，涵蓋認證、授權、CSRF 防護、SQL injection 防範、XSS 防範，以及安全的部署設定。在審查 Django 的認證、授權、輸入處理或部署設定時使用。
+metadata:
+  origin: ECC
+---
+
+# Django 安全最佳實務
+
+給 Django 應用程式用的完整安全指南，用來防範常見漏洞。
+
+## 何時啟用
+
+- 設定 Django 認證與授權
+- 實作使用者權限與角色
+- 設定 production 的安全設定
+- 審查 Django 應用程式的安全問題
+- 把 Django 應用程式部署到 production
+
+## 核心安全設定
+
+### Production 設定
+
+```python
+# settings/production.py
+import os
+
+DEBUG = False  # CRITICAL: Never use True in production
+
+ALLOWED_HOSTS = os.environ.get(&#x27;ALLOWED_HOSTS&#x27;, &#x27;&#x27;).split(&#x27;,&#x27;)
+
+# Security headers
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = &#x27;DENY&#x27;
+
+# HTTPS and Cookies
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = &#x27;Lax&#x27;
+CSRF_COOKIE_SAMESITE = &#x27;Lax&#x27;
+
+# Secret key (must be set via environment variable)
+SECRET_KEY = os.environ.get(&#x27;DJANGO_SECRET_KEY&#x27;)
+if not SECRET_KEY:
+    raise ImproperlyConfigured(&#x27;DJANGO_SECRET_KEY environment variable is required&#x27;)
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.UserAttributeSimilarityValidator&#x27;,
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.MinimumLengthValidator&#x27;,
+        &#x27;OPTIONS&#x27;: {
+            &#x27;min_length&#x27;: 12,
+        }
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.CommonPasswordValidator&#x27;,
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.NumericPasswordValidator&#x27;,
+    },
+]
+```
+
+## 認證
+
+### 自訂 User 模型
+
+```python
+# apps/users/models.py
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    &quot;&quot;&quot;Custom user model for better security.&quot;&quot;&quot;
+
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, blank=True)
+
+    USERNAME_FIELD = &#x27;email&#x27;  # Use email as username
+    REQUIRED_FIELDS = [&#x27;username&#x27;]
+
+    class Meta:
+        db_table = &#x27;users&#x27;
+        verbose_name = &#x27;User&#x27;
+        verbose_name_plural = &#x27;Users&#x27;
+
+    def __str__(self):
+        return self.email
+
+# settings/base.py
+AUTH_USER_MODEL = &#x27;users.User&#x27;
+```
+
+### 密碼雜湊
+
+```python
+# Django uses PBKDF2 by default. For stronger security:
+PASSWORD_HASHERS = [
+    &#x27;django.contrib.auth.hashers.Argon2PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.PBKDF2PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.BCryptSHA256PasswordHasher&#x27;,
+]
+```
+
+### Session 管理
+
+```python
+# Session configuration
+SESSION_ENGINE = &#x27;django.contrib.sessions.backends.cache&#x27;  # Or &#x27;db&#x27;
+SESSION_CACHE_ALIAS = &#x27;default&#x27;
+SESSION_COOKIE_AGE = 3600 * 24 * 7  # 1 week
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Better UX, but less secure
+```
+
+## 授權
+
+### 權限
+
+```python
+# models.py
+from django.db import models
+from django.contrib.auth.models import Permission
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = [
+            (&#x27;can_publish&#x27;, &#x27;Can publish posts&#x27;),
+            (&#x27;can_edit_others&#x27;, &#x27;Can edit posts of others&#x27;),
+        ]
+
+    def user_can_edit(self, user):
+        &quot;&quot;&quot;Check if user can edit this post.&quot;&quot;&quot;
+        return self.author == user or user.has_perm(&#x27;app.can_edit_others&#x27;)
+
+# views.py
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import UpdateView
+
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Post
+    permission_required = &#x27;app.can_edit_others&#x27;
+    raise_exception = True  # Return 403 instead of redirect
+
+    def get_queryset(self):
+        &quot;&quot;&quot;Only allow users to edit their own posts.&quot;&quot;&quot;
+        return Post.objects.filter(author=self.request.user)
+```
+
+### 自訂權限
+
+```python
+# permissions.py
+from rest_framework import permissions
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    &quot;&quot;&quot;Allow only owners to edit objects.&quot;&quot;&quot;
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions allowed for any request
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions only for owner
+        return obj.author == request.user
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    &quot;&quot;&quot;Allow admins to do anything, others read-only.&quot;&quot;&quot;
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+
+class IsVerifiedUser(permissions.BasePermission):
+    &quot;&quot;&quot;Allow only verified users.&quot;&quot;&quot;
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.is_verified
+```
+
+### 角色型存取控制（RBAC）
+
+```python
+# models.py
+from django.contrib.auth.models import AbstractUser, Group
+
+class User(AbstractUser):
+    ROLE_CHOICES = [
+        (&#x27;admin&#x27;, &#x27;Administrator&#x27;),
+        (&#x27;moderator&#x27;, &#x27;Moderator&#x27;),
+        (&#x27;user&#x27;, &#x27;Regular User&#x27;),
+    ]
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=&#x27;user&#x27;)
+
+    def is_admin(self):
+        return self.role == &#x27;admin&#x27; or self.is_superuser
+
+    def is_moderator(self):
+        return self.role in [&#x27;admin&#x27;, &#x27;moderator&#x27;]
+
+# Mixins
+class AdminRequiredMixin:
+    &quot;&quot;&quot;Mixin to require admin role.&quot;&quot;&quot;
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_admin():
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+```
+
+## 防範 SQL Injection
+
+### Django ORM 的保護
+
+```python
+# GOOD: Django ORM automatically escapes parameters
+def get_user(username):
+    return User.objects.get(username=username)  # Safe
+
+# GOOD: Using parameters with raw()
+def search_users(query):
+    return User.objects.raw(&#x27;SELECT * FROM users WHERE username = %s&#x27;, [query])
+
+# BAD: Never directly interpolate user input
+def get_user_bad(username):
+    return User.objects.raw(f&#x27;SELECT * FROM users WHERE username = {username}&#x27;)  # VULNERABLE!
+
+# GOOD: Using filter with proper escaping
+def get_users_by_email(email):
+    return User.objects.filter(email__iexact=email)  # Safe
+
+# GOOD: Using Q objects for complex queries
+from django.db.models import Q
+def search_users_complex(query):
+    return User.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query)
+    )  # Safe
+```
+
+### 用 raw() 時的額外安全措施
+
+```python
+# If you must use raw SQL, always use parameters
+User.objects.raw(
+    &#x27;SELECT * FROM users WHERE email = %s AND status = %s&#x27;,
+    [user_input_email, status]
+)
+```
+
+## 防範 XSS
+
+### 模板跳脫
+
+```django
+{# Django auto-escapes variables by default - SAFE #}
+{{ user_input }}  {# Escaped HTML #}
+
+{# Explicitly mark safe only for trusted content #}
+{{ trusted_html|safe }}  {# Not escaped #}
+
+{# Use template filters for safe HTML #}
+{{ user_input|escape }}  {# Same as default #}
+{{ user_input|striptags }}  {# Remove all HTML tags #}
+
+{# JavaScript escaping #}
+&lt;script&gt;
+    var username = {{ username|escapejs }};
+&lt;/script&gt;
+```
+
+### 安全的字串處理
+
+```python
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+
+# BAD: Never mark user input as safe without escaping
+def render_bad(user_input):
+    return mark_safe(user_input)  # VULNERABLE!
+
+# GOOD: Escape first, then mark safe
+def render_good(user_input):
+    return mark_safe(escape(user_input))
+
+# GOOD: Use format_html for HTML with variables
+from django.utils.html import format_html
+
+def greet_user(username):
+    return format_html(&#x27;&lt;span class=&quot;user&quot;&gt;{}&lt;/span&gt;&#x27;, escape(username))
+```
+
+### HTTP Header
+
+```python
+# settings.py
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME sniffing
+X_FRAME_OPTIONS = &#x27;DENY&#x27;  # Prevent clickjacking
+
+# Custom middleware
+from django.conf import settings
+
+class SecurityHeaderMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response[&#x27;X-Content-Type-Options&#x27;] = &#x27;nosniff&#x27;
+        response[&#x27;X-Frame-Options&#x27;] = &#x27;DENY&#x27;
+        response[&#x27;X-XSS-Protection&#x27;] = &#x27;1; mode=block&#x27;
+        response[&#x27;Content-Security-Policy&#x27;] = &quot;default-src &#x27;self&#x27;&quot;
+        return response
+```
+
+## CSRF 防護
+
+### 預設的 CSRF 防護
+
+```python
+# settings.py - CSRF is enabled by default
+CSRF_COOKIE_SECURE = True  # Only send over HTTPS
+CSRF_COOKIE_HTTPONLY = False  # False so AJAX can read csrf token from document.cookie; SESSION_COOKIE_HTTPONLY remains True
+CSRF_COOKIE_SAMESITE = &#x27;Lax&#x27;  # Prevent CSRF in some cases
+CSRF_TRUSTED_ORIGINS = [&#x27;https://example.com&#x27;]  # Trusted domains
+
+# Template usage
+&lt;form method=&quot;post&quot;&gt;
+    {% csrf_token %}
+    {{ form.as_p }}
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+# AJAX requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie &amp;&amp; document.cookie !== &#x27;&#x27;) {
+        const cookies = document.cookie.split(&#x27;;&#x27;);
+        for (let i = 0; i &lt; cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + &#x27;=&#x27;)) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+fetch(&#x27;/api/endpoint/&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+        &#x27;X-CSRFToken&#x27;: getCookie(&#x27;csrftoken&#x27;),
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+    },
+    body: JSON.stringify(data)
+});
+```
+
+### 豁免 View（小心使用）
+
+```python
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  # Only use when absolutely necessary!
+def webhook_view(request):
+    # Webhook from external service
+    pass
+```
+
+## 檔案上傳安全
+
+### 檔案驗證
+
+```python
+import os
+import magic  # pip install python-magic
+from django.core.exceptions import ValidationError
+
+ALLOWED_MIMES = {
+    &#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;, &#x27;application/pdf&#x27;,
+}
+
+MIME_TO_EXTENSIONS = {
+    &#x27;image/jpeg&#x27;: {&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;},
+    &#x27;image/png&#x27;: {&#x27;.png&#x27;},
+    &#x27;image/gif&#x27;: {&#x27;.gif&#x27;},
+    &#x27;application/pdf&#x27;: {&#x27;.pdf&#x27;},
+}
+
+def validate_file_type(value):
+    &quot;&quot;&quot;Validate file type using magic bytes and cross-check extension.&quot;&quot;&quot;
+    mime = magic.from_buffer(value.read(2048), mime=True)
+    value.seek(0)
+
+    if mime not in ALLOWED_MIMES:
+        raise ValidationError(&#x27;Unsupported file type.&#x27;)
+
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in MIME_TO_EXTENSIONS.get(mime, set()):
+        raise ValidationError(&#x27;File extension does not match file content.&#x27;)
+
+def validate_file_size(value):
+    &quot;&quot;&quot;Validate file size (max 5MB).&quot;&quot;&quot;
+    if value.size &gt; 5 * 1024 * 1024:
+        raise ValidationError(&#x27;File too large. Max size is 5MB.&#x27;)
+
+# models.py
+class Document(models.Model):
+    file = models.FileField(
+        upload_to=&#x27;documents/&#x27;,
+        validators=[validate_file_type, validate_file_size]
+    )
+
+```
+
+如果環境很難安裝 libmagic（例如極簡 container），
+可以改用純 Python 的 `filetype` 套件：
+
+```python
+import os
+from django.core.exceptions import ValidationError
+
+import filetype  # pip install filetype
+
+ALLOWED_MIMES = {
+    &#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;, &#x27;application/pdf&#x27;,
+}
+
+MIME_TO_EXTENSIONS = {
+    &#x27;image/jpeg&#x27;: {&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;},
+    &#x27;image/png&#x27;: {&#x27;.png&#x27;},
+    &#x27;image/gif&#x27;: {&#x27;.gif&#x27;},
+    &#x27;application/pdf&#x27;: {&#x27;.pdf&#x27;},
+}
+
+def validate_file_type(value):
+    &quot;&quot;&quot;Validate file type using magic bytes.&quot;&quot;&quot;
+    kind = filetype.guess(value.read(2048))
+    value.seek(0)
+
+    if kind is None or kind.mime not in ALLOWED_MIMES:
+        raise ValidationError(&#x27;Unsupported file type.&#x27;)
+
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in MIME_TO_EXTENSIONS.get(kind.mime, set()):
+        raise ValidationError(&#x27;File extension does not match file content.&#x27;)
+```
+
+### 安全的檔案儲存
+
+```python
+# settings.py
+MEDIA_ROOT = &#x27;/var/www/media/&#x27;
+MEDIA_URL = &#x27;/media/&#x27;
+
+# Use a separate domain for media in production
+MEDIA_DOMAIN = &#x27;https://media.example.com&#x27;
+
+# Don&#x27;t serve user uploads directly
+# Use whitenoise or a CDN for static files
+# Use a separate server or S3 for media files
+```
+
+## API 安全
+
+### 速率限制
+
+```python
+# settings.py
+REST_FRAMEWORK = {
+    &#x27;DEFAULT_THROTTLE_CLASSES&#x27;: [
+        &#x27;rest_framework.throttling.AnonRateThrottle&#x27;,
+        &#x27;rest_framework.throttling.UserRateThrottle&#x27;
+    ],
+    &#x27;DEFAULT_THROTTLE_RATES&#x27;: {
+        &#x27;anon&#x27;: &#x27;100/day&#x27;,
+        &#x27;user&#x27;: &#x27;1000/day&#x27;,
+        &#x27;upload&#x27;: &#x27;10/hour&#x27;,
+    }
+}
+
+# Custom throttle
+from rest_framework.throttling import UserRateThrottle
+
+class BurstRateThrottle(UserRateThrottle):
+    scope = &#x27;burst&#x27;
+    rate = &#x27;60/min&#x27;
+
+class SustainedRateThrottle(UserRateThrottle):
+    scope = &#x27;sustained&#x27;
+    rate = &#x27;1000/day&#x27;
+```
+
+### API 認證
+
+```python
+# settings.py
+REST_FRAMEWORK = {
+    &#x27;DEFAULT_AUTHENTICATION_CLASSES&#x27;: [
+        &#x27;rest_framework.authentication.TokenAuthentication&#x27;,
+        &#x27;rest_framework.authentication.SessionAuthentication&#x27;,
+        &#x27;rest_framework_simplejwt.authentication.JWTAuthentication&#x27;,
+    ],
+    &#x27;DEFAULT_PERMISSION_CLASSES&#x27;: [
+        &#x27;rest_framework.permissions.IsAuthenticated&#x27;,
+    ],
+}
+
+# views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+@api_view([&#x27;GET&#x27;, &#x27;POST&#x27;])
+@permission_classes([IsAuthenticated])
+def protected_view(request):
+    return Response({&#x27;message&#x27;: &#x27;You are authenticated&#x27;})
+```
+
+## 安全 Header
+
+### Content Security Policy
+
+```python
+# settings.py
+CSP_DEFAULT_SRC = &quot;&#x27;self&#x27;&quot;
+CSP_SCRIPT_SRC = &quot;&#x27;self&#x27; https://cdn.example.com&quot;
+CSP_STYLE_SRC = &quot;&#x27;self&#x27; &#x27;unsafe-inline&#x27;&quot;
+CSP_IMG_SRC = &quot;&#x27;self&#x27; data: https:&quot;
+CSP_CONNECT_SRC = &quot;&#x27;self&#x27; https://api.example.com&quot;
+
+# Middleware
+class CSPMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response[&#x27;Content-Security-Policy&#x27;] = (
+            f&quot;default-src {CSP_DEFAULT_SRC}; &quot;
+            f&quot;script-src {CSP_SCRIPT_SRC}; &quot;
+            f&quot;style-src {CSP_STYLE_SRC}; &quot;
+            f&quot;img-src {CSP_IMG_SRC}; &quot;
+            f&quot;connect-src {CSP_CONNECT_SRC}&quot;
+        )
+        return response
+```
+
+## 環境變數
+
+### 管理 Secret
+
+```python
+# Use python-decouple or django-environ
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# reading .env file
+environ.Env.read_env()
+
+SECRET_KEY = env(&#x27;DJANGO_SECRET_KEY&#x27;)
+DATABASE_URL = env(&#x27;DATABASE_URL&#x27;)
+ALLOWED_HOSTS = env.list(&#x27;ALLOWED_HOSTS&#x27;)
+
+# .env file (never commit this)
+DEBUG=False
+SECRET_KEY=your-secret-key-here
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+ALLOWED_HOSTS=example.com,www.example.com
+```
+
+## 記錄安全事件
+
+```python
+# settings.py
+LOGGING = {
+    &#x27;version&#x27;: 1,
+    &#x27;disable_existing_loggers&#x27;: False,
+    &#x27;handlers&#x27;: {
+        &#x27;file&#x27;: {
+            &#x27;level&#x27;: &#x27;WARNING&#x27;,
+            &#x27;class&#x27;: &#x27;logging.FileHandler&#x27;,
+            &#x27;filename&#x27;: &#x27;/var/log/django/security.log&#x27;,
+        },
+        &#x27;console&#x27;: {
+            &#x27;level&#x27;: &#x27;INFO&#x27;,
+            &#x27;class&#x27;: &#x27;logging.StreamHandler&#x27;,
+        },
+    },
+    &#x27;loggers&#x27;: {
+        &#x27;django.security&#x27;: {
+            &#x27;handlers&#x27;: [&#x27;file&#x27;, &#x27;console&#x27;],
+            &#x27;level&#x27;: &#x27;WARNING&#x27;,
+            &#x27;propagate&#x27;: True,
+        },
+        &#x27;django.request&#x27;: {
+            &#x27;handlers&#x27;: [&#x27;file&#x27;],
+            &#x27;level&#x27;: &#x27;ERROR&#x27;,
+            &#x27;propagate&#x27;: False,
+        },
+    },
+}
+```
+
+## 快速安全檢查清單
+
+| 檢查項目 | 說明 |
+|-------|-------------|
+| `DEBUG = False` | production 絕對不要開 DEBUG |
+| 只走 HTTPS | 強制 SSL、使用 secure cookie |
+| 強度夠的 secret | SECRET_KEY 用環境變數 |
+| 密碼驗證 | 啟用所有密碼 validator |
+| CSRF 防護 | 預設就開，不要關 |
+| XSS 防範 | Django 會自動跳脫，使用者輸入不要配 `&amp;#124;safe` |
+| SQL injection | 用 ORM，查詢裡絕對不要拼字串 |
+| 檔案上傳 | 驗證檔案類型與大小 |
+| 速率限制 | 對 API 端點做 throttle |
+| 安全 Header | CSP、X-Frame-Options、HSTS |
+| 記錄 | 記錄安全事件 |
+| 更新 | Django 與相依套件保持最新 |
+
+記住：安全是一個持續的過程，不是一個產品。要定期檢視、更新你的安全做法。</pre></section><section><h2>英文原文</h2><pre>---
+name: django-security
+description: Django security best practices, authentication, authorization, CSRF protection, SQL injection prevention, XSS prevention, and secure deployment configurations. Use when reviewing Django authentication, authorization, input handling, or deployment settings.
+metadata:
+  origin: ECC
+---
+
+# Django Security Best Practices
+
+Comprehensive security guidelines for Django applications to protect against common vulnerabilities.
+
+## When to Activate
+
+- Setting up Django authentication and authorization
+- Implementing user permissions and roles
+- Configuring production security settings
+- Reviewing Django application for security issues
+- Deploying Django applications to production
+
+## Core Security Settings
+
+### Production Settings Configuration
+
+```python
+# settings/production.py
+import os
+
+DEBUG = False  # CRITICAL: Never use True in production
+
+ALLOWED_HOSTS = os.environ.get(&#x27;ALLOWED_HOSTS&#x27;, &#x27;&#x27;).split(&#x27;,&#x27;)
+
+# Security headers
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = &#x27;DENY&#x27;
+
+# HTTPS and Cookies
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = &#x27;Lax&#x27;
+CSRF_COOKIE_SAMESITE = &#x27;Lax&#x27;
+
+# Secret key (must be set via environment variable)
+SECRET_KEY = os.environ.get(&#x27;DJANGO_SECRET_KEY&#x27;)
+if not SECRET_KEY:
+    raise ImproperlyConfigured(&#x27;DJANGO_SECRET_KEY environment variable is required&#x27;)
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.UserAttributeSimilarityValidator&#x27;,
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.MinimumLengthValidator&#x27;,
+        &#x27;OPTIONS&#x27;: {
+            &#x27;min_length&#x27;: 12,
+        }
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.CommonPasswordValidator&#x27;,
+    },
+    {
+        &#x27;NAME&#x27;: &#x27;django.contrib.auth.password_validation.NumericPasswordValidator&#x27;,
+    },
+]
+```
+
+## Authentication
+
+### Custom User Model
+
+```python
+# apps/users/models.py
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    &quot;&quot;&quot;Custom user model for better security.&quot;&quot;&quot;
+
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, blank=True)
+
+    USERNAME_FIELD = &#x27;email&#x27;  # Use email as username
+    REQUIRED_FIELDS = [&#x27;username&#x27;]
+
+    class Meta:
+        db_table = &#x27;users&#x27;
+        verbose_name = &#x27;User&#x27;
+        verbose_name_plural = &#x27;Users&#x27;
+
+    def __str__(self):
+        return self.email
+
+# settings/base.py
+AUTH_USER_MODEL = &#x27;users.User&#x27;
+```
+
+### Password Hashing
+
+```python
+# Django uses PBKDF2 by default. For stronger security:
+PASSWORD_HASHERS = [
+    &#x27;django.contrib.auth.hashers.Argon2PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.PBKDF2PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher&#x27;,
+    &#x27;django.contrib.auth.hashers.BCryptSHA256PasswordHasher&#x27;,
+]
+```
+
+### Session Management
+
+```python
+# Session configuration
+SESSION_ENGINE = &#x27;django.contrib.sessions.backends.cache&#x27;  # Or &#x27;db&#x27;
+SESSION_CACHE_ALIAS = &#x27;default&#x27;
+SESSION_COOKIE_AGE = 3600 * 24 * 7  # 1 week
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Better UX, but less secure
+```
+
+## Authorization
+
+### Permissions
+
+```python
+# models.py
+from django.db import models
+from django.contrib.auth.models import Permission
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = [
+            (&#x27;can_publish&#x27;, &#x27;Can publish posts&#x27;),
+            (&#x27;can_edit_others&#x27;, &#x27;Can edit posts of others&#x27;),
+        ]
+
+    def user_can_edit(self, user):
+        &quot;&quot;&quot;Check if user can edit this post.&quot;&quot;&quot;
+        return self.author == user or user.has_perm(&#x27;app.can_edit_others&#x27;)
+
+# views.py
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import UpdateView
+
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Post
+    permission_required = &#x27;app.can_edit_others&#x27;
+    raise_exception = True  # Return 403 instead of redirect
+
+    def get_queryset(self):
+        &quot;&quot;&quot;Only allow users to edit their own posts.&quot;&quot;&quot;
+        return Post.objects.filter(author=self.request.user)
+```
+
+### Custom Permissions
+
+```python
+# permissions.py
+from rest_framework import permissions
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    &quot;&quot;&quot;Allow only owners to edit objects.&quot;&quot;&quot;
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions allowed for any request
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions only for owner
+        return obj.author == request.user
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    &quot;&quot;&quot;Allow admins to do anything, others read-only.&quot;&quot;&quot;
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+
+class IsVerifiedUser(permissions.BasePermission):
+    &quot;&quot;&quot;Allow only verified users.&quot;&quot;&quot;
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.is_verified
+```
+
+### Role-Based Access Control (RBAC)
+
+```python
+# models.py
+from django.contrib.auth.models import AbstractUser, Group
+
+class User(AbstractUser):
+    ROLE_CHOICES = [
+        (&#x27;admin&#x27;, &#x27;Administrator&#x27;),
+        (&#x27;moderator&#x27;, &#x27;Moderator&#x27;),
+        (&#x27;user&#x27;, &#x27;Regular User&#x27;),
+    ]
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=&#x27;user&#x27;)
+
+    def is_admin(self):
+        return self.role == &#x27;admin&#x27; or self.is_superuser
+
+    def is_moderator(self):
+        return self.role in [&#x27;admin&#x27;, &#x27;moderator&#x27;]
+
+# Mixins
+class AdminRequiredMixin:
+    &quot;&quot;&quot;Mixin to require admin role.&quot;&quot;&quot;
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_admin():
+            from django.core.exceptions import PermissionDenied
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+```
+
+## SQL Injection Prevention
+
+### Django ORM Protection
+
+```python
+# GOOD: Django ORM automatically escapes parameters
+def get_user(username):
+    return User.objects.get(username=username)  # Safe
+
+# GOOD: Using parameters with raw()
+def search_users(query):
+    return User.objects.raw(&#x27;SELECT * FROM users WHERE username = %s&#x27;, [query])
+
+# BAD: Never directly interpolate user input
+def get_user_bad(username):
+    return User.objects.raw(f&#x27;SELECT * FROM users WHERE username = {username}&#x27;)  # VULNERABLE!
+
+# GOOD: Using filter with proper escaping
+def get_users_by_email(email):
+    return User.objects.filter(email__iexact=email)  # Safe
+
+# GOOD: Using Q objects for complex queries
+from django.db.models import Q
+def search_users_complex(query):
+    return User.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query)
+    )  # Safe
+```
+
+### Extra Security with raw()
+
+```python
+# If you must use raw SQL, always use parameters
+User.objects.raw(
+    &#x27;SELECT * FROM users WHERE email = %s AND status = %s&#x27;,
+    [user_input_email, status]
+)
+```
+
+## XSS Prevention
+
+### Template Escaping
+
+```django
+{# Django auto-escapes variables by default - SAFE #}
+{{ user_input }}  {# Escaped HTML #}
+
+{# Explicitly mark safe only for trusted content #}
+{{ trusted_html|safe }}  {# Not escaped #}
+
+{# Use template filters for safe HTML #}
+{{ user_input|escape }}  {# Same as default #}
+{{ user_input|striptags }}  {# Remove all HTML tags #}
+
+{# JavaScript escaping #}
+&lt;script&gt;
+    var username = {{ username|escapejs }};
+&lt;/script&gt;
+```
+
+### Safe String Handling
+
+```python
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+
+# BAD: Never mark user input as safe without escaping
+def render_bad(user_input):
+    return mark_safe(user_input)  # VULNERABLE!
+
+# GOOD: Escape first, then mark safe
+def render_good(user_input):
+    return mark_safe(escape(user_input))
+
+# GOOD: Use format_html for HTML with variables
+from django.utils.html import format_html
+
+def greet_user(username):
+    return format_html(&#x27;&lt;span class=&quot;user&quot;&gt;{}&lt;/span&gt;&#x27;, escape(username))
+```
+
+### HTTP Headers
+
+```python
+# settings.py
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME sniffing
+X_FRAME_OPTIONS = &#x27;DENY&#x27;  # Prevent clickjacking
+
+# Custom middleware
+from django.conf import settings
+
+class SecurityHeaderMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response[&#x27;X-Content-Type-Options&#x27;] = &#x27;nosniff&#x27;
+        response[&#x27;X-Frame-Options&#x27;] = &#x27;DENY&#x27;
+        response[&#x27;X-XSS-Protection&#x27;] = &#x27;1; mode=block&#x27;
+        response[&#x27;Content-Security-Policy&#x27;] = &quot;default-src &#x27;self&#x27;&quot;
+        return response
+```
+
+## CSRF Protection
+
+### Default CSRF Protection
+
+```python
+# settings.py - CSRF is enabled by default
+CSRF_COOKIE_SECURE = True  # Only send over HTTPS
+CSRF_COOKIE_HTTPONLY = False  # False so AJAX can read csrf token from document.cookie; SESSION_COOKIE_HTTPONLY remains True
+CSRF_COOKIE_SAMESITE = &#x27;Lax&#x27;  # Prevent CSRF in some cases
+CSRF_TRUSTED_ORIGINS = [&#x27;https://example.com&#x27;]  # Trusted domains
+
+# Template usage
+&lt;form method=&quot;post&quot;&gt;
+    {% csrf_token %}
+    {{ form.as_p }}
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+# AJAX requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie &amp;&amp; document.cookie !== &#x27;&#x27;) {
+        const cookies = document.cookie.split(&#x27;;&#x27;);
+        for (let i = 0; i &lt; cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + &#x27;=&#x27;)) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+fetch(&#x27;/api/endpoint/&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+        &#x27;X-CSRFToken&#x27;: getCookie(&#x27;csrftoken&#x27;),
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+    },
+    body: JSON.stringify(data)
+});
+```
+
+### Exempting Views (Use Carefully)
+
+```python
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  # Only use when absolutely necessary!
+def webhook_view(request):
+    # Webhook from external service
+    pass
+```
+
+## File Upload Security
+
+### File Validation
+
+```python
+import os
+import magic  # pip install python-magic
+from django.core.exceptions import ValidationError
+
+ALLOWED_MIMES = {
+    &#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;, &#x27;application/pdf&#x27;,
+}
+
+MIME_TO_EXTENSIONS = {
+    &#x27;image/jpeg&#x27;: {&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;},
+    &#x27;image/png&#x27;: {&#x27;.png&#x27;},
+    &#x27;image/gif&#x27;: {&#x27;.gif&#x27;},
+    &#x27;application/pdf&#x27;: {&#x27;.pdf&#x27;},
+}
+
+def validate_file_type(value):
+    &quot;&quot;&quot;Validate file type using magic bytes and cross-check extension.&quot;&quot;&quot;
+    mime = magic.from_buffer(value.read(2048), mime=True)
+    value.seek(0)
+
+    if mime not in ALLOWED_MIMES:
+        raise ValidationError(&#x27;Unsupported file type.&#x27;)
+
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in MIME_TO_EXTENSIONS.get(mime, set()):
+        raise ValidationError(&#x27;File extension does not match file content.&#x27;)
+
+def validate_file_size(value):
+    &quot;&quot;&quot;Validate file size (max 5MB).&quot;&quot;&quot;
+    if value.size &gt; 5 * 1024 * 1024:
+        raise ValidationError(&#x27;File too large. Max size is 5MB.&#x27;)
+
+# models.py
+class Document(models.Model):
+    file = models.FileField(
+        upload_to=&#x27;documents/&#x27;,
+        validators=[validate_file_type, validate_file_size]
+    )
+
+```
+
+For environments where installing libmagic is difficult (e.g., minimal containers),
+use the pure-Python `filetype` package as an alternative:
+
+```python
+import os
+from django.core.exceptions import ValidationError
+
+import filetype  # pip install filetype
+
+ALLOWED_MIMES = {
+    &#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;, &#x27;application/pdf&#x27;,
+}
+
+MIME_TO_EXTENSIONS = {
+    &#x27;image/jpeg&#x27;: {&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;},
+    &#x27;image/png&#x27;: {&#x27;.png&#x27;},
+    &#x27;image/gif&#x27;: {&#x27;.gif&#x27;},
+    &#x27;application/pdf&#x27;: {&#x27;.pdf&#x27;},
+}
+
+def validate_file_type(value):
+    &quot;&quot;&quot;Validate file type using magic bytes.&quot;&quot;&quot;
+    kind = filetype.guess(value.read(2048))
+    value.seek(0)
+
+    if kind is None or kind.mime not in ALLOWED_MIMES:
+        raise ValidationError(&#x27;Unsupported file type.&#x27;)
+
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in MIME_TO_EXTENSIONS.get(kind.mime, set()):
+        raise ValidationError(&#x27;File extension does not match file content.&#x27;)
+```
+
+### Secure File Storage
+
+```python
+# settings.py
+MEDIA_ROOT = &#x27;/var/www/media/&#x27;
+MEDIA_URL = &#x27;/media/&#x27;
+
+# Use a separate domain for media in production
+MEDIA_DOMAIN = &#x27;https://media.example.com&#x27;
+
+# Don&#x27;t serve user uploads directly
+# Use whitenoise or a CDN for static files
+# Use a separate server or S3 for media files
+```
+
+## API Security
+
+### Rate Limiting
+
+```python
+# settings.py
+REST_FRAMEWORK = {
+    &#x27;DEFAULT_THROTTLE_CLASSES&#x27;: [
+        &#x27;rest_framework.throttling.AnonRateThrottle&#x27;,
+        &#x27;rest_framework.throttling.UserRateThrottle&#x27;
+    ],
+    &#x27;DEFAULT_THROTTLE_RATES&#x27;: {
+        &#x27;anon&#x27;: &#x27;100/day&#x27;,
+        &#x27;user&#x27;: &#x27;1000/day&#x27;,
+        &#x27;upload&#x27;: &#x27;10/hour&#x27;,
+    }
+}
+
+# Custom throttle
+from rest_framework.throttling import UserRateThrottle
+
+class BurstRateThrottle(UserRateThrottle):
+    scope = &#x27;burst&#x27;
+    rate = &#x27;60/min&#x27;
+
+class SustainedRateThrottle(UserRateThrottle):
+    scope = &#x27;sustained&#x27;
+    rate = &#x27;1000/day&#x27;
+```
+
+### Authentication for APIs
+
+```python
+# settings.py
+REST_FRAMEWORK = {
+    &#x27;DEFAULT_AUTHENTICATION_CLASSES&#x27;: [
+        &#x27;rest_framework.authentication.TokenAuthentication&#x27;,
+        &#x27;rest_framework.authentication.SessionAuthentication&#x27;,
+        &#x27;rest_framework_simplejwt.authentication.JWTAuthentication&#x27;,
+    ],
+    &#x27;DEFAULT_PERMISSION_CLASSES&#x27;: [
+        &#x27;rest_framework.permissions.IsAuthenticated&#x27;,
+    ],
+}
+
+# views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+@api_view([&#x27;GET&#x27;, &#x27;POST&#x27;])
+@permission_classes([IsAuthenticated])
+def protected_view(request):
+    return Response({&#x27;message&#x27;: &#x27;You are authenticated&#x27;})
+```
+
+## Security Headers
+
+### Content Security Policy
+
+```python
+# settings.py
+CSP_DEFAULT_SRC = &quot;&#x27;self&#x27;&quot;
+CSP_SCRIPT_SRC = &quot;&#x27;self&#x27; https://cdn.example.com&quot;
+CSP_STYLE_SRC = &quot;&#x27;self&#x27; &#x27;unsafe-inline&#x27;&quot;
+CSP_IMG_SRC = &quot;&#x27;self&#x27; data: https:&quot;
+CSP_CONNECT_SRC = &quot;&#x27;self&#x27; https://api.example.com&quot;
+
+# Middleware
+class CSPMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response[&#x27;Content-Security-Policy&#x27;] = (
+            f&quot;default-src {CSP_DEFAULT_SRC}; &quot;
+            f&quot;script-src {CSP_SCRIPT_SRC}; &quot;
+            f&quot;style-src {CSP_STYLE_SRC}; &quot;
+            f&quot;img-src {CSP_IMG_SRC}; &quot;
+            f&quot;connect-src {CSP_CONNECT_SRC}&quot;
+        )
+        return response
+```
+
+## Environment Variables
+
+### Managing Secrets
+
+```python
+# Use python-decouple or django-environ
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# reading .env file
+environ.Env.read_env()
+
+SECRET_KEY = env(&#x27;DJANGO_SECRET_KEY&#x27;)
+DATABASE_URL = env(&#x27;DATABASE_URL&#x27;)
+ALLOWED_HOSTS = env.list(&#x27;ALLOWED_HOSTS&#x27;)
+
+# .env file (never commit this)
+DEBUG=False
+SECRET_KEY=your-secret-key-here
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+ALLOWED_HOSTS=example.com,www.example.com
+```
+
+## Logging Security Events
+
+```python
+# settings.py
+LOGGING = {
+    &#x27;version&#x27;: 1,
+    &#x27;disable_existing_loggers&#x27;: False,
+    &#x27;handlers&#x27;: {
+        &#x27;file&#x27;: {
+            &#x27;level&#x27;: &#x27;WARNING&#x27;,
+            &#x27;class&#x27;: &#x27;logging.FileHandler&#x27;,
+            &#x27;filename&#x27;: &#x27;/var/log/django/security.log&#x27;,
+        },
+        &#x27;console&#x27;: {
+            &#x27;level&#x27;: &#x27;INFO&#x27;,
+            &#x27;class&#x27;: &#x27;logging.StreamHandler&#x27;,
+        },
+    },
+    &#x27;loggers&#x27;: {
+        &#x27;django.security&#x27;: {
+            &#x27;handlers&#x27;: [&#x27;file&#x27;, &#x27;console&#x27;],
+            &#x27;level&#x27;: &#x27;WARNING&#x27;,
+            &#x27;propagate&#x27;: True,
+        },
+        &#x27;django.request&#x27;: {
+            &#x27;handlers&#x27;: [&#x27;file&#x27;],
+            &#x27;level&#x27;: &#x27;ERROR&#x27;,
+            &#x27;propagate&#x27;: False,
+        },
+    },
+}
+```
+
+## Quick Security Checklist
+
+| Check | Description |
+|-------|-------------|
+| `DEBUG = False` | Never run with DEBUG in production |
+| HTTPS only | Force SSL, secure cookies |
+| Strong secrets | Use environment variables for SECRET_KEY |
+| Password validation | Enable all password validators |
+| CSRF protection | Enabled by default, don&#x27;t disable |
+| XSS prevention | Django auto-escapes, don&#x27;t use `&amp;#124;safe` with user input |
+| SQL injection | Use ORM, never concatenate strings in queries |
+| File uploads | Validate file type and size |
+| Rate limiting | Throttle API endpoints |
+| Security headers | CSP, X-Frame-Options, HSTS |
+| Logging | Log security events |
+| Updates | Keep Django and dependencies updated |
+
+Remember: Security is a process, not a product. Regularly review and update your security practices.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

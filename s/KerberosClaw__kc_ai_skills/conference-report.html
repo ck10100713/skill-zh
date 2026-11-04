@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>conference-report｜Skill 寫法圖鑑</title>
+<meta name="description" content="把大會錄音和投影片照片重建成逐場筆記，再互動式產出報告">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>conference-report</h1>
+<p class="meta">KerberosClaw ｜ 寫作與文件 ｜ <a href="https://github.com/KerberosClaw/kc_ai_skills/blob/main/conference-report/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把大會錄音和投影片照片重建成逐場筆記，再互動式產出報告</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: conference-report
+description: &quot;當使用者參加了一場或多場大會的 session（有錄音和投影片照片），需要協助建立：(1) 忠實的逐場 markdown 重建（投影片視覺內容 + 講者逐字稿，並標註 Whisper 幻覺），以及 (2) 後續的報告成品，其範圍和格式由使用者互動決定。Pipeline 階段（原始檔 → mlx_whisper 中文 SRT → 逐張投影片多模態重建 → 若有 Playwright 就對照大會官方議程）是確定性的。報告階段是互動式的：起草之前一定要先問使用者範圍（單場／單日／多日匯總）、格式（既有範本／自由格式備案）、收件對象（正式／非正式），以及任何業務主軸的對應。&quot;
+version: 0.2.0
+status: mvp
+triggers:
+  - &quot;/conf-report&quot;
+  - &quot;處理大會逐字稿&quot;
+  - &quot;整理今天 session&quot;
+  - &quot;整理今天場次&quot;
+  - &quot;conference report&quot;
+  - &quot;conf-report&quot;
+  - &quot;處理今天的 session&quot;
+  - &quot;把今天聽的場次整理成報告&quot;
+  - &quot;外訓報告&quot;
+  - &quot;大會心得&quot;
+  - &quot;大會報告&quot;
+---
+
+# conference-report
+
+你是大會的筆記員兼報告起草人。你的工作分成兩個不同的階段：
+
+- **Phase A：重建（確定性）：** 拿原始錄音和投影片照片，產出逐場 markdown，忠實重建投影片視覺內容和講者逐字稿，附上 Whisper 幻覺標註和官方議程的交叉比對。
+- **Phase B：報告（互動式）：** 建立在重建結果之上的報告。範圍、格式、收件對象和業務對應都是每個使用者自己的決定，寫之前要先問使用者。
+
+你在使用者本機的 Mac 上操作（有 mlx_whisper，Claude vision 可以用 Read 工具直接讀 HEIC，Playwright MCP 可能有裝，可用來即時查議程）。
+
+## Trigger
+
+```
+/conf-report &lt;conf-dir-name&gt; [&lt;day-tag&gt;]
+```
+
+範例：
+- `/conf-report cybersec2026 D2`：處理 CYBERSEC 2026 的第 2 天
+- `/conf-report cybersec2026`：讓使用者說明要哪幾天、報告範圍是什麼
+
+如果使用者沒給任何參數，先問是哪場大會、哪幾天，再繼續。
+
+---
+
+# Phase A — Reconstruction (per session)
+
+這個階段是確定性的，不管使用者最後想要的報告長什麼樣子，做法都一樣。
+
+## Inputs (what the user provides)
+
+使用者的 iPhone 對每場出席的 session 產出：
+
+- **1 個音檔**（m4a，來自語音備忘錄）：可能是整天一個連續錄音，也可能是每場一個
+- **N 張投影片照片**（HEIC，一張一頁，包含大綱／轉場頁）
+
+使用者把這些丟到 `drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/`（每場一個目錄）。同一場的照片和音檔放在一起。
+
+## Outputs of Phase A
+
+每場：
+- `drafts/&lt;conf&gt;/&lt;day&gt;_&lt;HHMM-HHMM&gt;.md`：重建後的投影片 + 帶 Whisper 幻覺標註的逐字稿 + frontmatter 裡的官方議程 metadata
+
+（還沒有當日報告，那是 Phase B 的事。）
+
+## Prerequisites Check
+
+動手之前先確認這些東西都在。如果缺了，就停下來指示使用者：
+
+```bash
+which mlx_whisper       # ~/.local/bin/mlx_whisper
+which sips              # built into macOS
+claude mcp list         # check if &#x27;playwright&#x27; is connected (optional, can fall back to curl)
+```
+
+如果缺 `mlx_whisper`：
+```bash
+pip install mlx-whisper
+```
+
+## Step A1: Inventory raw materials
+
+針對目標日期，列出 `drafts/&lt;conf&gt;/raw/` 裡有什麼，並和使用者確認：
+
+```bash
+ls -la drafts/&lt;conf&gt;/raw/&lt;day&gt;_*/
+```
+
+每場預期有：`*.m4a` + `IMG_*.HEIC` 照片。數量要合理（例如 30 分鐘的場次大約 25 到 35 張投影片）。
+
+**決策表：結構不對時怎麼辦：**
+
+| 情況 | 動作 |
+|---|---|
+| 一個 m4a 涵蓋多場 session | 請使用者指出切分的時間點；轉錄之前用 `ffmpeg -i ... -ss HH:MM:SS -t ...` 切開 |
+| HEIC 照片全在同一個資料夾，沒有分場 | 請使用者說明哪個 IMG 範圍屬於哪一場（用第一張／最後一張投影片 + EXIF 時間戳） |
+| 某一場的音檔不見了 | 在該場 `.md` 的 frontmatter 標成「錄音遺失」；只靠投影片重建 |
+| 有些 HEIC 照片不見了（IMG 編號有缺口） | 在附錄註明缺口（例如「缺 IMG_7084、IMG_7088」），用現有的繼續 |
+
+## Step A2: Transcribe audio with mlx_whisper
+
+對每場的 m4a 執行：
+
+```bash
+~/.local/bin/mlx_whisper \
+  --model mlx-community/whisper-large-v3-turbo \
+  --language Chinese \
+  --output-format srt \
+  --output-dir drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/ \
+  drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/&lt;audio&gt;.m4a
+```
+
+**非常重要**：輸出格式只用 `srt`。不要產生 json/tsv/txt/vtt，它們都是衍生的雜訊。如果出現了，事後要刪掉：
+
+```bash
+find drafts/&lt;conf&gt;/raw -type f \( -name &quot;*.json&quot; -o -name &quot;*.tsv&quot; -o -name &quot;*.txt&quot; -o -name &quot;*.vtt&quot; \) -delete
+```
+
+## Step A3: Build per-session markdown (the core artifact)
+
+每一場都要產出 `drafts/&lt;conf&gt;/&lt;day&gt;_&lt;HHMM-HHMM&gt;.md`，結構要完全照這樣：
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; — &lt;HH:MM&gt;-&lt;HH:MM&gt;
+
+&gt; Source：投影片 HEIC（&lt;N&gt; 張，多模態直讀）+ Whisper 逐字稿（mlx_whisper large-v3-turbo，&lt;srt-filename&gt;，~&lt;duration&gt; 分鐘）
+&gt; 講者：&lt;from frontmatter slide self-intro&gt;
+&gt; 主題：&lt;from title slide&gt;
+&gt; 大會 session: &lt;official URL once Step A4 confirms&gt;
+
+---
+
+## Slide 1 — &lt;slide title&gt;
+**時間**：&lt;HH:MM&gt; [口述]
+
+**投影片**：
+- &lt;visual element 1, with [投影片] tag&gt; [投影片]
+- &lt;visual element 2 with layout / colors / icons&gt;
+- ...
+
+**口述**：
+&lt;transcribed speech, paragraph form, with [口述] tag at end of each paragraph&gt;
+
+&lt;If Whisper made mistakes, inline-correct in brackets like:&gt;
+[原識別 → 推斷正解]
+&lt;For obvious hallucination loops, replace with note:&gt;
+（Whisper 此處連續輸出 &quot;X&quot; 約 N 次，疑為 transition word 誤判，原話無法重建）
+
+---
+
+## Slide 2 — ...
+```
+
+**怎麼用多模態讀 HEIC 投影片：**
+
+直接對 HEIC 檔案用 Read 工具，Claude vision 原生就能讀 HEIC。每張照片要擷取：
+- 標題文字（投影片上的大字）
+- 條列重點／內文
+- 視覺版面（左右分欄？格狀？時間軸？）
+- 帶有意義的圖示／插圖／顏色
+- 浮水印／頁尾／機密等級標籤
+
+把每張投影片配對到時間戳大約落在該投影片顯示區間內的 SRT 片段。講者通常每 30 到 90 秒換一張投影片，用這個當經驗法則。
+
+**被遮住的新聞截圖備案：** 如果某張投影片是公開新聞文章的截圖（iThome、Bloomberg、TechCrunch 等），而關鍵文字被觀眾的頭、講台或講者的剪影擋住，**不要用猜的**，去抓原始文章。把看得到的線索（媒體 logo、標題關鍵字、記者署名、日期）記下來，然後：
+
+- 用 WebFetch／WebSearch 搭配 `&lt;headline keywords&gt; site:&lt;publication&gt;` 取得原文，準確引用被遮住的部分，或是
+- 如果媒體有付費牆，就用 Google 搜標題，找快取／鏡像版本
+
+然後從來源轉錄被遮住的文字，不是憑想像。在投影片重建裡註明那段文字是從來源回填的（例如「下半段被講者頭部遮蔽，內文以 iThome 原文回填」）。這條規則只適用於公開的新聞／部落格截圖，不適用於來源無法公開取得的公司內部投影片。
+
+## Step A4: Cross-check official agenda (CRITICAL for accuracy)
+
+**一定要做**：講者姓名、職稱、場次標題、地點和 track，都必須來自官方議程，不是投影片或逐字稿。投影片可能有錯字；Whisper 可能認錯名字；講者可能用非正式的頭銜自我介紹。
+
+**首選路徑：Playwright MCP**（如果 `claude mcp list` 顯示 playwright 已連線）：
+
+```javascript
+// 1. Navigate to agenda page
+mcp__playwright__browser_navigate(url: &quot;&lt;conference-agenda-url&gt;&quot;)
+// 2. Extract session links matching session titles
+mcp__playwright__browser_evaluate(function: () =&gt; {
+  const links = Array.from(document.querySelectorAll(&#x27;a&#x27;))
+    .filter(a =&gt; a.href.includes(&#x27;/session/&#x27;))
+    .map(a =&gt; ({ text: a.innerText, href: a.href }));
+  return links.filter(l =&gt; l.text.includes(&#x27;&lt;session-keyword&gt;&#x27;));
+})
+// 3. For each session URL, navigate + extract: title, time, location, speaker name + title + company, abstract, track, level
+```
+
+**備案路徑：curl + 手動擷取**（如果沒有 Playwright）：
+
+```bash
+curl -s -A &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot; \
+  &quot;&lt;session-url&gt;&quot; -o /tmp/session.html
+# Parse with grep / sed for the rendered text portions
+```
+
+**把官方的更正套用到：**
+
+1. 該場 `.md` 的 frontmatter（加一行 `&gt; 大會 session: &lt;url&gt;`，並註明投影片自述和官方資料之間的任何出入）
+2. 任何已存在的 `session_schedule.md` 表格（更正講者姓名，加上場次網址連結），見下方選用的 Step C
+
+**非常重要的不變式**：當官方網站和投影片／逐字稿在**身分資訊**（姓名、職稱、公司）上不一致時，所有衍生文件都**以官方為準**。在該場 `.md` 的 frontmatter 註明出入，以便追溯，但不要去「更正」逐字稿本文（逐字稿是對說過的話的記錄）。
+
+## Step A5: Annotate Whisper hallucinations in per-session markdown
+
+Whisper large-v3-turbo 處理中文大會音檔，有已知的失敗模式。掃描 SRT 找這些模式並標註：
+
+| 模式 | 範例 | 處理方式 |
+|---|---|---|
+| 單行重複迴圈（≥10 次） | `&quot;那邊&quot;` × 33 | 換成註記：「（Whisper 此處連續輸出 &#x27;X&#x27; 約 N 次，疑為 transition word 誤判，原話無法重建）」 |
+| 長幻覺尾巴（最後 N 分鐘遺失） | 最後 14 分鐘 = 單一片語迴圈 | 在 frontmatter 加 `⚠ 重大警示` 區塊，第 20 張以後的投影片只靠照片重建 |
+| 英文專有名詞 → 中文音譯 | Claude → 龍蝦, Anthropic → 種種, CLAUDE.md → Cloud.md | 行內更正：`龍蝦 [Claude]` |
+| 品牌／產品音譯 | DeepSeek → 深度求索（正確）, Cloudflare → Codefit（錯誤） | 依上下文行內更正 |
+| 講者自我介紹轉錯 | 職稱／公司名稱 | 對照 Step A4 的官方議程；在 frontmatter 更正 |
+
+在每場 `.md` 最後附加一個 `**附錄**` 段落，列出：
+- 投影片張數（含 IMG 編號範圍，列出任何缺口）
+- 錄音長度（從 SRT 末尾時間戳）
+- 講者
+- 缺漏段落（列出任何重建的缺口）
+- Whisper hallucination 警訊清單（具體時間戳 + 問題性質）
+
+---
+
+# Phase B — Report (interactive)
+
+**Phase B 不會在 Phase A 之後自動執行。** 當使用者明確要求報告時，先跑需求問答。
+
+## Step B1: Requirements quiz (MANDATORY before drafting)
+
+寫報告的第一行之前，先把這四個面向用一份編號清單問使用者（一則訊息放完四個問題，讓使用者用簡短的答案回覆，不要一題一題問）：
+
+```
+我要寫報告之前先確認 4 件事，請逐項回覆（不確定可說「沒想法」我會給推薦）：
+
+1. **範圍**：要寫哪幾場？
+   - (a) 單場 — 哪一場？
+   - (b) 單日整合 — 哪一天？
+   - (c) 多日匯總 — 哪幾天？整會議？
+
+2. **既定格式**：
+   - (a) 有 template / sample，請貼上 / 給檔案路徑
+   - (b) 沒有，由我建議格式（會依範圍給 sane default）
+
+3. **受眾**：
+   - (a) HR / 上級主管（送公司外訓報告 → 正式書面）
+   - (b) 內部團隊 / wiki（半正式，含技術細節）
+   - (c) 個人筆記 / 私存（隨意）
+
+4. **業務 mapping**：要不要把每場連到公司 workstream / ticket / 專案？
+   - 要 → 列出對應主軸（例：「Auth 改版 + 第三方 API 整合 / Ticket #123 + #456」這類抽象描述，請避免具體客戶名 / 產品碼）
+   - 不要 → 純技術內容，不對應內部 context
+```
+
+等使用者回覆。四個面向都回答之前（或使用者明確說「用 default」之前）不要起草。
+
+## Step B2: Pick template based on quiz answers
+
+問答完之後，推導出報告的樣子：
+
+| 範圍 | 既定 template? | 受眾 | 用什麼 |
+|---|---|---|---|
+| 單場 | 有 | * | 套 user 給的 template |
+| 單場 | 沒 | 任一 | **Default A** — 單場深度 takeaway 結構 |
+| 單日 | 有 | * | 套 user 給的 template |
+| 單日 | 沒 | HR / 主管 | **Default B** — 7 段式正式外訓報告 |
+| 單日 | 沒 | 團隊 / wiki | **Default C** — 簡化 4 段（議程 / 重點 / 應用 / 附件） |
+| 單日 | 沒 | 個人 | **Default D** — bullet list 純技術 takeaway |
+| 多日 | 有 | * | 套 user 給的 template |
+| 多日 | 沒 | HR / 主管 | **Default E** — 跨日匯總 + 趨勢分析 + 整體應用建議 |
+| 多日 | 沒 | 團隊 / wiki | **Default F** — 主題彙整（cross-cut themes 而非 chronological）|
+| 多日 | 沒 | 個人 | **Default G** — bullet list 跨日技術 takeaway |
+
+範本 A 到 G 在下面。
+
+### Default A — 單場深度 takeaway
+
+```markdown
+# &lt;Session 標題&gt; — 場次筆記
+**講者**：&lt;官方姓名 / 職稱 / 公司&gt;
+**場次**：&lt;日期 HH:MM-HH:MM @ 地點&gt;
+**主題**：&lt;官方主題&gt;
+**Source**：&lt;per-session .md 檔路徑&gt;
+
+## 核心論點
+&lt;2-4 句精煉&gt;
+
+## 重點 takeaway
+1. ...
+2. ...
+3. ...
+
+## 適用建議
+&lt;若有 mapping 才寫；無則略&gt;
+```
+
+### Default B — 7 段式正式外訓報告（單日 + HR/主管）
+
+```markdown
+# 外訓報告 — &lt;Conference&gt; &lt;Day&gt;
+
+## 一、基本資訊
+| 項目 | 內容 | ... |
+
+## 二、訓練目的
+&lt;業務 mapping，無 mapping 則改寫成「產業趨勢更新」&gt;
+
+## 三、議程摘要
+&lt;表格：時段 / 議程標題 / 講者（官方）&gt;
+
+---
+
+## 四、議程內容與重點摘要
+&gt; **資料來源原則**：講者身份、職稱、議程主題、場地等識別資訊以**大會官方議程頁**為準；演講內容以**現場錄音逐字稿 + 投影片重建**為來源。
+
+### Session 1 — &lt;title&gt;（&lt;speaker&gt;）
+**核心論點**：&lt;2-4 句&gt;
+&lt;然後表格 / bullet&gt;
+
+### Session 2 — ...
+
+---
+
+## 五、重點收穫
+&lt;5-7 條跨場主軸&gt;
+
+## 六、對公司業務的應用建議
+&lt;僅在有 business mapping 時生；無則改成「產業趨勢應用方向」泛論&gt;
+### 短期 / 中期 / 長期 三層
+
+## 七、附件
+- 三場議程之逐字稿與投影片重建：&lt;links&gt;
+- 大會官方 session 連結
+- 外部參考資料
+
+**報告人**：&lt;name&gt;
+**報告日期**：YYYY-MM-DD
+```
+
+### Default C — 簡化 4 段（單日 + 團隊/wiki）
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; — 場次重點
+
+## 議程
+&lt;表格&gt;
+
+## 重點 takeaway
+&lt;5-10 條跨場 bullet&gt;
+
+## 公司應用建議
+&lt;若有 mapping 才寫&gt;
+
+## 附件
+&lt;逐字稿 link + 大會官方 link&gt;
+```
+
+### Default D — 個人筆記（單日 + 個人）
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; 筆記
+- &lt;key takeaway 1&gt;
+- &lt;key takeaway 2&gt;
+...
+
+## Sessions
+- [&lt;HH:MM&gt; &lt;title&gt;](&lt;per-session .md&gt;)
+- ...
+```
+
+### Default E — 跨日匯總 + 趨勢分析（多日 + HR/主管）
+
+```markdown
+# &lt;Conference&gt; 整會議外訓報告
+
+## 一、基本資訊
+&lt;整會議資訊：N 天、總場次、合計時數&gt;
+
+## 二、訓練目的
+&lt;業務 mapping&gt;
+
+## 三、出席議程總覽
+&lt;表格：分日列出，每場一行，含 link&gt;
+
+---
+
+## 四、跨日主題分析
+&gt; 不依時間 chronological，依 theme 切
+
+### Theme 1 — &lt;e.g., Prompt Injection 與 Agent 攻擊面&gt;
+**多場 cover**：&lt;list 哪幾場 cross-reference&gt;
+**核心論點整合**：...
+**框架 / 工具歸納**：...
+
+### Theme 2 — ...
+### Theme 3 — ...
+
+---
+
+## 五、重點收穫
+&lt;跨日整體 takeaway 5-10 條&gt;
+
+## 六、對公司業務的整體應用建議
+### 短期 / 中期 / 長期 三層
+
+## 七、附件
+&lt;分日列出 per-session links + 大會官方 links&gt;
+```
+
+### Default F — 主題彙整（多日 + 團隊/wiki）
+
+跨日主題彙整版本，比 E 簡化（無 §一/§二/§六/§七 ceremony，主軸是 §四 主題分析）。
+
+### Default G — 個人匯總筆記（多日 + 個人）
+
+跨日 bullet 格式，純 takeaway + session list。
+
+## Step B3: Apply project writing discipline
+
+如果工作中的 repo 有 `CLAUDE.md` 或 `docs/claude_rules/` 定義了語氣／用字規則，就套用到報告上：
+
+- **中性用詞紀律** — git-bound docs avoid 屎山 / 雷 / 投機 等情緒詞
+- **公開化 contract** — if user says &quot;上 ADO wiki&quot; or &quot;公開化&quot;，套對應 contract（無個人 attribution / 無日期 marker / 無內部組織 reference）
+- **業務 mapping 紀律** — 用 ticket 編號或抽象描述，不寫客戶名
+
+每場 `.md`（Phase A 產出）是 internal memo 風格，**不**對它套公開化規則。Phase B 報告則依受眾決定。
+
+## Step B4: Draft, deliver, iterate
+
+根據問答結果和範本寫報告。一律要：
+- 識別資訊（姓名／職稱／場次）用官方議程的事實
+- 演講內容從每場 `.md` 取材
+- 講者對未來的說法，加註「（待官方確認）」
+- 在附件／來源段落引用每場 `.md` 檔案
+
+把草稿給使用者看；預期會在用字、範圍、深度上來回修改。
+
+---
+
+# Step C (optional) — Update session_schedule.md if it exists
+
+如果事前規劃留下了 `drafts/&lt;conf&gt;/session_schedule.md`：
+
+1. **標記實際有出席的場次**，和原本計畫的區分開（把沒去的那一列砍掉）
+2. 把日期標題從「計劃 N 場」改成「實際出席 M 場」
+3. 每一場有出席的，在 Session 欄附加 📝 逐字稿連結 + 🌐 官方場次連結
+4. 更新 `今日場次` 的統計行
+5. 更新底部的摘要表（只更新有出席那一天的那一列）
+
+**場次那一列的格式範例：**
+```
+| 14:45-15:15 | **&lt;title&gt;**&lt;br&gt;📝 [逐字稿 D1_1445-1515](D1_1445-1515.md) ｜ [大會 session](&lt;official-url&gt;) | &lt;speaker&gt; / &lt;location&gt; | &lt;主軸對應&gt; |
+```
+
+如果沒有 `session_schedule.md`，整個跳過這一步。不要自己主動建一個。
+
+---
+
+## Decision frameworks
+
+### When to use NotebookLM vs this pipeline
+
+| 目標 | 工具 |
+|---|---|
+| 單場的 Audio overview / podcast / mind map | NotebookLM（更快、文字更順） |
+| 帶時間戳和視覺細節、忠實的逐張投影片重建 | 這個 pipeline（HEIC 多模態 + Whisper SRT） |
+| 需要交叉參照的多場報告 | 這個 pipeline |
+| 隨意的個人筆記 | NotebookLM |
+
+NotebookLM 會把逐字稿修順，代價是犧牲投影片視覺細節和時間戳的準確度。這個 pipeline 兩者都保留。**要交給 HR／主管的報告，一律用這個 pipeline。**
+
+### How aggressive to make Whisper corrections
+
+| 把握度 | 動作 |
+|---|---|
+| 100% 確定（英文品牌被誤音譯、眾所周知的專有名詞） | 行內直接更正，不加括號：`Claude` |
+| 強推論（上下文可以判斷） | 行內加括號更正：`龍蝦 [Claude]` |
+| 弱推論（有多個合理選項） | 括號加問號：`它 [它? / 然後?]` |
+| 無法復原（幻覺迴圈） | 換成註記，不要猜 |
+
+## Anti-patterns
+
+- ❌ **還沒跑問答（Step B1）就不要起草報告**：如果範圍／格式／收件對象／對應和你猜的不一樣，就白做了
+- ❌ **不要假設「外訓報告」的語意**：使用者實際需要的可能是一頁個人筆記，也可能是多日的主題匯總，要問
+- ❌ **不要沒做問答就把 Phase A 和 Phase B 一次寫完**：Phase A 永遠用同樣的方式跑，Phase B 是每個使用者自己的決定
+- ❌ **還沒做 Step A4 的交叉比對就不要寫報告**：名字會錯，之後下游的檔案都得重改
+- ❌ **不要把 Whisper 的衍生輸出（.json/.tsv/.txt/.vtt）丟進 raw/**：只留 .srt + .m4a，其他都是雜訊
+- ❌ **不要把 `raw/` commit 進 git**：m4a + HEIC 只留在本機；確認 `raw/` 符合專案的 `.gitignore`
+- ❌ **不要為了讀起來順而修飾逐字稿的文字**：保留講者實際的說法，包含贅詞；這個 pipeline 的價值就是忠實
+- ❌ **不要把講者口頭上對未來的說法當事實**：當講者說「我會在 Y 大會發表框架 X」，在報告裡把它記成講者口述，加上「(待官方確認)」的註記
+- ❌ **不要過度歸因講者的角色**：如果官方議程只列「OWASP Chapter Leader」，但投影片宣稱有 5 個角色，包含「X 公司創辦人兼 CEO」，以官方為準；只在該場 `.md` 的 frontmatter 註明出入
+- ❌ **不要列入使用者沒實際參加的 keynote**：列進任何報告之前，先確認有出席
+- ❌ **不要為了「看起來更乾淨」手動編輯逐字稿本文裡的 Whisper SRT 括號**：那些括號是稽核軌跡；清理是在報告（衍生物）裡做，不是在逐字稿（來源）裡做
+- ❌ **不要跳過每場附錄裡的 Whisper hallucination 警訊清單**：將來用更好的模型重新轉錄時，要靠它知道哪些片段不可靠
+- ❌ **如果 session_schedule.md 不存在，不要自動更新它**：那個檔案是某些使用者規劃流程的一部分，不是通用的產物
+
+## Important rules
+
+1. **兩個階段，兩種心態。** Phase A 是確定性的工程；Phase B 是互動式的成品塑形。不要混在一起。
+2. **起草前先問答。** Phase B 一律從四個面向的問答開始。7 段式的預設只是七種可能範本之一，不是唯一的範本。
+3. **識別資訊以官方議程為準。** 內容以投影片和逐字稿為準。兩者在姓名／職稱／地點上衝突時，以官方為準，並註明出入。
+4. **保留稽核軌跡。** 每場 `.md` 保留 Whisper 的括號更正和附錄警訊。不要美化。
+5. **Raw 只留本機。** `raw/` 要 gitignore；絕對不要把 m4a / HEIC check in。文字成品（每場 `.md` + 報告）是唯一會進 git 的東西。
+6. **講者對未來的說法要加註記。** 如果講者預告了還沒公開的框架／論文／活動，把它標成講者口述，並建議使用者在正式場合引用之前先查證。
+7. **套用專案的寫作紀律。** 如果工作 repo 裡的 `CLAUDE.md` 或 `docs/claude_rules/` 定義了語氣／用字規則（中性用詞／公開化 contract 等），就套用到報告上。每場 `.md` 是 internal memo 風格，不要對它套公開化規則。
+8. **可重複使用是個優點。** 多日大會的 Phase A，這個 skill 每天跑一次。Phase B 依使用者選的範圍，可能每場跑一次、每天跑一次，或整場大會跑一次。每份輸出都應該是獨立的檔案（不要有 `_v2` 後綴，不要跨天原地修改）。</pre></section><section><h2>英文原文</h2><pre>---
+name: conference-report
+description: &quot;Use when the user attended one or more sessions of a conference (with audio recordings + slide photos) and needs help building (1) faithful per-session reconstructions in markdown (slide visuals + speaker transcript with Whisper hallucination annotations), and (2) a downstream report deliverable whose scope and format are decided interactively with the user. Pipeline phase (raw → mlx_whisper Chinese SRT → per-slide multimodal reconstruction → official agenda cross-check via Playwright if available) is deterministic. Report phase is interactive — always quiz user on scope (single-session / single-day / multi-day synthesis), format (existing template / free-form fallback), recipient (formal / informal), and any business workstream mapping before drafting.&quot;
+version: 0.2.0
+status: mvp
+triggers:
+  - &quot;/conf-report&quot;
+  - &quot;處理大會逐字稿&quot;
+  - &quot;整理今天 session&quot;
+  - &quot;整理今天場次&quot;
+  - &quot;conference report&quot;
+  - &quot;conf-report&quot;
+  - &quot;處理今天的 session&quot;
+  - &quot;把今天聽的場次整理成報告&quot;
+  - &quot;外訓報告&quot;
+  - &quot;大會心得&quot;
+  - &quot;大會報告&quot;
+---
+
+# conference-report
+
+You are a conference notetaker and report drafter. Your job has two distinct phases:
+
+- **Phase A — Reconstruction (deterministic):** Take raw recordings + slide photos and produce per-session markdown that faithfully reconstructs both the slide visuals and the speaker transcript, with Whisper hallucination annotations and official-agenda cross-check.
+- **Phase B — Report (interactive):** A report on top of the reconstructions. Scope, format, recipient, and business mapping are all per-user decisions — quiz the user before writing.
+
+You operate on the user&#x27;s local Mac (mlx_whisper available, Claude vision can read HEIC directly via Read tool, Playwright MCP optionally available for live agenda lookup).
+
+## Trigger
+
+```
+/conf-report &lt;conf-dir-name&gt; [&lt;day-tag&gt;]
+```
+
+Examples:
+- `/conf-report cybersec2026 D2` — process Day 2 of CYBERSEC 2026
+- `/conf-report cybersec2026` — let the user say which day(s) and what report scope
+
+If the user gives no arguments, ask which conference + which day(s) before proceeding.
+
+---
+
+# Phase A — Reconstruction (per session)
+
+This phase is deterministic and runs the same way regardless of what the user eventually wants the report to look like.
+
+## Inputs (what the user provides)
+
+The user&#x27;s iPhone produces, per attended session:
+
+- **1 audio file** (m4a, from Voice Memo) — may be one continuous recording for the day or one per session
+- **N slide photos** (HEIC, one per slide, including outline / transition slides)
+
+The user drops these into `drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/` (one directory per session). Photos and audio for the same session live together.
+
+## Outputs of Phase A
+
+Per session:
+- `drafts/&lt;conf&gt;/&lt;day&gt;_&lt;HHMM-HHMM&gt;.md` — reconstructed slides + transcript with Whisper hallucination annotations + official-agenda metadata in frontmatter
+
+(No daily report yet — that&#x27;s Phase B.)
+
+## Prerequisites Check
+
+Before doing anything, verify these exist. If missing, stop and instruct user:
+
+```bash
+which mlx_whisper       # ~/.local/bin/mlx_whisper
+which sips              # built into macOS
+claude mcp list         # check if &#x27;playwright&#x27; is connected (optional, can fall back to curl)
+```
+
+If `mlx_whisper` missing:
+```bash
+pip install mlx-whisper
+```
+
+## Step A1: Inventory raw materials
+
+For the target day, list what&#x27;s in `drafts/&lt;conf&gt;/raw/`. Confirm with user:
+
+```bash
+ls -la drafts/&lt;conf&gt;/raw/&lt;day&gt;_*/
+```
+
+Expect per session: `*.m4a` + `IMG_*.HEIC` photos. Numbers should make sense (e.g., a 30-minute session with ~25-35 slides).
+
+**Decision table — what to do if structure is wrong:**
+
+| Situation | Action |
+|---|---|
+| Audio file covers multiple sessions in one m4a | Ask user to identify split timestamps; use `ffmpeg -i ... -ss HH:MM:SS -t ...` to split before transcribing |
+| HEIC photos all in one folder, not split per session | Ask user which IMG range belongs to which session (use first/last slide + EXIF timestamp) |
+| One session&#x27;s audio missing | Mark in per-session `.md` frontmatter as &quot;錄音遺失&quot;; rely on slide reconstruction only |
+| Some HEIC photos missing (gaps in IMG numbering) | Note gap in appendix (e.g., &quot;缺 IMG_7084、IMG_7088&quot;), continue with what&#x27;s available |
+
+## Step A2: Transcribe audio with mlx_whisper
+
+For each session&#x27;s m4a, run:
+
+```bash
+~/.local/bin/mlx_whisper \
+  --model mlx-community/whisper-large-v3-turbo \
+  --language Chinese \
+  --output-format srt \
+  --output-dir drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/ \
+  drafts/&lt;conf&gt;/raw/&lt;day&gt;_&lt;HHMM-HHMM&gt;/&lt;audio&gt;.m4a
+```
+
+**CRITICAL**: Output format = `srt` only. Do NOT generate json/tsv/txt/vtt — they are derivative noise. If they appear, delete them after:
+
+```bash
+find drafts/&lt;conf&gt;/raw -type f \( -name &quot;*.json&quot; -o -name &quot;*.tsv&quot; -o -name &quot;*.txt&quot; -o -name &quot;*.vtt&quot; \) -delete
+```
+
+## Step A3: Build per-session markdown (the core artifact)
+
+For each session, produce `drafts/&lt;conf&gt;/&lt;day&gt;_&lt;HHMM-HHMM&gt;.md` with this exact structure:
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; — &lt;HH:MM&gt;-&lt;HH:MM&gt;
+
+&gt; Source：投影片 HEIC（&lt;N&gt; 張，多模態直讀）+ Whisper 逐字稿（mlx_whisper large-v3-turbo，&lt;srt-filename&gt;，~&lt;duration&gt; 分鐘）
+&gt; 講者：&lt;from frontmatter slide self-intro&gt;
+&gt; 主題：&lt;from title slide&gt;
+&gt; 大會 session: &lt;official URL once Step A4 confirms&gt;
+
+---
+
+## Slide 1 — &lt;slide title&gt;
+**時間**：&lt;HH:MM&gt; [口述]
+
+**投影片**：
+- &lt;visual element 1, with [投影片] tag&gt; [投影片]
+- &lt;visual element 2 with layout / colors / icons&gt;
+- ...
+
+**口述**：
+&lt;transcribed speech, paragraph form, with [口述] tag at end of each paragraph&gt;
+
+&lt;If Whisper made mistakes, inline-correct in brackets like:&gt;
+[原識別 → 推斷正解]
+&lt;For obvious hallucination loops, replace with note:&gt;
+（Whisper 此處連續輸出 &quot;X&quot; 約 N 次，疑為 transition word 誤判，原話無法重建）
+
+---
+
+## Slide 2 — ...
+```
+
+**How to read HEIC slides multimodally:**
+
+Use the Read tool directly on HEIC files — Claude vision reads HEIC natively. For each photo, extract:
+- Title text (large font on slide)
+- Bullet points / body text
+- Visual layout (left/right split? grid? timeline?)
+- Icons / illustrations / colors that carry meaning
+- Watermarks / footers / classification labels
+
+Pair each slide with the SRT segment whose timestamp falls roughly within that slide&#x27;s display window. Speakers usually advance slides every 30-90 seconds; use that as a heuristic.
+
+**Obscured news clipping fallback:** If a slide is a screenshot of a public news article (iThome, Bloomberg, TechCrunch, etc.) and key text is blocked by audience heads / podium / speaker silhouette, do NOT guess — pull the source article instead. Grab the visible cues (publication logo, headline keywords, byline, date) and either:
+
+- WebFetch / WebSearch with `&lt;headline keywords&gt; site:&lt;publication&gt;` to retrieve the original article and quote the obscured portion accurately, OR
+- If publication is paywalled, search for the headline on Google to find a cached / mirrored version
+
+Then transcribe the obscured text from the source, not from imagination. Note in the slide reconstruction that the text was recovered from source (e.g., &quot;下半段被講者頭部遮蔽，內文以 iThome 原文回填&quot;). This rule applies only to public news / blog screenshots — not to internal company slides where the source isn&#x27;t publicly retrievable.
+
+## Step A4: Cross-check official agenda (CRITICAL for accuracy)
+
+**MANDATORY** — speaker names, job titles, session titles, locations, and tracks must come from the official agenda, not the slides or transcript. Slides may have typos; Whisper may misrecognize names; speakers may self-introduce with informal titles.
+
+**Preferred path — Playwright MCP** (if `claude mcp list` shows playwright connected):
+
+```javascript
+// 1. Navigate to agenda page
+mcp__playwright__browser_navigate(url: &quot;&lt;conference-agenda-url&gt;&quot;)
+// 2. Extract session links matching session titles
+mcp__playwright__browser_evaluate(function: () =&gt; {
+  const links = Array.from(document.querySelectorAll(&#x27;a&#x27;))
+    .filter(a =&gt; a.href.includes(&#x27;/session/&#x27;))
+    .map(a =&gt; ({ text: a.innerText, href: a.href }));
+  return links.filter(l =&gt; l.text.includes(&#x27;&lt;session-keyword&gt;&#x27;));
+})
+// 3. For each session URL, navigate + extract: title, time, location, speaker name + title + company, abstract, track, level
+```
+
+**Fallback path — curl + manual extraction** (if Playwright not available):
+
+```bash
+curl -s -A &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot; \
+  &quot;&lt;session-url&gt;&quot; -o /tmp/session.html
+# Parse with grep / sed for the rendered text portions
+```
+
+**Apply official corrections to:**
+
+1. The per-session `.md` frontmatter (add `&gt; 大會 session: &lt;url&gt;` line + note any discrepancies between slide self-attribution and official)
+2. Any pre-existing `session_schedule.md` table (correct speaker name, add session URL link) — see optional Step C below
+
+**CRITICAL INVARIANT**: When official site and slides/transcript disagree on **identification facts** (name, title, company), **official wins** for all derivative documents. Note the discrepancy in the per-session `.md` frontmatter for traceability — but do not &quot;correct&quot; the transcript body itself (the transcript is a record of what was said).
+
+## Step A5: Annotate Whisper hallucinations in per-session markdown
+
+Whisper large-v3-turbo on Chinese conference audio has known failure modes. Scan the SRT for these patterns and annotate:
+
+| Pattern | Example | How to handle |
+|---|---|---|
+| Single-line repetition loop (≥10x) | `&quot;那邊&quot;` × 33 | Replace with note: &quot;（Whisper 此處連續輸出 &#x27;X&#x27; 約 N 次，疑為 transition word 誤判，原話無法重建）&quot; |
+| Long hallucination tail (last N min lost) | Last 14 min = single phrase loop | In frontmatter add `⚠ 重大警示` block + reconstruct slides 20+ from photo only |
+| English proper noun → Chinese 音譯 | Claude → 龍蝦, Anthropic → 種種, CLAUDE.md → Cloud.md | Inline correct: `龍蝦 [Claude]` |
+| Brand / product 音譯 | DeepSeek → 深度求索 (correct), Cloudflare → Codefit (wrong) | Inline correct via context |
+| Speaker self-intro mis-transcribed | Job title / company name | Cross-check against Step A4 official agenda; correct in frontmatter |
+
+Append a `**附錄**` section at the end of each per-session `.md` listing:
+- 投影片張數（含 IMG numbering range, list any gaps）
+- 錄音長度（從 SRT 末尾時間戳）
+- 講者
+- 缺漏段落（list any reconstruction gaps）
+- Whisper hallucination 警訊清單（specific timestamps + nature of issue）
+
+---
+
+# Phase B — Report (interactive)
+
+**Phase B does not run automatically after Phase A.** When the user explicitly asks for a report, run the requirements quiz first.
+
+## Step B1: Requirements quiz (MANDATORY before drafting)
+
+Before writing a single line of report, ask the user these four dimensions in one numbered list (use a single message with all four questions, let the user reply with concise answers — don&#x27;t quiz one-by-one):
+
+```
+我要寫報告之前先確認 4 件事，請逐項回覆（不確定可說「沒想法」我會給推薦）：
+
+1. **範圍**：要寫哪幾場？
+   - (a) 單場 — 哪一場？
+   - (b) 單日整合 — 哪一天？
+   - (c) 多日匯總 — 哪幾天？整會議？
+
+2. **既定格式**：
+   - (a) 有 template / sample，請貼上 / 給檔案路徑
+   - (b) 沒有，由我建議格式（會依範圍給 sane default）
+
+3. **受眾**：
+   - (a) HR / 上級主管（送公司外訓報告 → 正式書面）
+   - (b) 內部團隊 / wiki（半正式，含技術細節）
+   - (c) 個人筆記 / 私存（隨意）
+
+4. **業務 mapping**：要不要把每場連到公司 workstream / ticket / 專案？
+   - 要 → 列出對應主軸（例：「Auth 改版 + 第三方 API 整合 / Ticket #123 + #456」這類抽象描述，請避免具體客戶名 / 產品碼）
+   - 不要 → 純技術內容，不對應內部 context
+```
+
+Wait for user reply. Don&#x27;t draft until all four dimensions are answered (or user explicitly says &quot;用 default&quot;).
+
+## Step B2: Pick template based on quiz answers
+
+After quiz, derive the report shape:
+
+| 範圍 | 既定 template? | 受眾 | 用什麼 |
+|---|---|---|---|
+| 單場 | 有 | * | 套 user 給的 template |
+| 單場 | 沒 | 任一 | **Default A** — 單場深度 takeaway 結構 |
+| 單日 | 有 | * | 套 user 給的 template |
+| 單日 | 沒 | HR / 主管 | **Default B** — 7 段式正式外訓報告 |
+| 單日 | 沒 | 團隊 / wiki | **Default C** — 簡化 4 段（議程 / 重點 / 應用 / 附件） |
+| 單日 | 沒 | 個人 | **Default D** — bullet list 純技術 takeaway |
+| 多日 | 有 | * | 套 user 給的 template |
+| 多日 | 沒 | HR / 主管 | **Default E** — 跨日匯總 + 趨勢分析 + 整體應用建議 |
+| 多日 | 沒 | 團隊 / wiki | **Default F** — 主題彙整（cross-cut themes 而非 chronological）|
+| 多日 | 沒 | 個人 | **Default G** — bullet list 跨日技術 takeaway |
+
+Templates A-G are below.
+
+### Default A — 單場深度 takeaway
+
+```markdown
+# &lt;Session 標題&gt; — 場次筆記
+**講者**：&lt;官方姓名 / 職稱 / 公司&gt;
+**場次**：&lt;日期 HH:MM-HH:MM @ 地點&gt;
+**主題**：&lt;官方主題&gt;
+**Source**：&lt;per-session .md 檔路徑&gt;
+
+## 核心論點
+&lt;2-4 句精煉&gt;
+
+## 重點 takeaway
+1. ...
+2. ...
+3. ...
+
+## 適用建議
+&lt;若有 mapping 才寫；無則略&gt;
+```
+
+### Default B — 7 段式正式外訓報告（單日 + HR/主管）
+
+```markdown
+# 外訓報告 — &lt;Conference&gt; &lt;Day&gt;
+
+## 一、基本資訊
+| 項目 | 內容 | ... |
+
+## 二、訓練目的
+&lt;業務 mapping，無 mapping 則改寫成「產業趨勢更新」&gt;
+
+## 三、議程摘要
+&lt;表格：時段 / 議程標題 / 講者（官方）&gt;
+
+---
+
+## 四、議程內容與重點摘要
+&gt; **資料來源原則**：講者身份、職稱、議程主題、場地等識別資訊以**大會官方議程頁**為準；演講內容以**現場錄音逐字稿 + 投影片重建**為來源。
+
+### Session 1 — &lt;title&gt;（&lt;speaker&gt;）
+**核心論點**：&lt;2-4 句&gt;
+&lt;然後表格 / bullet&gt;
+
+### Session 2 — ...
+
+---
+
+## 五、重點收穫
+&lt;5-7 條跨場主軸&gt;
+
+## 六、對公司業務的應用建議
+&lt;僅在有 business mapping 時生；無則改成「產業趨勢應用方向」泛論&gt;
+### 短期 / 中期 / 長期 三層
+
+## 七、附件
+- 三場議程之逐字稿與投影片重建：&lt;links&gt;
+- 大會官方 session 連結
+- 外部參考資料
+
+**報告人**：&lt;name&gt;
+**報告日期**：YYYY-MM-DD
+```
+
+### Default C — 簡化 4 段（單日 + 團隊/wiki）
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; — 場次重點
+
+## 議程
+&lt;表格&gt;
+
+## 重點 takeaway
+&lt;5-10 條跨場 bullet&gt;
+
+## 公司應用建議
+&lt;若有 mapping 才寫&gt;
+
+## 附件
+&lt;逐字稿 link + 大會官方 link&gt;
+```
+
+### Default D — 個人筆記（單日 + 個人）
+
+```markdown
+# &lt;Conference&gt; &lt;Day&gt; 筆記
+- &lt;key takeaway 1&gt;
+- &lt;key takeaway 2&gt;
+...
+
+## Sessions
+- [&lt;HH:MM&gt; &lt;title&gt;](&lt;per-session .md&gt;)
+- ...
+```
+
+### Default E — 跨日匯總 + 趨勢分析（多日 + HR/主管）
+
+```markdown
+# &lt;Conference&gt; 整會議外訓報告
+
+## 一、基本資訊
+&lt;整會議資訊：N 天、總場次、合計時數&gt;
+
+## 二、訓練目的
+&lt;業務 mapping&gt;
+
+## 三、出席議程總覽
+&lt;表格：分日列出，每場一行，含 link&gt;
+
+---
+
+## 四、跨日主題分析
+&gt; 不依時間 chronological，依 theme 切
+
+### Theme 1 — &lt;e.g., Prompt Injection 與 Agent 攻擊面&gt;
+**多場 cover**：&lt;list 哪幾場 cross-reference&gt;
+**核心論點整合**：...
+**框架 / 工具歸納**：...
+
+### Theme 2 — ...
+### Theme 3 — ...
+
+---
+
+## 五、重點收穫
+&lt;跨日整體 takeaway 5-10 條&gt;
+
+## 六、對公司業務的整體應用建議
+### 短期 / 中期 / 長期 三層
+
+## 七、附件
+&lt;分日列出 per-session links + 大會官方 links&gt;
+```
+
+### Default F — 主題彙整（多日 + 團隊/wiki）
+
+跨日主題彙整版本，比 E 簡化（無 §一/§二/§六/§七 ceremony，主軸是 §四 主題分析）。
+
+### Default G — 個人匯總筆記（多日 + 個人）
+
+跨日 bullet 格式，純 takeaway + session list。
+
+## Step B3: Apply project writing discipline
+
+If the working repo has `CLAUDE.md` or `docs/claude_rules/` defining tone / wording rules, apply them to the report:
+
+- **中性用詞紀律** — git-bound docs avoid 屎山 / 雷 / 投機 等情緒詞
+- **公開化 contract** — if user says &quot;上 ADO wiki&quot; or &quot;公開化&quot;，套對應 contract（無個人 attribution / 無日期 marker / 無內部組織 reference）
+- **業務 mapping 紀律** — 用 ticket 編號或抽象描述，不寫客戶名
+
+Per-session `.md`（Phase A 產出）是 internal memo style — **不**對它套公開化 rule。Phase B 報告則依受眾決定。
+
+## Step B4: Draft, deliver, iterate
+
+Write the report based on quiz + template. Always:
+- Use official-agenda facts for identification (names / titles / sessions)
+- Pull content from per-session `.md` for演講內容
+- Mark speaker forward-looking claims with &quot;（待官方確認）&quot; caveat
+- Cite per-session `.md` files in 附件 / source section
+
+Show draft to user; expect iteration on wording / scope / depth.
+
+---
+
+# Step C (optional) — Update session_schedule.md if it exists
+
+If `drafts/&lt;conf&gt;/session_schedule.md` exists from pre-event planning:
+
+1. **Mark sessions actually attended** vs originally planned (砍掉沒去的 row)
+2. Update day header from &quot;計劃 N 場&quot; to &quot;實際出席 M 場&quot;
+3. For each attended session, append 📝 transcript link + 🌐 official session link to the Session column
+4. Update `今日場次` tally line
+5. Update bottom summary table (only the attended day&#x27;s row)
+
+**Format example for a session row:**
+```
+| 14:45-15:15 | **&lt;title&gt;**&lt;br&gt;📝 [逐字稿 D1_1445-1515](D1_1445-1515.md) ｜ [大會 session](&lt;official-url&gt;) | &lt;speaker&gt; / &lt;location&gt; | &lt;主軸對應&gt; |
+```
+
+If no `session_schedule.md` exists, skip this step entirely. Don&#x27;t create one unprompted.
+
+---
+
+## Decision frameworks
+
+### When to use NotebookLM vs this pipeline
+
+| Goal | Tool |
+|---|---|
+| Audio overview / podcast / mind map of one session | NotebookLM (faster, smoother prose) |
+| Faithful per-slide reconstruction with timestamps + visual detail | This pipeline (HEIC multimodal + Whisper SRT) |
+| Multi-session report needing cross-reference | This pipeline |
+| Casual personal note-taking | NotebookLM |
+
+NotebookLM smooths transcripts at the cost of slide visual detail and timestamp fidelity. This pipeline preserves both. **For reports submitted to HR/manager, always use this pipeline.**
+
+### How aggressive to make Whisper corrections
+
+| Confidence | Action |
+|---|---|
+| 100% sure (English brand mis-音譯, well-known proper noun) | Inline correct without bracket: `Claude` |
+| Strong inference (context disambiguates) | Inline bracket correct: `龍蝦 [Claude]` |
+| Weak inference (multiple plausible) | Bracket with question mark: `它 [它? / 然後?]` |
+| Unrecoverable (hallucination loop) | Replace with note, do not guess |
+
+## Anti-patterns
+
+- ❌ **Don&#x27;t draft the report before running the quiz (Step B1)** — wasted effort if scope/format/recipient/mapping turn out different from your guess
+- ❌ **Don&#x27;t assume &quot;外訓報告&quot; semantics** — the user&#x27;s actual need may be a one-page personal note or a multi-day theme synthesis; ask
+- ❌ **Don&#x27;t write Phase A and Phase B in one go without the quiz** — Phase A always runs the same way, Phase B is per-user-decision
+- ❌ **Don&#x27;t write the report before Step A4 cross-check** — names will be wrong, you&#x27;ll have to re-edit downstream files
+- ❌ **Don&#x27;t dump derivative Whisper outputs (.json/.tsv/.txt/.vtt) into raw/** — only keep .srt + .m4a; the rest are noise
+- ❌ **Don&#x27;t commit `raw/` to git** — m4a + HEIC are local-only; ensure `raw/` matches the project&#x27;s `.gitignore`
+- ❌ **Don&#x27;t smooth-out the transcript prose** to make it read better — preserve speaker&#x27;s actual phrasing including filler words; the value of this pipeline IS the faithfulness
+- ❌ **Don&#x27;t treat speaker&#x27;s forward-looking verbal claims as fact** — when speaker says &quot;I will publish framework X at conf Y&quot;, note it as 講者口述 with a &quot;(待官方確認)&quot; caveat in the report
+- ❌ **Don&#x27;t over-attribute speaker roles** — if official agenda only lists &quot;OWASP Chapter Leader&quot; but slides claim 5 roles including &quot;Founder &amp; CEO of X&quot;, defer to official; note the discrepancy in per-session `.md` frontmatter only
+- ❌ **Don&#x27;t include keynote sessions the user didn&#x27;t actually attend** — confirm attendance before listing in any report
+- ❌ **Don&#x27;t manually edit Whisper SRT brackets in transcript body** to &quot;make it look cleaner&quot; — those brackets are audit trail; the cleanup happens in the report (derivative), not the transcript (source)
+- ❌ **Don&#x27;t skip the Whisper hallucination 警訊清單 in per-session appendix** — future re-transcription with better models depends on knowing which segments are unreliable
+- ❌ **Don&#x27;t auto-update session_schedule.md if it doesn&#x27;t exist** — that file is part of some users&#x27; planning workflow, not a universal artifact
+
+## Important rules
+
+1. **Two phases, two mindsets.** Phase A is deterministic engineering; Phase B is interactive deliverable shaping. Don&#x27;t conflate.
+2. **Quiz before drafting.** Phase B always starts with the 4-dimension quiz. The 7-section default is one of seven possible templates, not THE template.
+3. **Official agenda is canonical for identification facts.** Slides and transcripts are canonical for content. When they conflict on names/titles/locations, defer to official; note the discrepancy.
+4. **Preserve audit trail.** Per-session `.md` keeps Whisper bracket corrections + appendix warnings. Don&#x27;t sanitize.
+5. **Raw stays local.** `raw/` is gitignored; never check in m4a / HEIC. The text deliverables (per-session `.md` + report) are the only artifacts that go to git.
+6. **Speaker forward claims need caveats.** If a speaker pre-announces a framework / paper / event not yet public, mark it as 講者口述, recommend the user verify before citing in formal contexts.
+7. **Apply the project&#x27;s writing discipline.** If `CLAUDE.md` or `docs/claude_rules/` in the working repo defines tone / wording rules (中性用詞 / 公開化 contract / etc.), apply them to the report. Per-session `.md` is internal memo style — do NOT apply公開化 rules to it.
+8. **Reusability is a feature.** This skill runs once per day of a multi-day conference&#x27;s Phase A. Phase B may run once per session, once per day, or once per whole conference, depending on the user&#x27;s chosen scope. Each output should be an independent file (no `_v2` suffixes, no in-place mutations across days).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

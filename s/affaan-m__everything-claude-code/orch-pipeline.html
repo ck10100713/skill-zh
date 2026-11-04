@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>orch-pipeline｜Skill 寫法圖鑑</title>
+<meta name="description" content="orch-* 家族共用的引擎：分級、五階段 pipeline 與兩個人工關卡">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>orch-pipeline</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/orch-pipeline/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">orch-* 家族共用的引擎：分級、五階段 pipeline 與兩個人工關卡</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: orch-pipeline
+description: orch-* skill 家族背後共用的統籌引擎，也就是有關卡的 Research-Plan-TDD-Review-Commit pipeline、大小分類器、agent 與指令對照表，以及兩個人工關卡（計畫核准、commit 確認），orch-* 的各個操作 skill 都委派給它。透過 orch-add-feature、orch-fix-defect、orch-change-feature、orch-refine-code 或 orch-build-mvp 間接使用；只有在新增 orch 操作或調整共用階段時才直接閱讀。
+metadata:
+  origin: ECC
+---
+
+# Orchestrator Pipeline (shared engine)
+
+`orch-*` 的 skill 都是薄包裝。它們不會重新實作任何工作，而是
+分類請求、選擇要跑*這條* pipeline 的哪些階段，並把
+每個階段委派給既有的 ECC agent 或指令。這個檔案就是那條 pipeline。
+
+&gt; 請呼叫某個操作 skill（`orch-add-feature`、`orch-fix-defect`……），不要
+&gt; 直接呼叫這個引擎。這個檔案是它們所指向的參考資料。
+
+## When to Use
+
+- 每當某個 `orch-*` 操作 skill 執行時，會被間接載入。
+- 只有在要為這個家族新增操作，或調整
+  共用的階段、關卡或 agent 對照表時，才直接閱讀。
+
+## The operation family
+
+| Skill | 操作 | 觸發 | 第一步 |
+|-------|-----------|---------|------------|
+| `orch-add-feature` | feature | 能力還不存在 | 研究並規劃新的切片 |
+| `orch-change-feature` | tweak | 能用，但期望的行為不同 | 修改既有行為*和它的測試* |
+| `orch-fix-defect` | fix | 壞了；行為不對 | 重現成失敗的測試，再修 |
+| `orch-refine-code` | refactor | 行為不變，結構改善 | 在保持測試為綠的同時重新整理結構 |
+| `orch-build-mvp` | mvp | 從設計/規格文件起步 | 讀入文件 → 垂直切片 |
+
+&gt; 這些包裝是**組合**既有的 ECC 指令，不是取代它們：
+&gt; `/feature-dev`、`/plan`、`/code-review`、`/build-fix`、`/refactor-clean`，以及
+&gt; `/gan-build`，加上 `tdd-workflow` skill。orch-* 家族在它們之上
+&gt; 加了共用的大小分類器和兩個關卡，
+&gt; 讓一把傘一致地涵蓋五種操作。
+
+## Step 0 — Classify size (right-sizing)
+
+儀式的繁瑣程度要跟爆炸半徑成比例。依三個訊號替請求打分，取任何一個訊號
+達到的**最高**級別，並用一行說出結果，讓使用者
+可以推翻：
+
+| 級別 | 動到的檔案 | 新相依 / 合約 | 設計的模糊程度 | 會跑的階段 |
+|------|---------------|---------------------------|------------------|-----------------|
+| trivial | 1 個，幾行 | 無 | 無，改動很明顯 | 4 → 5 → 6 |
+| small | 1 個檔案 / 1 個函式 | 無 | 讀過程式碼就清楚 | (輕量 1) → 4 → 5 → 6 |
+| standard | 2–5 個檔案 | 可能有新的內部模組 | 有一個真正要做的選擇 | 1 → 2 → 4 → 5 → 6 |
+| large | 很多 / 橫切 | 新的外部相依、公開 API，或規格文件 | 有多個未決問題 | 1 → 2 → (3) → 4 → 5 → 6 |
+
+階段 0（Intake）一定會跑，上表的遮罩欄沒有列出。決勝規則：
+任何碰到安全觸發條件（見下）或公開 API /
+合約的，不管檔案數量，**至少**是 standard。
+
+## The phases
+
+每個階段都是委派，不在行內自己做。
+
+- **0. Intake**：重述請求。對 `orch-build-mvp`，要讀規格/設計
+  文件，並擷取範圍、已鎖定的決定和功能清單。
+- **1. Research &amp; Reuse**：依 `rules/common/development-workflow.md`：先 `gh search repos` /
+  `gh search code`，再來是 Context7 / 廠商文件，再來是套件 registry，最後是
+  Exa。偏好採用經過驗證的實作，而不是寫全新的程式碼。
+- **2. Plan**：委派給 `planner` agent（結構性的決策則用 `architect` /
+  `code-architect`）。輸出一份排成薄垂直切片的 `task_list`。→ **GATE 1.**
+- **3. Scaffold**：只有 `orch-build-mvp` 才有：立起第一個端到端的切片。
+- **4. Implement (TDD)**：透過 `tdd-guide` agent（或 `tdd-workflow` skill）推動每個任務：
+  紅 → 綠 → 重構。遵守該操作的第一步規則。
+- **5. Review**：`code-reviewer` agent / `/code-review`。每當 diff 碰到安全觸發條件（見下），
+  就加上 `security-reviewer`。
+- **6. Commit**：conventional commit（`feat:` / `fix:` / `refactor:` / …），每個
+  邏輯單位一個。→ **GATE 2.**
+
+## The two gates
+
+這個家族是**有關卡的，不是全自動的**：
+
+1. **GATE 1：Plan 之後。** 呈現 `task_list`；使用者核准之前，
+   不准寫實作程式碼。
+2. **GATE 2：Commit 之前。** 呈現 diff 摘要和擬好的訊息；
+   使用者確認之前，不准 commit。
+
+兩個關卡之間的一切都不停地流過去。
+
+## Agent / command map
+
+| 階段 | 主要 | 備援 / 升級 |
+|-------|---------|----------------------|
+| Intake / understand | `code-explorer` | 在微調、修 bug 或重構之前，先追蹤既有的路徑 |
+| Plan | `planner` | 結構性的決定用 `architect`、`code-architect` |
+| Implement | `tdd-guide`（或 `tdd-workflow` skill） | 建置壞掉時用 `build-error-resolver` / `/build-fix` |
+| Review | `code-reviewer` / `/code-review` | 語言專屬的 reviewer（`python-reviewer`、`typescript-reviewer`……） |
+| Security | `security-reviewer` | — |
+| MVP inner loop | `/gan-build &quot;&lt;brief&gt;&quot; --skip-planner` | 驅動 `gan-generator` → `gan-evaluator`；調整 `--max-iterations` / `--pass-threshold` |
+
+語言 reviewer 要配合 repo（看 repo 自己的 `CLAUDE.md`）。
+
+## Security-review trigger
+
+當 diff 碰到下列任何一項時，要拉進 `security-reviewer`：驗證或
+授權、使用者輸入處理、資料庫查詢、檔案系統路徑、
+外部 API 呼叫、密碼學，或機密 / 憑證。（依 `rules/common/security.md`。）
+
+## Handoff artifacts
+
+pipeline 沒有隱藏的狀態，規劃文件*就是*交接：
+
+- `task_list`（來自 Plan）驅動 Implement 迴圈。
+- 比較大的工作，也可能依 `rules/common/development-workflow.md`，
+  在 repo 的 `docs/` 底下產出 PRD / 架構 / system_design。
+- 審查發現的 CRITICAL / HIGH 問題，在 Gate 2 之前必須解決。
+
+## Verification
+
+- 有說出大小級別，而且符合實際工作
+- Gate 1（計畫）和 Gate 2（commit）都有遵守
+- 當且僅當碰到安全觸發條件時，才有跑 `security-reviewer`
+- commit 符合 conventional 格式，而且範圍限定在單一邏輯變更
+- 新的 / 變更的行為有測試；依 `rules/common/testing.md`，覆蓋率 ≥ 80%</pre></section><section><h2>英文原文</h2><pre>---
+name: orch-pipeline
+description: Shared orchestration engine behind the orch-* skill family — the gated Research-Plan-TDD-Review-Commit pipeline, size classifier, agent and command map, and two human gates (plan approval, commit confirmation) that orch-* operation skills delegate to. Use indirectly via orch-add-feature, orch-fix-defect, orch-change-feature, orch-refine-code, or orch-build-mvp; read directly only when adding an orch operation or tuning shared phases.
+metadata:
+  origin: ECC
+---
+
+# Orchestrator Pipeline (shared engine)
+
+The `orch-*` skills are thin wrappers. They do not re-implement any work — they
+classify the request, choose which phases of *this* pipeline run, and delegate
+each phase to an existing ECC agent or command. This file is that pipeline.
+
+&gt; Invoke an operation skill (`orch-add-feature`, `orch-fix-defect`, …) rather
+&gt; than this engine directly. This file is the reference they point at.
+
+## When to Use
+
+- Loaded indirectly whenever an `orch-*` operation skill runs.
+- Read directly only when adding a new operation to the family or tuning the
+  shared phases, gates, or agent map.
+
+## The operation family
+
+| Skill | Operation | Trigger | First move |
+|-------|-----------|---------|------------|
+| `orch-add-feature` | feature | capability does not exist yet | research + plan a new slice |
+| `orch-change-feature` | tweak | works, but desired behavior differs | amend existing behavior *and its tests* |
+| `orch-fix-defect` | fix | broken; behavior is wrong | reproduce as a failing test, then fix |
+| `orch-refine-code` | refactor | behavior stays, structure improves | restructure while keeping tests green |
+| `orch-build-mvp` | mvp | bootstrap from a design/spec doc | ingest doc → vertical slices |
+
+&gt; These wrappers **compose** existing ECC commands rather than replace them:
+&gt; `/feature-dev`, `/plan`, `/code-review`, `/build-fix`, `/refactor-clean`, and
+&gt; `/gan-build`, plus the `tdd-workflow` skill. The orch-* family adds the shared
+&gt; size classifier and the two gates
+&gt; on top of them, so one umbrella covers all five operations consistently.
+
+## Step 0 — Classify size (right-sizing)
+
+Ceremony scales to blast radius. Score the request on three signals, take the
+**highest** tier any signal reaches, and state the result in one line so the user
+can override:
+
+| Tier | Files touched | New dependency / contract | Design ambiguity | Phases that run |
+|------|---------------|---------------------------|------------------|-----------------|
+| trivial | 1, a few lines | none | none — the change is obvious | 4 → 5 → 6 |
+| small | 1 file / 1 function | none | clear once you read the code | (1 light) → 4 → 5 → 6 |
+| standard | 2–5 files | maybe a new internal module | one real choice to make | 1 → 2 → 4 → 5 → 6 |
+| large | many / cross-cutting | new external dep, public API, or a spec doc | multiple open questions | 1 → 2 → (3) → 4 → 5 → 6 |
+
+Phase 0 (Intake) always runs and is omitted from the mask column above. The
+tie-breaker: anything touching a security trigger (below) or a public API /
+contract is **at least** standard, regardless of file count.
+
+## The phases
+
+Each phase delegates — it does not do the work inline.
+
+- **0. Intake** — restate the request. For `orch-build-mvp`, read the spec/design
+  doc and extract scope, locked decisions, and a feature list.
+- **1. Research &amp; Reuse** — per `rules/common/development-workflow.md`: `gh search repos` /
+  `gh search code`, then Context7 / vendor docs, then package registries, then
+  Exa. Prefer adopting a proven implementation over net-new code.
+- **2. Plan** — delegate to the `planner` agent (or `architect` /
+  `code-architect` for structural decisions). Output a `task_list` ordered as
+  thin vertical slices. → **GATE 1.**
+- **3. Scaffold** — `orch-build-mvp` only: stand up the first end-to-end slice.
+- **4. Implement (TDD)** — drive each task through the `tdd-guide` agent (or the `tdd-workflow` skill):
+  red → green → refactor. Honor the operation&#x27;s first-move rule.
+- **5. Review** — `code-reviewer` agent / `/code-review`. Add `security-reviewer`
+  whenever the diff touches a security trigger (below).
+- **6. Commit** — conventional commits (`feat:` / `fix:` / `refactor:` / …), one
+  per logical chunk. → **GATE 2.**
+
+## The two gates
+
+This family is **gated, not autonomous**:
+
+1. **GATE 1 — after Plan.** Present the `task_list`; do not write implementation
+   code until the user approves.
+2. **GATE 2 — before Commit.** Present the diff summary and proposed messages;
+   do not commit until the user confirms.
+
+Everything between the gates flows without stopping.
+
+## Agent / command map
+
+| Phase | Primary | Fallback / escalation |
+|-------|---------|----------------------|
+| Intake / understand | `code-explorer` | trace existing paths before a tweak, fix, or refactor |
+| Plan | `planner` | `architect`, `code-architect` for structural calls |
+| Implement | `tdd-guide` (or `tdd-workflow` skill) | `build-error-resolver` / `/build-fix` on build breaks |
+| Review | `code-reviewer` / `/code-review` | language reviewer (`python-reviewer`, `typescript-reviewer`, …) |
+| Security | `security-reviewer` | — |
+| MVP inner loop | `/gan-build &quot;&lt;brief&gt;&quot; --skip-planner` | drives `gan-generator` → `gan-evaluator`; tune `--max-iterations` / `--pass-threshold` |
+
+Match the language reviewer to the repo (see the repo&#x27;s own `CLAUDE.md`).
+
+## Security-review trigger
+
+Pull in `security-reviewer` when the diff touches any of: authentication or
+authorization, user-input handling, database queries, file-system paths,
+external API calls, cryptography, or secrets / credentials. (Per `rules/common/security.md`.)
+
+## Handoff artifacts
+
+The pipeline carries no hidden state — the planning docs *are* the handoff:
+
+- `task_list` (from Plan) drives the Implement loop.
+- Larger work may also emit PRD / architecture / system_design under the repo&#x27;s
+  `docs/` per `rules/common/development-workflow.md`.
+- Review findings (CRITICAL / HIGH) must be resolved before Gate 2.
+
+## Verification
+
+- size tier was stated and matched the work
+- Gate 1 (plan) and Gate 2 (commit) were both honored
+- `security-reviewer` ran iff a security trigger was touched
+- commits are conventional and scoped to one logical change
+- new / changed behavior has tests; coverage ≥ 80% per `rules/common/testing.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

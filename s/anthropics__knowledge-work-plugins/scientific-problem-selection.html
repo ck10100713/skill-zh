@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>scientific-problem-selection｜Skill 寫法圖鑑</title>
+<meta name="description" content="用決策樹框架幫科學家選題、評估風險並排解卡關的專案">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>scientific-problem-selection</h1>
+<p class="meta">Anthropic ｜ 規劃與釐清 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/bio-research/skills/scientific-problem-selection/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">用決策樹框架幫科學家選題、評估風險並排解卡關的專案</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: scientific-problem-selection
+description: 當科學家需要協助選擇研究題目、發想專案、替卡關的專案排障，或做策略性的科學決策時，使用這個 skill。當使用者要提出新的研究點子、處理專案裡的問題、評估專案風險、規劃研究策略、走過決策樹，或需要協助選擇要做哪個科學問題時使用。典型的請求像是「I have an idea for a project」、「I&#x27;m stuck on my research」、「help me evaluate this project」、「what should I work on」或「I need strategic advice about my research」。
+---
+
+# 科學問題選擇 Skills
+
+一個對話式的框架，用來系統性地選擇科學問題，根據 Fischbach 與 Walsh 的〈Problem choice and decision trees in science and engineering〉（Cell, 2024）。
+
+## 開始
+
+給使用者三個入口：
+
+**1) 提出一個新專案的點子**：一起把它發展起來
+
+**2) 分享目前專案裡的一個問題**：一起排除問題
+
+**3) 問一個策略性的問題**：一起走過決策樹
+
+這種對話式的入口，讓科學家從他們目前所在的位置開始，也建立起合作的氛圍。
+
+---
+
+## 選項 1：提出一個點子
+
+### 起始提示
+問：**「用簡短版本告訴我你的點子（1 到 2 句話）。」**
+
+### 回應方式
+使用者分享點子之後，回覆一段快速摘要（不超過一段），展現你理解了。點出大致的研究領域，並用凸顯點子核心的方式換句話說，顯示你們的理解一致、準備好深入細節。
+
+### 後續提示
+然後請他們提供更多細節：「現在多給我一些細節。你可以包含以下這些，簡短也沒關係，不確定的地方也可以直接說：
+1. 你到底想做什麼
+2. 你目前打算怎麼做
+3. 如果成功了，為什麼會是一件大事
+4. 你覺得主要的風險是什麼」
+
+### 工作流程
+從這裡開始，引導使用者走過問題選擇與評估的早期階段：
+- **Skill 1：Intuition Pumps** - 精煉並強化點子
+- **Skill 2：Risk Assessment** - 找出並管理專案風險
+- **Skill 3：Optimization Function** - 定義成功指標
+- **Skill 4：Parameter Strategy** - 決定哪些要固定、哪些保持彈性
+
+詳細指引見 `references/01-intuition-pumps.md`、`references/02-risk-assessment.md`、`references/03-optimization-function.md` 和 `references/04-parameter-strategy.md`。
+
+---
+
+## 選項 2：排除問題
+
+### 起始提示
+問：**「用簡短版本告訴我你的問題（1 到 2 句話，或任何你覺得容易的方式）。」**
+
+### 回應方式
+使用者分享問題之後，回覆一段快速摘要（不超過一段），展現你理解了。點出問題發生的專案脈絡，並換句話說，凸顯問題的核心本質，讓使用者知道你理解了狀況。也要提出其他看起來重要、值得討論的問題。
+
+### 後續提示
+然後問：「現在多給我一些細節。你可以包含以下這些，簡短也沒關係：
+1. 你專案的整體目標（如果我們之前還沒談過）
+2. 到底是哪裡出了問題
+3. 你目前想到的修正方式」
+
+### 工作流程
+從這裡開始，引導使用者進行排障和決策樹的導覽：
+- **Skill 5：Decision Tree Navigation** - 規劃決策點，並在執行和策略思考之間切換
+- **Skill 4：Parameter Strategy** - 一次只固定一個參數，讓其他的浮動
+- **Skill 6：Adversity Response** - 把問題框架成成長的機會
+- **Skill 7：Problem Inversion** - 繞過障礙的策略
+
+一定要包含變通辦法，不論問題能不能輕易修好，這些變通辦法都可能有用。
+
+詳細指引見 `references/05-decision-tree.md`、`references/06-adversity-planning.md`、`references/07-problem-inversion.md` 和 `references/04-parameter-strategy.md`。
+
+---
+
+## 選項 3：問一個策略性的問題
+
+### 起始提示
+問：**「用簡短版本告訴我你的問題（1 到 2 句話）。」**
+
+### 回應方式
+使用者分享問題之後，回覆一段快速摘要（不超過一段），展現你理解了。點出更廣的脈絡，並換句話說，凸顯問題的關鍵，確認和他們的想法一致。
+
+### 後續提示
+然後問：「現在多給我一些細節。你可以包含以下這些，簡短也沒關係：
+1. 情境（也就是說，這是關於目前的專案還是未來的專案）
+2. 你在想的內容，再多說一點細節」
+
+### 工作流程
+從這裡開始，從問題選擇框架中，挑選最適合這個問題的特定模組：
+- **Skills 1-4**：用於未來專案的規劃（發想、風險、optimization、參數）
+- **Skills 5-7**：用於目前專案的導覽（決策樹、逆境、反轉）
+- **Skill 8**：用於溝通與綜合
+- **Skill 9**：用於完整工作流程的統籌
+
+完整的參考資料見 `references/` 資料夾。
+
+---
+
+## 核心框架概念
+
+### 核心洞見
+**Problem Choice &gt;&gt; Execution Quality**
+
+就算把一個平庸的問題執行得很出色，也只會產生漸進式的影響。把一個重要的問題做好，會產生實質的影響。
+
+### 時間悖論
+科學家通常花：
+- **幾天** 選擇問題
+- **好幾年** 解決它
+
+這種失衡限制了影響力。這些 skill 幫助你投入更多時間明智地選擇。
+
+### 評估軸
+**評估點子時：**
+- **X 軸：** 成功的可能性
+- **Y 軸：** 成功時的影響
+
+這些 skill 幫助把點子往右移（更可行）、往上移（更有影響力）。
+
+### 風險悖論
+- 不要躲避風險，要和風險做朋友
+- 沒有風險 = 漸進式的工作
+- 但是：多重奇蹟 = 避開或修正
+- **平衡：** 被理解、被量化、可管理的風險
+
+### 參數悖論
+- 固定太多 = 脆弱
+- 固定太少 = 癱瘓
+- **甜蜜點：** 只固定一個有意義的限制
+
+### 逆境原則
+- 危機無可避免（不要驚訝）
+- 危機是機會（不要浪費）
+- **策略：** 同時修好問題並升級專案
+
+---
+
+## 9 個 Skill 總覽
+
+| Skill | 目的 | 產出 | 時間 |
+|-------|---------|--------|------|
+| 1. Intuition Pumps | 產生高品質的研究點子 | Problem Ideation Document | 約 1 週 |
+| 2. Risk Assessment | 找出並管理專案風險 | Risk Assessment Matrix | 3-5 天 |
+| 3. Optimization Function | 定義成功指標 | Impact Assessment Document | 2-3 天 |
+| 4. Parameter Strategy | 決定哪些要固定、哪些保持彈性 | Parameter Strategy Document | 2-3 天 |
+| 5. Decision Tree Navigation | 規劃決策點和 altitude dance | Decision Tree Map | 2 天 |
+| 6. Adversity Response | 把危機當成機會做準備 | Adversity Playbook | 2 天 |
+| 7. Problem Inversion | 繞過障礙 | Problem Inversion Analysis | 1 天 |
+| 8. Integration &amp; Synthesis | 綜合成連貫的計畫 | Project Communication Package | 3-5 天 |
+| 9. Meta-Framework | 統籌完整的工作流程 | Complete Project Package | 1-6 週 |
+
+---
+
+## Skill 工作流程
+
+```
+SKILL 1: Intuition Pumps
+         | (generates idea)
+         v
+SKILL 2: Risk Assessment
+         | (evaluates feasibility)
+         v
+SKILL 3: Optimization Function
+         | (defines success metrics)
+         v
+SKILL 4: Parameter Strategy
+         | (determines flexibility)
+         v
+SKILL 5: Decision Tree
+         | (plans execution and evaluation)
+         v
+SKILL 6: Adversity Planning
+         | (prepares for failure modes)
+         v
+SKILL 7: Problem Inversion
+         | (provides pivot strategies)
+         v
+SKILL 8: Integration &amp; Communication
+         | (synthesizes into coherent plan)
+         v
+SKILL 9: Meta-Skill
+         (orchestrates complete workflow)
+```
+
+---
+
+## 關鍵設計原則
+
+1. **對話式入口**：用三個明確的起點，讓使用者從他們所在的位置開始
+2. **用心的互動**：問釐清問題；信心低就請對方補充更多資訊
+3. **整合文獻**：在關鍵的時間點使用 PubMed 搜尋來驗證
+4. **具體的產出**：每個 skill 都產出具體的 1 到 2 頁文件
+5. **逐步建立具體性**：透過有針對性的問題，逐漸浮現更多細節
+6. **彈性**：Skill 可以獨立、依序或反覆地使用
+7. **科學嚴謹**：關於普遍性和可行性的主張，應該要有證據支持
+
+---
+
+## 誰該使用這些 Skills
+
+### 研究生（主要對象）
+- **何時：** 選擇論文專案、資格考、委員會會議
+- **重點：** Skills 1-3（發想、風險、影響）+ Skill 9（完整工作流程）
+- **時程：** 完整規劃需要 2 到 4 週
+
+### 博士後研究員
+- **何時：** 開始新職位、規劃獨立專案、申請研究獎助
+- **重點：** 所有 skill，強調獨立性和風險管理
+- **時程：** 密集規劃 1 到 2 週
+
+### 主持人（PI）
+- **何時：** 新實驗室、新方向、指導學員、經費申請週期
+- **重點：** Skills 1、3、4、6（發想、影響、參數、逆境）
+- **時程：** 持續進行，融入實驗室文化
+
+### 新創創辦人
+- **何時：** 公司創立、轉向決策、向投資人簡報
+- **重點：** Skills 1-4（從發想到參數）+ Skill 8（溝通）
+- **時程：** 初期規劃 1 到 2 週，每季回顧
+
+---
+
+## 參考資料
+
+詳細的 skill 文件放在 `references/` 資料夾：
+
+| 檔案 | 內容 | 搜尋模式 |
+|------|---------|-----------------|
+| `01-intuition-pumps.md` | 產生研究點子 | `Intuition Pump #`, `Trap #`, `Phase [0-9]` |
+| `02-risk-assessment.md` | 風險辨識 | `Risk.*1-5`, `go/no-go`, `assumption` |
+| `03-optimization-function.md` | 成功指標 | `Generality.*Learning`, `optimization`, `impact` |
+| `04-parameter-strategy.md` | 參數固定 | `fixed.*float`, `constraint`, `parameter` |
+| `05-decision-tree.md` | 決策樹導覽 | `altitude`, `Level [0-9]`, `decision` |
+| `06-adversity-planning.md` | 逆境應對 | `adversity`, `crisis`, `ensemble` |
+| `07-problem-inversion.md` | 問題反轉策略 | `Strategy [0-9]`, `inversion`, `goal` |
+| `08-integration-synthesis.md` | 整合與綜合 | `narrative`, `communication`, `story` |
+| `09-meta-framework.md` | 完整工作流程 | `Phase`, `workflow`, `orchestrat` |
+
+---
+
+## 預期成果
+
+### 立即（完成工作流程之後）
+- 清楚的專案願景
+- 誠實的風險評估
+- 應變計畫
+- 溝通資料準備就緒
+- 對問題選擇有信心
+
+### 6 個月
+- 更快的決策（有框架了）
+- 有成效的逆境處理
+- 沒有存在危機（風險已被緩解）
+
+### 2 年
+- 發表成果或有扎實的進展
+- 避開死胡同的專案
+- 職涯與目標一致
+- **時間花得值得**（終極的衡量標準）
+
+---
+
+## 基礎文獻
+
+**Fischbach, M.A., &amp; Walsh, C.T. (2024).** &quot;Problem choice and decision trees in science and engineering.&quot; *Cell*, 187, 1828-1833.
+
+根據在 Stanford University 開設的 BIOE 395 課程。</pre></section><section><h2>英文原文</h2><pre>---
+name: scientific-problem-selection
+description: This skill should be used when scientists need help with research problem selection, project ideation, troubleshooting stuck projects, or strategic scientific decisions. Use this skill when users ask to pitch a new research idea, work through a project problem, evaluate project risks, plan research strategy, navigate decision trees, or get help choosing what scientific problem to work on. Typical requests include &quot;I have an idea for a project&quot;, &quot;I&#x27;m stuck on my research&quot;, &quot;help me evaluate this project&quot;, &quot;what should I work on&quot;, or &quot;I need strategic advice about my research&quot;.
+---
+
+# Scientific Problem Selection Skills
+
+A conversational framework for systematic scientific problem selection based on Fischbach &amp; Walsh&#x27;s &quot;Problem choice and decision trees in science and engineering&quot; (Cell, 2024).
+
+## Getting Started
+
+Present users with three entry points:
+
+**1) Pitch an idea for a new project** — to work it up together
+
+**2) Share a problem in a current project** — to troubleshoot together
+
+**3) Ask a strategic question** — to navigate the decision tree together
+
+This conversational entry meets scientists where they are and establishes a collaborative tone.
+
+---
+
+## Option 1: Pitch an Idea
+
+### Initial Prompt
+Ask: **&quot;Tell me the short version of your idea (1-2 sentences).&quot;**
+
+### Response Approach
+After the user shares their idea, return a quick summary (no more than one paragraph) demonstrating understanding. Note the general area of research and rephrase the idea in a way that highlights its kernel—showing alignment and readiness to dive into details.
+
+### Follow-up Prompt
+Then ask for more detail: &quot;Now give me a bit more detail. You might include, however briefly or even say where you are unsure:
+1. What exactly you want to do
+2. How you currently plan to do it
+3. If it works, why will it be a big deal
+4. What you think are the major risks&quot;
+
+### Workflow
+From there, guide the user through the early stages of problem selection and evaluation:
+- **Skill 1: Intuition Pumps** - Refine and strengthen the idea
+- **Skill 2: Risk Assessment** - Identify and manage project risks
+- **Skill 3: Optimization Function** - Define success metrics
+- **Skill 4: Parameter Strategy** - Determine what to fix vs. keep flexible
+
+See `references/01-intuition-pumps.md`, `references/02-risk-assessment.md`, `references/03-optimization-function.md`, and `references/04-parameter-strategy.md` for detailed guidance.
+
+---
+
+## Option 2: Troubleshoot a Problem
+
+### Initial Prompt
+Ask: **&quot;Tell me a short version of your problem (1-2 sentences or whatever is easy).&quot;**
+
+### Response Approach
+After the user shares their problem, return a quick summary (no more than one paragraph) demonstrating understanding. Note the context of the project where the problem occurred and rephrase the problem—highlighting its core essence—so the user knows the situation is understood. Also raise additional questions that seem important to discuss.
+
+### Follow-up Prompt
+Then ask: &quot;Now give me a bit more detail. You might include, however briefly:
+1. The overall goal of your project (if we have not talked about it before)
+2. What exactly went wrong
+3. Your current ideas for fixing it&quot;
+
+### Workflow
+From there, guide the user through troubleshooting and decision tree navigation:
+- **Skill 5: Decision Tree Navigation** - Plan decision points and navigate between execution and strategic thinking
+- **Skill 4: Parameter Strategy** - Fix one parameter at a time, let others float
+- **Skill 6: Adversity Response** - Frame problems as opportunities for growth
+- **Skill 7: Problem Inversion** - Strategies for navigating around obstacles
+
+Always include workarounds that might be useful whether or not the problem can be fixed easily.
+
+See `references/05-decision-tree.md`, `references/06-adversity-planning.md`, `references/07-problem-inversion.md`, and `references/04-parameter-strategy.md` for detailed guidance.
+
+---
+
+## Option 3: Ask a Strategic Question
+
+### Initial Prompt
+Ask: **&quot;Tell me the short version of your question (1-2 sentences).&quot;**
+
+### Response Approach
+After the user shares their question, return a quick summary (no more than one paragraph) demonstrating understanding. Note the broader context and rephrase the question—highlighting its crux—to confirm alignment with their thinking.
+
+### Follow-up Prompt
+Then ask: &quot;Now give me a bit more detail. You might include, however briefly:
+1. The setting (i.e., is this about a current or future project)
+2. A bit more detail about what you&#x27;re thinking&quot;
+
+### Workflow
+From there, draw on the specific modules from the problem choice framework most appropriate to the question:
+- **Skills 1-4** for future project planning (ideation, risk, optimization, parameters)
+- **Skills 5-7** for current project navigation (decision trees, adversity, inversion)
+- **Skill 8** for communication and synthesis
+- **Skill 9** for comprehensive workflow orchestration
+
+See the complete reference materials in the `references/` folder.
+
+---
+
+## Core Framework Concepts
+
+### The Central Insight
+**Problem Choice &gt;&gt; Execution Quality**
+
+Even brilliant execution of a mediocre problem yields incremental impact. Good execution of an important problem yields substantial impact.
+
+### The Time Paradox
+Scientists typically spend:
+- **Days** choosing a problem
+- **Years** solving it
+
+This imbalance limits impact. These skills help invest more time choosing wisely.
+
+### Evaluation Axes
+**For Evaluating Ideas:**
+- **X-axis:** Likelihood of success
+- **Y-axis:** Impact if successful
+
+Skills help move ideas rightward (more feasible) and upward (more impactful).
+
+### The Risk Paradox
+- Don&#x27;t avoid risk—befriend it
+- No risk = incremental work
+- But: Multiple miracles = avoid or refine
+- **Balance:** Understood, quantified, manageable risk
+
+### The Parameter Paradox
+- Too many fixed = brittleness
+- Too few fixed = paralysis
+- **Sweet spot:** Fix ONE meaningful constraint
+
+### The Adversity Principle
+- Crises are inevitable (don&#x27;t be surprised)
+- Crises are opportune (don&#x27;t waste them)
+- **Strategy:** Fix problem AND upgrade project simultaneously
+
+---
+
+## The 9 Skills Overview
+
+| Skill | Purpose | Output | Time |
+|-------|---------|--------|------|
+| 1. Intuition Pumps | Generate high-quality research ideas | Problem Ideation Document | ~1 week |
+| 2. Risk Assessment | Identify and manage project risks | Risk Assessment Matrix | 3-5 days |
+| 3. Optimization Function | Define success metrics | Impact Assessment Document | 2-3 days |
+| 4. Parameter Strategy | Decide what to fix vs. keep flexible | Parameter Strategy Document | 2-3 days |
+| 5. Decision Tree Navigation | Plan decision points and altitude dance | Decision Tree Map | 2 days |
+| 6. Adversity Response | Prepare for crises as opportunities | Adversity Playbook | 2 days |
+| 7. Problem Inversion | Navigate around obstacles | Problem Inversion Analysis | 1 day |
+| 8. Integration &amp; Synthesis | Synthesize into coherent plan | Project Communication Package | 3-5 days |
+| 9. Meta-Framework | Orchestrate complete workflow | Complete Project Package | 1-6 weeks |
+
+---
+
+## Skill Workflow
+
+```
+SKILL 1: Intuition Pumps
+         | (generates idea)
+         v
+SKILL 2: Risk Assessment
+         | (evaluates feasibility)
+         v
+SKILL 3: Optimization Function
+         | (defines success metrics)
+         v
+SKILL 4: Parameter Strategy
+         | (determines flexibility)
+         v
+SKILL 5: Decision Tree
+         | (plans execution and evaluation)
+         v
+SKILL 6: Adversity Planning
+         | (prepares for failure modes)
+         v
+SKILL 7: Problem Inversion
+         | (provides pivot strategies)
+         v
+SKILL 8: Integration &amp; Communication
+         | (synthesizes into coherent plan)
+         v
+SKILL 9: Meta-Skill
+         (orchestrates complete workflow)
+```
+
+---
+
+## Key Design Principles
+
+1. **Conversational Entry** - Meet users where they are with three clear starting points
+2. **Thoughtful Interaction** - Ask clarifying questions; low confidence prompts additional input
+3. **Literature Integration** - Use PubMed searches at strategic points for validation
+4. **Concrete Outputs** - Every skill produces tangible 1-2 page documents
+5. **Building Specificity** - Progressive detail emerges through targeted questions
+6. **Flexibility** - Skills work independently, sequentially, or iteratively
+7. **Scientific Rigor** - Claims about generality and feasibility should be evidence-based
+
+---
+
+## Who Should Use These Skills
+
+### Graduate Students (Primary Audience)
+- **When:** Choosing thesis projects, qualifying exams, committee meetings
+- **Focus:** Skills 1-3 (ideation, risk, impact) + Skill 9 (complete workflow)
+- **Timeline:** 2-4 weeks for comprehensive planning
+
+### Postdocs
+- **When:** Starting new position, planning independent projects, fellowship applications
+- **Focus:** All skills, emphasizing independence and risk management
+- **Timeline:** 1-2 weeks intensive planning
+
+### Principal Investigators
+- **When:** New lab, new direction, mentoring trainees, grant cycles
+- **Focus:** Skills 1, 3, 4, 6 (ideation, impact, parameters, adversity)
+- **Timeline:** Ongoing, integrate into lab culture
+
+### Startup Founders
+- **When:** Company inception, pivot decisions, investor pitches
+- **Focus:** Skills 1-4 (ideation through parameters) + Skill 8 (communication)
+- **Timeline:** 1-2 weeks for initial planning, revisit quarterly
+
+---
+
+## Reference Materials
+
+Detailed skill documentation is available in the `references/` folder:
+
+| File | Content | Search Patterns |
+|------|---------|-----------------|
+| `01-intuition-pumps.md` | Generate research ideas | `Intuition Pump #`, `Trap #`, `Phase [0-9]` |
+| `02-risk-assessment.md` | Risk identification | `Risk.*1-5`, `go/no-go`, `assumption` |
+| `03-optimization-function.md` | Success metrics | `Generality.*Learning`, `optimization`, `impact` |
+| `04-parameter-strategy.md` | Parameter fixation | `fixed.*float`, `constraint`, `parameter` |
+| `05-decision-tree.md` | Decision tree navigation | `altitude`, `Level [0-9]`, `decision` |
+| `06-adversity-planning.md` | Adversity response | `adversity`, `crisis`, `ensemble` |
+| `07-problem-inversion.md` | Problem inversion strategies | `Strategy [0-9]`, `inversion`, `goal` |
+| `08-integration-synthesis.md` | Integration and synthesis | `narrative`, `communication`, `story` |
+| `09-meta-framework.md` | Complete workflow | `Phase`, `workflow`, `orchestrat` |
+
+---
+
+## Expected Outcomes
+
+### Immediate (After Completing Workflow)
+- Clear project vision
+- Honest risk assessment
+- Contingency plans
+- Communication materials ready
+- Confidence in problem choice
+
+### 6-Month
+- Faster decisions (have framework)
+- Productive adversity handling
+- No existential crises (risks mitigated)
+
+### 2-Year
+- Published results or strong progress
+- Avoided dead-end projects
+- Career aligned with goals
+- **Time well-spent** (ultimate measure)
+
+---
+
+## Foundational Reference
+
+**Fischbach, M.A., &amp; Walsh, C.T. (2024).** &quot;Problem choice and decision trees in science and engineering.&quot; *Cell*, 187, 1828-1833.
+
+Based on course BIOE 395 taught at Stanford University.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

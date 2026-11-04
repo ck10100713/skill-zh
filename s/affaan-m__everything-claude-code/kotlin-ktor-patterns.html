@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kotlin-ktor-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Ktor 建 Kotlin HTTP server，含路由、驗證、Koin 與測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>kotlin-ktor-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/kotlin-ktor-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Ktor 建 Kotlin HTTP server，含路由、驗證、Koin 與測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: kotlin-ktor-patterns
+description: Ktor server 的使用模式，包含 routing DSL、plugin、驗證、Koin DI、kotlinx.serialization、WebSocket 與 testApplication 測試。在建構 Ktor server 時使用（routing、plugin、auth、DI、serialization 或測試）。
+metadata:
+  origin: ECC
+---
+
+# Ktor Server Patterns
+
+用 Kotlin coroutines 建構穩健、好維護的 HTTP server 的完整 Ktor 模式。
+
+## 何時啟用
+
+- 建構 Ktor HTTP server
+- 設定 Ktor plugin（Auth、CORS、ContentNegotiation、StatusPages）
+- 用 Ktor 實作 REST API
+- 用 Koin 設定依賴注入
+- 用 testApplication 寫 Ktor 整合測試
+- 在 Ktor 裡使用 WebSocket
+
+## 應用程式結構
+
+### 標準 Ktor 專案目錄結構
+
+```text
+src/main/kotlin/
+├── com/example/
+│   ├── Application.kt           # Entry point, module configuration
+│   ├── plugins/
+│   │   ├── Routing.kt           # Route definitions
+│   │   ├── Serialization.kt     # Content negotiation setup
+│   │   ├── Authentication.kt    # Auth configuration
+│   │   ├── StatusPages.kt       # Error handling
+│   │   └── CORS.kt              # CORS configuration
+│   ├── routes/
+│   │   ├── UserRoutes.kt        # /users endpoints
+│   │   ├── AuthRoutes.kt        # /auth endpoints
+│   │   └── HealthRoutes.kt      # /health endpoints
+│   ├── models/
+│   │   ├── User.kt              # Domain models
+│   │   └── ApiResponse.kt       # Response envelopes
+│   ├── services/
+│   │   ├── UserService.kt       # Business logic
+│   │   └── AuthService.kt       # Auth logic
+│   ├── repositories/
+│   │   ├── UserRepository.kt    # Data access interface
+│   │   └── ExposedUserRepository.kt
+│   └── di/
+│       └── AppModule.kt         # Koin modules
+src/test/kotlin/
+├── com/example/
+│   ├── routes/
+│   │   └── UserRoutesTest.kt
+│   └── services/
+│       └── UserServiceTest.kt
+```
+
+### 應用程式進入點
+
+```kotlin
+// Application.kt
+fun main() {
+    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
+}
+
+fun Application.module() {
+    configureSerialization()
+    configureAuthentication()
+    configureStatusPages()
+    configureCORS()
+    configureDI()
+    configureRouting()
+}
+```
+
+## Routing DSL
+
+### 基本路由
+
+```kotlin
+// plugins/Routing.kt
+fun Application.configureRouting() {
+    routing {
+        userRoutes()
+        authRoutes()
+        healthRoutes()
+    }
+}
+
+// routes/UserRoutes.kt
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    route(&quot;/users&quot;) {
+        get {
+            val users = userService.getAll()
+            call.respond(users)
+        }
+
+        get(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val user = userService.getById(id)
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+            call.respond(user)
+        }
+
+        post {
+            val request = call.receive&lt;CreateUserRequest&gt;()
+            val user = userService.create(request)
+            call.respond(HttpStatusCode.Created, user)
+        }
+
+        put(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@put call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val request = call.receive&lt;UpdateUserRequest&gt;()
+            val user = userService.update(id, request)
+                ?: return@put call.respond(HttpStatusCode.NotFound)
+            call.respond(user)
+        }
+
+        delete(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@delete call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val deleted = userService.delete(id)
+            if (deleted) call.respond(HttpStatusCode.NoContent)
+            else call.respond(HttpStatusCode.NotFound)
+        }
+    }
+}
+```
+
+### 用驗證路由組織 Route
+
+```kotlin
+fun Route.userRoutes() {
+    route(&quot;/users&quot;) {
+        // Public routes
+        get { /* list users */ }
+        get(&quot;/{id}&quot;) { /* get user */ }
+
+        // Protected routes
+        authenticate(&quot;jwt&quot;) {
+            post { /* create user - requires auth */ }
+            put(&quot;/{id}&quot;) { /* update user - requires auth */ }
+            delete(&quot;/{id}&quot;) { /* delete user - requires auth */ }
+        }
+    }
+}
+```
+
+## 內容協商與序列化
+
+### kotlinx.serialization 設定
+
+```kotlin
+// plugins/Serialization.kt
+fun Application.configureSerialization() {
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = false
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+            explicitNulls = false
+        })
+    }
+}
+```
+
+### 可序列化的 Model
+
+```kotlin
+@Serializable
+data class UserResponse(
+    val id: String,
+    val name: String,
+    val email: String,
+    val role: Role,
+    @Serializable(with = InstantSerializer::class)
+    val createdAt: Instant,
+)
+
+@Serializable
+data class CreateUserRequest(
+    val name: String,
+    val email: String,
+    val role: Role = Role.USER,
+)
+
+@Serializable
+data class ApiResponse&lt;T&gt;(
+    val success: Boolean,
+    val data: T? = null,
+    val error: String? = null,
+) {
+    companion object {
+        fun &lt;T&gt; ok(data: T): ApiResponse&lt;T&gt; = ApiResponse(success = true, data = data)
+        fun &lt;T&gt; error(message: String): ApiResponse&lt;T&gt; = ApiResponse(success = false, error = message)
+    }
+}
+
+@Serializable
+data class PaginatedResponse&lt;T&gt;(
+    val data: List&lt;T&gt;,
+    val total: Long,
+    val page: Int,
+    val limit: Int,
+)
+```
+
+### 自訂 Serializer
+
+```kotlin
+object InstantSerializer : KSerializer&lt;Instant&gt; {
+    override val descriptor = PrimitiveSerialDescriptor(&quot;Instant&quot;, PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: Instant) =
+        encoder.encodeString(value.toString())
+    override fun deserialize(decoder: Decoder): Instant =
+        Instant.parse(decoder.decodeString())
+}
+```
+
+## 驗證
+
+### JWT 驗證
+
+```kotlin
+// plugins/Authentication.kt
+fun Application.configureAuthentication() {
+    val jwtSecret = environment.config.property(&quot;jwt.secret&quot;).getString()
+    val jwtIssuer = environment.config.property(&quot;jwt.issuer&quot;).getString()
+    val jwtAudience = environment.config.property(&quot;jwt.audience&quot;).getString()
+    val jwtRealm = environment.config.property(&quot;jwt.realm&quot;).getString()
+
+    install(Authentication) {
+        jwt(&quot;jwt&quot;) {
+            realm = jwtRealm
+            verifier(
+                JWT.require(Algorithm.HMAC256(jwtSecret))
+                    .withAudience(jwtAudience)
+                    .withIssuer(jwtIssuer)
+                    .build()
+            )
+            validate { credential -&gt;
+                if (credential.payload.audience.contains(jwtAudience)) {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
+            }
+            challenge { _, _ -&gt;
+                call.respond(HttpStatusCode.Unauthorized, ApiResponse.error&lt;Unit&gt;(&quot;Invalid or expired token&quot;))
+            }
+        }
+    }
+}
+
+// Extracting user from JWT
+fun ApplicationCall.userId(): String =
+    principal&lt;JWTPrincipal&gt;()
+        ?.payload
+        ?.getClaim(&quot;userId&quot;)
+        ?.asString()
+        ?: throw AuthenticationException(&quot;No userId in token&quot;)
+```
+
+### Auth 路由
+
+```kotlin
+fun Route.authRoutes() {
+    val authService by inject&lt;AuthService&gt;()
+
+    route(&quot;/auth&quot;) {
+        post(&quot;/login&quot;) {
+            val request = call.receive&lt;LoginRequest&gt;()
+            val token = authService.login(request.email, request.password)
+                ?: return@post call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ApiResponse.error&lt;Unit&gt;(&quot;Invalid credentials&quot;),
+                )
+            call.respond(ApiResponse.ok(TokenResponse(token)))
+        }
+
+        post(&quot;/register&quot;) {
+            val request = call.receive&lt;RegisterRequest&gt;()
+            val user = authService.register(request)
+            call.respond(HttpStatusCode.Created, ApiResponse.ok(user))
+        }
+
+        authenticate(&quot;jwt&quot;) {
+            get(&quot;/me&quot;) {
+                val userId = call.userId()
+                val user = authService.getProfile(userId)
+                call.respond(ApiResponse.ok(user))
+            }
+        }
+    }
+}
+```
+
+## Status Pages（錯誤處理）
+
+```kotlin
+// plugins/StatusPages.kt
+fun Application.configureStatusPages() {
+    install(StatusPages) {
+        exception&lt;ContentTransformationException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ApiResponse.error&lt;Unit&gt;(&quot;Invalid request body: ${cause.message}&quot;),
+            )
+        }
+
+        exception&lt;IllegalArgumentException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ApiResponse.error&lt;Unit&gt;(cause.message ?: &quot;Bad request&quot;),
+            )
+        }
+
+        exception&lt;AuthenticationException&gt; { call, _ -&gt;
+            call.respond(
+                HttpStatusCode.Unauthorized,
+                ApiResponse.error&lt;Unit&gt;(&quot;Authentication required&quot;),
+            )
+        }
+
+        exception&lt;AuthorizationException&gt; { call, _ -&gt;
+            call.respond(
+                HttpStatusCode.Forbidden,
+                ApiResponse.error&lt;Unit&gt;(&quot;Access denied&quot;),
+            )
+        }
+
+        exception&lt;NotFoundException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.NotFound,
+                ApiResponse.error&lt;Unit&gt;(cause.message ?: &quot;Resource not found&quot;),
+            )
+        }
+
+        exception&lt;Throwable&gt; { call, cause -&gt;
+            call.application.log.error(&quot;Unhandled exception&quot;, cause)
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                ApiResponse.error&lt;Unit&gt;(&quot;Internal server error&quot;),
+            )
+        }
+
+        status(HttpStatusCode.NotFound) { call, status -&gt;
+            call.respond(status, ApiResponse.error&lt;Unit&gt;(&quot;Route not found&quot;))
+        }
+    }
+}
+```
+
+## CORS 設定
+
+```kotlin
+// plugins/CORS.kt
+fun Application.configureCORS() {
+    install(CORS) {
+        allowHost(&quot;localhost:3000&quot;)
+        allowHost(&quot;example.com&quot;, schemes = listOf(&quot;https&quot;))
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowCredentials = true
+        maxAgeInSeconds = 3600
+    }
+}
+```
+
+## Koin 依賴注入
+
+### Module 定義
+
+```kotlin
+// di/AppModule.kt
+val appModule = module {
+    // Database
+    single&lt;Database&gt; { DatabaseFactory.create(get()) }
+
+    // Repositories
+    single&lt;UserRepository&gt; { ExposedUserRepository(get()) }
+    single&lt;OrderRepository&gt; { ExposedOrderRepository(get()) }
+
+    // Services
+    single { UserService(get()) }
+    single { OrderService(get(), get()) }
+    single { AuthService(get(), get()) }
+}
+
+// Application setup
+fun Application.configureDI() {
+    install(Koin) {
+        modules(appModule)
+    }
+}
+```
+
+### 在路由中使用 Koin
+
+```kotlin
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    route(&quot;/users&quot;) {
+        get {
+            val users = userService.getAll()
+            call.respond(ApiResponse.ok(users))
+        }
+    }
+}
+```
+
+### 測試時的 Koin
+
+```kotlin
+class UserServiceTest : FunSpec(), KoinTest {
+    override fun extensions() = listOf(KoinExtension(testModule))
+
+    private val testModule = module {
+        single&lt;UserRepository&gt; { mockk() }
+        single { UserService(get()) }
+    }
+
+    private val repository by inject&lt;UserRepository&gt;()
+    private val service by inject&lt;UserService&gt;()
+
+    init {
+        test(&quot;getUser returns user&quot;) {
+            coEvery { repository.findById(&quot;1&quot;) } returns testUser
+            service.getById(&quot;1&quot;) shouldBe testUser
+        }
+    }
+}
+```
+
+## 請求驗證
+
+```kotlin
+// Validate request data in routes
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    post(&quot;/users&quot;) {
+        val request = call.receive&lt;CreateUserRequest&gt;()
+
+        // Validate
+        require(request.name.isNotBlank()) { &quot;Name is required&quot; }
+        require(request.name.length &lt;= 100) { &quot;Name must be 100 characters or less&quot; }
+        require(request.email.matches(Regex(&quot;.+@.+\\..+&quot;))) { &quot;Invalid email format&quot; }
+
+        val user = userService.create(request)
+        call.respond(HttpStatusCode.Created, ApiResponse.ok(user))
+    }
+}
+
+// Or use a validation extension
+fun CreateUserRequest.validate() {
+    require(name.isNotBlank()) { &quot;Name is required&quot; }
+    require(name.length &lt;= 100) { &quot;Name must be 100 characters or less&quot; }
+    require(email.matches(Regex(&quot;.+@.+\\..+&quot;))) { &quot;Invalid email format&quot; }
+}
+```
+
+## WebSocket
+
+```kotlin
+fun Application.configureWebSockets() {
+    install(WebSockets) {
+        pingPeriod = 15.seconds
+        timeout = 15.seconds
+        maxFrameSize = 64 * 1024 // 64 KiB — increase only if your protocol requires larger frames
+        masking = false // Server-to-client frames are unmasked per RFC 6455; client-to-server are always masked by Ktor
+    }
+}
+
+fun Route.chatRoutes() {
+    val connections = Collections.synchronizedSet&lt;Connection&gt;(LinkedHashSet())
+
+    webSocket(&quot;/chat&quot;) {
+        val thisConnection = Connection(this)
+        connections += thisConnection
+
+        try {
+            send(&quot;Connected! Users online: ${connections.size}&quot;)
+
+            for (frame in incoming) {
+                frame as? Frame.Text ?: continue
+                val text = frame.readText()
+                val message = ChatMessage(thisConnection.name, text)
+
+                // Snapshot under lock to avoid ConcurrentModificationException
+                val snapshot = synchronized(connections) { connections.toList() }
+                snapshot.forEach { conn -&gt;
+                    conn.session.send(Json.encodeToString(message))
+                }
+            }
+        } catch (e: Exception) {
+            logger.error(&quot;WebSocket error&quot;, e)
+        } finally {
+            connections -= thisConnection
+        }
+    }
+}
+
+data class Connection(val session: DefaultWebSocketSession) {
+    val name: String = &quot;User-${counter.getAndIncrement()}&quot;
+
+    companion object {
+        private val counter = AtomicInteger(0)
+    }
+}
+```
+
+## testApplication 測試
+
+### 基本路由測試
+
+```kotlin
+class UserRoutesTest : FunSpec({
+    test(&quot;GET /users returns list of users&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureRouting()
+            }
+
+            val response = client.get(&quot;/users&quot;)
+
+            response.status shouldBe HttpStatusCode.OK
+            val body = response.body&lt;ApiResponse&lt;List&lt;UserResponse&gt;&gt;&gt;()
+            body.success shouldBe true
+            body.data.shouldNotBeNull().shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;POST /users creates a user&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureStatusPages()
+                configureRouting()
+            }
+
+            val client = createClient {
+                install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+                    json()
+                }
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+
+    test(&quot;GET /users/{id} returns 404 for unknown id&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureStatusPages()
+                configureRouting()
+            }
+
+            val response = client.get(&quot;/users/unknown-id&quot;)
+
+            response.status shouldBe HttpStatusCode.NotFound
+        }
+    }
+})
+```
+
+### 測試需驗證的路由
+
+```kotlin
+class AuthenticatedRoutesTest : FunSpec({
+    test(&quot;protected route requires JWT&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureAuthentication()
+                configureRouting()
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Unauthorized
+        }
+    }
+
+    test(&quot;protected route succeeds with valid JWT&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureAuthentication()
+                configureRouting()
+            }
+
+            val token = generateTestJWT(userId = &quot;test-user&quot;)
+
+            val client = createClient {
+                install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) { json() }
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                bearerAuth(token)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+})
+```
+
+## 設定
+
+### application.yaml
+
+```yaml
+ktor:
+  application:
+    modules:
+      - com.example.ApplicationKt.module
+  deployment:
+    port: 8080
+
+jwt:
+  secret: ${JWT_SECRET}
+  issuer: &quot;https://example.com&quot;
+  audience: &quot;https://example.com/api&quot;
+  realm: &quot;example&quot;
+
+database:
+  url: ${DATABASE_URL}
+  driver: &quot;org.postgresql.Driver&quot;
+  maxPoolSize: 10
+```
+
+### 讀取設定
+
+```kotlin
+fun Application.configureDI() {
+    val dbUrl = environment.config.property(&quot;database.url&quot;).getString()
+    val dbDriver = environment.config.property(&quot;database.driver&quot;).getString()
+    val maxPoolSize = environment.config.property(&quot;database.maxPoolSize&quot;).getString().toInt()
+
+    install(Koin) {
+        modules(module {
+            single { DatabaseConfig(dbUrl, dbDriver, maxPoolSize) }
+            single { DatabaseFactory.create(get()) }
+        })
+    }
+}
+```
+
+## 速查：Ktor 模式
+
+| 模式 | 說明 |
+|---------|-------------|
+| `route(&quot;/path&quot;) { get { } }` | 用 DSL 做路由分組 |
+| `call.receive&lt;T&gt;()` | 反序列化 request body |
+| `call.respond(status, body)` | 帶 status 送出 response |
+| `call.parameters[&quot;id&quot;]` | 讀取路徑參數 |
+| `call.request.queryParameters[&quot;q&quot;]` | 讀取 query 參數 |
+| `install(Plugin) { }` | 安裝並設定 plugin |
+| `authenticate(&quot;name&quot;) { }` | 用驗證保護路由 |
+| `by inject&lt;T&gt;()` | Koin 依賴注入 |
+| `testApplication { }` | 整合測試 |
+
+**記住**：Ktor 是圍繞 Kotlin coroutines 和 DSL 設計的。路由保持精簡，邏輯丟給 service，依賴注入用 Koin。用 `testApplication` 做測試，才有完整的整合覆蓋。</pre></section><section><h2>英文原文</h2><pre>---
+name: kotlin-ktor-patterns
+description: Ktor server patterns including routing DSL, plugins, authentication, Koin DI, kotlinx.serialization, WebSockets, and testApplication testing. Use when building a Ktor server — routing, plugins, auth, DI, serialization, or tests.
+metadata:
+  origin: ECC
+---
+
+# Ktor Server Patterns
+
+Comprehensive Ktor patterns for building robust, maintainable HTTP servers with Kotlin coroutines.
+
+## When to Activate
+
+- Building Ktor HTTP servers
+- Configuring Ktor plugins (Auth, CORS, ContentNegotiation, StatusPages)
+- Implementing REST APIs with Ktor
+- Setting up dependency injection with Koin
+- Writing Ktor integration tests with testApplication
+- Working with WebSockets in Ktor
+
+## Application Structure
+
+### Standard Ktor Project Layout
+
+```text
+src/main/kotlin/
+├── com/example/
+│   ├── Application.kt           # Entry point, module configuration
+│   ├── plugins/
+│   │   ├── Routing.kt           # Route definitions
+│   │   ├── Serialization.kt     # Content negotiation setup
+│   │   ├── Authentication.kt    # Auth configuration
+│   │   ├── StatusPages.kt       # Error handling
+│   │   └── CORS.kt              # CORS configuration
+│   ├── routes/
+│   │   ├── UserRoutes.kt        # /users endpoints
+│   │   ├── AuthRoutes.kt        # /auth endpoints
+│   │   └── HealthRoutes.kt      # /health endpoints
+│   ├── models/
+│   │   ├── User.kt              # Domain models
+│   │   └── ApiResponse.kt       # Response envelopes
+│   ├── services/
+│   │   ├── UserService.kt       # Business logic
+│   │   └── AuthService.kt       # Auth logic
+│   ├── repositories/
+│   │   ├── UserRepository.kt    # Data access interface
+│   │   └── ExposedUserRepository.kt
+│   └── di/
+│       └── AppModule.kt         # Koin modules
+src/test/kotlin/
+├── com/example/
+│   ├── routes/
+│   │   └── UserRoutesTest.kt
+│   └── services/
+│       └── UserServiceTest.kt
+```
+
+### Application Entry Point
+
+```kotlin
+// Application.kt
+fun main() {
+    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
+}
+
+fun Application.module() {
+    configureSerialization()
+    configureAuthentication()
+    configureStatusPages()
+    configureCORS()
+    configureDI()
+    configureRouting()
+}
+```
+
+## Routing DSL
+
+### Basic Routes
+
+```kotlin
+// plugins/Routing.kt
+fun Application.configureRouting() {
+    routing {
+        userRoutes()
+        authRoutes()
+        healthRoutes()
+    }
+}
+
+// routes/UserRoutes.kt
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    route(&quot;/users&quot;) {
+        get {
+            val users = userService.getAll()
+            call.respond(users)
+        }
+
+        get(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val user = userService.getById(id)
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+            call.respond(user)
+        }
+
+        post {
+            val request = call.receive&lt;CreateUserRequest&gt;()
+            val user = userService.create(request)
+            call.respond(HttpStatusCode.Created, user)
+        }
+
+        put(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@put call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val request = call.receive&lt;UpdateUserRequest&gt;()
+            val user = userService.update(id, request)
+                ?: return@put call.respond(HttpStatusCode.NotFound)
+            call.respond(user)
+        }
+
+        delete(&quot;/{id}&quot;) {
+            val id = call.parameters[&quot;id&quot;]
+                ?: return@delete call.respond(HttpStatusCode.BadRequest, &quot;Missing id&quot;)
+            val deleted = userService.delete(id)
+            if (deleted) call.respond(HttpStatusCode.NoContent)
+            else call.respond(HttpStatusCode.NotFound)
+        }
+    }
+}
+```
+
+### Route Organization with Authenticated Routes
+
+```kotlin
+fun Route.userRoutes() {
+    route(&quot;/users&quot;) {
+        // Public routes
+        get { /* list users */ }
+        get(&quot;/{id}&quot;) { /* get user */ }
+
+        // Protected routes
+        authenticate(&quot;jwt&quot;) {
+            post { /* create user - requires auth */ }
+            put(&quot;/{id}&quot;) { /* update user - requires auth */ }
+            delete(&quot;/{id}&quot;) { /* delete user - requires auth */ }
+        }
+    }
+}
+```
+
+## Content Negotiation &amp; Serialization
+
+### kotlinx.serialization Setup
+
+```kotlin
+// plugins/Serialization.kt
+fun Application.configureSerialization() {
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = false
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+            explicitNulls = false
+        })
+    }
+}
+```
+
+### Serializable Models
+
+```kotlin
+@Serializable
+data class UserResponse(
+    val id: String,
+    val name: String,
+    val email: String,
+    val role: Role,
+    @Serializable(with = InstantSerializer::class)
+    val createdAt: Instant,
+)
+
+@Serializable
+data class CreateUserRequest(
+    val name: String,
+    val email: String,
+    val role: Role = Role.USER,
+)
+
+@Serializable
+data class ApiResponse&lt;T&gt;(
+    val success: Boolean,
+    val data: T? = null,
+    val error: String? = null,
+) {
+    companion object {
+        fun &lt;T&gt; ok(data: T): ApiResponse&lt;T&gt; = ApiResponse(success = true, data = data)
+        fun &lt;T&gt; error(message: String): ApiResponse&lt;T&gt; = ApiResponse(success = false, error = message)
+    }
+}
+
+@Serializable
+data class PaginatedResponse&lt;T&gt;(
+    val data: List&lt;T&gt;,
+    val total: Long,
+    val page: Int,
+    val limit: Int,
+)
+```
+
+### Custom Serializers
+
+```kotlin
+object InstantSerializer : KSerializer&lt;Instant&gt; {
+    override val descriptor = PrimitiveSerialDescriptor(&quot;Instant&quot;, PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: Instant) =
+        encoder.encodeString(value.toString())
+    override fun deserialize(decoder: Decoder): Instant =
+        Instant.parse(decoder.decodeString())
+}
+```
+
+## Authentication
+
+### JWT Authentication
+
+```kotlin
+// plugins/Authentication.kt
+fun Application.configureAuthentication() {
+    val jwtSecret = environment.config.property(&quot;jwt.secret&quot;).getString()
+    val jwtIssuer = environment.config.property(&quot;jwt.issuer&quot;).getString()
+    val jwtAudience = environment.config.property(&quot;jwt.audience&quot;).getString()
+    val jwtRealm = environment.config.property(&quot;jwt.realm&quot;).getString()
+
+    install(Authentication) {
+        jwt(&quot;jwt&quot;) {
+            realm = jwtRealm
+            verifier(
+                JWT.require(Algorithm.HMAC256(jwtSecret))
+                    .withAudience(jwtAudience)
+                    .withIssuer(jwtIssuer)
+                    .build()
+            )
+            validate { credential -&gt;
+                if (credential.payload.audience.contains(jwtAudience)) {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
+            }
+            challenge { _, _ -&gt;
+                call.respond(HttpStatusCode.Unauthorized, ApiResponse.error&lt;Unit&gt;(&quot;Invalid or expired token&quot;))
+            }
+        }
+    }
+}
+
+// Extracting user from JWT
+fun ApplicationCall.userId(): String =
+    principal&lt;JWTPrincipal&gt;()
+        ?.payload
+        ?.getClaim(&quot;userId&quot;)
+        ?.asString()
+        ?: throw AuthenticationException(&quot;No userId in token&quot;)
+```
+
+### Auth Routes
+
+```kotlin
+fun Route.authRoutes() {
+    val authService by inject&lt;AuthService&gt;()
+
+    route(&quot;/auth&quot;) {
+        post(&quot;/login&quot;) {
+            val request = call.receive&lt;LoginRequest&gt;()
+            val token = authService.login(request.email, request.password)
+                ?: return@post call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ApiResponse.error&lt;Unit&gt;(&quot;Invalid credentials&quot;),
+                )
+            call.respond(ApiResponse.ok(TokenResponse(token)))
+        }
+
+        post(&quot;/register&quot;) {
+            val request = call.receive&lt;RegisterRequest&gt;()
+            val user = authService.register(request)
+            call.respond(HttpStatusCode.Created, ApiResponse.ok(user))
+        }
+
+        authenticate(&quot;jwt&quot;) {
+            get(&quot;/me&quot;) {
+                val userId = call.userId()
+                val user = authService.getProfile(userId)
+                call.respond(ApiResponse.ok(user))
+            }
+        }
+    }
+}
+```
+
+## Status Pages (Error Handling)
+
+```kotlin
+// plugins/StatusPages.kt
+fun Application.configureStatusPages() {
+    install(StatusPages) {
+        exception&lt;ContentTransformationException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ApiResponse.error&lt;Unit&gt;(&quot;Invalid request body: ${cause.message}&quot;),
+            )
+        }
+
+        exception&lt;IllegalArgumentException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ApiResponse.error&lt;Unit&gt;(cause.message ?: &quot;Bad request&quot;),
+            )
+        }
+
+        exception&lt;AuthenticationException&gt; { call, _ -&gt;
+            call.respond(
+                HttpStatusCode.Unauthorized,
+                ApiResponse.error&lt;Unit&gt;(&quot;Authentication required&quot;),
+            )
+        }
+
+        exception&lt;AuthorizationException&gt; { call, _ -&gt;
+            call.respond(
+                HttpStatusCode.Forbidden,
+                ApiResponse.error&lt;Unit&gt;(&quot;Access denied&quot;),
+            )
+        }
+
+        exception&lt;NotFoundException&gt; { call, cause -&gt;
+            call.respond(
+                HttpStatusCode.NotFound,
+                ApiResponse.error&lt;Unit&gt;(cause.message ?: &quot;Resource not found&quot;),
+            )
+        }
+
+        exception&lt;Throwable&gt; { call, cause -&gt;
+            call.application.log.error(&quot;Unhandled exception&quot;, cause)
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                ApiResponse.error&lt;Unit&gt;(&quot;Internal server error&quot;),
+            )
+        }
+
+        status(HttpStatusCode.NotFound) { call, status -&gt;
+            call.respond(status, ApiResponse.error&lt;Unit&gt;(&quot;Route not found&quot;))
+        }
+    }
+}
+```
+
+## CORS Configuration
+
+```kotlin
+// plugins/CORS.kt
+fun Application.configureCORS() {
+    install(CORS) {
+        allowHost(&quot;localhost:3000&quot;)
+        allowHost(&quot;example.com&quot;, schemes = listOf(&quot;https&quot;))
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowCredentials = true
+        maxAgeInSeconds = 3600
+    }
+}
+```
+
+## Koin Dependency Injection
+
+### Module Definition
+
+```kotlin
+// di/AppModule.kt
+val appModule = module {
+    // Database
+    single&lt;Database&gt; { DatabaseFactory.create(get()) }
+
+    // Repositories
+    single&lt;UserRepository&gt; { ExposedUserRepository(get()) }
+    single&lt;OrderRepository&gt; { ExposedOrderRepository(get()) }
+
+    // Services
+    single { UserService(get()) }
+    single { OrderService(get(), get()) }
+    single { AuthService(get(), get()) }
+}
+
+// Application setup
+fun Application.configureDI() {
+    install(Koin) {
+        modules(appModule)
+    }
+}
+```
+
+### Using Koin in Routes
+
+```kotlin
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    route(&quot;/users&quot;) {
+        get {
+            val users = userService.getAll()
+            call.respond(ApiResponse.ok(users))
+        }
+    }
+}
+```
+
+### Koin for Testing
+
+```kotlin
+class UserServiceTest : FunSpec(), KoinTest {
+    override fun extensions() = listOf(KoinExtension(testModule))
+
+    private val testModule = module {
+        single&lt;UserRepository&gt; { mockk() }
+        single { UserService(get()) }
+    }
+
+    private val repository by inject&lt;UserRepository&gt;()
+    private val service by inject&lt;UserService&gt;()
+
+    init {
+        test(&quot;getUser returns user&quot;) {
+            coEvery { repository.findById(&quot;1&quot;) } returns testUser
+            service.getById(&quot;1&quot;) shouldBe testUser
+        }
+    }
+}
+```
+
+## Request Validation
+
+```kotlin
+// Validate request data in routes
+fun Route.userRoutes() {
+    val userService by inject&lt;UserService&gt;()
+
+    post(&quot;/users&quot;) {
+        val request = call.receive&lt;CreateUserRequest&gt;()
+
+        // Validate
+        require(request.name.isNotBlank()) { &quot;Name is required&quot; }
+        require(request.name.length &lt;= 100) { &quot;Name must be 100 characters or less&quot; }
+        require(request.email.matches(Regex(&quot;.+@.+\\..+&quot;))) { &quot;Invalid email format&quot; }
+
+        val user = userService.create(request)
+        call.respond(HttpStatusCode.Created, ApiResponse.ok(user))
+    }
+}
+
+// Or use a validation extension
+fun CreateUserRequest.validate() {
+    require(name.isNotBlank()) { &quot;Name is required&quot; }
+    require(name.length &lt;= 100) { &quot;Name must be 100 characters or less&quot; }
+    require(email.matches(Regex(&quot;.+@.+\\..+&quot;))) { &quot;Invalid email format&quot; }
+}
+```
+
+## WebSockets
+
+```kotlin
+fun Application.configureWebSockets() {
+    install(WebSockets) {
+        pingPeriod = 15.seconds
+        timeout = 15.seconds
+        maxFrameSize = 64 * 1024 // 64 KiB — increase only if your protocol requires larger frames
+        masking = false // Server-to-client frames are unmasked per RFC 6455; client-to-server are always masked by Ktor
+    }
+}
+
+fun Route.chatRoutes() {
+    val connections = Collections.synchronizedSet&lt;Connection&gt;(LinkedHashSet())
+
+    webSocket(&quot;/chat&quot;) {
+        val thisConnection = Connection(this)
+        connections += thisConnection
+
+        try {
+            send(&quot;Connected! Users online: ${connections.size}&quot;)
+
+            for (frame in incoming) {
+                frame as? Frame.Text ?: continue
+                val text = frame.readText()
+                val message = ChatMessage(thisConnection.name, text)
+
+                // Snapshot under lock to avoid ConcurrentModificationException
+                val snapshot = synchronized(connections) { connections.toList() }
+                snapshot.forEach { conn -&gt;
+                    conn.session.send(Json.encodeToString(message))
+                }
+            }
+        } catch (e: Exception) {
+            logger.error(&quot;WebSocket error&quot;, e)
+        } finally {
+            connections -= thisConnection
+        }
+    }
+}
+
+data class Connection(val session: DefaultWebSocketSession) {
+    val name: String = &quot;User-${counter.getAndIncrement()}&quot;
+
+    companion object {
+        private val counter = AtomicInteger(0)
+    }
+}
+```
+
+## testApplication Testing
+
+### Basic Route Testing
+
+```kotlin
+class UserRoutesTest : FunSpec({
+    test(&quot;GET /users returns list of users&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureRouting()
+            }
+
+            val response = client.get(&quot;/users&quot;)
+
+            response.status shouldBe HttpStatusCode.OK
+            val body = response.body&lt;ApiResponse&lt;List&lt;UserResponse&gt;&gt;&gt;()
+            body.success shouldBe true
+            body.data.shouldNotBeNull().shouldNotBeEmpty()
+        }
+    }
+
+    test(&quot;POST /users creates a user&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureStatusPages()
+                configureRouting()
+            }
+
+            val client = createClient {
+                install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+                    json()
+                }
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+
+    test(&quot;GET /users/{id} returns 404 for unknown id&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureStatusPages()
+                configureRouting()
+            }
+
+            val response = client.get(&quot;/users/unknown-id&quot;)
+
+            response.status shouldBe HttpStatusCode.NotFound
+        }
+    }
+})
+```
+
+### Testing Authenticated Routes
+
+```kotlin
+class AuthenticatedRoutesTest : FunSpec({
+    test(&quot;protected route requires JWT&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureAuthentication()
+                configureRouting()
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Unauthorized
+        }
+    }
+
+    test(&quot;protected route succeeds with valid JWT&quot;) {
+        testApplication {
+            application {
+                install(Koin) { modules(testModule) }
+                configureSerialization()
+                configureAuthentication()
+                configureRouting()
+            }
+
+            val token = generateTestJWT(userId = &quot;test-user&quot;)
+
+            val client = createClient {
+                install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) { json() }
+            }
+
+            val response = client.post(&quot;/users&quot;) {
+                contentType(ContentType.Application.Json)
+                bearerAuth(token)
+                setBody(CreateUserRequest(&quot;Alice&quot;, &quot;alice@example.com&quot;))
+            }
+
+            response.status shouldBe HttpStatusCode.Created
+        }
+    }
+})
+```
+
+## Configuration
+
+### application.yaml
+
+```yaml
+ktor:
+  application:
+    modules:
+      - com.example.ApplicationKt.module
+  deployment:
+    port: 8080
+
+jwt:
+  secret: ${JWT_SECRET}
+  issuer: &quot;https://example.com&quot;
+  audience: &quot;https://example.com/api&quot;
+  realm: &quot;example&quot;
+
+database:
+  url: ${DATABASE_URL}
+  driver: &quot;org.postgresql.Driver&quot;
+  maxPoolSize: 10
+```
+
+### Reading Config
+
+```kotlin
+fun Application.configureDI() {
+    val dbUrl = environment.config.property(&quot;database.url&quot;).getString()
+    val dbDriver = environment.config.property(&quot;database.driver&quot;).getString()
+    val maxPoolSize = environment.config.property(&quot;database.maxPoolSize&quot;).getString().toInt()
+
+    install(Koin) {
+        modules(module {
+            single { DatabaseConfig(dbUrl, dbDriver, maxPoolSize) }
+            single { DatabaseFactory.create(get()) }
+        })
+    }
+}
+```
+
+## Quick Reference: Ktor Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| `route(&quot;/path&quot;) { get { } }` | Route grouping with DSL |
+| `call.receive&lt;T&gt;()` | Deserialize request body |
+| `call.respond(status, body)` | Send response with status |
+| `call.parameters[&quot;id&quot;]` | Read path parameters |
+| `call.request.queryParameters[&quot;q&quot;]` | Read query parameters |
+| `install(Plugin) { }` | Install and configure plugin |
+| `authenticate(&quot;name&quot;) { }` | Protect routes with auth |
+| `by inject&lt;T&gt;()` | Koin dependency injection |
+| `testApplication { }` | Integration testing |
+
+**Remember**: Ktor is designed around Kotlin coroutines and DSLs. Keep routes thin, push logic to services, and use Koin for dependency injection. Test with `testApplication` for full integration coverage.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

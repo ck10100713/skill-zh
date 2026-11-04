@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>prisma-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Prisma ORM 的 schema、查詢、transaction 與常見陷阱整理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>prisma-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/prisma-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Prisma ORM 的 schema、查詢、transaction 與常見陷阱整理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: prisma-patterns
+description: TypeScript 後端的 Prisma ORM 模式：schema 設計、查詢最佳化、transaction、分頁，以及幾個關鍵陷阱，例如 updateMany 回傳的是筆數而不是紀錄、$transaction 會 timeout、migrate dev 會重設資料庫、批次寫入會跳過 @updatedAt，以及 serverless 連線耗盡。撰寫 Prisma schema 或查詢，或排查 transaction、migration 或 serverless 連線上限的問題時使用。
+metadata:
+  origin: ECC
+---
+
+# Prisma Patterns
+
+TypeScript 後端使用 Prisma ORM 的正式環境模式，以及不明顯的陷阱。
+
+&gt; **套用這些模式之前，先確認你的版本。** Prisma 的 API 介面在各個主要版本之間一直在演進：
+&gt;
+&gt; ```bash
+&gt; npx prisma --version
+&gt; ```
+&gt;
+&gt; 各版本之間值得注意的 API 差異：
+&gt; - `relationJoins` 可以用 JOIN 載入關聯，而不是分開的查詢，但在大型的 1:N 關聯或很深的 `include` 上可能造成資料列暴增，兩種做法都要 benchmark
+&gt; - 新增了 `omit` 欄位修飾詞和 `prisma.$extends` Client Extensions API
+&gt; - **較新的安裝**：套件名稱可能是 `prisma`，而不是 `@prisma/client`；`PrismaClient` 可能需要 driver adapter（例如 `@prisma/adapter-pg`）；`datasource.url` 可能放在 `prisma.config.ts`，而不是 `schema.prisma`
+&gt; - CLI 指令（`migrate dev`、`migrate deploy`、`generate`）在各版本之間沒有變
+
+## 何時啟用
+
+- 設計或修改 Prisma 的 schema model 和關聯
+- 撰寫查詢、transaction 或分頁邏輯
+- 使用 `updateMany`、`deleteMany` 或任何批次操作
+- 執行或規劃資料庫 migration
+- 部署到 serverless 環境（Vercel、Lambda、Cloudflare Workers）
+- 實作 soft delete 或多租戶的資料列過濾
+
+## 核心概念
+
+### ID 策略
+
+| 策略 | 適用時機 | 避免時機 |
+|---|---|---|
+| `@default(cuid())` | 預設選擇，URL 安全、可排序、不會碰撞 | 外部系統需要連續 ID 的時候 |
+| `@default(uuid())` | 需要跟非 Prisma 的系統互通 | 高寫入量的資料表（隨機 UUID 會讓 B-tree 索引碎片化） |
+| `@default(autoincrement())` | 內部的 join table、稽核紀錄 | 對外公開的 ID（會暴露紀錄數量） |
+
+### Schema 預設值
+
+```prisma
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique  // @unique 已經會建立索引，不需要再加 @@index
+  name      String
+  role      Role      @default(USER)
+  posts     Post[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([createdAt])
+  @@index([deletedAt, createdAt]) // soft delete + 排序查詢用的複合索引
+}
+```
+
+- 每個外鍵，以及每個用在 `WHERE` 或 `ORDER BY` 的欄位，都要加 `@@index`。
+- 如果可預見會需要 soft delete，就事先宣告 `deletedAt DateTime?`，之後才加的話，要對正在線上的資料表做 migration。
+- `updatedAt @updatedAt` 只有在 `update` 和 `upsert` 時，Prisma 才會自動設定（批次更新的陷阱見反模式）。
+
+### `include` 和 `select`
+
+| | `include` | `select` |
+|---|---|---|
+| 回傳 | 所有純量欄位 + 指定的關聯 | 只有指定的欄位 |
+| 適用時機 | 你需要大部分欄位再加上一個關聯 | 熱點路徑、大型資料表、避免過度撈取 |
+| 效能 | 在欄位很多的資料表上可能過度撈取 | payload 最小，大型資料集上比較快 |
+| Prisma 5 備註 | 預設使用 JOIN（`relationJoins`） | 相同 |
+
+```ts
+// include：所有欄位 + 關聯
+const user = await prisma.user.findUnique({
+  where: { id },
+  include: { posts: { select: { id: true, title: true } } },
+});
+
+// select：明確的 allowlist
+const user = await prisma.user.findUnique({
+  where: { id },
+  select: { id: true, email: true, name: true },
+});
+```
+
+絕對不要在 API 回應裡直接回傳原始的 Prisma entity，要對應到回應用的 DTO，來控制公開的欄位：
+
+```ts
+// BAD: 會洩漏 passwordHash、deletedAt 和內部欄位
+return await prisma.user.findUniqueOrThrow({ where: { id } });
+
+// GOOD: 明確對應到 DTO
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+return { id: user.id, name: user.name, email: user.email };
+```
+
+### Transaction 形式的選擇
+
+| 情況 | 使用 |
+|---|---|
+| 彼此獨立的操作，沒有相依關係 | Array 形式 |
+| 後面的步驟依賴前面的結果 | Interactive 形式 |
+| 牽涉到外部呼叫（email、HTTP） | 完全放在 transaction 外面 |
+
+```ts
+// Array 形式：批次在一次 round trip 內完成
+const [user, post] = await prisma.$transaction([
+  prisma.user.update({ where: { id }, data: { name } }),
+  prisma.post.create({ data: { title, authorId: id } }),
+]);
+
+// Interactive 形式：只能用 tx client，絕對不要用外層的 prisma client
+const post = await prisma.$transaction(async (tx) =&gt; {
+  const user = await tx.user.findUniqueOrThrow({ where: { id } });
+  if (user.role !== &#x27;ADMIN&#x27;) throw new Error(&#x27;Forbidden&#x27;);
+  return tx.post.create({ data: { title, authorId: user.id } });
+});
+```
+
+### PrismaClient Singleton
+
+每個 `PrismaClient` 實例都會開自己的連線池。只實例化一次。
+
+```ts
+// lib/prisma.ts
+
+// 選項 A：以 adapter 初始化（較新的 Prisma 安裝需要這樣做）
+import { PrismaClient } from &#x27;@prisma/client&#x27;; // 或你的環境產生出來的 client 路徑
+import { PrismaPg } from &#x27;@prisma/adapter-pg&#x27;;
+
+function createPrismaClient() {
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  return new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === &#x27;development&#x27; ? [&#x27;query&#x27;, &#x27;error&#x27;] : [&#x27;error&#x27;],
+  });
+}
+
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== &#x27;production&#x27;) globalForPrisma.prisma = prisma;
+
+// 選項 B：直接初始化（較舊的安裝，不需要 adapter）
+// import { PrismaClient } from &#x27;@prisma/client&#x27;;
+// export const prisma = globalForPrisma.prisma ?? new PrismaClient({ ... });
+```
+
+如果你的 Prisma 安裝需要在 `PrismaClient` 建構子傳入 `adapter` 引數，就用選項 A。
+如果 `new PrismaClient()` 不帶引數就能運作，就用選項 B。哪個正確，讓編譯器告訴你。
+
+`globalThis` 這個寫法可以避免 hot reload（Next.js、nodemon、ts-node-dev）時產生重複的實例。
+
+### N+1 問題
+
+在迴圈裡載入關聯，每一列都會發出一次查詢。
+
+```ts
+// BAD: N+1，每個 user 多一次查詢
+const users = await prisma.user.findMany();
+for (const user of users) {
+  const posts = await prisma.post.findMany({ where: { authorId: user.id } });
+}
+
+// GOOD: 單一查詢
+const users = await prisma.user.findMany({ include: { posts: true } });
+```
+
+在 Prisma 5+ 的 `relationJoins` 下，`include` 的寫法會用單一 JOIN。在大型的 1:N 集合上，這可能讓結果集變大；如果每個 parent 可能回傳很多列關聯資料，兩種做法都要 benchmark。
+
+## 程式碼範例
+
+### Cursor 分頁（feed 和大型資料集的首選）
+
+```ts
+async function getPosts(cursor?: string, limit = 20) {
+  const items = await prisma.post.findMany({
+    where: { published: true },
+    orderBy: [
+      { createdAt: &#x27;desc&#x27; },
+      { id: &#x27;desc&#x27; }, // 次要排序，避免時間戳記重複時分頁不穩定
+    ],
+    take: limit + 1,
+    ...(cursor &amp;&amp; { cursor: { id: cursor }, skip: 1 }),
+  });
+
+  const hasNextPage = items.length &gt; limit;
+  if (hasNextPage) items.pop();
+
+  return { items, nextCursor: hasNextPage ? items[items.length - 1].id : null };
+}
+```
+
+多撈 `limit + 1` 筆再 pop 掉，是不用額外 count 查詢就能偵測 `hasNextPage` 的標準做法。一定要把唯一欄位（例如 `id`）當成次要的 `orderBy`，避免多筆資料時間戳記相同時分頁不穩定。只有在使用者需要跳到任意頁面時（管理後台的表格）才用 offset 分頁。
+
+### Soft Delete
+
+```ts
+// 一律明確過濾，不要依賴 middleware（會藏住行為，難以 debug）
+const activeUsers = await prisma.user.findMany({ where: { deletedAt: null } });
+
+await prisma.user.update({ where: { id }, data: { deletedAt: new Date() } });
+await prisma.user.update({ where: { id }, data: { deletedAt: null } }); // 還原
+```
+
+### 錯誤處理
+
+```ts
+import { Prisma } from &#x27;@prisma/client&#x27;; // 或你的環境產生出來的 client 路徑
+
+try {
+  await prisma.user.create({ data: { email } });
+} catch (e) {
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === &#x27;P2002&#x27;) throw new ConflictError(&#x27;Email already exists&#x27;);
+    if (e.code === &#x27;P2025&#x27;) throw new NotFoundError(&#x27;Record not found&#x27;);
+    if (e.code === &#x27;P2003&#x27;) throw new BadRequestError(&#x27;Referenced record does not exist&#x27;);
+  }
+  throw e;
+}
+```
+
+常見的錯誤碼：`P2002` 違反唯一性 · `P2025` 找不到 · `P2003` 違反外鍵。
+
+在 service 邊界捕捉並轉成領域錯誤。絕對不要把原始的 Prisma 訊息暴露給 API 使用者。
+
+### 連線池：Serverless
+
+連線參數直接內嵌在 `DATABASE_URL` 裡，如果 URL 已經有 query 參數（例如 `?schema=public`），用字串串接會壞掉：
+
+```bash
+# .env：建議把參數內嵌在 URL 裡
+DATABASE_URL=&quot;postgresql://user:pass@host/db?connection_limit=1&amp;pool_timeout=20&quot;
+
+# 搭配外部的 pooler（PgBouncer、Supabase pooler）
+DATABASE_URL=&quot;postgresql://user:pass@host/db?pgbouncer=true&amp;connection_limit=1&quot;
+```
+
+```ts
+// Vercel、AWS Lambda 和類似的 serverless runtime：
+// 每個實例把連線池上限設成 1；connection_limit 和 pool_timeout 由 DATABASE_URL 控制
+
+// 以 adapter 設定（如果你的 Prisma 安裝需要 adapter）：
+import { PrismaClient } from &#x27;@prisma/client&#x27;;
+import { PrismaPg } from &#x27;@prisma/adapter-pg&#x27;;
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
+
+// 直接設定（如果你的 Prisma 安裝不需要 adapter）：
+// const prisma = new PrismaClient();
+```
+
+## 反模式
+
+### `updateMany` 回傳的是筆數，不是紀錄
+
+```ts
+// BAD: 結果是 { count: 2 }，users[0] 是 undefined
+const users = await prisma.user.updateMany({ where: { role: &#x27;GUEST&#x27; }, data: { role: &#x27;USER&#x27; } });
+
+// GOOD: 先抓 ID，再更新，最後只撈受影響的列
+const targets = await prisma.user.findMany({
+  where: { role: &#x27;GUEST&#x27; },
+  select: { id: true },
+});
+const ids = targets.map((u) =&gt; u.id);
+await prisma.user.updateMany({ where: { id: { in: ids } }, data: { role: &#x27;USER&#x27; } });
+const updated = await prisma.user.findMany({ where: { id: { in: ids } } });
+```
+
+`deleteMany` 也一樣，回傳 `{ count: n }`，絕對不會回傳被刪掉的列。
+
+### `$transaction` 的 interactive 形式 5 秒後會 timeout
+
+```ts
+// BAD: transaction 裡的外部呼叫超過預設的 5 秒 → 「Transaction already closed」
+await prisma.$transaction(async (tx) =&gt; {
+  const user = await tx.user.findUniqueOrThrow({ where: { id } });
+  await sendWelcomeEmail(user.email); // 外部呼叫
+  await tx.user.update({ where: { id }, data: { emailSent: true } });
+});
+
+// GOOD: 外部呼叫放在 transaction 外面
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+await sendWelcomeEmail(user.email);
+await prisma.user.update({ where: { id }, data: { emailSent: true } });
+
+// 只有批次處理真的需要時，才調高 timeout
+await prisma.$transaction(async (tx) =&gt; { ... }, { timeout: 30_000 });
+```
+
+### `migrate dev` 可能會重設資料庫
+
+`migrate dev` 偵測到 schema drift 時，可能會提示要重設資料庫，把所有資料清掉。
+
+```bash
+# 在共用的 dev、staging 或 production 上絕對不要用
+npx prisma migrate dev --name add_column
+
+# 除了本機單人開發以外，到處都安全
+npx prisma migrate deploy
+
+# 檢查 drift 但不套用
+npx prisma migrate diff \
+  --from-migrations ./prisma/migrations \
+  --to-schema-datamodel ./prisma/schema.prisma \
+  --shadow-database-url &quot;$SHADOW_DATABASE_URL&quot;
+```
+
+### 手動編輯 migration 檔案會讓之後的 deploy 壞掉
+
+Prisma 會對每個 migration 檔案做 checksum。套用之後再編輯，會讓每個已經跑過原版的環境都出現 `P3006 checksum mismatch`。要改的話，請另外建立新的 migration。
+
+### 破壞性的 schema 變更需要多步驟 migration
+
+在一次 migration 裡替現有欄位加上 `NOT NULL`，或重新命名欄位，會鎖住資料表或掉資料。請用 expand-and-contract：
+
+```bash
+# Step 1: 在本機建立 migration，然後 deploy
+npx prisma migrate dev --name add_new_column   # 只限本機
+npx prisma migrate deploy                       # staging / production
+```
+
+```ts
+// Step 2: 回填資料（在 script 或 migration job 裡執行，不要在 shell 裡跑）
+await prisma.user.updateMany({ data: { newColumn: derivedValue } });
+```
+
+```bash
+# Step 3: 在本機建立 NOT NULL 限制的 migration，然後 deploy
+npx prisma migrate dev --name make_new_column_required  # 只限本機
+npx prisma migrate deploy                               # staging / production
+```
+
+### `@updatedAt` 不會在 `updateMany` 時觸發
+
+`@updatedAt` 只會在 `update` 和 `upsert` 時自動設定。批次寫入會讓它保持舊值。
+
+```ts
+// BAD: updatedAt 維持舊值
+await prisma.post.updateMany({ where: { authorId }, data: { published: true } });
+
+// GOOD
+await prisma.post.updateMany({
+  where: { authorId },
+  data: { published: true, updatedAt: new Date() },
+});
+```
+
+### Soft delete + `findUniqueOrThrow` 會洩漏已刪除的紀錄
+
+`findUniqueOrThrow` 只有在資料庫裡真的沒有那一列時，才會丟出 `P2025`。被 soft delete 的列仍然存在，會不報錯地被回傳。
+
+`findUniqueOrThrow` 的 `where` 需要放唯一限制的欄位，在 `id` 旁邊加上 `deletedAt: null` 會讓型別出錯，因為 `{ id, deletedAt }` 不是複合唯一限制。請改用 `findFirstOrThrow`。
+
+```ts
+// BAD: 會回傳被 soft delete 的 user
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+
+// BAD: Prisma 型別錯誤，{ id, deletedAt } 不是唯一限制
+const user = await prisma.user.findUniqueOrThrow({ where: { id, deletedAt: null } });
+
+// GOOD: findFirstOrThrow 支援任意的 where 條件
+const user = await prisma.user.findFirstOrThrow({ where: { id, deletedAt: null } });
+```
+
+### 沒有 `where` 的 `deleteMany` 會刪掉每一列
+
+```ts
+// BAD: 悄悄把整張表清空
+await prisma.post.deleteMany();
+
+// GOOD
+await prisma.post.deleteMany({ where: { authorId: userId } });
+```
+
+## 最佳實踐
+
+| 規則 | 原因 |
+|---|---|
+| CI/CD 用 `migrate deploy`，`migrate dev` 只在本機用 | `migrate dev` 遇到 drift 時可能重設資料庫 |
+| 把 entity 對應到回應用的 DTO | 避免洩漏內部欄位 |
+| 在 service 邊界捕捉 `PrismaClientKnownRequestError` | 轉成領域錯誤 |
+| 優先用 `*OrThrow` 方法，不要手動檢查 null | 會自動丟出 P2025；過濾非唯一欄位時用 `findFirstOrThrow` |
+| Serverless 用 `connection_limit=1` + 外部 pooler | 避免連線耗盡 |
+| `deleteMany` 一定要給 `where` | 避免不小心清空整張表 |
+| 在 `updateMany` 裡手動設定 `updatedAt: new Date()` | `@updatedAt` 會跳過批次寫入 |
+
+## 相關 Skills
+
+- `nestjs-patterns`：整合 Prisma 的 NestJS service 層
+- `postgres-patterns`：PostgreSQL 層級的索引和連線調校
+- `database-migrations`：正式環境的多步驟 migration 規劃
+- `backend-patterns`：通用的 API 與 service 層設計</pre></section><section><h2>英文原文</h2><pre>---
+name: prisma-patterns
+description: Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pagination, and critical traps like updateMany returning count not records, $transaction timeouts, migrate dev resetting the DB, @updatedAt skipped on bulk writes, and serverless connection exhaustion. Use when writing a Prisma schema or query, or debugging transactions, migrations, or serverless connection limits.
+metadata:
+  origin: ECC
+---
+
+# Prisma Patterns
+
+Production patterns and non-obvious traps for Prisma ORM in TypeScript backends.
+
+&gt; **Check your version before applying patterns.** The Prisma API surface has evolved across major releases:
+&gt;
+&gt; ```bash
+&gt; npx prisma --version
+&gt; ```
+&gt;
+&gt; Notable API differences across versions:
+&gt; - `relationJoins` can load relations via JOIN rather than separate queries, but may cause row explosion on large 1:N relations or deep `include` — benchmark both approaches
+&gt; - `omit` field modifier and `prisma.$extends` Client Extensions API were added
+&gt; - **Newer installs**: the package may be named `prisma` instead of `@prisma/client`; `PrismaClient` may require a driver adapter (e.g. `@prisma/adapter-pg`); `datasource.url` may live in `prisma.config.ts` instead of `schema.prisma`
+&gt; - CLI commands (`migrate dev`, `migrate deploy`, `generate`) are unchanged across versions
+
+## When to Activate
+
+- Designing or modifying Prisma schema models and relations
+- Writing queries, transactions, or pagination logic
+- Using `updateMany`, `deleteMany`, or any bulk operation
+- Running or planning database migrations
+- Deploying to serverless environments (Vercel, Lambda, Cloudflare Workers)
+- Implementing soft delete or multi-tenant row filtering
+
+## Core Concepts
+
+### ID Strategy
+
+| Strategy | Use When | Avoid When |
+|---|---|---|
+| `@default(cuid())` | Default choice — URL-safe, sortable, no collisions | Sequential IDs needed for external systems |
+| `@default(uuid())` | Interoperability with non-Prisma systems required | High-write tables (random UUIDs fragment B-tree indexes) |
+| `@default(autoincrement())` | Internal join tables, audit logs | Public-facing IDs (exposes record count) |
+
+### Schema Defaults
+
+```prisma
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique  // @unique already creates an index — no @@index needed
+  name      String
+  role      Role      @default(USER)
+  posts     Post[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([createdAt])
+  @@index([deletedAt, createdAt]) // composite for soft-delete + sort queries
+}
+```
+
+- Add `@@index` on every foreign key and column used in `WHERE` or `ORDER BY`.
+- Declare `deletedAt DateTime?` upfront when soft delete is a foreseeable requirement — adding it later requires a migration on a live table.
+- `updatedAt @updatedAt` is set automatically by Prisma on `update` and `upsert` only (see Anti-Patterns for bulk update trap).
+
+### `include` vs `select`
+
+| | `include` | `select` |
+|---|---|---|
+| Returns | All scalar fields + specified relations | Only specified fields |
+| Use when | You need most fields plus a relation | Hot paths, large tables, avoiding over-fetch |
+| Performance | May over-fetch on wide tables | Minimal payload, faster on large datasets |
+| Prisma 5 note | Uses JOIN by default (`relationJoins`) | Same |
+
+```ts
+// include — all columns + relation
+const user = await prisma.user.findUnique({
+  where: { id },
+  include: { posts: { select: { id: true, title: true } } },
+});
+
+// select — explicit allowlist
+const user = await prisma.user.findUnique({
+  where: { id },
+  select: { id: true, email: true, name: true },
+});
+```
+
+Never return raw Prisma entities from API responses — map to response DTOs to control exposed fields:
+
+```ts
+// BAD: leaks passwordHash, deletedAt, internal fields
+return await prisma.user.findUniqueOrThrow({ where: { id } });
+
+// GOOD: explicit DTO mapping
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+return { id: user.id, name: user.name, email: user.email };
+```
+
+### Transaction Form Selection
+
+| Situation | Use |
+|---|---|
+| Independent operations, no inter-dependency | Array form |
+| Later step depends on earlier result | Interactive form |
+| External calls (email, HTTP) involved | Outside transaction entirely |
+
+```ts
+// Array form — batched in one round trip
+const [user, post] = await prisma.$transaction([
+  prisma.user.update({ where: { id }, data: { name } }),
+  prisma.post.create({ data: { title, authorId: id } }),
+]);
+
+// Interactive form — use tx client only, never the outer prisma client
+const post = await prisma.$transaction(async (tx) =&gt; {
+  const user = await tx.user.findUniqueOrThrow({ where: { id } });
+  if (user.role !== &#x27;ADMIN&#x27;) throw new Error(&#x27;Forbidden&#x27;);
+  return tx.post.create({ data: { title, authorId: user.id } });
+});
+```
+
+### PrismaClient Singleton
+
+Each `PrismaClient` instance opens its own connection pool. Instantiate once.
+
+```ts
+// lib/prisma.ts
+
+// Option A — adapter-based initialization (required by newer Prisma installs)
+import { PrismaClient } from &#x27;@prisma/client&#x27;; // or the generated client path for your setup
+import { PrismaPg } from &#x27;@prisma/adapter-pg&#x27;;
+
+function createPrismaClient() {
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  return new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === &#x27;development&#x27; ? [&#x27;query&#x27;, &#x27;error&#x27;] : [&#x27;error&#x27;],
+  });
+}
+
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== &#x27;production&#x27;) globalForPrisma.prisma = prisma;
+
+// Option B — direct initialization (older installs, no adapter needed)
+// import { PrismaClient } from &#x27;@prisma/client&#x27;;
+// export const prisma = globalForPrisma.prisma ?? new PrismaClient({ ... });
+```
+
+Use Option A if your Prisma install requires an `adapter` argument in the `PrismaClient` constructor.
+Use Option B if `new PrismaClient()` works without arguments. Let the compiler tell you which is correct.
+
+The `globalThis` pattern prevents duplicate instances during hot reload (Next.js, nodemon, ts-node-dev).
+
+### N+1 Problem
+
+Loading relations inside a loop issues one query per row.
+
+```ts
+// BAD: N+1 — one extra query per user
+const users = await prisma.user.findMany();
+for (const user of users) {
+  const posts = await prisma.post.findMany({ where: { authorId: user.id } });
+}
+
+// GOOD: single query
+const users = await prisma.user.findMany({ include: { posts: true } });
+```
+
+With Prisma 5+ `relationJoins`, the `include` form uses a single JOIN. On large 1:N sets this may increase result set size — benchmark both approaches if the relation can return many rows per parent.
+
+## Code Examples
+
+### Cursor Pagination (preferred for feeds and large datasets)
+
+```ts
+async function getPosts(cursor?: string, limit = 20) {
+  const items = await prisma.post.findMany({
+    where: { published: true },
+    orderBy: [
+      { createdAt: &#x27;desc&#x27; },
+      { id: &#x27;desc&#x27; }, // secondary sort prevents unstable pagination on duplicate timestamps
+    ],
+    take: limit + 1,
+    ...(cursor &amp;&amp; { cursor: { id: cursor }, skip: 1 }),
+  });
+
+  const hasNextPage = items.length &gt; limit;
+  if (hasNextPage) items.pop();
+
+  return { items, nextCursor: hasNextPage ? items[items.length - 1].id : null };
+}
+```
+
+Fetch `limit + 1` and pop — canonical way to detect `hasNextPage` without an extra count query. Always include a unique field (e.g. `id`) as a secondary `orderBy` to prevent unstable pagination when multiple rows share the same timestamp. Use offset pagination only when users need to jump to arbitrary pages (admin tables).
+
+### Soft Delete
+
+```ts
+// Always filter explicitly — do not rely on middleware (hides behavior, hard to debug)
+const activeUsers = await prisma.user.findMany({ where: { deletedAt: null } });
+
+await prisma.user.update({ where: { id }, data: { deletedAt: new Date() } });
+await prisma.user.update({ where: { id }, data: { deletedAt: null } }); // restore
+```
+
+### Error Handling
+
+```ts
+import { Prisma } from &#x27;@prisma/client&#x27;; // or the generated client path for your setup
+
+try {
+  await prisma.user.create({ data: { email } });
+} catch (e) {
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === &#x27;P2002&#x27;) throw new ConflictError(&#x27;Email already exists&#x27;);
+    if (e.code === &#x27;P2025&#x27;) throw new NotFoundError(&#x27;Record not found&#x27;);
+    if (e.code === &#x27;P2003&#x27;) throw new BadRequestError(&#x27;Referenced record does not exist&#x27;);
+  }
+  throw e;
+}
+```
+
+Common codes: `P2002` unique violation · `P2025` not found · `P2003` foreign key violation.
+
+Catch at the service boundary and translate to domain errors. Never expose raw Prisma messages to API consumers.
+
+### Connection Pool — Serverless
+
+Embed connection params directly in `DATABASE_URL` — string concatenation breaks if the URL already has query parameters (e.g. `?schema=public`):
+
+```bash
+# .env — preferred: embed params in the URL
+DATABASE_URL=&quot;postgresql://user:pass@host/db?connection_limit=1&amp;pool_timeout=20&quot;
+
+# With an external pooler (PgBouncer, Supabase pooler)
+DATABASE_URL=&quot;postgresql://user:pass@host/db?pgbouncer=true&amp;connection_limit=1&quot;
+```
+
+```ts
+// Vercel, AWS Lambda, and similar serverless runtimes:
+// cap pool to 1 per instance; connection_limit and pool_timeout controlled via DATABASE_URL
+
+// Adapter-based setup (if your Prisma install requires an adapter):
+import { PrismaClient } from &#x27;@prisma/client&#x27;;
+import { PrismaPg } from &#x27;@prisma/adapter-pg&#x27;;
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
+
+// Direct setup (if your Prisma install does not require an adapter):
+// const prisma = new PrismaClient();
+```
+
+## Anti-Patterns
+
+### `updateMany` returns a count, not records
+
+```ts
+// BAD: result is { count: 2 } — users[0] is undefined
+const users = await prisma.user.updateMany({ where: { role: &#x27;GUEST&#x27; }, data: { role: &#x27;USER&#x27; } });
+
+// GOOD: capture IDs first, then update, then fetch only the affected rows
+const targets = await prisma.user.findMany({
+  where: { role: &#x27;GUEST&#x27; },
+  select: { id: true },
+});
+const ids = targets.map((u) =&gt; u.id);
+await prisma.user.updateMany({ where: { id: { in: ids } }, data: { role: &#x27;USER&#x27; } });
+const updated = await prisma.user.findMany({ where: { id: { in: ids } } });
+```
+
+Same applies to `deleteMany` — returns `{ count: n }`, never the deleted rows.
+
+### `$transaction` interactive form times out after 5 seconds
+
+```ts
+// BAD: external call inside transaction exceeds 5s default → &quot;Transaction already closed&quot;
+await prisma.$transaction(async (tx) =&gt; {
+  const user = await tx.user.findUniqueOrThrow({ where: { id } });
+  await sendWelcomeEmail(user.email); // external call
+  await tx.user.update({ where: { id }, data: { emailSent: true } });
+});
+
+// GOOD: external calls outside the transaction
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+await sendWelcomeEmail(user.email);
+await prisma.user.update({ where: { id }, data: { emailSent: true } });
+
+// Only raise timeout when bulk processing genuinely needs it
+await prisma.$transaction(async (tx) =&gt; { ... }, { timeout: 30_000 });
+```
+
+### `migrate dev` can reset the database
+
+`migrate dev` detects schema drift and may prompt to reset the DB, dropping all data.
+
+```bash
+# NEVER on shared dev, staging, or production
+npx prisma migrate dev --name add_column
+
+# Safe everywhere except local solo dev
+npx prisma migrate deploy
+
+# Check drift without applying
+npx prisma migrate diff \
+  --from-migrations ./prisma/migrations \
+  --to-schema-datamodel ./prisma/schema.prisma \
+  --shadow-database-url &quot;$SHADOW_DATABASE_URL&quot;
+```
+
+### Manually editing a migration file breaks future deploys
+
+Prisma checksums every migration file. Editing after apply causes `P3006 checksum mismatch` on every environment where the original already ran. Create a new migration instead.
+
+### Breaking schema changes require multi-step migration
+
+Adding `NOT NULL` to an existing column or renaming a column in one migration will lock the table or drop data. Use expand-and-contract:
+
+```bash
+# Step 1: create migration locally, then deploy
+npx prisma migrate dev --name add_new_column   # local only
+npx prisma migrate deploy                       # staging / production
+```
+
+```ts
+// Step 2: backfill data (run in a script or migration job, not in the shell)
+await prisma.user.updateMany({ data: { newColumn: derivedValue } });
+```
+
+```bash
+# Step 3: create the NOT NULL constraint migration locally, then deploy
+npx prisma migrate dev --name make_new_column_required  # local only
+npx prisma migrate deploy                               # staging / production
+```
+
+### `@updatedAt` does not fire on `updateMany`
+
+`@updatedAt` is set automatically only on `update` and `upsert`. Bulk writes leave it stale.
+
+```ts
+// BAD: updatedAt stays at its old value
+await prisma.post.updateMany({ where: { authorId }, data: { published: true } });
+
+// GOOD
+await prisma.post.updateMany({
+  where: { authorId },
+  data: { published: true, updatedAt: new Date() },
+});
+```
+
+### Soft delete + `findUniqueOrThrow` leaks deleted records
+
+`findUniqueOrThrow` throws `P2025` only when the row does not exist in the DB. Soft-deleted rows still exist and are returned without error.
+
+`findUniqueOrThrow` requires a unique constraint field in `where` — adding `deletedAt: null` alongside `id` breaks the type because `{ id, deletedAt }` is not a compound unique constraint. Use `findFirstOrThrow` instead.
+
+```ts
+// BAD: returns soft-deleted user
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+
+// BAD: Prisma type error — { id, deletedAt } is not a unique constraint
+const user = await prisma.user.findUniqueOrThrow({ where: { id, deletedAt: null } });
+
+// GOOD: findFirstOrThrow supports arbitrary where conditions
+const user = await prisma.user.findFirstOrThrow({ where: { id, deletedAt: null } });
+```
+
+### `deleteMany` without `where` deletes every row
+
+```ts
+// BAD: silently wipes the table
+await prisma.post.deleteMany();
+
+// GOOD
+await prisma.post.deleteMany({ where: { authorId: userId } });
+```
+
+## Best Practices
+
+| Rule | Reason |
+|---|---|
+| `migrate deploy` in CI/CD, `migrate dev` only locally | `migrate dev` can reset the DB on drift |
+| Map entities to response DTOs | Prevents leaking internal fields |
+| Catch `PrismaClientKnownRequestError` at service boundary | Translate to domain errors |
+| Prefer `*OrThrow` methods over manual null checks | Throws P2025 automatically; use `findFirstOrThrow` when filtering non-unique fields |
+| `connection_limit=1` + external pooler in serverless | Prevents connection exhaustion |
+| Always provide `where` on `deleteMany` | Prevents accidental table wipe |
+| Set `updatedAt: new Date()` manually in `updateMany` | `@updatedAt` skips bulk writes |
+
+## Related Skills
+
+- `nestjs-patterns` — NestJS service layer that integrates Prisma
+- `postgres-patterns` — PostgreSQL-level indexing and connection tuning
+- `database-migrations` — multi-step migration planning for production
+- `backend-patterns` — general API and service layer design</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

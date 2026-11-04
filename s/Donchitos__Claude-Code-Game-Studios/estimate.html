@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>estimate｜Skill 寫法圖鑑</title>
+<meta name="description" content="依複雜度、相依和風險估算任務工時，附信心等級">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>estimate</h1>
+<p class="meta">Donchitos ｜ 遊戲開發 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/estimate/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">依複雜度、相依和風險估算任務工時，附信心等級</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: estimate
+description: &quot;依複雜度、相依項目、velocity 和風險來估算任務工時，產出帶信心等級的結構化估算。&quot;
+argument-hint: &quot;[task-description]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep
+model: sonnet
+---
+
+# Estimate
+
+## Phase 1: Understand the Task
+
+從參數讀取任務描述。如果描述太模糊，沒辦法做有意義的估算，先請對方釐清再繼續。
+
+讀 CLAUDE.md 取得專案脈絡：技術堆疊、coding standard、架構模式，還有任何估算準則。
+
+如果任務跟某個有文件的功能或系統有關，就讀 `design/gdd/` 裡相關的設計文件。要按章節讀：用 Grep 工具（pattern `^#`，content mode）找出你需要的標題，再用 offset 和 limit 讀那幾段範圍。
+
+---
+
+## Phase 2: Scan Affected Code
+
+找出需要改動的檔案和模組：
+
+- 用 Grep 對每個受影響的檔案量測大小和分支數 — 這個 skill 只有 Read、Glob 和 Grep
+  三個工具，所以這些計數就是量測：
+  - **Size：** `Grep pattern=&quot;[^[:space:]]&quot; path=&quot;[file]&quot; output_mode=&quot;count&quot;` —
+    非空白行數。
+  - **Branching：** `Grep pattern=&quot;(^|[^A-Za-z0-9_])(if|elif|for|foreach|while|match|switch|case|catch)([^A-Za-z0-9_]|$)|&amp;&amp;|[|][|]&quot; path=&quot;[file]&quot; output_mode=&quot;count&quot;` —
+    含有分支或布林運算子的行數。這個計數
+    只是 cyclomatic complexity 的近似值（註解和字串也會被算進去）；要講成近似值，
+    絕對不要講成實測的複雜度。
+  - **Dependencies：** 每個檔案引入了什麼 — `preload`/`load(`（GDScript）、
+    `using`（C#）、`#include`（C++）— 以及還有哪些檔案參照它。
+  - Grep 算不出來的檔案（不存在、二進位、讀不了），要在 Notes
+    and Assumptions 底下點名，不要直接從總數裡漏掉。
+- 找出跟其他系統的整合點
+- 檢查受影響區域現有的測試覆蓋
+- 從 `production/sprints/` 讀過去的 sprint 資料，找類似的已完成任務和歷史 velocity。
+  **如果沒有**，要在 Notes and Assumptions 底下講明 — 「No sprint history found;
+  this estimate is not calibrated to the team&#x27;s velocity」— 並且把它當成信心等級裡的風險，
+  不要默默把數字加大來墊。
+
+---
+
+## Phase 3: Analyze Complexity Factors
+
+**Code Complexity:**
+- 受影響檔案的大小和分支數（Phase 2 的 Grep 計數）
+- 相依項目的數量和耦合程度
+- 這是動到 core/engine 程式碼，還是 leaf/feature 程式碼
+- 能不能沿用現有模式，還是需要新模式
+
+**Scope:**
+- 動到的系統數量
+- 新增程式碼 vs 修改現有程式碼
+- 需要新增多少測試覆蓋
+- 需不需要資料遷移或設定變更
+
+**Risk:**
+- 新技術或不熟的函式庫
+- 需求不清楚或有歧義
+- 依賴還沒完成的工作
+- 跨系統整合的複雜度
+- 對效能敏感
+
+---
+
+## Phase 4: Generate the Estimate
+
+```markdown
+## Task Estimate: [Task Name]
+Generated: [Date]
+
+### Task Description
+[Restate the task clearly in 1-2 sentences]
+
+### Complexity Assessment
+
+| Factor | Assessment | Notes |
+|--------|-----------|-------|
+| Systems affected | [List] | [Core, gameplay, UI, etc.] |
+| Files likely modified | [Count] | [Key files listed below] |
+| Size of affected files | [N non-blank lines; M branch lines] | Grep counts; branch lines approximate complexity |
+| New code vs modification | [Ratio] | |
+| Integration points | [Count] | [Which systems interact] |
+| Test coverage needed | [Low / Medium / High] | |
+| Existing patterns available | [Yes / Partial / No] | |
+
+**Key files likely affected:**
+- `[path/to/file1]` -- [what changes here]
+
+### Effort Estimate
+
+| Scenario | Days | Assumption |
+|----------|------|------------|
+| Optimistic | [X] | Everything goes right, no surprises |
+| Expected | [Y] | Normal pace, minor issues, one round of review |
+| Pessimistic | [Z] | Significant unknowns surface, blocked for a day |
+
+**Recommended budget: [Y days]**
+
+### Confidence: [High / Medium / Low]
+
+[Explain which factors drive the confidence level for this specific task.]
+
+### Risk Factors
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+
+### Dependencies
+
+| Dependency | Status | Impact if Delayed |
+|-----------|--------|-------------------|
+
+### Suggested Breakdown
+
+| # | Sub-task | Estimate | Notes |
+|---|----------|----------|-------|
+| 1 | [Research / spike] | [X days] | |
+| 2 | [Core implementation] | [X days] | |
+| 3 | [Testing and validation] | [X days] | |
+| | **Total** | **[Y days]** | |
+
+### Notes and Assumptions
+- [Key assumption that affects the estimate]
+- [Any caveats about scope boundaries]
+```
+
+輸出估算時附一段簡短摘要：建議預算、信心等級，以及最大的單一風險因素。
+
+這個 skill 是唯讀的 — 不會寫任何檔案。Verdict: **COMPLETE** — estimate generated.
+
+---
+
+## Phase 5: Next Steps
+
+- 信心等級是 Low：建議在承諾之前先做一個限時的 spike（`/prototype`）。
+- 任務超過 10 天：建議用 `/create-stories` 拆成比較小的 story。
+- 要排進行程：跑 `/sprint-plan update`，把它加進下一個 sprint（如果專案沒有 sprint plan，像預設的 minimal workflow，就改加進 brief 的 build order）。
+
+### Guidelines
+
+- 一律給範圍（optimistic / expected / pessimistic），絕對不要只給單一數字
+- 建議預算要用 expected 的估算，不要用 optimistic 的
+- 四捨五入到半天為單位 — 超過一天的任務用小時來估，會給人錯誤的精確感
+- 不要默默加估算的水分 — 把風險明講出來，讓團隊自己決定
+- 只要做法還沒決定，或核心需求還是 TBD，信心就是 Low — 建立在還沒做的決定上的範圍，就是用猜的</pre></section><section><h2>英文原文</h2><pre>---
+name: estimate
+description: &quot;Estimate task effort from complexity, dependencies, velocity, risk. Structured estimate with confidence levels.&quot;
+argument-hint: &quot;[task-description]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep
+model: sonnet
+---
+
+# Estimate
+
+## Phase 1: Understand the Task
+
+Read the task description from the argument. If the description is too vague to estimate meaningfully, ask for clarification before proceeding.
+
+Read CLAUDE.md for project context: tech stack, coding standards, architectural patterns, and any estimation guidelines.
+
+Read relevant design documents from `design/gdd/` if the task relates to a documented feature or system. Read them by section: find the headings you need with the Grep tool (pattern `^#`, content mode) and Read those ranges with offset and limit.
+
+---
+
+## Phase 2: Scan Affected Code
+
+Identify files and modules that would need to change:
+
+- Measure size and branching with Grep, per affected file — Read, Glob and Grep
+  are this skill&#x27;s only tools, so these counts are the measurement:
+  - **Size:** `Grep pattern=&quot;[^[:space:]]&quot; path=&quot;[file]&quot; output_mode=&quot;count&quot;` —
+    non-blank lines.
+  - **Branching:** `Grep pattern=&quot;(^|[^A-Za-z0-9_])(if|elif|for|foreach|while|match|switch|case|catch)([^A-Za-z0-9_]|$)|&amp;&amp;|[|][|]&quot; path=&quot;[file]&quot; output_mode=&quot;count&quot;` —
+    lines holding a branch or a boolean operator. The count
+    approximates cyclomatic complexity (comments and strings count too); report
+    it as that, never as a measured complexity.
+  - **Dependencies:** what each file pulls in — `preload`/`load(` (GDScript),
+    `using` (C#), `#include` (C++) — and which other files reference it.
+  - Name any file Grep could not count (missing, binary, unreadable) under Notes
+    and Assumptions rather than leaving it out of the totals.
+- Identify integration points with other systems
+- Check for existing test coverage in the affected areas
+- Read past sprint data from `production/sprints/` for similar completed tasks and historical velocity.
+  **If there is none**, say so under Notes and Assumptions — &quot;No sprint history found;
+  this estimate is not calibrated to the team&#x27;s velocity&quot; — and treat that as a risk
+  in the confidence level, not as a silent padding of the figures.
+
+---
+
+## Phase 3: Analyze Complexity Factors
+
+**Code Complexity:**
+- Size and branching of the affected files (Phase 2&#x27;s Grep counts)
+- Number of dependencies and coupling level
+- Whether this touches core/engine code vs leaf/feature code
+- Whether existing patterns can be followed or new patterns are needed
+
+**Scope:**
+- Number of systems touched
+- New code vs modification of existing code
+- Amount of new test coverage required
+- Data migration or configuration changes needed
+
+**Risk:**
+- New technology or unfamiliar libraries
+- Unclear or ambiguous requirements
+- Dependencies on unfinished work
+- Cross-system integration complexity
+- Performance sensitivity
+
+---
+
+## Phase 4: Generate the Estimate
+
+```markdown
+## Task Estimate: [Task Name]
+Generated: [Date]
+
+### Task Description
+[Restate the task clearly in 1-2 sentences]
+
+### Complexity Assessment
+
+| Factor | Assessment | Notes |
+|--------|-----------|-------|
+| Systems affected | [List] | [Core, gameplay, UI, etc.] |
+| Files likely modified | [Count] | [Key files listed below] |
+| Size of affected files | [N non-blank lines; M branch lines] | Grep counts; branch lines approximate complexity |
+| New code vs modification | [Ratio] | |
+| Integration points | [Count] | [Which systems interact] |
+| Test coverage needed | [Low / Medium / High] | |
+| Existing patterns available | [Yes / Partial / No] | |
+
+**Key files likely affected:**
+- `[path/to/file1]` -- [what changes here]
+
+### Effort Estimate
+
+| Scenario | Days | Assumption |
+|----------|------|------------|
+| Optimistic | [X] | Everything goes right, no surprises |
+| Expected | [Y] | Normal pace, minor issues, one round of review |
+| Pessimistic | [Z] | Significant unknowns surface, blocked for a day |
+
+**Recommended budget: [Y days]**
+
+### Confidence: [High / Medium / Low]
+
+[Explain which factors drive the confidence level for this specific task.]
+
+### Risk Factors
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+
+### Dependencies
+
+| Dependency | Status | Impact if Delayed |
+|-----------|--------|-------------------|
+
+### Suggested Breakdown
+
+| # | Sub-task | Estimate | Notes |
+|---|----------|----------|-------|
+| 1 | [Research / spike] | [X days] | |
+| 2 | [Core implementation] | [X days] | |
+| 3 | [Testing and validation] | [X days] | |
+| | **Total** | **[Y days]** | |
+
+### Notes and Assumptions
+- [Key assumption that affects the estimate]
+- [Any caveats about scope boundaries]
+```
+
+Output the estimate with a brief summary: recommended budget, confidence level, and the single biggest risk factor.
+
+This skill is read-only — no files are written. Verdict: **COMPLETE** — estimate generated.
+
+---
+
+## Phase 5: Next Steps
+
+- If confidence is Low: recommend a time-boxed spike (`/prototype`) before committing.
+- If the task is &gt; 10 days: recommend breaking it into smaller stories via `/create-stories`.
+- To schedule the task: run `/sprint-plan update` to add it to the next sprint (if the project has no sprint plan, as on the default minimal workflow, add it to the brief&#x27;s build order instead).
+
+### Guidelines
+
+- Always give a range (optimistic / expected / pessimistic), never a single number
+- The recommended budget should be the expected estimate, not the optimistic one
+- Round to half-day increments — estimating in hours implies false precision for tasks longer than a day
+- Do not pad estimates silently — call out risk explicitly so the team can decide
+- Confidence is Low whenever the approach is undecided or the core requirements are still TBD — a range built on an unmade decision is a guess</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

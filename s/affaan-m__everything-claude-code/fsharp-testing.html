@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fsharp-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="F# 測試模式：xUnit、FsUnit、Unquote、FsCheck 屬性測試與整合測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>fsharp-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/fsharp-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">F# 測試模式：xUnit、FsUnit、Unquote、FsCheck 屬性測試與整合測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: fsharp-testing
+description: 用 xUnit、FsUnit、Unquote、FsCheck 屬性測試、整合測試的 F# 測試模式，以及測試組織的最佳實務。用 xUnit、FsUnit、Unquote 或 FsCheck 寫 F# 測試時使用。
+metadata:
+  origin: ECC
+---
+
+# F# Testing Patterns
+
+用 xUnit、FsUnit、Unquote、FsCheck 和現代 .NET 測試實務，替 F# 應用程式做測試的完整模式。
+
+## When to Activate
+
+- 為 F# 程式碼寫新測試
+- review 測試品質與覆蓋率
+- 為 F# 專案建置測試基礎設施
+- 除錯 flaky 或很慢的測試
+
+## Test Framework Stack
+
+| Tool | Purpose |
+|---|---|
+| **xUnit** | 測試框架（標準 .NET 生態系的選擇） |
+| **FsUnit.xUnit** | 對 F# 友善的 xUnit 斷言語法 |
+| **Unquote** | 用 F# quotation 的斷言函式庫，失敗訊息很清楚 |
+| **FsCheck.xUnit** | 跟 xUnit 整合的屬性測試（property-based testing） |
+| **NSubstitute** | mock .NET 依賴 |
+| **Testcontainers** | 整合測試用真實的基礎設施 |
+| **WebApplicationFactory** | ASP.NET Core 整合測試 |
+
+## Unit Tests with xUnit + FsUnit
+
+### Basic Test Structure
+
+```fsharp
+module OrderServiceTests
+
+open Xunit
+open FsUnit.Xunit
+
+[&lt;Fact&gt;]
+let ``create sets status to Pending`` () =
+    let order = Order.create &quot;cust-1&quot; [ validItem ]
+    order.Status |&gt; should equal Pending
+
+[&lt;Fact&gt;]
+let ``confirm changes status to Confirmed`` () =
+    let order = Order.create &quot;cust-1&quot; [ validItem ]
+    let confirmed = Order.confirm order
+    confirmed.Status |&gt; should be (ofCase &lt;@ Confirmed @&gt;)
+```
+
+### Assertions with Unquote
+
+Unquote 用 F# quotation，所以失敗訊息會顯示失敗的完整運算式，不只是「expected X got Y」。
+
+```fsharp
+module OrderValidationTests
+
+open Xunit
+open Swensen.Unquote
+
+[&lt;Fact&gt;]
+let ``PlaceOrder returns success when request is valid`` () =
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [ validItem ] }
+    let result = OrderService.placeOrder request
+    test &lt;@ Result.isOk result @&gt;
+
+[&lt;Fact&gt;]
+let ``order total sums item prices`` () =
+    let items = [ { Sku = &quot;A&quot;; Quantity = 2; Price = 10m }
+                  { Sku = &quot;B&quot;; Quantity = 1; Price = 5m } ]
+    let total = Order.calculateTotal items
+    test &lt;@ total = 25m @&gt;
+
+[&lt;Fact&gt;]
+let ``validated email rejects empty input`` () =
+    let result = ValidatedEmail.create &quot;&quot;
+    test &lt;@ Result.isError result @&gt;
+```
+
+### Async Tests
+
+```fsharp
+[&lt;Fact&gt;]
+let ``PlaceOrder returns success when request is valid`` () = task {
+    let deps = createTestDeps ()
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [ validItem ] }
+
+    let! result = OrderService.placeOrder deps request
+
+    test &lt;@ Result.isOk result @&gt;
+}
+
+[&lt;Fact&gt;]
+let ``PlaceOrder returns error when items are empty`` () = task {
+    let deps = createTestDeps ()
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [] }
+
+    let! result = OrderService.placeOrder deps request
+
+    test &lt;@ Result.isError result @&gt;
+}
+```
+
+### Parameterized Tests with Theory
+
+```fsharp
+[&lt;Theory&gt;]
+[&lt;InlineData(&quot;&quot;)&gt;]
+[&lt;InlineData(&quot;   &quot;)&gt;]
+let ``PlaceOrder rejects empty customer ID`` (customerId: string) =
+    let request = { CustomerId = customerId; Items = [ validItem ] }
+    let result = OrderService.placeOrder request
+    result |&gt; should be (ofCase &lt;@ Error @&gt;)
+
+[&lt;Theory&gt;]
+[&lt;InlineData(&quot;&quot;, false)&gt;]
+[&lt;InlineData(&quot;a&quot;, false)&gt;]
+[&lt;InlineData(&quot;user@example.com&quot;, true)&gt;]
+[&lt;InlineData(&quot;user+tag@example.co.uk&quot;, true)&gt;]
+let ``IsValidEmail returns expected result`` (email: string, expected: bool) =
+    test &lt;@ EmailValidator.isValid email = expected @&gt;
+```
+
+## Property-Based Testing with FsCheck
+
+### Using FsCheck.xUnit
+
+```fsharp
+open FsCheck
+open FsCheck.Xunit
+
+[&lt;Property&gt;]
+let ``order total is always non-negative`` (items: NonEmptyList&lt;PositiveInt * decimal&gt;) =
+    let orderItems =
+        items.Get
+        |&gt; List.map (fun (qty, price) -&gt;
+            { Sku = &quot;SKU&quot;; Quantity = qty.Get; Price = abs price })
+    let total = Order.calculateTotal orderItems
+    total &gt;= 0m
+
+[&lt;Property&gt;]
+let ``serialization roundtrips`` (order: Order) =
+    let json = JsonSerializer.Serialize order
+    let deserialized = JsonSerializer.Deserialize&lt;Order&gt; json
+    deserialized = order
+```
+
+### Custom Generators
+
+```fsharp
+type OrderGenerators =
+    static member ValidEmail () =
+        gen {
+            let! user = Gen.elements [ &quot;alice&quot;; &quot;bob&quot;; &quot;carol&quot; ]
+            let! domain = Gen.elements [ &quot;example.com&quot;; &quot;test.org&quot; ]
+            return $&quot;{user}@{domain}&quot;
+        }
+        |&gt; Arb.fromGen
+
+[&lt;Property(Arbitrary = [| typeof&lt;OrderGenerators&gt; |])&gt;]
+let ``valid emails pass validation`` (email: string) =
+    EmailValidator.isValid email
+```
+
+## Mocking Dependencies
+
+### Function Stubs (Preferred)
+
+```fsharp
+let createTestDeps () =
+    let mutable savedOrders = []
+    { FindOrder = fun id -&gt; task { return Map.tryFind id testData }
+      SaveOrder = fun order -&gt; task { savedOrders &lt;- order :: savedOrders }
+      SendNotification = fun _ -&gt; Task.CompletedTask }
+
+[&lt;Fact&gt;]
+let ``PlaceOrder saves the confirmed order`` () = task {
+    let mutable saved = []
+    let deps =
+        { createTestDeps () with
+            SaveOrder = fun order -&gt; task { saved &lt;- order :: saved } }
+
+    let! _ = OrderService.placeOrder deps validRequest
+
+    test &lt;@ saved.Length = 1 @&gt;
+}
+```
+
+### NSubstitute for .NET Interfaces
+
+```fsharp
+open NSubstitute
+
+[&lt;Fact&gt;]
+let ``calls repository with correct ID`` () = task {
+    let repo = Substitute.For&lt;IOrderRepository&gt;()
+    repo.FindByIdAsync(Arg.Any&lt;Guid&gt;(), Arg.Any&lt;CancellationToken&gt;())
+        .Returns(Task.FromResult(Some testOrder))
+
+    let service = OrderService(repo)
+    let! _ = service.GetOrder(testOrder.Id, CancellationToken.None)
+
+    do! repo.Received(1).FindByIdAsync(testOrder.Id, Arg.Any&lt;CancellationToken&gt;())
+}
+```
+
+## ASP.NET Core Integration Tests
+
+```fsharp
+type OrderApiTests (factory: WebApplicationFactory&lt;Program&gt;) =
+    interface IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+
+    let client =
+        factory.WithWebHostBuilder(fun builder -&gt;
+            builder.ConfigureServices(fun services -&gt;
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;() |&gt; ignore
+                services.AddDbContext&lt;AppDbContext&gt;(fun options -&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;) |&gt; ignore) |&gt; ignore))
+            .CreateClient()
+
+    [&lt;Fact&gt;]
+    member _.``GET order returns 404 when not found`` () = task {
+        let! response = client.GetAsync($&quot;/api/orders/{Guid.NewGuid()}&quot;)
+        test &lt;@ response.StatusCode = HttpStatusCode.NotFound @&gt;
+    }
+```
+
+## Test Organization
+
+```
+tests/
+  MyApp.Tests/
+    Unit/
+      OrderServiceTests.fs
+      PaymentServiceTests.fs
+    Integration/
+      OrderApiTests.fs
+      OrderRepositoryTests.fs
+    Properties/
+      OrderPropertyTests.fs
+    Helpers/
+      TestData.fs
+      TestDeps.fs
+```
+
+## Common Anti-Patterns
+
+| Anti-Pattern | Fix |
+|---|---|
+| 測試實作細節 | 測行為和結果 |
+| 共用可變的測試狀態 | 每個測試用全新的狀態 |
+| 非同步測試裡用 `Thread.Sleep` | 用帶 timeout 的 `Task.Delay`，或 polling 輔助函式 |
+| 對 `sprintf` 的輸出做斷言 | 對有型別的值和 pattern match 做斷言 |
+| 忽略 `CancellationToken` | 一律傳入並驗證取消行為 |
+| 跳過屬性測試 | 任何有明確不變量的函式都用 FsCheck |
+
+## Related Skills
+
+- `dotnet-patterns`：慣用的 .NET 模式、依賴注入與架構
+- `csharp-testing`：C# 測試模式（WebApplicationFactory 和 Testcontainers 這類共用的基礎設施，也適用於 F#）
+
+## Running Tests
+
+```bash
+# 跑所有測試
+dotnet test
+
+# 跑覆蓋率
+dotnet test --collect:&quot;XPlat Code Coverage&quot;
+
+# 跑特定專案
+dotnet test tests/MyApp.Tests/
+
+# 依測試名稱過濾
+dotnet test --filter &quot;FullyQualifiedName~OrderService&quot;
+
+# 開發時用 watch 模式
+dotnet watch test --project tests/MyApp.Tests/
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: fsharp-testing
+description: F# testing patterns with xUnit, FsUnit, Unquote, FsCheck property-based testing, integration tests, and test organization best practices. Use when writing F# tests with xUnit, FsUnit, Unquote, or FsCheck.
+metadata:
+  origin: ECC
+---
+
+# F# Testing Patterns
+
+Comprehensive testing patterns for F# applications using xUnit, FsUnit, Unquote, FsCheck, and modern .NET testing practices.
+
+## When to Activate
+
+- Writing new tests for F# code
+- Reviewing test quality and coverage
+- Setting up test infrastructure for F# projects
+- Debugging flaky or slow tests
+
+## Test Framework Stack
+
+| Tool | Purpose |
+|---|---|
+| **xUnit** | Test framework (standard .NET ecosystem choice) |
+| **FsUnit.xUnit** | F#-friendly assertion syntax for xUnit |
+| **Unquote** | Assertion library using F# quotations for clear failure messages |
+| **FsCheck.xUnit** | Property-based testing integrated with xUnit |
+| **NSubstitute** | Mocking .NET dependencies |
+| **Testcontainers** | Real infrastructure in integration tests |
+| **WebApplicationFactory** | ASP.NET Core integration tests |
+
+## Unit Tests with xUnit + FsUnit
+
+### Basic Test Structure
+
+```fsharp
+module OrderServiceTests
+
+open Xunit
+open FsUnit.Xunit
+
+[&lt;Fact&gt;]
+let ``create sets status to Pending`` () =
+    let order = Order.create &quot;cust-1&quot; [ validItem ]
+    order.Status |&gt; should equal Pending
+
+[&lt;Fact&gt;]
+let ``confirm changes status to Confirmed`` () =
+    let order = Order.create &quot;cust-1&quot; [ validItem ]
+    let confirmed = Order.confirm order
+    confirmed.Status |&gt; should be (ofCase &lt;@ Confirmed @&gt;)
+```
+
+### Assertions with Unquote
+
+Unquote uses F# quotations so failure messages show the full expression that failed, not just &quot;expected X got Y&quot;.
+
+```fsharp
+module OrderValidationTests
+
+open Xunit
+open Swensen.Unquote
+
+[&lt;Fact&gt;]
+let ``PlaceOrder returns success when request is valid`` () =
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [ validItem ] }
+    let result = OrderService.placeOrder request
+    test &lt;@ Result.isOk result @&gt;
+
+[&lt;Fact&gt;]
+let ``order total sums item prices`` () =
+    let items = [ { Sku = &quot;A&quot;; Quantity = 2; Price = 10m }
+                  { Sku = &quot;B&quot;; Quantity = 1; Price = 5m } ]
+    let total = Order.calculateTotal items
+    test &lt;@ total = 25m @&gt;
+
+[&lt;Fact&gt;]
+let ``validated email rejects empty input`` () =
+    let result = ValidatedEmail.create &quot;&quot;
+    test &lt;@ Result.isError result @&gt;
+```
+
+### Async Tests
+
+```fsharp
+[&lt;Fact&gt;]
+let ``PlaceOrder returns success when request is valid`` () = task {
+    let deps = createTestDeps ()
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [ validItem ] }
+
+    let! result = OrderService.placeOrder deps request
+
+    test &lt;@ Result.isOk result @&gt;
+}
+
+[&lt;Fact&gt;]
+let ``PlaceOrder returns error when items are empty`` () = task {
+    let deps = createTestDeps ()
+    let request = { CustomerId = &quot;cust-123&quot;; Items = [] }
+
+    let! result = OrderService.placeOrder deps request
+
+    test &lt;@ Result.isError result @&gt;
+}
+```
+
+### Parameterized Tests with Theory
+
+```fsharp
+[&lt;Theory&gt;]
+[&lt;InlineData(&quot;&quot;)&gt;]
+[&lt;InlineData(&quot;   &quot;)&gt;]
+let ``PlaceOrder rejects empty customer ID`` (customerId: string) =
+    let request = { CustomerId = customerId; Items = [ validItem ] }
+    let result = OrderService.placeOrder request
+    result |&gt; should be (ofCase &lt;@ Error @&gt;)
+
+[&lt;Theory&gt;]
+[&lt;InlineData(&quot;&quot;, false)&gt;]
+[&lt;InlineData(&quot;a&quot;, false)&gt;]
+[&lt;InlineData(&quot;user@example.com&quot;, true)&gt;]
+[&lt;InlineData(&quot;user+tag@example.co.uk&quot;, true)&gt;]
+let ``IsValidEmail returns expected result`` (email: string, expected: bool) =
+    test &lt;@ EmailValidator.isValid email = expected @&gt;
+```
+
+## Property-Based Testing with FsCheck
+
+### Using FsCheck.xUnit
+
+```fsharp
+open FsCheck
+open FsCheck.Xunit
+
+[&lt;Property&gt;]
+let ``order total is always non-negative`` (items: NonEmptyList&lt;PositiveInt * decimal&gt;) =
+    let orderItems =
+        items.Get
+        |&gt; List.map (fun (qty, price) -&gt;
+            { Sku = &quot;SKU&quot;; Quantity = qty.Get; Price = abs price })
+    let total = Order.calculateTotal orderItems
+    total &gt;= 0m
+
+[&lt;Property&gt;]
+let ``serialization roundtrips`` (order: Order) =
+    let json = JsonSerializer.Serialize order
+    let deserialized = JsonSerializer.Deserialize&lt;Order&gt; json
+    deserialized = order
+```
+
+### Custom Generators
+
+```fsharp
+type OrderGenerators =
+    static member ValidEmail () =
+        gen {
+            let! user = Gen.elements [ &quot;alice&quot;; &quot;bob&quot;; &quot;carol&quot; ]
+            let! domain = Gen.elements [ &quot;example.com&quot;; &quot;test.org&quot; ]
+            return $&quot;{user}@{domain}&quot;
+        }
+        |&gt; Arb.fromGen
+
+[&lt;Property(Arbitrary = [| typeof&lt;OrderGenerators&gt; |])&gt;]
+let ``valid emails pass validation`` (email: string) =
+    EmailValidator.isValid email
+```
+
+## Mocking Dependencies
+
+### Function Stubs (Preferred)
+
+```fsharp
+let createTestDeps () =
+    let mutable savedOrders = []
+    { FindOrder = fun id -&gt; task { return Map.tryFind id testData }
+      SaveOrder = fun order -&gt; task { savedOrders &lt;- order :: savedOrders }
+      SendNotification = fun _ -&gt; Task.CompletedTask }
+
+[&lt;Fact&gt;]
+let ``PlaceOrder saves the confirmed order`` () = task {
+    let mutable saved = []
+    let deps =
+        { createTestDeps () with
+            SaveOrder = fun order -&gt; task { saved &lt;- order :: saved } }
+
+    let! _ = OrderService.placeOrder deps validRequest
+
+    test &lt;@ saved.Length = 1 @&gt;
+}
+```
+
+### NSubstitute for .NET Interfaces
+
+```fsharp
+open NSubstitute
+
+[&lt;Fact&gt;]
+let ``calls repository with correct ID`` () = task {
+    let repo = Substitute.For&lt;IOrderRepository&gt;()
+    repo.FindByIdAsync(Arg.Any&lt;Guid&gt;(), Arg.Any&lt;CancellationToken&gt;())
+        .Returns(Task.FromResult(Some testOrder))
+
+    let service = OrderService(repo)
+    let! _ = service.GetOrder(testOrder.Id, CancellationToken.None)
+
+    do! repo.Received(1).FindByIdAsync(testOrder.Id, Arg.Any&lt;CancellationToken&gt;())
+}
+```
+
+## ASP.NET Core Integration Tests
+
+```fsharp
+type OrderApiTests (factory: WebApplicationFactory&lt;Program&gt;) =
+    interface IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+
+    let client =
+        factory.WithWebHostBuilder(fun builder -&gt;
+            builder.ConfigureServices(fun services -&gt;
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;() |&gt; ignore
+                services.AddDbContext&lt;AppDbContext&gt;(fun options -&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;) |&gt; ignore) |&gt; ignore))
+            .CreateClient()
+
+    [&lt;Fact&gt;]
+    member _.``GET order returns 404 when not found`` () = task {
+        let! response = client.GetAsync($&quot;/api/orders/{Guid.NewGuid()}&quot;)
+        test &lt;@ response.StatusCode = HttpStatusCode.NotFound @&gt;
+    }
+```
+
+## Test Organization
+
+```
+tests/
+  MyApp.Tests/
+    Unit/
+      OrderServiceTests.fs
+      PaymentServiceTests.fs
+    Integration/
+      OrderApiTests.fs
+      OrderRepositoryTests.fs
+    Properties/
+      OrderPropertyTests.fs
+    Helpers/
+      TestData.fs
+      TestDeps.fs
+```
+
+## Common Anti-Patterns
+
+| Anti-Pattern | Fix |
+|---|---|
+| Testing implementation details | Test behavior and outcomes |
+| Mutable shared test state | Fresh state per test |
+| `Thread.Sleep` in async tests | Use `Task.Delay` with timeout, or polling helpers |
+| Asserting on `sprintf` output | Assert on typed values and pattern matches |
+| Ignoring `CancellationToken` | Always pass and verify cancellation |
+| Skipping property-based tests | Use FsCheck for any function with clear invariants |
+
+## Related Skills
+
+- `dotnet-patterns` - Idiomatic .NET patterns, dependency injection, and architecture
+- `csharp-testing` - C# testing patterns (shared infrastructure like WebApplicationFactory and Testcontainers applies to F# too)
+
+## Running Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test --collect:&quot;XPlat Code Coverage&quot;
+
+# Run specific project
+dotnet test tests/MyApp.Tests/
+
+# Filter by test name
+dotnet test --filter &quot;FullyQualifiedName~OrderService&quot;
+
+# Watch mode during development
+dotnet watch test --project tests/MyApp.Tests/
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

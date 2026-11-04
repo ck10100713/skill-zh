@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dart-flutter-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Dart 與 Flutter 的 null safety、狀態管理、導覽、網路和測試慣用寫法">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>dart-flutter-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/dart-flutter-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Dart 與 Flutter 的 null safety、狀態管理、導覽、網路和測試慣用寫法</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: dart-flutter-patterns
+description: 可以直接上 production 的 Dart 與 Flutter 模式，涵蓋 null safety、用 Freezed 做不可變狀態、async 組合、widget 架構、狀態管理（BLoC、Riverpod、Provider）、帶認證守衛的 GoRouter 導覽、Dio 網路請求、錯誤處理和測試。在撰寫或審查 Dart 與 Flutter 程式碼（狀態、widget、導覽、網路或架構）時使用。
+metadata:
+  origin: ECC
+---
+
+# Dart/Flutter 模式
+
+## 何時使用
+
+在這些情況使用這個 skill：
+- 開始一個新的 Flutter 功能，需要狀態管理、導覽或資料存取的慣用模式
+- 審查或撰寫 Dart 程式碼，需要 null safety、sealed type 或 async 組合的指引
+- 建立新的 Flutter 專案，要在 BLoC、Riverpod 或 Provider 之間做選擇
+- 實作安全的 HTTP client、WebView 整合或本機儲存
+- 為 Flutter widget、Cubit 或 Riverpod provider 撰寫測試
+- 把 GoRouter 跟認證守衛接起來
+
+## 運作方式
+
+這個 skill 提供依關注點整理、可以直接複製貼上的 Dart/Flutter 程式碼模式：
+1. **Null safety**：避免 `!`，優先用 `?.`/`??`/pattern matching
+2. **不可變狀態**：sealed class、`freezed`、`copyWith`
+3. **Async 組合**：並行的 `Future.wait`、`await` 之後安全使用 `BuildContext`
+4. **Widget 架構**：抽成類別（不要抽成方法）、`const` 的傳遞、範圍限定的 rebuild
+5. **狀態管理**：BLoC/Cubit 事件、Riverpod 的 notifier 和衍生 provider
+6. **導覽**：透過 `refreshListenable` 做出有反應式認證守衛的 GoRouter
+7. **網路**：帶 interceptor 的 Dio、有一次性重試守衛的 token 刷新
+8. **錯誤處理**：全域捕捉、`ErrorWidget.builder`、crashlytics 串接
+9. **測試**：單元（BLoC test）、widget（ProviderScope overrides）、fake 優先於 mock
+
+## 範例
+
+```dart
+// Sealed state — prevents impossible states
+sealed class AsyncState&lt;T&gt; {}
+final class Loading&lt;T&gt; extends AsyncState&lt;T&gt; {}
+final class Success&lt;T&gt; extends AsyncState&lt;T&gt; { final T data; const Success(this.data); }
+final class Failure&lt;T&gt; extends AsyncState&lt;T&gt; { final Object error; const Failure(this.error); }
+
+// GoRouter with reactive auth redirect
+final router = GoRouter(
+  refreshListenable: GoRouterRefreshStream(authCubit.stream),
+  redirect: (context, state) {
+    final authed = context.read&lt;AuthCubit&gt;().state is AuthAuthenticated;
+    if (!authed &amp;&amp; !state.matchedLocation.startsWith(&#x27;/login&#x27;)) return &#x27;/login&#x27;;
+    return null;
+  },
+  routes: [...],
+);
+
+// Riverpod derived provider with safe firstWhereOrNull
+@riverpod
+double cartTotal(Ref ref) {
+  final cart = ref.watch(cartNotifierProvider);
+  final products = ref.watch(productsProvider).valueOrNull ?? [];
+  return cart.fold(0.0, (total, item) {
+    final product = products.firstWhereOrNull((p) =&gt; p.id == item.productId);
+    return total + (product?.price ?? 0) * item.quantity;
+  });
+}
+```
+
+---
+
+給 Dart 和 Flutter 應用程式、務實且可以直接上 production 的模式。盡可能不綁特定函式庫，同時明確涵蓋生態系裡最常見的套件。
+
+---
+
+## 1. Null Safety 基礎
+
+### 優先用 Pattern，不要用 Bang 運算子
+
+```dart
+// BAD — crashes at runtime if null
+final name = user!.name;
+
+// GOOD — provide fallback
+final name = user?.name ?? &#x27;Unknown&#x27;;
+
+// GOOD — Dart 3 pattern matching (preferred for complex cases)
+final display = switch (user) {
+  User(:final name, :final email) =&gt; &#x27;$name &lt;$email&gt;&#x27;,
+  null =&gt; &#x27;Guest&#x27;,
+};
+
+// GOOD — guard early return
+String getUserName(User? user) {
+  if (user == null) return &#x27;Unknown&#x27;;
+  return user.name; // promoted to non-null after check
+}
+```
+
+### 避免濫用 `late`
+
+```dart
+// BAD — defers null error to runtime
+late String userId;
+
+// GOOD — nullable with explicit initialization
+String? userId;
+
+// OK — use late only when initialization is guaranteed before first access
+// (e.g., in initState() before any widget interaction)
+late final AnimationController _controller;
+
+@override
+void initState() {
+  super.initState();
+  _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+}
+```
+
+---
+
+## 2. 不可變狀態
+
+### 用 Sealed Class 做狀態階層
+
+```dart
+sealed class UserState {}
+
+final class UserInitial extends UserState {}
+
+final class UserLoading extends UserState {}
+
+final class UserLoaded extends UserState {
+  const UserLoaded(this.user);
+  final User user;
+}
+
+final class UserError extends UserState {
+  const UserError(this.message);
+  final String message;
+}
+
+// Exhaustive switch — compiler enforces all branches
+Widget buildFrom(UserState state) =&gt; switch (state) {
+  UserInitial() =&gt; const SizedBox.shrink(),
+  UserLoading() =&gt; const CircularProgressIndicator(),
+  UserLoaded(:final user) =&gt; UserCard(user: user),
+  UserError(:final message) =&gt; ErrorText(message),
+};
+```
+
+### 用 Freezed 免寫樣板碼就得到不可變性
+
+```dart
+import &#x27;package:freezed_annotation/freezed_annotation.dart&#x27;;
+
+part &#x27;user.freezed.dart&#x27;;
+part &#x27;user.g.dart&#x27;;
+
+@freezed
+class User with _$User {
+  const factory User({
+    required String id,
+    required String name,
+    required String email,
+    @Default(false) bool isAdmin,
+  }) = _User;
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; _$UserFromJson(json);
+}
+
+// Usage
+final user = User(id: &#x27;1&#x27;, name: &#x27;Alice&#x27;, email: &#x27;alice@example.com&#x27;);
+final updated = user.copyWith(name: &#x27;Alice Smith&#x27;); // immutable update
+final json = user.toJson();
+final fromJson = User.fromJson(json);
+```
+
+---
+
+## 3. Async 組合
+
+### 用 Future.wait 做結構化並行
+
+```dart
+Future&lt;DashboardData&gt; loadDashboard(UserRepository users, OrderRepository orders) async {
+  // Run concurrently — don&#x27;t await sequentially
+  final (userList, orderList) = await (
+    users.getAll(),
+    orders.getRecent(),
+  ).wait; // Dart 3 record destructuring + Future.wait extension
+
+  return DashboardData(users: userList, orders: orderList);
+}
+```
+
+### Stream 模式
+
+```dart
+// Repository exposes reactive streams for live data
+Stream&lt;List&lt;Item&gt;&gt; watchCartItems() =&gt; _db
+    .watchTable(&#x27;cart_items&#x27;)
+    .map((rows) =&gt; rows.map(Item.fromRow).toList());
+
+// In widget layer — declarative, no manual subscription
+StreamBuilder&lt;List&lt;Item&gt;&gt;(
+  stream: cartRepository.watchCartItems(),
+  builder: (context, snapshot) =&gt; switch (snapshot) {
+    AsyncSnapshot(connectionState: ConnectionState.waiting) =&gt;
+        const CircularProgressIndicator(),
+    AsyncSnapshot(:final error?) =&gt; ErrorWidget(error.toString()),
+    AsyncSnapshot(:final data?) =&gt; CartList(items: data),
+    _ =&gt; const SizedBox.shrink(),
+  },
+)
+```
+
+### Await 之後的 BuildContext
+
+```dart
+// CRITICAL — always check mounted after any await in StatefulWidget
+Future&lt;void&gt; _handleSubmit() async {
+  setState(() =&gt; _isLoading = true);
+  try {
+    await authService.login(_email, _password);
+    if (!mounted) return; // ← guard before using context
+    context.go(&#x27;/home&#x27;);
+  } on AuthException catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+  } finally {
+    if (mounted) setState(() =&gt; _isLoading = false);
+  }
+}
+```
+
+---
+
+## 4. Widget 架構
+
+### 抽成類別，不要抽成方法
+
+```dart
+// BAD — private method returning widget, prevents optimization
+Widget _buildHeader() {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+  );
+}
+
+// GOOD — separate widget class, enables const, element reuse
+class _PageHeader extends StatelessWidget {
+  const _PageHeader(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+    );
+  }
+}
+```
+
+### const 的傳遞
+
+```dart
+// BAD — new instances every rebuild
+child: Padding(
+  padding: EdgeInsets.all(16.0),       // not const
+  child: Icon(Icons.home, size: 24.0), // not const
+)
+
+// GOOD — const stops rebuild propagation
+child: const Padding(
+  padding: EdgeInsets.all(16.0),
+  child: Icon(Icons.home, size: 24.0),
+)
+```
+
+### 範圍限定的 Rebuild
+
+```dart
+// BAD — entire page rebuilds on every counter change
+class CounterPage extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider); // rebuilds everything
+    return Scaffold(
+      body: Column(children: [
+        const ExpensiveHeader(), // unnecessarily rebuilt
+        Text(&#x27;$count&#x27;),
+        const ExpensiveFooter(), // unnecessarily rebuilt
+      ]),
+    );
+  }
+}
+
+// GOOD — isolate the rebuilding part
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Column(children: [
+        ExpensiveHeader(),        // never rebuilt (const)
+        _CounterDisplay(),        // only this rebuilds
+        ExpensiveFooter(),        // never rebuilt (const)
+      ]),
+    );
+  }
+}
+
+class _CounterDisplay extends ConsumerWidget {
+  const _CounterDisplay();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    return Text(&#x27;$count&#x27;);
+  }
+}
+```
+
+---
+
+## 5. 狀態管理：BLoC/Cubit
+
+```dart
+// Cubit — synchronous or simple async state
+class AuthCubit extends Cubit&lt;AuthState&gt; {
+  AuthCubit(this._authService) : super(const AuthState.initial());
+  final AuthService _authService;
+
+  Future&lt;void&gt; login(String email, String password) async {
+    emit(const AuthState.loading());
+    try {
+      final user = await _authService.login(email, password);
+      emit(AuthState.authenticated(user));
+    } on AuthException catch (e) {
+      emit(AuthState.error(e.message));
+    }
+  }
+
+  void logout() {
+    _authService.logout();
+    emit(const AuthState.initial());
+  }
+}
+
+// In widget
+BlocBuilder&lt;AuthCubit, AuthState&gt;(
+  builder: (context, state) =&gt; switch (state) {
+    AuthInitial() =&gt; const LoginForm(),
+    AuthLoading() =&gt; const CircularProgressIndicator(),
+    AuthAuthenticated(:final user) =&gt; HomePage(user: user),
+    AuthError(:final message) =&gt; ErrorView(message: message),
+  },
+)
+```
+
+---
+
+## 6. 狀態管理：Riverpod
+
+```dart
+// Auto-dispose async provider
+@riverpod
+Future&lt;List&lt;Product&gt;&gt; products(Ref ref) async {
+  final repo = ref.watch(productRepositoryProvider);
+  return repo.getAll();
+}
+
+// Notifier with complex mutations
+@riverpod
+class CartNotifier extends _$CartNotifier {
+  @override
+  List&lt;CartItem&gt; build() =&gt; [];
+
+  void add(Product product) {
+    final existing = state.where((i) =&gt; i.productId == product.id).firstOrNull;
+    if (existing != null) {
+      state = [
+        for (final item in state)
+          if (item.productId == product.id) item.copyWith(quantity: item.quantity + 1)
+          else item,
+      ];
+    } else {
+      state = [...state, CartItem(productId: product.id, quantity: 1)];
+    }
+  }
+
+  void remove(String productId) =&gt;
+      state = state.where((i) =&gt; i.productId != productId).toList();
+
+  void clear() =&gt; state = [];
+}
+
+// Derived provider (selector pattern)
+@riverpod
+int cartCount(Ref ref) =&gt; ref.watch(cartNotifierProvider).length;
+
+@riverpod
+double cartTotal(Ref ref) {
+  final cart = ref.watch(cartNotifierProvider);
+  final products = ref.watch(productsProvider).valueOrNull ?? [];
+  return cart.fold(0.0, (total, item) {
+    // firstWhereOrNull (from collection package) avoids StateError when product is missing
+    final product = products.firstWhereOrNull((p) =&gt; p.id == item.productId);
+    return total + (product?.price ?? 0) * item.quantity;
+  });
+}
+```
+
+---
+
+## 7. 用 GoRouter 做導覽
+
+```dart
+final router = GoRouter(
+  initialLocation: &#x27;/&#x27;,
+  // refreshListenable re-evaluates redirect whenever auth state changes
+  refreshListenable: GoRouterRefreshStream(authCubit.stream),
+  redirect: (context, state) {
+    final isLoggedIn = context.read&lt;AuthCubit&gt;().state is AuthAuthenticated;
+    final isGoingToLogin = state.matchedLocation == &#x27;/login&#x27;;
+    if (!isLoggedIn &amp;&amp; !isGoingToLogin) return &#x27;/login&#x27;;
+    if (isLoggedIn &amp;&amp; isGoingToLogin) return &#x27;/&#x27;;
+    return null;
+  },
+  routes: [
+    GoRoute(path: &#x27;/login&#x27;, builder: (_, __) =&gt; const LoginPage()),
+    ShellRoute(
+      builder: (context, state, child) =&gt; AppShell(child: child),
+      routes: [
+        GoRoute(path: &#x27;/&#x27;, builder: (_, __) =&gt; const HomePage()),
+        GoRoute(
+          path: &#x27;/products/:id&#x27;,
+          builder: (context, state) =&gt;
+              ProductDetailPage(id: state.pathParameters[&#x27;id&#x27;]!),
+        ),
+      ],
+    ),
+  ],
+);
+```
+
+---
+
+## 8. 用 Dio 做 HTTP
+
+```dart
+final dio = Dio(BaseOptions(
+  baseUrl: const String.fromEnvironment(&#x27;API_URL&#x27;),
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 30),
+  headers: {&#x27;Content-Type&#x27;: &#x27;application/json&#x27;},
+));
+
+// Add auth interceptor
+dio.interceptors.add(InterceptorsWrapper(
+  onRequest: (options, handler) async {
+    final token = await secureStorage.read(key: &#x27;auth_token&#x27;);
+    if (token != null) options.headers[&#x27;Authorization&#x27;] = &#x27;Bearer $token&#x27;;
+    handler.next(options);
+  },
+  onError: (error, handler) async {
+    // Guard against infinite retry loops: only attempt refresh once per request
+    final isRetry = error.requestOptions.extra[&#x27;_isRetry&#x27;] == true;
+    if (!isRetry &amp;&amp; error.response?.statusCode == 401) {
+      final refreshed = await attemptTokenRefresh();
+      if (refreshed) {
+        error.requestOptions.extra[&#x27;_isRetry&#x27;] = true;
+        return handler.resolve(await dio.fetch(error.requestOptions));
+      }
+    }
+    handler.next(error);
+  },
+));
+
+// Repository using Dio
+class UserApiDataSource {
+  const UserApiDataSource(this._dio);
+  final Dio _dio;
+
+  Future&lt;User&gt; getById(String id) async {
+    final response = await _dio.get&lt;Map&lt;String, dynamic&gt;&gt;(&#x27;/users/$id&#x27;);
+    return User.fromJson(response.data!);
+  }
+}
+```
+
+---
+
+## 9. 錯誤處理架構
+
+```dart
+// Global error capture — set up in main()
+void main() {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    crashlytics.recordFlutterFatalError(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    crashlytics.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  runApp(const App());
+}
+
+// Custom ErrorWidget for production
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    ErrorWidget.builder = (details) =&gt; ProductionErrorWidget(details);
+    return MaterialApp.router(routerConfig: router);
+  }
+}
+```
+
+---
+
+## 10. 測試速查
+
+```dart
+// Unit test — use case
+test(&#x27;GetUserUseCase returns null for missing user&#x27;, () async {
+  final repo = FakeUserRepository();
+  final useCase = GetUserUseCase(repo);
+  expect(await useCase(&#x27;missing-id&#x27;), isNull);
+});
+
+// BLoC test
+blocTest&lt;AuthCubit, AuthState&gt;(
+  &#x27;emits loading then error on failed login&#x27;,
+  build: () =&gt; AuthCubit(FakeAuthService(throwsOn: &#x27;login&#x27;)),
+  act: (cubit) =&gt; cubit.login(&#x27;user@test.com&#x27;, &#x27;wrong&#x27;),
+  expect: () =&gt; [const AuthState.loading(), isA&lt;AuthError&gt;()],
+);
+
+// Widget test
+testWidgets(&#x27;CartBadge shows item count&#x27;, (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [cartNotifierProvider.overrideWith(() =&gt; FakeCartNotifier(count: 3))],
+      child: const MaterialApp(home: CartBadge()),
+    ),
+  );
+  expect(find.text(&#x27;3&#x27;), findsOneWidget);
+});
+```
+
+---
+
+## 參考資料
+
+- [Effective Dart: Design](https://dart.dev/effective-dart/design)
+- [Flutter Performance Best Practices](https://docs.flutter.dev/perf/best-practices)
+- [Riverpod Documentation](https://riverpod.dev/)
+- [BLoC Library](https://bloclibrary.dev/)
+- [GoRouter](https://pub.dev/packages/go_router)
+- [Freezed](https://pub.dev/packages/freezed)
+- Skill：`flutter-dart-code-review`，完整的審查檢查清單
+- Rules：`rules/dart/`，涵蓋程式風格、模式、安全、測試、hook</pre></section><section><h2>英文原文</h2><pre>---
+name: dart-flutter-patterns
+description: Production-ready Dart and Flutter patterns covering null safety, immutable state with Freezed, async composition, widget architecture, state management (BLoC, Riverpod, Provider), GoRouter navigation with auth guards, Dio networking, error handling, and testing. Use when writing or reviewing Dart and Flutter code — state, widgets, navigation, networking, or architecture.
+metadata:
+  origin: ECC
+---
+
+# Dart/Flutter Patterns
+
+## When to Use
+
+Use this skill when:
+- Starting a new Flutter feature and need idiomatic patterns for state management, navigation, or data access
+- Reviewing or writing Dart code and need guidance on null safety, sealed types, or async composition
+- Setting up a new Flutter project and choosing between BLoC, Riverpod, or Provider
+- Implementing secure HTTP clients, WebView integration, or local storage
+- Writing tests for Flutter widgets, Cubits, or Riverpod providers
+- Wiring up GoRouter with authentication guards
+
+## How It Works
+
+This skill provides copy-paste-ready Dart/Flutter code patterns organized by concern:
+1. **Null safety** — avoid `!`, prefer `?.`/`??`/pattern matching
+2. **Immutable state** — sealed classes, `freezed`, `copyWith`
+3. **Async composition** — concurrent `Future.wait`, safe `BuildContext` after `await`
+4. **Widget architecture** — extract to classes (not methods), `const` propagation, scoped rebuilds
+5. **State management** — BLoC/Cubit events, Riverpod notifiers and derived providers
+6. **Navigation** — GoRouter with reactive auth guards via `refreshListenable`
+7. **Networking** — Dio with interceptors, token refresh with one-time retry guard
+8. **Error handling** — global capture, `ErrorWidget.builder`, crashlytics wiring
+9. **Testing** — unit (BLoC test), widget (ProviderScope overrides), fakes over mocks
+
+## Examples
+
+```dart
+// Sealed state — prevents impossible states
+sealed class AsyncState&lt;T&gt; {}
+final class Loading&lt;T&gt; extends AsyncState&lt;T&gt; {}
+final class Success&lt;T&gt; extends AsyncState&lt;T&gt; { final T data; const Success(this.data); }
+final class Failure&lt;T&gt; extends AsyncState&lt;T&gt; { final Object error; const Failure(this.error); }
+
+// GoRouter with reactive auth redirect
+final router = GoRouter(
+  refreshListenable: GoRouterRefreshStream(authCubit.stream),
+  redirect: (context, state) {
+    final authed = context.read&lt;AuthCubit&gt;().state is AuthAuthenticated;
+    if (!authed &amp;&amp; !state.matchedLocation.startsWith(&#x27;/login&#x27;)) return &#x27;/login&#x27;;
+    return null;
+  },
+  routes: [...],
+);
+
+// Riverpod derived provider with safe firstWhereOrNull
+@riverpod
+double cartTotal(Ref ref) {
+  final cart = ref.watch(cartNotifierProvider);
+  final products = ref.watch(productsProvider).valueOrNull ?? [];
+  return cart.fold(0.0, (total, item) {
+    final product = products.firstWhereOrNull((p) =&gt; p.id == item.productId);
+    return total + (product?.price ?? 0) * item.quantity;
+  });
+}
+```
+
+---
+
+Practical, production-ready patterns for Dart and Flutter applications. Library-agnostic where possible, with explicit coverage of the most common ecosystem packages.
+
+---
+
+## 1. Null Safety Fundamentals
+
+### Prefer Patterns Over Bang Operator
+
+```dart
+// BAD — crashes at runtime if null
+final name = user!.name;
+
+// GOOD — provide fallback
+final name = user?.name ?? &#x27;Unknown&#x27;;
+
+// GOOD — Dart 3 pattern matching (preferred for complex cases)
+final display = switch (user) {
+  User(:final name, :final email) =&gt; &#x27;$name &lt;$email&gt;&#x27;,
+  null =&gt; &#x27;Guest&#x27;,
+};
+
+// GOOD — guard early return
+String getUserName(User? user) {
+  if (user == null) return &#x27;Unknown&#x27;;
+  return user.name; // promoted to non-null after check
+}
+```
+
+### Avoid `late` Overuse
+
+```dart
+// BAD — defers null error to runtime
+late String userId;
+
+// GOOD — nullable with explicit initialization
+String? userId;
+
+// OK — use late only when initialization is guaranteed before first access
+// (e.g., in initState() before any widget interaction)
+late final AnimationController _controller;
+
+@override
+void initState() {
+  super.initState();
+  _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+}
+```
+
+---
+
+## 2. Immutable State
+
+### Sealed Classes for State Hierarchies
+
+```dart
+sealed class UserState {}
+
+final class UserInitial extends UserState {}
+
+final class UserLoading extends UserState {}
+
+final class UserLoaded extends UserState {
+  const UserLoaded(this.user);
+  final User user;
+}
+
+final class UserError extends UserState {
+  const UserError(this.message);
+  final String message;
+}
+
+// Exhaustive switch — compiler enforces all branches
+Widget buildFrom(UserState state) =&gt; switch (state) {
+  UserInitial() =&gt; const SizedBox.shrink(),
+  UserLoading() =&gt; const CircularProgressIndicator(),
+  UserLoaded(:final user) =&gt; UserCard(user: user),
+  UserError(:final message) =&gt; ErrorText(message),
+};
+```
+
+### Freezed for Boilerplate-Free Immutability
+
+```dart
+import &#x27;package:freezed_annotation/freezed_annotation.dart&#x27;;
+
+part &#x27;user.freezed.dart&#x27;;
+part &#x27;user.g.dart&#x27;;
+
+@freezed
+class User with _$User {
+  const factory User({
+    required String id,
+    required String name,
+    required String email,
+    @Default(false) bool isAdmin,
+  }) = _User;
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =&gt; _$UserFromJson(json);
+}
+
+// Usage
+final user = User(id: &#x27;1&#x27;, name: &#x27;Alice&#x27;, email: &#x27;alice@example.com&#x27;);
+final updated = user.copyWith(name: &#x27;Alice Smith&#x27;); // immutable update
+final json = user.toJson();
+final fromJson = User.fromJson(json);
+```
+
+---
+
+## 3. Async Composition
+
+### Structured Concurrency with Future.wait
+
+```dart
+Future&lt;DashboardData&gt; loadDashboard(UserRepository users, OrderRepository orders) async {
+  // Run concurrently — don&#x27;t await sequentially
+  final (userList, orderList) = await (
+    users.getAll(),
+    orders.getRecent(),
+  ).wait; // Dart 3 record destructuring + Future.wait extension
+
+  return DashboardData(users: userList, orders: orderList);
+}
+```
+
+### Stream Patterns
+
+```dart
+// Repository exposes reactive streams for live data
+Stream&lt;List&lt;Item&gt;&gt; watchCartItems() =&gt; _db
+    .watchTable(&#x27;cart_items&#x27;)
+    .map((rows) =&gt; rows.map(Item.fromRow).toList());
+
+// In widget layer — declarative, no manual subscription
+StreamBuilder&lt;List&lt;Item&gt;&gt;(
+  stream: cartRepository.watchCartItems(),
+  builder: (context, snapshot) =&gt; switch (snapshot) {
+    AsyncSnapshot(connectionState: ConnectionState.waiting) =&gt;
+        const CircularProgressIndicator(),
+    AsyncSnapshot(:final error?) =&gt; ErrorWidget(error.toString()),
+    AsyncSnapshot(:final data?) =&gt; CartList(items: data),
+    _ =&gt; const SizedBox.shrink(),
+  },
+)
+```
+
+### BuildContext After Await
+
+```dart
+// CRITICAL — always check mounted after any await in StatefulWidget
+Future&lt;void&gt; _handleSubmit() async {
+  setState(() =&gt; _isLoading = true);
+  try {
+    await authService.login(_email, _password);
+    if (!mounted) return; // ← guard before using context
+    context.go(&#x27;/home&#x27;);
+  } on AuthException catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+  } finally {
+    if (mounted) setState(() =&gt; _isLoading = false);
+  }
+}
+```
+
+---
+
+## 4. Widget Architecture
+
+### Extract to Classes, Not Methods
+
+```dart
+// BAD — private method returning widget, prevents optimization
+Widget _buildHeader() {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+  );
+}
+
+// GOOD — separate widget class, enables const, element reuse
+class _PageHeader extends StatelessWidget {
+  const _PageHeader(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+    );
+  }
+}
+```
+
+### const Propagation
+
+```dart
+// BAD — new instances every rebuild
+child: Padding(
+  padding: EdgeInsets.all(16.0),       // not const
+  child: Icon(Icons.home, size: 24.0), // not const
+)
+
+// GOOD — const stops rebuild propagation
+child: const Padding(
+  padding: EdgeInsets.all(16.0),
+  child: Icon(Icons.home, size: 24.0),
+)
+```
+
+### Scoped Rebuilds
+
+```dart
+// BAD — entire page rebuilds on every counter change
+class CounterPage extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider); // rebuilds everything
+    return Scaffold(
+      body: Column(children: [
+        const ExpensiveHeader(), // unnecessarily rebuilt
+        Text(&#x27;$count&#x27;),
+        const ExpensiveFooter(), // unnecessarily rebuilt
+      ]),
+    );
+  }
+}
+
+// GOOD — isolate the rebuilding part
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Column(children: [
+        ExpensiveHeader(),        // never rebuilt (const)
+        _CounterDisplay(),        // only this rebuilds
+        ExpensiveFooter(),        // never rebuilt (const)
+      ]),
+    );
+  }
+}
+
+class _CounterDisplay extends ConsumerWidget {
+  const _CounterDisplay();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    return Text(&#x27;$count&#x27;);
+  }
+}
+```
+
+---
+
+## 5. State Management: BLoC/Cubit
+
+```dart
+// Cubit — synchronous or simple async state
+class AuthCubit extends Cubit&lt;AuthState&gt; {
+  AuthCubit(this._authService) : super(const AuthState.initial());
+  final AuthService _authService;
+
+  Future&lt;void&gt; login(String email, String password) async {
+    emit(const AuthState.loading());
+    try {
+      final user = await _authService.login(email, password);
+      emit(AuthState.authenticated(user));
+    } on AuthException catch (e) {
+      emit(AuthState.error(e.message));
+    }
+  }
+
+  void logout() {
+    _authService.logout();
+    emit(const AuthState.initial());
+  }
+}
+
+// In widget
+BlocBuilder&lt;AuthCubit, AuthState&gt;(
+  builder: (context, state) =&gt; switch (state) {
+    AuthInitial() =&gt; const LoginForm(),
+    AuthLoading() =&gt; const CircularProgressIndicator(),
+    AuthAuthenticated(:final user) =&gt; HomePage(user: user),
+    AuthError(:final message) =&gt; ErrorView(message: message),
+  },
+)
+```
+
+---
+
+## 6. State Management: Riverpod
+
+```dart
+// Auto-dispose async provider
+@riverpod
+Future&lt;List&lt;Product&gt;&gt; products(Ref ref) async {
+  final repo = ref.watch(productRepositoryProvider);
+  return repo.getAll();
+}
+
+// Notifier with complex mutations
+@riverpod
+class CartNotifier extends _$CartNotifier {
+  @override
+  List&lt;CartItem&gt; build() =&gt; [];
+
+  void add(Product product) {
+    final existing = state.where((i) =&gt; i.productId == product.id).firstOrNull;
+    if (existing != null) {
+      state = [
+        for (final item in state)
+          if (item.productId == product.id) item.copyWith(quantity: item.quantity + 1)
+          else item,
+      ];
+    } else {
+      state = [...state, CartItem(productId: product.id, quantity: 1)];
+    }
+  }
+
+  void remove(String productId) =&gt;
+      state = state.where((i) =&gt; i.productId != productId).toList();
+
+  void clear() =&gt; state = [];
+}
+
+// Derived provider (selector pattern)
+@riverpod
+int cartCount(Ref ref) =&gt; ref.watch(cartNotifierProvider).length;
+
+@riverpod
+double cartTotal(Ref ref) {
+  final cart = ref.watch(cartNotifierProvider);
+  final products = ref.watch(productsProvider).valueOrNull ?? [];
+  return cart.fold(0.0, (total, item) {
+    // firstWhereOrNull (from collection package) avoids StateError when product is missing
+    final product = products.firstWhereOrNull((p) =&gt; p.id == item.productId);
+    return total + (product?.price ?? 0) * item.quantity;
+  });
+}
+```
+
+---
+
+## 7. Navigation with GoRouter
+
+```dart
+final router = GoRouter(
+  initialLocation: &#x27;/&#x27;,
+  // refreshListenable re-evaluates redirect whenever auth state changes
+  refreshListenable: GoRouterRefreshStream(authCubit.stream),
+  redirect: (context, state) {
+    final isLoggedIn = context.read&lt;AuthCubit&gt;().state is AuthAuthenticated;
+    final isGoingToLogin = state.matchedLocation == &#x27;/login&#x27;;
+    if (!isLoggedIn &amp;&amp; !isGoingToLogin) return &#x27;/login&#x27;;
+    if (isLoggedIn &amp;&amp; isGoingToLogin) return &#x27;/&#x27;;
+    return null;
+  },
+  routes: [
+    GoRoute(path: &#x27;/login&#x27;, builder: (_, __) =&gt; const LoginPage()),
+    ShellRoute(
+      builder: (context, state, child) =&gt; AppShell(child: child),
+      routes: [
+        GoRoute(path: &#x27;/&#x27;, builder: (_, __) =&gt; const HomePage()),
+        GoRoute(
+          path: &#x27;/products/:id&#x27;,
+          builder: (context, state) =&gt;
+              ProductDetailPage(id: state.pathParameters[&#x27;id&#x27;]!),
+        ),
+      ],
+    ),
+  ],
+);
+```
+
+---
+
+## 8. HTTP with Dio
+
+```dart
+final dio = Dio(BaseOptions(
+  baseUrl: const String.fromEnvironment(&#x27;API_URL&#x27;),
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 30),
+  headers: {&#x27;Content-Type&#x27;: &#x27;application/json&#x27;},
+));
+
+// Add auth interceptor
+dio.interceptors.add(InterceptorsWrapper(
+  onRequest: (options, handler) async {
+    final token = await secureStorage.read(key: &#x27;auth_token&#x27;);
+    if (token != null) options.headers[&#x27;Authorization&#x27;] = &#x27;Bearer $token&#x27;;
+    handler.next(options);
+  },
+  onError: (error, handler) async {
+    // Guard against infinite retry loops: only attempt refresh once per request
+    final isRetry = error.requestOptions.extra[&#x27;_isRetry&#x27;] == true;
+    if (!isRetry &amp;&amp; error.response?.statusCode == 401) {
+      final refreshed = await attemptTokenRefresh();
+      if (refreshed) {
+        error.requestOptions.extra[&#x27;_isRetry&#x27;] = true;
+        return handler.resolve(await dio.fetch(error.requestOptions));
+      }
+    }
+    handler.next(error);
+  },
+));
+
+// Repository using Dio
+class UserApiDataSource {
+  const UserApiDataSource(this._dio);
+  final Dio _dio;
+
+  Future&lt;User&gt; getById(String id) async {
+    final response = await _dio.get&lt;Map&lt;String, dynamic&gt;&gt;(&#x27;/users/$id&#x27;);
+    return User.fromJson(response.data!);
+  }
+}
+```
+
+---
+
+## 9. Error Handling Architecture
+
+```dart
+// Global error capture — set up in main()
+void main() {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    crashlytics.recordFlutterFatalError(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    crashlytics.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  runApp(const App());
+}
+
+// Custom ErrorWidget for production
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    ErrorWidget.builder = (details) =&gt; ProductionErrorWidget(details);
+    return MaterialApp.router(routerConfig: router);
+  }
+}
+```
+
+---
+
+## 10. Testing Quick Reference
+
+```dart
+// Unit test — use case
+test(&#x27;GetUserUseCase returns null for missing user&#x27;, () async {
+  final repo = FakeUserRepository();
+  final useCase = GetUserUseCase(repo);
+  expect(await useCase(&#x27;missing-id&#x27;), isNull);
+});
+
+// BLoC test
+blocTest&lt;AuthCubit, AuthState&gt;(
+  &#x27;emits loading then error on failed login&#x27;,
+  build: () =&gt; AuthCubit(FakeAuthService(throwsOn: &#x27;login&#x27;)),
+  act: (cubit) =&gt; cubit.login(&#x27;user@test.com&#x27;, &#x27;wrong&#x27;),
+  expect: () =&gt; [const AuthState.loading(), isA&lt;AuthError&gt;()],
+);
+
+// Widget test
+testWidgets(&#x27;CartBadge shows item count&#x27;, (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [cartNotifierProvider.overrideWith(() =&gt; FakeCartNotifier(count: 3))],
+      child: const MaterialApp(home: CartBadge()),
+    ),
+  );
+  expect(find.text(&#x27;3&#x27;), findsOneWidget);
+});
+```
+
+---
+
+## References
+
+- [Effective Dart: Design](https://dart.dev/effective-dart/design)
+- [Flutter Performance Best Practices](https://docs.flutter.dev/perf/best-practices)
+- [Riverpod Documentation](https://riverpod.dev/)
+- [BLoC Library](https://bloclibrary.dev/)
+- [GoRouter](https://pub.dev/packages/go_router)
+- [Freezed](https://pub.dev/packages/freezed)
+- Skill: `flutter-dart-code-review` — comprehensive review checklist
+- Rules: `rules/dart/` — coding style, patterns, security, testing, hooks</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

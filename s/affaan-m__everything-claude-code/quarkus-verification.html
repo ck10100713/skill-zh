@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>quarkus-verification｜Skill 寫法圖鑑</title>
+<meta name="description" content="Quarkus 專案 PR 前與部署前的建置、測試、安全掃描驗證迴圈">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>quarkus-verification</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/quarkus-verification/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Quarkus 專案 PR 前與部署前的建置、測試、安全掃描驗證迴圈</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: quarkus-verification
+description: &quot;Quarkus 專案的驗證迴圈：建置、靜態分析（Checkstyle、PMD、SpotBugs）、搭配 JaCoCo 覆蓋率的測試、OWASP 依賴與容器安全掃描、GraalVM native 編譯、健康檢查，以及設定驗證。在 PR 之前、大型重構或依賴升級之後、部署前，驗證 Quarkus 服務時使用。&quot;
+metadata:
+  origin: ECC
+---
+
+# Quarkus 驗證迴圈
+
+在開 PR 前、大幅修改後和部署前執行。
+
+## 何時啟用
+
+- 為 Quarkus 服務開 pull request 之前
+- 大型重構或依賴升級之後
+- staging 或 production 部署前的驗證
+- 跑完整的 build → lint → test → 安全掃描 → native 編譯 pipeline
+- 驗證測試覆蓋率達到門檻（80% 以上）
+- 測試 native image 相容性
+
+## 階段 1：建置
+
+```bash
+# Maven
+mvn clean verify -DskipTests
+
+# Gradle
+./gradlew clean assemble -x test
+```
+
+建置失敗就停下來，先修掉編譯錯誤。
+
+## 階段 2：靜態分析
+
+### Checkstyle、PMD、SpotBugs（Maven）
+
+```bash
+mvn checkstyle:check pmd:check spotbugs:check
+```
+
+### SonarQube（如果有設定）
+
+```bash
+mvn sonar:sonar \
+  -Dsonar.projectKey=my-quarkus-project \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=${SONAR_TOKEN}
+```
+
+### 常見要處理的問題
+
+- 沒用到的 import 或變數
+- 複雜的方法（循環複雜度高）
+- 潛在的 null pointer dereference
+- SpotBugs 標出的安全問題
+
+## 階段 3：測試加覆蓋率
+
+```bash
+# 跑所有測試
+mvn clean test
+
+# 產生覆蓋率報告
+mvn jacoco:report
+
+# 強制覆蓋率門檻（80%）
+mvn jacoco:check
+
+# 或用 Gradle
+./gradlew test jacocoTestReport jacocoTestCoverageVerification
+```
+
+### 測試類別
+
+#### 單元測試
+用 mock 的依賴測試 service 邏輯：
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+  @Mock UserRepository userRepository;
+  @InjectMocks UserService userService;
+
+  @Test
+  void createUser_validInput_returnsUser() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;alice@example.com&quot;);
+
+    // Panache 的 persist() 是 void，用 doNothing 加 verify
+    doNothing().when(userRepository).persist(any(User.class));
+
+    User result = userService.create(dto);
+
+    assertThat(result.name).isEqualTo(&quot;Alice&quot;);
+    verify(userRepository).persist(any(User.class));
+  }
+}
+```
+
+#### 整合測試
+用真實資料庫測試（Testcontainers）：
+
+```java
+@QuarkusTest
+@QuarkusTestResource(PostgresTestResource.class)
+class UserRepositoryIntegrationTest {
+
+  @Inject
+  UserRepository userRepository;
+
+  @Test
+  @Transactional
+  void findByEmail_existingUser_returnsUser() {
+    User user = new User();
+    user.name = &quot;Alice&quot;;
+    user.email = &quot;alice@example.com&quot;;
+    userRepository.persist(user);
+
+    Optional&lt;User&gt; found = userRepository.findByEmail(&quot;alice@example.com&quot;);
+
+    assertThat(found).isPresent();
+    assertThat(found.get().name).isEqualTo(&quot;Alice&quot;);
+  }
+}
+```
+
+#### API 測試
+用 REST Assured 測試 REST endpoint：
+
+```java
+@QuarkusTest
+class UserResourceTest {
+
+  @Test
+  void createUser_validInput_returns201() {
+    given()
+        .contentType(ContentType.JSON)
+        .body(&quot;&quot;&quot;
+            {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@example.com&quot;}
+            &quot;&quot;&quot;)
+        .when().post(&quot;/api/users&quot;)
+        .then()
+        .statusCode(201)
+        .body(&quot;name&quot;, equalTo(&quot;Alice&quot;));
+  }
+
+  @Test
+  void createUser_invalidEmail_returns400() {
+    given()
+        .contentType(ContentType.JSON)
+        .body(&quot;&quot;&quot;
+            {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;invalid&quot;}
+            &quot;&quot;&quot;)
+        .when().post(&quot;/api/users&quot;)
+        .then()
+        .statusCode(400);
+  }
+}
+```
+
+### 覆蓋率報告
+
+看 `target/site/jacoco/index.html` 的詳細覆蓋率：
+- 整體行覆蓋率（目標：80% 以上）
+- 分支覆蓋率（目標：70% 以上）
+- 找出沒被覆蓋的關鍵路徑
+
+## 階段 4：安全掃描
+
+### 依賴漏洞（Maven）
+
+```bash
+mvn org.owasp:dependency-check-maven:check
+```
+
+看 `target/dependency-check-report.html` 的 CVE。
+
+### Quarkus 安全稽核
+
+```bash
+# 檢查有漏洞的 extension
+mvn quarkus:audit
+
+# 列出所有 extension
+mvn quarkus:list-extensions
+```
+
+### OWASP ZAP（API 安全測試）
+
+```bash
+docker run -t ghcr.io/zaproxy/zaproxy:stable zap-api-scan.py \
+  -t http://localhost:8080/q/openapi \
+  -f openapi
+```
+
+### 常見安全檢查
+
+- [ ] 所有 secret 都在環境變數裡（不在程式碼中）
+- [ ] 所有 endpoint 都有輸入驗證
+- [ ] 已設定驗證／授權
+- [ ] CORS 設定正確
+- [ ] 已設定安全標頭
+- [ ] 密碼用 BCrypt 雜湊
+- [ ] 防止 SQL injection（參數化查詢）
+- [ ] 公開 endpoint 有 rate limiting
+
+## 階段 5：Native 編譯
+
+測試 GraalVM native image 相容性：
+
+```bash
+# 建置 native 執行檔
+mvn package -Dnative
+
+# 或用容器
+mvn package -Dnative -Dquarkus.native.container-build=true
+
+# 測試 native 執行檔
+./target/*-runner
+
+# 跑基本的 smoke test
+curl http://localhost:8080/q/health/live
+curl http://localhost:8080/q/health/ready
+```
+
+### Native Image 疑難排解
+
+常見問題：
+- **Reflection**：為動態載入的類別加 reflection 設定
+- **Resources**：用 `quarkus.native.resources.includes` 把資源納入
+- **JNI**：如果用 native 函式庫，要註冊 JNI 類別
+
+reflection 設定範例：
+```java
+@RegisterForReflection(targets = {MyDynamicClass.class})
+public class ReflectionConfiguration {}
+```
+
+## 階段 6：效能測試
+
+### 用 K6 做負載測試
+
+```javascript
+// load-test.js
+import http from &#x27;k6/http&#x27;;
+import { check } from &#x27;k6&#x27;;
+
+export const options = {
+  stages: [
+    { duration: &#x27;30s&#x27;, target: 50 },
+    { duration: &#x27;1m&#x27;, target: 100 },
+    { duration: &#x27;30s&#x27;, target: 0 },
+  ],
+};
+
+export default function () {
+  const res = http.get(&#x27;http://localhost:8080/api/markets&#x27;);
+  check(res, {
+    &#x27;status is 200&#x27;: (r) =&gt; r.status === 200,
+    &#x27;response time &lt; 200ms&#x27;: (r) =&gt; r.timings.duration &lt; 200,
+  });
+}
+```
+
+執行：
+```bash
+k6 run load-test.js
+```
+
+### 要監控的指標
+
+- 回應時間（p50、p95、p99）
+- 吞吐量（requests/sec）
+- 錯誤率
+- 記憶體使用量
+- CPU 使用量
+
+## 階段 7：健康檢查
+
+```bash
+# Liveness
+curl http://localhost:8080/q/health/live
+
+# Readiness
+curl http://localhost:8080/q/health/ready
+
+# 所有健康檢查
+curl http://localhost:8080/q/health
+
+# Metrics（如果有啟用）
+curl http://localhost:8080/q/metrics
+```
+
+預期回應：
+```json
+{
+  &quot;status&quot;: &quot;UP&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;name&quot;: &quot;Database connection&quot;,
+      &quot;status&quot;: &quot;UP&quot;
+    }
+  ]
+}
+```
+
+## 階段 8：容器映像建置
+
+```bash
+# 建置容器映像
+mvn package -Dquarkus.container-image.build=true
+
+# 或指定 registry
+mvn package \
+  -Dquarkus.container-image.build=true \
+  -Dquarkus.container-image.registry=docker.io \
+  -Dquarkus.container-image.group=myorg \
+  -Dquarkus.container-image.tag=1.0.0
+
+# 測試容器
+docker run -p 8080:8080 myorg/my-quarkus-app:1.0.0
+```
+
+### 容器安全掃描
+
+```bash
+# Trivy
+trivy image myorg/my-quarkus-app:1.0.0
+
+# Grype
+grype myorg/my-quarkus-app:1.0.0
+```
+
+## 階段 9：設定驗證
+
+```bash
+# 檢查所有設定屬性
+mvn quarkus:info
+
+# 列出所有設定來源
+curl http://localhost:8080/q/dev/io.quarkus.quarkus-vertx-http/config
+```
+
+### 各環境專屬檢查
+
+- [ ] 每個環境都設定了資料庫 URL
+- [ ] secret 已外部化（Vault、環境變數）
+- [ ] logging 等級適當
+- [ ] CORS origin 設定正確
+- [ ] 已設定 rate limiting
+- [ ] 已啟用監控／tracing
+
+## 階段 10：文件審查
+
+- [ ] OpenAPI/Swagger 文件是最新的（`/q/swagger-ui`）
+- [ ] README 有安裝設定說明
+- [ ] API 變更都有文件
+- [ ] 破壞性變更有遷移指南
+- [ ] 設定屬性都有文件
+
+產生 OpenAPI spec：
+```bash
+curl http://localhost:8080/q/openapi -o openapi.json
+```
+
+## 驗證檢查清單
+
+### 程式碼品質
+- [ ] 建置通過，沒有警告
+- [ ] 靜態分析乾淨（沒有高／中等級問題）
+- [ ] 程式碼符合團隊慣例
+- [ ] PR 裡沒有被註解掉的程式碼或 TODO
+
+### 測試
+- [ ] 所有測試通過
+- [ ] 程式碼覆蓋率 ≥ 80%
+- [ ] 有用真實資料庫的整合測試
+- [ ] 安全測試通過
+- [ ] 效能在可接受範圍內
+
+### 安全
+- [ ] 沒有依賴漏洞
+- [ ] 驗證／授權已測試
+- [ ] 輸入驗證完整
+- [ ] 原始碼裡沒有 secret
+- [ ] 已設定安全標頭
+
+### 部署
+- [ ] Native 編譯成功
+- [ ] 容器映像能建置
+- [ ] 健康檢查回應正確
+- [ ] 設定對目標環境有效
+
+### Native Image
+- [ ] Native 執行檔能建置
+- [ ] Native 測試通過
+- [ ] 啟動時間 &lt; 100ms
+- [ ] 記憶體佔用可接受
+
+## 自動化驗證腳本
+
+```bash
+#!/bin/bash
+set -e
+
+echo &quot;=== 階段 1：建置 ===&quot;
+mvn clean verify -DskipTests
+
+echo &quot;=== 階段 2：靜態分析 ===&quot;
+mvn checkstyle:check pmd:check spotbugs:check
+
+echo &quot;=== 階段 3：測試加覆蓋率 ===&quot;
+mvn test jacoco:report jacoco:check
+
+echo &quot;=== 階段 4：安全掃描 ===&quot;
+mvn org.owasp:dependency-check-maven:check
+
+echo &quot;=== 階段 5：Native 編譯 ===&quot;
+mvn package -Dnative -Dquarkus.native.container-build=true
+
+echo &quot;=== 所有階段完成 ===&quot;
+echo &quot;請檢視報告：&quot;
+echo &quot;  - 覆蓋率：target/site/jacoco/index.html&quot;
+echo &quot;  - 安全性：target/dependency-check-report.html&quot;
+echo &quot;  - Native：target/*-runner&quot;
+```
+
+## CI/CD 整合
+
+### GitHub Actions 範例
+
+```yaml
+name: Verification
+
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: &#x27;21&#x27;
+          distribution: &#x27;temurin&#x27;
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles(&#x27;**/pom.xml&#x27;) }}
+
+      - name: Build
+        run: mvn clean verify -DskipTests
+
+      - name: Test with Coverage
+        run: mvn test jacoco:report jacoco:check
+
+      - name: Security Scan
+        run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+```
+
+## 最佳實踐
+
+- 每個 PR 之前都跑驗證迴圈
+- 在 CI/CD pipeline 中自動化
+- 問題馬上修，不要累積技術債
+- 覆蓋率維持在 80% 以上
+- 定期更新依賴
+- 定期測試 native 編譯
+- 監控效能趨勢
+- 文件化破壞性變更
+- 檢視安全掃描結果
+- 驗證每個環境的設定</pre></section><section><h2>英文原文</h2><pre>---
+name: quarkus-verification
+description: &quot;Verification loop for Quarkus projects: build, static analysis (Checkstyle, PMD, SpotBugs), tests with JaCoCo coverage, OWASP dependency and container security scans, GraalVM native compilation, health checks, and config validation. Use when verifying a Quarkus service before a PR, after major refactoring or dependency upgrades, or pre-deploy.&quot;
+metadata:
+  origin: ECC
+---
+
+# Quarkus Verification Loop
+
+Run before PRs, after major changes, and pre-deploy.
+
+## When to Activate
+
+- Before opening a pull request for a Quarkus service
+- After major refactoring or dependency upgrades
+- Pre-deployment verification for staging or production
+- Running full build → lint → test → security scan → native compilation pipeline
+- Validating test coverage meets thresholds (80%+)
+- Testing native image compatibility
+
+## Phase 1: Build
+
+```bash
+# Maven
+mvn clean verify -DskipTests
+
+# Gradle
+./gradlew clean assemble -x test
+```
+
+If build fails, stop and fix compilation errors.
+
+## Phase 2: Static Analysis
+
+### Checkstyle, PMD, SpotBugs (Maven)
+
+```bash
+mvn checkstyle:check pmd:check spotbugs:check
+```
+
+### SonarQube (if configured)
+
+```bash
+mvn sonar:sonar \
+  -Dsonar.projectKey=my-quarkus-project \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=${SONAR_TOKEN}
+```
+
+### Common Issues to Address
+
+- Unused imports or variables
+- Complex methods (high cyclomatic complexity)
+- Potential null pointer dereferences
+- Security issues flagged by SpotBugs
+
+## Phase 3: Tests + Coverage
+
+```bash
+# Run all tests
+mvn clean test
+
+# Generate coverage report
+mvn jacoco:report
+
+# Enforce coverage threshold (80%)
+mvn jacoco:check
+
+# Or with Gradle
+./gradlew test jacocoTestReport jacocoTestCoverageVerification
+```
+
+### Test Categories
+
+#### Unit Tests
+Test service logic with mocked dependencies:
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+  @Mock UserRepository userRepository;
+  @InjectMocks UserService userService;
+
+  @Test
+  void createUser_validInput_returnsUser() {
+    var dto = new CreateUserDto(&quot;Alice&quot;, &quot;alice@example.com&quot;);
+
+    // Panache persist() is void — use doNothing + verify
+    doNothing().when(userRepository).persist(any(User.class));
+
+    User result = userService.create(dto);
+
+    assertThat(result.name).isEqualTo(&quot;Alice&quot;);
+    verify(userRepository).persist(any(User.class));
+  }
+}
+```
+
+#### Integration Tests
+Test with real database (Testcontainers):
+
+```java
+@QuarkusTest
+@QuarkusTestResource(PostgresTestResource.class)
+class UserRepositoryIntegrationTest {
+
+  @Inject
+  UserRepository userRepository;
+
+  @Test
+  @Transactional
+  void findByEmail_existingUser_returnsUser() {
+    User user = new User();
+    user.name = &quot;Alice&quot;;
+    user.email = &quot;alice@example.com&quot;;
+    userRepository.persist(user);
+
+    Optional&lt;User&gt; found = userRepository.findByEmail(&quot;alice@example.com&quot;);
+
+    assertThat(found).isPresent();
+    assertThat(found.get().name).isEqualTo(&quot;Alice&quot;);
+  }
+}
+```
+
+#### API Tests
+Test REST endpoints with REST Assured:
+
+```java
+@QuarkusTest
+class UserResourceTest {
+
+  @Test
+  void createUser_validInput_returns201() {
+    given()
+        .contentType(ContentType.JSON)
+        .body(&quot;&quot;&quot;
+            {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@example.com&quot;}
+            &quot;&quot;&quot;)
+        .when().post(&quot;/api/users&quot;)
+        .then()
+        .statusCode(201)
+        .body(&quot;name&quot;, equalTo(&quot;Alice&quot;));
+  }
+
+  @Test
+  void createUser_invalidEmail_returns400() {
+    given()
+        .contentType(ContentType.JSON)
+        .body(&quot;&quot;&quot;
+            {&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;invalid&quot;}
+            &quot;&quot;&quot;)
+        .when().post(&quot;/api/users&quot;)
+        .then()
+        .statusCode(400);
+  }
+}
+```
+
+### Coverage Report
+
+Check `target/site/jacoco/index.html` for detailed coverage:
+- Overall line coverage (target: 80%+)
+- Branch coverage (target: 70%+)
+- Identify uncovered critical paths
+
+## Phase 4: Security Scanning
+
+### Dependency Vulnerabilities (Maven)
+
+```bash
+mvn org.owasp:dependency-check-maven:check
+```
+
+Review `target/dependency-check-report.html` for CVEs.
+
+### Quarkus Security Audit
+
+```bash
+# Check vulnerable extensions
+mvn quarkus:audit
+
+# List all extensions
+mvn quarkus:list-extensions
+```
+
+### OWASP ZAP (API Security Testing)
+
+```bash
+docker run -t ghcr.io/zaproxy/zaproxy:stable zap-api-scan.py \
+  -t http://localhost:8080/q/openapi \
+  -f openapi
+```
+
+### Common Security Checks
+
+- [ ] All secrets in environment variables (not in code)
+- [ ] Input validation on all endpoints
+- [ ] Authentication/authorization configured
+- [ ] CORS properly configured
+- [ ] Security headers set
+- [ ] Passwords hashed with BCrypt
+- [ ] SQL injection protection (parameterized queries)
+- [ ] Rate limiting on public endpoints
+
+## Phase 5: Native Compilation
+
+Test GraalVM native image compatibility:
+
+```bash
+# Build native executable
+mvn package -Dnative
+
+# Or with container
+mvn package -Dnative -Dquarkus.native.container-build=true
+
+# Test native executable
+./target/*-runner
+
+# Run basic smoke tests
+curl http://localhost:8080/q/health/live
+curl http://localhost:8080/q/health/ready
+```
+
+### Native Image Troubleshooting
+
+Common issues:
+- **Reflection**: Add reflection config for dynamic classes
+- **Resources**: Include resources with `quarkus.native.resources.includes`
+- **JNI**: Register JNI classes if using native libraries
+
+Example reflection config:
+```java
+@RegisterForReflection(targets = {MyDynamicClass.class})
+public class ReflectionConfiguration {}
+```
+
+## Phase 6: Performance Testing
+
+### Load Testing with K6
+
+```javascript
+// load-test.js
+import http from &#x27;k6/http&#x27;;
+import { check } from &#x27;k6&#x27;;
+
+export const options = {
+  stages: [
+    { duration: &#x27;30s&#x27;, target: 50 },
+    { duration: &#x27;1m&#x27;, target: 100 },
+    { duration: &#x27;30s&#x27;, target: 0 },
+  ],
+};
+
+export default function () {
+  const res = http.get(&#x27;http://localhost:8080/api/markets&#x27;);
+  check(res, {
+    &#x27;status is 200&#x27;: (r) =&gt; r.status === 200,
+    &#x27;response time &lt; 200ms&#x27;: (r) =&gt; r.timings.duration &lt; 200,
+  });
+}
+```
+
+Run:
+```bash
+k6 run load-test.js
+```
+
+### Metrics to Monitor
+
+- Response time (p50, p95, p99)
+- Throughput (requests/sec)
+- Error rate
+- Memory usage
+- CPU usage
+
+## Phase 7: Health Checks
+
+```bash
+# Liveness
+curl http://localhost:8080/q/health/live
+
+# Readiness
+curl http://localhost:8080/q/health/ready
+
+# All health checks
+curl http://localhost:8080/q/health
+
+# Metrics (if enabled)
+curl http://localhost:8080/q/metrics
+```
+
+Expected responses:
+```json
+{
+  &quot;status&quot;: &quot;UP&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;name&quot;: &quot;Database connection&quot;,
+      &quot;status&quot;: &quot;UP&quot;
+    }
+  ]
+}
+```
+
+## Phase 8: Container Image Build
+
+```bash
+# Build container image
+mvn package -Dquarkus.container-image.build=true
+
+# Or with specific registry
+mvn package \
+  -Dquarkus.container-image.build=true \
+  -Dquarkus.container-image.registry=docker.io \
+  -Dquarkus.container-image.group=myorg \
+  -Dquarkus.container-image.tag=1.0.0
+
+# Test container
+docker run -p 8080:8080 myorg/my-quarkus-app:1.0.0
+```
+
+### Container Security Scan
+
+```bash
+# Trivy
+trivy image myorg/my-quarkus-app:1.0.0
+
+# Grype
+grype myorg/my-quarkus-app:1.0.0
+```
+
+## Phase 9: Configuration Validation
+
+```bash
+# Check all configuration properties
+mvn quarkus:info
+
+# List all config sources
+curl http://localhost:8080/q/dev/io.quarkus.quarkus-vertx-http/config
+```
+
+### Environment-Specific Checks
+
+- [ ] Database URLs configured per environment
+- [ ] Secrets externalized (Vault, env vars)
+- [ ] Logging levels appropriate
+- [ ] CORS origins set correctly
+- [ ] Rate limiting configured
+- [ ] Monitoring/tracing enabled
+
+## Phase 10: Documentation Review
+
+- [ ] OpenAPI/Swagger docs up to date (`/q/swagger-ui`)
+- [ ] README has setup instructions
+- [ ] API changes documented
+- [ ] Migration guide for breaking changes
+- [ ] Configuration properties documented
+
+Generate OpenAPI spec:
+```bash
+curl http://localhost:8080/q/openapi -o openapi.json
+```
+
+## Verification Checklist
+
+### Code Quality
+- [ ] Build passes without warnings
+- [ ] Static analysis clean (no high/medium issues)
+- [ ] Code follows team conventions
+- [ ] No commented-out code or TODOs in PR
+
+### Testing
+- [ ] All tests pass
+- [ ] Code coverage ≥ 80%
+- [ ] Integration tests with real database
+- [ ] Security tests pass
+- [ ] Performance within acceptable limits
+
+### Security
+- [ ] No dependency vulnerabilities
+- [ ] Authentication/authorization tested
+- [ ] Input validation complete
+- [ ] Secrets not in source code
+- [ ] Security headers configured
+
+### Deployment
+- [ ] Native compilation successful
+- [ ] Container image builds
+- [ ] Health checks respond correctly
+- [ ] Configuration valid for target environment
+
+### Native Image
+- [ ] Native executable builds
+- [ ] Native tests pass
+- [ ] Startup time &lt; 100ms
+- [ ] Memory footprint acceptable
+
+## Automated Verification Script
+
+```bash
+#!/bin/bash
+set -e
+
+echo &quot;=== Phase 1: Build ===&quot;
+mvn clean verify -DskipTests
+
+echo &quot;=== Phase 2: Static Analysis ===&quot;
+mvn checkstyle:check pmd:check spotbugs:check
+
+echo &quot;=== Phase 3: Tests + Coverage ===&quot;
+mvn test jacoco:report jacoco:check
+
+echo &quot;=== Phase 4: Security Scan ===&quot;
+mvn org.owasp:dependency-check-maven:check
+
+echo &quot;=== Phase 5: Native Compilation ===&quot;
+mvn package -Dnative -Dquarkus.native.container-build=true
+
+echo &quot;=== All Phases Complete ===&quot;
+echo &quot;Review reports:&quot;
+echo &quot;  - Coverage: target/site/jacoco/index.html&quot;
+echo &quot;  - Security: target/dependency-check-report.html&quot;
+echo &quot;  - Native: target/*-runner&quot;
+```
+
+## CI/CD Integration
+
+### GitHub Actions Example
+
+```yaml
+name: Verification
+
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: &#x27;21&#x27;
+          distribution: &#x27;temurin&#x27;
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles(&#x27;**/pom.xml&#x27;) }}
+
+      - name: Build
+        run: mvn clean verify -DskipTests
+
+      - name: Test with Coverage
+        run: mvn test jacoco:report jacoco:check
+
+      - name: Security Scan
+        run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+```
+
+## Best Practices
+
+- Run verification loop before every PR
+- Automate in CI/CD pipeline
+- Fix issues immediately; don&#x27;t accumulate debt
+- Keep coverage above 80%
+- Update dependencies regularly
+- Test native compilation periodically
+- Monitor performance trends
+- Document breaking changes
+- Review security scan results
+- Validate configuration for each environment</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

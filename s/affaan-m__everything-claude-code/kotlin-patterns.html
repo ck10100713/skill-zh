@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kotlin-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="寫出慣用的 Kotlin：null safety、sealed class、coroutines 與 DSL">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>kotlin-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/kotlin-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">寫出慣用的 Kotlin：null safety、sealed class、coroutines 與 DSL</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: kotlin-patterns
+description: 慣用的 Kotlin 模式、最佳實務與慣例，用 coroutines、null safety 和 DSL builder 打造穩健、有效率、好維護的 Kotlin 應用程式。在撰寫或 review Kotlin 程式碼，且慣用結構或 null safety 有疑問時使用。
+metadata:
+  origin: ECC
+---
+
+# Kotlin Development Patterns
+
+慣用的 Kotlin 模式與最佳實務，用來打造穩健、有效率、好維護的應用程式。
+
+## 何時使用
+
+- 撰寫新的 Kotlin 程式碼
+- Review Kotlin 程式碼
+- 重構既有的 Kotlin 程式碼
+- 設計 Kotlin module 或 library
+- 設定 Gradle Kotlin DSL 建置
+
+## 運作方式
+
+這個 skill 在七個關鍵面向上落實慣用的 Kotlin 慣例：用型別系統與 safe-call 運算子做 null safety、用 `val` 與 data class 的 `copy()` 達到 immutability、用 sealed class 與 interface 建立可窮舉的型別階層、用 coroutines 與 `Flow` 做 structured concurrency、用 extension function 不靠繼承就能加行為、用 `@DslMarker` 與 lambda receiver 做型別安全的 DSL builder，以及用 Gradle Kotlin DSL 設定建置。
+
+## 範例
+
+**用 Elvis 運算子做 null safety：**
+```kotlin
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user?.email ?: &quot;unknown@example.com&quot;
+}
+```
+
+**用 sealed class 表達可窮舉的結果：**
+```kotlin
+sealed class Result&lt;out T&gt; {
+    data class Success&lt;T&gt;(val data: T) : Result&lt;T&gt;()
+    data class Failure(val error: AppError) : Result&lt;Nothing&gt;()
+    data object Loading : Result&lt;Nothing&gt;()
+}
+```
+
+**用 async/await 做 structured concurrency：**
+```kotlin
+suspend fun fetchUserWithPosts(userId: String): UserProfile =
+    coroutineScope {
+        val user = async { userService.getUser(userId) }
+        val posts = async { postService.getUserPosts(userId) }
+        UserProfile(user = user.await(), posts = posts.await())
+    }
+```
+
+## 核心原則
+
+### 1. Null Safety
+
+Kotlin 的型別系統區分 nullable 與 non-nullable 型別，要充分利用。
+
+```kotlin
+// Good: Use non-nullable types by default
+fun getUser(id: String): User {
+    return userRepository.findById(id)
+        ?: throw UserNotFoundException(&quot;User $id not found&quot;)
+}
+
+// Good: Safe calls and Elvis operator
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user?.email ?: &quot;unknown@example.com&quot;
+}
+
+// Bad: Force-unwrapping nullable types
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user!!.email // Throws NPE if null
+}
+```
+
+### 2. 預設不可變
+
+優先用 `val` 而不是 `var`，優先用不可變集合而不是可變集合。
+
+```kotlin
+// Good: Immutable data
+data class User(
+    val id: String,
+    val name: String,
+    val email: String,
+)
+
+// Good: Transform with copy()
+fun updateEmail(user: User, newEmail: String): User =
+    user.copy(email = newEmail)
+
+// Good: Immutable collections
+val users: List&lt;User&gt; = listOf(user1, user2)
+val filtered = users.filter { it.email.isNotBlank() }
+
+// Bad: Mutable state
+var currentUser: User? = null // Avoid mutable global state
+val mutableUsers = mutableListOf&lt;User&gt;() // Avoid unless truly needed
+```
+
+### 3. Expression Body 與單一運算式函式
+
+用 expression body 寫出簡潔、好讀的函式。
+
+```kotlin
+// Good: Expression body
+fun isAdult(age: Int): Boolean = age &gt;= 18
+
+fun formatFullName(first: String, last: String): String =
+    &quot;$first $last&quot;.trim()
+
+fun User.displayName(): String =
+    name.ifBlank { email.substringBefore(&#x27;@&#x27;) }
+
+// Good: When as expression
+fun statusMessage(code: Int): String = when (code) {
+    200 -&gt; &quot;OK&quot;
+    404 -&gt; &quot;Not Found&quot;
+    500 -&gt; &quot;Internal Server Error&quot;
+    else -&gt; &quot;Unknown status: $code&quot;
+}
+
+// Bad: Unnecessary block body
+fun isAdult(age: Int): Boolean {
+    return age &gt;= 18
+}
+```
+
+### 4. 用 Data Class 表示 Value Object
+
+主要用來裝資料的型別就用 data class。
+
+```kotlin
+// Good: Data class with copy, equals, hashCode, toString
+data class CreateUserRequest(
+    val name: String,
+    val email: String,
+    val role: Role = Role.USER,
+)
+
+// Good: Value class for type safety (zero overhead at runtime)
+@JvmInline
+value class UserId(val value: String) {
+    init {
+        require(value.isNotBlank()) { &quot;UserId cannot be blank&quot; }
+    }
+}
+
+@JvmInline
+value class Email(val value: String) {
+    init {
+        require(&#x27;@&#x27; in value) { &quot;Invalid email: $value&quot; }
+    }
+}
+
+fun getUser(id: UserId): User = userRepository.findById(id)
+```
+
+## Sealed Class 與 Interface
+
+### 建模受限的階層
+
+```kotlin
+// Good: Sealed class for exhaustive when
+sealed class Result&lt;out T&gt; {
+    data class Success&lt;T&gt;(val data: T) : Result&lt;T&gt;()
+    data class Failure(val error: AppError) : Result&lt;Nothing&gt;()
+    data object Loading : Result&lt;Nothing&gt;()
+}
+
+fun &lt;T&gt; Result&lt;T&gt;.getOrNull(): T? = when (this) {
+    is Result.Success -&gt; data
+    is Result.Failure -&gt; null
+    is Result.Loading -&gt; null
+}
+
+fun &lt;T&gt; Result&lt;T&gt;.getOrThrow(): T = when (this) {
+    is Result.Success -&gt; data
+    is Result.Failure -&gt; throw error.toException()
+    is Result.Loading -&gt; throw IllegalStateException(&quot;Still loading&quot;)
+}
+```
+
+### 用 Sealed Interface 表達 API Response
+
+```kotlin
+sealed interface ApiError {
+    val message: String
+
+    data class NotFound(override val message: String) : ApiError
+    data class Unauthorized(override val message: String) : ApiError
+    data class Validation(
+        override val message: String,
+        val field: String,
+    ) : ApiError
+    data class Internal(
+        override val message: String,
+        val cause: Throwable? = null,
+    ) : ApiError
+}
+
+fun ApiError.toStatusCode(): Int = when (this) {
+    is ApiError.NotFound -&gt; 404
+    is ApiError.Unauthorized -&gt; 401
+    is ApiError.Validation -&gt; 422
+    is ApiError.Internal -&gt; 500
+}
+```
+
+## Scope Function
+
+### 各自該在何時使用
+
+```kotlin
+// let: Transform nullable or scoped result
+val length: Int? = name?.let { it.trim().length }
+
+// apply: Configure an object (returns the object)
+val user = User().apply {
+    name = &quot;Alice&quot;
+    email = &quot;alice@example.com&quot;
+}
+
+// also: Side effects (returns the object)
+val user = createUser(request).also { logger.info(&quot;Created user: ${it.id}&quot;) }
+
+// run: Execute a block with receiver (returns result)
+val result = connection.run {
+    prepareStatement(sql)
+    executeQuery()
+}
+
+// with: Non-extension form of run
+val csv = with(StringBuilder()) {
+    appendLine(&quot;name,email&quot;)
+    users.forEach { appendLine(&quot;${it.name},${it.email}&quot;) }
+    toString()
+}
+```
+
+### 反模式
+
+```kotlin
+// Bad: Nesting scope functions
+user?.let { u -&gt;
+    u.address?.let { addr -&gt;
+        addr.city?.let { city -&gt;
+            println(city) // Hard to read
+        }
+    }
+}
+
+// Good: Chain safe calls instead
+val city = user?.address?.city
+city?.let { println(it) }
+```
+
+## Extension Function
+
+### 不靠繼承來加功能
+
+```kotlin
+// Good: Domain-specific extensions
+fun String.toSlug(): String =
+    lowercase()
+        .replace(Regex(&quot;[^a-z0-9\\s-]&quot;), &quot;&quot;)
+        .replace(Regex(&quot;\\s+&quot;), &quot;-&quot;)
+        .trim(&#x27;-&#x27;)
+
+fun Instant.toLocalDate(zone: ZoneId = ZoneId.systemDefault()): LocalDate =
+    atZone(zone).toLocalDate()
+
+// Good: Collection extensions
+fun &lt;T&gt; List&lt;T&gt;.second(): T = this[1]
+
+fun &lt;T&gt; List&lt;T&gt;.secondOrNull(): T? = getOrNull(1)
+
+// Good: Scoped extensions (not polluting global namespace)
+class UserService {
+    private fun User.isActive(): Boolean =
+        status == Status.ACTIVE &amp;&amp; lastLogin.isAfter(Instant.now().minus(30, ChronoUnit.DAYS))
+
+    fun getActiveUsers(): List&lt;User&gt; = userRepository.findAll().filter { it.isActive() }
+}
+```
+
+## Coroutines
+
+### Structured Concurrency
+
+```kotlin
+// Good: Structured concurrency with coroutineScope
+suspend fun fetchUserWithPosts(userId: String): UserProfile =
+    coroutineScope {
+        val userDeferred = async { userService.getUser(userId) }
+        val postsDeferred = async { postService.getUserPosts(userId) }
+
+        UserProfile(
+            user = userDeferred.await(),
+            posts = postsDeferred.await(),
+        )
+    }
+
+// Good: supervisorScope when children can fail independently
+suspend fun fetchDashboard(userId: String): Dashboard =
+    supervisorScope {
+        val user = async { userService.getUser(userId) }
+        val notifications = async { notificationService.getRecent(userId) }
+        val recommendations = async { recommendationService.getFor(userId) }
+
+        Dashboard(
+            user = user.await(),
+            notifications = try {
+                notifications.await()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            },
+            recommendations = try {
+                recommendations.await()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            },
+        )
+    }
+```
+
+### 用 Flow 處理 Reactive Stream
+
+```kotlin
+// Good: Cold flow with proper error handling
+fun observeUsers(): Flow&lt;List&lt;User&gt;&gt; = flow {
+    while (currentCoroutineContext().isActive) {
+        val users = userRepository.findAll()
+        emit(users)
+        delay(5.seconds)
+    }
+}.catch { e -&gt;
+    logger.error(&quot;Error observing users&quot;, e)
+    emit(emptyList())
+}
+
+// Good: Flow operators
+fun searchUsers(query: Flow&lt;String&gt;): Flow&lt;List&lt;User&gt;&gt; =
+    query
+        .debounce(300.milliseconds)
+        .distinctUntilChanged()
+        .filter { it.length &gt;= 2 }
+        .mapLatest { q -&gt; userRepository.search(q) }
+        .catch { emit(emptyList()) }
+```
+
+### 取消與清理
+
+```kotlin
+// Good: Respect cancellation
+suspend fun processItems(items: List&lt;Item&gt;) {
+    items.forEach { item -&gt;
+        ensureActive() // Check cancellation before expensive work
+        processItem(item)
+    }
+}
+
+// Good: Cleanup with try/finally
+suspend fun acquireAndProcess() {
+    val resource = acquireResource()
+    try {
+        resource.process()
+    } finally {
+        withContext(NonCancellable) {
+            resource.release() // Always release, even on cancellation
+        }
+    }
+}
+```
+
+## Delegation
+
+### Property Delegation
+
+```kotlin
+// Lazy initialization
+val expensiveData: List&lt;User&gt; by lazy {
+    userRepository.findAll()
+}
+
+// Observable property
+var name: String by Delegates.observable(&quot;initial&quot;) { _, old, new -&gt;
+    logger.info(&quot;Name changed from &#x27;$old&#x27; to &#x27;$new&#x27;&quot;)
+}
+
+// Map-backed properties
+class Config(private val map: Map&lt;String, Any?&gt;) {
+    val host: String by map
+    val port: Int by map
+    val debug: Boolean by map
+}
+
+val config = Config(mapOf(&quot;host&quot; to &quot;localhost&quot;, &quot;port&quot; to 8080, &quot;debug&quot; to true))
+```
+
+### Interface Delegation
+
+```kotlin
+// Good: Delegate interface implementation
+class LoggingUserRepository(
+    private val delegate: UserRepository,
+    private val logger: Logger,
+) : UserRepository by delegate {
+    // Only override what you need to add logging to
+    override suspend fun findById(id: String): User? {
+        logger.info(&quot;Finding user by id: $id&quot;)
+        return delegate.findById(id).also {
+            logger.info(&quot;Found user: ${it?.name ?: &quot;null&quot;}&quot;)
+        }
+    }
+}
+```
+
+## DSL Builder
+
+### 型別安全的 Builder
+
+```kotlin
+// Good: DSL with @DslMarker
+@DslMarker
+annotation class HtmlDsl
+
+@HtmlDsl
+class HTML {
+    private val children = mutableListOf&lt;Element&gt;()
+
+    fun head(init: Head.() -&gt; Unit) {
+        children += Head().apply(init)
+    }
+
+    fun body(init: Body.() -&gt; Unit) {
+        children += Body().apply(init)
+    }
+
+    override fun toString(): String = children.joinToString(&quot;\n&quot;)
+}
+
+fun html(init: HTML.() -&gt; Unit): HTML = HTML().apply(init)
+
+// Usage
+val page = html {
+    head { title(&quot;My Page&quot;) }
+    body {
+        h1(&quot;Welcome&quot;)
+        p(&quot;Hello, World!&quot;)
+    }
+}
+```
+
+### 設定用 DSL
+
+```kotlin
+data class ServerConfig(
+    val host: String = &quot;0.0.0.0&quot;,
+    val port: Int = 8080,
+    val ssl: SslConfig? = null,
+    val database: DatabaseConfig? = null,
+)
+
+data class SslConfig(val certPath: String, val keyPath: String)
+data class DatabaseConfig(val url: String, val maxPoolSize: Int = 10)
+
+class ServerConfigBuilder {
+    var host: String = &quot;0.0.0.0&quot;
+    var port: Int = 8080
+    private var ssl: SslConfig? = null
+    private var database: DatabaseConfig? = null
+
+    fun ssl(certPath: String, keyPath: String) {
+        ssl = SslConfig(certPath, keyPath)
+    }
+
+    fun database(url: String, maxPoolSize: Int = 10) {
+        database = DatabaseConfig(url, maxPoolSize)
+    }
+
+    fun build(): ServerConfig = ServerConfig(host, port, ssl, database)
+}
+
+fun serverConfig(init: ServerConfigBuilder.() -&gt; Unit): ServerConfig =
+    ServerConfigBuilder().apply(init).build()
+
+// Usage
+val config = serverConfig {
+    host = &quot;0.0.0.0&quot;
+    port = 443
+    ssl(&quot;/certs/cert.pem&quot;, &quot;/certs/key.pem&quot;)
+    database(&quot;jdbc:postgresql://localhost:5432/mydb&quot;, maxPoolSize = 20)
+}
+```
+
+## 用 Sequence 做惰性求值
+
+```kotlin
+// Good: Use sequences for large collections with multiple operations
+val result = users.asSequence()
+    .filter { it.isActive }
+    .map { it.email }
+    .filter { it.endsWith(&quot;@company.com&quot;) }
+    .take(10)
+    .toList()
+
+// Good: Generate infinite sequences
+val fibonacci: Sequence&lt;Long&gt; = sequence {
+    var a = 0L
+    var b = 1L
+    while (true) {
+        yield(a)
+        val next = a + b
+        a = b
+        b = next
+    }
+}
+
+val first20 = fibonacci.take(20).toList()
+```
+
+## Gradle Kotlin DSL
+
+### build.gradle.kts 設定
+
+```kotlin
+// Check for latest versions: https://kotlinlang.org/docs/releases.html
+plugins {
+    kotlin(&quot;jvm&quot;) version &quot;2.3.10&quot;
+    kotlin(&quot;plugin.serialization&quot;) version &quot;2.3.10&quot;
+    id(&quot;io.ktor.plugin&quot;) version &quot;3.4.0&quot;
+    id(&quot;org.jetbrains.kotlinx.kover&quot;) version &quot;0.9.7&quot;
+    id(&quot;io.gitlab.arturbosch.detekt&quot;) version &quot;1.23.8&quot;
+}
+
+group = &quot;com.example&quot;
+version = &quot;1.0.0&quot;
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    // Ktor
+    implementation(&quot;io.ktor:ktor-server-core:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-server-netty:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-server-content-negotiation:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-serialization-kotlinx-json:3.4.0&quot;)
+
+    // Exposed
+    implementation(&quot;org.jetbrains.exposed:exposed-core:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-dao:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-jdbc:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-kotlin-datetime:1.0.0&quot;)
+
+    // Koin
+    implementation(&quot;io.insert-koin:koin-ktor:4.2.0&quot;)
+
+    // Coroutines
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2&quot;)
+
+    // Testing
+    testImplementation(&quot;io.kotest:kotest-runner-junit5:6.1.4&quot;)
+    testImplementation(&quot;io.kotest:kotest-assertions-core:6.1.4&quot;)
+    testImplementation(&quot;io.kotest:kotest-property:6.1.4&quot;)
+    testImplementation(&quot;io.mockk:mockk:1.14.9&quot;)
+    testImplementation(&quot;io.ktor:ktor-server-test-host:3.4.0&quot;)
+    testImplementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2&quot;)
+}
+
+tasks.withType&lt;Test&gt; {
+    useJUnitPlatform()
+}
+
+detekt {
+    config.setFrom(files(&quot;config/detekt/detekt.yml&quot;))
+    buildUponDefaultConfig = true
+}
+```
+
+## 錯誤處理模式
+
+### 用 Result 型別處理領域操作
+
+```kotlin
+// Good: Use Kotlin&#x27;s Result or a custom sealed class
+suspend fun createUser(request: CreateUserRequest): Result&lt;User&gt; = runCatching {
+    require(request.name.isNotBlank()) { &quot;Name cannot be blank&quot; }
+    require(&#x27;@&#x27; in request.email) { &quot;Invalid email format&quot; }
+
+    val user = User(
+        id = UserId(UUID.randomUUID().toString()),
+        name = request.name,
+        email = Email(request.email),
+    )
+    userRepository.save(user)
+    user
+}
+
+// Good: Chain results
+val displayName = createUser(request)
+    .map { it.name }
+    .getOrElse { &quot;Unknown&quot; }
+```
+
+### require、check、error
+
+```kotlin
+// Good: Preconditions with clear messages
+fun withdraw(account: Account, amount: Money): Account {
+    require(amount.value &gt; 0) { &quot;Amount must be positive: $amount&quot; }
+    check(account.balance &gt;= amount) { &quot;Insufficient balance: ${account.balance} &lt; $amount&quot; }
+
+    return account.copy(balance = account.balance - amount)
+}
+```
+
+## Collection 操作
+
+### 慣用的 Collection 處理
+
+```kotlin
+// Good: Chained operations
+val activeAdminEmails: List&lt;String&gt; = users
+    .filter { it.role == Role.ADMIN &amp;&amp; it.isActive }
+    .sortedBy { it.name }
+    .map { it.email }
+
+// Good: Grouping and aggregation
+val usersByRole: Map&lt;Role, List&lt;User&gt;&gt; = users.groupBy { it.role }
+
+val oldestByRole: Map&lt;Role, User?&gt; = users.groupBy { it.role }
+    .mapValues { (_, users) -&gt; users.minByOrNull { it.createdAt } }
+
+// Good: Associate for map creation
+val usersById: Map&lt;UserId, User&gt; = users.associateBy { it.id }
+
+// Good: Partition for splitting
+val (active, inactive) = users.partition { it.isActive }
+```
+
+## 速查：Kotlin 慣用寫法
+
+| 慣用寫法 | 說明 |
+|-------|-------------|
+| `val` over `var` | 優先用不可變變數 |
+| `data class` | 用於有 equals/hashCode/copy 的 value object |
+| `sealed class/interface` | 用於受限的型別階層 |
+| `value class` | 零額外開銷的型別安全包裝 |
+| Expression `when` | 可窮舉的模式比對 |
+| Safe call `?.` | null 安全的成員存取 |
+| Elvis `?:` | nullable 的預設值 |
+| `let`/`apply`/`also`/`run`/`with` | 讓程式碼更乾淨的 scope function |
+| Extension functions | 不靠繼承就能加行為 |
+| `copy()` | data class 的不可變更新 |
+| `require`/`check` | 前置條件斷言 |
+| Coroutine `async`/`await` | structured 的並行執行 |
+| `Flow` | cold reactive stream |
+| `sequence` | 惰性求值 |
+| Delegation `by` | 不靠繼承重用實作 |
+
+## 要避開的反模式
+
+```kotlin
+// Bad: Force-unwrapping nullable types
+val name = user!!.name
+
+// Bad: Platform type leakage from Java
+fun getLength(s: String) = s.length // Safe
+fun getLength(s: String?) = s?.length ?: 0 // Handle nulls from Java
+
+// Bad: Mutable data classes
+data class MutableUser(var name: String, var email: String)
+
+// Bad: Using exceptions for control flow
+try {
+    val user = findUser(id)
+} catch (e: NotFoundException) {
+    // Don&#x27;t use exceptions for expected cases
+}
+
+// Good: Use nullable return or Result
+val user: User? = findUserOrNull(id)
+
+// Bad: Ignoring coroutine scope
+GlobalScope.launch { /* Avoid GlobalScope */ }
+
+// Good: Use structured concurrency
+coroutineScope {
+    launch { /* Properly scoped */ }
+}
+
+// Bad: Deeply nested scope functions
+user?.let { u -&gt;
+    u.address?.let { a -&gt;
+        a.city?.let { c -&gt; process(c) }
+    }
+}
+
+// Good: Direct null-safe chain
+user?.address?.city?.let { process(it) }
+```
+
+**記住**：Kotlin 程式碼要簡潔但好讀。善用型別系統確保安全，優先用不可變，並發用 coroutines。有疑問就讓編譯器幫你。</pre></section><section><h2>英文原文</h2><pre>---
+name: kotlin-patterns
+description: Idiomatic Kotlin patterns, best practices, and conventions for building robust, efficient, and maintainable Kotlin applications with coroutines, null safety, and DSL builders. Use when writing or reviewing Kotlin code and idiomatic structure or null safety is in question.
+metadata:
+  origin: ECC
+---
+
+# Kotlin Development Patterns
+
+Idiomatic Kotlin patterns and best practices for building robust, efficient, and maintainable applications.
+
+## When to Use
+
+- Writing new Kotlin code
+- Reviewing Kotlin code
+- Refactoring existing Kotlin code
+- Designing Kotlin modules or libraries
+- Configuring Gradle Kotlin DSL builds
+
+## How It Works
+
+This skill enforces idiomatic Kotlin conventions across seven key areas: null safety using the type system and safe-call operators, immutability via `val` and `copy()` on data classes, sealed classes and interfaces for exhaustive type hierarchies, structured concurrency with coroutines and `Flow`, extension functions for adding behaviour without inheritance, type-safe DSL builders using `@DslMarker` and lambda receivers, and Gradle Kotlin DSL for build configuration.
+
+## Examples
+
+**Null safety with Elvis operator:**
+```kotlin
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user?.email ?: &quot;unknown@example.com&quot;
+}
+```
+
+**Sealed class for exhaustive results:**
+```kotlin
+sealed class Result&lt;out T&gt; {
+    data class Success&lt;T&gt;(val data: T) : Result&lt;T&gt;()
+    data class Failure(val error: AppError) : Result&lt;Nothing&gt;()
+    data object Loading : Result&lt;Nothing&gt;()
+}
+```
+
+**Structured concurrency with async/await:**
+```kotlin
+suspend fun fetchUserWithPosts(userId: String): UserProfile =
+    coroutineScope {
+        val user = async { userService.getUser(userId) }
+        val posts = async { postService.getUserPosts(userId) }
+        UserProfile(user = user.await(), posts = posts.await())
+    }
+```
+
+## Core Principles
+
+### 1. Null Safety
+
+Kotlin&#x27;s type system distinguishes nullable and non-nullable types. Leverage it fully.
+
+```kotlin
+// Good: Use non-nullable types by default
+fun getUser(id: String): User {
+    return userRepository.findById(id)
+        ?: throw UserNotFoundException(&quot;User $id not found&quot;)
+}
+
+// Good: Safe calls and Elvis operator
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user?.email ?: &quot;unknown@example.com&quot;
+}
+
+// Bad: Force-unwrapping nullable types
+fun getUserEmail(userId: String): String {
+    val user = userRepository.findById(userId)
+    return user!!.email // Throws NPE if null
+}
+```
+
+### 2. Immutability by Default
+
+Prefer `val` over `var`, immutable collections over mutable ones.
+
+```kotlin
+// Good: Immutable data
+data class User(
+    val id: String,
+    val name: String,
+    val email: String,
+)
+
+// Good: Transform with copy()
+fun updateEmail(user: User, newEmail: String): User =
+    user.copy(email = newEmail)
+
+// Good: Immutable collections
+val users: List&lt;User&gt; = listOf(user1, user2)
+val filtered = users.filter { it.email.isNotBlank() }
+
+// Bad: Mutable state
+var currentUser: User? = null // Avoid mutable global state
+val mutableUsers = mutableListOf&lt;User&gt;() // Avoid unless truly needed
+```
+
+### 3. Expression Bodies and Single-Expression Functions
+
+Use expression bodies for concise, readable functions.
+
+```kotlin
+// Good: Expression body
+fun isAdult(age: Int): Boolean = age &gt;= 18
+
+fun formatFullName(first: String, last: String): String =
+    &quot;$first $last&quot;.trim()
+
+fun User.displayName(): String =
+    name.ifBlank { email.substringBefore(&#x27;@&#x27;) }
+
+// Good: When as expression
+fun statusMessage(code: Int): String = when (code) {
+    200 -&gt; &quot;OK&quot;
+    404 -&gt; &quot;Not Found&quot;
+    500 -&gt; &quot;Internal Server Error&quot;
+    else -&gt; &quot;Unknown status: $code&quot;
+}
+
+// Bad: Unnecessary block body
+fun isAdult(age: Int): Boolean {
+    return age &gt;= 18
+}
+```
+
+### 4. Data Classes for Value Objects
+
+Use data classes for types that primarily hold data.
+
+```kotlin
+// Good: Data class with copy, equals, hashCode, toString
+data class CreateUserRequest(
+    val name: String,
+    val email: String,
+    val role: Role = Role.USER,
+)
+
+// Good: Value class for type safety (zero overhead at runtime)
+@JvmInline
+value class UserId(val value: String) {
+    init {
+        require(value.isNotBlank()) { &quot;UserId cannot be blank&quot; }
+    }
+}
+
+@JvmInline
+value class Email(val value: String) {
+    init {
+        require(&#x27;@&#x27; in value) { &quot;Invalid email: $value&quot; }
+    }
+}
+
+fun getUser(id: UserId): User = userRepository.findById(id)
+```
+
+## Sealed Classes and Interfaces
+
+### Modeling Restricted Hierarchies
+
+```kotlin
+// Good: Sealed class for exhaustive when
+sealed class Result&lt;out T&gt; {
+    data class Success&lt;T&gt;(val data: T) : Result&lt;T&gt;()
+    data class Failure(val error: AppError) : Result&lt;Nothing&gt;()
+    data object Loading : Result&lt;Nothing&gt;()
+}
+
+fun &lt;T&gt; Result&lt;T&gt;.getOrNull(): T? = when (this) {
+    is Result.Success -&gt; data
+    is Result.Failure -&gt; null
+    is Result.Loading -&gt; null
+}
+
+fun &lt;T&gt; Result&lt;T&gt;.getOrThrow(): T = when (this) {
+    is Result.Success -&gt; data
+    is Result.Failure -&gt; throw error.toException()
+    is Result.Loading -&gt; throw IllegalStateException(&quot;Still loading&quot;)
+}
+```
+
+### Sealed Interfaces for API Responses
+
+```kotlin
+sealed interface ApiError {
+    val message: String
+
+    data class NotFound(override val message: String) : ApiError
+    data class Unauthorized(override val message: String) : ApiError
+    data class Validation(
+        override val message: String,
+        val field: String,
+    ) : ApiError
+    data class Internal(
+        override val message: String,
+        val cause: Throwable? = null,
+    ) : ApiError
+}
+
+fun ApiError.toStatusCode(): Int = when (this) {
+    is ApiError.NotFound -&gt; 404
+    is ApiError.Unauthorized -&gt; 401
+    is ApiError.Validation -&gt; 422
+    is ApiError.Internal -&gt; 500
+}
+```
+
+## Scope Functions
+
+### When to Use Each
+
+```kotlin
+// let: Transform nullable or scoped result
+val length: Int? = name?.let { it.trim().length }
+
+// apply: Configure an object (returns the object)
+val user = User().apply {
+    name = &quot;Alice&quot;
+    email = &quot;alice@example.com&quot;
+}
+
+// also: Side effects (returns the object)
+val user = createUser(request).also { logger.info(&quot;Created user: ${it.id}&quot;) }
+
+// run: Execute a block with receiver (returns result)
+val result = connection.run {
+    prepareStatement(sql)
+    executeQuery()
+}
+
+// with: Non-extension form of run
+val csv = with(StringBuilder()) {
+    appendLine(&quot;name,email&quot;)
+    users.forEach { appendLine(&quot;${it.name},${it.email}&quot;) }
+    toString()
+}
+```
+
+### Anti-Patterns
+
+```kotlin
+// Bad: Nesting scope functions
+user?.let { u -&gt;
+    u.address?.let { addr -&gt;
+        addr.city?.let { city -&gt;
+            println(city) // Hard to read
+        }
+    }
+}
+
+// Good: Chain safe calls instead
+val city = user?.address?.city
+city?.let { println(it) }
+```
+
+## Extension Functions
+
+### Adding Functionality Without Inheritance
+
+```kotlin
+// Good: Domain-specific extensions
+fun String.toSlug(): String =
+    lowercase()
+        .replace(Regex(&quot;[^a-z0-9\\s-]&quot;), &quot;&quot;)
+        .replace(Regex(&quot;\\s+&quot;), &quot;-&quot;)
+        .trim(&#x27;-&#x27;)
+
+fun Instant.toLocalDate(zone: ZoneId = ZoneId.systemDefault()): LocalDate =
+    atZone(zone).toLocalDate()
+
+// Good: Collection extensions
+fun &lt;T&gt; List&lt;T&gt;.second(): T = this[1]
+
+fun &lt;T&gt; List&lt;T&gt;.secondOrNull(): T? = getOrNull(1)
+
+// Good: Scoped extensions (not polluting global namespace)
+class UserService {
+    private fun User.isActive(): Boolean =
+        status == Status.ACTIVE &amp;&amp; lastLogin.isAfter(Instant.now().minus(30, ChronoUnit.DAYS))
+
+    fun getActiveUsers(): List&lt;User&gt; = userRepository.findAll().filter { it.isActive() }
+}
+```
+
+## Coroutines
+
+### Structured Concurrency
+
+```kotlin
+// Good: Structured concurrency with coroutineScope
+suspend fun fetchUserWithPosts(userId: String): UserProfile =
+    coroutineScope {
+        val userDeferred = async { userService.getUser(userId) }
+        val postsDeferred = async { postService.getUserPosts(userId) }
+
+        UserProfile(
+            user = userDeferred.await(),
+            posts = postsDeferred.await(),
+        )
+    }
+
+// Good: supervisorScope when children can fail independently
+suspend fun fetchDashboard(userId: String): Dashboard =
+    supervisorScope {
+        val user = async { userService.getUser(userId) }
+        val notifications = async { notificationService.getRecent(userId) }
+        val recommendations = async { recommendationService.getFor(userId) }
+
+        Dashboard(
+            user = user.await(),
+            notifications = try {
+                notifications.await()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            },
+            recommendations = try {
+                recommendations.await()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emptyList()
+            },
+        )
+    }
+```
+
+### Flow for Reactive Streams
+
+```kotlin
+// Good: Cold flow with proper error handling
+fun observeUsers(): Flow&lt;List&lt;User&gt;&gt; = flow {
+    while (currentCoroutineContext().isActive) {
+        val users = userRepository.findAll()
+        emit(users)
+        delay(5.seconds)
+    }
+}.catch { e -&gt;
+    logger.error(&quot;Error observing users&quot;, e)
+    emit(emptyList())
+}
+
+// Good: Flow operators
+fun searchUsers(query: Flow&lt;String&gt;): Flow&lt;List&lt;User&gt;&gt; =
+    query
+        .debounce(300.milliseconds)
+        .distinctUntilChanged()
+        .filter { it.length &gt;= 2 }
+        .mapLatest { q -&gt; userRepository.search(q) }
+        .catch { emit(emptyList()) }
+```
+
+### Cancellation and Cleanup
+
+```kotlin
+// Good: Respect cancellation
+suspend fun processItems(items: List&lt;Item&gt;) {
+    items.forEach { item -&gt;
+        ensureActive() // Check cancellation before expensive work
+        processItem(item)
+    }
+}
+
+// Good: Cleanup with try/finally
+suspend fun acquireAndProcess() {
+    val resource = acquireResource()
+    try {
+        resource.process()
+    } finally {
+        withContext(NonCancellable) {
+            resource.release() // Always release, even on cancellation
+        }
+    }
+}
+```
+
+## Delegation
+
+### Property Delegation
+
+```kotlin
+// Lazy initialization
+val expensiveData: List&lt;User&gt; by lazy {
+    userRepository.findAll()
+}
+
+// Observable property
+var name: String by Delegates.observable(&quot;initial&quot;) { _, old, new -&gt;
+    logger.info(&quot;Name changed from &#x27;$old&#x27; to &#x27;$new&#x27;&quot;)
+}
+
+// Map-backed properties
+class Config(private val map: Map&lt;String, Any?&gt;) {
+    val host: String by map
+    val port: Int by map
+    val debug: Boolean by map
+}
+
+val config = Config(mapOf(&quot;host&quot; to &quot;localhost&quot;, &quot;port&quot; to 8080, &quot;debug&quot; to true))
+```
+
+### Interface Delegation
+
+```kotlin
+// Good: Delegate interface implementation
+class LoggingUserRepository(
+    private val delegate: UserRepository,
+    private val logger: Logger,
+) : UserRepository by delegate {
+    // Only override what you need to add logging to
+    override suspend fun findById(id: String): User? {
+        logger.info(&quot;Finding user by id: $id&quot;)
+        return delegate.findById(id).also {
+            logger.info(&quot;Found user: ${it?.name ?: &quot;null&quot;}&quot;)
+        }
+    }
+}
+```
+
+## DSL Builders
+
+### Type-Safe Builders
+
+```kotlin
+// Good: DSL with @DslMarker
+@DslMarker
+annotation class HtmlDsl
+
+@HtmlDsl
+class HTML {
+    private val children = mutableListOf&lt;Element&gt;()
+
+    fun head(init: Head.() -&gt; Unit) {
+        children += Head().apply(init)
+    }
+
+    fun body(init: Body.() -&gt; Unit) {
+        children += Body().apply(init)
+    }
+
+    override fun toString(): String = children.joinToString(&quot;\n&quot;)
+}
+
+fun html(init: HTML.() -&gt; Unit): HTML = HTML().apply(init)
+
+// Usage
+val page = html {
+    head { title(&quot;My Page&quot;) }
+    body {
+        h1(&quot;Welcome&quot;)
+        p(&quot;Hello, World!&quot;)
+    }
+}
+```
+
+### Configuration DSL
+
+```kotlin
+data class ServerConfig(
+    val host: String = &quot;0.0.0.0&quot;,
+    val port: Int = 8080,
+    val ssl: SslConfig? = null,
+    val database: DatabaseConfig? = null,
+)
+
+data class SslConfig(val certPath: String, val keyPath: String)
+data class DatabaseConfig(val url: String, val maxPoolSize: Int = 10)
+
+class ServerConfigBuilder {
+    var host: String = &quot;0.0.0.0&quot;
+    var port: Int = 8080
+    private var ssl: SslConfig? = null
+    private var database: DatabaseConfig? = null
+
+    fun ssl(certPath: String, keyPath: String) {
+        ssl = SslConfig(certPath, keyPath)
+    }
+
+    fun database(url: String, maxPoolSize: Int = 10) {
+        database = DatabaseConfig(url, maxPoolSize)
+    }
+
+    fun build(): ServerConfig = ServerConfig(host, port, ssl, database)
+}
+
+fun serverConfig(init: ServerConfigBuilder.() -&gt; Unit): ServerConfig =
+    ServerConfigBuilder().apply(init).build()
+
+// Usage
+val config = serverConfig {
+    host = &quot;0.0.0.0&quot;
+    port = 443
+    ssl(&quot;/certs/cert.pem&quot;, &quot;/certs/key.pem&quot;)
+    database(&quot;jdbc:postgresql://localhost:5432/mydb&quot;, maxPoolSize = 20)
+}
+```
+
+## Sequences for Lazy Evaluation
+
+```kotlin
+// Good: Use sequences for large collections with multiple operations
+val result = users.asSequence()
+    .filter { it.isActive }
+    .map { it.email }
+    .filter { it.endsWith(&quot;@company.com&quot;) }
+    .take(10)
+    .toList()
+
+// Good: Generate infinite sequences
+val fibonacci: Sequence&lt;Long&gt; = sequence {
+    var a = 0L
+    var b = 1L
+    while (true) {
+        yield(a)
+        val next = a + b
+        a = b
+        b = next
+    }
+}
+
+val first20 = fibonacci.take(20).toList()
+```
+
+## Gradle Kotlin DSL
+
+### build.gradle.kts Configuration
+
+```kotlin
+// Check for latest versions: https://kotlinlang.org/docs/releases.html
+plugins {
+    kotlin(&quot;jvm&quot;) version &quot;2.3.10&quot;
+    kotlin(&quot;plugin.serialization&quot;) version &quot;2.3.10&quot;
+    id(&quot;io.ktor.plugin&quot;) version &quot;3.4.0&quot;
+    id(&quot;org.jetbrains.kotlinx.kover&quot;) version &quot;0.9.7&quot;
+    id(&quot;io.gitlab.arturbosch.detekt&quot;) version &quot;1.23.8&quot;
+}
+
+group = &quot;com.example&quot;
+version = &quot;1.0.0&quot;
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    // Ktor
+    implementation(&quot;io.ktor:ktor-server-core:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-server-netty:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-server-content-negotiation:3.4.0&quot;)
+    implementation(&quot;io.ktor:ktor-serialization-kotlinx-json:3.4.0&quot;)
+
+    // Exposed
+    implementation(&quot;org.jetbrains.exposed:exposed-core:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-dao:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-jdbc:1.0.0&quot;)
+    implementation(&quot;org.jetbrains.exposed:exposed-kotlin-datetime:1.0.0&quot;)
+
+    // Koin
+    implementation(&quot;io.insert-koin:koin-ktor:4.2.0&quot;)
+
+    // Coroutines
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2&quot;)
+
+    // Testing
+    testImplementation(&quot;io.kotest:kotest-runner-junit5:6.1.4&quot;)
+    testImplementation(&quot;io.kotest:kotest-assertions-core:6.1.4&quot;)
+    testImplementation(&quot;io.kotest:kotest-property:6.1.4&quot;)
+    testImplementation(&quot;io.mockk:mockk:1.14.9&quot;)
+    testImplementation(&quot;io.ktor:ktor-server-test-host:3.4.0&quot;)
+    testImplementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2&quot;)
+}
+
+tasks.withType&lt;Test&gt; {
+    useJUnitPlatform()
+}
+
+detekt {
+    config.setFrom(files(&quot;config/detekt/detekt.yml&quot;))
+    buildUponDefaultConfig = true
+}
+```
+
+## Error Handling Patterns
+
+### Result Type for Domain Operations
+
+```kotlin
+// Good: Use Kotlin&#x27;s Result or a custom sealed class
+suspend fun createUser(request: CreateUserRequest): Result&lt;User&gt; = runCatching {
+    require(request.name.isNotBlank()) { &quot;Name cannot be blank&quot; }
+    require(&#x27;@&#x27; in request.email) { &quot;Invalid email format&quot; }
+
+    val user = User(
+        id = UserId(UUID.randomUUID().toString()),
+        name = request.name,
+        email = Email(request.email),
+    )
+    userRepository.save(user)
+    user
+}
+
+// Good: Chain results
+val displayName = createUser(request)
+    .map { it.name }
+    .getOrElse { &quot;Unknown&quot; }
+```
+
+### require, check, error
+
+```kotlin
+// Good: Preconditions with clear messages
+fun withdraw(account: Account, amount: Money): Account {
+    require(amount.value &gt; 0) { &quot;Amount must be positive: $amount&quot; }
+    check(account.balance &gt;= amount) { &quot;Insufficient balance: ${account.balance} &lt; $amount&quot; }
+
+    return account.copy(balance = account.balance - amount)
+}
+```
+
+## Collection Operations
+
+### Idiomatic Collection Processing
+
+```kotlin
+// Good: Chained operations
+val activeAdminEmails: List&lt;String&gt; = users
+    .filter { it.role == Role.ADMIN &amp;&amp; it.isActive }
+    .sortedBy { it.name }
+    .map { it.email }
+
+// Good: Grouping and aggregation
+val usersByRole: Map&lt;Role, List&lt;User&gt;&gt; = users.groupBy { it.role }
+
+val oldestByRole: Map&lt;Role, User?&gt; = users.groupBy { it.role }
+    .mapValues { (_, users) -&gt; users.minByOrNull { it.createdAt } }
+
+// Good: Associate for map creation
+val usersById: Map&lt;UserId, User&gt; = users.associateBy { it.id }
+
+// Good: Partition for splitting
+val (active, inactive) = users.partition { it.isActive }
+```
+
+## Quick Reference: Kotlin Idioms
+
+| Idiom | Description |
+|-------|-------------|
+| `val` over `var` | Prefer immutable variables |
+| `data class` | For value objects with equals/hashCode/copy |
+| `sealed class/interface` | For restricted type hierarchies |
+| `value class` | For type-safe wrappers with zero overhead |
+| Expression `when` | Exhaustive pattern matching |
+| Safe call `?.` | Null-safe member access |
+| Elvis `?:` | Default value for nullables |
+| `let`/`apply`/`also`/`run`/`with` | Scope functions for clean code |
+| Extension functions | Add behavior without inheritance |
+| `copy()` | Immutable updates on data classes |
+| `require`/`check` | Precondition assertions |
+| Coroutine `async`/`await` | Structured concurrent execution |
+| `Flow` | Cold reactive streams |
+| `sequence` | Lazy evaluation |
+| Delegation `by` | Reuse implementation without inheritance |
+
+## Anti-Patterns to Avoid
+
+```kotlin
+// Bad: Force-unwrapping nullable types
+val name = user!!.name
+
+// Bad: Platform type leakage from Java
+fun getLength(s: String) = s.length // Safe
+fun getLength(s: String?) = s?.length ?: 0 // Handle nulls from Java
+
+// Bad: Mutable data classes
+data class MutableUser(var name: String, var email: String)
+
+// Bad: Using exceptions for control flow
+try {
+    val user = findUser(id)
+} catch (e: NotFoundException) {
+    // Don&#x27;t use exceptions for expected cases
+}
+
+// Good: Use nullable return or Result
+val user: User? = findUserOrNull(id)
+
+// Bad: Ignoring coroutine scope
+GlobalScope.launch { /* Avoid GlobalScope */ }
+
+// Good: Use structured concurrency
+coroutineScope {
+    launch { /* Properly scoped */ }
+}
+
+// Bad: Deeply nested scope functions
+user?.let { u -&gt;
+    u.address?.let { a -&gt;
+        a.city?.let { c -&gt; process(c) }
+    }
+}
+
+// Good: Direct null-safe chain
+user?.address?.city?.let { process(it) }
+```
+
+**Remember**: Kotlin code should be concise but readable. Leverage the type system for safety, prefer immutability, and use coroutines for concurrency. When in doubt, let the compiler help you.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

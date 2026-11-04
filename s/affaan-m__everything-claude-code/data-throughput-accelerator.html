@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>data-throughput-accelerator｜Skill 寫法圖鑑</title>
+<meta name="description" content="找出資料搬移的真正瓶頸、加速 pipeline，並用對帳區塊證明資料正確">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>data-throughput-accelerator</h1>
+<p class="meta">affaan-m ｜ 資料與分析 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/data-throughput-accelerator/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">找出資料搬移的真正瓶頸、加速 pipeline，並用對帳區塊證明資料正確</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: data-throughput-accelerator
+description: 診斷並加速大量資料搬移（ingestion、backfill、匯出、ETL、載入資料倉儲、manifest 補進度、資料表同步），做法是找出真正的瓶頸、對各種變體做 benchmark，並把最快的路徑寫成固定流程，附上一份嚴格的對帳區塊，證明資料列和時間戳是一致的。當 pipeline 或 backfill 太慢、必須變快又不能犧牲資料正確性時使用。
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Data Throughput Accelerator
+
+當瓶頸在於搬移、轉換或儲存大量資料時，使用這個 skill。
+目標不只是快。目標是讓正確的資料更快落到正確的位置，而且有證明。
+
+## 先做區分
+
+最佳化之前，先把這些分開：
+
+- 來源擷取速度；
+- 網路傳輸速度；
+- 資料倉儲/載入速度；
+- 轉換速度；
+- 服務用資料表的新鮮度；
+- 作業執行期間，即時尾端（live tail）的成長。
+
+一條 pipeline 可以很「快」，但如果新資料進來的速度比最後的補進度時間窗口還快，看起來仍然是落後的。
+
+## 快速路徑的經驗法則
+
+- 把運算搬到資料已經在的地方。
+- 對已經落地的大型檔案，優先用資料倉儲原生的掃描、join 和 append。
+- 使用 manifest 或 checkpoint，讓已經完成的檔案/partition 被跳過。
+- 使用符合讀取和 append 模式的 partitioning 和 clustering。
+- 把小檔案、小請求和小寫入批次處理。
+- 透過唯一鍵、manifest 或可替換的 staging 讓寫入具備冪等性（idempotent）。
+- 讓原始、衍生和服務用的資料表各自負責各自的帳。
+
+## 工作流程
+
+1. 讀目前的來源、目標和 manifest 的契約。
+2. 量測積壓量：外部檔案、manifest 資料列、原始資料列、衍生資料列、最小/最大時間戳，以及未處理的數量。
+3. 跑一次安全的補進度或取樣 benchmark。
+4. 比較各種變體：批次大小、worker 數量、資料倉儲 SQL、檔案分組、staging 的形狀，以及 manifest 的更新方式。
+5. 只採用最快、而且能讓數量和時間戳維持一致的路徑。
+6. 把這條路徑寫成 CLI、排程作業、workflow 或 runbook。
+7. 固定下來的路徑執行完之後，重新跑一次最終對帳。
+
+## 對帳輸出
+
+使用嚴格的對帳區塊：
+
+```text
+Data throughput result:
+- Source files discovered: 294
+- Files processed this run: 294
+- Raw rows added: 9,683,598
+- Derived rows added: 8,917,585
+- Remaining tail: 24 files at readback time
+- Runtime: 38.7s
+- Correctness gate: manifest counts and table max timestamps match
+```
+
+## 護欄
+
+- 不要為了讓某個指標好看而刪除原始資料。
+- 不要默默跳過失敗的檔案。
+- 不要把歷史 backfill 的狀態和即時尾端的新鮮度混為一談。
+- 在目標資料表和 manifest 一致之前，不要宣稱 pipeline 已經完成。
+- 對金融、醫療、受管制或會影響客戶的資料，要保留重播的證據和核准關卡。</pre></section><section><h2>英文原文</h2><pre>---
+name: data-throughput-accelerator
+description: Diagnose and accelerate large data movement — ingestion, backfill, export, ETL, warehouse loading, manifest catch-up, and table synchronization — by isolating the true bottleneck, benchmarking variants, and codifying the fastest path with a hard accounting block proving rows and timestamps cohere. Use when a pipeline or backfill is too slow and must get faster without losing data correctness.
+license: MIT
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob
+---
+
+# Data Throughput Accelerator
+
+Use this skill when the bottleneck is moving, transforming, or saving lots of
+data. The goal is not just speed. The goal is faster correct data landing in the
+right place with proof.
+
+## First Distinction
+
+Separate these before optimizing:
+
+- source extraction speed;
+- network transfer speed;
+- warehouse/load speed;
+- transform speed;
+- serving-table freshness;
+- live tail growth while the job runs.
+
+A pipeline can be &quot;fast&quot; and still appear behind if new data arrives faster
+than the final catch-up window.
+
+## Fast Path Heuristics
+
+- Move compute to where the data already is.
+- Prefer warehouse-native scans, joins, and appends for large landed files.
+- Use manifests or checkpoints so completed files/partitions are skipped.
+- Use partitioning and clustering that match the read and append pattern.
+- Batch small files, requests, and writes.
+- Make writes idempotent through unique keys, manifests, or replaceable staging.
+- Keep raw, derived, and serving tables separately accountable.
+
+## Workflow
+
+1. Read the current source, target, and manifest contracts.
+2. Measure backlog: external files, manifest rows, raw rows, derived rows,
+   min/max timestamps, and unprocessed counts.
+3. Run a safe catch-up or sample benchmark.
+4. Compare variants: batch size, worker count, warehouse SQL, file grouping,
+   staging shape, and manifest update method.
+5. Promote only the fastest path that keeps counts and timestamps coherent.
+6. Codify the path as a CLI, scheduled job, workflow, or runbook.
+7. Rerun final accounting after the codified path executes.
+
+## Accounting Output
+
+Use a hard accounting block:
+
+```text
+Data throughput result:
+- Source files discovered: 294
+- Files processed this run: 294
+- Raw rows added: 9,683,598
+- Derived rows added: 8,917,585
+- Remaining tail: 24 files at readback time
+- Runtime: 38.7s
+- Correctness gate: manifest counts and table max timestamps match
+```
+
+## Guardrails
+
+- Do not delete raw data to make a metric look better.
+- Do not skip failed files silently.
+- Do not mix historical backfill status with live-tail freshness.
+- Do not call a pipeline complete until the target tables and manifest agree.
+- For finance, healthcare, regulated, or customer-impacting data, preserve
+  replay evidence and approval gates.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

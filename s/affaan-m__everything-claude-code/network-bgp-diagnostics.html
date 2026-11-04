@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>network-bgp-diagnostics｜Skill 寫法圖鑑</title>
+<meta name="description" content="只讀不改的 BGP 疑難排解流程，檢查 neighbor 狀態、路由與政策">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>network-bgp-diagnostics</h1>
+<p class="meta">affaan-m ｜ 除錯與調查 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/network-bgp-diagnostics/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">只讀不改的 BGP 疑難排解流程，檢查 neighbor 狀態、路由與政策</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: network-bgp-diagnostics
+description: 只做診斷的 BGP 疑難排解模式，涵蓋 neighbor 狀態、路由交換、prefix 政策、AS path 檢查和安全的證據蒐集。BGP neighbor 斷線、路由遺失，或需要檢查 prefix 政策和 AS path 時使用。
+metadata:
+  origin: community
+---
+
+# Network BGP Diagnostics
+
+BGP session 斷線、反覆震盪、已建立但路由遺失，
+或廣播了意外的 prefix 時，用這個 skill。預設的流程是唯讀的
+證據蒐集；政策和 reset 的動作屬於經過審查的變更時段。
+
+## When to Use
+
+- BGP neighbor 卡在 Idle、Connect、Active、OpenSent 或 OpenConfirm。
+- Session 已經 Established，但預期的 prefix 遺失。
+- route-map、prefix-list、max-prefix 上限或 AS path 政策，可能正在過濾
+  路由。
+- 需要 BGP 變更前後的證據。
+- 你在審查解析 BGP summary 輸出的自動化。
+
+## Read-Only Triage Flow
+
+1. 找出確切的 neighbor、address family、VRF，以及本地/遠端的 ASN。
+2. 擷取 summary 狀態和最後一次 reset 的原因。
+3. 證明對 peer 來源位址是可達的。
+4. 在假設是傳輸層失敗之前，先檢查路由政策的參照。
+5. 平台有支援相關指令時，比較廣播出去、收到和已安裝的路由。
+
+```text
+show bgp summary
+show bgp neighbors &lt;peer&gt;
+show ip route &lt;peer&gt;
+show tcp brief | include &lt;peer&gt;|:179
+show logging | include BGP|&lt;peer&gt;
+show running-config | section router bgp
+show ip prefix-list
+show route-map
+```
+
+設備使用 VRF、IPv6、VPNv4 或 EVPN 時，用平台專屬的 address-family 指令。
+不要假設是全域的 IPv4 unicast。
+
+## State Interpretation
+
+| 狀態 | 先檢查 |
+| --- | --- |
+| Established 且有 prefix 數量 | 路由交換正常；檢查政策和路由表的選擇 |
+| Established 但 prefix 為零 | 檢查 inbound 政策、max-prefix、廣播的路由和 AFI/SAFI |
+| Active | TCP session 沒有完成；檢查路由、來源、ACL 和 peer 的可達性 |
+| Connect | TCP 連線進行中；檢查路徑和遠端的 listener |
+| OpenSent/OpenConfirm | TCP 正常；檢查 ASN、驗證、計時器、能力和紀錄 |
+| Idle | Neighbor 可能被停用、缺少設定、被政策擋住，或處於 backoff 計時器 |
+
+## Transport Checks
+
+```text
+ping &lt;peer&gt; source &lt;local-source&gt;
+traceroute &lt;peer&gt; source &lt;local-source&gt;
+show ip route &lt;peer&gt;
+show bgp neighbors &lt;peer&gt; | include BGP state|Last reset|Local host|Foreign host
+```
+
+如果 peer 的來源是 loopback，要確認雙向都能路由到
+loopback 位址，而且 neighbor 設定用的是預期的 update source。
+
+不要把停用 ACL 或防火牆政策當成診斷的捷徑。先讀命中
+計數器、紀錄和路徑狀態。
+
+## Route Policy Checks
+
+```text
+show bgp neighbors &lt;peer&gt; advertised-routes
+show bgp neighbors &lt;peer&gt; routes
+show ip prefix-list &lt;name&gt;
+show route-map &lt;name&gt;
+show bgp &lt;prefix&gt;
+```
+
+有些平台需要額外的設定，`received-routes` 才能使用。事件分流期間，
+除非操作員核准，否則不要加那個設定。
+
+## AS Path And Prefix Review
+
+```text
+show bgp regexp _65001_
+show bgp regexp ^65001$
+show bgp &lt;prefix&gt;
+show bgp neighbors &lt;peer&gt; advertised-routes | include Network|Path|&lt;prefix&gt;
+```
+
+AS-path 的 regex 要小心用。`_65001_` 會把 AS 65001 當成一個 token 來比對。單純的
+`65001` 可能會比對到更長的 ASN 或不相關的文字。
+
+## Parser Pattern
+
+```python
+import re
+from typing import Any
+
+BGP_SUMMARY_RE = re.compile(
+    r&quot;^(?P&lt;neighbor&gt;\d{1,3}(?:\.\d{1,3}){3})\s+&quot;
+    r&quot;(?P&lt;version&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;remote_as&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;msg_rcvd&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;msg_sent&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;table_version&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;input_queue&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;output_queue&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;uptime&gt;\S+)\s+&quot;
+    r&quot;(?P&lt;state_or_prefixes&gt;\S+)$&quot;,
+    re.M,
+)
+
+def parse_bgp_summary(raw: str) -&gt; list[dict[str, Any]]:
+    rows = []
+    for match in BGP_SUMMARY_RE.finditer(raw):
+        state_or_prefixes = match.group(&quot;state_or_prefixes&quot;)
+        if state_or_prefixes.isdigit():
+            state = &quot;Established&quot;
+            prefixes_received = int(state_or_prefixes)
+        else:
+            state = state_or_prefixes
+            prefixes_received = None
+        rows.append({
+            &quot;neighbor&quot;: match.group(&quot;neighbor&quot;),
+            &quot;remote_as&quot;: int(match.group(&quot;remote_as&quot;)),
+            &quot;state&quot;: state,
+            &quot;prefixes_received&quot;: prefixes_received,
+            &quot;uptime&quot;: match.group(&quot;uptime&quot;),
+        })
+    return rows
+```
+
+有結構化的解析器輸出時就偏好使用它，但要把原始輸出和事件紀錄一起保存，
+因為 BGP summary 的格式會隨平台和 address family 而異。
+
+## Change-Window Only
+
+這些動作會影響路由，不應該被建議成自動診斷：
+
+- 清除 BGP session。
+- 變更 neighbor 的驗證、計時器、update source、route-map 或
+  prefix-list。
+- 啟用額外的 received-route 儲存。
+- 放寬防火牆、ACL 或 control-plane 政策。
+
+如果 reset 已經核准，偏好用平台支援的、破壞最小的 soft 或 route-refresh 選項，
+並把它為什麼安全寫清楚。
+
+## Anti-Patterns
+
+- 假設 `Active` 一定代表遠端斷了。
+- 忽略 VRF、address family 或 update-source 的差異。
+- 使用沒有 token 邊界的大範圍 AS-path regex。
+- 還沒讀最後一次 reset 的原因和紀錄，就 hard reset peer。
+- 把沒有 `received-routes` 輸出，當成沒有收到任何路由的證明。
+
+## See Also
+
+- Skill: `cisco-ios-patterns`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section><section><h2>英文原文</h2><pre>---
+name: network-bgp-diagnostics
+description: Diagnostics-only BGP troubleshooting patterns for neighbor state, route exchange, prefix policy, AS path inspection, and safe evidence collection. Use when a BGP neighbor is down, routes are missing, or prefix policy and AS path need inspection.
+metadata:
+  origin: community
+---
+
+# Network BGP Diagnostics
+
+Use this skill when a BGP session is down, flapping, established with missing
+routes, or advertising unexpected prefixes. The default workflow is read-only
+evidence collection; policy and reset actions belong in a reviewed change
+window.
+
+## When to Use
+
+- BGP neighbors are stuck in Idle, Connect, Active, OpenSent, or OpenConfirm.
+- A session is Established but expected prefixes are missing.
+- A route-map, prefix-list, max-prefix limit, or AS path policy may be filtering
+  routes.
+- You need before/after evidence for a BGP change.
+- You are reviewing automation that parses BGP summary output.
+
+## Read-Only Triage Flow
+
+1. Identify the exact neighbor, address family, VRF, and local/remote ASNs.
+2. Capture summary state and last reset reason.
+3. Prove reachability to the peer source address.
+4. Check route policy references before assuming transport failure.
+5. Compare advertised, received, and installed routes where the platform
+   supports those commands.
+
+```text
+show bgp summary
+show bgp neighbors &lt;peer&gt;
+show ip route &lt;peer&gt;
+show tcp brief | include &lt;peer&gt;|:179
+show logging | include BGP|&lt;peer&gt;
+show running-config | section router bgp
+show ip prefix-list
+show route-map
+```
+
+Use platform-specific address-family commands when the device uses VRFs, IPv6,
+VPNv4, or EVPN. Do not assume global IPv4 unicast.
+
+## State Interpretation
+
+| State | First checks |
+| --- | --- |
+| Established with prefix count | Route exchange is up; inspect policy and table selection |
+| Established with zero prefixes | Check inbound policy, max-prefix, advertised routes, and AFI/SAFI |
+| Active | TCP session is not completing; check routing, source, ACLs, and peer reachability |
+| Connect | TCP connection is in progress; check path and remote listener |
+| OpenSent/OpenConfirm | TCP works; check ASN, authentication, timers, capabilities, and logs |
+| Idle | Neighbor may be disabled, missing config, blocked by policy, or backoff timer |
+
+## Transport Checks
+
+```text
+ping &lt;peer&gt; source &lt;local-source&gt;
+traceroute &lt;peer&gt; source &lt;local-source&gt;
+show ip route &lt;peer&gt;
+show bgp neighbors &lt;peer&gt; | include BGP state|Last reset|Local host|Foreign host
+```
+
+If the peer is sourced from a loopback, confirm both directions route to the
+loopback addresses and that the neighbor config uses the expected update source.
+
+Avoid disabling ACLs or firewall policy as a diagnostic shortcut. Read hit
+counters, logs, and path state first.
+
+## Route Policy Checks
+
+```text
+show bgp neighbors &lt;peer&gt; advertised-routes
+show bgp neighbors &lt;peer&gt; routes
+show ip prefix-list &lt;name&gt;
+show route-map &lt;name&gt;
+show bgp &lt;prefix&gt;
+```
+
+Some platforms require additional configuration before `received-routes` is
+available. Do not add that configuration during incident triage unless the
+operator approves the change.
+
+## AS Path And Prefix Review
+
+```text
+show bgp regexp _65001_
+show bgp regexp ^65001$
+show bgp &lt;prefix&gt;
+show bgp neighbors &lt;peer&gt; advertised-routes | include Network|Path|&lt;prefix&gt;
+```
+
+Use AS-path regex carefully. `_65001_` matches AS 65001 as a token. Plain
+`65001` can match longer ASNs or unrelated text.
+
+## Parser Pattern
+
+```python
+import re
+from typing import Any
+
+BGP_SUMMARY_RE = re.compile(
+    r&quot;^(?P&lt;neighbor&gt;\d{1,3}(?:\.\d{1,3}){3})\s+&quot;
+    r&quot;(?P&lt;version&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;remote_as&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;msg_rcvd&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;msg_sent&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;table_version&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;input_queue&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;output_queue&gt;\d+)\s+&quot;
+    r&quot;(?P&lt;uptime&gt;\S+)\s+&quot;
+    r&quot;(?P&lt;state_or_prefixes&gt;\S+)$&quot;,
+    re.M,
+)
+
+def parse_bgp_summary(raw: str) -&gt; list[dict[str, Any]]:
+    rows = []
+    for match in BGP_SUMMARY_RE.finditer(raw):
+        state_or_prefixes = match.group(&quot;state_or_prefixes&quot;)
+        if state_or_prefixes.isdigit():
+            state = &quot;Established&quot;
+            prefixes_received = int(state_or_prefixes)
+        else:
+            state = state_or_prefixes
+            prefixes_received = None
+        rows.append({
+            &quot;neighbor&quot;: match.group(&quot;neighbor&quot;),
+            &quot;remote_as&quot;: int(match.group(&quot;remote_as&quot;)),
+            &quot;state&quot;: state,
+            &quot;prefixes_received&quot;: prefixes_received,
+            &quot;uptime&quot;: match.group(&quot;uptime&quot;),
+        })
+    return rows
+```
+
+Prefer structured parser output when available, but store raw output with the
+incident record because BGP summary formats vary by platform and address family.
+
+## Change-Window Only
+
+These actions can affect routing and should not be suggested as automatic
+diagnostics:
+
+- Clearing a BGP session.
+- Changing neighbor authentication, timers, update source, route-maps, or
+  prefix-lists.
+- Enabling additional received-route storage.
+- Relaxing firewall, ACL, or control-plane policy.
+
+If a reset is approved, prefer the least disruptive soft or route-refresh option
+supported by the platform and document exactly why it is safe.
+
+## Anti-Patterns
+
+- Assuming `Active` always means the remote side is down.
+- Ignoring VRF, address family, or update-source differences.
+- Using broad AS-path regex without token boundaries.
+- Hard-resetting a peer before reading last reset reason and logs.
+- Treating missing `received-routes` output as proof that no routes arrived.
+
+## See Also
+
+- Skill: `cisco-ios-patterns`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

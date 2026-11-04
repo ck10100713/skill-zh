@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>typescript-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="寫出嚴格、型別安全的 TypeScript：型別設計、narrowing、錯誤與非同步處理">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>typescript-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/typescript-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">寫出嚴格、型別安全的 TypeScript：型別設計、narrowing、錯誤與非同步處理</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: typescript-patterns
+description: 在現代 TypeScript 和 JavaScript 應用程式裡，寫出嚴格、型別安全、好維護程式碼的 TypeScript 模式。涵蓋嚴格的編譯器設定、型別設計、narrowing、discriminated union、泛型、非同步與錯誤處理、模組邊界、相依套件管理，以及型別層級的測試。寫或 review TypeScript 或 JavaScript 程式碼時使用。
+metadata:
+  origin: ECC
+---
+
+# TypeScript 開發模式
+
+用 TypeScript 建構穩健、型別安全、好維護的應用程式的模式與最佳實務。編譯器在能證明你程式的形狀時最有用，所以這裡的指導原則是：讓型別系統做真正的事，不要跟它對著幹。這個 skill 講的是「怎麼做」。至於「做什麼」和「何時」（要選哪個模式的決定），請看 TypeScript 規則，也就是這個 repo 裡的 `rules/typescript/coding-style.md` 和 `rules/typescript/patterns.md`，安裝後位於 `rules/ecc/typescript/coding-style.md` 和 `rules/ecc/typescript/patterns.md`。
+
+## 何時啟用
+
+- 寫新的 TypeScript 或 JavaScript 程式碼
+- Review 一個動到 `.ts` 或 `.tsx` 檔案的 PR
+- 重構現有的 TypeScript，移除 `any`、收緊型別，或加強嚴格度
+- 為新功能設計型別、泛型或模組邊界
+- 建立新的 TypeScript 專案，或升級 `tsconfig.json`
+- 除錯在整個程式碼庫裡連鎖出現的型別錯誤（通常是設計問題，不是標註問題）
+
+## 核心原則
+
+### 1. 嚴格模式是基準線
+
+在健康的程式碼庫裡，`strict: true`（它會啟用 `strictNullChecks`、`noImplicitAny`、`strictFunctionTypes` 和其他選項）不是選配。如果程式碼庫在 strict 下編譯不過，那是一個遷移任務，不是把這個 flag 關掉的藉口。
+
+```jsonc
+// tsconfig.json — a strict, discriminating baseline
+{
+  &quot;compilerOptions&quot;: {
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;exactOptionalPropertyTypes&quot;: true,
+    &quot;noImplicitOverride&quot;: true,
+    &quot;noFallthroughCasesInSwitch&quot;: true,
+    &quot;noPropertyAccessFromIndexSignature&quot;: true,
+    &quot;noUnusedLocals&quot;: true,
+    &quot;noUnusedParameters&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;verbatimModuleSyntax&quot;: true
+  }
+}
+```
+
+`noUncheckedIndexedAccess` 會讓陣列和 record 的存取變成可能是 undefined，這樣一整類的 runtime 崩潰就在編譯時浮現。如果它產生太多雜訊，要加的是下面這個模式，不是把這個 flag 移掉：
+
+```typescript
+// If you have proven the index exists, lift the element into a local first.
+const [first] = items
+if (first === undefined) {
+  throw new Error(&quot;expected at least one item&quot;)
+}
+```
+
+### 2. `any` 是 bug，不是工具
+
+`any` 把型別系統關掉的地方，剛好是 bug 最可能藏身的地方：跟不可信或動態資料的邊界。優先用 `unknown` 然後 narrow 它。當你真的需要退路時，寧可用帶註解的明確放寬，也不要悄悄地用 `any`。
+
+```typescript
+// Bad: any disables checking on the public API
+export function parseConfig(raw: any): Config {
+  return raw.config ?? {}
+}
+
+interface Config {
+  timeout: number
+  retries: number
+}
+
+const DEFAULT_CONFIG: Config = { timeout: 30_000, retries: 3 }
+
+function isRecord(value: unknown): value is Record&lt;string, unknown&gt; {
+  return typeof value === &#x27;object&#x27; &amp;&amp; value !== null
+}
+
+function toPositiveInt(value: unknown, field: string): number {
+  if (typeof value !== &#x27;number&#x27; || !Number.isInteger(value) || value &lt;= 0) {
+    throw new TypeError(`Expected ${field} to be a positive integer`)
+  }
+  return value
+}
+
+// Good: unknown forces safe narrowing at the edge. Every consumed field is
+// validated with an explicit range, and defaults are declared up front.
+export function parseConfig(raw: unknown): Config {
+  if (!isRecord(raw)) return { ...DEFAULT_CONFIG }
+  return {
+    timeout: raw[&#x27;timeout&#x27;] === undefined ? DEFAULT_CONFIG.timeout : toPositiveInt(raw[&#x27;timeout&#x27;], &#x27;timeout&#x27;),
+    retries: raw[&#x27;retries&#x27;] === undefined ? DEFAULT_CONFIG.retries : toPositiveInt(raw[&#x27;retries&#x27;], &#x27;retries&#x27;),
+  }
+}
+```
+
+### 3. 公開 API 要有明確型別，區域變數交給推論
+
+TypeScript 對區域變數的推論很好。匯出的函式如果參數和回傳型別是隱含的，就會把推論的決定洩漏給每個使用者，也讓意圖變得讀不出來。
+
+```typescript
+// Bad: exported API without explicit types
+export function formatUser(user) {
+  return `${user.firstName} ${user.lastName}`
+}
+
+// Good: explicit public contract, inferred internals
+interface User {
+  firstName: string
+  lastName: string
+}
+
+export function formatUser(user: User): string {
+  return `${user.firstName} ${user.lastName}`
+}
+```
+
+## 型別設計
+
+### Interface vs. Type Alias
+
+可能被擴充或實作的物件形狀用 `interface`；union、intersection、tuple、mapped type 和 utility type 用 `type`。優先用字串字面值 union，不要用 `enum`，除非你需要在 runtime 列舉值，或要跟需要它的程式碼互通。
+
+```typescript
+interface User {
+  id: string
+  email: string
+}
+
+type UserRole = &#x27;admin&#x27; | &#x27;member&#x27;
+type AdminUser = User &amp; { role: &#x27;admin&#x27; }
+```
+
+### Discriminated Union 是預設的狀態機
+
+當一個值可能有多種形狀時，把它建模成帶有字面值 `type`/`kind` 欄位的 discriminated union。這樣窮盡檢查就變成免費的編譯器功能：絕不是 runtime 的退路，缺少分支一律是編譯錯誤。
+
+```typescript
+type Transaction =
+  | { kind: &#x27;draft&#x27;; id: string }
+  | { kind: &#x27;submitted&#x27;; id: string; submittedAt: Date }
+  | { kind: &#x27;paid&#x27;; id: string; paidAt: Date; amountCents: number }
+
+function describe(t: Transaction): string {
+  switch (t.kind) {
+    case &#x27;draft&#x27;:
+      return &#x27;Saved but not sent&#x27;
+    case &#x27;submitted&#x27;:
+      return `Submitted on ${t.submittedAt.toISOString()}`
+    case &#x27;paid&#x27;:
+      return `Paid ${t.amountCents} cents on ${t.paidAt.toISOString()}`
+    default:
+      // exhaustive: any new member forces this to fail to compile
+      return assertNever(t)
+  }
+}
+
+function assertNever(value: never): never {
+  throw new Error(`Unhandled member: ${JSON.stringify(value)}`)
+}
+```
+
+### 結構不夠時，用 Brand 取得名目安全
+
+結構型別分不出 `CustomerId` 和 `string`。當某個 ID 或單位不能跟另一個搞混時，就加一個 brand（用 unique symbol 當 key 的幽靈欄位）。
+
+```typescript
+declare const brand: unique symbol
+
+export type CustomerId = string &amp; { [brand]: &#x27;CustomerId&#x27; }
+
+function ensureCustomerId(value: string): CustomerId {
+  if (!/^cus_[a-z0-9]+$/.test(value)) {
+    throw new TypeError(`Invalid customer id: ${value}`)
+  }
+  return value as CustomerId
+}
+```
+
+要把 brand 留在邊界模組內部；絕對不要把 cast 的 helper 暴露到離能證明它合理的驗證很遠的地方。
+
+### 泛型用來建模取決於呼叫端的型別
+
+如果一個值的型別取決於呼叫端提供什麼，就把它做成泛型，不要壓平成 `any` 或 `unknown`，然後在呼叫處手動 cast。
+
+```typescript
+// Bad: caller must cast the result
+export function getCached(key: string): unknown {
+  return cache.get(key)
+}
+
+// Good: the caller&#x27;s type flows through
+export function getCached&lt;T&gt;(key: string, parse: (raw: string) =&gt; T): T | undefined {
+  const raw = cache.get(key)
+  if (raw === undefined) return undefined
+  return parse(raw)
+}
+```
+
+要約束泛型，讓契約找得到：當存在形狀假設時，優先用 `T extends SomeShape`，不要用漂浮的 `T`。
+
+### 用選項物件取代位置參數
+
+旋鈕超過兩三個的函式，應該接收單一選項物件。這樣呼叫處可以自我說明，加新旋鈕時也不會造成位置參數的連鎖更動。
+
+```typescript
+interface FetchOptions {
+  timeoutMs?: number
+  retries?: number
+  signal?: AbortSignal
+}
+
+export async function fetchWithRetry(url: string, options: FetchOptions = {}): Promise&lt;Response&gt; {
+  // ...
+}
+```
+
+## Narrowing 與 Runtime 安全
+
+### 在邊界驗證，在內部信任
+
+不可信的資料從 I/O 邊界進來：API handler、訊息消費者、檔案載入器。用 schema 解析並驗證一次，然後把精煉後的型別帶進整個領域。這就是驗證函式庫（例如 Zod）派上用場的地方：schema 同時是 runtime 檢查和編譯時型別。
+
+```typescript
+import { z } from &#x27;zod&#x27;
+
+const userInputSchema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+
+export type UserInput = z.infer&lt;typeof userInputSchema&gt;
+
+// validate once at the edge
+const input: UserInput = userInputSchema.parse(rawBody)
+```
+
+### Type Predicate 與 Assertion Function
+
+守衛形狀時，優先用 type predicate 和 assertion function，不要用沒檢查的 cast。守衛會把不變量寫成文件，而編譯器會檢查它的使用。
+
+```typescript
+function isConfig(value: unknown): value is Config {
+  if (typeof value !== &#x27;object&#x27; || value === null) return false
+  if (!(&#x27;timeout&#x27; in value) || !(&#x27;retries&#x27; in value)) return false
+  const { timeout, retries } = value
+  return (
+    typeof timeout === &#x27;number&#x27; &amp;&amp; Number.isInteger(timeout) &amp;&amp; timeout &gt; 0 &amp;&amp;
+    typeof retries === &#x27;number&#x27; &amp;&amp; Number.isInteger(retries) &amp;&amp; retries &gt; 0
+  )
+}
+```
+
+要對格式錯誤的值大聲失敗，而不是回傳布林值，就用 assertion signature：
+
+```typescript
+function assertIsStringArray(value: unknown): asserts value is string[] {
+  if (!Array.isArray(value)) {
+    throw new TypeError(&#x27;Expected an array of strings&#x27;)
+  }
+  // Iteration visits sparse positions as undefined instead of skipping them.
+  for (const item of value) {
+    if (typeof item !== &#x27;string&#x27;) throw new TypeError(&#x27;Expected an array of strings&#x27;)
+  }
+}
+```
+
+### 預設唯讀
+
+當函式不會修改陣列和物件參數時，把它們標成 `readonly`/`ReadonlyArray`。這樣能防止意外的修改，並在簽章上表明意圖。（依照 coding-style 規則，不可變更新優先用展開運算子。）
+
+```typescript
+export function totalAmount(items: readonly LineItem[]): number {
+  return items.reduce((sum, item) =&gt; sum + item.amountCents, 0)
+}
+```
+
+Runtime 的不可變性（例如 `Object.freeze`）是給熱點應用程式邊界用的；型別位置上的 `readonly` 才是日常的守衛。
+
+## 錯誤處理
+
+### 在邊界失敗，在邊緣處理
+
+`try/catch` 應該放在呼叫端能對失敗採取行動的地方，不要包在每個內部呼叫外面，疊成一堆被吞掉的錯誤。用 async/await 搭配 `try/catch`，並安全地 narrow `unknown` 的錯誤（依照 coding-style 規則）。
+
+這個 endpoint 範例接受由 ASCII 字母、數字、底線和連字號組成的非空 ID，例如 `u_1`。在組出路徑或發出請求之前，要先驗證這個契約。識別碼的文法要依真實的 API 調整。
+
+```typescript
+type User = { id: string; email: string }
+
+function isUser(value: unknown): value is User {
+  if (typeof value !== &#x27;object&#x27; || value === null) return false
+  if (!(&#x27;id&#x27; in value) || !(&#x27;email&#x27; in value)) return false
+  const { id, email } = value
+  return (
+    typeof id === &#x27;string&#x27; &amp;&amp; id.length &gt; 0 &amp;&amp;
+    typeof email === &#x27;string&#x27; &amp;&amp; email.includes(&#x27;@&#x27;)
+  )
+}
+
+function assertUserId(userId: string): void {
+  if (typeof userId !== &#x27;string&#x27; || userId.length === 0 || /[^A-Za-z0-9_-]/.test(userId)) {
+    throw new TypeError(&#x27;Expected a user ID using letters, digits, &quot;_&quot; or &quot;-&quot;&#x27;)
+  }
+}
+
+async function loadUser(userId: string): Promise&lt;User&gt; {
+  assertUserId(userId)
+  const response = await fetch(`/users/${userId}`)
+  if (!response.ok) {
+    throw new Error(`Failed to load user ${userId}: ${response.status}`)
+  }
+  const data: unknown = await response.json()
+  if (!isUser(data)) {
+    throw new TypeError(`Invalid user payload for ${userId}`)
+  }
+  return data
+}
+
+export async function getUser(userId: string): Promise&lt;User&gt; {
+  try {
+    return await loadUser(userId)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      // known failure mode: retry or surface a friendly message
+      throw new Error(`user lookup failed: ${error.message}`, { cause: error })
+    }
+    throw new TypeError(&#x27;unknown error shape&#x27;)
+  }
+}
+```
+
+### 預期中的失敗用 Result 型別
+
+對預期中的業務失敗（驗證、找不到、衝突），用 discriminated 的 `Result` union，讓失敗明確寫在型別裡，而不是藏在例外流程中。
+
+```typescript
+type Result&lt;T, E&gt; = { ok: true; value: T } | { ok: false; error: E }
+
+function createUser(input: UserInput): Result&lt;User, ValidationIssue[]&gt; {
+  const issues = validate(input)
+  if (issues.length &gt; 0) {
+    return { ok: false, error: issues }
+  }
+  return { ok: true, value: { id: generateId(), ...input } }
+}
+```
+
+例外留給意料之外的情況。預期中的結果屬於回傳型別。
+
+### 保留錯誤 Context
+
+用 `new Error(message, { cause })`（ES2022 起可用），讓原本的失敗鏈在重新包裝後仍然保留。絕對不要把錯誤字串化塞進訊息裡，把 cause 弄丟。
+
+## 非同步模式
+
+### 獨立的 Fan-Out 優先用 `Promise.allSettled`
+
+當結果彼此獨立，而且一個失敗不能讓其他的都掉掉時，用 `Promise.allSettled`，並處理每個 promise 各自的結果。
+
+```typescript
+const results: PromiseSettledResult&lt;number&gt;[] = await Promise.allSettled(
+  sourceIds.map((id) =&gt; fetchCount(id))
+)
+
+const total = results.reduce((sum, result) =&gt; {
+  if (result.status === &#x27;fulfilled&#x27;) {
+    return sum + result.value
+  }
+  log.warn(&#x27;count fetch failed&#x27;, result.reason)
+  return sum
+}, 0)
+```
+
+當你要的是 fail-fast 語意，也就是真正的全有或全無的工作，才用 `Promise.all`。
+
+### 避免無上限的並行
+
+一次 fan-out 好幾百個 promise，會壓垮連線和 event loop。用一個小的 pool 限制並行數。
+
+```typescript
+async function mapWithConcurrency&lt;T, R&gt;(
+  items: readonly T[],
+  limit: number,
+  mapper: (item: T) =&gt; Promise&lt;R&gt;
+): Promise&lt;R[]&gt; {
+  if (!Number.isInteger(limit) || limit &lt; 1) {
+    throw new RangeError(`Expected concurrency limit to be a positive integer, got: ${limit}`)
+  }
+  const results: R[] = new Array(items.length)
+  let nextIndex = 0
+
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () =&gt; {
+    while (true) {
+      const index = nextIndex++
+      if (index &gt;= items.length) return
+      // Required under noUncheckedIndexedAccess: the index is proven
+      // in-bounds above, but the compiler still types this T | undefined.
+      // Skip only genuine sparse-array holes, mirroring Array.prototype.map:
+      // a present `undefined` element is a legitimate value and must still
+      // reach the mapper.
+      if (!Object.hasOwn(items, index)) continue
+      // Presence is proven above, so the indexed access is in-bounds and
+      // filled — never a hole and never the compiler&#x27;s speculative undefined.
+      results[index] = await mapper(items[index]!)
+    }
+  })
+
+  // One worker rejecting rejects the whole pool: Promise.all propagates the
+  // first rejection to the caller (fail-fast). That is rejection, not
+  // cancellation — the other workers keep running and may settle more of
+  // their remaining items after the pool has already rejected. Use
+  // Promise.all only when leaving that in-flight work running is acceptable;
+  // otherwise use allSettled or thread an AbortSignal through the mapper.
+  await Promise.all(workers)
+  return results
+}
+```
+
+### Timeout 與取消
+
+長時間執行或對外的工作，一定要把 `AbortSignal` 串進去，讓呼叫端能取消；底層操作無法中止時，再搭配 `Promise.race` 做硬性的 timeout。
+
+```typescript
+function withTimeout&lt;T&gt;(promise: Promise&lt;T&gt;, ms: number): Promise&lt;T&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const timer = setTimeout(() =&gt; reject(new Error(`Timed out after ${ms}ms`)), ms)
+    promise.then(
+      (value) =&gt; {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (reason) =&gt; {
+        clearTimeout(timer)
+        reject(reason)
+      }
+    )
+  })
+}
+```
+
+## Null 與 Undefined 的紀律
+
+優先用有區分的做法，不要混用哨兵值。在「找不到」或「不存在」是合理狀態的地方，用 `T | undefined` 並明確檢查；避免深度巢狀的 `?.` 鏈，後面再接會藏 bug 的靜默 fallback。
+
+```typescript
+function findUser(id: string): User | undefined {
+  return users.get(id)
+}
+
+const user = findUser(&#x27;u_1&#x27;)
+if (user === undefined) {
+  return notFound()
+}
+// from here on, `user` is narrowed to User
+```
+
+避免會悄悄接受錯誤型別的 truthiness 檢查（`result` 可能是 `0` 或 `&#x27;&#x27;` 時寫 `if (result)`）。要明確地跟 `undefined`/`null` 比較。
+
+## 模組邊界與 Export
+
+### 小而有名字的模組
+
+在每個模組的邊界，刻意暴露一個介面。優先用明確的具名 export，不要用 default export，並在公開的邊緣重新 export，讓使用者從擁有那個型別的模組 import，而不是從日後可能被重構的深層內部 import。
+
+```typescript
+// user/model.ts — internal types
+export interface UserAccount {
+  id: string
+  email: string
+  role: UserRole
+}
+
+// user/index.ts — public surface
+export { type UserAccount, type UserRole } from &#x27;./model&#x27;
+export { createUser, findUser, updateUser } from &#x27;./service&#x27;
+```
+
+### 避免 Barrel 膨脹和循環 Import
+
+不要建立在模組載入時就 import 所有東西的 barrel（它們會讓 tree-shaking 失效，也會拉長 cold start）。要 import 具體的路徑。循環 import 表示有一個子邊界應該往上收；兩邊都需要的型別，屬於一個誰都不 import 的共用模組。
+
+### 依相依方向切分
+
+讓型別圖指出方向：跨邊界的型別放在契約模組；實作 import 契約；契約絕不 import 實作。在 node/後端程式碼庫裡，大致上就是：`domain`（純型別和規則）→ `application`（use case）→ `infrastructure`（adapter），相依只往內指。
+
+## 相依套件與建置
+
+### 先診斷，再加相依
+
+優先用內建的 `Array`、`Map`、`Promise` 和 `Intl`，不要每個小操作都拉一個工具函式庫進來。一個很小的行內函式，勝過一個必須升級、稽核、並維持相容的相依套件。（Go 的慣用語「少量的複製好過少量的相依」同樣適用於 TypeScript。）
+
+### Runtime 驗證，不是型別信任
+
+在 runtime 驗證的 schema（Zod、validator，或手寫的守衛）是不可信資料和編譯時型別之間的橋樑。各函式庫的做法不同（Zod 和其他 schema 優先的函式庫，是從 schema 推導出型別；某些生態系的 validator 模式則是型別優先，runtime 檢查由它推導出來）。選一個模型，並在整個程式碼庫保持一致。
+
+### 讓編譯器保持增量且快速
+
+大型程式碼庫受益於 `composite: true` 搭配 project references、`incremental` 建置快取，以及在 bundler 支援時使用 `moduleResolution: bundler`。型別檢查太慢是一個流程問題，會把開發者推離型別系統，所以要投資在縮小被檢查的範圍，不要放寬它。
+
+## 效能
+
+### 型別是免費的，結構不是
+
+型別層級的雜耍（mapped type、conditional type、template literal type）在 runtime 不花任何成本，卻可能花掉很多開發者的清晰度。把複雜的型別機制留在邊界模組裡；不要把型別特技表演當成公開的 API 匯出。
+
+### 避免不必要的物件重新命名
+
+在熱點路徑上，反覆複製和展開大型巢狀物件有真實的成本。優先在變更的那一點用展開做不可變更新，但避免對沒變的結構做防禦性的重複複製（例如在 render 路徑或每則訊息的 handler 裡）。
+
+### 對冪等的計算做 Memoize
+
+純粹而昂貴的衍生計算，如果會用同樣的輸入重複出現，就應該放在快取後面。用以 `Map` 為基礎、有明確生命週期的快取，不要用永遠不清的臨時全域快取。
+
+## 型別層級的測試
+
+### 斷言型別，不只是 Runtime
+
+行為測試證明 runtime 的行為；專門的型別測試鎖住公開 API 的契約。一個悄悄放寬的型別就是 regression。
+
+```typescript
+import { expectTypeOf } from &#x27;vitest&#x27;
+
+expectTypeOf&lt;Result&lt;User, ValidationIssue[]&gt;&gt;().toEqualTypeOf&lt;
+  | { ok: true; value: User }
+  | { ok: false; error: ValidationIssue[] }
+&gt;()
+```
+
+### 用 `satisfies` 保留意圖
+
+`satisfies` 會對照某個形狀檢查一個值，卻不把它放寬成那個形狀，是在驗證結構的同時保留字面值型別的理想做法。
+
+```typescript
+const statusByAction = {
+  new: &#x27;open&#x27;,
+  reopen: &#x27;open&#x27;,
+  close: &#x27;closed&#x27;
+} as const satisfies Record&lt;Action, Status&gt;
+```
+
+## TypeScript 工具整合
+
+### 必備指令
+
+```bash
+# Type-check the whole project
+npx tsc --noEmit
+
+# Watch mode for fast feedback
+npx tsc --noEmit --watch
+
+# Run tests (Vitest)
+npx vitest run
+
+# Lint with types-aware rules (typescript-eslint)
+npx eslint .
+
+# Formatting
+npx prettier --write .
+```
+
+### 建議的 Linter 基準
+
+`typescript-eslint` 的 recommended-type-checked 規則集是實用的預設：它把 `no-unsafe-assignment`、`no-unsafe-member-access`、`no-unsafe-argument` 和 `no-unsafe-call`，從風格雜訊提升成類似編譯器的保證。要保留感知型別的設定；如果它很慢，那是專案結構的訊號，不是停用它的理由。
+
+## 要避免的反模式
+
+- **把 `any` 當作加速的捷徑**：它把編譯器的證明變成 runtime 的猜測。改用 `unknown` + narrowing。
+- **說謊的 `as` cast**：繞過一個你其實沒執行的檢查的 cast，就是 null 指標和形狀 bug 誕生的地方。先驗證再 cast，並把 cast 留在做驗證的模組裡。
+- **深度巢狀的 callback / promise 鏈**：優先用 async/await；扁平的程式碼才是可以 narrow 的程式碼。
+- **`enum` 強制轉型的 bug**：字串字面值 union 給你同樣的安全，卻沒有 runtime 產物，也沒有反向對應的陷阱。
+- **巨大的 god type**：一個建模好幾個不相關形狀的 interface，應該改成 discriminated union 或好幾個 interface。
+- **全是選填的選項物件**：`allOptional` 的設定型別會悄悄吞掉呼叫處的拼字錯誤；函式真正依賴的欄位，優先用必填欄位。
+- **靜默的 catch**：`catch {}` 或 `catch (e) { /* nothing */ }` 會藏起呼叫端以為已經處理掉的失敗。
+- **混用同步和非同步的錯誤路徑**：`async` 函式一定會把 throw 表現成 rejection，即使在第一個 `await` 之前也一樣。只有回傳 promise 的非 `async` 函式，才可能（在回傳它之前）同步 throw，逼呼叫端處理兩種錯誤形狀。要全面使用 `async`，讓每個失敗都是 rejection：
+
+```typescript
+async function asyncFails(): Promise&lt;never&gt; {
+  throw new Error(&#x27;becomes a rejection, never a sync throw&#x27;)
+}
+
+function lazyFails(): Promise&lt;never&gt; {
+  throw new Error(&#x27;throws synchronously — needs try/catch AND .catch&#x27;)
+}
+```
+
+**記住**：型別系統是證明工具，不是文書負擔。當一個型別錯誤用合理的標註還是解不掉時，通常該改的是設計，不是編譯器。寧可選無聊、明確、範圍清楚的 TypeScript，也不要花俏的型別引擎。
+
+## 相關 Skills
+
+- `nestjs-patterns`：TypeScript 後端的 NestJS 架構模式（module、controller、provider、DTO 驗證）
+- `frontend-patterns`：React 和 Next.js 的元件與狀態模式
+- TypeScript 規則（`rules/typescript/`，安裝後位於 `rules/ecc/typescript/`）：這個 skill 把它的「做什麼」和「何時」實作成「怎麼做」
+- `prisma-patterns`：TypeScript 應用程式裡使用的資料庫存取模式</pre></section><section><h2>英文原文</h2><pre>---
+name: typescript-patterns
+description: TypeScript patterns for strict, type-safe, maintainable code in modern TypeScript and JavaScript applications. Covers strict compiler configuration, type design, narrowing, discriminated unions, generics, async and error handling, module boundaries, dependency hygiene, and type-level testing. Use when writing or reviewing TypeScript or JavaScript code.
+metadata:
+  origin: ECC
+---
+
+# TypeScript Development Patterns
+
+TypeScript patterns and best practices for building robust, type-safe, and maintainable applications. The compiler is most useful when it can prove your program&#x27;s shape, so the guiding principle here is: push the type system to do real work instead of fighting it. This skill is the &quot;how.&quot; For the &quot;what&quot; and &quot;when&quot; (the decisions about which pattern to reach for), see the TypeScript rules — `rules/typescript/coding-style.md` and `rules/typescript/patterns.md` in this repository, installed as `rules/ecc/typescript/coding-style.md` and `rules/ecc/typescript/patterns.md`.
+
+## When to Activate
+
+- Writing new TypeScript or JavaScript code
+- Reviewing a PR that touches `.ts` or `.tsx` files
+- Refactoring existing TypeScript to remove `any`, tighten types, or add strictness
+- Designing types, generics, or module boundaries for a new feature
+- Setting up a new TypeScript project or upgrading `tsconfig.json`
+- Debugging type errors that cascade through a codebase (usually a design problem, not an annotation problem)
+
+## Core Principles
+
+### 1. Strict Mode Is the Baseline
+
+`strict: true` (which enables `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, and the rest) is not optional in a healthy codebase. If a codebase cannot compile under strict, that is a migration task, not an excuse to leave the flag off.
+
+```jsonc
+// tsconfig.json — a strict, discriminating baseline
+{
+  &quot;compilerOptions&quot;: {
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;exactOptionalPropertyTypes&quot;: true,
+    &quot;noImplicitOverride&quot;: true,
+    &quot;noFallthroughCasesInSwitch&quot;: true,
+    &quot;noPropertyAccessFromIndexSignature&quot;: true,
+    &quot;noUnusedLocals&quot;: true,
+    &quot;noUnusedParameters&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;verbatimModuleSyntax&quot;: true
+  }
+}
+```
+
+`noUncheckedIndexedAccess` makes array and record access possibly-undefined, which surfaces a whole class of runtime crashes at compile time. If it produces too much noise, this is the pattern to add, not the flag to remove:
+
+```typescript
+// If you have proven the index exists, lift the element into a local first.
+const [first] = items
+if (first === undefined) {
+  throw new Error(&quot;expected at least one item&quot;)
+}
+```
+
+### 2. `any` Is a Bug, Not a Tool
+
+`any` disables the type system exactly where a bug is most likely to hide: at the boundary with untrusted or dynamic data. Prefer `unknown` and narrow it. When you truly need a fallback, prefer an explicit loosening with a comment over a silent `any`.
+
+```typescript
+// Bad: any disables checking on the public API
+export function parseConfig(raw: any): Config {
+  return raw.config ?? {}
+}
+
+interface Config {
+  timeout: number
+  retries: number
+}
+
+const DEFAULT_CONFIG: Config = { timeout: 30_000, retries: 3 }
+
+function isRecord(value: unknown): value is Record&lt;string, unknown&gt; {
+  return typeof value === &#x27;object&#x27; &amp;&amp; value !== null
+}
+
+function toPositiveInt(value: unknown, field: string): number {
+  if (typeof value !== &#x27;number&#x27; || !Number.isInteger(value) || value &lt;= 0) {
+    throw new TypeError(`Expected ${field} to be a positive integer`)
+  }
+  return value
+}
+
+// Good: unknown forces safe narrowing at the edge. Every consumed field is
+// validated with an explicit range, and defaults are declared up front.
+export function parseConfig(raw: unknown): Config {
+  if (!isRecord(raw)) return { ...DEFAULT_CONFIG }
+  return {
+    timeout: raw[&#x27;timeout&#x27;] === undefined ? DEFAULT_CONFIG.timeout : toPositiveInt(raw[&#x27;timeout&#x27;], &#x27;timeout&#x27;),
+    retries: raw[&#x27;retries&#x27;] === undefined ? DEFAULT_CONFIG.retries : toPositiveInt(raw[&#x27;retries&#x27;], &#x27;retries&#x27;),
+  }
+}
+```
+
+### 3. Public APIs Get Explicit Types, Locals Get Inference
+
+TypeScript infers local variables well. Exporting functions whose parameter and return types are implicit leaks inference decisions into every consumer and makes intent unreadable.
+
+```typescript
+// Bad: exported API without explicit types
+export function formatUser(user) {
+  return `${user.firstName} ${user.lastName}`
+}
+
+// Good: explicit public contract, inferred internals
+interface User {
+  firstName: string
+  lastName: string
+}
+
+export function formatUser(user: User): string {
+  return `${user.firstName} ${user.lastName}`
+}
+```
+
+## Type Design
+
+### Interfaces vs. Type Aliases
+
+`interface` for object shapes that may be extended or implemented; `type` for unions, intersections, tuples, mapped types, and utility types. Prefer string-literal unions over `enum` unless you need runtime value enumeration or interop with code that requires it.
+
+```typescript
+interface User {
+  id: string
+  email: string
+}
+
+type UserRole = &#x27;admin&#x27; | &#x27;member&#x27;
+type AdminUser = User &amp; { role: &#x27;admin&#x27; }
+```
+
+### Discriminated Unions Are the Default State Machine
+
+When a value can be in multiple shapes, model it as a discriminated union with a literal `type`/`kind` field. Exhaustive checking then becomes a free compiler feature: never a runtime fallback, always a compile error on a missing branch.
+
+```typescript
+type Transaction =
+  | { kind: &#x27;draft&#x27;; id: string }
+  | { kind: &#x27;submitted&#x27;; id: string; submittedAt: Date }
+  | { kind: &#x27;paid&#x27;; id: string; paidAt: Date; amountCents: number }
+
+function describe(t: Transaction): string {
+  switch (t.kind) {
+    case &#x27;draft&#x27;:
+      return &#x27;Saved but not sent&#x27;
+    case &#x27;submitted&#x27;:
+      return `Submitted on ${t.submittedAt.toISOString()}`
+    case &#x27;paid&#x27;:
+      return `Paid ${t.amountCents} cents on ${t.paidAt.toISOString()}`
+    default:
+      // exhaustive: any new member forces this to fail to compile
+      return assertNever(t)
+  }
+}
+
+function assertNever(value: never): never {
+  throw new Error(`Unhandled member: ${JSON.stringify(value)}`)
+}
+```
+
+### Brands and Nominal Safety Where Structure Is Not Enough
+
+Structural typing cannot tell `CustomerId` from `string`. When an ID or unit must not be confused with another, add a brand (a phantom field with a unique symbol key).
+
+```typescript
+declare const brand: unique symbol
+
+export type CustomerId = string &amp; { [brand]: &#x27;CustomerId&#x27; }
+
+function ensureCustomerId(value: string): CustomerId {
+  if (!/^cus_[a-z0-9]+$/.test(value)) {
+    throw new TypeError(`Invalid customer id: ${value}`)
+  }
+  return value as CustomerId
+}
+```
+
+Keep brands internal to a boundary module; never expose the cast helper far from the validation that justifies it.
+
+### Generics Model Caller-Dependent Types
+
+If a value&#x27;s type depends on what the caller supplies, make it generic rather than flattening to `any` or `unknown` and hand-casting at call sites.
+
+```typescript
+// Bad: caller must cast the result
+export function getCached(key: string): unknown {
+  return cache.get(key)
+}
+
+// Good: the caller&#x27;s type flows through
+export function getCached&lt;T&gt;(key: string, parse: (raw: string) =&gt; T): T | undefined {
+  const raw = cache.get(key)
+  if (raw === undefined) return undefined
+  return parse(raw)
+}
+```
+
+Constrain generics so the contract is discoverable: prefer `T extends SomeShape` over free-floating `T` when a shape assumption exists.
+
+### Options Objects over Positional Parameters
+
+Functions with more than a couple of knobs should take a single options object. It makes call sites self-documenting and lets new knobs be added without positional churn.
+
+```typescript
+interface FetchOptions {
+  timeoutMs?: number
+  retries?: number
+  signal?: AbortSignal
+}
+
+export async function fetchWithRetry(url: string, options: FetchOptions = {}): Promise&lt;Response&gt; {
+  // ...
+}
+```
+
+## Narrowing and Runtime Safety
+
+### Validate at the Boundary, Trust Inside
+
+Untrusted data enters at I/O boundaries: API handlers, message consumers, file loaders. Parse and validate once with a schema, then carry the refined type through the domain. This is where a validation library (for example, Zod) earns its keep — the schema is both the runtime check and the compile-time type.
+
+```typescript
+import { z } from &#x27;zod&#x27;
+
+const userInputSchema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+
+export type UserInput = z.infer&lt;typeof userInputSchema&gt;
+
+// validate once at the edge
+const input: UserInput = userInputSchema.parse(rawBody)
+```
+
+### Type Predicates and Assertion Functions
+
+Prefer type predicates and assertion functions over unchecked casts when guarding shapes. The guard documents the invariant and the compiler checks its usage.
+
+```typescript
+function isConfig(value: unknown): value is Config {
+  if (typeof value !== &#x27;object&#x27; || value === null) return false
+  if (!(&#x27;timeout&#x27; in value) || !(&#x27;retries&#x27; in value)) return false
+  const { timeout, retries } = value
+  return (
+    typeof timeout === &#x27;number&#x27; &amp;&amp; Number.isInteger(timeout) &amp;&amp; timeout &gt; 0 &amp;&amp;
+    typeof retries === &#x27;number&#x27; &amp;&amp; Number.isInteger(retries) &amp;&amp; retries &gt; 0
+  )
+}
+```
+
+To fail loudly on a malformed value instead of returning a boolean, use an assertion signature:
+
+```typescript
+function assertIsStringArray(value: unknown): asserts value is string[] {
+  if (!Array.isArray(value)) {
+    throw new TypeError(&#x27;Expected an array of strings&#x27;)
+  }
+  // Iteration visits sparse positions as undefined instead of skipping them.
+  for (const item of value) {
+    if (typeof item !== &#x27;string&#x27;) throw new TypeError(&#x27;Expected an array of strings&#x27;)
+  }
+}
+```
+
+### Readonly by Default
+
+Mark array and object parameters `readonly`/`ReadonlyArray` when the function does not mutate them. It prevents accidental mutation and signals intent at the signature. (Per the coding-style rules, prefer the spread operator for immutable updates.)
+
+```typescript
+export function totalAmount(items: readonly LineItem[]): number {
+  return items.reduce((sum, item) =&gt; sum + item.amountCents, 0)
+}
+```
+
+Runtime immutability (for example, `Object.freeze`) is for hot application boundaries; `readonly` in type positions is the everyday guard.
+
+## Error Handling
+
+### Fail at the Boundary, Handle at the Edge
+
+The `try/catch` belongs where the caller can act on failure — not wrapped around every internal call in a stack of swallowed errors. Use async/await with `try/catch` and narrow `unknown` errors safely (per the coding-style rules).
+
+This endpoint example accepts non-empty IDs made of ASCII letters, digits, underscores, and hyphens, such as `u_1`. Validate that contract before constructing the path or making a request. Adapt the identifier grammar to the real API.
+
+```typescript
+type User = { id: string; email: string }
+
+function isUser(value: unknown): value is User {
+  if (typeof value !== &#x27;object&#x27; || value === null) return false
+  if (!(&#x27;id&#x27; in value) || !(&#x27;email&#x27; in value)) return false
+  const { id, email } = value
+  return (
+    typeof id === &#x27;string&#x27; &amp;&amp; id.length &gt; 0 &amp;&amp;
+    typeof email === &#x27;string&#x27; &amp;&amp; email.includes(&#x27;@&#x27;)
+  )
+}
+
+function assertUserId(userId: string): void {
+  if (typeof userId !== &#x27;string&#x27; || userId.length === 0 || /[^A-Za-z0-9_-]/.test(userId)) {
+    throw new TypeError(&#x27;Expected a user ID using letters, digits, &quot;_&quot; or &quot;-&quot;&#x27;)
+  }
+}
+
+async function loadUser(userId: string): Promise&lt;User&gt; {
+  assertUserId(userId)
+  const response = await fetch(`/users/${userId}`)
+  if (!response.ok) {
+    throw new Error(`Failed to load user ${userId}: ${response.status}`)
+  }
+  const data: unknown = await response.json()
+  if (!isUser(data)) {
+    throw new TypeError(`Invalid user payload for ${userId}`)
+  }
+  return data
+}
+
+export async function getUser(userId: string): Promise&lt;User&gt; {
+  try {
+    return await loadUser(userId)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      // known failure mode: retry or surface a friendly message
+      throw new Error(`user lookup failed: ${error.message}`, { cause: error })
+    }
+    throw new TypeError(&#x27;unknown error shape&#x27;)
+  }
+}
+```
+
+### Result Types for Expected Failures
+
+For expected business failures (validation, not-found, conflict), a discriminated `Result` union makes failure explicit in the type instead of hiding it in the exception flow.
+
+```typescript
+type Result&lt;T, E&gt; = { ok: true; value: T } | { ok: false; error: E }
+
+function createUser(input: UserInput): Result&lt;User, ValidationIssue[]&gt; {
+  const issues = validate(input)
+  if (issues.length &gt; 0) {
+    return { ok: false, error: issues }
+  }
+  return { ok: true, value: { id: generateId(), ...input } }
+}
+```
+
+Reserve exceptions for the unexpected. Expected outcomes belong in the return type.
+
+### Preserve Error Context
+
+Use `new Error(message, { cause })` (available since ES2022) so the original failure chain survives rewrapping. Never stringify errors into a message and lose the cause.
+
+## Async Patterns
+
+### Prefer `Promise.allSettled` for Independent Fan-Out
+
+When results are independent and one failure must not drop the others, use `Promise.allSettled` and handle the per-promise outcomes.
+
+```typescript
+const results: PromiseSettledResult&lt;number&gt;[] = await Promise.allSettled(
+  sourceIds.map((id) =&gt; fetchCount(id))
+)
+
+const total = results.reduce((sum, result) =&gt; {
+  if (result.status === &#x27;fulfilled&#x27;) {
+    return sum + result.value
+  }
+  log.warn(&#x27;count fetch failed&#x27;, result.reason)
+  return sum
+}, 0)
+```
+
+Use `Promise.all` when you want fail-fast semantics — genuinely all-or-nothing work.
+
+### Avoid Unbounded Concurrency
+
+Fanning out hundreds of promises at once overwhelms connections and event loop. Bound the concurrency with a small pool.
+
+```typescript
+async function mapWithConcurrency&lt;T, R&gt;(
+  items: readonly T[],
+  limit: number,
+  mapper: (item: T) =&gt; Promise&lt;R&gt;
+): Promise&lt;R[]&gt; {
+  if (!Number.isInteger(limit) || limit &lt; 1) {
+    throw new RangeError(`Expected concurrency limit to be a positive integer, got: ${limit}`)
+  }
+  const results: R[] = new Array(items.length)
+  let nextIndex = 0
+
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () =&gt; {
+    while (true) {
+      const index = nextIndex++
+      if (index &gt;= items.length) return
+      // Required under noUncheckedIndexedAccess: the index is proven
+      // in-bounds above, but the compiler still types this T | undefined.
+      // Skip only genuine sparse-array holes, mirroring Array.prototype.map:
+      // a present `undefined` element is a legitimate value and must still
+      // reach the mapper.
+      if (!Object.hasOwn(items, index)) continue
+      // Presence is proven above, so the indexed access is in-bounds and
+      // filled — never a hole and never the compiler&#x27;s speculative undefined.
+      results[index] = await mapper(items[index]!)
+    }
+  })
+
+  // One worker rejecting rejects the whole pool: Promise.all propagates the
+  // first rejection to the caller (fail-fast). That is rejection, not
+  // cancellation — the other workers keep running and may settle more of
+  // their remaining items after the pool has already rejected. Use
+  // Promise.all only when leaving that in-flight work running is acceptable;
+  // otherwise use allSettled or thread an AbortSignal through the mapper.
+  await Promise.all(workers)
+  return results
+}
+```
+
+### Timeouts and Cancellation
+
+Always thread `AbortSignal` through long-running or outbound work so callers can cancel; pair it with `Promise.race` for hard timeouts where the underlying operation cannot be aborted.
+
+```typescript
+function withTimeout&lt;T&gt;(promise: Promise&lt;T&gt;, ms: number): Promise&lt;T&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const timer = setTimeout(() =&gt; reject(new Error(`Timed out after ${ms}ms`)), ms)
+    promise.then(
+      (value) =&gt; {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (reason) =&gt; {
+        clearTimeout(timer)
+        reject(reason)
+      }
+    )
+  })
+}
+```
+
+## Null and Undefined Discipline
+
+Prefer a discriminated approach over mixing sentinel values. Where &quot;not found&quot; or &quot;absent&quot; is a legitimate state, use `T | undefined` and check explicitly; avoid deeply nesting `?.` chains followed by silent fallbacks that hide bugs.
+
+```typescript
+function findUser(id: string): User | undefined {
+  return users.get(id)
+}
+
+const user = findUser(&#x27;u_1&#x27;)
+if (user === undefined) {
+  return notFound()
+}
+// from here on, `user` is narrowed to User
+```
+
+Avoid truthiness checks that silently accept wrong types (`if (result)` when `result` may be `0` or `&#x27;&#x27;`). Compare against `undefined`/`null` explicitly.
+
+## Module Boundaries and Exports
+
+### Small, Named Modules
+
+Expose a deliberate surface at each module&#x27;s boundary. Prefer explicit named exports over default exports, and re-export at the public edge so consumers import from the module that owns the type — not from deep internals that can be refactored.
+
+```typescript
+// user/model.ts — internal types
+export interface UserAccount {
+  id: string
+  email: string
+  role: UserRole
+}
+
+// user/index.ts — public surface
+export { type UserAccount, type UserRole } from &#x27;./model&#x27;
+export { createUser, findUser, updateUser } from &#x27;./service&#x27;
+```
+
+### Avoid Barrel Bloat and Circular Imports
+
+Do not create barrels that import everything at module load (they defeat tree-shaking and grow cold-start). Import concrete paths. Circular imports signal a submission boundary that should fold upward; the type that both sides need belongs in a shared module neither imports.
+
+### Split by Dependency Direction
+
+Let the type graph point the way: types that cross boundaries go in a contract module; implementations import the contract; nothing imports implementations from contracts. In a node/backend codebase that means roughly: `domain` (pure types and rules) → `application` (use cases) → `infrastructure` (adapters), with dependencies pointing only inward.
+
+## Dependencies and Build
+
+### Diagnose, Then Add Dependencies
+
+Prefer built-in `Array`, `Map`, `Promise`, and `Intl` over pulling in utilities for every small operation. A tiny inline function beats a dependency that must be upgraded, audited, and kept compatible. (The Go idiom &quot;a little copying is better than a little dependency&quot; applies to TypeScript too.)
+
+### Runtime Validation, Not Type-of-Trust
+
+Schemas that validate at runtime (Zod, validators, or hand-written guards) are the bridge between untrusted data and compile-time types. Library approaches differ (Zod and other schema-first libraries derive the type from the schema; validators in some ecosystem patterns are type-first with the runtime check derived). Pick one model and be consistent across the codebase.
+
+### Keep the Compiler Incremental and Fast
+
+Large codebases benefit from `composite: true` with project references, an `incremental` build cache, and `moduleResolution: bundler` where the bundler supports it. Slow type-checking is a workflow problem that pushes developers off the type system — invest in narrowing the checked surface over relaxing it.
+
+## Performance
+
+### Types Are Free, Structures Are Not
+
+Type-level gymnastics (mapped types, conditional types, template literal types) cost nothing at runtime but can cost a lot of developer clarity. Keep complex type machinery inside boundary modules; do not export type circus acts as the public API.
+
+### Avoid Unnecessary Object Renaming
+
+Copying and spreading large nested objects repeatedly has real cost in hot paths. Prefer immutable updates with spread at the point of change, but avoid defensive re-copying of unchanged structures (for example, in render paths or per-message handlers).
+
+### Memoize Idempotent Computation
+
+Pure, expensive derivations belong behind a cache if they repeat with the same inputs. Use `Map`-based caches with explicit lifetime instead of ad-hoc global caches that never clear.
+
+## Type-Level Testing
+
+### Assert the Types, Not Just the Runtime
+
+Behavior tests prove runtime behavior; dedicated type tests lock in the public API contract. A type that silently loosens is a regression.
+
+```typescript
+import { expectTypeOf } from &#x27;vitest&#x27;
+
+expectTypeOf&lt;Result&lt;User, ValidationIssue[]&gt;&gt;().toEqualTypeOf&lt;
+  | { ok: true; value: User }
+  | { ok: false; error: ValidationIssue[] }
+&gt;()
+```
+
+### Use `satisfies` to Preserve Intent
+
+`satisfies` checks a value against a shape without widening it to that shape — the ideal way to keep literal types while still validating structure.
+
+```typescript
+const statusByAction = {
+  new: &#x27;open&#x27;,
+  reopen: &#x27;open&#x27;,
+  close: &#x27;closed&#x27;
+} as const satisfies Record&lt;Action, Status&gt;
+```
+
+## TypeScript Tooling Integration
+
+### Essential Commands
+
+```bash
+# Type-check the whole project
+npx tsc --noEmit
+
+# Watch mode for fast feedback
+npx tsc --noEmit --watch
+
+# Run tests (Vitest)
+npx vitest run
+
+# Lint with types-aware rules (typescript-eslint)
+npx eslint .
+
+# Formatting
+npx prettier --write .
+```
+
+### Recommended Linter Baseline
+
+The `typescript-eslint` recommended-type-checked ruleset is the practical default: it promotes `no-unsafe-assignment`, `no-unsafe-member-access`, `no-unsafe-argument`, and `no-unsafe-call` from style noise to compiler-like guarantees. Keep the type-aware config; if it is slow, that is a project-structure signal, not a reason to disable it.
+
+## Anti-Patterns to Avoid
+
+- **`any` as a speed hack** — it converts the compiler&#x27;s proof into a runtime guess. Reach for `unknown` + narrowing instead.
+- **`as` casts that lie** — a cast that bypasses a check you did not actually perform is where null-pointer and shape bugs are born. Validate, then cast, and keep the cast inside the module that validates.
+- **Deeply nested callbacks / promise chains** — prefer async/await; flat code is narrowable code.
+- **`enum` coercion bugs** — string-literal unions give you the same safety without runtime artifacts or reverse-mapping footguns.
+- **Giant god types** — a single interface that models several unrelated shapes should be a discriminated union or several interfaces.
+- **Optional-only option objects** — `allOptional` config types silently swallow typos at the call site; prefer required fields for the ones the function genuinely depends on.
+- **Silent catch** — `catch {}` or `catch (e) { /* nothing */ }` hides failures the caller assumed were handled.
+- **Mixing sync and async error paths** — an `async` function always surfaces throws as rejections, even before the first `await`. Only a non-`async` function returning a promise can throw synchronously (before returning it), forcing callers to handle two error shapes. Prefer `async` throughout so every failure is a rejection:
+
+```typescript
+async function asyncFails(): Promise&lt;never&gt; {
+  throw new Error(&#x27;becomes a rejection, never a sync throw&#x27;)
+}
+
+function lazyFails(): Promise&lt;never&gt; {
+  throw new Error(&#x27;throws synchronously — needs try/catch AND .catch&#x27;)
+}
+```
+
+**Remember**: the type system is a proof tool, not a paperwork burden. When a type error resists a reasonable annotation, the design — not the compiler — is usually the thing to change. Prefer boring, explicit, well-scoped TypeScript over clever type engines.
+
+## Related Skills
+
+- `nestjs-patterns` — NestJS architecture patterns for TypeScript backends (modules, controllers, providers, DTO validation)
+- `frontend-patterns` — React and Next.js component and state patterns
+- TypeScript rules (`rules/typescript/`, installed as `rules/ecc/typescript/`) — the &quot;what&quot; and &quot;when&quot; this skill implements as the &quot;how&quot;
+- `prisma-patterns` — database access patterns used in TypeScript applications</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

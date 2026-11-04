@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sql-queries｜Skill 寫法圖鑑</title>
+<meta name="description" content="各大資料倉儲方言的 SQL 寫法、效能提示和常用查詢模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>sql-queries</h1>
+<p class="meta">Anthropic ｜ 資料與分析 ｜ <a href="https://github.com/anthropics/knowledge-work-plugins/blob/main/data/skills/sql-queries/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">各大資料倉儲方言的 SQL 寫法、效能提示和常用查詢模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: sql-queries
+description: 在所有主要資料倉儲方言（Snowflake、BigQuery、Databricks、PostgreSQL 等）寫出正確又有效率的 SQL。適用於撰寫查詢、優化慢速 SQL、在不同方言之間轉換，或用 CTE、window function 或聚合函式建構複雜的分析查詢。
+user-invocable: false
+---
+
+# SQL 查詢 Skill
+
+在所有主要資料倉儲方言中，寫出正確、有效率、好讀的 SQL。
+
+## 各方言參考
+
+### PostgreSQL（含 Aurora、RDS、Supabase、Neon）
+
+**日期／時間：**
+```sql
+-- 目前日期／時間
+CURRENT_DATE, CURRENT_TIMESTAMP, NOW()
+
+-- 日期運算
+date_column + INTERVAL &#x27;7 days&#x27;
+date_column - INTERVAL &#x27;1 month&#x27;
+
+-- 截斷到某個期間
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- 取出部分
+EXTRACT(YEAR FROM created_at)
+EXTRACT(DOW FROM created_at)  -- 0=Sunday
+
+-- 格式化
+TO_CHAR(created_at, &#x27;YYYY-MM-DD&#x27;)
+```
+
+**字串函式：**
+```sql
+-- 串接
+first_name || &#x27; &#x27; || last_name
+CONCAT(first_name, &#x27; &#x27;, last_name)
+
+-- 模式比對
+column ILIKE &#x27;%pattern%&#x27;  -- 不分大小寫
+column ~ &#x27;^regex_pattern$&#x27;  -- regex
+
+-- 字串處理
+LEFT(str, n), RIGHT(str, n)
+SPLIT_PART(str, delimiter, position)
+REGEXP_REPLACE(str, pattern, replacement)
+```
+
+**陣列與 JSON：**
+```sql
+-- JSON 存取
+data-&gt;&gt;&#x27;key&#x27;  -- text
+data-&gt;&#x27;nested&#x27;-&gt;&#x27;key&#x27;  -- json
+data#&gt;&gt;&#x27;{path,to,key}&#x27;  -- 巢狀 text
+
+-- 陣列操作
+ARRAY_AGG(column)
+ANY(array_column)
+array_column @&gt; ARRAY[&#x27;value&#x27;]
+```
+
+**效能提示：**
+- 用 `EXPLAIN ANALYZE` 剖析查詢
+- 在常被過濾／join 的欄位建立索引
+- 相關子查詢用 `EXISTS` 而不是 `IN`
+- 常見過濾條件用 partial index
+- 並行存取時用 connection pooling
+
+---
+
+### Snowflake
+
+**日期／時間：**
+```sql
+-- 目前日期／時間
+CURRENT_DATE(), CURRENT_TIMESTAMP(), SYSDATE()
+
+-- 日期運算
+DATEADD(day, 7, date_column)
+DATEDIFF(day, start_date, end_date)
+
+-- 截斷到某個期間
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- 取出部分
+YEAR(created_at), MONTH(created_at), DAY(created_at)
+DAYOFWEEK(created_at)
+
+-- 格式化
+TO_CHAR(created_at, &#x27;YYYY-MM-DD&#x27;)
+```
+
+**字串函式：**
+```sql
+-- 預設不分大小寫（視 collation 而定）
+column ILIKE &#x27;%pattern%&#x27;
+REGEXP_LIKE(column, &#x27;pattern&#x27;)
+
+-- 解析 JSON
+column:key::string  -- VARIANT 用點記法
+PARSE_JSON(&#x27;{&quot;key&quot;: &quot;value&quot;}&#x27;)
+GET_PATH(variant_col, &#x27;path.to.key&#x27;)
+
+-- 展開陣列／物件
+SELECT f.value FROM table, LATERAL FLATTEN(input =&gt; array_col) f
+```
+
+**半結構化資料：**
+```sql
+-- VARIANT 型別存取
+data:customer:name::STRING
+data:items[0]:price::NUMBER
+
+-- 展開巢狀結構
+SELECT
+    t.id,
+    item.value:name::STRING as item_name,
+    item.value:qty::NUMBER as quantity
+FROM my_table t,
+LATERAL FLATTEN(input =&gt; t.data:items) item
+```
+
+**效能提示：**
+- 大型資料表用 clustering key（不是傳統索引）
+- 過濾 clustering key 欄位，才能做 partition pruning
+- 依查詢複雜度設定適當的 warehouse 大小
+- 用 `RESULT_SCAN(LAST_QUERY_ID())` 避免重跑昂貴的查詢
+- staging／暫存資料用 transient table
+
+---
+
+### BigQuery（Google Cloud）
+
+**日期／時間：**
+```sql
+-- 目前日期／時間
+CURRENT_DATE(), CURRENT_TIMESTAMP()
+
+-- 日期運算
+DATE_ADD(date_column, INTERVAL 7 DAY)
+DATE_SUB(date_column, INTERVAL 1 MONTH)
+DATE_DIFF(end_date, start_date, DAY)
+TIMESTAMP_DIFF(end_ts, start_ts, HOUR)
+
+-- 截斷到某個期間
+DATE_TRUNC(created_at, MONTH)
+TIMESTAMP_TRUNC(created_at, HOUR)
+
+-- 取出部分
+EXTRACT(YEAR FROM created_at)
+EXTRACT(DAYOFWEEK FROM created_at)  -- 1=Sunday
+
+-- 格式化
+FORMAT_DATE(&#x27;%Y-%m-%d&#x27;, date_column)
+FORMAT_TIMESTAMP(&#x27;%Y-%m-%d %H:%M:%S&#x27;, ts_column)
+```
+
+**字串函式：**
+```sql
+-- 沒有 ILIKE，用 LOWER()
+LOWER(column) LIKE &#x27;%pattern%&#x27;
+REGEXP_CONTAINS(column, r&#x27;pattern&#x27;)
+REGEXP_EXTRACT(column, r&#x27;pattern&#x27;)
+
+-- 字串處理
+SPLIT(str, delimiter)  -- 回傳 ARRAY
+ARRAY_TO_STRING(array, delimiter)
+```
+
+**陣列與 struct：**
+```sql
+-- 陣列操作
+ARRAY_AGG(column)
+UNNEST(array_column)
+ARRAY_LENGTH(array_column)
+value IN UNNEST(array_column)
+
+-- Struct 存取
+struct_column.field_name
+```
+
+**效能提示：**
+- 一定要過濾 partition 欄位（通常是日期），減少掃描的位元組數
+- 在 partition 內，對常被過濾的欄位用 clustering
+- 大規模基數估算用 `APPROX_COUNT_DISTINCT()`
+- 避免 `SELECT *`：計費是依掃描的位元組數
+- 參數化腳本用 `DECLARE` 和 `SET`
+- 執行大型查詢之前，先用 dry run 預覽查詢成本
+
+---
+
+### Redshift（Amazon）
+
+**日期／時間：**
+```sql
+-- 目前日期／時間
+CURRENT_DATE, GETDATE(), SYSDATE
+
+-- 日期運算
+DATEADD(day, 7, date_column)
+DATEDIFF(day, start_date, end_date)
+
+-- 截斷到某個期間
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- 取出部分
+EXTRACT(YEAR FROM created_at)
+DATE_PART(&#x27;dow&#x27;, created_at)
+```
+
+**字串函式：**
+```sql
+-- 不分大小寫
+column ILIKE &#x27;%pattern%&#x27;
+REGEXP_INSTR(column, &#x27;pattern&#x27;) &gt; 0
+
+-- 字串處理
+SPLIT_PART(str, delimiter, position)
+LISTAGG(column, &#x27;, &#x27;) WITHIN GROUP (ORDER BY column)
+```
+
+**效能提示：**
+- 設計 distribution key 讓 join 在同一節點上完成（DISTKEY）
+- 常被過濾的欄位用 sort key（SORTKEY）
+- 用 `EXPLAIN` 檢查查詢計畫
+- 避免跨節點的資料搬移（注意 DS_BCAST 和 DS_DIST）
+- 定期執行 `ANALYZE` 和 `VACUUM`
+- 用 late-binding view 讓 schema 更有彈性
+
+---
+
+### Databricks SQL
+
+**日期／時間：**
+```sql
+-- 目前日期／時間
+CURRENT_DATE(), CURRENT_TIMESTAMP()
+
+-- 日期運算
+DATE_ADD(date_column, 7)
+DATEDIFF(end_date, start_date)
+ADD_MONTHS(date_column, 1)
+
+-- 截斷到某個期間
+DATE_TRUNC(&#x27;MONTH&#x27;, created_at)
+TRUNC(date_column, &#x27;MM&#x27;)
+
+-- 取出部分
+YEAR(created_at), MONTH(created_at)
+DAYOFWEEK(created_at)
+```
+
+**Delta Lake 功能：**
+```sql
+-- 時間旅行
+SELECT * FROM my_table TIMESTAMP AS OF &#x27;2024-01-15&#x27;
+SELECT * FROM my_table VERSION AS OF 42
+
+-- 查看歷史
+DESCRIBE HISTORY my_table
+
+-- Merge（upsert）
+MERGE INTO target USING source
+ON target.id = source.id
+WHEN MATCHED THEN UPDATE SET *
+WHEN NOT MATCHED THEN INSERT *
+```
+
+**效能提示：**
+- 用 Delta Lake 的 `OPTIMIZE` 和 `ZORDER` 提升查詢效能
+- 運算密集的查詢善用 Photon 引擎
+- 常存取的資料集用 `CACHE TABLE`
+- 依基數低的日期欄位做 partition
+
+---
+
+## 常見 SQL 模式
+
+### Window Function
+
+```sql
+-- 排名
+ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC)
+RANK() OVER (PARTITION BY category ORDER BY revenue DESC)
+DENSE_RANK() OVER (ORDER BY score DESC)
+
+-- 累計總和／移動平均
+SUM(revenue) OVER (ORDER BY date_col ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as running_total
+AVG(revenue) OVER (ORDER BY date_col ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as moving_avg_7d
+
+-- Lag / Lead
+LAG(value, 1) OVER (PARTITION BY entity ORDER BY date_col) as prev_value
+LEAD(value, 1) OVER (PARTITION BY entity ORDER BY date_col) as next_value
+
+-- 第一個／最後一個值
+FIRST_VALUE(status) OVER (PARTITION BY user_id ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+LAST_VALUE(status) OVER (PARTITION BY user_id ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+
+-- 佔總數的百分比
+revenue / SUM(revenue) OVER () as pct_of_total
+revenue / SUM(revenue) OVER (PARTITION BY category) as pct_of_category
+```
+
+### 用 CTE 提升可讀性
+
+```sql
+WITH
+-- 步驟 1：定義基礎母體
+base_users AS (
+    SELECT user_id, created_at, plan_type
+    FROM users
+    WHERE created_at &gt;= DATE &#x27;2024-01-01&#x27;
+      AND status = &#x27;active&#x27;
+),
+
+-- 步驟 2：計算使用者層級的指標
+user_metrics AS (
+    SELECT
+        u.user_id,
+        u.plan_type,
+        COUNT(DISTINCT e.session_id) as session_count,
+        SUM(e.revenue) as total_revenue
+    FROM base_users u
+    LEFT JOIN events e ON u.user_id = e.user_id
+    GROUP BY u.user_id, u.plan_type
+),
+
+-- 步驟 3：聚合到摘要層級
+summary AS (
+    SELECT
+        plan_type,
+        COUNT(*) as user_count,
+        AVG(session_count) as avg_sessions,
+        SUM(total_revenue) as total_revenue
+    FROM user_metrics
+    GROUP BY plan_type
+)
+
+SELECT * FROM summary ORDER BY total_revenue DESC;
+```
+
+### 世代留存（Cohort Retention）
+
+```sql
+WITH cohorts AS (
+    SELECT
+        user_id,
+        DATE_TRUNC(&#x27;month&#x27;, first_activity_date) as cohort_month
+    FROM users
+),
+activity AS (
+    SELECT
+        user_id,
+        DATE_TRUNC(&#x27;month&#x27;, activity_date) as activity_month
+    FROM user_activity
+)
+SELECT
+    c.cohort_month,
+    COUNT(DISTINCT c.user_id) as cohort_size,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month THEN a.user_id
+    END) as month_0,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month + INTERVAL &#x27;1 month&#x27; THEN a.user_id
+    END) as month_1,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month + INTERVAL &#x27;3 months&#x27; THEN a.user_id
+    END) as month_3
+FROM cohorts c
+LEFT JOIN activity a ON c.user_id = a.user_id
+GROUP BY c.cohort_month
+ORDER BY c.cohort_month;
+```
+
+### 漏斗分析
+
+```sql
+WITH funnel AS (
+    SELECT
+        user_id,
+        MAX(CASE WHEN event = &#x27;page_view&#x27; THEN 1 ELSE 0 END) as step_1_view,
+        MAX(CASE WHEN event = &#x27;signup_start&#x27; THEN 1 ELSE 0 END) as step_2_start,
+        MAX(CASE WHEN event = &#x27;signup_complete&#x27; THEN 1 ELSE 0 END) as step_3_complete,
+        MAX(CASE WHEN event = &#x27;first_purchase&#x27; THEN 1 ELSE 0 END) as step_4_purchase
+    FROM events
+    WHERE event_date &gt;= CURRENT_DATE - INTERVAL &#x27;30 days&#x27;
+    GROUP BY user_id
+)
+SELECT
+    COUNT(*) as total_users,
+    SUM(step_1_view) as viewed,
+    SUM(step_2_start) as started_signup,
+    SUM(step_3_complete) as completed_signup,
+    SUM(step_4_purchase) as purchased,
+    ROUND(100.0 * SUM(step_2_start) / NULLIF(SUM(step_1_view), 0), 1) as view_to_start_pct,
+    ROUND(100.0 * SUM(step_3_complete) / NULLIF(SUM(step_2_start), 0), 1) as start_to_complete_pct,
+    ROUND(100.0 * SUM(step_4_purchase) / NULLIF(SUM(step_3_complete), 0), 1) as complete_to_purchase_pct
+FROM funnel;
+```
+
+### 去重
+
+```sql
+-- 每個 key 只保留最新的一筆紀錄
+WITH ranked AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (
+            PARTITION BY entity_id
+            ORDER BY updated_at DESC
+        ) as rn
+    FROM source_table
+)
+SELECT * FROM ranked WHERE rn = 1;
+```
+
+## 錯誤處理與除錯
+
+查詢失敗時：
+
+1. **語法錯誤**：檢查方言專屬的語法（例如 BigQuery 沒有 `ILIKE`，`SAFE_DIVIDE` 只有 BigQuery 有）
+2. **找不到欄位**：對照 schema 驗證欄位名稱，檢查拼字、大小寫敏感度（PostgreSQL 對加引號的識別字是區分大小寫的）
+3. **型別不符**：比較不同型別時要明確轉型（`CAST(col AS DATE)`、`col::DATE`）
+4. **除以零**：用 `NULLIF(denominator, 0)` 或方言專屬的安全除法
+5. **欄位有歧義**：JOIN 時一律用 table alias 限定欄位名稱
+6. **Group by 錯誤**：所有沒有聚合的欄位都必須放進 GROUP BY（BigQuery 例外，它允許用 alias 分組）</pre></section><section><h2>英文原文</h2><pre>---
+name: sql-queries
+description: Write correct, performant SQL across all major data warehouse dialects (Snowflake, BigQuery, Databricks, PostgreSQL, etc.). Use when writing queries, optimizing slow SQL, translating between dialects, or building complex analytical queries with CTEs, window functions, or aggregations.
+user-invocable: false
+---
+
+# SQL Queries Skill
+
+Write correct, performant, readable SQL across all major data warehouse dialects.
+
+## Dialect-Specific Reference
+
+### PostgreSQL (including Aurora, RDS, Supabase, Neon)
+
+**Date/time:**
+```sql
+-- Current date/time
+CURRENT_DATE, CURRENT_TIMESTAMP, NOW()
+
+-- Date arithmetic
+date_column + INTERVAL &#x27;7 days&#x27;
+date_column - INTERVAL &#x27;1 month&#x27;
+
+-- Truncate to period
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- Extract parts
+EXTRACT(YEAR FROM created_at)
+EXTRACT(DOW FROM created_at)  -- 0=Sunday
+
+-- Format
+TO_CHAR(created_at, &#x27;YYYY-MM-DD&#x27;)
+```
+
+**String functions:**
+```sql
+-- Concatenation
+first_name || &#x27; &#x27; || last_name
+CONCAT(first_name, &#x27; &#x27;, last_name)
+
+-- Pattern matching
+column ILIKE &#x27;%pattern%&#x27;  -- case-insensitive
+column ~ &#x27;^regex_pattern$&#x27;  -- regex
+
+-- String manipulation
+LEFT(str, n), RIGHT(str, n)
+SPLIT_PART(str, delimiter, position)
+REGEXP_REPLACE(str, pattern, replacement)
+```
+
+**Arrays and JSON:**
+```sql
+-- JSON access
+data-&gt;&gt;&#x27;key&#x27;  -- text
+data-&gt;&#x27;nested&#x27;-&gt;&#x27;key&#x27;  -- json
+data#&gt;&gt;&#x27;{path,to,key}&#x27;  -- nested text
+
+-- Array operations
+ARRAY_AGG(column)
+ANY(array_column)
+array_column @&gt; ARRAY[&#x27;value&#x27;]
+```
+
+**Performance tips:**
+- Use `EXPLAIN ANALYZE` to profile queries
+- Create indexes on frequently filtered/joined columns
+- Use `EXISTS` over `IN` for correlated subqueries
+- Partial indexes for common filter conditions
+- Use connection pooling for concurrent access
+
+---
+
+### Snowflake
+
+**Date/time:**
+```sql
+-- Current date/time
+CURRENT_DATE(), CURRENT_TIMESTAMP(), SYSDATE()
+
+-- Date arithmetic
+DATEADD(day, 7, date_column)
+DATEDIFF(day, start_date, end_date)
+
+-- Truncate to period
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- Extract parts
+YEAR(created_at), MONTH(created_at), DAY(created_at)
+DAYOFWEEK(created_at)
+
+-- Format
+TO_CHAR(created_at, &#x27;YYYY-MM-DD&#x27;)
+```
+
+**String functions:**
+```sql
+-- Case-insensitive by default (depends on collation)
+column ILIKE &#x27;%pattern%&#x27;
+REGEXP_LIKE(column, &#x27;pattern&#x27;)
+
+-- Parse JSON
+column:key::string  -- dot notation for VARIANT
+PARSE_JSON(&#x27;{&quot;key&quot;: &quot;value&quot;}&#x27;)
+GET_PATH(variant_col, &#x27;path.to.key&#x27;)
+
+-- Flatten arrays/objects
+SELECT f.value FROM table, LATERAL FLATTEN(input =&gt; array_col) f
+```
+
+**Semi-structured data:**
+```sql
+-- VARIANT type access
+data:customer:name::STRING
+data:items[0]:price::NUMBER
+
+-- Flatten nested structures
+SELECT
+    t.id,
+    item.value:name::STRING as item_name,
+    item.value:qty::NUMBER as quantity
+FROM my_table t,
+LATERAL FLATTEN(input =&gt; t.data:items) item
+```
+
+**Performance tips:**
+- Use clustering keys on large tables (not traditional indexes)
+- Filter on clustering key columns for partition pruning
+- Set appropriate warehouse size for query complexity
+- Use `RESULT_SCAN(LAST_QUERY_ID())` to avoid re-running expensive queries
+- Use transient tables for staging/temp data
+
+---
+
+### BigQuery (Google Cloud)
+
+**Date/time:**
+```sql
+-- Current date/time
+CURRENT_DATE(), CURRENT_TIMESTAMP()
+
+-- Date arithmetic
+DATE_ADD(date_column, INTERVAL 7 DAY)
+DATE_SUB(date_column, INTERVAL 1 MONTH)
+DATE_DIFF(end_date, start_date, DAY)
+TIMESTAMP_DIFF(end_ts, start_ts, HOUR)
+
+-- Truncate to period
+DATE_TRUNC(created_at, MONTH)
+TIMESTAMP_TRUNC(created_at, HOUR)
+
+-- Extract parts
+EXTRACT(YEAR FROM created_at)
+EXTRACT(DAYOFWEEK FROM created_at)  -- 1=Sunday
+
+-- Format
+FORMAT_DATE(&#x27;%Y-%m-%d&#x27;, date_column)
+FORMAT_TIMESTAMP(&#x27;%Y-%m-%d %H:%M:%S&#x27;, ts_column)
+```
+
+**String functions:**
+```sql
+-- No ILIKE, use LOWER()
+LOWER(column) LIKE &#x27;%pattern%&#x27;
+REGEXP_CONTAINS(column, r&#x27;pattern&#x27;)
+REGEXP_EXTRACT(column, r&#x27;pattern&#x27;)
+
+-- String manipulation
+SPLIT(str, delimiter)  -- returns ARRAY
+ARRAY_TO_STRING(array, delimiter)
+```
+
+**Arrays and structs:**
+```sql
+-- Array operations
+ARRAY_AGG(column)
+UNNEST(array_column)
+ARRAY_LENGTH(array_column)
+value IN UNNEST(array_column)
+
+-- Struct access
+struct_column.field_name
+```
+
+**Performance tips:**
+- Always filter on partition columns (usually date) to reduce bytes scanned
+- Use clustering for frequently filtered columns within partitions
+- Use `APPROX_COUNT_DISTINCT()` for large-scale cardinality estimates
+- Avoid `SELECT *` -- billing is per-byte scanned
+- Use `DECLARE` and `SET` for parameterized scripts
+- Preview query cost with dry run before executing large queries
+
+---
+
+### Redshift (Amazon)
+
+**Date/time:**
+```sql
+-- Current date/time
+CURRENT_DATE, GETDATE(), SYSDATE
+
+-- Date arithmetic
+DATEADD(day, 7, date_column)
+DATEDIFF(day, start_date, end_date)
+
+-- Truncate to period
+DATE_TRUNC(&#x27;month&#x27;, created_at)
+
+-- Extract parts
+EXTRACT(YEAR FROM created_at)
+DATE_PART(&#x27;dow&#x27;, created_at)
+```
+
+**String functions:**
+```sql
+-- Case-insensitive
+column ILIKE &#x27;%pattern%&#x27;
+REGEXP_INSTR(column, &#x27;pattern&#x27;) &gt; 0
+
+-- String manipulation
+SPLIT_PART(str, delimiter, position)
+LISTAGG(column, &#x27;, &#x27;) WITHIN GROUP (ORDER BY column)
+```
+
+**Performance tips:**
+- Design distribution keys for collocated joins (DISTKEY)
+- Use sort keys for frequently filtered columns (SORTKEY)
+- Use `EXPLAIN` to check query plan
+- Avoid cross-node data movement (watch for DS_BCAST and DS_DIST)
+- `ANALYZE` and `VACUUM` regularly
+- Use late-binding views for schema flexibility
+
+---
+
+### Databricks SQL
+
+**Date/time:**
+```sql
+-- Current date/time
+CURRENT_DATE(), CURRENT_TIMESTAMP()
+
+-- Date arithmetic
+DATE_ADD(date_column, 7)
+DATEDIFF(end_date, start_date)
+ADD_MONTHS(date_column, 1)
+
+-- Truncate to period
+DATE_TRUNC(&#x27;MONTH&#x27;, created_at)
+TRUNC(date_column, &#x27;MM&#x27;)
+
+-- Extract parts
+YEAR(created_at), MONTH(created_at)
+DAYOFWEEK(created_at)
+```
+
+**Delta Lake features:**
+```sql
+-- Time travel
+SELECT * FROM my_table TIMESTAMP AS OF &#x27;2024-01-15&#x27;
+SELECT * FROM my_table VERSION AS OF 42
+
+-- Describe history
+DESCRIBE HISTORY my_table
+
+-- Merge (upsert)
+MERGE INTO target USING source
+ON target.id = source.id
+WHEN MATCHED THEN UPDATE SET *
+WHEN NOT MATCHED THEN INSERT *
+```
+
+**Performance tips:**
+- Use Delta Lake&#x27;s `OPTIMIZE` and `ZORDER` for query performance
+- Leverage Photon engine for compute-intensive queries
+- Use `CACHE TABLE` for frequently accessed datasets
+- Partition by low-cardinality date columns
+
+---
+
+## Common SQL Patterns
+
+### Window Functions
+
+```sql
+-- Ranking
+ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC)
+RANK() OVER (PARTITION BY category ORDER BY revenue DESC)
+DENSE_RANK() OVER (ORDER BY score DESC)
+
+-- Running totals / moving averages
+SUM(revenue) OVER (ORDER BY date_col ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as running_total
+AVG(revenue) OVER (ORDER BY date_col ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as moving_avg_7d
+
+-- Lag / Lead
+LAG(value, 1) OVER (PARTITION BY entity ORDER BY date_col) as prev_value
+LEAD(value, 1) OVER (PARTITION BY entity ORDER BY date_col) as next_value
+
+-- First / Last value
+FIRST_VALUE(status) OVER (PARTITION BY user_id ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+LAST_VALUE(status) OVER (PARTITION BY user_id ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+
+-- Percent of total
+revenue / SUM(revenue) OVER () as pct_of_total
+revenue / SUM(revenue) OVER (PARTITION BY category) as pct_of_category
+```
+
+### CTEs for Readability
+
+```sql
+WITH
+-- Step 1: Define the base population
+base_users AS (
+    SELECT user_id, created_at, plan_type
+    FROM users
+    WHERE created_at &gt;= DATE &#x27;2024-01-01&#x27;
+      AND status = &#x27;active&#x27;
+),
+
+-- Step 2: Calculate user-level metrics
+user_metrics AS (
+    SELECT
+        u.user_id,
+        u.plan_type,
+        COUNT(DISTINCT e.session_id) as session_count,
+        SUM(e.revenue) as total_revenue
+    FROM base_users u
+    LEFT JOIN events e ON u.user_id = e.user_id
+    GROUP BY u.user_id, u.plan_type
+),
+
+-- Step 3: Aggregate to summary level
+summary AS (
+    SELECT
+        plan_type,
+        COUNT(*) as user_count,
+        AVG(session_count) as avg_sessions,
+        SUM(total_revenue) as total_revenue
+    FROM user_metrics
+    GROUP BY plan_type
+)
+
+SELECT * FROM summary ORDER BY total_revenue DESC;
+```
+
+### Cohort Retention
+
+```sql
+WITH cohorts AS (
+    SELECT
+        user_id,
+        DATE_TRUNC(&#x27;month&#x27;, first_activity_date) as cohort_month
+    FROM users
+),
+activity AS (
+    SELECT
+        user_id,
+        DATE_TRUNC(&#x27;month&#x27;, activity_date) as activity_month
+    FROM user_activity
+)
+SELECT
+    c.cohort_month,
+    COUNT(DISTINCT c.user_id) as cohort_size,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month THEN a.user_id
+    END) as month_0,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month + INTERVAL &#x27;1 month&#x27; THEN a.user_id
+    END) as month_1,
+    COUNT(DISTINCT CASE
+        WHEN a.activity_month = c.cohort_month + INTERVAL &#x27;3 months&#x27; THEN a.user_id
+    END) as month_3
+FROM cohorts c
+LEFT JOIN activity a ON c.user_id = a.user_id
+GROUP BY c.cohort_month
+ORDER BY c.cohort_month;
+```
+
+### Funnel Analysis
+
+```sql
+WITH funnel AS (
+    SELECT
+        user_id,
+        MAX(CASE WHEN event = &#x27;page_view&#x27; THEN 1 ELSE 0 END) as step_1_view,
+        MAX(CASE WHEN event = &#x27;signup_start&#x27; THEN 1 ELSE 0 END) as step_2_start,
+        MAX(CASE WHEN event = &#x27;signup_complete&#x27; THEN 1 ELSE 0 END) as step_3_complete,
+        MAX(CASE WHEN event = &#x27;first_purchase&#x27; THEN 1 ELSE 0 END) as step_4_purchase
+    FROM events
+    WHERE event_date &gt;= CURRENT_DATE - INTERVAL &#x27;30 days&#x27;
+    GROUP BY user_id
+)
+SELECT
+    COUNT(*) as total_users,
+    SUM(step_1_view) as viewed,
+    SUM(step_2_start) as started_signup,
+    SUM(step_3_complete) as completed_signup,
+    SUM(step_4_purchase) as purchased,
+    ROUND(100.0 * SUM(step_2_start) / NULLIF(SUM(step_1_view), 0), 1) as view_to_start_pct,
+    ROUND(100.0 * SUM(step_3_complete) / NULLIF(SUM(step_2_start), 0), 1) as start_to_complete_pct,
+    ROUND(100.0 * SUM(step_4_purchase) / NULLIF(SUM(step_3_complete), 0), 1) as complete_to_purchase_pct
+FROM funnel;
+```
+
+### Deduplication
+
+```sql
+-- Keep the most recent record per key
+WITH ranked AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (
+            PARTITION BY entity_id
+            ORDER BY updated_at DESC
+        ) as rn
+    FROM source_table
+)
+SELECT * FROM ranked WHERE rn = 1;
+```
+
+## Error Handling and Debugging
+
+When a query fails:
+
+1. **Syntax errors**: Check for dialect-specific syntax (e.g., `ILIKE` not available in BigQuery, `SAFE_DIVIDE` only in BigQuery)
+2. **Column not found**: Verify column names against schema -- check for typos, case sensitivity (PostgreSQL is case-sensitive for quoted identifiers)
+3. **Type mismatches**: Cast explicitly when comparing different types (`CAST(col AS DATE)`, `col::DATE`)
+4. **Division by zero**: Use `NULLIF(denominator, 0)` or dialect-specific safe division
+5. **Ambiguous columns**: Always qualify column names with table alias in JOINs
+6. **Group by errors**: All non-aggregated columns must be in GROUP BY (except in BigQuery which allows grouping by alias)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

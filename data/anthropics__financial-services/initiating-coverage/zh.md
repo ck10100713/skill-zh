@@ -1,0 +1,783 @@
+---
+name: initiating-coverage
+description: 透過 5 個任務的工作流程，撰寫機構等級的股票研究 initiation 報告。任務必須逐一執行，且先驗證前置條件：(1) 公司研究、(2) 財務建模、(3) 估值分析、(4) 圖表產生、(5) 最終報告組裝。每個任務產出特定的交付物（markdown 文件、Excel 模型、圖表或 DOCX 報告）。任務 3 到 5 依賴前面的任務。
+---
+
+# 開始覆蓋（Initiating Coverage）
+
+透過結構化的 5 任務工作流程，撰寫機構等級的股票研究 initiation 報告。每個任務都必須分開執行，並驗證輸入。
+
+## 概覽
+
+這個 skill 產出完整的首次覆蓋報告，遵循機構標準（JPMorgan、Goldman Sachs、Morgan Stanley 的格式）。任務逐一執行，每個任務在繼續之前都要驗證前置條件。
+
+**預設字體**：所有文件全文使用 Times New Roman（除非使用者另行指定）。
+
+---
+
+## ⚠️ 關鍵：一次只做一個任務
+
+**這個 skill 只在單一任務模式下運作。**
+
+### 如果使用者要求完整流程
+
+當使用者提出以下要求時：
+- "Create a coverage initiation report for [Company]"
+- "Write an initiation report for [Company]"
+- "Do the entire equity research process for [Company]"
+- "Complete all 5 tasks for [Company]"
+- 任何暗示要執行多個任務或整個工作流程的請求
+
+**必要的回應：**
+
+1. **詢問要執行哪個特定任務：**
+   ```
+   I can help you create an equity research initiation report for [Company].
+   This involves 5 separate tasks that need to be completed individually:
+
+   1. Company Research - Research business, management, industry
+   2. Financial Modeling - Build projection model
+   3. Valuation Analysis - DCF and comparable companies
+   4. Chart Generation - Create 25-35 charts
+   5. Report Assembly - Compile final report
+
+   Which task would you like to start with?
+   ```
+
+2. **當使用者明確要求一次做完所有任務：**
+   ```
+   I understand you'd like to complete the entire initiation report pipeline.
+   Currently, this skill supports executing one task at a time, which allows
+   for better quality control and review at each stage.
+
+   We're working on a seamless end-to-end workflow that will make this process
+   more automated, but for now, we'll need to complete each task separately.
+
+   Would you like to start with Task 1 (Company Research)?
+   ```
+
+3. **絕對不要自動假設要從哪個任務開始**，一律請使用者確認。
+
+4. **絕對不要連續執行多個任務**：完成一個任務、交付輸出，然後等使用者的下一個請求。
+
+### 任務執行規則
+
+- ✅ 每個使用者請求只執行一個任務
+- ✅ 開始任務前一定要驗證前置條件
+- ✅ 交付任務輸出並確認完成
+- ✅ 等使用者明確要求下一個任務
+- ❌ 絕對不要自動把多個任務串在一起
+- ❌ 絕對不要假設使用者想繼續下一個任務
+- ❌ 沒有驗證所需輸入存在之前，絕對不要執行任務 3 到 5
+
+### ⚠️ 交付物政策：不准走捷徑
+
+**只交付指定的輸出。不要多做額外的文件。**
+
+每個任務都有明確指定的交付物。不要建立：
+- ❌「完成摘要」
+- ❌「執行摘要」
+- ❌「快速參考指南」
+- ❌「後續步驟文件」
+- ❌「任務完成報告」
+- ❌ 任何其他沒有明確指定的「貼心」文件
+
+**原因**：這些多餘的東西會浪費 context，也不屬於專業的工作流程。
+
+**該交付什麼**：
+- ✅ 任務 1：研究文件（.md），**不要有其他東西**
+- ✅ 任務 2：財務模型（.xlsx），**不要有其他東西**
+- ✅ 任務 3：估值分析（.md）+ 加進任務 2 檔案的 Excel 分頁，**不要有其他東西**
+- ✅ 任務 4：圖表 zip 檔（.zip），**不要有其他東西**
+- ✅ 任務 5：最終報告（.docx），**不要有其他東西**
+
+**如果某個交付物沒有列在上面，就不要建立它。**
+
+---
+
+## 任務選擇
+
+選擇要執行哪個任務：
+
+| 任務 | 名稱 | 前置條件 | 輸出 |
+|------|------|--------------|--------|
+| **1** | 公司研究 | 公司名稱／股票代號 | 6 到 8 千字的文件 |
+| **2** | 財務建模 | 能取得 10-K 或財報 | Excel 模型（6 個分頁） |
+| **3** | 估值分析 | 財務模型（任務 2） | 估值 + 目標價 |
+| **4** | 圖表產生 | 任務 1、2、3 + 外部資料 | 25 到 35 張 PNG/JPG 圖表 |
+| **5** | 報告組裝 | 所有前面的任務（1 到 4） | 30 到 50 頁的 DOCX 報告 |
+
+---
+
+## 如何使用這個 Skill
+
+### 使用者請求模式與回應
+
+**模式 1：使用者指定特定任務**
+```
+User: "Use initiating-coverage, Task 1 for Tesla"
+Response: ✅ Execute Task 1 immediately
+```
+
+**模式 2：使用者要求「initiation report」或「完整流程」**
+```
+User: "Create a coverage initiation report for Tesla"
+Response: ❌ DO NOT start any task automatically
+         ✅ Ask which task to start with (see template above)
+```
+
+**模式 3：使用者想做「所有任務」或「整個工作流程」**
+```
+User: "I want to complete all 5 tasks for Tesla"
+Response: ❌ DO NOT chain tasks together
+         ✅ Explain one-at-a-time limitation (see template above)
+         ✅ Ask if they want to start with Task 1
+```
+
+### 正確的使用範例
+
+**執行單一任務：**
+```
+"Use initiating-coverage skill, Task 1 for Tesla"
+"Do Task 2 of initiating-coverage for Tesla"
+"Run Task 3 for Tesla using the initiating-coverage skill"
+```
+
+**完成完整報告（需要 5 次分開的請求）：**
+```
+Request 1: "Do Task 1 for Tesla" → Complete → Deliver outputs
+Request 2: "Do Task 2 for Tesla" → Complete → Deliver outputs
+Request 3: "Do Task 3 for Tesla" → Complete → Deliver outputs
+Request 4: "Do Task 4 for Tesla" → Complete → Deliver outputs
+Request 5: "Do Task 5 for Tesla" → Complete → Deliver outputs
+```
+
+### 任務執行順序
+
+要完成一份完整的 initiation 報告，任務必須依這個順序，在分開的使用者請求中執行：
+
+```
+Request 1: Task 1 - Company Research (independent)
+           ↓ [User reviews outputs and requests next task]
+Request 2: Task 2 - Financial Modeling (independent)
+           ↓ [User reviews outputs and requests next task]
+Request 3: Task 3 - Valuation Analysis (requires Task 2 output)
+           ↓ [User reviews outputs and requests next task]
+Request 4: Task 4 - Chart Generation (requires Tasks 2 & 3 outputs)
+           ↓ [User reviews outputs and requests next task]
+Request 5: Task 5 - Report Assembly (requires ALL previous task outputs)
+```
+
+**注意**：任務 1 和 2 可以任意順序執行。任務 3 到 5 有嚴格的相依關係，繼續之前必須驗證輸入。
+
+---
+
+## 任務 1：公司研究
+
+**目的**：研究公司的業務、管理層、競爭地位、產業和風險。
+
+**前置條件**：✅ 無（完全獨立）
+- 公司名稱或股票代號
+
+**流程**：
+1. 驗證有提供公司名稱／股票代號
+2. 從 references/task1-company-research.md 載入詳細指示
+3. 執行質化研究工作流程
+4. 交付研究文件
+
+**輸出**：公司研究文件（6,000 到 8,000 字）
+- 公司概覽與歷史
+- 管理層簡介（300 到 400 字 × 3 到 4 位高階主管）
+- 產品與服務分析
+- 產業概覽
+- 競爭分析（5 到 10 個競爭對手）
+- TAM 規模估算
+- 風險評估（8 到 12 項風險）
+
+**檔名**：`[Company]_Research_Document_[Date].md`
+
+**⚠️ 只交付這 1 個檔案。不要有完成摘要，不要有額外文件。**
+
+**⚠️ 不准走捷徑：**
+- ✅ 寫滿完整的 6,000 到 8,000 字（不是摘要）
+- ✅ 對所有 3 到 4 位高階主管，都完成 300 到 400 字的簡介
+- ✅ 徹底分析所有 5 到 10 個競爭對手
+- ✅ 涵蓋 4 大類中全部 8 到 12 項風險
+- ❌ 不要為了省時間而縮寫段落
+- ❌ 不要跳過任何必要的段落
+
+**繼續之前的驗證**：這個任務不需要驗證。
+
+---
+
+## 任務 2：財務建模
+
+**目的**：擷取歷史財務資料，並建立完整的 Excel 財務模型，包含預測和情境。
+
+**前置條件**：⚠️ 開始前要驗證
+- **必要**：能取得公司財務資料
+  - 上市公司：來自 SEC EDGAR 的最新 10-K
+  - 私人公司：財務報表或可取得的估計值
+  - 或者：使用者提供已擷取好的歷史財務資料
+- **選用**：公司研究（任務 1），提供業務背景
+
+**輸入驗證**：
+```
+BEFORE STARTING - Select approach:
+
+Option A: Extract financials (most common)
+- [ ] Have access to 10-K or financial statements?
+- [ ] Ready to extract 3-5 years of data?
+
+Option B: User provided pre-extracted financials
+- [ ] Historical financials file received?
+- [ ] Contains income statement, cash flow, balance sheet (3-5 years)?
+
+Optional:
+- [ ] Company research (Task 1) complete for context?
+```
+
+**流程**：
+1. 驗證能取得財務資料
+2. 從 references/task2-financial-modeling.md 載入詳細指示
+3. **步驟 1**：擷取歷史財務資料（如有需要）
+4. **步驟 2 以後**：建立含 6 個必要分頁的預測模型
+5. 交付 Excel 模型
+
+**輸出**：Excel 財務模型（.xlsx）
+- 6 個必要分頁：
+  1. **Revenue Model**：產品拆解（20 到 30 列）+ 地區拆解（15 到 20 列）
+  2. **Income Statement**：完整損益表，含 40 到 50 個項目，歷史（3 到 5 年）+ 預測（5 年）
+  3. **Cash Flow Statement**：營業／投資／融資活動，歷史 + 預測
+  4. **Balance Sheet**：資產／負債／權益，歷史 + 預測
+  5. **Scenarios**：Bull/Base/Bear 比較表
+  6. **DCF Inputs**：為任務 3 的估值做準備
+
+**檔名**：`[Company]_Financial_Model_[Date].xlsx`
+
+**⚠️ 只交付這 1 個檔案。不要有完成摘要，不要有額外文件。**
+
+**⚠️ 不准走捷徑：**
+- ✅ 如果要擷取財務資料：擷取 3 大財報的所有項目（3 到 5 年）
+- ✅ 完整建好全部 6 個預測分頁，細節齊全
+- ✅ 建立詳細的營收模型，含 20 到 30 列產品和 15 到 20 列地區
+- ✅ 建立完整的損益表，含 40 到 50 個項目（不要縮寫）
+- ✅ 包含完整的現金流量表和資產負債表，所有項目都要有
+- ✅ 完成全部三個情境（Bull/Base/Bear），參數各不相同
+- ❌ 不要建立簡化／縮寫的版本
+- ❌ 不要跳過 6 個必要分頁中的任何一個
+- ❌ 如果需要，不要跳過歷史財務資料的擷取
+
+**進入任務 3 之前的驗證**：
+- [ ] 已擷取（如有需要）或已取得歷史財務資料
+- [ ] Excel 檔案已建立且可以開啟
+- [ ] 模型有全部 6 個必要分頁（Revenue Model、Income Statement、Cash Flow、Balance Sheet、Scenarios、DCF Inputs）
+- [ ] 已納入歷史資料（3 到 5 年）
+- [ ] 預測完整（往後 5 年）
+- [ ] 情境完整（Bull/Base/Bear）
+
+---
+
+## 任務 3：估值分析
+
+**目的**：使用 DCF、可比公司和先例交易進行完整的估值。
+
+**前置條件**：⚠️ 開始前要驗證
+- **必要**：任務 2 的財務模型
+  - 預測損益表
+  - 預測現金流
+  - 營收與 EBITDA 預測
+  - DCF 輸入（無槓桿 FCF）
+
+**⚠️ 關鍵：任務 2 沒完成就不准開始這個任務**
+
+這個任務需要任務 2 的財務模型。沒有它就開始，只會做出不完整的成果。
+
+**如果任務 2 還沒完成**：立刻停下來，告訴使用者必須先完成任務 2（財務建模）。不要硬做，也不要建立佔位的估值。
+
+**輸入驗證**：
+```
+BEFORE STARTING:
+- [ ] Task 2 complete? (Financial model exists)
+- [ ] Model file path/location known?
+- [ ] Can access projected financials from model?
+
+Required from model:
+- [ ] Projected FCF (5 years)
+- [ ] Revenue projections
+- [ ] EBITDA projections
+- [ ] Terminal year metrics
+```
+
+**流程**：
+1. 驗證能取用財務模型
+2. 從 references/task3-valuation.md 載入詳細指示
+3. 執行估值工作流程
+4. 交付估值分析
+
+**輸出**：估值分析（4 到 6 頁 + Excel 分頁）
+- 含敏感度表的 DCF 分析
+- 可比公司（5 到 10 家同業，附統計摘要）
+- 先例交易（如適用）
+- 估值 football field 圖
+- **目標價**：$XX.XX
+- **建議**：BUY/HOLD/SELL
+- **上檔空間**：XX%
+- 關鍵催化劑（3 到 5 個）
+
+**檔案**：
+- `[Company]_Valuation_Analysis_[Date].md`（書面分析文件）
+- 加進 `[Company]_Financial_Model_[Date].xlsx`（來自任務 2）的 Excel 分頁
+  - 含計算的 DCF 分頁
+  - 敏感度分析分頁
+  - 可比公司分頁
+  - 估值摘要分頁
+
+**⚠️ 只交付：1 個 markdown 檔 + 加進既有 Excel 的 4 個分頁。不要有完成摘要，不要有額外文件。**
+
+**⚠️ 不准走捷徑：**
+- ✅ 完成完整的 DCF 分析和敏感度矩陣（不要簡化）
+- ✅ 用完整資料分析所有 5 到 10 家可比公司
+- ✅ 在 comps 表中納入統計摘要（max/75th/median/25th/min）
+- ✅ 建立完整的敏感度分析分頁，涵蓋多種 WACC 和終端成長率情境
+- ✅ 寫滿完整的 4 到 6 頁估值分析（不要縮寫）
+- ✅ 研究並以具體方法論論證目標價
+- ❌ 不要跳過可比公司分析
+- ❌ 不要建立沒有敏感度的簡化 DCF
+
+**進入任務 4 之前的驗證**：
+- [ ] 已決定目標價
+- [ ] 估值使用多種方法（至少 DCF + Comps）
+- [ ] DCF 敏感度表完整
+- [ ] 可比公司表包含統計摘要
+
+---
+
+## 任務 4：圖表產生
+
+**目的**：為報告產生 25 到 35 張專業的財務圖表。
+
+**前置條件**：⚠️ 開始前要驗證
+- **必要**：任務 1 的公司研究
+  - 公司歷史與里程碑（用於時間軸圖表）
+  - 管理團隊與組織結構（用於組織圖）
+  - 產品組合（用於產品圖表）
+  - 客戶區隔（用於客戶圖表）
+  - 競爭格局（用於競爭圖表）
+  - TAM 分析（用於市場規模圖表）
+- **必要**：任務 2 的財務模型（已加入任務 3 的估值分頁）
+  - 依產品／地區的營收資料（任務 2 分頁）
+  - 利潤率趨勢（任務 2 分頁）
+  - 情境比較資料（任務 2 分頁）
+  - DCF 敏感度表（同一個 Excel 檔中的任務 3 分頁）
+  - 可比公司資料（同一個 Excel 檔中的任務 3 分頁）
+  - 估值區間（同一個 Excel 檔中的任務 3 分頁）
+- **必要**：外部市場資料
+  - 歷史股價資料（Yahoo Finance、Bloomberg 等）
+  - 歷史估值倍數（用於歷史趨勢圖表）
+
+**⚠️ 關鍵：任務 1、2、3 沒全部完成就不准開始這個任務**
+
+這個任務需要前面三個任務的所有輸出。沒有它們就開始，只會做出不完整的圖表。
+
+**如果任務 1、2、3 有任何一個還沒完成**：立刻停下來，告訴使用者哪些任務要先完成。具體要求如下：
+- 任務 1：公司研究文件（供 9 張圖表使用）
+- 任務 2：含全部 6 個分頁的財務模型（供 8 張圖表使用）
+- 任務 3：加進模型的估值分頁（供 6 張圖表使用）
+- 外部資料存取（供 2 張圖表使用）
+
+不要因為缺資料就建立佔位圖表或跳過圖表。
+
+**輸入驗證**：
+```
+BEFORE STARTING:
+- [ ] Task 1 complete? (Company research exists)
+- [ ] Task 2 complete? (Financial model exists)
+- [ ] Task 3 complete? (Valuation analysis exists)
+- [ ] Can access external market data sources?
+
+Required from Task 1:
+- [ ] Company history and milestones (for charts 05, 06)
+- [ ] Management team structure (for chart 07)
+- [ ] Product portfolio details (for chart 08)
+- [ ] Customer segmentation data (for chart 09)
+- [ ] Competitive landscape analysis (for charts 16, 17, 18)
+- [ ] TAM sizing and market data (for chart 15)
+
+Required from Task 2:
+- [ ] Revenue by product (historical + projected) - for chart 03 ⭐
+- [ ] Revenue by geography (historical + projected) - for chart 04 ⭐
+- [ ] Income statement with margins (for charts 02, 10, 11)
+- [ ] Cash flow statement (for chart 12)
+- [ ] Scenario comparison data (for chart 14)
+
+Required from Task 3:
+- [ ] DCF sensitivity matrix - for chart 28 ⭐
+- [ ] DCF components (for chart 29)
+- [ ] Comparable companies data (for charts 30, 31)
+- [ ] Valuation ranges - for chart 32 ⭐
+
+Required from External Sources:
+- [ ] Historical stock price data (for chart 01)
+- [ ] Historical valuation multiples (for chart 34)
+```
+
+**流程**：
+1. 驗證能取用模型和估值輸出
+2. 從 references/task4-chart-generation.md 載入詳細指示
+3. 執行圖表產生工作流程
+4. 把所有圖表打包成 zip 檔
+5. 交付 zip 檔
+
+**輸出**：25 到 35 個專業圖表檔案（PNG/JPG，300 DPI），打包成 zip
+
+**4 張必備圖表**（一定要有）⭐：
+- chart_03：依產品的營收（堆疊面積圖）
+- chart_04：依地區的營收（堆疊長條圖）
+- chart_28：DCF 敏感度（雙向熱力圖）
+- chart_32：估值 football field（水平長條圖）
+
+**25 張必要圖表**（具體清單）：
+- 投資摘要：chart_01
+- 財務表現：charts 02、03⭐、04⭐、10、11、12、14
+- Company 101：charts 05、06、07、08、09、15、16
+- 競爭／市場：charts 17、18
+- 情境分析：chart 13
+- 估值：charts 28⭐、29、30、31、32⭐、33、34
+
+**10 張選用圖表**（用於 26 到 35 張的範圍）：
+- charts 19-27、35（客戶獲取、單位經濟、產品 roadmap 等）
+
+**重要**：任務 5 會嵌入所有做出來的圖表（25 到 35 張），以達到視覺密度（每 200 到 300 字一張圖）。
+
+**檔案命名**：`chart_01_description.png`、`chart_02_description.png` 等。
+
+**交付物**：`[Company]_Charts_[Date].zip`，內含全部 25 到 35 個圖表檔 + chart_index.txt
+
+**⚠️ 只交付這 1 個 zip 檔。不要有完成摘要，不要有另外的圖表清單，不要有額外文件。**
+
+**⚠️ 不准走捷徑：**
+- ✅ 至少建立全部 25 張必要圖表（具體清單在 task4-chart-generation.md）
+- ✅ 包含全部 4 張必備圖表：
+  - chart_03：依產品的營收（堆疊面積圖）⭐
+  - chart_04：依地區的營收（堆疊長條圖）⭐
+  - chart_28：DCF 敏感度（熱力圖）⭐
+  - chart_32：估值 football field ⭐
+- ✅ 選用：再加 1 到 10 張，達到總共 26 到 35 張，增加視覺密度
+- ✅ 產生 300 DPI 的專業品質圖表（不是低解析度的佔位圖）
+- ✅ 每個視覺化都建立獨特、排版良好的圖表
+- ✅ 把所有圖表連同圖表索引打包成 zip 檔
+- ❌ 不要只做 10 到 15 張圖表（最低是 25 張）
+- ❌ 不要跳過 4 張必備圖表中的任何一張
+- ❌ 不要用低品質／佔位圖片
+
+**進入任務 5 之前的驗證**：
+- [ ] 至少建立 25 個圖表檔（必要）
+- [ ] 4 張必備圖表都有：
+  - [ ] chart_03：依產品的營收 ⭐
+  - [ ] chart_04：依地區的營收 ⭐
+  - [ ] chart_28：DCF 敏感度 ⭐
+  - [ ] chart_32：估值 football field ⭐
+- [ ] 所有圖表都能開啟且顯示正常
+- [ ] 圖表以 300 DPI 儲存（列印品質）
+- [ ] 已建立圖表索引，依類別列出所有檔案
+- [ ] 所有圖表都打包進 zip 檔
+- [ ] 檔案命名遵循慣例：chart_##_description.png
+
+---
+
+## 任務 5：報告組裝
+
+**目的**：撰寫並組裝完整的最終 DOCX 報告。
+
+**前置條件**：⚠️ 開始前要驗證
+- **必要**：任務 1 的公司研究
+  - 全部 6 到 8 千字的內容
+  - 管理層簡介
+  - 競爭分析
+  - 風險評估
+- **必要**：任務 2 的財務模型
+  - Excel 活頁簿
+  - 所有預測與情境
+- **必要**：任務 3 的估值分析
+  - 目標價與建議
+  - DCF、comps、先例交易
+  - 所有估值資料
+- **必要**：任務 4 的圖表檔案
+  - 內含全部 25 到 35 個 PNG/JPG 檔案的 zip 檔
+  - zip 內含圖表索引
+
+**⚠️ 關鍵：任務 1 到 4 沒全部完成就不准開始這個任務**
+
+這是最後的組裝任務。沒有前面所有的成果，就無法完成。
+
+**如果任務 1、2、3、4 有任何一個還沒完成**：立刻停下來，告訴使用者哪些任務要先完成。具體要求如下：
+- 任務 1：公司研究文件（6 到 8 千字）
+- 任務 2：含全部 6 個分頁的財務模型
+- 任務 3：含目標價與建議的估值分析
+- 任務 4：含 25 到 35 張圖表的 zip 檔
+
+不要建立佔位內容、不要替換缺少的段落、也不要組裝不完整的報告。報告需要所有輸入，才能達到可發布的水準。
+
+**輸入驗證**：
+```
+BEFORE STARTING - ALL TASKS MUST BE COMPLETE:
+
+Task 1 Verification:
+- [ ] Company research document exists? (6-8K words)
+- [ ] Management bios complete? (300-400 words × 3-4 execs)
+- [ ] Competitive analysis complete? (5-10 competitors)
+- [ ] Risk assessment complete? (8-12 risks)
+
+Task 2 Verification:
+- [ ] Financial model exists and can be opened?
+- [ ] Model has projections (5 years)?
+- [ ] Scenarios exist (Bull/Base/Bear)?
+
+Task 3 Verification:
+- [ ] Valuation analysis complete?
+- [ ] Price target determined?
+- [ ] Recommendation set? (BUY/HOLD/SELL)
+- [ ] DCF and comps complete?
+
+Task 4 Verification:
+- [ ] Chart zip file exists?
+- [ ] Can extract/access all 25-35 chart files from zip?
+- [ ] All 4 mandatory charts present?
+  - [ ] Revenue by product (stacked area)
+  - [ ] Revenue by geography (stacked bar)
+  - [ ] DCF sensitivity (heatmap)
+  - [ ] Valuation football field
+- [ ] Chart files accessible and can be opened?
+
+IF ANY VERIFICATION FAILS: Stop and complete missing task first.
+```
+
+**流程**：
+1. **關鍵**：開始前驗證所有前置條件
+2. 從 references/task5-report-assembly.md 載入詳細指示
+3. 使用 Claude 內建的 skill 執行報告組裝工作流程：
+   - **用 DOCX skill** 建立並操作 Word 文件
+   - **用 XLSX skill** 讀取任務 2/3 的 Excel 資料
+   - **用 Read 工具** 讀取任務 1 和任務 3 的 markdown 檔案
+   - 讀取任務 1 的 .md 檔 → 轉成 Word 格式 → 把圖表以行內方式插入
+   - 讀取任務 2 的 .xlsx 檔 → 擷取表格 → 撰寫量化分析
+   - 讀取任務 3 的 .md 檔 + Excel 分頁 → 複製／改寫估值分析
+   - 用 DOCX skill 把任務 4 的 .png 圖表檔插入各處
+   - 製作以文字為主的報告，每 200 到 300 字穿插一張圖表
+4. 儲存並交付最終 DOCX 報告
+
+**關鍵原則**：
+- 使用 Claude 的 DOCX 和 XLSX skill（不要用 Python 函式庫）
+- 使用實際的檔案操作（讀 .md/.xlsx/.png 檔、寫 .docx 檔）
+- 好的股票研究報告文字密集，並配有大量說明用的圖片（頁面覆蓋率 60 到 80%，每頁至少 1 張圖表）
+
+**🔥 關鍵：這個任務要全力以赴**
+
+**這是最終交付物。不准走捷徑。**
+
+- ✅ **用滿全部 token 預算**：這是前面所有工作的總結
+- ✅ **每個段落都寫完整**：不要摘要或縮寫
+- ✅ **達到所有最低要求**：30 頁以上、10,000 字以上、25 張以上圖表、12 張以上表格
+- ✅ **預測假設要徹底**：2,000 到 3,000 字，逐產品詳述
+- ✅ **情境要全面**：1,500 到 2,000 字，附具體的 Bull/Base/Bear 參數
+- ✅ **插入任務 4 的所有圖表**：不是只放幾張，是全部 25 到 35 張，穿插在整份報告中
+- ✅ **建立任務 2/3 的所有表格**：擷取每一張財務表，一張都不要漏
+- ✅ **逐字使用任務 1 的內容**：複製／貼上完整的 Company 101 段落（6 到 8 千字）
+- ✅ **只接受專業品質**：必須跟 JPMorgan/Goldman Sachs 的研究報告看不出差別
+
+**絕對不准：**
+- ❌ 「這個段落會包含…」：去寫實際的段落
+- ❌ 「圖表會插入在這裡…」：去插入實際的圖表
+- ❌ 「詳見財務模型」：去擷取並放進細節
+- ❌ 因為太長就跳過段落：每個段落都必須完整
+- ❌ 為了節省 token 而縮寫：需要多少 token 就用多少
+
+**這是可發布的機構等級研究。不要吝惜任何力氣、token 或細節。**
+
+**輸出**：完整的股票研究報告（.docx）
+
+**規格**：
+- **篇幅**：30 到 50 頁（最少 30）
+- **字數**：10,000 到 15,000 字（最少 10,000）
+- **圖表**：25 到 35 張嵌入的圖片
+- **表格**：12 到 20 張完整的表格
+- **格式**：專業的 DOCX，含可點擊的超連結
+
+**結構**：
+- 第 1 頁：投資摘要（INITIATING COVERAGE 格式）
+- 第 2 到 5 頁：投資論點與風險
+- 第 6 到 17 頁：Company 101
+- 第 18 到 30 頁：財務分析與預測
+- 第 31 到 40 頁：估值分析
+- 第 41 到 50 頁：附錄
+
+**檔名**：`[Company]_Initiation_Report_[Date].docx`
+
+**⚠️ 只交付這 1 個 DOCX 檔。不要有執行摘要，不要有「重點」文件，不要有額外檔案。**
+
+**最終驗證**：
+- [ ] 報告 30 到 50 頁
+- [ ] 字數 10,000 到 15,000
+- [ ] 嵌入 25 到 35 張圖表
+- [ ] 包含 12 到 20 張表格
+- [ ] 所有引用都是可點擊的超連結
+- [ ] 數字與財務模型完全吻合
+
+---
+
+## 輸入驗證協定
+
+### 為什麼輸入驗證很重要
+
+每個任務都有嚴格的前置條件。沒有所需輸入就執行任務，會：
+- 因為做出不完整的成果而浪費時間
+- 產出低品質的輸出
+- 需要重做
+
+**開始任務之前，一定要驗證輸入。**
+
+### 各任務的驗證 Checklist
+
+**任務 1**：✅ 不需要驗證（獨立）
+
+**任務 2**：檢查有沒有歷史財務資料
+
+**任務 3**：檢查財務模型存在且可取用
+
+**任務 4**：檢查模型（任務 2）和估值（任務 3）都存在
+
+**任務 5**：檢查所有前面的任務都完成（1、2、3、4）
+
+### 驗證失敗時該怎麼做
+
+```
+IF prerequisites are missing:
+1. Stop the current task
+2. Identify which prerequisite task(s) need to be completed
+3. Execute the missing task(s) first
+4. Return to current task once prerequisites are met
+```
+
+### 驗證對話範例
+
+```
+User: "Use initiating-coverage, Task 5 for Tesla"
+
+Claude: "Starting Task 5: Report Assembly for Tesla
+
+VERIFICATION - Checking prerequisites:
+- Task 1 (Company research)... ❌ NOT FOUND
+- Task 2 (Financial model)... ❌ NOT FOUND
+- Task 3 (Valuation)... ❌ NOT FOUND
+- Task 4 (Charts)... ❌ NOT FOUND
+
+⚠️ VERIFICATION FAILED
+
+Task 5 requires ALL previous tasks to be complete.
+
+To proceed:
+1. Complete Task 1: Company Research
+2. Complete Task 2: Financial Modeling
+3. Complete Task 3: Valuation Analysis
+4. Complete Task 4: Chart Generation
+5. Then return to Task 5
+
+Would you like to start with Task 1 first?"
+```
+
+---
+
+## 任務參考檔案
+
+每個任務的詳細指示放在獨立的參考檔案裡，讓這個 skill 保持精簡：
+
+- **references/task1-company-research.md** - 公司研究工作流程
+- **references/task2-financial-modeling.md** - 財務建模工作流程
+- **references/task3-valuation.md** - 估值方法論
+  - 另見：references/valuation-methodologies.md，有 DCF/comps 的深入說明
+- **references/task4-chart-generation.md** - 圖表產生工作流程
+- **references/task5-report-assembly.md** - 報告撰寫工作流程
+  - 另見：assets/report-template.md，有報告結構
+  - 另見：assets/quality-checklist.md，有品質檢查
+
+**何時載入參考檔案**：只載入跟當前正在執行的任務相關的那一個參考檔案。這些檔案非常大，不要一次載入多個。在任務一開始就讀取對應的任務參考檔案，取得詳細的逐步指示。
+
+---
+
+## 品質標準
+
+所有輸出都符合領先投資銀行（JPMorgan、Goldman Sachs、Morgan Stanley）的機構標準：
+
+- **完整**：滿足所有最低要求
+- **詳細**：具體的資料和例子，不是籠統的陳述
+- **量化**：以數字和指標開頭
+- **有引用**：有適當的來源和可點擊的超連結
+- **專業**：機構等級的格式
+- **正確**：所有數字都經過驗證與交叉核對
+
+---
+
+## 重要注意事項
+
+### 任務獨立性
+
+- **任務 1** 隨時可以執行（沒有相依）
+- **任務 2** 隨時可以執行（只需要歷史資料）
+- **任務 1 和 2** 可以平行執行
+- **任務 3** 需要任務 2
+- **任務 4** 需要任務 2 和 3
+- **任務 5** 需要任務 1、2、3 和 4
+
+### Session 管理
+
+**同一個 session**：輸出會自動提供給後續任務使用
+
+**不同的 session**：要明確引用先前任務的輸出
+```
+"Use Task 3 with the model from yesterday at [path]"
+"Use Task 5 with the research document at [path]"
+```
+
+### 檔案組織
+
+工作流程中建議的結構：
+```
+ProjectFolder/
+├── Task1_Research/
+│   └── [Company]_Research_Document.md
+├── Task2_Model/
+│   └── [Company]_Financial_Model.xlsx
+├── Task3_Valuation/
+│   └── [Company]_Valuation_Analysis.pdf
+├── Task4_Charts/
+│   ├── chart_01.png
+│   └── ... (25-35 files)
+└── Task5_Report/
+    └── [Company]_Initiation_Report.docx
+```
+
+### 不支援端到端執行
+
+這個 skill **不**支援自動依序執行所有任務。每個任務都必須明確請求並驗證。
+
+**原因**：這樣能確保：
+- 每個階段都有品質控管
+- 繼續之前可以審閱輸出
+- 可以彈性暫停／恢復工作流程
+- 前置條件有清楚的驗證
+
+---
+
+## 成功標準
+
+一個成功的 initiation 報告工作流程應該：
+1. 依序完成全部 5 個任務
+2. 通過所有輸入驗證
+3. 滿足所有品質標準
+4. 產出所有必要的交付物
+5. 各輸出之間的數字能交叉核對
+6. 最終報告達到可發布的水準
+
+**輸出品質**：機構等級（JPMorgan/Goldman/Morgan Stanley 水準）
+**使用情境**：對公司的首次完整覆蓋

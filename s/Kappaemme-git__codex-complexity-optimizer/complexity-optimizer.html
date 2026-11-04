@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>complexity-optimizer｜Skill 寫法圖鑑</title>
+<meta name="description" content="掃描 codebase 的演算法複雜度熱點，提出不破壞行為的優化">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>complexity-optimizer</h1>
+<p class="meta">Kappaemme-git ｜ 架構與重構 ｜ <a href="https://github.com/Kappaemme-git/codex-complexity-optimizer/blob/main/complexity-optimizer/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">掃描 codebase 的演算法複雜度熱點，提出不破壞行為的優化</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: complexity-optimizer
+description: 分析軟體 codebase 的演算法複雜度和效能熱點，然後提出或實作不破壞行為的安全優化。當 Codex 被要求掃描大量檔案、找出低效率的迴圈、巢狀迭代、重複掃描、昂貴的 rendering／重算、N+1 query、可以避免的 O(n^2) 或 O(n) 操作，或是把 O(n^2) 降成 O(n log n) / O(n) 這類複雜度，同時要保住測試、API、輸出和可維護性時使用。
+---
+
+# Complexity Optimizer
+
+## Core Rule
+
+只有在目前的行為已經搞清楚、而且能保住的時候才優化。寧可做小而有測試證明的改進，也不要做正確性不明的大改寫。
+
+## Default Behavior
+
+當使用者要求分析、掃描、audit、review，或「給我一份報告」時，自動產出完整的複雜度報告。不用等使用者指定報告欄位。
+
+預設的報告內容：
+
+- 分析的範圍，以及偵測到的技術棧／測試指令。
+- 依可能影響大小排序的主要發現。
+- 每個發現的檔案和行號。
+- 目前的寫法，以及為什麼可能很貴。
+- 目前的估計複雜度。
+- 建議的修改。
+- 修改後的估計複雜度。
+- 風險等級。
+- 需要的測試、benchmark 或手動檢查。
+- 明確聲明沒有修改任何檔案，除非使用者明確要求實作。
+
+只有在使用者要求實作、修、優化、套用、修改、refactor，或是其他明確要求改程式碼的時候，才編輯檔案。如果使用者只要分析或報告，就不要改檔案。
+
+## Workflow
+
+1. 建立基準：
+   - 找出語言、framework、測試指令、build 指令，以及對效能敏感的路徑。
+   - 動程式碼之前先看現有的測試。
+   - 掃描 repo 時，先跑 `scripts/analyze_complexity.py &lt;repo&gt;` 取得第一輪的熱點清單。
+
+2. 排序機會：
+   - 優先處理熱路徑、大量輸入的路徑、rendering 迴圈、資料庫／API 迴圈，以及共用的 utility。
+   - 把演算法複雜度和常數係數的整理分開。
+   - 不要每個警告都去修。掃描器的輸出當線索，不是證據。
+   - 只要報告的請求，要看夠多周圍的程式碼來估計目前和建議後的複雜度，不要只停在掃描器的原始輸出。
+
+3. 證明行為：
+   - 找出或補上針對要改的函式／元件的聚焦測試。
+   - 抓出邊界情況：空輸入、重複值、順序穩定性、null／缺值、錯誤、權限、分頁、時區，以及會改動資料的副作用。
+   - 如果沒有測試而且行為不明確，就做最小的 refactor，或是先問預期行為，再動語意。
+
+4. 保守地優化：
+   - key 相等性穩定的時候，把重複的線性查找換成 map／set。
+   - 只有在資料形狀支持的情況下，才把巢狀掃描換成 indexing、grouping、雙指標掃描、sweep-line、二分搜尋、memoization、batching 或預先計算。
+   - UI 程式碼裡，用穩定的 props、memoize 衍生資料、virtualization、debounce，並把昂貴的工作移出 render 路徑，來減少不必要的 render。
+   - 資料存取的程式碼裡，用批次抓取、join、preload、cache 或 batching 移除 N+1，同時保住授權和過濾。
+
+5. 驗證：
+   - 跑相關的測試和 type／lint／build 指令。
+   - 複雜度改善不明顯或對效能很關鍵時，加一個 micro-benchmark 或量測。
+   - 回報原本的複雜度、新的複雜度、改動的檔案、跑過的測試，以及剩下的風險。
+
+## First-Pass Scanner
+
+用 skill 目錄裡附的掃描器：
+
+```bash
+python3 scripts/analyze_complexity.py /path/to/repo --format markdown
+python3 scripts/analyze_complexity.py /path/to/repo --format json
+```
+
+掃描器會標出 Python、JavaScript、TypeScript、JSX/TSX、Java、Go、C、C++、C#、Ruby、PHP 和 Swift 檔案裡常見的寫法。它刻意追求好讀的線索，而不是完美的靜態分析。
+
+如果掃描器什麼都沒回報，還是要手動檢查已知的熱路徑。Rendering 的反覆重繪、資料庫 query 的寫法、framework 生命週期的問題，常常需要該 repo 專屬的脈絡才看得出來。
+
+## Optimization Safety Checklist
+
+編輯之前：
+
+- 確認資料量大到複雜度真的有差。
+- 確認優化後保住輸出順序，因為呼叫端可能依賴它。
+- 確認物件 identity、可變性和 reference 共用不是公開行為的一部分。
+- 確認 cache 有有效的失效策略。
+- 確認去重不會把顯示標籤相同但實際不同的記錄合併掉。
+- 確認資料庫的 batching 保住 tenant、權限、soft-delete、分頁和排序的限制。
+
+編輯之後：
+
+- 先跑範圍窄的測試，再跑範圍最廣的相關測試／build 指令。
+- 有 benchmark（原本就有或新加的）時，比對前後的數字。
+- 讓 patch 保持局部。不要在不相關的檔案裡亂改格式。
+
+## References
+
+- 常見的 O(n^2) 到 O(n log n) / O(n) 轉換和 framework 專屬的寫法，讀 `references/optimization-playbook.md`。
+- 準備最後的分析或 audit 輸出時，讀 `references/report-template.md`。</pre></section><section><h2>英文原文</h2><pre>---
+name: complexity-optimizer
+description: Analyze a software codebase for algorithmic complexity and performance hotspots, then propose or implement safe optimizations without breaking behavior. Use when Codex is asked to scan many files, find inefficient loops, nested iteration, repeated scans, costly rendering/recomputation, N+1 queries, avoidable O(n^2) or O(n) operations, or reduce complexity such as O(n^2) to O(n log n) / O(n), while preserving tests, APIs, outputs, and maintainability.
+---
+
+# Complexity Optimizer
+
+## Core Rule
+
+Optimize only when the current behavior is understood and can be preserved. Prefer a small, proven improvement with tests over a broad rewrite with unclear correctness.
+
+## Default Behavior
+
+When the user asks to analyze, scan, audit, review, or &quot;give me a report&quot; for a codebase, produce the full complexity report automatically. Do not require the user to specify report fields.
+
+Default report contents:
+
+- Scope analyzed and detected stack/test commands.
+- Top findings ranked by likely impact.
+- File and line for each finding.
+- Current pattern and why it may be costly.
+- Estimated current complexity.
+- Recommended change.
+- Estimated complexity after the change.
+- Risk level.
+- Tests, benchmarks, or manual checks needed.
+- Clear statement that no files were modified, unless the user explicitly requested implementation.
+
+Only edit files when the user asks to implement, fix, optimize, apply, change, refactor, or otherwise clearly requests code modification. If the user only asks for analysis or a report, do not modify files.
+
+## Workflow
+
+1. Establish the baseline:
+   - Identify the language, framework, test command, build command, and performance-sensitive paths.
+   - Inspect existing tests before touching code.
+   - Run `scripts/analyze_complexity.py &lt;repo&gt;` for a first-pass hotspot list when scanning a repository.
+
+2. Rank opportunities:
+   - Prioritize code on hot paths, large input paths, rendering loops, database/API loops, and shared utilities.
+   - Separate algorithmic complexity from constant-factor cleanup.
+   - Do not patch every warning. Treat scanner output as leads, not proof.
+   - For report-only requests, inspect enough surrounding code to estimate current and proposed complexity; do not stop at raw scanner output.
+
+3. Prove behavior:
+   - Locate or add focused tests for the function/component being changed.
+   - Capture edge cases: empty input, duplicates, ordering stability, null/missing values, errors, permissions, pagination, time zones, and mutation side effects.
+   - If tests are absent and behavior is ambiguous, make the smallest refactor or ask for expected behavior before changing semantics.
+
+4. Optimize conservatively:
+   - Replace repeated linear lookup with maps/sets when key equality is stable.
+   - Replace nested scans with indexing, grouping, two-pointer scans, sweep-line logic, binary search, memoization, batching, or precomputation only when the data shape supports it.
+   - In UI code, reduce unnecessary renders with stable props, memoized derived data, virtualization, debounced work, and moving expensive work out of render paths.
+   - In data access code, remove N+1 behavior with bulk fetches, joins, preloading, caching, or batching while preserving authorization and filtering.
+
+5. Verify:
+   - Run relevant tests and type/lint/build commands.
+   - Add a micro-benchmark or measurement when the complexity improvement is non-obvious or performance-critical.
+   - Report the original complexity, new complexity, changed files, tests run, and any residual risk.
+
+## First-Pass Scanner
+
+Use the bundled scanner from the skill directory:
+
+```bash
+python3 scripts/analyze_complexity.py /path/to/repo --format markdown
+python3 scripts/analyze_complexity.py /path/to/repo --format json
+```
+
+The scanner flags common patterns in Python, JavaScript, TypeScript, JSX/TSX, Java, Go, C, C++, C#, Ruby, PHP, and Swift files. It intentionally favors readable leads over perfect static analysis.
+
+If the scanner reports nothing, still inspect known hot paths manually. Rendering churn, database query patterns, and framework lifecycle issues often require repository-specific context.
+
+## Optimization Safety Checklist
+
+Before editing:
+
+- Confirm the data sizes are large enough for complexity to matter.
+- Confirm the optimization preserves output ordering where callers may rely on it.
+- Confirm object identity, mutability, and reference sharing are not part of the public behavior.
+- Confirm caches have a valid invalidation strategy.
+- Confirm deduplication does not collapse distinct records that share a display label.
+- Confirm database batching preserves tenant, permission, soft-delete, pagination, and sorting constraints.
+
+After editing:
+
+- Run the narrow test first, then the broadest relevant test/build command.
+- Compare before/after benchmark numbers when a benchmark exists or was added.
+- Keep the patch localized. Avoid formatting churn in unrelated files.
+
+## References
+
+- Read `references/optimization-playbook.md` for common O(n^2) to O(n log n) / O(n) transformations and framework-specific patterns.
+- Read `references/report-template.md` when preparing the final analysis or audit output.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

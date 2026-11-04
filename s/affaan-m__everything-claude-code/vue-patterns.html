@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vue-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Vue 3 Composition API、Pinia、Router 和 Nuxt 的寫法與最佳實務">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>vue-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/vue-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Vue 3 Composition API、Pinia、Router 和 Nuxt 的寫法與最佳實務</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: vue-patterns
+description: Vue.js 3 Composition API 的各種模式、component 架構、reactivity 最佳實務、Pinia 狀態管理、Vue Router 導覽，以及 Nuxt SSR 模式。處理 Vue、Nuxt、Vite 或 Pinia 專案時啟用。建置或 review Vue 3、Nuxt 或 Pinia 程式碼（Composition API、reactivity 或 router 導覽）時使用。
+origin: ECC
+---
+
+# Vue.js 模式與最佳實務
+
+用 Composition API（`&lt;script setup&gt;`）開發 Vue.js 3 的完整指南，涵蓋 component 設計、reactivity、狀態管理、路由、測試和 SSR 模式。跟原生 Vue 不同的地方，會附上 Nuxt 專屬的指引。
+
+## 何時啟用
+
+在以下情況啟用這個 skill：
+- 專案使用 Vue.js（任何版本）、Nuxt、Vite + Vue 或 Pinia。
+- 使用者詢問 Vue component 架構、composable、reactivity 或狀態管理。
+- Review Vue Single-File Component（`.vue` 檔案）。
+- 設定 Vue Router、Pinia store，或 Vite/Vitest 設定。
+- 討論 Vue 專屬的效能、安全或 SSR 模式。
+
+---
+
+## 1. 專案結構
+
+### 建議的目錄配置（Feature-First）
+
+```
+src/
+├── api/              # API client 與 endpoint 定義
+├── assets/           # 靜態資源（圖片、字型、圖示）
+├── components/       # 共用/可重複使用的 component
+│   ├── base/         # 基礎 UI 元件（Button、Input、Modal）
+│   └── features/     # 特定功能共用的 component
+├── composables/      # 可重複使用的 Composition API 邏輯
+├── layouts/          # 頁面 layout（選用）
+├── pages/            # 路由層級的頁面 component
+├── router/           # Vue Router 設定
+├── stores/           # Pinia store
+├── types/            # TypeScript 型別定義
+├── utils/            # 純工具函式
+└── App.vue           # 根 component
+```
+
+### 檔案命名
+
+| 慣例 | 何時使用 |
+|-----------|-------------|
+| `PascalCase.vue` | 所有 component（由 `vue/multi-word-component-names` 強制檢查） |
+| `useCamelCase.ts` | Composable |
+| `camelCase.ts` | 工具函式、API client、型別 |
+| `kebab-case` 目錄 | 路由區段、功能資料夾 |
+
+---
+
+## 2. Component 架構
+
+### Single-File Component 的順序
+
+```vue
+&lt;script setup lang=&quot;ts&quot;&gt;
+// 1. Import（vue → 生態系套件 → 絕對路徑 → 相對路徑）
+// 2. Props、Emits、Slots
+// 3. Composable
+// 4. 區域狀態（ref/reactive）
+// 5. Computed 屬性
+// 6. Method
+// 7. Watcher
+// 8. Lifecycle hook
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Template 內容 --&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+  /* Scoped 樣式 */
+&lt;/style&gt;
+```
+
+### Presentational 與 Container
+
+- **Container component**：自己負責資料抓取、狀態和副作用，然後渲染 presentational component。
+- **Presentational component**：接收 props、發出事件。不呼叫 API、不碰 store，純渲染。
+
+### Props 最佳實務
+
+```ts
+// 以型別定義 props，並附預設值
+interface Props {
+  label: string;
+  variant?: &quot;primary&quot; | &quot;secondary&quot;;
+  disabled?: boolean;
+  items: Item[];
+}
+
+const props = withDefaults(defineProps&lt;Props&gt;(), {
+  variant: &quot;primary&quot;,
+  disabled: false,
+});
+```
+
+- 一定要提供 `type`，並在適當時加上 `required`/`default`。
+- Boolean props 用 `isXxx`、`hasXxx`、`canXxx` 命名。
+- 絕對不要修改 props，改成 emit 事件。
+- v-model 綁定用 `defineModel()`（Vue 3.4+），或 `modelValue` + `update:modelValue`。
+
+### 事件
+
+```ts
+const emit = defineEmits&lt;{
+  submit: [];
+  &quot;update:modelValue&quot;: [value: string];
+  select: [id: string, index: number];
+}&gt;();
+```
+
+- Template 裡用 kebab-case（`@update:model-value`）。
+- Script 裡用 camelCase（`emit(&quot;update:modelValue&quot;, val)`）。
+
+---
+
+## 3. Composable（可重複使用的邏輯）
+
+### 結構
+
+```ts
+// composables/useDebounce.ts
+export function useDebounce&lt;T&gt;(value: MaybeRef&lt;T&gt;, delay: number): Ref&lt;T&gt; {
+  const debounced = ref(toValue(value)) as Ref&lt;T&gt;;
+
+  let timer: ReturnType&lt;typeof setTimeout&gt;;
+  watch(
+    () =&gt; toValue(value),
+    (newVal) =&gt; {
+      clearTimeout(timer);
+      timer = setTimeout(() =&gt; { debounced.value = newVal; }, delay);
+    }
+  );
+
+  onUnmounted(() =&gt; clearTimeout(timer));
+  return readonly(debounced);
+}
+```
+
+### 規則
+
+- 一定要以 `use` 開頭。
+- 回傳 reactive 的值（`ref`、`computed`、`reactive`），絕對不要回傳單純的原始值。
+- 透過 `MaybeRef` / `toRef()` / `toValue()` 接受 reactive 的輸入。
+- 在 `onUnmounted` 或 watcher 的 `onCleanup` 裡清理副作用。
+- 不要在 module 層級放副作用。
+
+### 與 Mixin 的比較
+
+Composable 完全取代 Vue 2 的 mixin：
+- **Mixin**：資料流不透明、source-of-truth 會衝突、名稱會撞。
+- **Composable**：明確 import、回傳值清楚、可組合、可 tree-shake。
+
+---
+
+## 4. 狀態管理
+
+### 什麼情況用什麼
+
+| 模式 | 使用情境 |
+|---------|----------|
+| `ref()` / `reactive()` | Component 區域狀態 |
+| Props + Emits | 父子溝通 |
+| Provide / Inject | 主題、設定、plugin API |
+| Pinia store | 全域、共用、複雜的狀態 |
+| Server state composable | 帶快取的 API 資料（包裝 `fetch`/TanStack Query） |
+
+### Pinia Setup Store（首選）
+
+```ts
+// stores/useCartStore.ts
+export const useCartStore = defineStore(&quot;cart&quot;, () =&gt; {
+  const items = ref&lt;CartItem[]&gt;([]);
+  const isLoading = ref(false);
+
+  const totalPrice = computed(() =&gt;
+    items.value.reduce((sum, i) =&gt; sum + i.price * i.quantity, 0)
+  );
+  const itemCount = computed(() =&gt;
+    items.value.reduce((sum, i) =&gt; sum + i.quantity, 0)
+  );
+
+  async function addItem(productId: string) {
+    isLoading.value = true;
+    try {
+      const item = await fetchProduct(productId);
+      const existing = items.value.find(i =&gt; i.id === item.id);
+      if (existing) existing.quantity++;
+      else items.value.push({ ...item, quantity: 1 });
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  return { items, isLoading, totalPrice, itemCount, addItem };
+});
+```
+
+- 用 Setup Store 語法（不要用 Options Store）。
+- 業務層級的變更優先用 action，成組的更新用 `$patch()`。
+- 每個 async action：都要處理 loading + success + error。
+
+---
+
+## 5. Vue Router
+
+### 路由定義
+
+```ts
+const routes = [
+  {
+    path: &quot;/users/:id&quot;,
+    name: &quot;user-detail&quot;,
+    component: () =&gt; import(&quot;@/pages/UserDetail.vue&quot;), // lazy 載入
+    props: true, // 把 params 當成 props 傳入
+    meta: { requiresAuth: true },
+  },
+];
+```
+
+### Navigation Guard
+
+```ts
+router.beforeEach((to, from) =&gt; {
+  const { isLoggedIn } = useAuthStore();
+  if (to.meta.requiresAuth &amp;&amp; !isLoggedIn) {
+    return { name: &quot;login&quot;, query: { redirect: to.fullPath } };
+  }
+});
+```
+
+### Reactive 的路由參數
+
+當 component 保持掛載、但路由參數改變時：
+
+```ts
+const route = useRoute();
+const id = computed(() =&gt; route.params.id as string);
+watch(id, (newId) =&gt; fetchItem(newId));
+```
+
+---
+
+## 6. Template 模式
+
+### Template 語法
+
+```vue
+&lt;!-- v-if/v-else-if/v-else --&gt;
+&lt;div v-if=&quot;isLoading&quot;&gt;Loading...&lt;/div&gt;
+&lt;div v-else-if=&quot;error&quot;&gt;Error: {{ error }}&lt;/div&gt;
+&lt;div v-else&gt;{{ content }}&lt;/div&gt;
+
+&lt;!-- 頻繁切換用 v-show --&gt;
+&lt;div v-show=&quot;isOpen&quot;&gt;Toggled content&lt;/div&gt;
+
+&lt;!-- v-for 搭配穩定的 key --&gt;
+&lt;div v-for=&quot;item in items&quot; :key=&quot;item.id&quot;&gt;{{ item.name }}&lt;/div&gt;
+
+&lt;!-- 用 computed 過濾後的清單（不要在同一個元素上用 v-if + v-for） --&gt;
+&lt;div v-for=&quot;item in activeItems&quot; :key=&quot;item.id&quot;&gt;{{ item.name }}&lt;/div&gt;
+
+&lt;!-- 事件處理 --&gt;
+&lt;form @submit.prevent=&quot;handleSubmit&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Save&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- v-model --&gt;
+&lt;input v-model=&quot;name&quot; /&gt;
+&lt;CustomInput v-model=&quot;value&quot; v-model:title=&quot;title&quot; /&gt;
+```
+
+---
+
+## 7. 效能
+
+| 技巧 | 何時使用 |
+|-----------|-------------|
+| `v-memo` | 很少變動的清單項目 |
+| `v-once` | 只渲染一次、之後永遠靜態的內容 |
+| `shallowRef()` | 整個被整批取代的大型資料結構 |
+| `shallowReactive()` | 只有最上層屬性需要 reactive |
+| `v-show` 優先於 `v-if` | 頻繁切換顯示狀態 |
+| `&lt;KeepAlive :max=&quot;10&quot;&gt;` | 快取會來回切換的 view |
+| Lazy 路由 | 非關鍵路由用 `() =&gt; import(...)` |
+| `Suspense` | 非同步 component 載入，附 fallback |
+
+---
+
+## 8. 測試
+
+### 工具組合
+
+- **Vitest**：單元測試與 component 測試
+- **Vue Test Utils**：掛載與互動
+- **@pinia/testing**：store mock
+- **Playwright**：E2E
+
+### Component 測試模式
+
+```ts
+import { mount } from &quot;@vue/test-utils&quot;;
+import { createPinia, setActivePinia } from &quot;pinia&quot;;
+import UserCard from &quot;./UserCard.vue&quot;;
+
+beforeEach(() =&gt; { setActivePinia(createPinia()); });
+
+it(&quot;renders and emits&quot;, async () =&gt; {
+  const wrapper = mount(UserCard, {
+    props: { user: { id: &quot;1&quot;, name: &quot;Alice&quot; } },
+  });
+  expect(wrapper.text()).toContain(&quot;Alice&quot;);
+  await wrapper.find(&quot;button&quot;).trigger(&quot;click&quot;);
+  expect(wrapper.emitted(&quot;select&quot;)![0]).toEqual([&quot;1&quot;]);
+});
+```
+
+---
+
+## 9. Nuxt 專屬模式
+
+### Auto-Import
+
+Nuxt 會自動 import `ref`、`computed`、`watch`、`useFetch`、`useAsyncData` 等，直接用就好，不用 import。非 Nuxt 專案則一律要明確 import。
+
+### useAsyncData / useFetch
+
+```ts
+const { data: user, pending, error, refresh } = await useAsyncData(
+  &quot;user&quot;, // 快取用的唯一 key
+  () =&gt; $fetch(`/api/users/${id}`),
+);
+
+const { data: posts } = await useFetch(&quot;/api/posts&quot;, {
+  query: { page: 1 },
+  key: &quot;posts-page-1&quot;, // 讓請求去重
+});
+```
+
+### Server Route
+
+```ts
+// server/api/users/[id].ts
+export default defineEventHandler(async (event) =&gt; {
+  const { id } = await getValidatedRouterParams(event, z.object({
+    id: z.string().uuid(),
+  }).parse);
+  // ... 抓取並回傳
+});
+```
+
+### Runtime Config
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  runtimeConfig: {
+    // 只在 server 端可用
+    apiSecret: &quot;&quot;,
+    // 公開（會暴露給 client）
+    public: {
+      apiBase: &quot;https://api.example.com&quot;,
+    },
+  },
+});
+```
+
+---
+
+## 10. Vue 3.5+ 新 API
+
+### Reactive Props Destructure
+
+Vue 3.5 把 reactive props destructure 轉為穩定功能：從 `defineProps()` 解構出來的變數會自動具備 reactivity：
+
+```ts
+// Vue 3.5+：解構出來的 props 是 reactive 的（不需要 toRefs）
+const { count = 0, msg = &quot;hello&quot; } = defineProps&lt;{
+  count?: number;
+  msg?: string;
+}&gt;();
+
+// 限制：不能直接 watch 解構出來的 prop
+watch(() =&gt; count, (newVal) =&gt; { ... }); // 正確：必須用 getter
+```
+
+### `useTemplateRef()`
+
+Template ref 改用 `useTemplateRef()`，取代靠變數名稱對應的普通 ref：
+
+```ts
+import { useTemplateRef } from &quot;vue&quot;;
+const inputEl = useTemplateRef&lt;HTMLInputElement&gt;(&quot;input&quot;);
+// &quot;input&quot; 對應的是 template 裡的 ref=&quot;input&quot; 屬性，不是變數名稱
+```
+
+支援動態 ref ID：`useTemplateRef(dynamicRefId)`。
+
+### `onWatcherCleanup()`
+
+可全域 import 的 watcher 清理 API（Vue 3.5+）。必須在 watcher callback 內同步呼叫：
+
+```ts
+import { watch, onWatcherCleanup } from &quot;vue&quot;;
+
+watch(userId, async (newId) =&gt; {
+  const controller = new AbortController();
+  onWatcherCleanup(() =&gt; controller.abort());
+  // ... 帶著 signal 去 fetch
+});
+```
+
+### `useId()`
+
+為表單元素和無障礙功能產生在 SSR 下穩定的唯一 ID：
+
+```ts
+import { useId } from &quot;vue&quot;;
+const id = useId();
+```
+
+### `defer` Teleport
+
+`&lt;Teleport defer&gt;` 允許 teleport 到同一個渲染週期內才渲染出來的目標：
+
+```vue
+&lt;Teleport defer to=&quot;#container&quot;&gt;Content&lt;/Teleport&gt;
+&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+```
+
+### Lazy Hydration（SSR）
+
+`defineAsyncComponent()` 現在支援 `hydrate` 策略：
+
+```ts
+import { defineAsyncComponent, hydrateOnVisible } from &quot;vue&quot;;
+const AsyncComp = defineAsyncComponent({
+  loader: () =&gt; import(&quot;./Comp.vue&quot;),
+  hydrate: hydrateOnVisible(),
+});
+```
+
+---
+
+## 反模式
+
+| 反模式 | 為什麼不對 | 修正方式 |
+|-------------|---------------|---------|
+| 解構 `defineProps()`（Vue &lt; 3.5） | 只抓到快照，失去 reactivity | 用 `props.xxx` 存取，或用 `toRefs()` |
+| 對解構出來的 prop 用 `watch()`（Vue 3.5+） | 編譯期錯誤，解構出來的 props 不能直接 watch | 用 getter 包起來：`watch(() =&gt; count, ...)` |
+| 同一個元素上用 `v-if` + `v-for` | 執行順序不明確 | 用 computed 過濾後的陣列 |
+| `v-for` 的 key 用 index | 重新排序時狀態會壞掉 | 用穩定的資料庫 ID |
+| 修改 props | 違反單向資料流 | Emit 事件，或用 `v-model` |
+| 用 `v-html` 渲染使用者內容 | XSS 漏洞 | 用 DOMPurify 清理 |
+| Vue 3 裡用 mixin | 不透明、容易衝突 | 改用 composable |
+| Composable 裡有 module 層級的副作用 | 會在各 instance 之間共用 | 限縮在 `onMounted` + `onUnmounted` 裡 |
+| 用 `reactive()` 存會被整個取代的狀態 | 整個取代會破壞 reactivity | 改用 `ref()` |
+| Watcher 沒有清理 | 記憶體洩漏、race condition | 用 `onCleanup` 或 `onWatcherCleanup()`（Vue 3.5+） |
+| 新的 Vue 3 程式碼用 Options API | 生態系已經轉向 Composition API | 用 `&lt;script setup&gt;` |
+| Template ref 用普通 ref | 不支援動態 ref，靠名稱對應很脆弱 | 用 `useTemplateRef()`（Vue 3.5+） |
+
+## 相關 Skill
+
+- `accessibility`：ARIA、語意化 HTML、focus 管理
+- `frontend-patterns`：跨框架的前端架構
+- `typescript`：套用在 Vue 專案上的 TypeScript 最佳實務
+- `coding-standards`：一般程式碼品質標準</pre></section><section><h2>英文原文</h2><pre>---
+name: vue-patterns
+description: Vue.js 3 Composition API patterns, component architecture, reactivity best practices, Pinia state management, Vue Router navigation, and Nuxt SSR patterns. Activates for Vue, Nuxt, Vite, or Pinia projects. Use when building or reviewing Vue 3, Nuxt, or Pinia code — Composition API, reactivity, or router navigation.
+origin: ECC
+---
+
+# Vue.js Patterns and Best Practices
+
+Comprehensive guide for Vue.js 3 development using Composition API (`&lt;script setup&gt;`), covering component design, reactivity, state management, routing, testing, and SSR patterns. Nuxt-specific guidance is included where it differs from vanilla Vue.
+
+## When to Activate
+
+Activate this skill when:
+- The project uses Vue.js (any version), Nuxt, Vite + Vue, or Pinia.
+- The user asks about Vue component architecture, composables, reactivity, or state management.
+- Reviewing Vue Single-File Components (`.vue` files).
+- Setting up Vue Router, Pinia stores, or Vite/Vitest configuration.
+- Discussing Vue-specific performance, security, or SSR patterns.
+
+---
+
+## 1. Project Structure
+
+### Recommended Layout (Feature-First)
+
+```
+src/
+├── api/              # API client and endpoint definitions
+├── assets/           # Static assets (images, fonts, icons)
+├── components/       # Shared/reusable components
+│   ├── base/         # Base UI primitives (Button, Input, Modal)
+│   └── features/     # Feature-specific shared components
+├── composables/      # Reusable Composition API logic
+├── layouts/          # Page layouts (optional)
+├── pages/            # Route-level page components
+├── router/           # Vue Router configuration
+├── stores/           # Pinia stores
+├── types/            # TypeScript type definitions
+├── utils/            # Pure utility functions
+└── App.vue           # Root component
+```
+
+### File Naming
+
+| Convention | When to Use |
+|-----------|-------------|
+| `PascalCase.vue` | All components (enforced by `vue/multi-word-component-names`) |
+| `useCamelCase.ts` | Composables |
+| `camelCase.ts` | Utilities, API clients, types |
+| `kebab-case` directories | Route segments, feature folders |
+
+---
+
+## 2. Component Architecture
+
+### Single-File Component Order
+
+```vue
+&lt;script setup lang=&quot;ts&quot;&gt;
+// 1. Imports (vue → ecosystem → absolute → relative)
+// 2. Props &amp; Emits &amp; Slots
+// 3. Composables
+// 4. Local state (ref/reactive)
+// 5. Computed properties
+// 6. Methods
+// 7. Watchers
+// 8. Lifecycle hooks
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Template content --&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+  /* Scoped styles */
+&lt;/style&gt;
+```
+
+### Presentational vs Container
+
+- **Container components**: Own data fetching, state, and side effects. Render presentational components.
+- **Presentational components**: Receive props, emit events. No API calls, no store access. Pure rendering.
+
+### Props Best Practices
+
+```ts
+// Type-based props with defaults
+interface Props {
+  label: string;
+  variant?: &quot;primary&quot; | &quot;secondary&quot;;
+  disabled?: boolean;
+  items: Item[];
+}
+
+const props = withDefaults(defineProps&lt;Props&gt;(), {
+  variant: &quot;primary&quot;,
+  disabled: false,
+});
+```
+
+- Always provide `type`, and `required`/`default` where appropriate.
+- Boolean props: `isXxx`, `hasXxx`, `canXxx`.
+- Never mutate props — emit events instead.
+- For v-model binding, use `defineModel()` (Vue 3.4+) or `modelValue` + `update:modelValue`.
+
+### Events
+
+```ts
+const emit = defineEmits&lt;{
+  submit: [];
+  &quot;update:modelValue&quot;: [value: string];
+  select: [id: string, index: number];
+}&gt;();
+```
+
+- Use kebab-case in templates (`@update:model-value`).
+- Use camelCase in script (`emit(&quot;update:modelValue&quot;, val)`).
+
+---
+
+## 3. Composables (Reusable Logic)
+
+### Structure
+
+```ts
+// composables/useDebounce.ts
+export function useDebounce&lt;T&gt;(value: MaybeRef&lt;T&gt;, delay: number): Ref&lt;T&gt; {
+  const debounced = ref(toValue(value)) as Ref&lt;T&gt;;
+
+  let timer: ReturnType&lt;typeof setTimeout&gt;;
+  watch(
+    () =&gt; toValue(value),
+    (newVal) =&gt; {
+      clearTimeout(timer);
+      timer = setTimeout(() =&gt; { debounced.value = newVal; }, delay);
+    }
+  );
+
+  onUnmounted(() =&gt; clearTimeout(timer));
+  return readonly(debounced);
+}
+```
+
+### Rules
+
+- Must start with `use` prefix.
+- Return reactive values (`ref`, `computed`, `reactive`), never plain primitives.
+- Accept reactive inputs via `MaybeRef` / `toRef()` / `toValue()`.
+- Clean up side effects in `onUnmounted` or watcher `onCleanup`.
+- No module-scope side effects.
+
+### vs Mixins
+
+Composables replace Vue 2 mixins entirely:
+- **Mixins**: Opaque data flow, source-of-truth collisions, name conflicts.
+- **Composables**: Explicit imports, clear return values, composable and tree-shakable.
+
+---
+
+## 4. State Management
+
+### When to Use What
+
+| Pattern | Use Case |
+|---------|----------|
+| `ref()` / `reactive()` | Local component state |
+| Props + Emits | Parent-child communication |
+| Provide / Inject | Theme, config, plugin API |
+| Pinia store | Global, shared, complex state |
+| Server state composable | API data with caching (wrap `fetch`/TanStack Query) |
+
+### Pinia Setup Store (Preferred)
+
+```ts
+// stores/useCartStore.ts
+export const useCartStore = defineStore(&quot;cart&quot;, () =&gt; {
+  const items = ref&lt;CartItem[]&gt;([]);
+  const isLoading = ref(false);
+
+  const totalPrice = computed(() =&gt;
+    items.value.reduce((sum, i) =&gt; sum + i.price * i.quantity, 0)
+  );
+  const itemCount = computed(() =&gt;
+    items.value.reduce((sum, i) =&gt; sum + i.quantity, 0)
+  );
+
+  async function addItem(productId: string) {
+    isLoading.value = true;
+    try {
+      const item = await fetchProduct(productId);
+      const existing = items.value.find(i =&gt; i.id === item.id);
+      if (existing) existing.quantity++;
+      else items.value.push({ ...item, quantity: 1 });
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  return { items, isLoading, totalPrice, itemCount, addItem };
+});
+```
+
+- Use Setup Store syntax (not Options Store).
+- Prefer actions for business-level mutations and `$patch()` for grouped updates.
+- Every async action: handle loading + success + error.
+
+---
+
+## 5. Vue Router
+
+### Route Definitions
+
+```ts
+const routes = [
+  {
+    path: &quot;/users/:id&quot;,
+    name: &quot;user-detail&quot;,
+    component: () =&gt; import(&quot;@/pages/UserDetail.vue&quot;), // lazy
+    props: true, // pass params as props
+    meta: { requiresAuth: true },
+  },
+];
+```
+
+### Navigation Guards
+
+```ts
+router.beforeEach((to, from) =&gt; {
+  const { isLoggedIn } = useAuthStore();
+  if (to.meta.requiresAuth &amp;&amp; !isLoggedIn) {
+    return { name: &quot;login&quot;, query: { redirect: to.fullPath } };
+  }
+});
+```
+
+### Reactive Route Params
+
+When a component stays mounted but route params change:
+
+```ts
+const route = useRoute();
+const id = computed(() =&gt; route.params.id as string);
+watch(id, (newId) =&gt; fetchItem(newId));
+```
+
+---
+
+## 6. Template Patterns
+
+### Template Syntax
+
+```vue
+&lt;!-- v-if/v-else-if/v-else --&gt;
+&lt;div v-if=&quot;isLoading&quot;&gt;Loading...&lt;/div&gt;
+&lt;div v-else-if=&quot;error&quot;&gt;Error: {{ error }}&lt;/div&gt;
+&lt;div v-else&gt;{{ content }}&lt;/div&gt;
+
+&lt;!-- v-show for frequent toggles --&gt;
+&lt;div v-show=&quot;isOpen&quot;&gt;Toggled content&lt;/div&gt;
+
+&lt;!-- v-for with stable keys --&gt;
+&lt;div v-for=&quot;item in items&quot; :key=&quot;item.id&quot;&gt;{{ item.name }}&lt;/div&gt;
+
+&lt;!-- Computed filtered list (not v-if + v-for on same element) --&gt;
+&lt;div v-for=&quot;item in activeItems&quot; :key=&quot;item.id&quot;&gt;{{ item.name }}&lt;/div&gt;
+
+&lt;!-- Event handling --&gt;
+&lt;form @submit.prevent=&quot;handleSubmit&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Save&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- v-model --&gt;
+&lt;input v-model=&quot;name&quot; /&gt;
+&lt;CustomInput v-model=&quot;value&quot; v-model:title=&quot;title&quot; /&gt;
+```
+
+---
+
+## 7. Performance
+
+| Technique | When to Use |
+|-----------|-------------|
+| `v-memo` | List items that rarely change |
+| `v-once` | Content rendered once and static forever |
+| `shallowRef()` | Large data structures replaced wholesale |
+| `shallowReactive()` | Only top-level properties are reactive |
+| `v-show` over `v-if` | Frequent visibility toggles |
+| `&lt;KeepAlive :max=&quot;10&quot;&gt;` | Cache toggled views |
+| Lazy routes | `() =&gt; import(...)` for non-critical routes |
+| `Suspense` | Async component loading with fallback |
+
+---
+
+## 8. Testing
+
+### Stack
+
+- **Vitest** for unit and component tests
+- **Vue Test Utils** for mounting and interaction
+- **@pinia/testing** for store mocking
+- **Playwright** for E2E
+
+### Component Test Pattern
+
+```ts
+import { mount } from &quot;@vue/test-utils&quot;;
+import { createPinia, setActivePinia } from &quot;pinia&quot;;
+import UserCard from &quot;./UserCard.vue&quot;;
+
+beforeEach(() =&gt; { setActivePinia(createPinia()); });
+
+it(&quot;renders and emits&quot;, async () =&gt; {
+  const wrapper = mount(UserCard, {
+    props: { user: { id: &quot;1&quot;, name: &quot;Alice&quot; } },
+  });
+  expect(wrapper.text()).toContain(&quot;Alice&quot;);
+  await wrapper.find(&quot;button&quot;).trigger(&quot;click&quot;);
+  expect(wrapper.emitted(&quot;select&quot;)![0]).toEqual([&quot;1&quot;]);
+});
+```
+
+---
+
+## 9. Nuxt-Specific Patterns
+
+### Auto-Imports
+
+Nuxt auto-imports `ref`, `computed`, `watch`, `useFetch`, `useAsyncData`, etc. Use them directly without importing. For non-Nuxt projects, always import explicitly.
+
+### useAsyncData / useFetch
+
+```ts
+const { data: user, pending, error, refresh } = await useAsyncData(
+  &quot;user&quot;, // unique key for caching
+  () =&gt; $fetch(`/api/users/${id}`),
+);
+
+const { data: posts } = await useFetch(&quot;/api/posts&quot;, {
+  query: { page: 1 },
+  key: &quot;posts-page-1&quot;, // dedupes requests
+});
+```
+
+### Server Routes
+
+```ts
+// server/api/users/[id].ts
+export default defineEventHandler(async (event) =&gt; {
+  const { id } = await getValidatedRouterParams(event, z.object({
+    id: z.string().uuid(),
+  }).parse);
+  // ... fetch and return
+});
+```
+
+### Runtime Config
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  runtimeConfig: {
+    // server-only
+    apiSecret: &quot;&quot;,
+    // public (exposed to client)
+    public: {
+      apiBase: &quot;https://api.example.com&quot;,
+    },
+  },
+});
+```
+
+---
+
+## 10. Vue 3.5+ New APIs
+
+### Reactive Props Destructure
+
+Vue 3.5 stabilized reactive props destructure — destructured variables from `defineProps()` are automatically reactive:
+
+```ts
+// Vue 3.5+: destructured props are reactive (no need for toRefs)
+const { count = 0, msg = &quot;hello&quot; } = defineProps&lt;{
+  count?: number;
+  msg?: string;
+}&gt;();
+
+// Limitation: cannot watch destructured prop directly
+watch(() =&gt; count, (newVal) =&gt; { ... }); // PASS getter required
+```
+
+### `useTemplateRef()`
+
+Replace name-matched plain refs with `useTemplateRef()` for template references:
+
+```ts
+import { useTemplateRef } from &quot;vue&quot;;
+const inputEl = useTemplateRef&lt;HTMLInputElement&gt;(&quot;input&quot;);
+// &quot;input&quot; matches the ref=&quot;input&quot; attribute in template, not the variable name
+```
+
+Supports dynamic ref IDs: `useTemplateRef(dynamicRefId)`.
+
+### `onWatcherCleanup()`
+
+Globally importable watcher cleanup API (Vue 3.5+). It must be called synchronously inside the watcher callback:
+
+```ts
+import { watch, onWatcherCleanup } from &quot;vue&quot;;
+
+watch(userId, async (newId) =&gt; {
+  const controller = new AbortController();
+  onWatcherCleanup(() =&gt; controller.abort());
+  // ... fetch with signal
+});
+```
+
+### `useId()`
+
+SSR-stable unique ID generation for form elements and accessibility:
+
+```ts
+import { useId } from &quot;vue&quot;;
+const id = useId();
+```
+
+### `defer` Teleport
+
+`&lt;Teleport defer&gt;` allows teleporting to targets rendered in the same cycle:
+
+```vue
+&lt;Teleport defer to=&quot;#container&quot;&gt;Content&lt;/Teleport&gt;
+&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+```
+
+### Lazy Hydration (SSR)
+
+`defineAsyncComponent()` now supports `hydrate` strategy:
+
+```ts
+import { defineAsyncComponent, hydrateOnVisible } from &quot;vue&quot;;
+const AsyncComp = defineAsyncComponent({
+  loader: () =&gt; import(&quot;./Comp.vue&quot;),
+  hydrate: hydrateOnVisible(),
+});
+```
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Why It&#x27;s Wrong | The Fix |
+|-------------|---------------|---------|
+| Destructuring `defineProps()` (Vue &lt; 3.5) | Captures snapshot, loses reactivity | Access via `props.xxx` or use `toRefs()` |
+| `watch()` on destructured prop (Vue 3.5+) | Compile-time error — destructured props can&#x27;t be watched directly | Use getter wrapper: `watch(() =&gt; count, ...)` |
+| `v-if` + `v-for` on same element | Ambiguous execution order | Use computed filtered array |
+| `v-for` key = index | Broken state on reorder | Use stable database IDs |
+| Mutating props | Violates one-way data flow | Emit events or use `v-model` |
+| `v-html` with user content | XSS vulnerability | Sanitize with DOMPurify |
+| Mixins in Vue 3 | Opaque, collision-prone | Replace with composables |
+| Module-scope side effects in composable | Shared across instances | Scope in `onMounted` + `onUnmounted` |
+| `reactive()` for replaceable state | Replacement breaks reactivity | Use `ref()` instead |
+| Watcher without cleanup | Memory leaks, race conditions | Use `onCleanup` or `onWatcherCleanup()` (Vue 3.5+) |
+| Options API in new Vue 3 code | Ecosystem move to Composition API | Use `&lt;script setup&gt;` |
+| Plain ref for template references | No dynamic ref support, name-matching fragile | Use `useTemplateRef()` (Vue 3.5+) |
+
+## Related Skills
+
+- `accessibility` — ARIA, semantic HTML, focus management
+- `frontend-patterns` — Cross-framework frontend architecture
+- `typescript` — TypeScript best practices applied to Vue projects
+- `coding-standards` — General code quality standards</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

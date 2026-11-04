@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>brownfield-retrospective｜Skill 寫法圖鑑</title>
+<meta name="description" content="對既有專案切片補跑 ECC 流程，找出四軸落差再逐項修">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>brownfield-retrospective</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/brownfield-retrospective/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">對既有專案切片補跑 ECC 流程，找出四軸落差再逐項修</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: brownfield-retrospective
+description: 對既有專案的某一塊，事後補跑 ECC 工程流程。稽核現況、重建過去的決策、產出四軸落差登記表（思考、寫程式的做法、缺少的功能、技術選型），再透過 plan-TDD-review 管線往前執行修正。適用於專案做到一半才導入 ECC、接手別人留下的 codebase，或想知道漏了什麼、從第一天起哪些會做得不一樣。
+metadata:
+  origin: ECC
+---
+
+# Brownfield Retrospective
+
+對一個沒用過 ECC 流程蓋起來的專案，事後補跑 ECC 的工程流程。挑 codebase 裡任何一塊，稽核現有的東西，重建它是怎麼變成這樣的，整理出四軸落差登記表，再透過標準的 ECC 管線把修正往前推進。
+
+整個流程以切片優先：不用先把整個 repo 摸過一遍才有用，而且每個階段都能從磁碟上的持久產出物重新進入。從中間開始，往回推，再往前走。
+
+## When to Activate
+
+- 在一個已經存在、已經成形的 repository 裡導入 ECC
+- 使用者說「audit my existing project」、「retro this codebase」或「what did we miss?」
+- 接手、繼承，或隔了很久之後回到某個 codebase
+- 使用者先問「為什麼會變這樣？」，接著問「該繼續維持這樣嗎？」
+- 某個模組、功能或服務，在下一個功能蓋上去之前需要重新思考
+- 決定某個舊的區塊該往前修、重寫，還是只留文件記錄、維持原樣
+
+## When Not to Use
+
+- 沒有既有程式碼的全新專案，直接用 `planner` 和 `tdd-workflow`
+- 只想導入 spec-driven development、不需要重新設計的循環，`spec-miner` agent 自己就能做
+- 上線前的 go/no-go 正式環境就緒度檢查，用 `production-audit`
+- 只看安全性的掃描，用 `security-review`
+- 團隊流程的回顧（sprint 儀式），這個 skill 稽核的是 codebase，不是人
+
+## The Working Set
+
+所有產出物都寫在被稽核的專案裡面，放在 `docs/retro/&lt;slice&gt;/` 底下：
+
+| File | Phase | Purpose |
+|------|-------|---------|
+| `gap-register.md` | 0-6 | 狀態機，包含範圍邊界、`Current phase:` 標記和各列資料。這是中途接手時唯一必要的檔案。 |
+| `baseline-audit.md` | 1 | Reviewer 的發現、test/CI 快照、TODO 清單。 |
+| `reconstructed-spec.md` | 2 | 程式碼現在實際上做了什麼（Requirements + Invariants）。 |
+| `target-design.md` | 4 | 這一塊的目標樣貌，以及修正的順序。 |
+
+補寫的決策依 `architecture-decision-records` skill 放到 `docs/adr/`。如果專案用 OpenSpec，`reconstructed-spec.md` 也可以改成 `spec-miner` 產出的 `openspec/specs/&lt;capability&gt;/spec.md`。
+
+## How It Works
+
+### Phase 0 — Pick the Entry Point
+
+從使用者現在在意的東西開始。不要先把整個 repo 畫成地圖。
+
+下面任何一種都是合法的切片：
+
+| User signal | Slice |
+|-------------|-------|
+| 指名某個目錄、模組或服務 | 那個路徑加上它的直接呼叫者 |
+| 指名某個功能或使用者流程 | 實作它的檔案，從進入點往下追 |
+| 指名某個 bug、事故或痛點 | 產生它的程式碼，再加一層呼叫鏈 |
+| 指名某個依賴或技術選擇 | 所有碰到它的東西 |
+| 什麼都沒指名 | 依 churn 排出最熱的 2-3 條路徑，提出來讓使用者選 |
+
+任何事情之前，先把範圍邊界記在 `gap-register.md` 最上面：納入範圍的路徑、進入點、呼叫者、影響範圍。切片大小抓大約 15 個檔案或 2,000 行；如果使用者挑的比這大，就切成有名字的子切片，各自登記成一列工作。一個太大、一個 session 稽核不完的切片，就是永遠做不完的切片。在範圍邊界旁邊放一個 `Current phase:` 標記，每完成一個階段就往前推。
+
+### Phase 1 — Present-State Audit
+
+用證據確認現在有什麼。這時候還不要修任何東西。
+
+1. 偵察這個切片：manifest 和 framework 指紋、進入點、測試的擺放方式、CI 檢查（沿用 `codebase-onboarding` 的偵察步驟，範圍限縮在邊界內）。
+2. 跑跟技術堆疊相符的 reviewer，盡量平行跑。每一個發現都必須附上 `file:line` 位置：
+   - 該技術堆疊的語言 reviewer（`typescript-reviewer`、`python-reviewer`、`go-reviewer`……）
+   - `security-reviewer`
+   - `silent-failure-hunter`，找被吞掉的錯誤
+   - `type-design-analyzer`，針對不變量用型別編碼的地方
+   - `performance-optimizer`，只有這個切片在熱路徑上才用
+3. 為目前的狀態拍快照：測試數量和覆蓋率、lint/CI 狀態、範圍內的 `TODO`/`FIXME`/`HACK` 清單。
+
+全部寫進 `baseline-audit.md`。在這個階段就修掉的發現會污染基準線，先留給登記表處理。
+
+### Phase 2 — Backward Reconstruction
+
+從現況往回推，找出造成這個現況的決策。
+
+1. 挖出行為規格：對這個切片跑 `spec-miner`。它產出的 Requirements（WHEN → THEN）和 Invariants 會成為 `reconstructed-spec.md`，也就是 Phase 5 測試的基準真相。
+2. 對範圍邊界做 git 考古：
+   - 用 `git log --oneline -- &lt;slice&gt;` 看目錄歷史；`--follow` 只能搭配單一檔案路徑使用，看年齡、作者、節奏
+   - 最大和最常被 revert 的 commit，也就是設計在壓力下被改掉的地方
+   - Churn 熱點，也就是被改的頻率遠高於鄰近檔案的檔案
+   - 死路，也就是從沒上線的 branch 或鷹架
+3. 決策清單：列出被凍結在程式碼裡的重大決策（技術堆疊與 framework 選擇、資料模型、邊界、錯誤策略、狀態管理）。逐一對照 `docs/adr/`、README 和註解。沒有任何書面紀錄的決策，本身就是既有的思考落差，記到 Phase 3，不要在這裡悄悄補寫。
+4. 行為不透明的地方，先用 `code-explorer` 追蹤執行路徑，不要猜意圖。
+
+### Phase 3 — Gap Analysis (Four Axes)
+
+把稽核和重建的結果轉成登記表的列。每一類落差用一個軸：
+
+| Axis | Question | Sources |
+|------|-----------|---------|
+| Thinking | 有哪些決定做了卻沒記錄？哪些不變量只存在於程式碼裡？ | 決策清單、重建出來的規格 |
+| Coding practice | 程式碼哪裡跟 ECC 會怎麼寫不一樣？ | Phase 1 的發現、該語言的 `rules/` 規則包、沒有測試對應的規格項目 |
+| Missing features | 第一天就從頭蓋的話，會有哪些東西是這個切片從來沒有的？ | 邊界輸入驗證、可觀測性、rate limiting、冪等性、migration 加 rollback、a11y、i18n、使用者文件、CI 關卡 |
+| Technology selection | 選的技術是不是在跟 codebase 作對？過時、重複、有風險或缺漏？ | 依賴清單、git 考古、偵察結果 |
+
+登記表格式（這張表是這個 skill 的持久產出）：
+
+```markdown
+| ID | Axis | Gap | Evidence | Forward fix | Severity | Effort | Status |
+|----|------|-----|----------|-------------|----------|--------|--------|
+| G-001 | practice | Errors swallowed in retry loop | src/api/retry.ts:42 | Propagate + map at boundary | P1 | S | open |
+```
+
+- Severity：`P0` 安全外洩或資料遺失，`P1` 正確性，`P2` 做法與可觀測性，`P3` 選型與清理。
+- Effort：`S` 不到一個 session，`M` 幾個 session，`L` 需要自己的計畫。
+- Status：`open`、`in-progress`、`done`、`wont-fix`。
+- 每一列都需要證據位置。指不出來的落差只是意見。
+
+### Phase 4 — Redesign / Rethink
+
+把登記表轉成有順序的計畫。遵循專案既有的任務與核准權責。登記表當作稽核證據，連結到那個系統，不要另外建立互相競爭的正式任務狀態。要重寫、換技術、做 migration 或其他重大變更之前，先確認範圍並取得專案要求的核准。
+
+1. 對 `P0` 和 `P1` 的列跑 `architect` 或 `code-architect`，產出 `target-design.md`：這個切片的目標樣貌、修正順序，以及一份明確的「哪些不改」清單，用來保護現有能正常運作的行為。
+2. 為 Phase 2 找到的每個沒有文件的決策補寫 retro-ADR。標記成重建的（`status: proposed (reconstructed)`，日期填 retro 當天，並註明原始決策早於這份記錄）。把觀察到的歷史和推論出來的意圖分開，並且在標成 accepted 之前，要請專案負責人確認這個決策。補寫的 ADR 絕對不准假裝成決策當下寫的。
+3. 把登記表每一列分到其中一類：`fix-forward`（就地修復）、`rewrite`（替換整個切片）、`leave-documented`（wont-fix）。`wont-fix` 一定要在登記表裡記下原因，有原因的 wont-fix 會把思考落差補起來，沒講的 wont-fix 會讓落差重新打開。
+4. 排 backlog 的順序：先做 `P0`，然後把容易的小勝利和較大的修復穿插，維持動能。
+
+### Phase 5 — Forward Execution
+
+把登記表透過標準 ECC 管線處理，基準節奏是一個 session 做一列：
+
+```text
+planner (scope the row)
+  → tdd-guide (failing test first — for a legacy gap the first test
+    usually encodes the missing invariant from reconstructed-spec.md)
+  → implement
+  → code-reviewer
+  → security-reviewer (if the row touches input, auth, or data)
+  → doc-updater + ADR (if the decision changed)
+  → conventional commit
+  → mark the register row done
+```
+
+- 列結案時，同步更新 `gap-register.md` 的狀態；持久的狀態是登記表，不是對話。
+- 跨 session 時，透過專案的記憶機制（`unified-memory`、context carriers）交接，讓下一個 session 只靠登記表就能接著做。
+
+### Phase 6 — Closure and Re-Audit
+
+當每一列都是 `done` 或 `wont-fix` 時：
+
+1. 對同一個範圍邊界重跑 Phase 1 的稽核。
+2. 跟 `baseline-audit.md` 做 diff，並用 `verification-loop` 驗證，宣稱已關閉的落差必須維持關閉。
+3. 把差異（當時的發現、現在的發現、已結案的列、延後的列）記在 `gap-register.md` 底部。
+4. 重新冒出來的東西變成新的一列，不算失敗，登記表是個循環，不是做一次就結束。
+
+## Resuming Mid-Stream
+
+任何 session 都可以從中間開始。先讀 `docs/retro/&lt;slice&gt;/gap-register.md`：
+
+- 登記表存在，且有一列是 `in-progress` → Phase 5，把那一列做完。
+- 登記表存在，至少有一列，且所有列都已結案 → Phase 6。
+- 登記表存在，有 open 的列，但沒有進行中的 → 從 `Current phase:` 標記繼續（Phase 3 登記表等著分類，或是 Phase 4 backlog 等著開第一列）。
+- 沒有登記表，但有 `baseline-audit.md` → Phase 2。
+- 完全沒有產出物 → 跟使用者一起從 Phase 0 開始。
+
+## Anti-Patterns
+
+- 在挑切片之前就稽核整個 repo，這個流程設計上就是切片優先。
+- 在 Phase 1-3 期間修改程式碼，稽核階段的產出是登記表，稽核中途動手改會污染基準線。
+- 登記表的列沒有證據位置。
+- `wont-fix` 沒有記錄原因。
+- 把補寫的 ADR 當成當時留下的紀錄。
+- 跳過 Phase 6 的重新稽核，結案要靠驗證，不是靠宣布。
+
+## Related Skills
+
+- `codebase-onboarding`：Phase 1 的偵察基準
+- `architecture-decision-records`：Phase 4 的 retro-ADR 補寫
+- `tdd-workflow`：Phase 5 的執行紀律
+- `verification-loop`：Phase 6 的結案
+- `production-audit`：上線就緒度的角度（互補，較後面才用）
+- `security-review`：只針對安全性的需求</pre></section><section><h2>英文原文</h2><pre>---
+name: brownfield-retrospective
+description: Run the ECC engineering process retroactively against an existing project slice. Audit current state, reconstruct past decisions, produce a four-axis gap register (thinking, coding practice, missing features, technology selection), then execute fixes forward through the plan-TDD-review pipeline. Use when adopting ECC mid-project, taking over an inherited codebase, or asking what was missed and what would have been built differently from day one.
+metadata:
+  origin: ECC
+---
+
+# Brownfield Retrospective
+
+Run ECC&#x27;s engineering process retroactively against a project that was built without it. Pick any slice of an existing codebase, audit what exists, reconstruct how it got there, extract a four-axis gap register, then execute the fixes forward through the standard ECC pipeline.
+
+The workflow is slice-first: no whole-repo onboarding is required before it is useful, and every phase is re-enterable from a durable artifact on disk. Start in the middle, work backwards, then move forward.
+
+## When to Activate
+
+- Adopting ECC in a repository that already exists and is already shaped
+- User asks to &quot;audit my existing project&quot;, &quot;retro this codebase&quot;, or &quot;what did we miss?&quot;
+- Taking over, inheriting, or returning to a codebase after a long gap
+- User asks &quot;why is it like this?&quot; followed by &quot;should it stay like this?&quot;
+- A module, feature, or service needs a rethink before the next feature lands on top of it
+- Deciding whether a legacy area should be fixed forward, rewritten, or left documented as-is
+
+## When Not to Use
+
+- Greenfield work with no existing code — use `planner` and `tdd-workflow` directly
+- Onboarding to spec-driven development without the redesign loop — the `spec-miner` agent does that on its own
+- A launch go/no-go production-readiness pass — use `production-audit`
+- Security-only sweeps — use `security-review`
+- Team process retrospectives (sprint ceremonies) — this audits a codebase, not people
+
+## The Working Set
+
+All artifacts are written inside the audited project, under `docs/retro/&lt;slice&gt;/`:
+
+| File | Phase | Purpose |
+|------|-------|---------|
+| `gap-register.md` | 0-6 | The state machine — perimeter, `Current phase:` marker, and rows. The only file required to resume mid-stream. |
+| `baseline-audit.md` | 1 | Reviewer findings, test/CI snapshot, TODO inventory. |
+| `reconstructed-spec.md` | 2 | What the code actually does today (Requirements + Invariants). |
+| `target-design.md` | 4 | Target shape for the slice and the fix sequence. |
+
+Backfilled decisions go to `docs/adr/` per the `architecture-decision-records` skill. If the project uses OpenSpec, `reconstructed-spec.md` may instead be `openspec/specs/&lt;capability&gt;/spec.md` produced by `spec-miner`.
+
+## How It Works
+
+### Phase 0 — Pick the Entry Point
+
+Start from what the user cares about today. Do not map the whole repo first.
+
+Any of these is a valid slice:
+
+| User signal | Slice |
+|-------------|-------|
+| Names a directory, module, or service | That path plus its direct callers |
+| Names a feature or user flow | The files that implement it, traced from the entry point |
+| Names a bug, incident, or pain point | The code that produced it plus one level of call chain |
+| Names a dependency or tech choice | Everything that touches it |
+| Names nothing | The 2-3 hottest paths by churn — propose them and let the user pick |
+
+Record the perimeter at the top of `gap-register.md` before anything else: paths in scope, entry points, callers, blast radius. Budget the slice at roughly 15 files or 2,000 lines; if the user&#x27;s pick is bigger, cut it into named sub-slices and register each as its own row of work. A slice too big to audit in one session is a slice that never finishes. Keep a `Current phase:` marker beside the perimeter and advance it each time a phase completes.
+
+### Phase 1 — Present-State Audit
+
+Establish what exists now, with evidence. Do not fix anything yet.
+
+1. Recon the slice: manifest and framework fingerprint, entry points, test layout, CI checks (borrow the recon steps from `codebase-onboarding`, scoped to the perimeter).
+2. Run the reviewers that match the stack, in parallel where possible. Every finding must carry a `file:line` pointer:
+   - The language reviewer for the stack (`typescript-reviewer`, `python-reviewer`, `go-reviewer`, ...)
+   - `security-reviewer`
+   - `silent-failure-hunter` for swallowed errors
+   - `type-design-analyzer` where invariants are encoded in types
+   - `performance-optimizer` only if the slice is on a hot path
+3. Snapshot the current state: test count and coverage, lint/CI status, `TODO`/`FIXME`/`HACK` inventory inside the perimeter.
+
+Write everything to `baseline-audit.md`. Findings that get fixed during this phase corrupt the baseline — hold them for the register.
+
+### Phase 2 — Backward Reconstruction
+
+Work backwards from the present state to the decisions that produced it.
+
+1. Mine the behavioral spec: run `spec-miner` against the slice. Its Requirements (WHEN → THEN) and Invariants become `reconstructed-spec.md` — the baseline truth for Phase 5 tests.
+2. Git archaeology on the perimeter:
+   - `git log --oneline -- &lt;slice&gt;` for directory history; use `--follow` only with a single file path — age, authors, cadence
+   - Largest and most reverted commits — where the design changed under pressure
+   - Churn hotspots — files changed far more often than neighbors
+   - Dead ends — branches or scaffolding that never shipped
+3. Decision inventory: list the significant decisions frozen into the code (stack and framework choices, data model, boundaries, error strategy, state management). Check each against `docs/adr/`, README, and comments. Every decision with no written record is itself a pre-existing thinking gap — record it in Phase 3, do not silently backfill it here.
+4. Where behavior is opaque, use `code-explorer` to trace execution paths before guessing at intent.
+
+### Phase 3 — Gap Analysis (Four Axes)
+
+Convert the audit and reconstruction into register rows. One axis per class of gap:
+
+| Axis | Question | Sources |
+|------|-----------|---------|
+| Thinking | What was decided but never recorded? Which invariants live only in code? | Decision inventory, reconstructed spec |
+| Coding practice | Where does the code diverge from how ECC would have written it? | Phase 1 findings, the `rules/` pack for the language, spec items with no test anchor |
+| Missing features | What would a day-one build have included that this slice never got? | Boundary input validation, observability, rate limiting, idempotency, migrations plus rollback, a11y, i18n, user docs, CI gates |
+| Technology selection | Is the chosen tech fighting the codebase? Outdated, duplicated, risky, or missing? | Dependency inventory, git archaeology, recon |
+
+Register format (the table is the skill&#x27;s durable output):
+
+```markdown
+| ID | Axis | Gap | Evidence | Forward fix | Severity | Effort | Status |
+|----|------|-----|----------|-------------|----------|--------|--------|
+| G-001 | practice | Errors swallowed in retry loop | src/api/retry.ts:42 | Propagate + map at boundary | P1 | S | open |
+```
+
+- Severity: `P0` security exposure or data loss, `P1` correctness, `P2` practice and observability, `P3` selection and cleanup.
+- Effort: `S` under a session, `M` a few sessions, `L` needs its own plan.
+- Status: `open`, `in-progress`, `done`, `wont-fix`.
+- Every row needs an evidence pointer. A gap you cannot point at is an opinion.
+
+### Phase 4 — Redesign / Rethink
+
+Turn the register into a sequenced plan. Follow the project&#x27;s existing task and approval authority. Keep the register as audit evidence linked to that system; do not create competing canonical task state. Confirm scope and obtain project-required approval before a rewrite, technology replacement, migration, or other material change.
+
+1. Run `architect` or `code-architect` over the `P0` and `P1` rows to produce `target-design.md`: target shape for the slice, the fix sequence, and an explicit &quot;what does not change&quot; list to protect working behavior.
+2. Backfill retro-ADRs for every undocumented decision from Phase 2. Mark them as reconstructed (`status: proposed (reconstructed)`, date of the retro, note the original decision predates the record). Separate observed history from inferred intent, and have the project owner confirm a decision before marking it accepted. Never present a backfilled ADR as if it were written at decision time.
+3. Triage every register row into one of: `fix-forward` (repair in place), `rewrite` (replace the slice), `leave-documented` (wont-fix). A `wont-fix` must record its reason in the register — a wont-fix with a reason closes the thinking gap; a silent one reopens it.
+4. Sequence the backlog: `P0` first, then interleave quick wins with larger repairs to keep momentum.
+
+### Phase 5 — Forward Execution
+
+Work the register through the standard ECC pipeline, one row per session as a baseline pace:
+
+```text
+planner (scope the row)
+  → tdd-guide (failing test first — for a legacy gap the first test
+    usually encodes the missing invariant from reconstructed-spec.md)
+  → implement
+  → code-reviewer
+  → security-reviewer (if the row touches input, auth, or data)
+  → doc-updater + ADR (if the decision changed)
+  → conventional commit
+  → mark the register row done
+```
+
+- Update `gap-register.md` statuses as rows close; the register is the durable state, not the conversation.
+- On session boundaries, hand off through the project&#x27;s memory mechanism (`unified-memory`, context carriers) so the next session resumes from the register alone.
+
+### Phase 6 — Closure and Re-Audit
+
+When every row is `done` or `wont-fix`:
+
+1. Re-run the Phase 1 audit over the same perimeter.
+2. Diff against `baseline-audit.md` and verify with `verification-loop` — the gaps claimed closed must stay closed.
+3. Record the delta (findings then, findings now, rows closed, rows deferred) at the bottom of `gap-register.md`.
+4. Anything that resurfaced becomes a new row, not a failure — the register is a loop, not a one-shot.
+
+## Resuming Mid-Stream
+
+Any session can start in the middle. Read `docs/retro/&lt;slice&gt;/gap-register.md` first:
+
+- Register exists with a row `in-progress` → Phase 5, finish that row.
+- Register exists with at least one row, all rows closed → Phase 6.
+- Register exists, rows open, none in progress → resume at the `Current phase:` marker (Phase 3 register awaiting triage, or Phase 4 backlog awaiting its first row).
+- No register, but `baseline-audit.md` exists → Phase 2.
+- No artifacts at all → Phase 0 with the user.
+
+## Anti-Patterns
+
+- Auditing the whole repo before any slice — the workflow is slice-first by design.
+- Fixing code during Phases 1-3 — audit phases produce the register; edits mid-audit corrupt the baseline.
+- Register rows without evidence pointers.
+- `wont-fix` without a recorded reason.
+- Presenting backfilled ADRs as contemporaneous records.
+- Skipping the Phase 6 re-audit — closure is verified, not declared.
+
+## Related Skills
+
+- `codebase-onboarding` — recon baseline for Phase 1
+- `architecture-decision-records` — retro-ADR backfill in Phase 4
+- `tdd-workflow` — Phase 5 execution discipline
+- `verification-loop` — Phase 6 closure
+- `production-audit` — launch-readiness lens (complementary, later)
+- `security-review` — security-only requests</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

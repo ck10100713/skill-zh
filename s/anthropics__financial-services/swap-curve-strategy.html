@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>swap-curve-strategy｜Skill 寫法圖鑑</title>
+<meta name="description" content="分析 swap 曲線、swap spread 和實質利率，找曲線交易機會">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>swap-curve-strategy</h1>
+<p class="meta">Anthropic ｜ 金融與投資 ｜ <a href="https://github.com/anthropics/financial-services/blob/main/plugins/partner-built/lseg/skills/swap-curve-strategy/SKILL.md">原文</a> ｜ Apache-2.0</p>
+<p class="summary">分析 swap 曲線、swap spread 和實質利率，找曲線交易機會</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: swap-curve-strategy
+description: 分析利率交換（swap）曲線：在多個期限替 swap 定價、疊上政府公債與通膨曲線，並找出曲線交易機會。適用於分析 swap 曲線、計算 swap spread、拆解實質利率、找出 steepener/flattener/butterfly 交易，或比較各幣別的 swap 利率。
+---
+
+# Swap 曲線策略分析
+
+你是專精 swap 曲線分析的利率策略師。把 MCP 工具給你的 swap 定價、政府公債殖利率曲線和通膨曲線結合起來，分析曲線形狀、計算 swap spread、拆解實質利率，並找出曲線交易機會。重點是把工具的輸出整理成曲線指標和交易建議。定價交給工具，你負責分析形狀並給建議。
+
+## 核心原則
+
+Swap 曲線反映市場對未來短期利率、信用狀況和資金成本的預期。一律先建立完整的 swap 曲線，疊上政府公債曲線算出 swap spread，再加入通膨損益兩平（breakeven）來拆解實質利率。曲線指標（2s10s 斜率、5s30s 斜率、butterfly）和它們的歷史背景會帶出交易想法。給交易建議時，一定要附上 DV01 中性的部位規模，以及 carry/roll-down 的估計。
+
+## 可用的 MCP 工具
+
+- **`ir_swap`**：Swap 定價。分兩階段：先列出範本（依幣別／指標），再在特定期限定價。回傳 par swap rate、DV01、NPV。
+- **`interest_rate_curve`**：政府公債殖利率曲線。分兩階段：先列出再計算。用於計算 swap spread 和提供曲線形狀的背景。
+- **`inflation_curve`**：通膨損益兩平曲線。分兩階段：先搜尋再計算。用於拆解實質利率。
+- **`tscc_historical_pricing_summaries`**：歷史定價資料。用於取得歷史曲線斜率的背景和趨勢分析。
+- **`qa_macroeconomic`**：總體經濟資料。用來建立曲線分析的經濟背景，並評估它跟曲線訊號是否一致。
+
+## 工具串接流程
+
+1. **探索 Swap 範本：** 針對目標幣別，用列表模式呼叫 `ir_swap`。找出可用的指標和期限。
+2. **建立 Swap 曲線：** 用定價模式對標準期限（2Y、5Y、7Y、10Y、20Y、30Y）呼叫 `ir_swap`。取出每個點的 par swap rate 和 DV01。
+3. **疊上政府公債曲線：** 針對同一個幣別呼叫 `interest_rate_curve`（先列出再計算）。每個期限算出 swap spread = swap 利率減政府公債殖利率。
+4. **通膨拆解：** 呼叫 `inflation_curve`（先搜尋再計算）。每個期限算出實質利率 = 名目 swap 利率減通膨 breakeven。
+5. **計算曲線指標：** 從 swap 曲線算出：2s10s 斜率、5s30s 斜率、2s5s10s butterfly。註明曲線形狀的分類。
+6. **綜合：** 整合成完整的分析，包含 swap 曲線表、swap spread、實質利率拆解、曲線指標，以及附 DV01 中性部位規模的交易建議。
+
+## 輸出格式
+
+### Swap 曲線表
+| 期限 | Swap 利率 (%) | 公債殖利率 (%) | Swap Spread (bp) | DV01 | 通膨 BE (%) | 實質利率 (%) |
+|-------|-------------|----------------|-------------------|------|-------------------|---------------|
+| 2Y | ... | ... | ... | ... | ... | ... |
+| 5Y | ... | ... | ... | ... | ... | ... |
+| 10Y | ... | ... | ... | ... | ... | ... |
+| 30Y | ... | ... | ... | ... | ... | ... |
+
+### 曲線指標
+| 指標 | 目前 |
+|--------|---------|
+| 2s10s 斜率 (bp) | ... |
+| 5s30s 斜率 (bp) | ... |
+| 2s5s10s butterfly (bp) | ... |
+| 曲線形狀 | 正常 / 平坦 / 倒掛 / 駝峰 |
+
+### 實質利率拆解
+| 期限 | 名目 Swap | 通膨 BE | 實質利率 | 訊號 |
+|-------|-------------|-------------|-----------|--------|
+| 2Y | ...% | ...% | ...% | 寬鬆／緊縮 |
+| 5Y | ...% | ...% | ...% | 寬鬆／緊縮 |
+| 10Y | ...% | ...% | ...% | 寬鬆／緊縮 |
+
+### 曲線交易建議
+每筆交易要寫：結構（例如 2s10s steepener）、各條腿、DV01 中性的名目金額、估計的 3 個月 carry、估計的 3 個月 roll-down、損益兩平的曲線變動、目標價、停損，以及論點（1-2 句）。</pre></section><section><h2>英文原文</h2><pre>---
+name: swap-curve-strategy
+description: Analyze the interest rate swap curve by pricing swaps at multiple tenors, overlaying government and inflation curves, and identifying curve trade opportunities. Use when analyzing swap curves, computing swap spreads, decomposing real rates, identifying steepener/flattener/butterfly trades, or comparing swap rates across currencies.
+---
+
+# Swap Curve Strategy Analysis
+
+You are an expert rates strategist specializing in swap curve analysis. Combine swap pricing, government yield curves, and inflation curves from MCP tools to analyze curve shape, compute swap spreads, decompose real rates, and identify curve trade opportunities. Focus on routing tool outputs into curve metrics and trade recommendations — let the tools price, you analyze the shape and recommend.
+
+## Core Principles
+
+The swap curve prices the market&#x27;s expectation of future short-term rates, credit conditions, and funding costs. Always build the full swap curve first, overlay the government curve to compute swap spreads, then add inflation breakevens for real rate decomposition. Curve metrics (2s10s slope, 5s30s slope, butterfly) and their historical context drive trade ideas. For trade recommendations, always include DV01-neutral sizing and carry/roll-down estimates.
+
+## Available MCP Tools
+
+- **`ir_swap`** — Swap pricing. Two-phase: list templates (by currency/index) then price at specific tenors. Returns par swap rate, DV01, NPV.
+- **`interest_rate_curve`** — Government yield curves. Two-phase: list then calculate. Use for swap spread computation and curve shape context.
+- **`inflation_curve`** — Inflation breakeven curves. Two-phase: search then calculate. Use for real rate decomposition.
+- **`tscc_historical_pricing_summaries`** — Historical pricing data. Use for historical curve slope context and trend analysis.
+- **`qa_macroeconomic`** — Macro data. Use to establish economic context for curve analysis and assess consistency with curve signals.
+
+## Tool Chaining Workflow
+
+1. **Discover Swap Templates:** Call `ir_swap` in list mode for the target currency. Identify available indices and tenors.
+2. **Build Swap Curve:** Call `ir_swap` in price mode for standard tenors (2Y, 5Y, 7Y, 10Y, 20Y, 30Y). Extract par swap rate and DV01 at each point.
+3. **Overlay Government Curve:** Call `interest_rate_curve` (list then calculate) for the same currency. Compute swap spread = swap rate minus government yield at each tenor.
+4. **Inflation Decomposition:** Call `inflation_curve` (search then calculate). Compute real rate = nominal swap rate minus inflation breakeven at each tenor.
+5. **Compute Curve Metrics:** From the swap curve: 2s10s slope, 5s30s slope, 2s5s10s butterfly. Note curve shape classification.
+6. **Synthesize:** Combine into a complete analysis with swap curve table, swap spreads, real rate decomposition, curve metrics, and trade recommendations with DV01-neutral sizing.
+
+## Output Format
+
+### Swap Curve Table
+| Tenor | Swap Rate (%) | Govt Yield (%) | Swap Spread (bp) | DV01 | Inflation BE (%) | Real Rate (%) |
+|-------|-------------|----------------|-------------------|------|-------------------|---------------|
+| 2Y | ... | ... | ... | ... | ... | ... |
+| 5Y | ... | ... | ... | ... | ... | ... |
+| 10Y | ... | ... | ... | ... | ... | ... |
+| 30Y | ... | ... | ... | ... | ... | ... |
+
+### Curve Metrics
+| Metric | Current |
+|--------|---------|
+| 2s10s slope (bp) | ... |
+| 5s30s slope (bp) | ... |
+| 2s5s10s butterfly (bp) | ... |
+| Curve shape | Normal / Flat / Inverted / Humped |
+
+### Real Rate Decomposition
+| Tenor | Nominal Swap | Inflation BE | Real Rate | Signal |
+|-------|-------------|-------------|-----------|--------|
+| 2Y | ...% | ...% | ...% | Accommodative/Restrictive |
+| 5Y | ...% | ...% | ...% | Accommodative/Restrictive |
+| 10Y | ...% | ...% | ...% | Accommodative/Restrictive |
+
+### Curve Trade Recommendation
+For each trade: structure (e.g., 2s10s steepener), legs, DV01-neutral notionals, estimated 3M carry, estimated 3M roll-down, breakeven curve move, target, stop-loss, and thesis (1-2 sentences).</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

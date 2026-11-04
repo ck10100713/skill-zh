@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dotnet-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="C# 與 .NET 的慣用寫法，包含 DI、async、Options、Result 模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>dotnet-patterns</h1>
+<p class="meta">affaan-m ｜ 架構與重構 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/dotnet-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">C# 與 .NET 的慣用寫法，包含 DI、async、Options、Result 模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: dotnet-patterns
+description: 慣用的 C# 與 .NET 模式、慣例、依賴注入、async/await，以及打造穩健、好維護的 .NET 應用程式的最佳實務。在撰寫或審查 C# / .NET 程式碼（DI、async 或一般慣例）時使用。
+metadata:
+  origin: ECC
+---
+
+# .NET 開發模式
+
+用來打造穩健、高效能、好維護的應用程式的慣用 C# 與 .NET 模式。
+
+## 何時啟用
+
+- 撰寫新的 C# 程式碼
+- 審查 C# 程式碼
+- 重構既有的 .NET 應用程式
+- 用 ASP.NET Core 設計服務架構
+
+## 核心原則
+
+### 1. 優先使用不可變
+
+資料模型用 record 和 init-only 屬性。可變應該是明確且有理由的選擇。
+
+```csharp
+// Good: Immutable value object
+public sealed record Money(decimal Amount, string Currency);
+
+// Good: Immutable DTO with init setters
+public sealed class CreateOrderRequest
+{
+    public required string CustomerId { get; init; }
+    public required IReadOnlyList&lt;OrderItem&gt; Items { get; init; }
+}
+
+// Bad: Mutable model with public setters
+public class Order
+{
+    public string CustomerId { get; set; }
+    public List&lt;OrderItem&gt; Items { get; set; }
+}
+```
+
+### 2. 明確優於隱含
+
+可為 null 與否、存取修飾詞和意圖都要講清楚。
+
+```csharp
+// Good: Explicit access modifiers and nullability
+public sealed class UserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+
+    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public async Task&lt;User?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _repository.FindByIdAsync(id, cancellationToken);
+    }
+}
+```
+
+### 3. 依賴抽象
+
+服務邊界用 interface，透過 DI container 註冊。
+
+```csharp
+// Good: Interface-based dependency
+public interface IOrderRepository
+{
+    Task&lt;Order?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task&lt;IReadOnlyList&lt;Order&gt;&gt; FindByCustomerAsync(string customerId, CancellationToken cancellationToken);
+    Task AddAsync(Order order, CancellationToken cancellationToken);
+}
+
+// Registration
+builder.Services.AddScoped&lt;IOrderRepository, SqlOrderRepository&gt;();
+```
+
+## Async/Await 模式
+
+### 正確使用 Async
+
+```csharp
+// Good: Async all the way, with CancellationToken
+public async Task&lt;OrderSummary&gt; GetOrderSummaryAsync(
+    Guid orderId,
+    CancellationToken cancellationToken)
+{
+    var order = await _repository.FindByIdAsync(orderId, cancellationToken)
+        ?? throw new NotFoundException($&quot;Order {orderId} not found&quot;);
+
+    var customer = await _customerService.GetAsync(order.CustomerId, cancellationToken);
+
+    return new OrderSummary(order, customer);
+}
+
+// Bad: Blocking on async
+public OrderSummary GetOrderSummary(Guid orderId)
+{
+    var order = _repository.FindByIdAsync(orderId, CancellationToken.None).Result; // Deadlock risk
+    return new OrderSummary(order);
+}
+```
+
+### 平行的 Async 操作
+
+```csharp
+// Good: Concurrent independent operations
+public async Task&lt;DashboardData&gt; LoadDashboardAsync(CancellationToken cancellationToken)
+{
+    var ordersTask = _orderService.GetRecentAsync(cancellationToken);
+    var metricsTask = _metricsService.GetCurrentAsync(cancellationToken);
+    var alertsTask = _alertService.GetActiveAsync(cancellationToken);
+
+    await Task.WhenAll(ordersTask, metricsTask, alertsTask);
+
+    return new DashboardData(
+        Orders: await ordersTask,
+        Metrics: await metricsTask,
+        Alerts: await alertsTask);
+}
+```
+
+## Options 模式
+
+把設定區段綁到強型別物件上。
+
+```csharp
+public sealed class SmtpOptions
+{
+    public const string SectionName = &quot;Smtp&quot;;
+
+    public required string Host { get; init; }
+    public required int Port { get; init; }
+    public required string Username { get; init; }
+    public bool UseSsl { get; init; } = true;
+}
+
+// Registration
+builder.Services.Configure&lt;SmtpOptions&gt;(
+    builder.Configuration.GetSection(SmtpOptions.SectionName));
+
+// Usage via injection
+public class EmailService(IOptions&lt;SmtpOptions&gt; options)
+{
+    private readonly SmtpOptions _smtp = options.Value;
+}
+```
+
+## Result 模式
+
+預期內的失敗，回傳明確的成功/失敗，不要用 throw。
+
+```csharp
+public sealed record Result&lt;T&gt;
+{
+    public bool IsSuccess { get; }
+    public T? Value { get; }
+    public string? Error { get; }
+
+    private Result(T value) { IsSuccess = true; Value = value; }
+    private Result(string error) { IsSuccess = false; Error = error; }
+
+    public static Result&lt;T&gt; Success(T value) =&gt; new(value);
+    public static Result&lt;T&gt; Failure(string error) =&gt; new(error);
+}
+
+// Usage
+public async Task&lt;Result&lt;Order&gt;&gt; PlaceOrderAsync(CreateOrderRequest request)
+{
+    if (request.Items.Count == 0)
+        return Result&lt;Order&gt;.Failure(&quot;Order must contain at least one item&quot;);
+
+    var order = Order.Create(request);
+    await _repository.AddAsync(order, CancellationToken.None);
+    return Result&lt;Order&gt;.Success(order);
+}
+```
+
+## 搭配 EF Core 的 Repository 模式
+
+```csharp
+public sealed class SqlOrderRepository : IOrderRepository
+{
+    private readonly AppDbContext _db;
+
+    public SqlOrderRepository(AppDbContext db) =&gt; _db = db;
+
+    public async Task&lt;Order?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _db.Orders
+            .Include(o =&gt; o.Items)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o =&gt; o.Id == id, cancellationToken);
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Order&gt;&gt; FindByCustomerAsync(
+        string customerId,
+        CancellationToken cancellationToken)
+    {
+        return await _db.Orders
+            .Where(o =&gt; o.CustomerId == customerId)
+            .OrderByDescending(o =&gt; o.CreatedAt)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Order order, CancellationToken cancellationToken)
+    {
+        _db.Orders.Add(order);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+}
+```
+
+## Middleware 與 Pipeline
+
+```csharp
+// Custom middleware
+public sealed class RequestTimingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;RequestTimingMiddleware&gt; _logger;
+
+    public RequestTimingMiddleware(RequestDelegate next, ILogger&lt;RequestTimingMiddleware&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        try
+        {
+            await _next(context);
+        }
+        finally
+        {
+            stopwatch.Stop();
+            _logger.LogInformation(
+                &quot;Request {Method} {Path} completed in {ElapsedMs}ms with status {StatusCode}&quot;,
+                context.Request.Method,
+                context.Request.Path,
+                stopwatch.ElapsedMilliseconds,
+                context.Response.StatusCode);
+        }
+    }
+}
+```
+
+## Minimal API 模式
+
+```csharp
+// Organized with route groups
+var orders = app.MapGroup(&quot;/api/orders&quot;)
+    .RequireAuthorization()
+    .WithTags(&quot;Orders&quot;);
+
+orders.MapGet(&quot;/{id:guid}&quot;, async (
+    Guid id,
+    IOrderRepository repository,
+    CancellationToken cancellationToken) =&gt;
+{
+    var order = await repository.FindByIdAsync(id, cancellationToken);
+    return order is not null
+        ? TypedResults.Ok(order)
+        : TypedResults.NotFound();
+});
+
+orders.MapPost(&quot;/&quot;, async (
+    CreateOrderRequest request,
+    IOrderService service,
+    CancellationToken cancellationToken) =&gt;
+{
+    var result = await service.PlaceOrderAsync(request, cancellationToken);
+    return result.IsSuccess
+        ? TypedResults.Created($&quot;/api/orders/{result.Value!.Id}&quot;, result.Value)
+        : TypedResults.BadRequest(result.Error);
+});
+```
+
+## Guard Clause
+
+```csharp
+// Good: Early returns with clear validation
+public async Task&lt;ProcessResult&gt; ProcessPaymentAsync(
+    PaymentRequest request,
+    CancellationToken cancellationToken)
+{
+    ArgumentNullException.ThrowIfNull(request);
+
+    if (request.Amount &lt;= 0)
+        throw new ArgumentOutOfRangeException(nameof(request.Amount), &quot;Amount must be positive&quot;);
+
+    if (string.IsNullOrWhiteSpace(request.Currency))
+        throw new ArgumentException(&quot;Currency is required&quot;, nameof(request.Currency));
+
+    // Happy path continues here without nesting
+    var gateway = _gatewayFactory.Create(request.Currency);
+    return await gateway.ChargeAsync(request, cancellationToken);
+}
+```
+
+## 要避開的反模式
+
+| 反模式 | 修正方式 |
+|---|---|
+| `async void` 方法 | 回傳 `Task`（event handler 除外） |
+| `.Result` 或 `.Wait()` | 用 `await` |
+| `catch (Exception) { }` | 處理它，或帶上 context 後重新 throw |
+| 在 constructor 裡 `new Service()` | 用 constructor 注入 |
+| `public` 欄位 | 用有適當存取子的屬性 |
+| 在業務邏輯裡用 `dynamic` | 用泛型或明確型別 |
+| 可變的 `static` 狀態 | 用 DI scope 或 `ConcurrentDictionary` |
+| 在迴圈裡用 `string.Format` | 用 `StringBuilder` 或 interpolated string handler |</pre></section><section><h2>英文原文</h2><pre>---
+name: dotnet-patterns
+description: Idiomatic C# and .NET patterns, conventions, dependency injection, async/await, and best practices for building robust, maintainable .NET applications. Use when writing or reviewing C# / .NET code — DI, async, or general conventions.
+metadata:
+  origin: ECC
+---
+
+# .NET Development Patterns
+
+Idiomatic C# and .NET patterns for building robust, performant, and maintainable applications.
+
+## When to Activate
+
+- Writing new C# code
+- Reviewing C# code
+- Refactoring existing .NET applications
+- Designing service architectures with ASP.NET Core
+
+## Core Principles
+
+### 1. Prefer Immutability
+
+Use records and init-only properties for data models. Mutability should be an explicit, justified choice.
+
+```csharp
+// Good: Immutable value object
+public sealed record Money(decimal Amount, string Currency);
+
+// Good: Immutable DTO with init setters
+public sealed class CreateOrderRequest
+{
+    public required string CustomerId { get; init; }
+    public required IReadOnlyList&lt;OrderItem&gt; Items { get; init; }
+}
+
+// Bad: Mutable model with public setters
+public class Order
+{
+    public string CustomerId { get; set; }
+    public List&lt;OrderItem&gt; Items { get; set; }
+}
+```
+
+### 2. Explicit Over Implicit
+
+Be clear about nullability, access modifiers, and intent.
+
+```csharp
+// Good: Explicit access modifiers and nullability
+public sealed class UserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+
+    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public async Task&lt;User?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _repository.FindByIdAsync(id, cancellationToken);
+    }
+}
+```
+
+### 3. Depend on Abstractions
+
+Use interfaces for service boundaries. Register via DI container.
+
+```csharp
+// Good: Interface-based dependency
+public interface IOrderRepository
+{
+    Task&lt;Order?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task&lt;IReadOnlyList&lt;Order&gt;&gt; FindByCustomerAsync(string customerId, CancellationToken cancellationToken);
+    Task AddAsync(Order order, CancellationToken cancellationToken);
+}
+
+// Registration
+builder.Services.AddScoped&lt;IOrderRepository, SqlOrderRepository&gt;();
+```
+
+## Async/Await Patterns
+
+### Proper Async Usage
+
+```csharp
+// Good: Async all the way, with CancellationToken
+public async Task&lt;OrderSummary&gt; GetOrderSummaryAsync(
+    Guid orderId,
+    CancellationToken cancellationToken)
+{
+    var order = await _repository.FindByIdAsync(orderId, cancellationToken)
+        ?? throw new NotFoundException($&quot;Order {orderId} not found&quot;);
+
+    var customer = await _customerService.GetAsync(order.CustomerId, cancellationToken);
+
+    return new OrderSummary(order, customer);
+}
+
+// Bad: Blocking on async
+public OrderSummary GetOrderSummary(Guid orderId)
+{
+    var order = _repository.FindByIdAsync(orderId, CancellationToken.None).Result; // Deadlock risk
+    return new OrderSummary(order);
+}
+```
+
+### Parallel Async Operations
+
+```csharp
+// Good: Concurrent independent operations
+public async Task&lt;DashboardData&gt; LoadDashboardAsync(CancellationToken cancellationToken)
+{
+    var ordersTask = _orderService.GetRecentAsync(cancellationToken);
+    var metricsTask = _metricsService.GetCurrentAsync(cancellationToken);
+    var alertsTask = _alertService.GetActiveAsync(cancellationToken);
+
+    await Task.WhenAll(ordersTask, metricsTask, alertsTask);
+
+    return new DashboardData(
+        Orders: await ordersTask,
+        Metrics: await metricsTask,
+        Alerts: await alertsTask);
+}
+```
+
+## Options Pattern
+
+Bind configuration sections to strongly-typed objects.
+
+```csharp
+public sealed class SmtpOptions
+{
+    public const string SectionName = &quot;Smtp&quot;;
+
+    public required string Host { get; init; }
+    public required int Port { get; init; }
+    public required string Username { get; init; }
+    public bool UseSsl { get; init; } = true;
+}
+
+// Registration
+builder.Services.Configure&lt;SmtpOptions&gt;(
+    builder.Configuration.GetSection(SmtpOptions.SectionName));
+
+// Usage via injection
+public class EmailService(IOptions&lt;SmtpOptions&gt; options)
+{
+    private readonly SmtpOptions _smtp = options.Value;
+}
+```
+
+## Result Pattern
+
+Return explicit success/failure instead of throwing for expected failures.
+
+```csharp
+public sealed record Result&lt;T&gt;
+{
+    public bool IsSuccess { get; }
+    public T? Value { get; }
+    public string? Error { get; }
+
+    private Result(T value) { IsSuccess = true; Value = value; }
+    private Result(string error) { IsSuccess = false; Error = error; }
+
+    public static Result&lt;T&gt; Success(T value) =&gt; new(value);
+    public static Result&lt;T&gt; Failure(string error) =&gt; new(error);
+}
+
+// Usage
+public async Task&lt;Result&lt;Order&gt;&gt; PlaceOrderAsync(CreateOrderRequest request)
+{
+    if (request.Items.Count == 0)
+        return Result&lt;Order&gt;.Failure(&quot;Order must contain at least one item&quot;);
+
+    var order = Order.Create(request);
+    await _repository.AddAsync(order, CancellationToken.None);
+    return Result&lt;Order&gt;.Success(order);
+}
+```
+
+## Repository Pattern with EF Core
+
+```csharp
+public sealed class SqlOrderRepository : IOrderRepository
+{
+    private readonly AppDbContext _db;
+
+    public SqlOrderRepository(AppDbContext db) =&gt; _db = db;
+
+    public async Task&lt;Order?&gt; FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _db.Orders
+            .Include(o =&gt; o.Items)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o =&gt; o.Id == id, cancellationToken);
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Order&gt;&gt; FindByCustomerAsync(
+        string customerId,
+        CancellationToken cancellationToken)
+    {
+        return await _db.Orders
+            .Where(o =&gt; o.CustomerId == customerId)
+            .OrderByDescending(o =&gt; o.CreatedAt)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddAsync(Order order, CancellationToken cancellationToken)
+    {
+        _db.Orders.Add(order);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+}
+```
+
+## Middleware and Pipeline
+
+```csharp
+// Custom middleware
+public sealed class RequestTimingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;RequestTimingMiddleware&gt; _logger;
+
+    public RequestTimingMiddleware(RequestDelegate next, ILogger&lt;RequestTimingMiddleware&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        try
+        {
+            await _next(context);
+        }
+        finally
+        {
+            stopwatch.Stop();
+            _logger.LogInformation(
+                &quot;Request {Method} {Path} completed in {ElapsedMs}ms with status {StatusCode}&quot;,
+                context.Request.Method,
+                context.Request.Path,
+                stopwatch.ElapsedMilliseconds,
+                context.Response.StatusCode);
+        }
+    }
+}
+```
+
+## Minimal API Patterns
+
+```csharp
+// Organized with route groups
+var orders = app.MapGroup(&quot;/api/orders&quot;)
+    .RequireAuthorization()
+    .WithTags(&quot;Orders&quot;);
+
+orders.MapGet(&quot;/{id:guid}&quot;, async (
+    Guid id,
+    IOrderRepository repository,
+    CancellationToken cancellationToken) =&gt;
+{
+    var order = await repository.FindByIdAsync(id, cancellationToken);
+    return order is not null
+        ? TypedResults.Ok(order)
+        : TypedResults.NotFound();
+});
+
+orders.MapPost(&quot;/&quot;, async (
+    CreateOrderRequest request,
+    IOrderService service,
+    CancellationToken cancellationToken) =&gt;
+{
+    var result = await service.PlaceOrderAsync(request, cancellationToken);
+    return result.IsSuccess
+        ? TypedResults.Created($&quot;/api/orders/{result.Value!.Id}&quot;, result.Value)
+        : TypedResults.BadRequest(result.Error);
+});
+```
+
+## Guard Clauses
+
+```csharp
+// Good: Early returns with clear validation
+public async Task&lt;ProcessResult&gt; ProcessPaymentAsync(
+    PaymentRequest request,
+    CancellationToken cancellationToken)
+{
+    ArgumentNullException.ThrowIfNull(request);
+
+    if (request.Amount &lt;= 0)
+        throw new ArgumentOutOfRangeException(nameof(request.Amount), &quot;Amount must be positive&quot;);
+
+    if (string.IsNullOrWhiteSpace(request.Currency))
+        throw new ArgumentException(&quot;Currency is required&quot;, nameof(request.Currency));
+
+    // Happy path continues here without nesting
+    var gateway = _gatewayFactory.Create(request.Currency);
+    return await gateway.ChargeAsync(request, cancellationToken);
+}
+```
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern | Fix |
+|---|---|
+| `async void` methods | Return `Task` (except event handlers) |
+| `.Result` or `.Wait()` | Use `await` |
+| `catch (Exception) { }` | Handle or rethrow with context |
+| `new Service()` in constructors | Use constructor injection |
+| `public` fields | Use properties with appropriate accessors |
+| `dynamic` in business logic | Use generics or explicit types |
+| Mutable `static` state | Use DI scoping or `ConcurrentDictionary` |
+| `string.Format` in loops | Use `StringBuilder` or interpolated string handlers |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

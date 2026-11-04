@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nuxt4-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="Nuxt 4 的 hydration 安全、route rules 與 SSR 資料取得寫法">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>nuxt4-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/nuxt4-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Nuxt 4 的 hydration 安全、route rules 與 SSR 資料取得寫法</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: nuxt4-patterns
+description: Nuxt 4 應用的模式，涵蓋 hydration 安全、效能、route rules、延遲載入，以及用 useFetch 和 useAsyncData 做 SSR 安全的資料取得。建置或審查 Nuxt 4 應用，或除錯 hydration 不一致和 SSR 安全的資料取得時使用。
+metadata:
+  origin: ECC
+---
+
+# Nuxt 4 Patterns
+
+建置或除錯使用 SSR、混合 rendering、route rules 或頁面層級資料取得的 Nuxt 4 應用時使用。
+
+## When to Activate
+
+- 伺服器 HTML 和 client 狀態之間的 hydration 不一致
+- 路由層級的 rendering 決策，例如 prerender、SWR、ISR 或 client-only 區塊
+- 圍繞延遲載入、延遲 hydration 或 payload 大小的效能工作
+- 用 `useFetch`、`useAsyncData` 或 `$fetch` 取得頁面或元件的資料
+- 和路由參數、middleware 或 SSR/client 差異有關的 Nuxt 路由問題
+
+## Hydration Safety
+
+- 讓第一次 render 保持確定性。不要把 `Date.now()`、`Math.random()`、只有瀏覽器才有的 API，或 storage 的讀取，直接放進 SSR 渲染的樣板狀態裡。
+- 伺服器產生不出同樣的 markup 時，把只有瀏覽器才會跑的邏輯放到 `onMounted()`、`import.meta.client`、`ClientOnly` 或 `.client.vue` 元件後面。
+- 用 Nuxt 的 `useRoute()` composable，不要用 `vue-router` 的那個。
+- 不要用 `route.fullPath` 來驅動 SSR 渲染的 markup。URL 的 fragment 只存在於 client，會造成 hydration 不一致。
+- 把 `ssr: false` 當成真正只有瀏覽器才有的區域的逃生口，不要當成不一致的預設解法。
+
+## Data Fetching
+
+- 在頁面和元件裡做 SSR 安全的 API 讀取，偏好用 `await useFetch()`。它會把伺服器取得的資料轉進 Nuxt 的 payload，避免 hydration 時再取一次。
+- 當 fetcher 不是單純的 `$fetch()` 呼叫、需要自訂 key，或要組合多個非同步來源時，用 `useAsyncData()`。
+- 給 `useAsyncData()` 一個穩定的 key，才能重用快取，refresh 的行為也才可預期。
+- 讓 `useAsyncData()` 的 handler 沒有副作用。它們可能在 SSR 和 hydration 期間執行。
+- 使用者觸發的寫入或只在 client 的動作，用 `$fetch()`，不要用在應該從 SSR hydrate 的頂層頁面資料上。
+- 不重要、不該擋住導覽的資料，用 `lazy: true`、`useLazyFetch()` 或 `useLazyAsyncData()`。在 UI 裡要處理 `status === &#x27;pending&#x27;`。
+- 只有對 SEO 或首次繪製不需要的資料，才用 `server: false`。
+- 用 `pick` 精簡 payload 大小，不需要深層響應性時，偏好比較淺的 payload。
+
+```ts
+const route = useRoute()
+
+const { data: article, status, error, refresh } = await useAsyncData(
+  () =&gt; `article:${route.params.slug}`,
+  () =&gt; $fetch(`/api/articles/${route.params.slug}`),
+)
+
+const { data: comments } = await useFetch(`/api/articles/${route.params.slug}/comments`, {
+  lazy: true,
+  server: false,
+})
+```
+
+## Route Rules
+
+rendering 和快取策略，偏好在 `nuxt.config.ts` 裡用 `routeRules`：
+
+```ts
+export default defineNuxtConfig({
+  routeRules: {
+    &#x27;/&#x27;: { prerender: true },
+    &#x27;/products/**&#x27;: { swr: 3600 },
+    &#x27;/blog/**&#x27;: { isr: true },
+    &#x27;/admin/**&#x27;: { ssr: false },
+    &#x27;/api/**&#x27;: { cache: { maxAge: 60 * 60 } },
+  },
+})
+```
+
+- `prerender`：建置時產生靜態 HTML
+- `swr`：提供快取的內容，並在背景重新驗證
+- `isr`：在支援的平台上做增量靜態再生
+- `ssr: false`：由 client 渲染的路由
+- `cache` 或 `redirect`：Nitro 層級的回應行為
+
+route rules 要依路由群組挑，不要全域套用。行銷頁面、商品目錄、儀表板和 API 通常需要不同的策略。
+
+## Lazy Loading and Performance
+
+- Nuxt 已經依路由對頁面做 code-split。在微調元件的切分之前，先讓路由邊界有意義。
+- 用 `Lazy` 前綴動態 import 不重要的元件。
+- 用 `v-if` 有條件地渲染延遲元件，這樣在 UI 真的需要之前，不會載入那個 chunk。
+- 對首屏以下或不重要的互動式 UI，用延遲 hydration。
+
+```vue
+&lt;template&gt;
+  &lt;LazyRecommendations v-if=&quot;showRecommendations&quot; /&gt;
+  &lt;LazyProductGallery hydrate-on-visible /&gt;
+&lt;/template&gt;
+```
+
+- 要自訂策略，用 `defineLazyHydrationComponent()` 搭配 visibility 或 idle 策略。
+- Nuxt 的延遲 hydration 作用在單一檔案元件上。傳新的 props 給延遲 hydrate 的元件，會立刻觸發 hydration。
+- 內部導覽用 `NuxtLink`，這樣 Nuxt 才能預先載入路由元件和產生出來的 payload。
+
+## Review Checklist
+
+- 第一次 SSR render 和 hydrate 後的 client render 產生相同的 markup
+- 頁面資料用 `useFetch` 或 `useAsyncData`，不是頂層的 `$fetch`
+- 不重要的資料是延遲載入的，而且有明確的載入 UI
+- route rules 符合頁面對 SEO 和新鮮度的要求
+- 很重的互動式 island 是延遲載入或延遲 hydrate 的</pre></section><section><h2>英文原文</h2><pre>---
+name: nuxt4-patterns
+description: Nuxt 4 app patterns for hydration safety, performance, route rules, lazy loading, and SSR-safe data fetching with useFetch and useAsyncData. Use when building or reviewing a Nuxt 4 app, or debugging hydration mismatches and SSR-safe data fetching.
+metadata:
+  origin: ECC
+---
+
+# Nuxt 4 Patterns
+
+Use when building or debugging Nuxt 4 apps with SSR, hybrid rendering, route rules, or page-level data fetching.
+
+## When to Activate
+
+- Hydration mismatches between server HTML and client state
+- Route-level rendering decisions such as prerender, SWR, ISR, or client-only sections
+- Performance work around lazy loading, lazy hydration, or payload size
+- Page or component data fetching with `useFetch`, `useAsyncData`, or `$fetch`
+- Nuxt routing issues tied to route params, middleware, or SSR/client differences
+
+## Hydration Safety
+
+- Keep the first render deterministic. Do not put `Date.now()`, `Math.random()`, browser-only APIs, or storage reads directly into SSR-rendered template state.
+- Move browser-only logic behind `onMounted()`, `import.meta.client`, `ClientOnly`, or a `.client.vue` component when the server cannot produce the same markup.
+- Use Nuxt&#x27;s `useRoute()` composable, not the one from `vue-router`.
+- Do not use `route.fullPath` to drive SSR-rendered markup. URL fragments are client-only, which can create hydration mismatches.
+- Treat `ssr: false` as an escape hatch for truly browser-only areas, not a default fix for mismatches.
+
+## Data Fetching
+
+- Prefer `await useFetch()` for SSR-safe API reads in pages and components. It forwards server-fetched data into the Nuxt payload and avoids a second fetch on hydration.
+- Use `useAsyncData()` when the fetcher is not a simple `$fetch()` call, when you need a custom key, or when you are composing multiple async sources.
+- Give `useAsyncData()` a stable key for cache reuse and predictable refresh behavior.
+- Keep `useAsyncData()` handlers side-effect free. They can run during SSR and hydration.
+- Use `$fetch()` for user-triggered writes or client-only actions, not top-level page data that should be hydrated from SSR.
+- Use `lazy: true`, `useLazyFetch()`, or `useLazyAsyncData()` for non-critical data that should not block navigation. Handle `status === &#x27;pending&#x27;` in the UI.
+- Use `server: false` only for data that is not needed for SEO or the first paint.
+- Trim payload size with `pick` and prefer shallower payloads when deep reactivity is unnecessary.
+
+```ts
+const route = useRoute()
+
+const { data: article, status, error, refresh } = await useAsyncData(
+  () =&gt; `article:${route.params.slug}`,
+  () =&gt; $fetch(`/api/articles/${route.params.slug}`),
+)
+
+const { data: comments } = await useFetch(`/api/articles/${route.params.slug}/comments`, {
+  lazy: true,
+  server: false,
+})
+```
+
+## Route Rules
+
+Prefer `routeRules` in `nuxt.config.ts` for rendering and caching strategy:
+
+```ts
+export default defineNuxtConfig({
+  routeRules: {
+    &#x27;/&#x27;: { prerender: true },
+    &#x27;/products/**&#x27;: { swr: 3600 },
+    &#x27;/blog/**&#x27;: { isr: true },
+    &#x27;/admin/**&#x27;: { ssr: false },
+    &#x27;/api/**&#x27;: { cache: { maxAge: 60 * 60 } },
+  },
+})
+```
+
+- `prerender`: static HTML at build time
+- `swr`: serve cached content and revalidate in the background
+- `isr`: incremental static regeneration on supported platforms
+- `ssr: false`: client-rendered route
+- `cache` or `redirect`: Nitro-level response behavior
+
+Pick route rules per route group, not globally. Marketing pages, catalogs, dashboards, and APIs usually need different strategies.
+
+## Lazy Loading and Performance
+
+- Nuxt already code-splits pages by route. Keep route boundaries meaningful before micro-optimizing component splits.
+- Use the `Lazy` prefix to dynamically import non-critical components.
+- Conditionally render lazy components with `v-if` so the chunk is not loaded until the UI actually needs it.
+- Use lazy hydration for below-the-fold or non-critical interactive UI.
+
+```vue
+&lt;template&gt;
+  &lt;LazyRecommendations v-if=&quot;showRecommendations&quot; /&gt;
+  &lt;LazyProductGallery hydrate-on-visible /&gt;
+&lt;/template&gt;
+```
+
+- For custom strategies, use `defineLazyHydrationComponent()` with a visibility or idle strategy.
+- Nuxt lazy hydration works on single-file components. Passing new props to a lazily hydrated component will trigger hydration immediately.
+- Use `NuxtLink` for internal navigation so Nuxt can prefetch route components and generated payloads.
+
+## Review Checklist
+
+- First SSR render and hydrated client render produce the same markup
+- Page data uses `useFetch` or `useAsyncData`, not top-level `$fetch`
+- Non-critical data is lazy and has explicit loading UI
+- Route rules match the page&#x27;s SEO and freshness requirements
+- Heavy interactive islands are lazy-loaded or lazily hydrated</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>module-regression｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 REGRESSION.md 帳本管理跨模組回歸，跑完下游指令才算過">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>module-regression</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/module-regression/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 REGRESSION.md 帳本管理跨模組回歸，跑完下游指令才算過</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: module-regression
+description: &gt;-
+  在大型 repo 裡，用 REGRESSION.md 帳本管理跨模組的回歸，帳本記錄每個模組的下游使用者和可執行的驗收指令。變更之後，執行被改的模組和每個受影響的下游指令，並依專案的交付政策，把實際觀察到的 exit code 當作回歸證據。用於模組回歸、回歸帳本、影響稽核、下游驗證，以及「改 A 可能弄壞 B」的變更。
+metadata:
+  origin: ECC
+---
+
+# Module Regression Ledger
+
+## When to Activate
+
+- repo 至少有三個互相依賴的模組，或之前改 A 曾經弄壞 B。
+- 某項變更會改動模組對外可觀察的行為，必須同時證明該模組和下游使用者仍然正常。
+- 專案已經有可執行的測試或對帳指令，應該依相依關係整理起來。
+
+## Anti-Patterns
+
+- 對沒有跨模組相依的小型 repo 建立回歸帳本。
+- 手動猜相依關係，或把一次掃描當成永遠正確。
+- 用模型審查取代可執行驗收指令的 exit code。
+
+## Related Skills
+
+- `test-collaboration`：TEST-ID、測試資產和缺陷回歸的證據。
+- `ai-regression-testing`：從重要缺陷衍生出來的可執行回歸測試。
+- `contract-first`：跨服務或跨 client 的合約驗證。
+- `change-impact`：實作前後的爆炸半徑分析。
+
+## Problem
+
+大型專案裡，模組互相依賴。人和 agent 常常只驗證被改的模組，下游使用者卻悄悄壞掉。缺陷幾天後才出現，在彙總、匯出或對外行為出錯的時候。
+
+解法是一份**回歸帳本**（`REGRESSION.md`）加上確定性的稽核：任何相關變更之後，執行被改的模組和所有受影響的下游使用者。交付要求每個指令都通過。
+
+## Three Required Fields per Module
+
+```markdown
+## Module 03 — Shop Data Cleaning
+Downstream consumers: 05-aggregation, 07-final-export
+Dependency evidence: `&lt;repository dependency graph or reproducible scan command&gt;`
+Regression acceptance command: `pytest tests/test_03.py &amp;&amp; python scripts/reconcile.py --module 03`
+Propagation rule: external behavior change → run 05 and 07; internal-only change with a green module check → downstream may be exempted
+```
+
+1. **Downstream consumers**：從 repo 的相依圖、建置工具，或可重現的 import/呼叫掃描推導出來，並記錄所用的指令或工具。各生態系的擷取方式不同；這個 skill 不假裝有一個通用的掃描器能解析每種語言。無法用機械方式確立的邊，標成 `unverified`。受影響的 unverified 邊，會擋住「全綠」的結論，直到有人確認它的範圍，或把相關模組納入這次執行為止。
+2. **Regression acceptance command**：帳本的核心資產。每個模組都需要一個可執行的指令來證明它仍然正常：測試、對帳腳本，或 golden sample 的 diff。沒有它，稽核就會退化成「模型看過了，沒發現問題」。
+3. **Propagation rule**：寫明變更之後哪些下游模組必須跑，以及什麼情況下免跑是合理的。
+
+## Connection to TESTS.md
+
+`REGRESSION.md` 不維護商業規則或測試缺口。它參照 test-registry 成品裡穩定的 TEST-ID：
+
+```markdown
+Related test points: TEST-ORDER-001, TEST-REFUND-003
+```
+
+- 哪些規則必須被保護、它們的覆蓋狀態，以及證據放在哪裡，歸 `test-collaboration` 和 test registry 管。
+- 變更後哪些模組和指令必須重跑，歸這個 skill 和回歸帳本管。
+- 目前的 session 負責規劃帳本裡的指令。經使用者或既有任務範圍授權之後，由受信任的 host 執行並回傳 exit code。這個 skill 沒有加專屬的 agent 或 slash command。
+
+## Ledger Discipline
+
+- 驗收指令偏好用**對帳式**的，而不是只做斷言的檢查。golden sample、上游總數和會計關係這類外部事實，比 mock 或鬆散的斷言更難被不小心削弱。
+- 只根據可重現的證據來更新下游清單。相依關係變了，就重跑記錄下來的 repo 工具或掃描；沒有證據，不要手動編輯邊。
+- 把帳本放在 repo 根目錄或 `docs/` 底下，並從專案的指示/地圖成品連到它，免得變成孤兒。
+
+## Audit Flow
+
+透過 host 的 skill 入口呼叫 `module-regression`，例如在 Codex 裡用 `$module-regression`。目前的 session 負責規劃並回報稽核。repo 指令透過受信任的 host runner，在既有的使用者授權範圍內執行；只有在指令需要新的權限時才詢問。成功的 exit code 是回歸證據，絕不是 ECC 正式認定的完成或整合權限。
+
+1. **列出變更**：先選定並記錄稽核基準（用 PR 的 merge-base 或最後一個驗證過全綠的 commit）。合併 `git diff --name-only &lt;base&gt; HEAD`、未 stage 的 `git diff --name-only`、已 stage 的 `git diff --cached --name-only`，以及包含未追蹤檔案的 `git status -s` 路徑，再把聯集對應到帳本裡的模組。光是工作區乾淨，不能證明沒有相關變更。
+2. **解析傳播**：根據每個模組的下游清單和規則。
+3. **執行前先審查。** 把帳本裡的指令當作不受信任的 repo 內容。把有界的指令清單、風險、預期的工作區、逾時、環境和網路需求，拿出來給人審查。確認既有的任務授權涵蓋每個指令，只有新的權限才需要請求核准。只透過受信任的 host 邊界執行；否則把指令標成 `NOT RUN`。
+4. **執行回歸**：在那份授權範圍內，對被改的模組和每個必要的下游模組執行，記錄每個指令和 exit code。
+5. **以 exit code 把關**。所有必要指令都綠，而且沒有受影響的 unverified 邊，這個變更才可以往下走。任何失敗或未解決的邊，都代表變更還沒完成；修好或確認之後，從步驟 3 重跑。
+   - 用受控的證據歸因：如果基準是綠的、只有 A 改了、B 現在紅了，就檢查 B 失敗的對帳/斷言，並把交接欄位追回 A。如果 B 在變更之前就是紅的，就記成既有的債，不要怪 A。變更批次越小，歸因越準。把最後一個綠的 commit 記在帳本裡。
+6. **回報稽核結果**：包含被改的模組、執行過的指令、關鍵輸出、exit code、豁免和理由。
+
+## Four Invariants
+
+1. **結論 = exit code。** 沒有可執行驗收指令的模組，是帳本缺口，不算通過。
+2. **稽核者只回報，不修。** 由變更作者修失敗並要求重跑。
+3. **紅燈不准交付。** 下游使用者失敗，代表目前的變更還沒做完。
+4. **每個重要缺陷都要留下持久的證據。** 修 bug 必須建立或連結一個 TEST-ID，並指出它的回歸測試、lint 規則、schema 檢查，或明確的人工出口。只修程式碼不算完成。
+
+## Boundary with Adjacent Methods
+
+| 方法 | 負責 | 成品 | 驗證時間 |
+|---|---|---|---|
+| `contract-first` | 跨 client/服務的欄位合約 | `CONTRACT.md` 或既有的同等檔案 | 整合對帳 |
+| `test-collaboration` | 測試資產、必要的測試點、bug 防護和證據 | `TESTS.md` 或既有的同等檔案 | 需求、bug、測試變更和交付 |
+| `module-regression` | 同一個 codebase 內跨模組的行為回歸 | `REGRESSION.md` 或既有的同等檔案 | 每次相關變更之後 |
+
+## Progressive Adoption
+
+- 少於三個模組，或沒有跨模組參照，而且之前沒發生過跨模組的壞掉：不要建立帳本。
+- 第一次發生「A 弄壞 B」的事件：當天就建立帳本。
+- 如果測試和對帳腳本已經存在，導入主要就是依模組整理它們的指令，並驗證下游證據。</pre></section><section><h2>英文原文</h2><pre>---
+name: module-regression
+description: &gt;-
+  Govern cross-module regression in large repositories with a REGRESSION.md ledger that records each module&#x27;s downstream consumers and executable acceptance command. After a change, run the changed module and every affected downstream command, and use observed exit codes as regression evidence under the project&#x27;s delivery policy. Use for module regression, regression ledgers, impact audits, downstream verification, and changes where modifying A may break B.
+metadata:
+  origin: ECC
+---
+
+# Module Regression Ledger
+
+## When to Activate
+
+- The repository has at least three interdependent modules, or a previous change to A has broken B.
+- A change modifies a module&#x27;s externally observable behavior and must prove both that module and downstream consumers still work.
+- The project already has executable tests or reconciliation commands that should be organized by dependency.
+
+## Anti-Patterns
+
+- Creating a regression ledger for a small repository with no cross-module dependencies.
+- Guessing dependencies manually or treating one scan as permanent truth.
+- Replacing executable acceptance-command exit codes with model review.
+
+## Related Skills
+
+- `test-collaboration`: TEST-IDs, test assets, and defect-regression evidence.
+- `ai-regression-testing`: executable regression tests derived from important defects.
+- `contract-first`: cross-service or cross-client contract verification.
+- `change-impact`: pre- and post-implementation blast-radius analysis.
+
+## Problem
+
+In large projects, modules depend on one another. People and agents often verify only the changed module while downstream consumers fail silently. The defect appears days later when an aggregate, export, or external behavior is wrong.
+
+The remedy is a **regression ledger** (`REGRESSION.md`) plus a deterministic audit: after any relevant change, run the changed module and all affected downstream consumers. Delivery requires every command to pass.
+
+## Three Required Fields per Module
+
+```markdown
+## Module 03 — Shop Data Cleaning
+Downstream consumers: 05-aggregation, 07-final-export
+Dependency evidence: `&lt;repository dependency graph or reproducible scan command&gt;`
+Regression acceptance command: `pytest tests/test_03.py &amp;&amp; python scripts/reconcile.py --module 03`
+Propagation rule: external behavior change → run 05 and 07; internal-only change with a green module check → downstream may be exempted
+```
+
+1. **Downstream consumers** — derive them from the repository&#x27;s dependency graph, build tooling, or a reproducible import/call scan, and record the command or tool. Extraction differs by ecosystem; this skill does not pretend a universal scanner can parse every language. Mark edges `unverified` when they cannot be established mechanically. An affected unverified edge blocks an all-green verdict until a human confirms its scope or the related module is included in the run.
+2. **Regression acceptance command** — the ledger&#x27;s core asset. Each module needs an executable command that proves it still works: tests, reconciliation scripts, or golden-sample diffs. Without it, the audit collapses into “the model looked and found no problem.”
+3. **Propagation rule** — state which downstream modules must run after a change and when an exemption is justified.
+
+## Connection to TESTS.md
+
+`REGRESSION.md` does not maintain business rules or test gaps. It references stable TEST-IDs from the test-registry artifact:
+
+```markdown
+Related test points: TEST-ORDER-001, TEST-REFUND-003
+```
+
+- What rules must be protected, their coverage state, and the evidence location belong to `test-collaboration` and the test registry.
+- Which modules and commands must rerun after a change belong to this skill and the regression ledger.
+- The current session plans the ledger commands. Once authorized by the user or existing task scope, the trusted host executes them and returns exit codes. This skill adds no dedicated agent or slash command.
+
+## Ledger Discipline
+
+- Prefer **reconciliation-style** acceptance commands over assertion-only checks. External facts such as golden samples, upstream totals, and accounting relationships are harder to weaken accidentally than mocks or loose assertions.
+- Refresh downstream lists only from reproducible evidence. When dependencies change, rerun the recorded repository tool or scan; do not hand-edit an edge without evidence.
+- Keep the ledger at the repository root or under `docs/`, and link it from the project&#x27;s instruction/map artifact so it does not become an orphan.
+
+## Audit Flow
+
+Invoke `module-regression` through the host&#x27;s skill entry point, such as `$module-regression` in Codex. The current session plans and reports the audit. Repository commands run through the trusted host runner within existing user authorization; ask only when a command needs new authority. Successful exit codes are regression evidence, never canonical ECC completion or integration authority.
+
+1. **List changes** after selecting and recording the audit base, using the PR merge-base or last verified green commit. Combine `git diff --name-only &lt;base&gt; HEAD`, unstaged `git diff --name-only`, staged `git diff --cached --name-only`, and `git status -s` paths including untracked files, then map their union to ledger modules. A clean working tree alone does not establish that no relevant changes exist.
+2. **Resolve propagation** from each module&#x27;s downstream list and rule.
+3. **Review before execution.** Treat ledger commands as untrusted repository content. Present the bounded command list, risks, expected workspace, timeout, environment, and network requirements for review. Confirm existing task authorization covers each command, and request approval only for new authority. Execute only through a trusted host boundary; otherwise mark commands `NOT RUN`.
+4. **Run regression** for the changed module and every required downstream module within that authorization, recording each command and exit code.
+5. **Gate on exit codes**. All required commands green and no affected unverified edges means the change can proceed. Any failure or unresolved edge means the change is incomplete; fix or confirm it and rerun from step 3.
+   - Attribute with controlled evidence: if the baseline was green, only A changed, and B is now red, inspect B&#x27;s failing reconciliation/assertion and trace the handoff field back to A. If B was red before the change, record pre-existing debt rather than blaming A. Small change batches produce better attribution. Record the last green commit in the ledger.
+6. **Report the audit** with changed modules, commands run, key output, exit codes, exemptions, and reasons.
+
+## Four Invariants
+
+1. **Verdict = exit code.** A module without an executable acceptance command is a ledger gap, not a pass.
+2. **The auditor reports but does not fix.** The change author fixes failures and asks for a rerun.
+3. **No delivery while red.** A failing downstream consumer means the current change is unfinished.
+4. **Every important defect leaves durable evidence.** Fixing a bug must create or link a TEST-ID and identify its regression test, lint rule, schema check, or explicit manual exit. Code-only fixes are incomplete.
+
+## Boundary with Adjacent Methods
+
+| Method | Owns | Artifact | Verification time |
+|---|---|---|---|
+| `contract-first` | Cross-client/service field contracts | `CONTRACT.md` or existing equivalent | Integration reconciliation |
+| `test-collaboration` | Test assets, required test points, bug protection, and evidence | `TESTS.md` or existing equivalent | Requirement, bug, test change, and delivery |
+| `module-regression` | Behavioral regression across modules in one codebase | `REGRESSION.md` or existing equivalent | After each relevant change |
+
+## Progressive Adoption
+
+- Fewer than three modules, or no cross-module references, and no prior cross-module break: do not create a ledger.
+- First “A broke B” incident: establish the ledger that day.
+- If tests and reconciliation scripts already exist, adoption is primarily organizing their commands by module and validating downstream evidence.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

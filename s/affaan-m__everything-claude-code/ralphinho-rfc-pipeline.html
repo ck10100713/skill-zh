@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ralphinho-rfc-pipeline｜Skill 寫法圖鑑</title>
+<meta name="description" content="把 RFC 拆成多 agent 的 DAG 並用 merge queue 合併">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ralphinho-rfc-pipeline</h1>
+<p class="meta">affaan-m ｜ Agent 與工作流 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/ralphinho-rfc-pipeline/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把 RFC 拆成多 agent 的 DAG 並用 merge queue 合併</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ralphinho-rfc-pipeline
+description: 把 RFC 拆成多 agent 執行的 DAG：分解成有依賴關係和驗收測試的工作單元，每個單元各自做研究、規劃、實作、測試和 review，再透過 merge queue（branch 先 rebase）合併，最後做整個系統的驗證。功能大到單一 agent 一次做不完、要編排 RFC 驅動的多 agent 執行，或管理多個 agent 產出單元的 merge queue 時使用。
+metadata:
+  origin: ECC
+---
+
+# Ralphinho RFC Pipeline
+
+靈感來自 [humanplane](https://github.com/humanplane) 風格的 RFC 分解模式和多單元編排工作流程。
+
+功能大到單一 agent 一次做不完，必須拆成可以獨立驗證的工作單元時，使用這個 skill。
+
+## Pipeline 階段
+
+1. RFC 接收
+2. DAG 分解
+3. 單元分派
+4. 單元實作
+5. 單元驗證
+6. Merge queue 與整合
+7. 最終系統驗證
+
+## 單元規格範本
+
+每個工作單元要包含：
+- `id`
+- `depends_on`
+- `scope`
+- `acceptance_tests`
+- `risk_level`
+- `rollback_plan`
+
+## 複雜度分級
+
+- Tier 1：單檔隔離的修改，測試是確定性的
+- Tier 2：多檔行為變更，整合風險中等
+- Tier 3：schema／auth／效能／安全相關變更
+
+## 每個單元的品質 Pipeline
+
+1. 研究
+2. 實作計畫
+3. 實作
+4. 測試
+5. review
+6. 可合併報告
+
+## Merge Queue 規則
+
+- 依賴還有未解決的失敗時，絕對不要合併該單元。
+- 單元 branch 一律 rebase 到最新的整合 branch 上。
+- 每次排隊合併之後，都要重跑整合測試。
+
+## 復原
+
+單元卡住時：
+- 從進行中的 queue 剔除
+- 把已找到的結果做快照
+- 重新產生縮小範圍的單元
+- 用更新後的限制條件重試
+
+## 輸出
+
+- RFC 執行紀錄
+- 單元計分卡
+- 依賴圖快照
+- 整合風險摘要</pre></section><section><h2>英文原文</h2><pre>---
+name: ralphinho-rfc-pipeline
+description: Split an RFC into a multi-agent execution DAG — decompose into work units with dependencies and acceptance tests, run research, plan, implement, test, and review per unit, then merge through a queue with re-based branches and final system verification. Use when a feature is too large for a single agent pass, orchestrating RFC-driven multi-agent execution, or managing merge queues across agent-built units.
+metadata:
+  origin: ECC
+---
+
+# Ralphinho RFC Pipeline
+
+Inspired by [humanplane](https://github.com/humanplane) style RFC decomposition patterns and multi-unit orchestration workflows.
+
+Use this skill when a feature is too large for a single agent pass and must be split into independently verifiable work units.
+
+## Pipeline Stages
+
+1. RFC intake
+2. DAG decomposition
+3. Unit assignment
+4. Unit implementation
+5. Unit validation
+6. Merge queue and integration
+7. Final system verification
+
+## Unit Spec Template
+
+Each work unit should include:
+- `id`
+- `depends_on`
+- `scope`
+- `acceptance_tests`
+- `risk_level`
+- `rollback_plan`
+
+## Complexity Tiers
+
+- Tier 1: isolated file edits, deterministic tests
+- Tier 2: multi-file behavior changes, moderate integration risk
+- Tier 3: schema/auth/perf/security changes
+
+## Quality Pipeline per Unit
+
+1. research
+2. implementation plan
+3. implementation
+4. tests
+5. review
+6. merge-ready report
+
+## Merge Queue Rules
+
+- Never merge a unit with unresolved dependency failures.
+- Always rebase unit branches on latest integration branch.
+- Re-run integration tests after each queued merge.
+
+## Recovery
+
+If a unit stalls:
+- evict from active queue
+- snapshot findings
+- regenerate narrowed unit scope
+- retry with updated constraints
+
+## Outputs
+
+- RFC execution log
+- unit scorecards
+- dependency graph snapshot
+- integration risk summary</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>token-card｜Skill 寫法圖鑑</title>
+<meta name="description" content="從本機 agent log 產出 token 用量 SVG 卡片並 commit 進 repo">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>token-card</h1>
+<p class="meta">affaan-m ｜ 資料與分析 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/token-card/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">從本機 agent log 產出 token 用量 SVG 卡片並 commit 進 repo</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: token-card
+description: 從本機 Claude Code、Codex、Gemini CLI 和 OpenCode 的 session log，渲染出 token 用量統計卡片，並把它當成檔案 commit 進 repo。當有人想在 README 裡放目前的用量數字，或要求一張可分享的 coding-agent 活動卡片時使用。
+metadata:
+  origin: community
+---
+
+# Token Card
+
+產出一張 SVG 卡片，總結這台機器上 AI coding agent 的用量：總 token 數、
+等價的 API 費用、目前的連續天數，以及各 agent 之間的占比，並把它當成
+README 可以引用的檔案寫進工作目錄。
+
+這張卡片是 commit 進去的產出物，而不是託管的圖片，所以它直接從
+repo 本身渲染，不依賴第三方 endpoint 一直維持運作。
+
+## 何時啟用
+
+- 有人想在 README 或文件頁面裡放一個看得到的用量數字。
+- 有人要求跨工具的 agent 活動可分享摘要。
+
+如果問題是「我這週花了多少」，改用 `/cost-report`。這兩個讀的
+來源不同，產出的東西也不同：
+
+| | `/cost-report` | Token Card |
+|---|---|---|
+| 來源 | `~/.claude/metrics/costs.jsonl`，由 ECC 的 `stop:cost-tracker` hook 寫入 | 各 agent 自己的 session log |
+| Agent | Claude Code | Claude Code、Codex、Gemini CLI、OpenCode |
+| 輸出 | 終端機摘要，可選 CSV | commit 進 repo 的 SVG 檔 |
+
+## 它執行的工具
+
+`@tokenchit/cli`，MIT 授權：&lt;https://github.com/iyashjayesh/tokenchit&gt;
+
+**刻意釘在確切的版本。** `@latest` 會解析成 registry
+當下提供的任何版本，而這個工具會讀本機的 session log，所以
+未來一個被入侵的 release，在還沒有人審查之前，就會帶著存取那些 log 的權限被執行。要釘住版本，
+並且在知情的情況下才提高它：
+
+```bash
+TOKENCHIT_VERSION=0.10.0
+```
+
+第一次執行之前，要檢查被釘住的產物：
+
+```bash
+npm view @tokenchit/cli@0.10.0 dist.integrity dist.tarball
+```
+
+## 工作流
+
+1. **第一次下載之前先問。** `npx` 會從 npm registry 抓取套件並
+   執行。那是下載遠端程式碼，而且這些程式碼會讀本機的 log，所以在這台機器上第一次執行之前，要先取得使用者的明確
+   確認。如果他們拒絕，就在這裡停下來，
+   並說明原本會執行什麼。
+
+2. **設定，除非這是 dry run。** 如果沒有 `.tokenchit.json`，就執行：
+
+   ```bash
+   npx -y @tokenchit/cli@0.10.0 init
+   ```
+
+   它會偵測這台機器上哪些 agent 有 log，並記錄下來。這個檔案是設計來
+   commit 的，而且絕不含任何憑證。
+
+   **如果使用者傳了 `--dry-run`，就完全跳過這一步**，並回報 `.tokenchit.json`
+   *會*被建立。會寫設定檔的預覽，不算預覽。
+
+3. **渲染卡片。** 不帶參數的指令會寫到已設定的輸出位置，也就是 `tokenchit.svg`，
+   除非 `.tokenchit.json` 指定了別的路徑：
+
+   ```bash
+   npx -y @tokenchit/cli@0.10.0 sync
+   ```
+
+   只附加使用者真正要求的 flag，每個都要照下面的拼法。不要
+   把佔位符複製進指令：`sync` 會忽略不認得的位置引數，
+   而不是拒絕它，所以帶方括號的 `[--dry-run]` 會被當成垃圾傳給 CLI，
+   卡片照樣被寫出來，跟使用者要求的剛好相反。
+
+   | Flag | 效果 |
+   |---|---|
+   | `--out &lt;path&gt;` | 寫到已設定輸出以外的地方 |
+   | `--theme auto` \| `light` \| `dark` | 卡片主題；`auto` 會配合讀者的系統 |
+   | `--dry-run` | 印出會寫入的內容，什麼都不動 |
+
+   `sync` 讀本機檔案，不傳送任何東西：沒有 prompt、沒有程式碼、沒有檔案內容離開
+   這台機器，也不會傳到任何伺服器。包在外面的 npx 呼叫是
+   從 registry 下載，這就是這個工作流裡的網路存取，而步驟 1 就是
+   取得同意的地方。
+
+4. **回報並提議。** 印出它產生的數字（token、等價費用、連續天數、
+   各 agent 占比）和寫入的路徑。如果 repo 有 README 還沒有
+   引用這張卡片，就提議加上：
+
+   ```markdown
+   ![tokenchit](./tokenchit.svg)
+   ```
+
+   `sync` 印出的是相對於 repo 根目錄的路徑。Markdown 圖片是相對於
+   它所在的檔案解析的，所以要依正在編輯的 README 重寫：位於
+   `docs/usage.svg` 的卡片，從根目錄的 README 是 `./docs/usage.svg`，但從
+   `docs/zh-CN/README.md` 是 `../usage.svg`。把印出來的路徑直接貼進巢狀的 README，
+   會指到 `docs/zh-CN/docs/usage.svg`，渲染會壞掉。
+
+   沒被要求就不要編輯 README。
+
+做完步驟 4 就停。發布到公開排行榜是另一個 `publish` 指令，
+需要明確選擇加入，不屬於這個工作流，只有使用者指名要求時才執行。
+`unpublish` 會再次移除那一列和帳號。
+
+## 輸出
+
+SVG 的路徑、它包含的數字，以及引用它的 markdown 片段。
+dry run 時：會寫入什麼，而磁碟上什麼都沒有改變。
+
+## 備註
+
+- 需要 Node.js 22 或更新的版本（套件宣告了 `engines: { node: &quot;&gt;=22&quot; }`）。沒有東西
+  是全域安裝的；`npx` 每次執行都會抓取被釘住的版本。
+- 只讀 token 數和時間戳。</pre></section><section><h2>英文原文</h2><pre>---
+name: token-card
+description: Render a token-usage stat card from local Claude Code, Codex, Gemini CLI, and OpenCode session logs and commit it into the repository as a file. Use when someone wants a current usage figure in a README, or asks for a shareable card of their coding-agent activity.
+metadata:
+  origin: community
+---
+
+# Token Card
+
+Produce an SVG card summarising this machine&#x27;s AI coding agent usage — total tokens,
+equivalent API cost, current streak, and the split across agents — and write it into the
+working tree as a file the README can reference.
+
+The card is a committed artifact rather than a hosted image, so it renders from the
+repository itself and does not depend on a third-party endpoint staying up.
+
+## When to Activate
+
+- Someone wants a usage figure visible in a README or docs page.
+- Someone asks for a shareable summary of their agent activity across tools.
+
+Use `/cost-report` instead when the question is &quot;what did I spend this week&quot;. The two read
+different sources and produce different things:
+
+| | `/cost-report` | Token Card |
+|---|---|---|
+| Source | `~/.claude/metrics/costs.jsonl`, written by ECC&#x27;s `stop:cost-tracker` hook | The agents&#x27; own session logs |
+| Agents | Claude Code | Claude Code, Codex, Gemini CLI, OpenCode |
+| Output | Terminal summary, optional CSV | An SVG file committed to the repo |
+
+## The tool this runs
+
+`@tokenchit/cli`, MIT licensed: &lt;https://github.com/iyashjayesh/tokenchit&gt;
+
+**Pinned to an exact version, deliberately.** `@latest` resolves to whatever the registry
+currently serves, and this tool reads local session logs — so a compromised future release
+would be executed with access to them before anyone had reviewed it. Pin, and raise the pin
+knowingly:
+
+```bash
+TOKENCHIT_VERSION=0.10.0
+```
+
+To check the pinned artifact before running it the first time:
+
+```bash
+npm view @tokenchit/cli@0.10.0 dist.integrity dist.tarball
+```
+
+## Workflow
+
+1. **Ask before the first download.** `npx` fetches the package from the npm registry and
+   executes it. That is a remote download of code that will read local logs, so get explicit
+   confirmation from the user before the first run on a machine. If they decline, stop here
+   and say what would have run.
+
+2. **Configure, unless this is a dry run.** If `.tokenchit.json` is absent, run:
+
+   ```bash
+   npx -y @tokenchit/cli@0.10.0 init
+   ```
+
+   It detects which agents have logs on this machine and records them. The file is meant to
+   be committed and never contains a credential.
+
+   **Skip this entirely when the user passed `--dry-run`**, and report that `.tokenchit.json`
+   *would* be created. A preview that writes a config file is not a preview.
+
+3. **Render the card.** The bare command writes to the configured output — `tokenchit.svg`
+   unless `.tokenchit.json` names another path:
+
+   ```bash
+   npx -y @tokenchit/cli@0.10.0 sync
+   ```
+
+   Append only the flags the user actually asked for, each spelled exactly as below. Do not
+   copy a placeholder into the command — `sync` ignores an unrecognised positional argument
+   rather than refusing it, so a bracketed `[--dry-run]` reaches the CLI as junk and the card
+   is written anyway, which is the opposite of what was asked.
+
+   | Flag | Effect |
+   |---|---|
+   | `--out &lt;path&gt;` | Write somewhere other than the configured output |
+   | `--theme auto` \| `light` \| `dark` | Card theme; `auto` adapts to the reader&#x27;s system |
+   | `--dry-run` | Print what would be written and touch nothing |
+
+   `sync` reads local files and sends nothing: no prompts, no code, no file contents leave
+   the machine, and it transmits nothing to any server. The npx invocation around it is a
+   registry download — that is the network access in this workflow, and step 1 is where it
+   is agreed.
+
+4. **Report and offer.** Print the figures it produced — tokens, equivalent cost, streak,
+   per-agent split — and the path written. If the repository has a README that does not yet
+   reference the card, offer to add:
+
+   ```markdown
+   ![tokenchit](./tokenchit.svg)
+   ```
+
+   `sync` prints the path relative to the repository root. A Markdown image resolves
+   relative to the file it sits in, so rewrite it for the README being edited: a card at
+   `docs/usage.svg` is `./docs/usage.svg` from the root README but `../usage.svg` from
+   `docs/zh-CN/README.md`. Pasting the printed path into a nested README points at
+   `docs/zh-CN/docs/usage.svg` and renders broken.
+
+   Do not edit the README without being asked.
+
+Stop after step 4. Publishing to the public leaderboard is a separate `publish` command that
+requires explicit opt-in, and is not part of this workflow — run it only if the user asks for
+it by name. `unpublish` removes the row and the account again.
+
+## Output
+
+The path of the SVG, the figures it contains, and the markdown snippet for referencing it.
+On a dry run: what would have been written, and nothing on disk changed.
+
+## Notes
+
+- Requires Node.js 22 or newer (the package declares `engines: { node: &quot;&gt;=22&quot; }`). Nothing is
+  installed globally; `npx` fetches the pinned version per run.
+- Reads token counts and timestamps only.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

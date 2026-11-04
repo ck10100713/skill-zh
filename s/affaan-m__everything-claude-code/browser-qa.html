@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>browser-qa｜Skill 寫法圖鑑</title>
+<meta name="description" content="部署後用瀏覽器 MCP 跑冒煙、互動、視覺與無障礙檢查再給上線結論">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>browser-qa</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/browser-qa/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">部署後用瀏覽器 MCP 跑冒煙、互動、視覺與無障礙檢查再給上線結論</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: browser-qa
+description: &quot;用瀏覽器自動化 MCP（claude-in-chrome、Playwright 或 Puppeteer）執行部署後的 UI 自動驗證：console 錯誤與 Core Web Vitals 冒煙檢查、表單與登入流程的互動測試、三個斷點的截圖視覺回歸，以及 axe-core 無障礙稽核，最後給出 SHIP / DO-NOT-SHIP 的結論。適用於測試 staging 或 preview 上已部署的功能、前端變更上線前、審查前端 PR，或檢查響應式版面與無障礙。&quot;
+metadata:
+  origin: ECC
+---
+
+# Browser QA — Automated Visual Testing &amp; Interaction
+
+## When to Use
+
+- 功能部署到 staging/preview 之後
+- 需要驗證跨頁面的 UI 行為時
+- 上線前，確認版面、表單、互動真的能用
+- 審查動到前端程式碼的 PR 時
+- 無障礙稽核與響應式測試
+
+## How It Works
+
+用瀏覽器自動化 MCP（claude-in-chrome、Playwright 或 Puppeteer），像真實使用者一樣操作線上頁面。
+
+### Safety first — blast radius (run read-only by default)
+
+Browser QA 會動用真實的登入和真實的使用者旅程，所以要明確控制影響範圍。
+預設是**唯讀**：絕對不要對 production URL 跑會**變更資料**的旅程（結帳、付款、刪除、
+大量更新），一定要有明確的 opt-in **而且**是 staging/preview
+URL 才行。用事先建好的**測試帳號**，絕對不用真實的 production 登入，
+儲存任何截圖之前，要先把憑證、token、個資**遮蔽**掉。
+
+### Phase 1: Smoke Test
+```
+1. Navigate to target URL
+2. Check for console errors (filter noise: analytics, third-party)
+3. Verify no 4xx/5xx in network requests
+4. Screenshot above-the-fold on desktop + mobile viewport
+5. Check Core Web Vitals: LCP &lt; 2.5s, CLS &lt; 0.1, INP &lt; 200ms
+   (INP replaced FID in March 2024; thresholds per web.dev)
+```
+
+### Phase 2: Interaction Test
+```
+1. Click every nav link — verify no dead links
+2. Submit forms with valid data — verify success state
+3. Submit forms with invalid data — verify error state
+4. Test auth flow: login → protected page → logout (test creds only, never prod)
+5. Test critical user journeys (checkout, onboarding, search)
+   — read-only by default; only exercise mutating journeys against staging
+     with explicit opt-in (see &quot;Safety first&quot; above)
+```
+
+### Phase 3: Visual Regression
+```
+1. Screenshot key pages at 3 breakpoints (375px, 768px, 1440px)
+2. Compare against committed baseline screenshots
+   — no baseline ⇒ report INCONCLUSIVE, never a silent PASS
+3. Flag layout shifts &gt; 5px, missing elements, overflow
+4. Check dark mode if applicable
+```
+
+### Phase 4: Accessibility
+```
+1. Run axe-core or equivalent on each page
+2. Flag WCAG 2.2 AA violations (contrast, labels, focus order)
+3. Verify keyboard navigation works end-to-end
+4. Check screen reader landmarks
+```
+
+&gt; 注意：axe-core 自動涵蓋的範圍大約只有 WCAG 的 30–40%。跑出乾淨的結果是**必要條件，
+&gt; 但不充分**，鍵盤導覽、焦點順序和螢幕閱讀器的檢查仍然需要手動
+&gt; 確認。不要只憑自動化通過就回報「無障礙沒問題」。
+
+## Output Format
+
+```markdown
+## QA Report — [URL] — [timestamp]
+
+### Smoke Test
+- Console errors: 0 critical, 2 warnings (analytics noise)
+- Network: all 200/304, no failures
+- Core Web Vitals: LCP 1.2s ✓, CLS 0.02 ✓, INP 89ms ✓
+
+### Interactions
+- [✓] Nav links: 12/12 working
+- [✗] Contact form: missing error state for invalid email
+- [✓] Auth flow: login/logout working
+
+### Visual
+- [✗] Hero section overflows on 375px viewport
+- [✓] Dark mode: all pages consistent
+
+### Accessibility
+- 2 AA violations: missing alt text on hero image, low contrast on footer links
+
+### Verdict: SHIP WITH FIXES (2 issues, 0 blockers)
+# verdict ∈ SHIP / SHIP WITH FIXES / DO NOT SHIP; use INCONCLUSIVE if no visual baseline
+```
+
+## Integration
+
+可搭配任何瀏覽器 MCP：
+- `mChild__claude-in-chrome__*` 工具（首選，用的是你實際的 Chrome）
+- 透過 `mcp__browserbase__*` 使用 Playwright
+- 直接寫 Puppeteer script
+
+搭配 `/canary-watch` 做部署後的監控。</pre></section><section><h2>英文原文</h2><pre>---
+name: browser-qa
+description: &quot;Run automated post-deploy UI verification with a browser automation MCP (claude-in-chrome, Playwright, or Puppeteer): console-error and Core Web Vitals smoke checks, form and auth-flow interaction tests, screenshot visual regression across three breakpoints, and axe-core accessibility audits ending in a SHIP / DO-NOT-SHIP verdict. Use when testing a deployed feature on staging or preview, before shipping frontend changes, reviewing a frontend PR, or checking responsive layout and accessibility.&quot;
+metadata:
+  origin: ECC
+---
+
+# Browser QA — Automated Visual Testing &amp; Interaction
+
+## When to Use
+
+- After deploying a feature to staging/preview
+- When you need to verify UI behavior across pages
+- Before shipping — confirm layouts, forms, interactions actually work
+- When reviewing PRs that touch frontend code
+- Accessibility audits and responsive testing
+
+## How It Works
+
+Uses the browser automation MCP (claude-in-chrome, Playwright, or Puppeteer) to interact with live pages like a real user.
+
+### Safety first — blast radius (run read-only by default)
+
+Browser QA drives real auth and real user journeys, so treat the blast radius explicitly.
+Default to **read-only**: never run a **mutating** journey (checkout, payment, delete,
+mass-update) against a production URL — require an explicit opt-in **and** a staging/preview
+URL. Use seeded **test credentials**, never real production logins, and **redact**
+credentials/tokens/PII before saving any screenshot.
+
+### Phase 1: Smoke Test
+```
+1. Navigate to target URL
+2. Check for console errors (filter noise: analytics, third-party)
+3. Verify no 4xx/5xx in network requests
+4. Screenshot above-the-fold on desktop + mobile viewport
+5. Check Core Web Vitals: LCP &lt; 2.5s, CLS &lt; 0.1, INP &lt; 200ms
+   (INP replaced FID in March 2024; thresholds per web.dev)
+```
+
+### Phase 2: Interaction Test
+```
+1. Click every nav link — verify no dead links
+2. Submit forms with valid data — verify success state
+3. Submit forms with invalid data — verify error state
+4. Test auth flow: login → protected page → logout (test creds only, never prod)
+5. Test critical user journeys (checkout, onboarding, search)
+   — read-only by default; only exercise mutating journeys against staging
+     with explicit opt-in (see &quot;Safety first&quot; above)
+```
+
+### Phase 3: Visual Regression
+```
+1. Screenshot key pages at 3 breakpoints (375px, 768px, 1440px)
+2. Compare against committed baseline screenshots
+   — no baseline ⇒ report INCONCLUSIVE, never a silent PASS
+3. Flag layout shifts &gt; 5px, missing elements, overflow
+4. Check dark mode if applicable
+```
+
+### Phase 4: Accessibility
+```
+1. Run axe-core or equivalent on each page
+2. Flag WCAG 2.2 AA violations (contrast, labels, focus order)
+3. Verify keyboard navigation works end-to-end
+4. Check screen reader landmarks
+```
+
+&gt; Note: axe-core automatically covers roughly 30–40% of WCAG. A clean run is **necessary,
+&gt; not sufficient** — keyboard nav, focus order, and a screen-reader pass still need a manual
+&gt; check. Don&#x27;t report &quot;accessible&quot; from an automated pass alone.
+
+## Output Format
+
+```markdown
+## QA Report — [URL] — [timestamp]
+
+### Smoke Test
+- Console errors: 0 critical, 2 warnings (analytics noise)
+- Network: all 200/304, no failures
+- Core Web Vitals: LCP 1.2s ✓, CLS 0.02 ✓, INP 89ms ✓
+
+### Interactions
+- [✓] Nav links: 12/12 working
+- [✗] Contact form: missing error state for invalid email
+- [✓] Auth flow: login/logout working
+
+### Visual
+- [✗] Hero section overflows on 375px viewport
+- [✓] Dark mode: all pages consistent
+
+### Accessibility
+- 2 AA violations: missing alt text on hero image, low contrast on footer links
+
+### Verdict: SHIP WITH FIXES (2 issues, 0 blockers)
+# verdict ∈ SHIP / SHIP WITH FIXES / DO NOT SHIP; use INCONCLUSIVE if no visual baseline
+```
+
+## Integration
+
+Works with any browser MCP:
+- `mChild__claude-in-chrome__*` tools (preferred — uses your actual Chrome)
+- Playwright via `mcp__browserbase__*`
+- Direct Puppeteer scripts
+
+Pair with `/canary-watch` for post-deploy monitoring.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

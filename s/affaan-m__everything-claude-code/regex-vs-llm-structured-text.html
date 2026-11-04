@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>regex-vs-llm-structured-text｜Skill 寫法圖鑑</title>
+<meta name="description" content="解析結構化文字時 regex 優先、LLM 只補邊界案例的決策框架">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>regex-vs-llm-structured-text</h1>
+<p class="meta">affaan-m ｜ 資料與分析 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/regex-vs-llm-structured-text/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">解析結構化文字時 regex 優先、LLM 只補邊界案例的決策框架</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: regex-vs-llm-structured-text
+description: 用「regex 優先」的混合 pipeline 解析結構化文字（測驗題、表單、發票、收據、表格）的決策框架：regex 便宜地處理 95% 以上，信心評分器標出低信心項目，LLM 驗證器只修邊界案例。在 regex 與 LLM 之間選擇文字擷取方式、建置便宜的文件解析器，或最佳化擷取成本與準確度時使用。
+metadata:
+  origin: ECC
+---
+
+# 解析結構化文字：Regex 還是 LLM
+
+解析結構化文字（測驗題、表單、發票、文件）的實用決策框架。關鍵洞察：regex 能便宜、確定地處理 95-98% 的情況。昂貴的 LLM 呼叫留給剩下的邊界案例。
+
+## 何時啟用
+
+- 解析有重複模式的結構化文字（題目、表單、表格）
+- 在 regex 與 LLM 之間決定文字擷取的做法
+- 建置結合兩種做法的混合 pipeline
+- 最佳化文字處理的成本與準確度取捨
+
+## 決策框架
+
+```
+文字格式是否一致而且重複？
+├── 是（&gt;90% 符合某個模式）→ 從 Regex 開始
+│   ├── Regex 處理 95%+ → 完成，不需要 LLM
+│   └── Regex 處理 &lt;95% → 只針對邊界案例加上 LLM
+└── 否（自由格式、變化很大）→ 直接用 LLM
+```
+
+## 架構模式
+
+```
+原始文字
+    │
+    ▼
+[Regex Parser] ─── 擷取結構（95-98% 準確度）
+    │
+    ▼
+[Text Cleaner] ─── 移除雜訊（標記、頁碼、殘留物）
+    │
+    ▼
+[Confidence Scorer] ─── 標出低信心的擷取結果
+    │
+    ├── 高信心（≥0.95）→ 直接輸出
+    │
+    └── 低信心（&lt;0.95）→ [LLM Validator] → 輸出
+```
+
+## 實作
+
+### 1. Regex Parser（處理大多數）
+
+```python
+import re
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class ParsedItem:
+    id: str
+    text: str
+    choices: tuple[str, ...]
+    answer: str
+    confidence: float = 1.0
+
+def parse_structured_text(content: str) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;Parse structured text using regex patterns.&quot;&quot;&quot;
+    pattern = re.compile(
+        r&quot;(?P&lt;id&gt;\d+)\.\s*(?P&lt;text&gt;.+?)\n&quot;
+        r&quot;(?P&lt;choices&gt;(?:[A-D]\..+?\n)+)&quot;
+        r&quot;Answer:\s*(?P&lt;answer&gt;[A-D])&quot;,
+        re.MULTILINE | re.DOTALL,
+    )
+    items = []
+    for match in pattern.finditer(content):
+        choices = tuple(
+            c.strip() for c in re.findall(r&quot;[A-D]\.\s*(.+)&quot;, match.group(&quot;choices&quot;))
+        )
+        items.append(ParsedItem(
+            id=match.group(&quot;id&quot;),
+            text=match.group(&quot;text&quot;).strip(),
+            choices=choices,
+            answer=match.group(&quot;answer&quot;),
+        ))
+    return items
+```
+
+### 2. 信心評分
+
+標出可能需要 LLM review 的項目：
+
+```python
+@dataclass(frozen=True)
+class ConfidenceFlag:
+    item_id: str
+    score: float
+    reasons: tuple[str, ...]
+
+def score_confidence(item: ParsedItem) -&gt; ConfidenceFlag:
+    &quot;&quot;&quot;Score extraction confidence and flag issues.&quot;&quot;&quot;
+    reasons = []
+    score = 1.0
+
+    if len(item.choices) &lt; 3:
+        reasons.append(&quot;few_choices&quot;)
+        score -= 0.3
+
+    if not item.answer:
+        reasons.append(&quot;missing_answer&quot;)
+        score -= 0.5
+
+    if len(item.text) &lt; 10:
+        reasons.append(&quot;short_text&quot;)
+        score -= 0.2
+
+    return ConfidenceFlag(
+        item_id=item.id,
+        score=max(0.0, score),
+        reasons=tuple(reasons),
+    )
+
+def identify_low_confidence(
+    items: list[ParsedItem],
+    threshold: float = 0.95,
+) -&gt; list[ConfidenceFlag]:
+    &quot;&quot;&quot;Return items below confidence threshold.&quot;&quot;&quot;
+    flags = [score_confidence(item) for item in items]
+    return [f for f in flags if f.score &lt; threshold]
+```
+
+### 3. LLM Validator（只處理邊界案例）
+
+```python
+def validate_with_llm(
+    item: ParsedItem,
+    original_text: str,
+    client,
+) -&gt; ParsedItem:
+    &quot;&quot;&quot;Use LLM to fix low-confidence extractions.&quot;&quot;&quot;
+    response = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,  # 驗證用最便宜的模型
+        max_tokens=500,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Extract the question, choices, and answer from this text.\n\n&quot;
+                f&quot;Text: {original_text}\n\n&quot;
+                f&quot;Current extraction: {item}\n\n&quot;
+                f&quot;Return corrected JSON if needed, or &#x27;CORRECT&#x27; if accurate.&quot;
+            ),
+        }],
+    )
+    # 解析 LLM 的回應並回傳修正後的項目...
+    return corrected_item
+```
+
+### 4. 混合 Pipeline
+
+```python
+def process_document(
+    content: str,
+    *,
+    llm_client=None,
+    confidence_threshold: float = 0.95,
+) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;完整 pipeline：regex -&gt; 信心檢查 -&gt; 邊界案例交給 LLM。&quot;&quot;&quot;
+    # 步驟 1：Regex 擷取（處理 95-98%）
+    items = parse_structured_text(content)
+
+    # 步驟 2：信心評分
+    low_confidence = identify_low_confidence(items, confidence_threshold)
+
+    if not low_confidence or llm_client is None:
+        return items
+
+    # 步驟 3：LLM 驗證（只針對被標出的項目）
+    low_conf_ids = {f.item_id for f in low_confidence}
+    result = []
+    for item in items:
+        if item.id in low_conf_ids:
+            result.append(validate_with_llm(item, content, llm_client))
+        else:
+            result.append(item)
+
+    return result
+```
+
+## 真實世界的指標
+
+來自一個 production 測驗解析 pipeline（410 題）：
+
+| 指標 | 數值 |
+|--------|-------|
+| Regex 成功率 | 98.0% |
+| 低信心項目 | 8（2.0%） |
+| 需要的 LLM 呼叫 | 約 5 次 |
+| 相較全部用 LLM 省下的成本 | 約 95% |
+| 測試覆蓋率 | 93% |
+
+## 最佳實踐
+
+- **從 regex 開始**：即使不完美的 regex，也給你一個可以改進的基準
+- **用信心評分**，以程式方式找出哪些需要 LLM 幫忙
+- 驗證用**最便宜的 LLM**（Haiku 等級的模型就夠了）
+- **絕對不要修改**已解析的項目，在清理／驗證步驟中回傳新的實例
+- 解析器**很適合 TDD**：先為已知的模式寫測試，再寫邊界案例
+- **記錄指標**（regex 成功率、LLM 呼叫次數），追蹤 pipeline 的健康度
+
+## 要避免的反模式
+
+- regex 能處理 95% 以上的情況，卻把所有文字都送給 LLM（又貴又慢）
+- 對自由格式、變化很大的文字用 regex（這種情況 LLM 比較好）
+- 跳過信心評分，只希望 regex「自然會對」
+- 在清理／驗證步驟中修改已解析的物件
+- 沒測邊界案例（格式錯誤的輸入、缺少欄位、編碼問題）
+
+## 何時使用
+
+- 測驗／考試題目解析
+- 表單資料擷取
+- 發票／收據處理
+- 文件結構解析（標題、章節、表格）
+- 任何有重複模式、而且在意成本的結構化文字</pre></section><section><h2>英文原文</h2><pre>---
+name: regex-vs-llm-structured-text
+description: Decision framework for parsing structured text (quizzes, forms, invoices, receipts, tables) with a hybrid regex-first pipeline — regex extraction handles 95%+ cheaply, a confidence scorer flags low-confidence items, and an LLM validator fixes only the edge cases. Use when choosing between regex and LLM for text extraction, building a cheap document parser, or optimizing extraction cost and accuracy.
+metadata:
+  origin: ECC
+---
+
+# Regex vs LLM for Structured Text Parsing
+
+A practical decision framework for parsing structured text (quizzes, forms, invoices, documents). The key insight: regex handles 95-98% of cases cheaply and deterministically. Reserve expensive LLM calls for the remaining edge cases.
+
+## When to Activate
+
+- Parsing structured text with repeating patterns (questions, forms, tables)
+- Deciding between regex and LLM for text extraction
+- Building hybrid pipelines that combine both approaches
+- Optimizing cost/accuracy tradeoffs in text processing
+
+## Decision Framework
+
+```
+Is the text format consistent and repeating?
+├── Yes (&gt;90% follows a pattern) → Start with Regex
+│   ├── Regex handles 95%+ → Done, no LLM needed
+│   └── Regex handles &lt;95% → Add LLM for edge cases only
+└── No (free-form, highly variable) → Use LLM directly
+```
+
+## Architecture Pattern
+
+```
+Source Text
+    │
+    ▼
+[Regex Parser] ─── Extracts structure (95-98% accuracy)
+    │
+    ▼
+[Text Cleaner] ─── Removes noise (markers, page numbers, artifacts)
+    │
+    ▼
+[Confidence Scorer] ─── Flags low-confidence extractions
+    │
+    ├── High confidence (≥0.95) → Direct output
+    │
+    └── Low confidence (&lt;0.95) → [LLM Validator] → Output
+```
+
+## Implementation
+
+### 1. Regex Parser (Handles the Majority)
+
+```python
+import re
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class ParsedItem:
+    id: str
+    text: str
+    choices: tuple[str, ...]
+    answer: str
+    confidence: float = 1.0
+
+def parse_structured_text(content: str) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;Parse structured text using regex patterns.&quot;&quot;&quot;
+    pattern = re.compile(
+        r&quot;(?P&lt;id&gt;\d+)\.\s*(?P&lt;text&gt;.+?)\n&quot;
+        r&quot;(?P&lt;choices&gt;(?:[A-D]\..+?\n)+)&quot;
+        r&quot;Answer:\s*(?P&lt;answer&gt;[A-D])&quot;,
+        re.MULTILINE | re.DOTALL,
+    )
+    items = []
+    for match in pattern.finditer(content):
+        choices = tuple(
+            c.strip() for c in re.findall(r&quot;[A-D]\.\s*(.+)&quot;, match.group(&quot;choices&quot;))
+        )
+        items.append(ParsedItem(
+            id=match.group(&quot;id&quot;),
+            text=match.group(&quot;text&quot;).strip(),
+            choices=choices,
+            answer=match.group(&quot;answer&quot;),
+        ))
+    return items
+```
+
+### 2. Confidence Scoring
+
+Flag items that may need LLM review:
+
+```python
+@dataclass(frozen=True)
+class ConfidenceFlag:
+    item_id: str
+    score: float
+    reasons: tuple[str, ...]
+
+def score_confidence(item: ParsedItem) -&gt; ConfidenceFlag:
+    &quot;&quot;&quot;Score extraction confidence and flag issues.&quot;&quot;&quot;
+    reasons = []
+    score = 1.0
+
+    if len(item.choices) &lt; 3:
+        reasons.append(&quot;few_choices&quot;)
+        score -= 0.3
+
+    if not item.answer:
+        reasons.append(&quot;missing_answer&quot;)
+        score -= 0.5
+
+    if len(item.text) &lt; 10:
+        reasons.append(&quot;short_text&quot;)
+        score -= 0.2
+
+    return ConfidenceFlag(
+        item_id=item.id,
+        score=max(0.0, score),
+        reasons=tuple(reasons),
+    )
+
+def identify_low_confidence(
+    items: list[ParsedItem],
+    threshold: float = 0.95,
+) -&gt; list[ConfidenceFlag]:
+    &quot;&quot;&quot;Return items below confidence threshold.&quot;&quot;&quot;
+    flags = [score_confidence(item) for item in items]
+    return [f for f in flags if f.score &lt; threshold]
+```
+
+### 3. LLM Validator (Edge Cases Only)
+
+```python
+def validate_with_llm(
+    item: ParsedItem,
+    original_text: str,
+    client,
+) -&gt; ParsedItem:
+    &quot;&quot;&quot;Use LLM to fix low-confidence extractions.&quot;&quot;&quot;
+    response = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,  # Cheapest model for validation
+        max_tokens=500,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Extract the question, choices, and answer from this text.\n\n&quot;
+                f&quot;Text: {original_text}\n\n&quot;
+                f&quot;Current extraction: {item}\n\n&quot;
+                f&quot;Return corrected JSON if needed, or &#x27;CORRECT&#x27; if accurate.&quot;
+            ),
+        }],
+    )
+    # Parse LLM response and return corrected item...
+    return corrected_item
+```
+
+### 4. Hybrid Pipeline
+
+```python
+def process_document(
+    content: str,
+    *,
+    llm_client=None,
+    confidence_threshold: float = 0.95,
+) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;Full pipeline: regex -&gt; confidence check -&gt; LLM for edge cases.&quot;&quot;&quot;
+    # Step 1: Regex extraction (handles 95-98%)
+    items = parse_structured_text(content)
+
+    # Step 2: Confidence scoring
+    low_confidence = identify_low_confidence(items, confidence_threshold)
+
+    if not low_confidence or llm_client is None:
+        return items
+
+    # Step 3: LLM validation (only for flagged items)
+    low_conf_ids = {f.item_id for f in low_confidence}
+    result = []
+    for item in items:
+        if item.id in low_conf_ids:
+            result.append(validate_with_llm(item, content, llm_client))
+        else:
+            result.append(item)
+
+    return result
+```
+
+## Real-World Metrics
+
+From a production quiz parsing pipeline (410 items):
+
+| Metric | Value |
+|--------|-------|
+| Regex success rate | 98.0% |
+| Low confidence items | 8 (2.0%) |
+| LLM calls needed | ~5 |
+| Cost savings vs all-LLM | ~95% |
+| Test coverage | 93% |
+
+## Best Practices
+
+- **Start with regex** — even imperfect regex gives you a baseline to improve
+- **Use confidence scoring** to programmatically identify what needs LLM help
+- **Use the cheapest LLM** for validation (Haiku-class models are sufficient)
+- **Never mutate** parsed items — return new instances from cleaning/validation steps
+- **TDD works well** for parsers — write tests for known patterns first, then edge cases
+- **Log metrics** (regex success rate, LLM call count) to track pipeline health
+
+## Anti-Patterns to Avoid
+
+- Sending all text to an LLM when regex handles 95%+ of cases (expensive and slow)
+- Using regex for free-form, highly variable text (LLM is better here)
+- Skipping confidence scoring and hoping regex &quot;just works&quot;
+- Mutating parsed objects during cleaning/validation steps
+- Not testing edge cases (malformed input, missing fields, encoding issues)
+
+## When to Use
+
+- Quiz/exam question parsing
+- Form data extraction
+- Invoice/receipt processing
+- Document structure parsing (headers, sections, tables)
+- Any structured text with repeating patterns where cost matters</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

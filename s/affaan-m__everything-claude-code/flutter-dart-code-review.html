@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flutter-dart-code-review｜Skill 寫法圖鑑</title>
+<meta name="description" content="不綁函式庫的 Flutter/Dart code review 檢查清單，含 widget、狀態管理、效能、安全">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>flutter-dart-code-review</h1>
+<p class="meta">affaan-m ｜ Code Review ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/flutter-dart-code-review/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">不綁函式庫的 Flutter/Dart code review 檢查清單，含 widget、狀態管理、效能、安全</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: flutter-dart-code-review
+description: 不綁特定函式庫的 Flutter/Dart code review 檢查清單，涵蓋 widget 最佳實務、狀態管理模式（BLoC、Riverpod、Provider、GetX、MobX、Signals）、Dart 慣用寫法、效能、無障礙、安全性與 clean architecture。review Flutter 或 Dart 程式碼時使用，不論專案用哪種狀態管理函式庫。
+metadata:
+  origin: ECC
+---
+
+# Flutter/Dart Code Review Best Practices
+
+一份完整、不綁特定函式庫的 Flutter/Dart 應用程式 review 檢查清單。不管用哪種狀態管理方案、路由函式庫或 DI 框架，這些原則都適用。
+
+---
+
+## 1. General Project Health
+
+- [ ] 專案的資料夾結構一致（feature-first 或 layer-first）
+- [ ] 關注點分離得當：UI、商業邏輯、資料層各自獨立
+- [ ] widget 裡沒有商業邏輯，widget 純粹負責呈現
+- [ ] `pubspec.yaml` 很乾淨：沒有用不到的依賴，版本鎖得適當
+- [ ] `analysis_options.yaml` 包含嚴格的 lint 規則集，並開啟嚴格的 analyzer 設定
+- [ ] production 程式碼裡沒有 `print()`，改用 `dart:developer` 的 `log()` 或 logging 套件
+- [ ] 產生出來的檔案（`.g.dart`、`.freezed.dart`、`.gr.dart`）是最新的，或已加進 `.gitignore`
+- [ ] 平台專屬的程式碼隔離在抽象層後面
+
+---
+
+## 2. Dart Language Pitfalls
+
+- [ ] **隱含的 dynamic**：缺少型別標註導致變成 `dynamic`，要開啟 `strict-casts`、`strict-inference`、`strict-raw-types`
+- [ ] **濫用 null safety**：過度使用 `!`（bang operator），而不是做正確的 null 檢查或用 Dart 3 的 pattern matching（`if (value case var v?)`）
+- [ ] **型別提升失敗**：用了 `this.field`，其實改用區域變數就能做型別提升
+- [ ] **catch 範圍太廣**：`catch (e)` 沒有 `on` 子句，一律要指定例外型別
+- [ ] **去 catch `Error`**：`Error` 的子型別代表 bug，不應該被 catch
+- [ ] **沒必要的 `async`**：標了 `async` 卻從沒 `await`，白白增加開銷
+- [ ] **`late` 用太多**：該用 nullable 或建構子初始化比較安全的地方卻用了 `late`，會把錯誤延後到 runtime
+- [ ] **迴圈裡做字串串接**：反覆組字串要用 `StringBuffer`，不要用 `+`
+- [ ] **`const` 情境下有可變狀態**：`const` 建構子類別的欄位不應該是可變的
+- [ ] **忽略 `Future` 的回傳值**：要用 `await`，或明確呼叫 `unawaited()` 表明是故意的
+- [ ] **能用 `final` 卻用 `var`**：區域變數優先用 `final`，編譯期常數用 `const`
+- [ ] **相對 import**：為了一致，用 `package:` 形式的 import
+- [ ] **對外暴露可變集合**：public API 應該回傳不可修改的 view，不要直接回傳原始的 `List`/`Map`
+- [ ] **沒用到 Dart 3 pattern matching**：優先用 switch expression 和 `if-case`，不要寫囉嗦的 `is` 檢查加手動轉型
+- [ ] **為了回傳多個值而建的拋棄式類別**：用 Dart 3 的 record `(String, int)`，不要建只用一次的 DTO
+- [ ] **production 程式碼裡的 `print()`**：用 `dart:developer` 的 `log()` 或專案的 logging 套件；`print()` 沒有 log level，也沒辦法過濾
+
+---
+
+## 3. Widget Best Practices
+
+### Widget decomposition:
+- [ ] 沒有任何 widget 的 `build()` 方法超過約 80 到 100 行
+- [ ] widget 的拆分同時考慮封裝，以及它們變動的方式（rebuild 邊界）
+- [ ] 回傳 widget 的私有 `_build*()` 輔助方法，要抽成獨立的 widget 類別（這樣才能重用 element、傳遞 const，也能吃到框架的最佳化）
+- [ ] 不需要可變區域狀態的地方，優先用 Stateless widget 而不是 Stateful
+- [ ] 可重用的 widget 抽出來放在獨立檔案
+
+### Const usage:
+- [ ] 能用 `const` 建構子就用，避免不必要的 rebuild
+- [ ] 不會變的集合用 `const` 字面值（`const []`、`const {}`）
+- [ ] 所有欄位都是 final 時，建構子要宣告成 `const`
+
+### Key usage:
+- [ ] list/grid 裡用 `ValueKey`，重新排序時才能保留狀態
+- [ ] `GlobalKey` 要節制使用，只在真的需要跨整棵 tree 存取狀態時才用
+- [ ] `build()` 裡避免用 `UniqueKey`，它會讓每個 frame 都強制 rebuild
+- [ ] 身分是由資料物件而不是單一值決定時，用 `ObjectKey`
+
+### Theming &amp; design system:
+- [ ] 顏色來自 `Theme.of(context).colorScheme`，沒有寫死 `Colors.red` 或 hex 值
+- [ ] 文字樣式來自 `Theme.of(context).textTheme`，沒有直接寫帶原始字級的 inline `TextStyle`
+- [ ] 確認過深色模式相容，沒有預設背景是淺色
+- [ ] 間距和尺寸用一致的 design token 或常數，不用 magic number
+
+### Build method complexity:
+- [ ] `build()` 裡沒有網路呼叫、檔案 I/O 或繁重的運算
+- [ ] `build()` 裡沒有 `Future.then()` 或 `async` 工作
+- [ ] `build()` 裡沒有建立訂閱（`.listen()`）
+- [ ] `setState()` 限縮在盡可能小的子樹
+
+---
+
+## 4. State Management (Library-Agnostic)
+
+這些原則適用於所有 Flutter 狀態管理方案（BLoC、Riverpod、Provider、GetX、MobX、Signals、ValueNotifier 等等）。
+
+### Architecture:
+- [ ] 商業邏輯放在 widget 層之外，放在狀態管理元件裡（BLoC、Notifier、Controller、Store、ViewModel 等）
+- [ ] 狀態管理元件透過注入取得依賴，不是在內部自己建構
+- [ ] 由 service 或 repository 層抽象化資料來源，widget 和狀態管理元件不該直接呼叫 API 或資料庫
+- [ ] 每個狀態管理元件只負責單一職責，不要有處理不相干事情的「上帝」管理器
+- [ ] 跨元件的依賴要遵循該方案的慣例：
+  - 在 **Riverpod**：provider 透過 `ref.watch` 依賴其他 provider 是正常的，只有循環或過度糾纏的鏈才需要標出來
+  - 在 **BLoC**：bloc 不應該直接依賴其他 bloc，優先用共用的 repository 或在 presentation 層協調
+  - 在其他方案：照官方文件記載的元件間溝通慣例來做
+
+### Immutability &amp; value equality (for immutable-state solutions: BLoC, Riverpod, Redux):
+- [ ] state 物件是不可變的，用 `copyWith()` 或建構子產生新實例，不要原地修改
+- [ ] state 類別有正確實作 `==` 和 `hashCode`（所有欄位都納入比較）
+- [ ] 整個專案的機制要一致：手動 override、`Equatable`、`freezed`、Dart record 或其他都行，但要統一
+- [ ] state 物件裡的集合不要以原始的可變 `List`/`Map` 暴露出去
+
+### Reactivity discipline (for reactive-mutation solutions: MobX, GetX, Signals):
+- [ ] state 只能透過該方案的 reactive API 修改（MobX 的 `@action`、signal 的 `.value`、GetX 的 `.obs`），直接改欄位會繞過變更追蹤
+- [ ] 衍生值用該方案的 computed 機制，不要重複儲存
+- [ ] reaction 和 disposer 都有正確清理（MobX 的 `ReactionDisposer`、Signals 的 effect 清理）
+
+### State shape design:
+- [ ] 互斥的狀態用 sealed type、union variant，或該方案內建的非同步狀態型別（例如 Riverpod 的 `AsyncValue`），不要用布林旗標（`isLoading`、`isError`、`hasData`）
+- [ ] 每個非同步操作都把 loading、success、error 建模成各自獨立的狀態
+- [ ] UI 窮舉處理所有 state variant，沒有被默默忽略的情況
+- [ ] error 狀態帶著可以顯示的錯誤資訊；loading 狀態不要帶著過期的資料
+- [ ] 不要拿 nullable 資料當作 loading 指標，狀態要明確
+
+```dart
+// BAD：一堆布林旗標會允許不可能的狀態
+class UserState {
+  bool isLoading = false;
+  bool hasError = false; // isLoading &amp;&amp; hasError 竟然表示得出來！
+  User? user;
+}
+
+// GOOD（不可變做法）：sealed type 讓不可能的狀態根本無法表示
+sealed class UserState {}
+class UserInitial extends UserState {}
+class UserLoading extends UserState {}
+class UserLoaded extends UserState {
+  final User user;
+  const UserLoaded(this.user);
+}
+class UserError extends UserState {
+  final String message;
+  const UserError(this.message);
+}
+
+// GOOD（reactive 做法）：observable enum 加資料，透過 reactivity API 修改
+// enum UserStatus { initial, loading, loaded, error }
+// 用你的方案提供的 observable/signal，把 status 和 data 分開包起來
+```
+
+### Rebuild optimization:
+- [ ] 狀態消費端 widget（Builder、Consumer、Observer、Obx、Watch 等）的範圍盡可能縮小
+- [ ] 用 selector 讓只有特定欄位變動時才 rebuild，而不是每次 state 發出就 rebuild
+- [ ] 用 `const` widget 擋住 rebuild 沿著 tree 往下傳
+- [ ] 計算出來的／衍生的狀態用 reactive 方式算，不要重複儲存
+
+### Subscriptions &amp; disposal:
+- [ ] 所有手動訂閱（`.listen()`）都在 `dispose()` / `close()` 裡取消
+- [ ] 不再需要的 stream controller 都關掉
+- [ ] timer 在 dispose 生命週期裡取消
+- [ ] 優先用框架管理的生命週期，不要手動訂閱（用宣告式的 builder，不要用 `.listen()`）
+- [ ] 非同步 callback 裡呼叫 `setState` 前，先檢查 `mounted`
+- [ ] `await` 之後要用 `BuildContext` 時，先檢查 `context.mounted`（Flutter 3.7+），過期的 context 會造成 crash
+- [ ] 非同步空檔之後，沒確認 widget 還在 mounted 狀態就不要做導覽、跳 dialog 或顯示 scaffold 訊息
+- [ ] `BuildContext` 絕對不要存在 singleton、狀態管理元件或 static 欄位裡
+
+### Local vs global state:
+- [ ] 暫時性的 UI 狀態（checkbox、slider、動畫）用區域狀態（`setState`、`ValueNotifier`）
+- [ ] 共享狀態只往上提到剛好需要的高度，不要過度全域化
+- [ ] 功能範圍的狀態在該功能不再使用時要正確 dispose
+
+---
+
+## 5. Performance
+
+### Unnecessary rebuilds:
+- [ ] 不要在根 widget 層級呼叫 `setState()`，把狀態變動限縮在區域
+- [ ] 用 `const` widget 擋住 rebuild 傳遞
+- [ ] 會獨立重繪的複雜子樹外面包 `RepaintBoundary`
+- [ ] 跟動畫無關的子樹，用 `AnimatedBuilder` 的 child 參數
+
+### Expensive operations in build():
+- [ ] `build()` 裡不要對大型集合做排序、過濾或 map，這些要放在狀態管理層算
+- [ ] `build()` 裡不要編譯 regex
+- [ ] `MediaQuery.of(context)` 的用法要具體（例如 `MediaQuery.sizeOf(context)`）
+
+### Image optimization:
+- [ ] 網路圖片有做快取（用專案適合的任何快取方案）
+- [ ] 圖片解析度適合目標裝置（縮圖不要載 4K 圖）
+- [ ] `Image.asset` 搭配 `cacheWidth`/`cacheHeight`，以顯示尺寸解碼
+- [ ] 網路圖片提供 placeholder 和 error widget
+
+### Lazy loading:
+- [ ] 大型或動態清單用 `ListView.builder` / `GridView.builder`，不要用 `ListView(children: [...])`（小型靜態清單用具體建構子沒問題）
+- [ ] 大型資料集有實作分頁
+- [ ] web build 裡的重型函式庫用延遲載入（`deferred as`）
+
+### Other:
+- [ ] 動畫裡避免用 `Opacity` widget，改用 `AnimatedOpacity` 或 `FadeTransition`
+- [ ] 動畫裡避免做裁切，圖片事先裁好
+- [ ] 不要在 widget 上覆寫 `operator ==`，改用 `const` 建構子
+- [ ] 節制使用 intrinsic dimension widget（`IntrinsicHeight`、`IntrinsicWidth`），它們會多一次 layout pass
+
+---
+
+## 6. Testing
+
+### Test types and expectations:
+- [ ] **單元測試**：涵蓋所有商業邏輯（狀態管理元件、repository、工具函式）
+- [ ] **Widget 測試**：涵蓋單一 widget 的行為、互動和視覺輸出
+- [ ] **整合測試**：涵蓋端到端的關鍵使用者流程
+- [ ] **Golden 測試**：對設計關鍵的 UI 元件做像素等級的比對
+
+### Coverage targets:
+- [ ] 商業邏輯的行覆蓋率目標 80% 以上
+- [ ] 所有狀態轉換都有對應的測試（loading → success、loading → error、retry 等）
+- [ ] 測過邊界情況：空狀態、錯誤狀態、載入狀態、邊界值
+
+### Test isolation:
+- [ ] 外部依賴（API client、資料庫、service）都用 mock 或 fake
+- [ ] 每個測試檔剛好只測一個類別/單元
+- [ ] 測試驗證的是行為，不是實作細節
+- [ ] stub 只定義每個測試需要的行為（最小化 stub）
+- [ ] 測試案例之間沒有共享的可變狀態
+
+### Widget test quality:
+- [ ] 非同步操作正確使用 `pumpWidget` 和 `pump`
+- [ ] 適當使用 `find.byType`、`find.text`、`find.byKey`
+- [ ] 沒有依賴時間的 flaky 測試，改用 `pumpAndSettle` 或明確的 `pump(Duration)`
+- [ ] 測試在 CI 裡跑，失敗就擋住 merge
+
+---
+
+## 7. Accessibility
+
+### Semantic widgets:
+- [ ] 自動產生的標籤不夠用時，用 `Semantics` widget 提供螢幕閱讀器的標籤
+- [ ] 純裝飾性的元素用 `ExcludeSemantics`
+- [ ] 用 `MergeSemantics` 把相關的 widget 合併成單一個無障礙元素
+- [ ] 圖片有設 `semanticLabel` 屬性
+
+### Screen reader support:
+- [ ] 所有互動元素都能取得焦點，而且有有意義的描述
+- [ ] 焦點順序合乎邏輯（跟視覺閱讀順序一致）
+
+### Visual accessibility:
+- [ ] 文字與背景的對比度 &gt;= 4.5:1
+- [ ] 可點擊目標至少 48x48 像素
+- [ ] 不要只靠顏色表示狀態（要搭配圖示或文字）
+- [ ] 文字會跟著系統字級設定縮放
+
+### Interaction accessibility:
+- [ ] 沒有什麼都不做的 `onPressed` callback，每個按鈕不是有作用就是被停用
+- [ ] 錯誤欄位會建議如何修正
+- [ ] 使用者輸入資料時，情境不會無預警地改變
+
+---
+
+## 8. Platform-Specific Concerns
+
+### iOS/Android differences:
+- [ ] 適當的地方使用平台自適應的 widget
+- [ ] 正確處理返回導覽（Android 返回鍵、iOS 滑動返回）
+- [ ] 狀態列和安全區域用 `SafeArea` widget 處理
+- [ ] 平台專屬的權限已在 `AndroidManifest.xml` 和 `Info.plist` 宣告
+
+### Responsive design:
+- [ ] 響應式版面用 `LayoutBuilder` 或 `MediaQuery`
+- [ ] breakpoint 定義一致（手機、平板、桌面）
+- [ ] 小螢幕上文字不會溢出，用 `Flexible`、`Expanded`、`FittedBox`
+- [ ] 橫向模式有測過，或明確鎖定
+- [ ] Web 專屬：支援滑鼠/鍵盤互動，有 hover 狀態
+
+---
+
+## 9. Security
+
+### Secure storage:
+- [ ] 敏感資料（token、憑證）存在平台的安全儲存空間（iOS 的 Keychain、Android 的 EncryptedSharedPreferences）
+- [ ] 絕對不要把 secret 存在明文儲存空間
+- [ ] 敏感操作考慮用生物辨識驗證把關
+
+### API key handling:
+- [ ] API key 沒有寫死在 Dart 原始碼裡，用 `--dart-define`、排除在版控之外的 `.env` 檔，或編譯期設定
+- [ ] secret 沒有 commit 進 git，檢查 `.gitignore`
+- [ ] 真正機密的 key 用後端 proxy（client 絕不該持有伺服器端的 secret）
+
+### Input validation:
+- [ ] 所有使用者輸入在送到 API 前都經過驗證
+- [ ] 表單驗證採用正確的驗證模式
+- [ ] 沒有原始 SQL，也沒有把使用者輸入做字串插值
+- [ ] deep link URL 在導覽前先驗證並清理
+
+### Network security:
+- [ ] 所有 API 呼叫都強制使用 HTTPS
+- [ ] 高安全性的 app 考慮做憑證綁定（certificate pinning）
+- [ ] 驗證 token 有正確更新並過期
+- [ ] 沒有把敏感資料寫進 log 或印出來
+
+---
+
+## 10. Package/Dependency Review
+
+### Evaluating pub.dev packages:
+- [ ] 檢查 **pub points 分數**（目標 130 以上，滿分 160）
+- [ ] 以 **likes** 和 **popularity** 當作社群訊號
+- [ ] 確認發佈者在 pub.dev 上是 **verified**
+- [ ] 檢查最後發佈日期，久未更新（超過 1 年）的套件有風險
+- [ ] 看開放中的 issue 和維護者的回應速度
+- [ ] 檢查授權跟你的專案相不相容
+- [ ] 確認支援的平台涵蓋你的目標
+
+### Version constraints:
+- [ ] 依賴用 caret 語法（`^1.2.3`），允許相容的更新
+- [ ] 只有在絕對必要時才鎖死精確版本
+- [ ] 定期跑 `flutter pub outdated` 追蹤過期的依賴
+- [ ] production 的 `pubspec.yaml` 不要有 dependency override，只在暫時修補時用，並附上註解或 issue 連結
+- [ ] 盡量減少間接依賴的數量，每個依賴都是一個攻擊面
+
+### Monorepo-specific (melos/workspace):
+- [ ] 內部套件只從 public API import，不要用 `package:other/src/internal.dart`（這會破壞 Dart 套件的封裝）
+- [ ] 內部套件的依賴用 workspace 解析，不要寫死 `path: ../../` 這種相對路徑字串
+- [ ] 所有子套件共用或繼承根目錄的 `analysis_options.yaml`
+
+---
+
+## 11. Navigation and Routing
+
+### General principles (apply to any routing solution):
+- [ ] 一致使用同一種路由做法，不要把命令式的 `Navigator.push` 和宣告式 router 混著用
+- [ ] 路由參數有型別，不要用 `Map&lt;String, dynamic&gt;` 或對 `Object?` 做轉型
+- [ ] 路由路徑用常數、enum 或自動產生的方式定義，不要在程式碼裡散落 magic string
+- [ ] 驗證 guard/redirect 集中管理，不要在各個畫面重複寫
+- [ ] Android 和 iOS 都設定了 deep link
+- [ ] deep link URL 在導覽前先驗證並清理
+- [ ] 導覽狀態可測試，路由切換可以在測試裡驗證
+- [ ] 所有平台上的返回行為都正確
+
+---
+
+## 12. Error Handling
+
+### Framework error handling:
+- [ ] 覆寫 `FlutterError.onError` 來捕捉框架錯誤（build、layout、paint）
+- [ ] 設定 `PlatformDispatcher.instance.onError`，處理 Flutter 沒攔到的非同步錯誤
+- [ ] 針對 release 模式客製 `ErrorWidget.builder`（顯示對使用者友善的畫面，不要紅屏）
+- [ ] `runApp` 外面包一層全域錯誤捕捉（例如 `runZonedGuarded`、Sentry/Crashlytics 的包裝）
+
+### Error reporting:
+- [ ] 整合了錯誤回報服務（Firebase Crashlytics、Sentry 或同等的服務）
+- [ ] 非致命錯誤連同 stack trace 一起回報
+- [ ] 狀態管理的錯誤 observer 接上錯誤回報（例如 BlocObserver、ProviderObserver，或你所用方案的對應機制）
+- [ ] 錯誤回報附上可識別使用者的資訊（user ID），方便除錯
+
+### Graceful degradation:
+- [ ] API 錯誤會顯示對使用者友善的錯誤 UI，不會 crash
+- [ ] 暫時性的網路失敗有重試機制
+- [ ] 離線狀態有妥善處理
+- [ ] 狀態管理裡的 error 狀態帶有可顯示的錯誤資訊
+- [ ] 原始例外（網路、解析）在到達 UI 之前，先對應成對使用者友善、已本地化的訊息，絕對不要把原始例外字串顯示給使用者
+
+---
+
+## 13. Internationalization (l10n)
+
+### Setup:
+- [ ] 設定好在地化方案（Flutter 內建的 ARB/l10n、easy_localization 或同等方案）
+- [ ] 在 app 設定中宣告支援的 locale
+
+### Content:
+- [ ] 所有使用者看得到的字串都走在地化系統，widget 裡沒有寫死的字串
+- [ ] 範本檔包含給翻譯人員看的說明/脈絡
+- [ ] 複數、性別、選項用 ICU 訊息語法
+- [ ] placeholder 有定義型別
+- [ ] 各 locale 之間沒有缺漏的 key
+
+### Code review:
+- [ ] 整個專案一致使用同一種在地化存取方式
+- [ ] 日期、時間、數字、貨幣的格式化會依 locale 調整
+- [ ] 如果目標市場包含阿拉伯文、希伯來文等，要支援文字方向（RTL）
+- [ ] 在地化文字不要用字串串接，用帶參數的訊息
+
+---
+
+## 14. Dependency Injection
+
+### Principles (apply to any DI approach):
+- [ ] 在層級邊界上，類別依賴的是抽象（介面），不是具體實作
+- [ ] 依賴由外部透過建構子、DI 框架或 provider graph 提供，不是在內部自己建立
+- [ ] 註冊時區分生命週期：singleton、factory、lazy singleton
+- [ ] 環境專屬的綁定（dev/staging/prod）用設定處理，不要用 runtime 的 `if` 檢查
+- [ ] DI graph 裡沒有循環依賴
+- [ ] service locator 的呼叫（如果有用）不要散落在商業邏輯各處
+
+---
+
+## 15. Static Analysis
+
+### Configuration:
+- [ ] 有 `analysis_options.yaml`，並開啟嚴格設定
+- [ ] 嚴格的 analyzer 設定：`strict-casts: true`、`strict-inference: true`、`strict-raw-types: true`
+- [ ] 納入完整的 lint 規則集（very_good_analysis、flutter_lints 或自訂的嚴格規則）
+- [ ] monorepo 裡所有子套件都繼承或共用根目錄的 analysis 選項
+
+### Enforcement:
+- [ ] 已 commit 的程式碼沒有未解決的 analyzer 警告
+- [ ] lint 抑制（`// ignore:`）都有註解說明理由
+- [ ] `flutter analyze` 在 CI 裡跑，失敗就擋住 merge
+
+### Key rules to verify regardless of lint package:
+- [ ] `prefer_const_constructors`：對 widget tree 的效能有幫助
+- [ ] `avoid_print`：改用正式的 logging
+- [ ] `unawaited_futures`：避免 fire-and-forget 的非同步 bug
+- [ ] `prefer_final_locals`：變數層級的不可變性
+- [ ] `always_declare_return_types`：明確的契約
+- [ ] `avoid_catches_without_on_clauses`：針對特定錯誤處理
+- [ ] `always_use_package_imports`：一致的 import 風格
+
+---
+
+## State Management Quick Reference
+
+下表把通用原則對應到各主流方案的實作。用它來把 review 規則套用到專案所用的方案上。
+
+| Principle | BLoC/Cubit | Riverpod | Provider | GetX | MobX | Signals | Built-in |
+|-----------|-----------|----------|----------|------|------|---------|----------|
+| State container | `Bloc`/`Cubit` | `Notifier`/`AsyncNotifier` | `ChangeNotifier` | `GetxController` | `Store` | `signal()` | `StatefulWidget` |
+| UI consumer | `BlocBuilder` | `ConsumerWidget` | `Consumer` | `Obx`/`GetBuilder` | `Observer` | `Watch` | `setState` |
+| Selector | `BlocSelector`/`buildWhen` | `ref.watch(p.select(...))` | `Selector` | N/A | computed | `computed()` | N/A |
+| Side effects | `BlocListener` | `ref.listen` | `Consumer` callback | `ever()`/`once()` | `reaction` | `effect()` | callbacks |
+| Disposal | auto via `BlocProvider` | `.autoDispose` | auto via `Provider` | `onClose()` | `ReactionDisposer` | manual | `dispose()` |
+| Testing | `blocTest()` | `ProviderContainer` | `ChangeNotifier` directly | `Get.put` in test | store directly | signal directly | widget test |
+
+---
+
+## Sources
+
+- [Effective Dart: Style](https://dart.dev/effective-dart/style)
+- [Effective Dart: Usage](https://dart.dev/effective-dart/usage)
+- [Effective Dart: Design](https://dart.dev/effective-dart/design)
+- [Flutter Performance Best Practices](https://docs.flutter.dev/perf/best-practices)
+- [Flutter Testing Overview](https://docs.flutter.dev/testing/overview)
+- [Flutter Accessibility](https://docs.flutter.dev/ui/accessibility-and-internationalization/accessibility)
+- [Flutter Internationalization](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)
+- [Flutter Navigation and Routing](https://docs.flutter.dev/ui/navigation)
+- [Flutter Error Handling](https://docs.flutter.dev/testing/errors)
+- [Flutter State Management Options](https://docs.flutter.dev/data-and-backend/state-mgmt/options)</pre></section><section><h2>英文原文</h2><pre>---
+name: flutter-dart-code-review
+description: Library-agnostic Flutter/Dart code review checklist covering widget best practices, state management patterns (BLoC, Riverpod, Provider, GetX, MobX, Signals), Dart idioms, performance, accessibility, security, and clean architecture. Use when reviewing Flutter or Dart code, whatever state management library the project uses.
+metadata:
+  origin: ECC
+---
+
+# Flutter/Dart Code Review Best Practices
+
+Comprehensive, library-agnostic checklist for reviewing Flutter/Dart applications. These principles apply regardless of which state management solution, routing library, or DI framework is used.
+
+---
+
+## 1. General Project Health
+
+- [ ] Project follows consistent folder structure (feature-first or layer-first)
+- [ ] Proper separation of concerns: UI, business logic, data layers
+- [ ] No business logic in widgets; widgets are purely presentational
+- [ ] `pubspec.yaml` is clean — no unused dependencies, versions pinned appropriately
+- [ ] `analysis_options.yaml` includes a strict lint set with strict analyzer settings enabled
+- [ ] No `print()` statements in production code — use `dart:developer` `log()` or a logging package
+- [ ] Generated files (`.g.dart`, `.freezed.dart`, `.gr.dart`) are up-to-date or in `.gitignore`
+- [ ] Platform-specific code isolated behind abstractions
+
+---
+
+## 2. Dart Language Pitfalls
+
+- [ ] **Implicit dynamic**: Missing type annotations leading to `dynamic` — enable `strict-casts`, `strict-inference`, `strict-raw-types`
+- [ ] **Null safety misuse**: Excessive `!` (bang operator) instead of proper null checks or Dart 3 pattern matching (`if (value case var v?)`)
+- [ ] **Type promotion failures**: Using `this.field` where local variable promotion would work
+- [ ] **Catching too broadly**: `catch (e)` without `on` clause; always specify exception types
+- [ ] **Catching `Error`**: `Error` subtypes indicate bugs and should not be caught
+- [ ] **Unused `async`**: Functions marked `async` that never `await` — unnecessary overhead
+- [ ] **`late` overuse**: `late` used where nullable or constructor initialization would be safer; defers errors to runtime
+- [ ] **String concatenation in loops**: Use `StringBuffer` instead of `+` for iterative string building
+- [ ] **Mutable state in `const` contexts**: Fields in `const` constructor classes should not be mutable
+- [ ] **Ignoring `Future` return values**: Use `await` or explicitly call `unawaited()` to signal intent
+- [ ] **`var` where `final` works**: Prefer `final` for locals and `const` for compile-time constants
+- [ ] **Relative imports**: Use `package:` imports for consistency
+- [ ] **Mutable collections exposed**: Public APIs should return unmodifiable views, not raw `List`/`Map`
+- [ ] **Missing Dart 3 pattern matching**: Prefer switch expressions and `if-case` over verbose `is` checks and manual casting
+- [ ] **Throwaway classes for multiple returns**: Use Dart 3 records `(String, int)` instead of single-use DTOs
+- [ ] **`print()` in production code**: Use `dart:developer` `log()` or the project&#x27;s logging package; `print()` has no log levels and cannot be filtered
+
+---
+
+## 3. Widget Best Practices
+
+### Widget decomposition:
+- [ ] No single widget with a `build()` method exceeding ~80-100 lines
+- [ ] Widgets split by encapsulation AND by how they change (rebuild boundaries)
+- [ ] Private `_build*()` helper methods that return widgets are extracted to separate widget classes (enables element reuse, const propagation, and framework optimizations)
+- [ ] Stateless widgets preferred over Stateful where no mutable local state is needed
+- [ ] Extracted widgets are in separate files when reusable
+
+### Const usage:
+- [ ] `const` constructors used wherever possible — prevents unnecessary rebuilds
+- [ ] `const` literals for collections that don&#x27;t change (`const []`, `const {}`)
+- [ ] Constructor is declared `const` when all fields are final
+
+### Key usage:
+- [ ] `ValueKey` used in lists/grids to preserve state across reorders
+- [ ] `GlobalKey` used sparingly — only when accessing state across the tree is truly needed
+- [ ] `UniqueKey` avoided in `build()` — it forces rebuild every frame
+- [ ] `ObjectKey` used when identity is based on a data object rather than a single value
+
+### Theming &amp; design system:
+- [ ] Colors come from `Theme.of(context).colorScheme` — no hardcoded `Colors.red` or hex values
+- [ ] Text styles come from `Theme.of(context).textTheme` — no inline `TextStyle` with raw font sizes
+- [ ] Dark mode compatibility verified — no assumptions about light background
+- [ ] Spacing and sizing use consistent design tokens or constants, not magic numbers
+
+### Build method complexity:
+- [ ] No network calls, file I/O, or heavy computation in `build()`
+- [ ] No `Future.then()` or `async` work in `build()`
+- [ ] No subscription creation (`.listen()`) in `build()`
+- [ ] `setState()` localized to smallest possible subtree
+
+---
+
+## 4. State Management (Library-Agnostic)
+
+These principles apply to all Flutter state management solutions (BLoC, Riverpod, Provider, GetX, MobX, Signals, ValueNotifier, etc.).
+
+### Architecture:
+- [ ] Business logic lives outside the widget layer — in a state management component (BLoC, Notifier, Controller, Store, ViewModel, etc.)
+- [ ] State managers receive dependencies via injection, not by constructing them internally
+- [ ] A service or repository layer abstracts data sources — widgets and state managers should not call APIs or databases directly
+- [ ] State managers have a single responsibility — no &quot;god&quot; managers handling unrelated concerns
+- [ ] Cross-component dependencies follow the solution&#x27;s conventions:
+  - In **Riverpod**: providers depending on providers via `ref.watch` is expected — flag only circular or overly tangled chains
+  - In **BLoC**: blocs should not directly depend on other blocs — prefer shared repositories or presentation-layer coordination
+  - In other solutions: follow the documented conventions for inter-component communication
+
+### Immutability &amp; value equality (for immutable-state solutions: BLoC, Riverpod, Redux):
+- [ ] State objects are immutable — new instances created via `copyWith()` or constructors, never mutated in-place
+- [ ] State classes implement `==` and `hashCode` properly (all fields included in comparison)
+- [ ] Mechanism is consistent across the project — manual override, `Equatable`, `freezed`, Dart records, or other
+- [ ] Collections inside state objects are not exposed as raw mutable `List`/`Map`
+
+### Reactivity discipline (for reactive-mutation solutions: MobX, GetX, Signals):
+- [ ] State is only mutated through the solution&#x27;s reactive API (`@action` in MobX, `.value` on signals, `.obs` in GetX) — direct field mutation bypasses change tracking
+- [ ] Derived values use the solution&#x27;s computed mechanism rather than being stored redundantly
+- [ ] Reactions and disposers are properly cleaned up (`ReactionDisposer` in MobX, effect cleanup in Signals)
+
+### State shape design:
+- [ ] Mutually exclusive states use sealed types, union variants, or the solution&#x27;s built-in async state type (e.g. Riverpod&#x27;s `AsyncValue`) — not boolean flags (`isLoading`, `isError`, `hasData`)
+- [ ] Every async operation models loading, success, and error as distinct states
+- [ ] All state variants are handled exhaustively in UI — no silently ignored cases
+- [ ] Error states carry error information for display; loading states don&#x27;t carry stale data
+- [ ] Nullable data is not used as a loading indicator — states are explicit
+
+```dart
+// BAD — boolean flag soup allows impossible states
+class UserState {
+  bool isLoading = false;
+  bool hasError = false; // isLoading &amp;&amp; hasError is representable!
+  User? user;
+}
+
+// GOOD (immutable approach) — sealed types make impossible states unrepresentable
+sealed class UserState {}
+class UserInitial extends UserState {}
+class UserLoading extends UserState {}
+class UserLoaded extends UserState {
+  final User user;
+  const UserLoaded(this.user);
+}
+class UserError extends UserState {
+  final String message;
+  const UserError(this.message);
+}
+
+// GOOD (reactive approach) — observable enum + data, mutations via reactivity API
+// enum UserStatus { initial, loading, loaded, error }
+// Use your solution&#x27;s observable/signal to wrap status and data separately
+```
+
+### Rebuild optimization:
+- [ ] State consumer widgets (Builder, Consumer, Observer, Obx, Watch, etc.) scoped as narrow as possible
+- [ ] Selectors used to rebuild only when specific fields change — not on every state emission
+- [ ] `const` widgets used to stop rebuild propagation through the tree
+- [ ] Computed/derived state is calculated reactively, not stored redundantly
+
+### Subscriptions &amp; disposal:
+- [ ] All manual subscriptions (`.listen()`) are cancelled in `dispose()` / `close()`
+- [ ] Stream controllers are closed when no longer needed
+- [ ] Timers are cancelled in disposal lifecycle
+- [ ] Framework-managed lifecycle is preferred over manual subscription (declarative builders over `.listen()`)
+- [ ] `mounted` check before `setState` in async callbacks
+- [ ] `BuildContext` not used after `await` without checking `context.mounted` (Flutter 3.7+) — stale context causes crashes
+- [ ] No navigation, dialogs, or scaffold messages after async gaps without verifying the widget is still mounted
+- [ ] `BuildContext` never stored in singletons, state managers, or static fields
+
+### Local vs global state:
+- [ ] Ephemeral UI state (checkbox, slider, animation) uses local state (`setState`, `ValueNotifier`)
+- [ ] Shared state is lifted only as high as needed — not over-globalized
+- [ ] Feature-scoped state is properly disposed when the feature is no longer active
+
+---
+
+## 5. Performance
+
+### Unnecessary rebuilds:
+- [ ] `setState()` not called at root widget level — localize state changes
+- [ ] `const` widgets used to stop rebuild propagation
+- [ ] `RepaintBoundary` used around complex subtrees that repaint independently
+- [ ] `AnimatedBuilder` child parameter used for subtrees independent of animation
+
+### Expensive operations in build():
+- [ ] No sorting, filtering, or mapping large collections in `build()` — compute in state management layer
+- [ ] No regex compilation in `build()`
+- [ ] `MediaQuery.of(context)` usage is specific (e.g., `MediaQuery.sizeOf(context)`)
+
+### Image optimization:
+- [ ] Network images use caching (any caching solution appropriate for the project)
+- [ ] Appropriate image resolution for target device (no loading 4K images for thumbnails)
+- [ ] `Image.asset` with `cacheWidth`/`cacheHeight` to decode at display size
+- [ ] Placeholder and error widgets provided for network images
+
+### Lazy loading:
+- [ ] `ListView.builder` / `GridView.builder` used instead of `ListView(children: [...])` for large or dynamic lists (concrete constructors are fine for small, static lists)
+- [ ] Pagination implemented for large data sets
+- [ ] Deferred loading (`deferred as`) used for heavy libraries in web builds
+
+### Other:
+- [ ] `Opacity` widget avoided in animations — use `AnimatedOpacity` or `FadeTransition`
+- [ ] Clipping avoided in animations — pre-clip images
+- [ ] `operator ==` not overridden on widgets — use `const` constructors instead
+- [ ] Intrinsic dimension widgets (`IntrinsicHeight`, `IntrinsicWidth`) used sparingly (extra layout pass)
+
+---
+
+## 6. Testing
+
+### Test types and expectations:
+- [ ] **Unit tests**: Cover all business logic (state managers, repositories, utility functions)
+- [ ] **Widget tests**: Cover individual widget behavior, interactions, and visual output
+- [ ] **Integration tests**: Cover critical user flows end-to-end
+- [ ] **Golden tests**: Pixel-perfect comparisons for design-critical UI components
+
+### Coverage targets:
+- [ ] Aim for 80%+ line coverage on business logic
+- [ ] All state transitions have corresponding tests (loading → success, loading → error, retry, etc.)
+- [ ] Edge cases tested: empty states, error states, loading states, boundary values
+
+### Test isolation:
+- [ ] External dependencies (API clients, databases, services) are mocked or faked
+- [ ] Each test file tests exactly one class/unit
+- [ ] Tests verify behavior, not implementation details
+- [ ] Stubs define only the behavior needed for each test (minimal stubbing)
+- [ ] No shared mutable state between test cases
+
+### Widget test quality:
+- [ ] `pumpWidget` and `pump` used correctly for async operations
+- [ ] `find.byType`, `find.text`, `find.byKey` used appropriately
+- [ ] No flaky tests depending on timing — use `pumpAndSettle` or explicit `pump(Duration)`
+- [ ] Tests run in CI and failures block merges
+
+---
+
+## 7. Accessibility
+
+### Semantic widgets:
+- [ ] `Semantics` widget used to provide screen reader labels where automatic labels are insufficient
+- [ ] `ExcludeSemantics` used for purely decorative elements
+- [ ] `MergeSemantics` used to combine related widgets into a single accessible element
+- [ ] Images have `semanticLabel` property set
+
+### Screen reader support:
+- [ ] All interactive elements are focusable and have meaningful descriptions
+- [ ] Focus order is logical (follows visual reading order)
+
+### Visual accessibility:
+- [ ] Contrast ratio &gt;= 4.5:1 for text against background
+- [ ] Tappable targets are at least 48x48 pixels
+- [ ] Color is not the sole indicator of state (use icons/text alongside)
+- [ ] Text scales with system font size settings
+
+### Interaction accessibility:
+- [ ] No no-op `onPressed` callbacks — every button does something or is disabled
+- [ ] Error fields suggest corrections
+- [ ] Context does not change unexpectedly while user is inputting data
+
+---
+
+## 8. Platform-Specific Concerns
+
+### iOS/Android differences:
+- [ ] Platform-adaptive widgets used where appropriate
+- [ ] Back navigation handled correctly (Android back button, iOS swipe-to-go-back)
+- [ ] Status bar and safe area handled via `SafeArea` widget
+- [ ] Platform-specific permissions declared in `AndroidManifest.xml` and `Info.plist`
+
+### Responsive design:
+- [ ] `LayoutBuilder` or `MediaQuery` used for responsive layouts
+- [ ] Breakpoints defined consistently (phone, tablet, desktop)
+- [ ] Text doesn&#x27;t overflow on small screens — use `Flexible`, `Expanded`, `FittedBox`
+- [ ] Landscape orientation tested or explicitly locked
+- [ ] Web-specific: mouse/keyboard interactions supported, hover states present
+
+---
+
+## 9. Security
+
+### Secure storage:
+- [ ] Sensitive data (tokens, credentials) stored using platform-secure storage (Keychain on iOS, EncryptedSharedPreferences on Android)
+- [ ] Never store secrets in plaintext storage
+- [ ] Biometric authentication gating considered for sensitive operations
+
+### API key handling:
+- [ ] API keys NOT hardcoded in Dart source — use `--dart-define`, `.env` files excluded from VCS, or compile-time configuration
+- [ ] Secrets not committed to git — check `.gitignore`
+- [ ] Backend proxy used for truly secret keys (client should never hold server secrets)
+
+### Input validation:
+- [ ] All user input validated before sending to API
+- [ ] Form validation uses proper validation patterns
+- [ ] No raw SQL or string interpolation of user input
+- [ ] Deep link URLs validated and sanitized before navigation
+
+### Network security:
+- [ ] HTTPS enforced for all API calls
+- [ ] Certificate pinning considered for high-security apps
+- [ ] Authentication tokens refreshed and expired properly
+- [ ] No sensitive data logged or printed
+
+---
+
+## 10. Package/Dependency Review
+
+### Evaluating pub.dev packages:
+- [ ] Check **pub points score** (aim for 130+/160)
+- [ ] Check **likes** and **popularity** as community signals
+- [ ] Verify the publisher is **verified** on pub.dev
+- [ ] Check last publish date — stale packages (&gt;1 year) are a risk
+- [ ] Review open issues and response time from maintainers
+- [ ] Check license compatibility with your project
+- [ ] Verify platform support covers your targets
+
+### Version constraints:
+- [ ] Use caret syntax (`^1.2.3`) for dependencies — allows compatible updates
+- [ ] Pin exact versions only when absolutely necessary
+- [ ] Run `flutter pub outdated` regularly to track stale dependencies
+- [ ] No dependency overrides in production `pubspec.yaml` — only for temporary fixes with a comment/issue link
+- [ ] Minimize transitive dependency count — each dependency is an attack surface
+
+### Monorepo-specific (melos/workspace):
+- [ ] Internal packages import only from public API — no `package:other/src/internal.dart` (breaks Dart package encapsulation)
+- [ ] Internal package dependencies use workspace resolution, not hardcoded `path: ../../` relative strings
+- [ ] All sub-packages share or inherit root `analysis_options.yaml`
+
+---
+
+## 11. Navigation and Routing
+
+### General principles (apply to any routing solution):
+- [ ] One routing approach used consistently — no mixing imperative `Navigator.push` with a declarative router
+- [ ] Route arguments are typed — no `Map&lt;String, dynamic&gt;` or `Object?` casting
+- [ ] Route paths defined as constants, enums, or generated — no magic strings scattered in code
+- [ ] Auth guards/redirects centralized — not duplicated across individual screens
+- [ ] Deep links configured for both Android and iOS
+- [ ] Deep link URLs validated and sanitized before navigation
+- [ ] Navigation state is testable — route changes can be verified in tests
+- [ ] Back behavior is correct on all platforms
+
+---
+
+## 12. Error Handling
+
+### Framework error handling:
+- [ ] `FlutterError.onError` overridden to capture framework errors (build, layout, paint)
+- [ ] `PlatformDispatcher.instance.onError` set for async errors not caught by Flutter
+- [ ] `ErrorWidget.builder` customized for release mode (user-friendly instead of red screen)
+- [ ] Global error capture wrapper around `runApp` (e.g., `runZonedGuarded`, Sentry/Crashlytics wrapper)
+
+### Error reporting:
+- [ ] Error reporting service integrated (Firebase Crashlytics, Sentry, or equivalent)
+- [ ] Non-fatal errors reported with stack traces
+- [ ] State management error observer wired to error reporting (e.g., BlocObserver, ProviderObserver, or equivalent for your solution)
+- [ ] User-identifiable info (user ID) attached to error reports for debugging
+
+### Graceful degradation:
+- [ ] API errors result in user-friendly error UI, not crashes
+- [ ] Retry mechanisms for transient network failures
+- [ ] Offline state handled gracefully
+- [ ] Error states in state management carry error info for display
+- [ ] Raw exceptions (network, parsing) are mapped to user-friendly, localized messages before reaching the UI — never show raw exception strings to users
+
+---
+
+## 13. Internationalization (l10n)
+
+### Setup:
+- [ ] Localization solution configured (Flutter&#x27;s built-in ARB/l10n, easy_localization, or equivalent)
+- [ ] Supported locales declared in app configuration
+
+### Content:
+- [ ] All user-visible strings use the localization system — no hardcoded strings in widgets
+- [ ] Template file includes descriptions/context for translators
+- [ ] ICU message syntax used for plurals, genders, selects
+- [ ] Placeholders defined with types
+- [ ] No missing keys across locales
+
+### Code review:
+- [ ] Localization accessor used consistently throughout the project
+- [ ] Date, time, number, and currency formatting is locale-aware
+- [ ] Text directionality (RTL) supported if targeting Arabic, Hebrew, etc.
+- [ ] No string concatenation for localized text — use parameterized messages
+
+---
+
+## 14. Dependency Injection
+
+### Principles (apply to any DI approach):
+- [ ] Classes depend on abstractions (interfaces), not concrete implementations at layer boundaries
+- [ ] Dependencies provided externally via constructor, DI framework, or provider graph — not created internally
+- [ ] Registration distinguishes lifetime: singleton vs factory vs lazy singleton
+- [ ] Environment-specific bindings (dev/staging/prod) use configuration, not runtime `if` checks
+- [ ] No circular dependencies in the DI graph
+- [ ] Service locator calls (if used) are not scattered throughout business logic
+
+---
+
+## 15. Static Analysis
+
+### Configuration:
+- [ ] `analysis_options.yaml` present with strict settings enabled
+- [ ] Strict analyzer settings: `strict-casts: true`, `strict-inference: true`, `strict-raw-types: true`
+- [ ] A comprehensive lint rule set is included (very_good_analysis, flutter_lints, or custom strict rules)
+- [ ] All sub-packages in monorepos inherit or share the root analysis options
+
+### Enforcement:
+- [ ] No unresolved analyzer warnings in committed code
+- [ ] Lint suppressions (`// ignore:`) are justified with comments explaining why
+- [ ] `flutter analyze` runs in CI and failures block merges
+
+### Key rules to verify regardless of lint package:
+- [ ] `prefer_const_constructors` — performance in widget trees
+- [ ] `avoid_print` — use proper logging
+- [ ] `unawaited_futures` — prevent fire-and-forget async bugs
+- [ ] `prefer_final_locals` — immutability at variable level
+- [ ] `always_declare_return_types` — explicit contracts
+- [ ] `avoid_catches_without_on_clauses` — specific error handling
+- [ ] `always_use_package_imports` — consistent import style
+
+---
+
+## State Management Quick Reference
+
+The table below maps universal principles to their implementation in popular solutions. Use this to adapt review rules to whichever solution the project uses.
+
+| Principle | BLoC/Cubit | Riverpod | Provider | GetX | MobX | Signals | Built-in |
+|-----------|-----------|----------|----------|------|------|---------|----------|
+| State container | `Bloc`/`Cubit` | `Notifier`/`AsyncNotifier` | `ChangeNotifier` | `GetxController` | `Store` | `signal()` | `StatefulWidget` |
+| UI consumer | `BlocBuilder` | `ConsumerWidget` | `Consumer` | `Obx`/`GetBuilder` | `Observer` | `Watch` | `setState` |
+| Selector | `BlocSelector`/`buildWhen` | `ref.watch(p.select(...))` | `Selector` | N/A | computed | `computed()` | N/A |
+| Side effects | `BlocListener` | `ref.listen` | `Consumer` callback | `ever()`/`once()` | `reaction` | `effect()` | callbacks |
+| Disposal | auto via `BlocProvider` | `.autoDispose` | auto via `Provider` | `onClose()` | `ReactionDisposer` | manual | `dispose()` |
+| Testing | `blocTest()` | `ProviderContainer` | `ChangeNotifier` directly | `Get.put` in test | store directly | signal directly | widget test |
+
+---
+
+## Sources
+
+- [Effective Dart: Style](https://dart.dev/effective-dart/style)
+- [Effective Dart: Usage](https://dart.dev/effective-dart/usage)
+- [Effective Dart: Design](https://dart.dev/effective-dart/design)
+- [Flutter Performance Best Practices](https://docs.flutter.dev/perf/best-practices)
+- [Flutter Testing Overview](https://docs.flutter.dev/testing/overview)
+- [Flutter Accessibility](https://docs.flutter.dev/ui/accessibility-and-internationalization/accessibility)
+- [Flutter Internationalization](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)
+- [Flutter Navigation and Routing](https://docs.flutter.dev/ui/navigation)
+- [Flutter Error Handling](https://docs.flutter.dev/testing/errors)
+- [Flutter State Management Options](https://docs.flutter.dev/data-and-backend/state-mgmt/options)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

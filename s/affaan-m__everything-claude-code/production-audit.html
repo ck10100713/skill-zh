@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>production-audit｜Skill 寫法圖鑑</title>
+<meta name="description" content="用本機證據稽核正式環境就緒度，給出分數與出貨或擋下建議">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>production-audit</h1>
+<p class="meta">affaan-m ｜ 部署與發布 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/production-audit/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用本機證據稽核正式環境就緒度，給出分數與出貨或擋下建議</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: production-audit
+description: 以本機證據為基礎的正式環境就緒稽核，適用於已出貨的應用程式、上線前 review、merge 後檢查，以及「正式環境會壞在哪？」這類問題，不會把 repo 資料送到外部稽核服務。在上線前、merge 之後稽核正式環境就緒程度，或被問到正式環境會壞在哪時使用。
+metadata:
+  origin: community
+---
+
+# Production Audit
+
+當使用者問應用程式是否準備好出貨、正式環境可能壞在哪，或上線前必須修什麼的時候，使用這個 skill。這是把過時的社群 production-audit 構想，改寫成維護者可以放心用的版本：保留有用的正式環境就緒視角，移除了未釘住版本的外部執行，以及第三方的資料分享。
+
+## 何時使用
+
+- 使用者問「這個 production-ready 了嗎」、「正式環境會壞在哪」、「我們漏掉了什麼」、「幫我稽核這個 repo」或「可以出貨了嗎？」
+- 某個功能剛 merge，需要 deploy 之前或 merge 之後的風險檢視。
+- 公開上線、demo、客戶推出或投資人 walkthrough 快到了。
+- CI 是綠的，但使用者想知道的是正式環境的風險，不只是測試狀態。
+- 有 deploy 後的 URL、release branch、PR 或目前的 checkout 可以蒐集證據。
+
+## 何時不要使用
+
+- 正在積極實作，而適合的視角是逐行的安全寫法時，請先用 `security-review`。
+- 純函式庫、範本、只有文件的 repo 或 scaffold，除非使用者想要的是打包/發佈的就緒度，而不是應用程式的就緒度。
+- 使用者要求的是正式的合規稽核。這個 skill 是工程上的初步判斷，不是法律、財務、醫療或法規認證。
+- 手上唯一的證據只是一個產品點子，沒有 repo、deployment、CI 或 runtime 介面。
+
+## 運作方式
+
+根據本機和使用者授權的證據來建立稽核。除非使用者明確核准特定的工具和資料流，否則不要執行未釘住版本的遠端程式碼、不要把 repo 內容上傳到第三方服務，也不要呼叫外部掃描器。
+
+依照這個順序：
+
+1. 確立 release 的範圍。
+2. 讀最近的變更和目前的 branch 狀態。
+3. 檢查 repo 裡實際存在的 runtime、認證、資料、付款、背景工作、AI 和 deployment 邊界。
+4. 檢查 CI、測試、migration、環境變數文件和 rollback 路徑。
+5. 給出簡短的 ship/block 建議，附上具體的修法。
+
+## 證據檢查清單
+
+從便宜的本機訊號開始：
+
+```text
+git status --short --branch
+git log --oneline --decorate -20
+git diff --stat origin/main...HEAD
+```
+
+然後檢查專案特有的範圍：
+
+- Package script、CI workflow、release script、Docker 檔案和 deployment manifest。
+- API 路由、webhook、認證 middleware、背景 worker、cron job 和資料庫 migration。
+- 環境變數文件和啟動時的檢查。
+- 可觀測性 hook、錯誤回報、log、health check 和儀表板。
+- Rollback、seed、migration 和 backfill 的說明。
+- 對最重要的使用者路徑的 E2E 涵蓋。
+
+如果範圍內有 deploy 後的 URL，只對那個 URL 做瀏覽器或 HTTP 檢查，除非使用者提供安全的測試帳號，否則避免需要憑證的動作。
+
+## 風險視角
+
+### 安全與認證
+
+- 公開路由、API 路由和管理路由是否清楚分開？
+- 認證和授權是否在 server 端強制執行？
+- Secret 是否都沒有出現在 client bundle、log、範例輸出和已 commit 的檔案裡？
+- 在應用程式需要的地方，是否有 rate limit、CSRF 防護、CORS 政策和上傳驗證？
+- AI 或 agent 的介面，是否能防禦 prompt injection、工具濫用，以及不受信任的內容跨進有特權的動作？
+
+### 資料完整性
+
+- Migration 能不能順利向前執行，並且有 rollback 或復原計畫？
+- 破壞性的 migration、backfill 和資料匯入，是否有安全地分階段進行？
+- 資料庫的 policy、授權和 service-role 邊界，是否符合應用程式的租戶模型？
+- 寫入、工作和 webhook handler 的重試是否具冪等性？
+
+### 付款與 Webhook
+
+- 在解析可信的 payload 欄位之前，是否先驗證了 webhook 簽章？
+- 每個付款、訂閱或履約的 webhook 是否具冪等性？
+- 是否處理了重放、重複投遞和亂序投遞？
+- 測試模式和正式模式的憑證是否分開？
+
+### 營運
+
+- 應用程式能不能從乾淨的 checkout，用文件記載的指令啟動？
+- 必要的環境變數是否有命名、驗證，而且缺少時會立刻失敗（fail-fast）？
+- 有沒有 health check 可以證明依賴的服務連得到？
+- Deploy、rollback 和事故負責人的路徑是否有文件？
+- Log 是否有用，又不會洩漏 secret 或個資？
+
+### 使用者體驗
+
+- 上線關鍵的路徑，在桌面和行動裝置上是否都有涵蓋？
+- 表單在行動裝置上能不能順利使用，沒有輸入時縮放、版面重疊或送出被擋住的狀態？
+- 載入中、空狀態、錯誤和權限被拒的狀態，是否有告訴使用者發生了什麼事？
+- 當關鍵操作失敗時，有沒有支援或復原的路徑？
+
+## 評分
+
+用分數來強迫排優先順序，不是要暗示數學上的確定性。
+
+| 等級 | 分數 | 意義 |
+| --- | --- | --- |
+| Blocked | 0-49 | 頂端的風險修好之前，不要出貨 |
+| Risky | 50-69 | 只能搭配小規模推出或內部 beta 出貨 |
+| Launchable With Caveats | 70-84 | 如果負責人接受列出的風險，就可以出貨 |
+| Strong | 85-100 | 就現有證據看來，沒有明顯的上線阻礙 |
+
+只要符合下列任何一項，分數上限就是 `69`：
+
+- 敏感資料缺少認證或授權。
+- 付款或履約的 webhook 不具冪等性。
+- 必要的 migration 無法安全執行。
+- Secret 暴露在 client bundle、log 或已 commit 的檔案裡。
+- 高影響的 release 沒有 rollback 路徑。
+
+如果 CI 不是綠的，或上線關鍵路徑沒有端到端測試過，分數上限就是 `84`。
+
+## 輸出格式
+
+先用一句話開頭：
+
+```text
+Production audit: 76/100, launchable with caveats, with webhook idempotency and rollback docs as the two risks to fix before public launch.
+```
+
+然後列出：
+
+- `Blockers`：deploy 之前必須修的項目。
+- `High-value fixes`：如果使用者想提高分數，接下來要修的項目。
+- `Evidence checked`：檢查過的檔案、指令、CI、deploy 後的 URL 或 PR。
+- `Evidence missing`：如果能提供，會改變信心的東西。
+- `Next action`：一個具體的修復或驗證步驟。
+
+優點要簡短帶過。使用者問的是就緒度，所以有用的答案是剩下的風險和下一步行動。
+
+## 範例
+
+使用者：
+
+```text
+is this ready to ship?
+```
+
+回應：
+
+```text
+Production audit: 68/100, risky, because Stripe webhooks are verified but not idempotent and there is no rollback note for the pending migration.
+
+Blockers:
+- Add idempotency for `checkout.session.completed` before fulfilling orders.
+- Write and test the rollback path for `20260511_add_billing_state.sql`.
+
+High-value fixes:
+- Add a health check that verifies database and payment-provider reachability.
+- Add one E2E path for upgrade, webhook fulfillment, and billing-page refresh.
+
+Evidence checked:
+- `api/stripe/webhook.ts`
+- `db/migrations/20260511_add_billing_state.sql`
+- GitHub Actions run for the release branch
+
+Next action: Want me to patch webhook idempotency first?
+```
+
+## 反模式
+
+- 把 `npx &lt;package&gt;@latest` 或遠端掃描器當成預設的稽核路徑。
+- 沒有明確核准，就把原始碼、secret、客戶資料或私有拓撲上傳到外部稽核服務。
+- 給了分數，卻沒有說明檢查過哪些證據。
+- 把綠色的 CI 當成正式環境就緒。
+- 用一句通用的「告訴我你想怎麼做」收尾。
+
+## 另請參閱
+
+- Skill：`security-review`
+- Skill：`deployment-patterns`
+- Skill：`e2e-testing`
+- Skill：`tdd-workflow`
+- Skill：`verification-loop`</pre></section><section><h2>英文原文</h2><pre>---
+name: production-audit
+description: Local-evidence production readiness audit for shipped apps, pre-launch reviews, post-merge checks, and &quot;what breaks in prod?&quot; questions without sending repo data to an external audit service. Use when auditing production readiness before launch, after a merge, or when asked what breaks in prod.
+metadata:
+  origin: community
+---
+
+# Production Audit
+
+Use this skill when the user asks whether an application is ready to ship, what
+could break in production, or what must be fixed before a launch. This is a
+maintainer-safe rewrite of the stale community production-audit idea: it keeps
+the useful production-readiness lens and removes unpinned external execution and
+third-party data sharing.
+
+## When to Use
+
+- The user asks &quot;is this production-ready&quot;, &quot;what would break in prod&quot;, &quot;what
+  did we miss&quot;, &quot;audit this repo&quot;, or &quot;ready to ship?&quot;
+- A feature was merged and needs a pre-deploy or post-merge risk pass.
+- A public launch, demo, customer rollout, or investor walkthrough is close.
+- CI is green but the user wants production risk, not only test status.
+- A deployed URL, release branch, PR, or current checkout is available for
+  evidence gathering.
+
+## When Not to Use
+
+- During active implementation when the right lens is line-level secure coding;
+  use `security-review` first.
+- For pure libraries, templates, docs-only repos, or scaffolds unless the user
+  wants packaging/release readiness rather than application readiness.
+- When the user asks for a formal compliance audit. This skill is engineering
+  triage, not legal, financial, medical, or regulatory certification.
+- When the only available evidence is a product idea with no repo, deployment,
+  CI, or runtime surface.
+
+## How It Works
+
+Build the audit from local and user-authorized evidence. Do not run unpinned
+remote code, upload repository contents to third-party services, or call
+external scanners unless the user explicitly approves that specific tool and
+data flow.
+
+Use this order:
+
+1. Establish the release surface.
+2. Read recent changes and current branch state.
+3. Inspect runtime, auth, data, payment, background-job, AI, and deployment
+   boundaries that actually exist in the repo.
+4. Check CI, tests, migrations, environment documentation, and rollback path.
+5. Produce a short ship/block recommendation with specific fixes.
+
+## Evidence Checklist
+
+Start with cheap, local signals:
+
+```text
+git status --short --branch
+git log --oneline --decorate -20
+git diff --stat origin/main...HEAD
+```
+
+Then inspect the project-specific surface:
+
+- Package scripts, CI workflows, release scripts, Docker files, and deployment
+  manifests.
+- API routes, webhooks, auth middleware, background workers, cron jobs, and
+  database migrations.
+- Environment variable documentation and startup checks.
+- Observability hooks, error reporting, logs, health checks, and dashboards.
+- Rollback, seed, migration, and backfill instructions.
+- E2E coverage for the user paths that matter most.
+
+If a deployed URL is in scope, use browser or HTTP checks only against that URL
+and avoid credentialed actions unless the user supplies a safe test account.
+
+## Risk Lenses
+
+### Security And Auth
+
+- Are public routes, API routes, and admin routes clearly separated?
+- Are auth and authorization enforced server-side?
+- Are secrets kept out of client bundles, logs, example output, and checked-in
+  files?
+- Are rate limits, CSRF protections, CORS policy, and upload validation present
+  where the app needs them?
+- Does the AI or agent surface defend against prompt injection, tool abuse, and
+  untrusted content crossing into privileged actions?
+
+### Data Integrity
+
+- Do migrations run forward cleanly and have a rollback or recovery plan?
+- Are destructive migrations, backfills, and data imports staged safely?
+- Do database policies, grants, and service-role boundaries match the app&#x27;s
+  tenancy model?
+- Are retries idempotent for writes, jobs, and webhook handlers?
+
+### Payments And Webhooks
+
+- Are webhook signatures verified before parsing trusted payload fields?
+- Is each payment, subscription, or fulfillment webhook idempotent?
+- Are replay, duplicate delivery, and out-of-order delivery handled?
+- Are test-mode and live-mode credentials separated?
+
+### Operations
+
+- Can the app start from a clean checkout using documented commands?
+- Are required environment variables named, validated, and fail-fast?
+- Is there a health check that proves dependencies are reachable?
+- Are deploy, rollback, and incident-owner paths documented?
+- Are logs useful without leaking secrets or personal data?
+
+### User Experience
+
+- Are the launch-critical paths covered on desktop and mobile?
+- Are forms usable on mobile without input zoom, layout overlap, or blocked
+  submission states?
+- Do loading, empty, error, and permission-denied states tell the user what
+  happened?
+- Is there a support or recovery path when a critical operation fails?
+
+## Scoring
+
+Use scores to force prioritization, not to imply mathematical certainty.
+
+| Band | Score | Meaning |
+| --- | --- | --- |
+| Blocked | 0-49 | Do not ship until the top risks are fixed |
+| Risky | 50-69 | Ship only behind a small rollout or internal beta |
+| Launchable With Caveats | 70-84 | Ship if owners accept the listed risks |
+| Strong | 85-100 | No obvious launch blockers from available evidence |
+
+Cap the score at `69` if any of these are true:
+
+- Authentication or authorization is missing on sensitive data.
+- Payment or fulfillment webhooks are not idempotent.
+- Required migrations cannot be run safely.
+- Secrets are exposed in client bundles, logs, or committed files.
+- There is no rollback path for a high-impact release.
+
+Cap the score at `84` if CI is not green or the launch-critical path was not
+tested end to end.
+
+## Output Format
+
+Lead with one sentence:
+
+```text
+Production audit: 76/100, launchable with caveats, with webhook idempotency and rollback docs as the two risks to fix before public launch.
+```
+
+Then list:
+
+- `Blockers`: must-fix items before deploy.
+- `High-value fixes`: next fixes if the user wants to improve the score.
+- `Evidence checked`: files, commands, CI, deployed URL, or PRs inspected.
+- `Evidence missing`: what would change confidence if provided.
+- `Next action`: one concrete fix or verification step.
+
+Keep strengths short. The user asked for readiness, so the useful answer is the
+remaining risk and the next action.
+
+## Example
+
+User:
+
+```text
+is this ready to ship?
+```
+
+Response:
+
+```text
+Production audit: 68/100, risky, because Stripe webhooks are verified but not idempotent and there is no rollback note for the pending migration.
+
+Blockers:
+- Add idempotency for `checkout.session.completed` before fulfilling orders.
+- Write and test the rollback path for `20260511_add_billing_state.sql`.
+
+High-value fixes:
+- Add a health check that verifies database and payment-provider reachability.
+- Add one E2E path for upgrade, webhook fulfillment, and billing-page refresh.
+
+Evidence checked:
+- `api/stripe/webhook.ts`
+- `db/migrations/20260511_add_billing_state.sql`
+- GitHub Actions run for the release branch
+
+Next action: Want me to patch webhook idempotency first?
+```
+
+## Anti-Patterns
+
+- Running `npx &lt;package&gt;@latest` or a remote scanner as the default audit path.
+- Uploading source, secrets, customer data, or private topology to an external
+  audit service without explicit approval.
+- Producing a score without naming the evidence checked.
+- Treating green CI as production readiness.
+- Ending with a generic &quot;let me know what you want to do.&quot;
+
+## See Also
+
+- Skill: `security-review`
+- Skill: `deployment-patterns`
+- Skill: `e2e-testing`
+- Skill: `tdd-workflow`
+- Skill: `verification-loop`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

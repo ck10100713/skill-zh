@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>compose-multiplatform-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="KMP 專案的 Compose 狀態、導覽、主題與效能模式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>compose-multiplatform-patterns</h1>
+<p class="meta">affaan-m ｜ 設計與前端 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/compose-multiplatform-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">KMP 專案的 Compose 狀態、導覽、主題與效能模式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: compose-multiplatform-patterns
+description: KMP 專案用的 Compose Multiplatform 與 Jetpack Compose 模式：狀態管理、導覽、主題、效能，以及平台專屬的 UI。適用於在 KMP 專案中建構 Compose 或 Jetpack Compose 的 UI、狀態、導覽或主題。
+metadata:
+  origin: ECC
+---
+
+# Compose Multiplatform Patterns
+
+用 Compose Multiplatform 和 Jetpack Compose，在 Android、iOS、Desktop 和 Web 之間建構共用 UI 的模式。涵蓋狀態管理、導覽、主題和效能。
+
+## When to Activate
+
+- 建構 Compose UI（Jetpack Compose 或 Compose Multiplatform）
+- 用 ViewModel 和 Compose state 管理 UI 狀態
+- 在 KMP 或 Android 專案裡實作導覽
+- 設計可重複使用的 composable 和設計系統
+- 最佳化 recomposition 與渲染效能
+
+## State Management
+
+### ViewModel + Single State Object
+
+每個畫面的狀態用單一個 data class。以 `StateFlow` 對外公開，並在 Compose 裡收集：
+
+```kotlin
+data class ItemListState(
+    val items: List&lt;Item&gt; = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val searchQuery: String = &quot;&quot;
+)
+
+class ItemListViewModel(
+    private val getItems: GetItemsUseCase
+) : ViewModel() {
+    private val _state = MutableStateFlow(ItemListState())
+    val state: StateFlow&lt;ItemListState&gt; = _state.asStateFlow()
+
+    fun onSearch(query: String) {
+        _state.update { it.copy(searchQuery = query) }
+        loadItems(query)
+    }
+
+    private fun loadItems(query: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            getItems(query).fold(
+                onSuccess = { items -&gt; _state.update { it.copy(items = items, isLoading = false) } },
+                onFailure = { e -&gt; _state.update { it.copy(error = e.message, isLoading = false) } }
+            )
+        }
+    }
+}
+```
+
+### Collecting State in Compose
+
+```kotlin
+@Composable
+fun ItemListScreen(viewModel: ItemListViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ItemListContent(
+        state = state,
+        onSearch = viewModel::onSearch
+    )
+}
+
+@Composable
+private fun ItemListContent(
+    state: ItemListState,
+    onSearch: (String) -&gt; Unit
+) {
+    // 無狀態的 composable，容易預覽和測試
+}
+```
+
+### Event Sink Pattern
+
+複雜的畫面用 sealed interface 表示事件，不要用多個 callback lambda：
+
+```kotlin
+sealed interface ItemListEvent {
+    data class Search(val query: String) : ItemListEvent
+    data class Delete(val itemId: String) : ItemListEvent
+    data object Refresh : ItemListEvent
+}
+
+// 在 ViewModel 裡
+fun onEvent(event: ItemListEvent) {
+    when (event) {
+        is ItemListEvent.Search -&gt; onSearch(event.query)
+        is ItemListEvent.Delete -&gt; deleteItem(event.itemId)
+        is ItemListEvent.Refresh -&gt; loadItems(_state.value.searchQuery)
+    }
+}
+
+// 在 Composable 裡，用單一 lambda 取代很多個
+ItemListContent(
+    state = state,
+    onEvent = viewModel::onEvent
+)
+```
+
+## Navigation
+
+### Type-Safe Navigation (Compose Navigation 2.8+)
+
+把路由定義成 `@Serializable` 物件：
+
+```kotlin
+@Serializable data object HomeRoute
+@Serializable data class DetailRoute(val id: String)
+@Serializable data object SettingsRoute
+
+@Composable
+fun AppNavHost(navController: NavHostController = rememberNavController()) {
+    NavHost(navController, startDestination = HomeRoute) {
+        composable&lt;HomeRoute&gt; {
+            HomeScreen(onNavigateToDetail = { id -&gt; navController.navigate(DetailRoute(id)) })
+        }
+        composable&lt;DetailRoute&gt; { backStackEntry -&gt;
+            val route = backStackEntry.toRoute&lt;DetailRoute&gt;()
+            DetailScreen(id = route.id)
+        }
+        composable&lt;SettingsRoute&gt; { SettingsScreen() }
+    }
+}
+```
+
+### Dialog and Bottom Sheet Navigation
+
+用 `dialog()` 和 overlay 的模式，不要用命令式的 show/hide：
+
+```kotlin
+NavHost(navController, startDestination = HomeRoute) {
+    composable&lt;HomeRoute&gt; { /* ... */ }
+    dialog&lt;ConfirmDeleteRoute&gt; { backStackEntry -&gt;
+        val route = backStackEntry.toRoute&lt;ConfirmDeleteRoute&gt;()
+        ConfirmDeleteDialog(
+            itemId = route.itemId,
+            onConfirm = { navController.popBackStack() },
+            onDismiss = { navController.popBackStack() }
+        )
+    }
+}
+```
+
+## Composable Design
+
+### Slot-Based APIs
+
+設計 composable 時用 slot 參數來保留彈性：
+
+```kotlin
+@Composable
+fun AppCard(
+    modifier: Modifier = Modifier,
+    header: @Composable () -&gt; Unit = {},
+    content: @Composable ColumnScope.() -&gt; Unit,
+    actions: @Composable RowScope.() -&gt; Unit = {}
+) {
+    Card(modifier = modifier) {
+        Column {
+            header()
+            Column(content = content)
+            Row(horizontalArrangement = Arrangement.End, content = actions)
+        }
+    }
+}
+```
+
+### Modifier Ordering
+
+Modifier 的順序很重要，照這個順序套用：
+
+```kotlin
+Text(
+    text = &quot;Hello&quot;,
+    modifier = Modifier
+        .padding(16.dp)          // 1. Layout (padding, size)
+        .clip(RoundedCornerShape(8.dp))  // 2. Shape
+        .background(Color.White) // 3. Drawing (background, border)
+        .clickable { }           // 4. Interaction
+)
+```
+
+## KMP Platform-Specific UI
+
+### expect/actual for Platform Composables
+
+```kotlin
+// commonMain
+@Composable
+expect fun PlatformStatusBar(darkIcons: Boolean)
+
+// androidMain
+@Composable
+actual fun PlatformStatusBar(darkIcons: Boolean) {
+    val systemUiController = rememberSystemUiController()
+    SideEffect { systemUiController.setStatusBarColor(Color.Transparent, darkIcons) }
+}
+
+// iosMain
+@Composable
+actual fun PlatformStatusBar(darkIcons: Boolean) {
+    // iOS 透過 UIKit interop 或 Info.plist 處理這個
+}
+```
+
+## Performance
+
+### Stable Types for Skippable Recomposition
+
+當所有屬性都是 stable 時，把類別標記成 `@Stable` 或 `@Immutable`：
+
+```kotlin
+@Immutable
+data class ItemUiModel(
+    val id: String,
+    val title: String,
+    val description: String,
+    val progress: Float
+)
+```
+
+### Use `key()` and Lazy Lists Correctly
+
+```kotlin
+LazyColumn {
+    items(
+        items = items,
+        key = { it.id }  // 穩定的 key 才能讓項目重複使用，也才能有動畫
+    ) { item -&gt;
+        ItemRow(item = item)
+    }
+}
+```
+
+### Defer Reads with `derivedStateOf`
+
+```kotlin
+val listState = rememberLazyListState()
+val showScrollToTop by remember {
+    derivedStateOf { listState.firstVisibleItemIndex &gt; 5 }
+}
+```
+
+### Avoid Allocations in Recomposition
+
+```kotlin
+// BAD — 每次 recomposition 都產生新的 lambda 和 list
+items.filter { it.isActive }.forEach { ActiveItem(it, onClick = { handle(it) }) }
+
+// GOOD — 幫每個項目加 key，讓 callback 保持綁在正確的那一列
+val activeItems = remember(items) { items.filter { it.isActive } }
+activeItems.forEach { item -&gt;
+    key(item.id) {
+        ActiveItem(item, onClick = { handle(item) })
+    }
+}
+```
+
+## Theming
+
+### Material 3 Dynamic Theming
+
+```kotlin
+@Composable
+fun AppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
+    content: @Composable () -&gt; Unit
+) {
+    val colorScheme = when {
+        dynamicColor &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.S -&gt; {
+            if (darkTheme) dynamicDarkColorScheme(LocalContext.current)
+            else dynamicLightColorScheme(LocalContext.current)
+        }
+        darkTheme -&gt; darkColorScheme()
+        else -&gt; lightColorScheme()
+    }
+
+    MaterialTheme(colorScheme = colorScheme, content = content)
+}
+```
+
+## Anti-Patterns to Avoid
+
+- 在 ViewModel 裡用 `mutableStateOf`，其實搭配 `collectAsStateWithLifecycle` 的 `MutableStateFlow` 對生命週期更安全
+- 把 `NavController` 一路傳進很深的 composable，要改傳 lambda callback
+- 在 `@Composable` 函式裡做大量運算，要搬到 ViewModel 或 `remember {}`
+- 用 `LaunchedEffect(Unit)` 取代 ViewModel 的 init，在某些設定下，它會在設定變更時重新執行
+- 在 composable 參數裡建立新的物件實例，會造成不必要的 recomposition
+
+## References
+
+模組結構與分層請見 skill：`android-clean-architecture`。
+coroutine 和 Flow 的模式請見 skill：`kotlin-coroutines-flows`。</pre></section><section><h2>英文原文</h2><pre>---
+name: compose-multiplatform-patterns
+description: Compose Multiplatform and Jetpack Compose patterns for KMP projects — state management, navigation, theming, performance, and platform-specific UI. Use when building Compose or Jetpack Compose UI, state, navigation, or theming in a KMP project.
+metadata:
+  origin: ECC
+---
+
+# Compose Multiplatform Patterns
+
+Patterns for building shared UI across Android, iOS, Desktop, and Web using Compose Multiplatform and Jetpack Compose. Covers state management, navigation, theming, and performance.
+
+## When to Activate
+
+- Building Compose UI (Jetpack Compose or Compose Multiplatform)
+- Managing UI state with ViewModels and Compose state
+- Implementing navigation in KMP or Android projects
+- Designing reusable composables and design systems
+- Optimizing recomposition and rendering performance
+
+## State Management
+
+### ViewModel + Single State Object
+
+Use a single data class for screen state. Expose it as `StateFlow` and collect in Compose:
+
+```kotlin
+data class ItemListState(
+    val items: List&lt;Item&gt; = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val searchQuery: String = &quot;&quot;
+)
+
+class ItemListViewModel(
+    private val getItems: GetItemsUseCase
+) : ViewModel() {
+    private val _state = MutableStateFlow(ItemListState())
+    val state: StateFlow&lt;ItemListState&gt; = _state.asStateFlow()
+
+    fun onSearch(query: String) {
+        _state.update { it.copy(searchQuery = query) }
+        loadItems(query)
+    }
+
+    private fun loadItems(query: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            getItems(query).fold(
+                onSuccess = { items -&gt; _state.update { it.copy(items = items, isLoading = false) } },
+                onFailure = { e -&gt; _state.update { it.copy(error = e.message, isLoading = false) } }
+            )
+        }
+    }
+}
+```
+
+### Collecting State in Compose
+
+```kotlin
+@Composable
+fun ItemListScreen(viewModel: ItemListViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ItemListContent(
+        state = state,
+        onSearch = viewModel::onSearch
+    )
+}
+
+@Composable
+private fun ItemListContent(
+    state: ItemListState,
+    onSearch: (String) -&gt; Unit
+) {
+    // Stateless composable — easy to preview and test
+}
+```
+
+### Event Sink Pattern
+
+For complex screens, use a sealed interface for events instead of multiple callback lambdas:
+
+```kotlin
+sealed interface ItemListEvent {
+    data class Search(val query: String) : ItemListEvent
+    data class Delete(val itemId: String) : ItemListEvent
+    data object Refresh : ItemListEvent
+}
+
+// In ViewModel
+fun onEvent(event: ItemListEvent) {
+    when (event) {
+        is ItemListEvent.Search -&gt; onSearch(event.query)
+        is ItemListEvent.Delete -&gt; deleteItem(event.itemId)
+        is ItemListEvent.Refresh -&gt; loadItems(_state.value.searchQuery)
+    }
+}
+
+// In Composable — single lambda instead of many
+ItemListContent(
+    state = state,
+    onEvent = viewModel::onEvent
+)
+```
+
+## Navigation
+
+### Type-Safe Navigation (Compose Navigation 2.8+)
+
+Define routes as `@Serializable` objects:
+
+```kotlin
+@Serializable data object HomeRoute
+@Serializable data class DetailRoute(val id: String)
+@Serializable data object SettingsRoute
+
+@Composable
+fun AppNavHost(navController: NavHostController = rememberNavController()) {
+    NavHost(navController, startDestination = HomeRoute) {
+        composable&lt;HomeRoute&gt; {
+            HomeScreen(onNavigateToDetail = { id -&gt; navController.navigate(DetailRoute(id)) })
+        }
+        composable&lt;DetailRoute&gt; { backStackEntry -&gt;
+            val route = backStackEntry.toRoute&lt;DetailRoute&gt;()
+            DetailScreen(id = route.id)
+        }
+        composable&lt;SettingsRoute&gt; { SettingsScreen() }
+    }
+}
+```
+
+### Dialog and Bottom Sheet Navigation
+
+Use `dialog()` and overlay patterns instead of imperative show/hide:
+
+```kotlin
+NavHost(navController, startDestination = HomeRoute) {
+    composable&lt;HomeRoute&gt; { /* ... */ }
+    dialog&lt;ConfirmDeleteRoute&gt; { backStackEntry -&gt;
+        val route = backStackEntry.toRoute&lt;ConfirmDeleteRoute&gt;()
+        ConfirmDeleteDialog(
+            itemId = route.itemId,
+            onConfirm = { navController.popBackStack() },
+            onDismiss = { navController.popBackStack() }
+        )
+    }
+}
+```
+
+## Composable Design
+
+### Slot-Based APIs
+
+Design composables with slot parameters for flexibility:
+
+```kotlin
+@Composable
+fun AppCard(
+    modifier: Modifier = Modifier,
+    header: @Composable () -&gt; Unit = {},
+    content: @Composable ColumnScope.() -&gt; Unit,
+    actions: @Composable RowScope.() -&gt; Unit = {}
+) {
+    Card(modifier = modifier) {
+        Column {
+            header()
+            Column(content = content)
+            Row(horizontalArrangement = Arrangement.End, content = actions)
+        }
+    }
+}
+```
+
+### Modifier Ordering
+
+Modifier order matters — apply in this sequence:
+
+```kotlin
+Text(
+    text = &quot;Hello&quot;,
+    modifier = Modifier
+        .padding(16.dp)          // 1. Layout (padding, size)
+        .clip(RoundedCornerShape(8.dp))  // 2. Shape
+        .background(Color.White) // 3. Drawing (background, border)
+        .clickable { }           // 4. Interaction
+)
+```
+
+## KMP Platform-Specific UI
+
+### expect/actual for Platform Composables
+
+```kotlin
+// commonMain
+@Composable
+expect fun PlatformStatusBar(darkIcons: Boolean)
+
+// androidMain
+@Composable
+actual fun PlatformStatusBar(darkIcons: Boolean) {
+    val systemUiController = rememberSystemUiController()
+    SideEffect { systemUiController.setStatusBarColor(Color.Transparent, darkIcons) }
+}
+
+// iosMain
+@Composable
+actual fun PlatformStatusBar(darkIcons: Boolean) {
+    // iOS handles this via UIKit interop or Info.plist
+}
+```
+
+## Performance
+
+### Stable Types for Skippable Recomposition
+
+Mark classes as `@Stable` or `@Immutable` when all properties are stable:
+
+```kotlin
+@Immutable
+data class ItemUiModel(
+    val id: String,
+    val title: String,
+    val description: String,
+    val progress: Float
+)
+```
+
+### Use `key()` and Lazy Lists Correctly
+
+```kotlin
+LazyColumn {
+    items(
+        items = items,
+        key = { it.id }  // Stable keys enable item reuse and animations
+    ) { item -&gt;
+        ItemRow(item = item)
+    }
+}
+```
+
+### Defer Reads with `derivedStateOf`
+
+```kotlin
+val listState = rememberLazyListState()
+val showScrollToTop by remember {
+    derivedStateOf { listState.firstVisibleItemIndex &gt; 5 }
+}
+```
+
+### Avoid Allocations in Recomposition
+
+```kotlin
+// BAD — new lambda and list every recomposition
+items.filter { it.isActive }.forEach { ActiveItem(it, onClick = { handle(it) }) }
+
+// GOOD — key each item so callbacks stay attached to the right row
+val activeItems = remember(items) { items.filter { it.isActive } }
+activeItems.forEach { item -&gt;
+    key(item.id) {
+        ActiveItem(item, onClick = { handle(item) })
+    }
+}
+```
+
+## Theming
+
+### Material 3 Dynamic Theming
+
+```kotlin
+@Composable
+fun AppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
+    content: @Composable () -&gt; Unit
+) {
+    val colorScheme = when {
+        dynamicColor &amp;&amp; Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.S -&gt; {
+            if (darkTheme) dynamicDarkColorScheme(LocalContext.current)
+            else dynamicLightColorScheme(LocalContext.current)
+        }
+        darkTheme -&gt; darkColorScheme()
+        else -&gt; lightColorScheme()
+    }
+
+    MaterialTheme(colorScheme = colorScheme, content = content)
+}
+```
+
+## Anti-Patterns to Avoid
+
+- Using `mutableStateOf` in ViewModels when `MutableStateFlow` with `collectAsStateWithLifecycle` is safer for lifecycle
+- Passing `NavController` deep into composables — pass lambda callbacks instead
+- Heavy computation inside `@Composable` functions — move to ViewModel or `remember {}`
+- Using `LaunchedEffect(Unit)` as a substitute for ViewModel init — it re-runs on configuration change in some setups
+- Creating new object instances in composable parameters — causes unnecessary recomposition
+
+## References
+
+See skill: `android-clean-architecture` for module structure and layering.
+See skill: `kotlin-coroutines-flows` for coroutine and Flow patterns.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

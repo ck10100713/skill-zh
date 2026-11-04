@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>csharp-testing｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 xUnit、FluentAssertions、NSubstitute 寫 .NET 單元與整合測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>csharp-testing</h1>
+<p class="meta">affaan-m ｜ 測試與驗證 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/csharp-testing/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 xUnit、FluentAssertions、NSubstitute 寫 .NET 單元與整合測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: csharp-testing
+description: C# 與 .NET 的測試模式，涵蓋 xUnit、FluentAssertions、mocking、整合測試，以及測試組織的最佳實務。在 C# / .NET 專案裡撰寫或審查 xUnit 測試、mock 或整合測試時使用。
+metadata:
+  origin: ECC
+---
+
+# C# 測試模式
+
+用 xUnit、FluentAssertions 和現代測試實務，為 .NET 應用程式整理的完整測試模式。
+
+## 何時啟用
+
+- 為 C# 程式碼撰寫新的測試
+- 審查測試品質和涵蓋率
+- 為 .NET 專案建立測試基礎設施
+- 除錯 flaky 或很慢的測試
+
+## 測試框架組合
+
+| 工具 | 用途 |
+|---|---|
+| **xUnit** | 測試框架（.NET 首選） |
+| **FluentAssertions** | 好讀的 assertion 語法 |
+| **NSubstitute** 或 **Moq** | mock 依賴 |
+| **Testcontainers** | 整合測試裡使用真實的基礎設施 |
+| **WebApplicationFactory** | ASP.NET Core 整合測試 |
+| **Bogus** | 產生擬真的測試資料 |
+
+## 單元測試結構
+
+### Arrange-Act-Assert
+
+```csharp
+public sealed class OrderServiceTests
+{
+    private readonly IOrderRepository _repository = Substitute.For&lt;IOrderRepository&gt;();
+    private readonly ILogger&lt;OrderService&gt; _logger = Substitute.For&lt;ILogger&lt;OrderService&gt;&gt;();
+    private readonly OrderService _sut;
+
+    public OrderServiceTests()
+    {
+        _sut = new OrderService(_repository, _logger);
+    }
+
+    [Fact]
+    public async Task PlaceOrderAsync_ReturnsSuccess_WhenRequestIsValid()
+    {
+        // Arrange
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-123&quot;,
+            Items = [new OrderItem(&quot;SKU-001&quot;, 2, 29.99m)]
+        };
+
+        // Act
+        var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value!.CustomerId.Should().Be(&quot;cust-123&quot;);
+    }
+
+    [Fact]
+    public async Task PlaceOrderAsync_ReturnsFailure_WhenNoItems()
+    {
+        // Arrange
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-123&quot;,
+            Items = []
+        };
+
+        // Act
+        var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().Contain(&quot;at least one item&quot;);
+    }
+}
+```
+
+### 用 Theory 寫參數化測試
+
+```csharp
+[Theory]
+[InlineData(&quot;&quot;, false)]
+[InlineData(&quot;a&quot;, false)]
+[InlineData(&quot;ab@c.d&quot;, false)]
+[InlineData(&quot;user@example.com&quot;, true)]
+[InlineData(&quot;user+tag@example.co.uk&quot;, true)]
+public void IsValidEmail_ReturnsExpected(string email, bool expected)
+{
+    EmailValidator.IsValid(email).Should().Be(expected);
+}
+
+[Theory]
+[MemberData(nameof(InvalidOrderCases))]
+public async Task PlaceOrderAsync_RejectsInvalidOrders(CreateOrderRequest request, string expectedError)
+{
+    var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Contain(expectedError);
+}
+
+public static TheoryData&lt;CreateOrderRequest, string&gt; InvalidOrderCases =&gt; new()
+{
+    { new() { CustomerId = &quot;&quot;, Items = [ValidItem()] }, &quot;CustomerId&quot; },
+    { new() { CustomerId = &quot;c1&quot;, Items = [] }, &quot;at least one item&quot; },
+    { new() { CustomerId = &quot;c1&quot;, Items = [new(&quot;&quot;, 1, 10m)] }, &quot;SKU&quot; },
+};
+```
+
+## 用 NSubstitute 做 Mocking
+
+```csharp
+[Fact]
+public async Task GetOrderAsync_ReturnsNull_WhenNotFound()
+{
+    // Arrange
+    var orderId = Guid.NewGuid();
+    _repository.FindByIdAsync(orderId, Arg.Any&lt;CancellationToken&gt;())
+        .Returns((Order?)null);
+
+    // Act
+    var result = await _sut.GetOrderAsync(orderId, CancellationToken.None);
+
+    // Assert
+    result.Should().BeNull();
+}
+
+[Fact]
+public async Task PlaceOrderAsync_PersistsOrder()
+{
+    // Arrange
+    var request = ValidOrderRequest();
+
+    // Act
+    await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+    // Assert — verify the repository was called
+    await _repository.Received(1).AddAsync(
+        Arg.Is&lt;Order&gt;(o =&gt; o.CustomerId == request.CustomerId),
+        Arg.Any&lt;CancellationToken&gt;());
+}
+```
+
+## ASP.NET Core 整合測試
+
+### WebApplicationFactory 設定
+
+```csharp
+public sealed class OrderApiTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly HttpClient _client;
+
+    public OrderApiTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        _client = factory.WithWebHostBuilder(builder =&gt;
+        {
+            builder.ConfigureServices(services =&gt;
+            {
+                // Replace real DB with in-memory for tests
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;();
+                services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;));
+            });
+        }).CreateClient();
+    }
+
+    [Fact]
+    public async Task GetOrder_Returns404_WhenNotFound()
+    {
+        var response = await _client.GetAsync($&quot;/api/orders/{Guid.NewGuid()}&quot;);
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task CreateOrder_Returns201_WithValidRequest()
+    {
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-1&quot;,
+            Items = [new(&quot;SKU-001&quot;, 1, 19.99m)]
+        };
+
+        var response = await _client.PostAsJsonAsync(&quot;/api/orders&quot;, request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.Headers.Location.Should().NotBeNull();
+    }
+}
+```
+
+### 用 Testcontainers 測試
+
+```csharp
+public sealed class PostgresOrderRepositoryTests : IAsyncLifetime
+{
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+        .WithImage(&quot;postgres:16-alpine&quot;)
+        .Build();
+
+    private AppDbContext _db = null!;
+
+    public async Task InitializeAsync()
+    {
+        await _postgres.StartAsync();
+        var options = new DbContextOptionsBuilder&lt;AppDbContext&gt;()
+            .UseNpgsql(_postgres.GetConnectionString())
+            .Options;
+        _db = new AppDbContext(options);
+        await _db.Database.MigrateAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _db.DisposeAsync();
+        await _postgres.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task AddAsync_PersistsOrder()
+    {
+        var repo = new SqlOrderRepository(_db);
+        var order = Order.Create(&quot;cust-1&quot;, [new OrderItem(&quot;SKU-001&quot;, 2, 10m)]);
+
+        await repo.AddAsync(order, CancellationToken.None);
+
+        var found = await repo.FindByIdAsync(order.Id, CancellationToken.None);
+        found.Should().NotBeNull();
+        found!.Items.Should().HaveCount(1);
+    }
+}
+```
+
+## 測試組織
+
+```
+tests/
+  MyApp.UnitTests/
+    Services/
+      OrderServiceTests.cs
+      PaymentServiceTests.cs
+    Validators/
+      EmailValidatorTests.cs
+  MyApp.IntegrationTests/
+    Api/
+      OrderApiTests.cs
+    Repositories/
+      OrderRepositoryTests.cs
+  MyApp.TestHelpers/
+    Builders/
+      OrderBuilder.cs
+    Fixtures/
+      DatabaseFixture.cs
+```
+
+## 測試資料 Builder
+
+```csharp
+public sealed class OrderBuilder
+{
+    private string _customerId = &quot;cust-default&quot;;
+    private readonly List&lt;OrderItem&gt; _items = [new(&quot;SKU-001&quot;, 1, 10m)];
+
+    public OrderBuilder WithCustomer(string customerId)
+    {
+        _customerId = customerId;
+        return this;
+    }
+
+    public OrderBuilder WithItem(string sku, int quantity, decimal price)
+    {
+        _items.Add(new OrderItem(sku, quantity, price));
+        return this;
+    }
+
+    public Order Build() =&gt; Order.Create(_customerId, _items);
+}
+
+// Usage in tests
+var order = new OrderBuilder()
+    .WithCustomer(&quot;cust-vip&quot;)
+    .WithItem(&quot;SKU-PREMIUM&quot;, 3, 99.99m)
+    .Build();
+```
+
+## 常見反模式
+
+| 反模式 | 修正方式 |
+|---|---|
+| 測試實作細節 | 測試行為和結果 |
+| 共用的可變測試狀態 | 每個測試用全新的實例（xUnit 透過建構函式就做到了） |
+| 在 async 測試裡用 `Thread.Sleep` | 用帶 timeout 的 `Task.Delay`，或 polling helper |
+| 對 `ToString()` 的輸出做 assertion | 對有型別的屬性做 assertion |
+| 每個測試一個巨大的 assertion | 每個測試一個邏輯上的 assertion |
+| 測試名稱描述實作 | 用行為命名：`Method_ExpectedResult_WhenCondition` |
+| 忽略 `CancellationToken` | 一律傳入並驗證取消行為 |
+
+## 執行測試
+
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test --collect:&quot;XPlat Code Coverage&quot;
+
+# Run specific project
+dotnet test tests/MyApp.UnitTests/
+
+# Filter by test name
+dotnet test --filter &quot;FullyQualifiedName~OrderService&quot;
+
+# Watch mode during development
+dotnet watch test --project tests/MyApp.UnitTests/
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: csharp-testing
+description: C# and .NET testing patterns with xUnit, FluentAssertions, mocking, integration tests, and test organization best practices. Use when writing or reviewing xUnit tests, mocks, or integration tests in a C# / .NET project.
+metadata:
+  origin: ECC
+---
+
+# C# Testing Patterns
+
+Comprehensive testing patterns for .NET applications using xUnit, FluentAssertions, and modern testing practices.
+
+## When to Activate
+
+- Writing new tests for C# code
+- Reviewing test quality and coverage
+- Setting up test infrastructure for .NET projects
+- Debugging flaky or slow tests
+
+## Test Framework Stack
+
+| Tool | Purpose |
+|---|---|
+| **xUnit** | Test framework (preferred for .NET) |
+| **FluentAssertions** | Readable assertion syntax |
+| **NSubstitute** or **Moq** | Mocking dependencies |
+| **Testcontainers** | Real infrastructure in integration tests |
+| **WebApplicationFactory** | ASP.NET Core integration tests |
+| **Bogus** | Realistic test data generation |
+
+## Unit Test Structure
+
+### Arrange-Act-Assert
+
+```csharp
+public sealed class OrderServiceTests
+{
+    private readonly IOrderRepository _repository = Substitute.For&lt;IOrderRepository&gt;();
+    private readonly ILogger&lt;OrderService&gt; _logger = Substitute.For&lt;ILogger&lt;OrderService&gt;&gt;();
+    private readonly OrderService _sut;
+
+    public OrderServiceTests()
+    {
+        _sut = new OrderService(_repository, _logger);
+    }
+
+    [Fact]
+    public async Task PlaceOrderAsync_ReturnsSuccess_WhenRequestIsValid()
+    {
+        // Arrange
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-123&quot;,
+            Items = [new OrderItem(&quot;SKU-001&quot;, 2, 29.99m)]
+        };
+
+        // Act
+        var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value!.CustomerId.Should().Be(&quot;cust-123&quot;);
+    }
+
+    [Fact]
+    public async Task PlaceOrderAsync_ReturnsFailure_WhenNoItems()
+    {
+        // Arrange
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-123&quot;,
+            Items = []
+        };
+
+        // Act
+        var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().Contain(&quot;at least one item&quot;);
+    }
+}
+```
+
+### Parameterized Tests with Theory
+
+```csharp
+[Theory]
+[InlineData(&quot;&quot;, false)]
+[InlineData(&quot;a&quot;, false)]
+[InlineData(&quot;ab@c.d&quot;, false)]
+[InlineData(&quot;user@example.com&quot;, true)]
+[InlineData(&quot;user+tag@example.co.uk&quot;, true)]
+public void IsValidEmail_ReturnsExpected(string email, bool expected)
+{
+    EmailValidator.IsValid(email).Should().Be(expected);
+}
+
+[Theory]
+[MemberData(nameof(InvalidOrderCases))]
+public async Task PlaceOrderAsync_RejectsInvalidOrders(CreateOrderRequest request, string expectedError)
+{
+    var result = await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+    result.IsSuccess.Should().BeFalse();
+    result.Error.Should().Contain(expectedError);
+}
+
+public static TheoryData&lt;CreateOrderRequest, string&gt; InvalidOrderCases =&gt; new()
+{
+    { new() { CustomerId = &quot;&quot;, Items = [ValidItem()] }, &quot;CustomerId&quot; },
+    { new() { CustomerId = &quot;c1&quot;, Items = [] }, &quot;at least one item&quot; },
+    { new() { CustomerId = &quot;c1&quot;, Items = [new(&quot;&quot;, 1, 10m)] }, &quot;SKU&quot; },
+};
+```
+
+## Mocking with NSubstitute
+
+```csharp
+[Fact]
+public async Task GetOrderAsync_ReturnsNull_WhenNotFound()
+{
+    // Arrange
+    var orderId = Guid.NewGuid();
+    _repository.FindByIdAsync(orderId, Arg.Any&lt;CancellationToken&gt;())
+        .Returns((Order?)null);
+
+    // Act
+    var result = await _sut.GetOrderAsync(orderId, CancellationToken.None);
+
+    // Assert
+    result.Should().BeNull();
+}
+
+[Fact]
+public async Task PlaceOrderAsync_PersistsOrder()
+{
+    // Arrange
+    var request = ValidOrderRequest();
+
+    // Act
+    await _sut.PlaceOrderAsync(request, CancellationToken.None);
+
+    // Assert — verify the repository was called
+    await _repository.Received(1).AddAsync(
+        Arg.Is&lt;Order&gt;(o =&gt; o.CustomerId == request.CustomerId),
+        Arg.Any&lt;CancellationToken&gt;());
+}
+```
+
+## ASP.NET Core Integration Tests
+
+### WebApplicationFactory Setup
+
+```csharp
+public sealed class OrderApiTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly HttpClient _client;
+
+    public OrderApiTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        _client = factory.WithWebHostBuilder(builder =&gt;
+        {
+            builder.ConfigureServices(services =&gt;
+            {
+                // Replace real DB with in-memory for tests
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;();
+                services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;));
+            });
+        }).CreateClient();
+    }
+
+    [Fact]
+    public async Task GetOrder_Returns404_WhenNotFound()
+    {
+        var response = await _client.GetAsync($&quot;/api/orders/{Guid.NewGuid()}&quot;);
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task CreateOrder_Returns201_WithValidRequest()
+    {
+        var request = new CreateOrderRequest
+        {
+            CustomerId = &quot;cust-1&quot;,
+            Items = [new(&quot;SKU-001&quot;, 1, 19.99m)]
+        };
+
+        var response = await _client.PostAsJsonAsync(&quot;/api/orders&quot;, request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.Headers.Location.Should().NotBeNull();
+    }
+}
+```
+
+### Testing with Testcontainers
+
+```csharp
+public sealed class PostgresOrderRepositoryTests : IAsyncLifetime
+{
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
+        .WithImage(&quot;postgres:16-alpine&quot;)
+        .Build();
+
+    private AppDbContext _db = null!;
+
+    public async Task InitializeAsync()
+    {
+        await _postgres.StartAsync();
+        var options = new DbContextOptionsBuilder&lt;AppDbContext&gt;()
+            .UseNpgsql(_postgres.GetConnectionString())
+            .Options;
+        _db = new AppDbContext(options);
+        await _db.Database.MigrateAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _db.DisposeAsync();
+        await _postgres.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task AddAsync_PersistsOrder()
+    {
+        var repo = new SqlOrderRepository(_db);
+        var order = Order.Create(&quot;cust-1&quot;, [new OrderItem(&quot;SKU-001&quot;, 2, 10m)]);
+
+        await repo.AddAsync(order, CancellationToken.None);
+
+        var found = await repo.FindByIdAsync(order.Id, CancellationToken.None);
+        found.Should().NotBeNull();
+        found!.Items.Should().HaveCount(1);
+    }
+}
+```
+
+## Test Organization
+
+```
+tests/
+  MyApp.UnitTests/
+    Services/
+      OrderServiceTests.cs
+      PaymentServiceTests.cs
+    Validators/
+      EmailValidatorTests.cs
+  MyApp.IntegrationTests/
+    Api/
+      OrderApiTests.cs
+    Repositories/
+      OrderRepositoryTests.cs
+  MyApp.TestHelpers/
+    Builders/
+      OrderBuilder.cs
+    Fixtures/
+      DatabaseFixture.cs
+```
+
+## Test Data Builders
+
+```csharp
+public sealed class OrderBuilder
+{
+    private string _customerId = &quot;cust-default&quot;;
+    private readonly List&lt;OrderItem&gt; _items = [new(&quot;SKU-001&quot;, 1, 10m)];
+
+    public OrderBuilder WithCustomer(string customerId)
+    {
+        _customerId = customerId;
+        return this;
+    }
+
+    public OrderBuilder WithItem(string sku, int quantity, decimal price)
+    {
+        _items.Add(new OrderItem(sku, quantity, price));
+        return this;
+    }
+
+    public Order Build() =&gt; Order.Create(_customerId, _items);
+}
+
+// Usage in tests
+var order = new OrderBuilder()
+    .WithCustomer(&quot;cust-vip&quot;)
+    .WithItem(&quot;SKU-PREMIUM&quot;, 3, 99.99m)
+    .Build();
+```
+
+## Common Anti-Patterns
+
+| Anti-Pattern | Fix |
+|---|---|
+| Testing implementation details | Test behavior and outcomes |
+| Shared mutable test state | Fresh instance per test (xUnit does this via constructors) |
+| `Thread.Sleep` in async tests | Use `Task.Delay` with timeout, or polling helpers |
+| Asserting on `ToString()` output | Assert on typed properties |
+| One giant assertion per test | One logical assertion per test |
+| Test names describing implementation | Name by behavior: `Method_ExpectedResult_WhenCondition` |
+| Ignoring `CancellationToken` | Always pass and verify cancellation |
+
+## Running Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test --collect:&quot;XPlat Code Coverage&quot;
+
+# Run specific project
+dotnet test tests/MyApp.UnitTests/
+
+# Filter by test name
+dotnet test --filter &quot;FullyQualifiedName~OrderService&quot;
+
+# Watch mode during development
+dotnet watch test --project tests/MyApp.UnitTests/
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

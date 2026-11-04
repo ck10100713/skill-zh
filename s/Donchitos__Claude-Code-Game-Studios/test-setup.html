@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>test-setup｜Skill 寫法圖鑑</title>
+<meta name="description" content="一次建好測試框架、tests/ 目錄與 CI workflow 的骨架">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>test-setup</h1>
+<p class="meta">Donchitos ｜ 測試與驗證 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/test-setup/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">一次建好測試框架、tests/ 目錄與 CI workflow 的骨架</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: test-setup
+description: &quot;建立測試框架與 CI 的骨架：tests/ 目錄、引擎測試執行器、GitHub Actions workflow。第一個 sprint 之前做一次就好。&quot;
+argument-hint: &quot;[force]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(grep -q &#x27;com.unity.test-framework&#x27; Packages/manifest.json), Bash(bash &quot;*/.claude/skills/test-setup/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow,qa.level`
+
+**Automation mode**：解析 `modes.automation`（`project.local.yaml` →
+`project.yaml` → 預設 `collaborative`）。每一次 `AskUserQuestion` 呼叫和每一次檔案寫入，都要遵守 `.claude/docs/automation-modes.md`
+（collaborative 一律要問 · guided 只問重大的 · autonomous 記錄後直接往下走；
+屬於 `automation_always_ask` 類別的一律要問）。
+
+# Test Setup
+
+這個 skill 為專案建立自動化測試的基礎設施骨架。它會偵測設定好的引擎、產生對應的測試執行器設定、建立標準的目錄結構，並把 CI/CD 接好，讓每次 push 都會跑測試。
+
+在 Technical Setup 階段、任何實作開始之前，跑一次就好。在 sprint 開始時裝好測試框架，要花 30 分鐘。拖到第四個 sprint 才裝，要花 3 個 sprint。
+
+**輸出：** `tests/` 目錄結構 + `.github/workflows/tests.yml`
+
+---
+
+## Phase 1: Detect Engine and Existing State
+
+**現在就讀 `references/1-detect.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Phase 2: Present Plan
+
+**現在就讀 `references/2-plan.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Phase 3: Create Directory Structure
+
+**現在就讀 `references/3-directories.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Phase 4: Create CI/CD Workflow
+
+**現在就讀 `references/4-ci.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Phase 5: Create Smoke Test Seed
+
+**現在就讀 `references/5-smoke-seed.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Phase 6: Post-Setup Summary
+
+**現在就讀 `references/6-summary.md` 並照著做**：這個 phase 的步驟在那個檔案裡，不在這裡。如果對話在這個 phase 期間被壓縮或恢復，要再讀一次。
+
+## Collaborative Protocol
+
+- **絕對不要覆蓋既有的測試檔案**：只建立缺少的檔案。如果測試執行器的檔案已經存在，就保持原樣。
+- **建立檔案之前一定要先問**：Phase 2 需要明確核准。
+- **引擎偵測沒得商量**：如果沒有設定引擎，就停下來並導向 `/setup-engine`。不要用猜的。
+- **`force` 旗標會跳過「已經存在」的提前結束，但絕對不會覆蓋。** 它的意思是「即使目錄已經存在，也把缺少的檔案建起來」。
+- 對 Unity 的 CI，要註明 `UNITY_LICENSE` secret 必須手動設定。不要嘗試把授權管理自動化。</pre></section><section><h2>英文原文</h2><pre>---
+name: test-setup
+description: &quot;Scaffold the test framework and CI — tests/ directory, engine test runner, GitHub Actions workflow. Once, before the first sprint.&quot;
+argument-hint: &quot;[force]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(grep -q &#x27;com.unity.test-framework&#x27; Packages/manifest.json), Bash(bash &quot;*/.claude/skills/test-setup/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation,workflow,qa.level`
+
+**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
+`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+every file write follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+# Test Setup
+
+This skill scaffolds the automated testing infrastructure for the project.
+It detects the configured engine, generates the appropriate test runner
+configuration, creates the standard directory layout, and wires up CI/CD
+so tests run on every push.
+
+Run this once during the Technical Setup phase, before any implementation
+begins. A test framework installed at sprint start costs 30 minutes.
+A test framework installed at sprint four costs 3 sprints.
+
+**Output:** `tests/` directory structure + `.github/workflows/tests.yml`
+
+---
+
+## Phase 1: Detect Engine and Existing State
+
+**Read `references/1-detect.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 2: Present Plan
+
+**Read `references/2-plan.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 3: Create Directory Structure
+
+**Read `references/3-directories.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 4: Create CI/CD Workflow
+
+**Read `references/4-ci.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 5: Create Smoke Test Seed
+
+**Read `references/5-smoke-seed.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Phase 6: Post-Setup Summary
+
+**Read `references/6-summary.md` now and follow it** — this phase&#x27;s steps are in that file, not here. Read it again if the conversation was compacted or resumed during this phase.
+
+## Collaborative Protocol
+
+- **Never overwrite existing test files** — only create files that are missing.
+  If a test runner file exists, leave it as-is.
+- **Always ask before creating files** — Phase 2 requires explicit approval.
+- **Engine detection is non-negotiable** — if the engine is not configured,
+  stop and redirect to `/setup-engine`. Do not guess.
+- **`force` flag skips the &quot;already exists&quot; early-exit but never overwrites.**
+  It means &quot;create any missing files even if the directory already exists.&quot;
+- For Unity CI, note that the `UNITY_LICENSE` secret must be configured
+  manually. Do not attempt to automate license management.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

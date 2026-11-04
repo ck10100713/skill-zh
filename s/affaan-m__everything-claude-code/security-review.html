@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>security-review｜Skill 寫法圖鑑</title>
+<meta name="description" content="涵蓋 secret、輸入驗證、注入、驗證授權等的安全檢查清單">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>security-review</h1>
+<p class="meta">affaan-m ｜ 安全護欄 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/security-review/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">涵蓋 secret、輸入驗證、注入、驗證授權等的安全檢查清單</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: security-review
+description: 新增驗證機制、處理使用者輸入、處理 secret、建立 API endpoint，或實作付款/敏感功能時使用這個 skill。提供完整的安全檢查清單和模式。
+metadata:
+  origin: ECC
+---
+
+# 安全 Review Skill
+
+這個 skill 確保所有程式碼都遵循安全最佳實務，並找出潛在的漏洞。
+
+## 何時啟用
+
+- 實作驗證（authentication）或授權（authorization）
+- 處理使用者輸入或檔案上傳
+- 建立新的 API endpoint
+- 處理 secret 或憑證
+- 實作付款功能
+- 儲存或傳輸敏感資料
+- 整合第三方 API
+
+## 安全檢查清單
+
+### 1. Secret 管理
+
+#### FAIL：絕對不要這樣做
+```typescript
+const apiKey = &quot;sk-proj-xxxxx&quot;  // Hardcoded secret
+const dbPassword = &quot;password123&quot; // In source code
+```
+
+#### PASS：一律這樣做
+```typescript
+const apiKey = process.env.OPENAI_API_KEY
+const dbUrl = process.env.DATABASE_URL
+
+// Verify secrets exist
+if (!apiKey) {
+  throw new Error(&#x27;OPENAI_API_KEY not configured&#x27;)
+}
+```
+
+#### 驗證步驟
+- [ ] 沒有寫死的 API key、token 或密碼
+- [ ] 所有 secret 都放在環境變數
+- [ ] `.env.local` 在 .gitignore 裡
+- [ ] git 歷史裡沒有 secret
+- [ ] 正式環境的 secret 放在託管平台（Vercel、Railway）
+
+### 2. 輸入驗證
+
+#### 一律驗證使用者輸入
+```typescript
+import { z } from &#x27;zod&#x27;
+
+// Define validation schema
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  age: z.number().int().min(0).max(150)
+})
+
+// Validate before processing
+export async function createUser(input: unknown) {
+  try {
+    const validated = CreateUserSchema.parse(input)
+    return await db.users.create(validated)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { success: false, errors: error.issues }
+    }
+    throw error
+  }
+}
+```
+
+#### 檔案上傳驗證
+```typescript
+function validateFileUpload(file: File) {
+  // Size check (5MB max)
+  const maxSize = 5 * 1024 * 1024
+  if (file.size &gt; maxSize) {
+    throw new Error(&#x27;File too large (max 5MB)&#x27;)
+  }
+
+  // Type check
+  const allowedTypes = [&#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;]
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(&#x27;Invalid file type&#x27;)
+  }
+
+  // Extension check
+  const allowedExtensions = [&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;, &#x27;.png&#x27;, &#x27;.gif&#x27;]
+  const extension = file.name.toLowerCase().match(/\.[^.]+$/)?.[0]
+  if (!extension || !allowedExtensions.includes(extension)) {
+    throw new Error(&#x27;Invalid file extension&#x27;)
+  }
+
+  return true
+}
+```
+
+#### 驗證步驟
+- [ ] 所有使用者輸入都用 schema 驗證
+- [ ] 檔案上傳有限制（大小、類型、副檔名）
+- [ ] 沒有把使用者輸入直接用在查詢裡
+- [ ] 用白名單驗證（不是黑名單）
+- [ ] 錯誤訊息不會洩漏敏感資訊
+
+### 3. 防止 SQL Injection
+
+#### FAIL：絕對不要串接 SQL
+```typescript
+// DANGEROUS - SQL Injection vulnerability
+const query = `SELECT * FROM users WHERE email = &#x27;${userEmail}&#x27;`
+await db.query(query)
+```
+
+#### PASS：一律使用參數化查詢
+```typescript
+// Safe - parameterized query
+const { data } = await supabase
+  .from(&#x27;users&#x27;)
+  .select(&#x27;*&#x27;)
+  .eq(&#x27;email&#x27;, userEmail)
+
+// Or with raw SQL -- the value goes in the params array, never in the
+// string. Use your driver&#x27;s placeholder syntax (Postgres numbers its
+// placeholders, MySQL uses &quot;?&quot;).
+await db.query(
+  &#x27;SELECT * FROM users WHERE email = ?&#x27;,
+  [userEmail]
+)
+```
+
+&lt;!-- 這個檔案裡任何地方都不要寫出字面上的「錢字號加數字」placeholder。
+     帶參數呼叫這個 skill 時，它會被替換掉，上面的範例就會變成串接出來的 SQL，
+     正是這一節警告要避免的反模式。請用 &quot;?&quot;，並在文字說明裡點出 Postgres 的寫法。 --&gt;
+
+#### 驗證步驟
+- [ ] 所有資料庫查詢都用參數化查詢
+- [ ] SQL 裡沒有字串串接
+- [ ] 正確使用 ORM/query builder
+- [ ] Supabase 查詢有適當地清理
+
+### 4. 驗證與授權
+
+#### JWT Token 處理
+```typescript
+// FAIL: WRONG: localStorage (vulnerable to XSS)
+localStorage.setItem(&#x27;token&#x27;, token)
+
+// PASS: CORRECT: httpOnly cookies
+res.setHeader(&#x27;Set-Cookie&#x27;,
+  `token=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600`)
+```
+
+#### 授權檢查
+```typescript
+export async function deleteUser(userId: string, requesterId: string) {
+  // ALWAYS verify authorization first
+  const requester = await db.users.findUnique({
+    where: { id: requesterId }
+  })
+
+  if (requester.role !== &#x27;admin&#x27;) {
+    return NextResponse.json(
+      { error: &#x27;Unauthorized&#x27; },
+      { status: 403 }
+    )
+  }
+
+  // Proceed with deletion
+  await db.users.delete({ where: { id: userId } })
+}
+```
+
+#### Row Level Security（Supabase）
+```sql
+-- Enable RLS on all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Users can only view their own data
+CREATE POLICY &quot;Users view own data&quot;
+  ON users FOR SELECT
+  USING (auth.uid() = id);
+
+-- Users can only update their own data
+CREATE POLICY &quot;Users update own data&quot;
+  ON users FOR UPDATE
+  USING (auth.uid() = id);
+```
+
+#### 驗證步驟
+- [ ] Token 存在 httpOnly cookie 裡（不是 localStorage）
+- [ ] 敏感操作之前有授權檢查
+- [ ] Supabase 啟用 Row Level Security
+- [ ] 實作了角色型存取控制
+- [ ] Session 管理安全
+
+### 5. 防止 XSS
+
+#### 清理 HTML
+```typescript
+import DOMPurify from &#x27;isomorphic-dompurify&#x27;
+
+// ALWAYS sanitize user-provided HTML
+function renderUserContent(html: string) {
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [&#x27;b&#x27;, &#x27;i&#x27;, &#x27;em&#x27;, &#x27;strong&#x27;, &#x27;p&#x27;],
+    ALLOWED_ATTR: []
+  })
+  return &lt;div dangerouslySetInnerHTML={{ __html: clean }} /&gt;
+}
+```
+
+#### Content Security Policy
+
+從嚴格開始，要放寬就一定要有文件記載的移除計畫。預設不要用 `&#x27;unsafe-inline&#x27;` 或 `&#x27;unsafe-eval&#x27;`，它們會讓 CSP 大部分的保護失效，要當成暫時的相容性債務看待。
+
+```typescript
+// next.config.js
+const securityHeaders = [
+  {
+    key: &#x27;Content-Security-Policy&#x27;,
+    value: `
+      default-src &#x27;self&#x27;;
+      base-uri &#x27;self&#x27;;
+      object-src &#x27;none&#x27;;
+      frame-ancestors &#x27;none&#x27;;
+      script-src &#x27;self&#x27;;
+      style-src &#x27;self&#x27;;
+      img-src &#x27;self&#x27; data: https:;
+      font-src &#x27;self&#x27;;
+      connect-src &#x27;self&#x27; https://api.example.com;
+    `.replace(/\s{2,}/g, &#x27; &#x27;).trim()
+  }
+]
+```
+
+#### 驗證步驟
+- [ ] 使用者提供的 HTML 有清理
+- [ ] 設定了 CSP header
+- [ ] 沒有未驗證的動態內容渲染
+- [ ] 使用 React 內建的 XSS 防護
+
+### 6. CSRF 防護
+
+#### CSRF Token
+```typescript
+import { csrf } from &#x27;@/lib/csrf&#x27;
+
+export async function POST(request: Request) {
+  const token = request.headers.get(&#x27;X-CSRF-Token&#x27;)
+
+  if (!csrf.verify(token)) {
+    return NextResponse.json(
+      { error: &#x27;Invalid CSRF token&#x27; },
+      { status: 403 }
+    )
+  }
+
+  // Process request
+}
+```
+
+#### SameSite Cookie
+```typescript
+res.setHeader(&#x27;Set-Cookie&#x27;,
+  `session=${sessionId}; HttpOnly; Secure; SameSite=Strict`)
+```
+
+#### 驗證步驟
+- [ ] 會改變狀態的操作都有 CSRF token
+- [ ] 所有 cookie 都設 SameSite=Strict
+- [ ] 實作了 double-submit cookie 模式
+
+### 7. Rate Limiting
+
+#### API Rate Limiting
+```typescript
+import rateLimit from &#x27;express-rate-limit&#x27;
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: &#x27;Too many requests&#x27;
+})
+
+// Apply to routes
+app.use(&#x27;/api/&#x27;, limiter)
+```
+
+#### 昂貴的操作
+```typescript
+// Aggressive rate limiting for searches
+const searchLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute
+  message: &#x27;Too many search requests&#x27;
+})
+
+app.use(&#x27;/api/search&#x27;, searchLimiter)
+```
+
+#### 驗證步驟
+- [ ] 所有 API endpoint 都有 rate limiting
+- [ ] 昂貴的操作限制更嚴格
+- [ ] 以 IP 為基礎的 rate limiting
+- [ ] 以使用者為基礎的 rate limiting（已驗證的使用者）
+
+### 8. 敏感資料外洩
+
+#### 日誌
+```typescript
+// FAIL: WRONG: Logging sensitive data
+console.log(&#x27;User login:&#x27;, { email, password })
+console.log(&#x27;Payment:&#x27;, { cardNumber, cvv })
+
+// PASS: CORRECT: Redact sensitive data
+console.log(&#x27;User login:&#x27;, { email, userId })
+console.log(&#x27;Payment:&#x27;, { last4: card.last4, userId })
+```
+
+#### 錯誤訊息
+```typescript
+// FAIL: WRONG: Exposing internal details
+catch (error) {
+  return NextResponse.json(
+    { error: error.message, stack: error.stack },
+    { status: 500 }
+  )
+}
+
+// PASS: CORRECT: Generic error messages
+catch (error) {
+  console.error(&#x27;Internal error:&#x27;, error)
+  return NextResponse.json(
+    { error: &#x27;An error occurred. Please try again.&#x27; },
+    { status: 500 }
+  )
+}
+```
+
+#### 驗證步驟
+- [ ] 日誌裡沒有密碼、token 或 secret
+- [ ] 給使用者看的錯誤訊息是通用的
+- [ ] 詳細的錯誤只放在伺服器日誌
+- [ ] 沒有把 stack trace 暴露給使用者
+
+### 9. 區塊鏈安全（Solana）
+
+#### 錢包驗證
+```typescript
+import { verify } from &#x27;@solana/web3.js&#x27;
+
+async function verifyWalletOwnership(
+  publicKey: string,
+  signature: string,
+  message: string
+) {
+  try {
+    const isValid = verify(
+      Buffer.from(message),
+      Buffer.from(signature, &#x27;base64&#x27;),
+      Buffer.from(publicKey, &#x27;base64&#x27;)
+    )
+    return isValid
+  } catch (error) {
+    return false
+  }
+}
+```
+
+#### 交易驗證
+```typescript
+async function verifyTransaction(transaction: Transaction) {
+  // Verify recipient
+  if (transaction.to !== expectedRecipient) {
+    throw new Error(&#x27;Invalid recipient&#x27;)
+  }
+
+  // Verify amount
+  if (transaction.amount &gt; maxAmount) {
+    throw new Error(&#x27;Amount exceeds limit&#x27;)
+  }
+
+  // Verify user has sufficient balance
+  const balance = await getBalance(transaction.from)
+  if (balance &lt; transaction.amount) {
+    throw new Error(&#x27;Insufficient balance&#x27;)
+  }
+
+  return true
+}
+```
+
+#### 驗證步驟
+- [ ] 錢包簽章有驗證
+- [ ] 交易細節有驗證
+- [ ] 交易之前有檢查餘額
+- [ ] 沒有盲簽交易
+
+### 10. 相依套件安全
+
+#### 定期更新
+```bash
+# Check for vulnerabilities
+npm audit
+
+# Fix automatically fixable issues
+npm audit fix
+
+# Update dependencies
+npm update
+
+# Check for outdated packages
+npm outdated
+```
+
+#### Lock 檔
+```bash
+# ALWAYS commit lock files
+git add package-lock.json
+
+# Use in CI/CD for reproducible builds
+npm ci  # Instead of npm install
+```
+
+#### 驗證步驟
+- [ ] 相依套件是最新的
+- [ ] 沒有已知漏洞（npm audit 乾淨）
+- [ ] Lock 檔有 commit
+- [ ] GitHub 上啟用 Dependabot
+- [ ] 定期做安全更新
+
+## 安全測試
+
+### 自動化安全測試
+```typescript
+// Test authentication
+test(&#x27;requires authentication&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/protected&#x27;)
+  expect(response.status).toBe(401)
+})
+
+// Test authorization
+test(&#x27;requires admin role&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/admin&#x27;, {
+    headers: { Authorization: `Bearer ${userToken}` }
+  })
+  expect(response.status).toBe(403)
+})
+
+// Test input validation
+test(&#x27;rejects invalid input&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/users&#x27;, {
+    method: &#x27;POST&#x27;,
+    body: JSON.stringify({ email: &#x27;not-an-email&#x27; })
+  })
+  expect(response.status).toBe(400)
+})
+
+// Test rate limiting
+test(&#x27;enforces rate limits&#x27;, async () =&gt; {
+  const requests = Array(101).fill(null).map(() =&gt;
+    fetch(&#x27;/api/endpoint&#x27;)
+  )
+
+  const responses = await Promise.all(requests)
+  const tooManyRequests = responses.filter(r =&gt; r.status === 429)
+
+  expect(tooManyRequests.length).toBeGreaterThan(0)
+})
+```
+
+## 部署前安全檢查清單
+
+任何正式環境部署之前：
+
+- [ ] **Secret**：沒有寫死的 secret，全部放環境變數
+- [ ] **輸入驗證**：所有使用者輸入都有驗證
+- [ ] **SQL Injection**：所有查詢都參數化
+- [ ] **XSS**：使用者內容有清理
+- [ ] **CSRF**：已啟用防護
+- [ ] **驗證**：Token 處理正確
+- [ ] **授權**：有角色檢查
+- [ ] **Rate Limiting**：所有 endpoint 都啟用
+- [ ] **HTTPS**：正式環境強制使用
+- [ ] **安全 Header**：已設定 CSP、X-Frame-Options
+- [ ] **錯誤處理**：錯誤裡沒有敏感資料
+- [ ] **日誌**：沒有記錄敏感資料
+- [ ] **相依套件**：是最新的，沒有漏洞
+- [ ] **Row Level Security**：Supabase 已啟用
+- [ ] **CORS**：設定正確
+- [ ] **檔案上傳**：有驗證（大小、類型）
+- [ ] **錢包簽章**：有驗證（如果是區塊鏈）
+
+## 資源
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Next.js Security](https://nextjs.org/docs/security)
+- [Supabase Security](https://supabase.com/docs/guides/auth)
+- [Web Security Academy](https://portswigger.net/web-security)
+
+---
+
+**記住**：安全不是選配。一個漏洞就可能讓整個平台淪陷。有疑慮的時候，寧可保守。</pre></section><section><h2>英文原文</h2><pre>---
+name: security-review
+description: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
+metadata:
+  origin: ECC
+---
+
+# Security Review Skill
+
+This skill ensures all code follows security best practices and identifies potential vulnerabilities.
+
+## When to Activate
+
+- Implementing authentication or authorization
+- Handling user input or file uploads
+- Creating new API endpoints
+- Working with secrets or credentials
+- Implementing payment features
+- Storing or transmitting sensitive data
+- Integrating third-party APIs
+
+## Security Checklist
+
+### 1. Secrets Management
+
+#### FAIL: NEVER Do This
+```typescript
+const apiKey = &quot;sk-proj-xxxxx&quot;  // Hardcoded secret
+const dbPassword = &quot;password123&quot; // In source code
+```
+
+#### PASS: ALWAYS Do This
+```typescript
+const apiKey = process.env.OPENAI_API_KEY
+const dbUrl = process.env.DATABASE_URL
+
+// Verify secrets exist
+if (!apiKey) {
+  throw new Error(&#x27;OPENAI_API_KEY not configured&#x27;)
+}
+```
+
+#### Verification Steps
+- [ ] No hardcoded API keys, tokens, or passwords
+- [ ] All secrets in environment variables
+- [ ] `.env.local` in .gitignore
+- [ ] No secrets in git history
+- [ ] Production secrets in hosting platform (Vercel, Railway)
+
+### 2. Input Validation
+
+#### Always Validate User Input
+```typescript
+import { z } from &#x27;zod&#x27;
+
+// Define validation schema
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  age: z.number().int().min(0).max(150)
+})
+
+// Validate before processing
+export async function createUser(input: unknown) {
+  try {
+    const validated = CreateUserSchema.parse(input)
+    return await db.users.create(validated)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { success: false, errors: error.issues }
+    }
+    throw error
+  }
+}
+```
+
+#### File Upload Validation
+```typescript
+function validateFileUpload(file: File) {
+  // Size check (5MB max)
+  const maxSize = 5 * 1024 * 1024
+  if (file.size &gt; maxSize) {
+    throw new Error(&#x27;File too large (max 5MB)&#x27;)
+  }
+
+  // Type check
+  const allowedTypes = [&#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;]
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(&#x27;Invalid file type&#x27;)
+  }
+
+  // Extension check
+  const allowedExtensions = [&#x27;.jpg&#x27;, &#x27;.jpeg&#x27;, &#x27;.png&#x27;, &#x27;.gif&#x27;]
+  const extension = file.name.toLowerCase().match(/\.[^.]+$/)?.[0]
+  if (!extension || !allowedExtensions.includes(extension)) {
+    throw new Error(&#x27;Invalid file extension&#x27;)
+  }
+
+  return true
+}
+```
+
+#### Verification Steps
+- [ ] All user inputs validated with schemas
+- [ ] File uploads restricted (size, type, extension)
+- [ ] No direct use of user input in queries
+- [ ] Whitelist validation (not blacklist)
+- [ ] Error messages don&#x27;t leak sensitive info
+
+### 3. SQL Injection Prevention
+
+#### FAIL: NEVER Concatenate SQL
+```typescript
+// DANGEROUS - SQL Injection vulnerability
+const query = `SELECT * FROM users WHERE email = &#x27;${userEmail}&#x27;`
+await db.query(query)
+```
+
+#### PASS: ALWAYS Use Parameterized Queries
+```typescript
+// Safe - parameterized query
+const { data } = await supabase
+  .from(&#x27;users&#x27;)
+  .select(&#x27;*&#x27;)
+  .eq(&#x27;email&#x27;, userEmail)
+
+// Or with raw SQL -- the value goes in the params array, never in the
+// string. Use your driver&#x27;s placeholder syntax (Postgres numbers its
+// placeholders, MySQL uses &quot;?&quot;).
+await db.query(
+  &#x27;SELECT * FROM users WHERE email = ?&#x27;,
+  [userEmail]
+)
+```
+
+&lt;!-- Do not write a literal dollar-sign-N placeholder anywhere in this file.
+     Invoking this skill with arguments substitutes it away, and the example
+     above then renders as concatenated SQL -- the exact anti-pattern this
+     section warns against. Use &quot;?&quot; and name the Postgres form in prose. --&gt;
+
+#### Verification Steps
+- [ ] All database queries use parameterized queries
+- [ ] No string concatenation in SQL
+- [ ] ORM/query builder used correctly
+- [ ] Supabase queries properly sanitized
+
+### 4. Authentication &amp; Authorization
+
+#### JWT Token Handling
+```typescript
+// FAIL: WRONG: localStorage (vulnerable to XSS)
+localStorage.setItem(&#x27;token&#x27;, token)
+
+// PASS: CORRECT: httpOnly cookies
+res.setHeader(&#x27;Set-Cookie&#x27;,
+  `token=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600`)
+```
+
+#### Authorization Checks
+```typescript
+export async function deleteUser(userId: string, requesterId: string) {
+  // ALWAYS verify authorization first
+  const requester = await db.users.findUnique({
+    where: { id: requesterId }
+  })
+
+  if (requester.role !== &#x27;admin&#x27;) {
+    return NextResponse.json(
+      { error: &#x27;Unauthorized&#x27; },
+      { status: 403 }
+    )
+  }
+
+  // Proceed with deletion
+  await db.users.delete({ where: { id: userId } })
+}
+```
+
+#### Row Level Security (Supabase)
+```sql
+-- Enable RLS on all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Users can only view their own data
+CREATE POLICY &quot;Users view own data&quot;
+  ON users FOR SELECT
+  USING (auth.uid() = id);
+
+-- Users can only update their own data
+CREATE POLICY &quot;Users update own data&quot;
+  ON users FOR UPDATE
+  USING (auth.uid() = id);
+```
+
+#### Verification Steps
+- [ ] Tokens stored in httpOnly cookies (not localStorage)
+- [ ] Authorization checks before sensitive operations
+- [ ] Row Level Security enabled in Supabase
+- [ ] Role-based access control implemented
+- [ ] Session management secure
+
+### 5. XSS Prevention
+
+#### Sanitize HTML
+```typescript
+import DOMPurify from &#x27;isomorphic-dompurify&#x27;
+
+// ALWAYS sanitize user-provided HTML
+function renderUserContent(html: string) {
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [&#x27;b&#x27;, &#x27;i&#x27;, &#x27;em&#x27;, &#x27;strong&#x27;, &#x27;p&#x27;],
+    ALLOWED_ATTR: []
+  })
+  return &lt;div dangerouslySetInnerHTML={{ __html: clean }} /&gt;
+}
+```
+
+#### Content Security Policy
+
+Start strict and loosen only with a documented removal plan. Do not default to
+`&#x27;unsafe-inline&#x27;` or `&#x27;unsafe-eval&#x27;`; they neutralize much of CSP&#x27;s protection
+and should be treated as temporary compatibility debt.
+
+```typescript
+// next.config.js
+const securityHeaders = [
+  {
+    key: &#x27;Content-Security-Policy&#x27;,
+    value: `
+      default-src &#x27;self&#x27;;
+      base-uri &#x27;self&#x27;;
+      object-src &#x27;none&#x27;;
+      frame-ancestors &#x27;none&#x27;;
+      script-src &#x27;self&#x27;;
+      style-src &#x27;self&#x27;;
+      img-src &#x27;self&#x27; data: https:;
+      font-src &#x27;self&#x27;;
+      connect-src &#x27;self&#x27; https://api.example.com;
+    `.replace(/\s{2,}/g, &#x27; &#x27;).trim()
+  }
+]
+```
+
+#### Verification Steps
+- [ ] User-provided HTML sanitized
+- [ ] CSP headers configured
+- [ ] No unvalidated dynamic content rendering
+- [ ] React&#x27;s built-in XSS protection used
+
+### 6. CSRF Protection
+
+#### CSRF Tokens
+```typescript
+import { csrf } from &#x27;@/lib/csrf&#x27;
+
+export async function POST(request: Request) {
+  const token = request.headers.get(&#x27;X-CSRF-Token&#x27;)
+
+  if (!csrf.verify(token)) {
+    return NextResponse.json(
+      { error: &#x27;Invalid CSRF token&#x27; },
+      { status: 403 }
+    )
+  }
+
+  // Process request
+}
+```
+
+#### SameSite Cookies
+```typescript
+res.setHeader(&#x27;Set-Cookie&#x27;,
+  `session=${sessionId}; HttpOnly; Secure; SameSite=Strict`)
+```
+
+#### Verification Steps
+- [ ] CSRF tokens on state-changing operations
+- [ ] SameSite=Strict on all cookies
+- [ ] Double-submit cookie pattern implemented
+
+### 7. Rate Limiting
+
+#### API Rate Limiting
+```typescript
+import rateLimit from &#x27;express-rate-limit&#x27;
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: &#x27;Too many requests&#x27;
+})
+
+// Apply to routes
+app.use(&#x27;/api/&#x27;, limiter)
+```
+
+#### Expensive Operations
+```typescript
+// Aggressive rate limiting for searches
+const searchLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute
+  message: &#x27;Too many search requests&#x27;
+})
+
+app.use(&#x27;/api/search&#x27;, searchLimiter)
+```
+
+#### Verification Steps
+- [ ] Rate limiting on all API endpoints
+- [ ] Stricter limits on expensive operations
+- [ ] IP-based rate limiting
+- [ ] User-based rate limiting (authenticated)
+
+### 8. Sensitive Data Exposure
+
+#### Logging
+```typescript
+// FAIL: WRONG: Logging sensitive data
+console.log(&#x27;User login:&#x27;, { email, password })
+console.log(&#x27;Payment:&#x27;, { cardNumber, cvv })
+
+// PASS: CORRECT: Redact sensitive data
+console.log(&#x27;User login:&#x27;, { email, userId })
+console.log(&#x27;Payment:&#x27;, { last4: card.last4, userId })
+```
+
+#### Error Messages
+```typescript
+// FAIL: WRONG: Exposing internal details
+catch (error) {
+  return NextResponse.json(
+    { error: error.message, stack: error.stack },
+    { status: 500 }
+  )
+}
+
+// PASS: CORRECT: Generic error messages
+catch (error) {
+  console.error(&#x27;Internal error:&#x27;, error)
+  return NextResponse.json(
+    { error: &#x27;An error occurred. Please try again.&#x27; },
+    { status: 500 }
+  )
+}
+```
+
+#### Verification Steps
+- [ ] No passwords, tokens, or secrets in logs
+- [ ] Error messages generic for users
+- [ ] Detailed errors only in server logs
+- [ ] No stack traces exposed to users
+
+### 9. Blockchain Security (Solana)
+
+#### Wallet Verification
+```typescript
+import { verify } from &#x27;@solana/web3.js&#x27;
+
+async function verifyWalletOwnership(
+  publicKey: string,
+  signature: string,
+  message: string
+) {
+  try {
+    const isValid = verify(
+      Buffer.from(message),
+      Buffer.from(signature, &#x27;base64&#x27;),
+      Buffer.from(publicKey, &#x27;base64&#x27;)
+    )
+    return isValid
+  } catch (error) {
+    return false
+  }
+}
+```
+
+#### Transaction Verification
+```typescript
+async function verifyTransaction(transaction: Transaction) {
+  // Verify recipient
+  if (transaction.to !== expectedRecipient) {
+    throw new Error(&#x27;Invalid recipient&#x27;)
+  }
+
+  // Verify amount
+  if (transaction.amount &gt; maxAmount) {
+    throw new Error(&#x27;Amount exceeds limit&#x27;)
+  }
+
+  // Verify user has sufficient balance
+  const balance = await getBalance(transaction.from)
+  if (balance &lt; transaction.amount) {
+    throw new Error(&#x27;Insufficient balance&#x27;)
+  }
+
+  return true
+}
+```
+
+#### Verification Steps
+- [ ] Wallet signatures verified
+- [ ] Transaction details validated
+- [ ] Balance checks before transactions
+- [ ] No blind transaction signing
+
+### 10. Dependency Security
+
+#### Regular Updates
+```bash
+# Check for vulnerabilities
+npm audit
+
+# Fix automatically fixable issues
+npm audit fix
+
+# Update dependencies
+npm update
+
+# Check for outdated packages
+npm outdated
+```
+
+#### Lock Files
+```bash
+# ALWAYS commit lock files
+git add package-lock.json
+
+# Use in CI/CD for reproducible builds
+npm ci  # Instead of npm install
+```
+
+#### Verification Steps
+- [ ] Dependencies up to date
+- [ ] No known vulnerabilities (npm audit clean)
+- [ ] Lock files committed
+- [ ] Dependabot enabled on GitHub
+- [ ] Regular security updates
+
+## Security Testing
+
+### Automated Security Tests
+```typescript
+// Test authentication
+test(&#x27;requires authentication&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/protected&#x27;)
+  expect(response.status).toBe(401)
+})
+
+// Test authorization
+test(&#x27;requires admin role&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/admin&#x27;, {
+    headers: { Authorization: `Bearer ${userToken}` }
+  })
+  expect(response.status).toBe(403)
+})
+
+// Test input validation
+test(&#x27;rejects invalid input&#x27;, async () =&gt; {
+  const response = await fetch(&#x27;/api/users&#x27;, {
+    method: &#x27;POST&#x27;,
+    body: JSON.stringify({ email: &#x27;not-an-email&#x27; })
+  })
+  expect(response.status).toBe(400)
+})
+
+// Test rate limiting
+test(&#x27;enforces rate limits&#x27;, async () =&gt; {
+  const requests = Array(101).fill(null).map(() =&gt;
+    fetch(&#x27;/api/endpoint&#x27;)
+  )
+
+  const responses = await Promise.all(requests)
+  const tooManyRequests = responses.filter(r =&gt; r.status === 429)
+
+  expect(tooManyRequests.length).toBeGreaterThan(0)
+})
+```
+
+## Pre-Deployment Security Checklist
+
+Before ANY production deployment:
+
+- [ ] **Secrets**: No hardcoded secrets, all in env vars
+- [ ] **Input Validation**: All user inputs validated
+- [ ] **SQL Injection**: All queries parameterized
+- [ ] **XSS**: User content sanitized
+- [ ] **CSRF**: Protection enabled
+- [ ] **Authentication**: Proper token handling
+- [ ] **Authorization**: Role checks in place
+- [ ] **Rate Limiting**: Enabled on all endpoints
+- [ ] **HTTPS**: Enforced in production
+- [ ] **Security Headers**: CSP, X-Frame-Options configured
+- [ ] **Error Handling**: No sensitive data in errors
+- [ ] **Logging**: No sensitive data logged
+- [ ] **Dependencies**: Up to date, no vulnerabilities
+- [ ] **Row Level Security**: Enabled in Supabase
+- [ ] **CORS**: Properly configured
+- [ ] **File Uploads**: Validated (size, type)
+- [ ] **Wallet Signatures**: Verified (if blockchain)
+
+## Resources
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Next.js Security](https://nextjs.org/docs/security)
+- [Supabase Security](https://supabase.com/docs/guides/auth)
+- [Web Security Academy](https://portswigger.net/web-security)
+
+---
+
+**Remember**: Security is not optional. One vulnerability can compromise the entire platform. When in doubt, err on the side of caution.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

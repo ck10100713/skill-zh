@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>test-helpers｜Skill 寫法圖鑑</title>
+<meta name="description" content="產生引擎專屬的測試 helper：斷言工具、factory 與 mock">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>test-helpers</h1>
+<p class="meta">Donchitos ｜ 測試與驗證 ｜ <a href="https://github.com/Donchitos/Claude-Code-Game-Studios/blob/main/.claude/skills/test-helpers/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">產生引擎專屬的測試 helper：斷言工具、factory 與 mock</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: test-helpers
+description: &quot;產生引擎專屬的測試 helper 函式庫：斷言工具、factory 函式、mock，放在引擎的測試資料夾裡，減少重複的樣板程式碼。&quot;
+argument-hint: &quot;[system-name | all | scaffold]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**Automation mode**：解析 `modes.automation`（`project.local.yaml` →
+`project.yaml` → 預設 `collaborative`）。每一次 `AskUserQuestion` 呼叫和每一次檔案寫入，都要遵守 `.claude/docs/automation-modes.md`
+（collaborative 一律要問 · guided 只問重大的 · autonomous 記錄後直接往下走；
+屬於 `automation_always_ask` 類別的一律要問）。
+
+# Test Helpers
+
+把常見的 setup、teardown 和斷言寫法抽成 helper，寫測試案例會更快、也更一致。這個 skill 會產生一套貼合專案實際引擎、語言和系統的 `tests/helpers/` 函式庫，讓每個開發者少寫一些樣板程式碼，多寫一些斷言。
+
+**輸出：** 引擎專屬的 helper 檔案，放在引擎的 **helper root**，
+那是它的測試執行器唯一會編譯到它們的地方（`.claude/docs/directory-structure.md`）：
+
+| Engine | Helper root |
+|---|---|
+| Godot | `tests/helpers/` |
+| Unity | `Assets/Tests/EditMode/Helpers/` — inside the `EditModeTests` assembly `/test-setup` creates. If PlayMode tests need the same helpers, ask before creating `Assets/Tests/Helpers/TestHelpers.asmdef` and referencing it from both test assemblies. |
+| Unreal | `Source/&lt;Module&gt;/Private/Tests/Helpers/` |
+
+下面的 `tests/helpers/` 指的是專案所用引擎的 helper root。
+
+**什麼時候跑：**
+- `/test-setup` 建好框架骨架之後（第一次）
+- 多個測試檔案重複同樣的 setup 樣板時
+- 開始為一個新系統寫測試時
+
+---
+
+## Assertions: use the project&#x27;s test framework, never bare `assert()`
+
+**產生的 helper 必須透過設定好的測試框架的斷言 API 來斷言**，由 `testing.framework` 解析出來，不能用 GDScript 內建的 `assert()`。
+
+helper 裡用裸的 `assert()` 會出兩個問題，而且兩個都是悄悄發生的：
+
+1. **它會中止整個執行，而不是讓測試失敗。** 框架的斷言會記錄失敗並繼續往下跑，所以一個壞掉的預期只會產生一個紅燈的測試。裸的 `assert()` 會讓執行停住，第一個失敗就把後面所有結果都藏起來。
+2. **它在 release build 裡會被移除。** 一套建在 `assert()` 上的 helper 函式庫，會在你最想檢查的那個 build 裡完全停止斷言，而且沒有任何錯誤，測試還是「通過」。
+
+**產生程式碼之前，先查好設定的框架的斷言形式。** 不要把這個檔案裡、或其他 skill 範例裡的寫法當成權威來抄，它們只是示意，而且已經不一致了（`assert_eq`、`assert_true` 和 `assert_that` 在整個 repo 裡都有出現）。如果你沒辦法確認專案框架的正確 API，就直說，而且不要產生 helper，不要用猜的。
+
+**Helper 絕對不能繼承框架的 test-suite 基底類別。** `tests/helpers/` 裡一個繼承 suite 型別的檔案，會被執行器當成含有零個測試的測試 suite 發現。Helper 是普通的類別；只有真正的測試檔案才繼承 suite。
+
+---
+
+## 1. Parse Arguments
+
+**模式：**
+- `/test-helpers [system-name]` — 為特定系統產生 helper
+  （例如 `/test-helpers combat`）
+- `/test-helpers all` — 為所有有測試檔案的系統產生 helper
+- `/test-helpers scaffold` — 只產生基礎 helper 函式庫（不含系統專屬的 helper）；第一次跑的時候用這個
+- 沒有參數 — 如果還沒有 helper 就跑 `scaffold`，否則跑 `all`
+
+---
+
+## 2. Detect Engine and Language
+
+先從 `project.yaml` 讀，對於任何缺少或是空的 key，退回去讀 `.claude/docs/technical-preferences.md`：
+- `engine.name`（否則用 `Engine:` 的值）
+- `engine.language`（否則用 `Language:` 的值）
+- `testing.framework`（否則用 Testing 章節裡的 `Framework:`）
+
+如果兩個來源都沒設定引擎：「Engine not configured. Run `/setup-engine` first.」
+
+---
+
+## 3. Load Existing Test Patterns
+
+掃描引擎的測試根目錄，找已經在用的寫法（Godot `tests/`、Unity
+`Assets/Tests/`、Unreal `Source/&lt;Module&gt;/Private/Tests/`）：
+
+```
+Glob pattern=&quot;tests/**/*_test.*&quot;                  (Godot)
+Glob pattern=&quot;Assets/Tests/**/*Tests.cs&quot;          (Unity)
+Glob pattern=&quot;Source/*/Private/Tests/**/*.cpp&quot;    (Unreal)
+```
+
+挑一批具代表性的樣本（最多 5 個檔案），讀這些測試檔案並擷取：
+- Setup 的寫法（`before_each` / `setUp` / fixture 是怎麼寫的）
+- 常見的斷言寫法（最常斷言的是什麼）
+- 物件建立的寫法（測試裡遊戲物件或場景是怎麼實例化的）
+- Mock/stub 的寫法（依賴項是怎麼被替換的）
+
+這樣可以確保產生的 helper 符合專案既有的風格，而不是一個通用模板。
+
+也要讀：
+- `design/gdd/systems-index.md` — 知道有哪些系統
+- 範圍內的 GDD — 了解需要測試哪些資料型別和數值。要分段讀：先用 Grep 工具（pattern `^#`，content mode）找出需要的標題，再用 offset 和 limit 讀那些範圍。
+- `docs/architecture/tr-registry.yaml` — 把需求對應到被測試的系統
+
+---
+
+## 4. Generate Engine-Specific Helpers
+
+### Godot 4 (GDUnit4 / GDScript)
+
+&gt; **下面範例裡的 `FAIL_IF(...)` 是 PLACEHOLDER，不是 API。** 它標出在輸出任何這些程式碼之前，你必須依照 §2 的規則，從專案實際的測試框架解析出來的那一行。換成框架真正的失敗呼叫，也就是**向執行器登記一個失敗、並讓 suite 繼續往下跑**的那種形式，然後刪掉那行標記註解。
+&gt;
+&gt; **它刻意不寫成 `assert_that`、`assert_eq` 或 `assert_true`。** 這三個在 repo 裡的某處都有出現，而且彼此不一致，**GdUnit4 的 API 又不在 `docs/engine-reference/` 的涵蓋範圍內**，所以在這裡寫其中任何一個，就是在一個整個任務就是要阻止人這樣做的檔案裡，斷言一個這個 repo 沒辦法查證出處的 API。如果你沒辦法確認設定的框架的正確呼叫方式，§2 已經告訴你答案：**不要產生 helper。** 沒解決的 `FAIL_IF` 跑到磁碟上是 bug；缺少一個 helper 只是一件待辦。
+&gt;
+&gt; 範例也必須遵守 §2：這裡出現一個裸的 `assert()`，就會是 §2 禁止的那個確切形式，而且在 §2 禁止它之後六十行就出現。用文字寫下的規則，除非有人去強制，否則碰不到它自己的範例。
+
+**基礎 helper**（`tests/helpers/game_assertions.gd`）：
+
+```gdscript
+## Game-specific assertion utilities for [Project Name] tests.
+## Domain-specific helpers built on the project&#x27;s test framework.
+##
+## Usage (static — no instance needed):
+##   GameAssertions.assert_in_range(entity.health, 0, entity.max_health, &quot;health&quot;)
+
+class_name GameAssertions
+extends RefCounted
+
+## Assert a value is within the inclusive range [min_val, max_val].
+## Use for any formula output that has defined bounds in a GDD.
+static func assert_in_range(
+    value: float,
+    min_val: float,
+    max_val: float,
+    label: String = &quot;value&quot;
+) -&gt; void:
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(
+        not (value &gt;= min_val and value &lt;= max_val),
+        &quot;%s %.2f is outside expected range [%.2f, %.2f]&quot; % [label, value, min_val, max_val]
+    )
+
+## Assert a signal was emitted during a callable block.
+## Usage: assert_signal_emitted(entity, &quot;health_changed&quot;, func(): entity.take_damage(10))
+static func assert_signal_emitted(
+    obj: Object,
+    signal_name: String,
+    action: Callable
+) -&gt; void:
+    # A lambda captures a local by value: `emitted = true` inside it would set
+    # the lambda&#x27;s own copy. Mutate a Dictionary it shares instead. `...args`
+    # (4.5+) accepts a signal with any number of arguments.
+    var state := {&quot;emitted&quot;: false}
+    obj.connect(signal_name, func(...args): state.emitted = true)
+    action.call()
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(not state.emitted, &quot;Expected signal &#x27;%s&#x27; to be emitted, but it was not.&quot; % signal_name)
+
+## Assert that a callable does NOT emit a signal.
+static func assert_signal_not_emitted(
+    obj: Object,
+    signal_name: String,
+    action: Callable
+) -&gt; void:
+    var state := {&quot;emitted&quot;: false}  # a Dictionary, as above
+    obj.connect(signal_name, func(...args): state.emitted = true)
+    action.call()
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(state.emitted, &quot;Expected signal &#x27;%s&#x27; NOT to be emitted, but it was.&quot; % signal_name)
+
+## Assert a node exists at path within a parent.
+static func assert_node_exists(parent: Node, path: NodePath) -&gt; void:
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(
+        not parent.has_node(path),
+        &quot;Expected node at path &#x27;%s&#x27; to exist.&quot; % str(path)
+    )
+```
+
+**Factory helper**（`tests/helpers/game_factory.gd`）：
+
+```gdscript
+## Factory functions for creating test game objects.
+## Returns minimal objects configured for unit testing (no scene tree required).
+##
+## Usage: var player = GameFactory.make_player(health: 100)
+
+class_name GameFactory
+extends RefCounted
+
+## Create a minimal player-like object for testing.
+## Override fields as needed.
+static func make_player(health: int = 100) -&gt; Node:
+    var player = Node.new()
+    player.set_meta(&quot;health&quot;, health)
+    player.set_meta(&quot;max_health&quot;, health)
+    return player
+```
+
+**Scene helper**（`tests/helpers/scene_runner_helper.gd`）：
+
+```gdscript
+## Utilities for scene-based integration tests. For input simulation and frame
+## stepping, use gdUnit4&#x27;s own `scene_runner()` from inside the suite.
+
+class_name SceneRunnerHelper
+extends RefCounted
+
+## Load a scene under `host` — the calling test suite, which passes `self` —
+## and wait one frame for _ready() to complete. A plain class, so the runner
+## never discovers this file as a suite with zero tests.
+static func load_scene_and_wait(host: Node, scene_path: String) -&gt; Node:
+    var scene: Node = load(scene_path).instantiate()
+    host.add_child(scene)
+    await host.get_tree().process_frame
+    return scene
+```
+
+---
+
+### Unity (NUnit / C#)
+
+**基礎 helper**（`Assets/Tests/EditMode/Helpers/GameAssertions.cs`）：
+
+```csharp
+using NUnit.Framework;
+using UnityEngine;
+
+/// &lt;summary&gt;
+/// Game-specific assertion utilities for [Project Name] tests.
+/// Extends NUnit&#x27;s Assert with domain-specific helpers.
+/// &lt;/summary&gt;
+public static class GameAssertions
+{
+    /// &lt;summary&gt;
+    /// Assert a value is within an inclusive range [min, max].
+    /// Use for any formula output defined in GDD Formulas sections.
+    /// &lt;/summary&gt;
+    public static void AssertInRange(float value, float min, float max, string label = &quot;value&quot;)
+    {
+        Assert.That(value, Is.InRange(min, max),
+            $&quot;{label} ({value:F2}) is outside expected range [{min:F2}, {max:F2}]&quot;);
+    }
+
+    /// &lt;summary&gt;Assert a UnityEvent or C# event was raised during an action.&lt;/summary&gt;
+    public static void AssertEventRaised(ref bool wasCalled, System.Action action, string eventName)
+    {
+        wasCalled = false;
+        action();
+        Assert.IsTrue(wasCalled, $&quot;Expected event &#x27;{eventName}&#x27; to be raised, but it was not.&quot;);
+    }
+
+    /// &lt;summary&gt;Assert a component exists on a GameObject.&lt;/summary&gt;
+    public static void AssertHasComponent&lt;T&gt;(GameObject obj) where T : Component
+    {
+        var component = obj.GetComponent&lt;T&gt;();
+        Assert.IsNotNull(component,
+            $&quot;Expected GameObject &#x27;{obj.name}&#x27; to have component {typeof(T).Name}.&quot;);
+    }
+}
+```
+
+**Factory helper**（`Assets/Tests/EditMode/Helpers/GameFactory.cs`）：
+
+```csharp
+using UnityEngine;
+
+/// &lt;summary&gt;
+/// Factory methods for creating minimal test objects without loading scenes.
+/// &lt;/summary&gt;
+public static class GameFactory
+{
+    /// &lt;summary&gt;Create a minimal GameObject with a named component for testing.&lt;/summary&gt;
+    public static GameObject MakeGameObject(string name = &quot;TestObject&quot;)
+    {
+        var go = new GameObject(name);
+        return go;
+    }
+
+    /// &lt;summary&gt;
+    /// Create a ScriptableObject of type T for data-driven tests.
+    /// Dispose with Object.DestroyImmediate after test.
+    /// &lt;/summary&gt;
+    public static T MakeScriptableObject&lt;T&gt;() where T : ScriptableObject
+    {
+        return ScriptableObject.CreateInstance&lt;T&gt;();
+    }
+}
+```
+
+---
+
+### Unreal Engine (C++)
+
+**基礎 helper**（`Source/&lt;Module&gt;/Private/Tests/Helpers/GameTestHelpers.h`）：
+
+```cpp
+#pragma once
+
+#include &quot;CoreMinimal.h&quot;
+#include &quot;Misc/AutomationTest.h&quot;
+
+/**
+ * Game-specific assertion macros and helpers for [Project Name] automation tests.
+ * Include in any test file that needs domain-specific assertions.
+ *
+ * Usage:
+ *   GAME_TEST_ASSERT_IN_RANGE(TestName, DamageValue, 10.0f, 50.0f, TEXT(&quot;Damage&quot;));
+ */
+
+// Assert a float value is within inclusive range [Min, Max]
+#define GAME_TEST_ASSERT_IN_RANGE(TestName, Value, Min, Max, Label) \
+    TestTrue( \
+        FString::Printf(TEXT(&quot;%s (%.2f) in range [%.2f, %.2f]&quot;), Label, Value, Min, Max), \
+        (Value) &gt;= (Min) &amp;&amp; (Value) &lt;= (Max) \
+    )
+
+// Assert a UObject pointer is valid (not null, not garbage collected)
+#define GAME_TEST_ASSERT_VALID(TestName, Ptr, Label) \
+    TestTrue( \
+        FString::Printf(TEXT(&quot;%s is valid&quot;), Label), \
+        IsValid(Ptr) \
+    )
+
+// Assert an Actor is in the world (spawned successfully)
+#define GAME_TEST_ASSERT_SPAWNED(TestName, ActorPtr, ClassName) \
+    TestNotNull( \
+        FString::Printf(TEXT(&quot;Spawned actor of class %s&quot;), TEXT(#ClassName)), \
+        ActorPtr \
+    )
+
+/**
+ * Helper to create a minimal test world.
+ * Remember to call World-&gt;DestroyWorld(false) in teardown.
+ */
+namespace GameTestHelpers
+{
+    inline UWorld* CreateTestWorld(const FString&amp; WorldName = TEXT(&quot;TestWorld&quot;))
+    {
+        UWorld* World = UWorld::CreateWorld(EWorldType::Game, false);
+        FWorldContext&amp; WorldContext = GEngine-&gt;CreateNewWorldContext(EWorldType::Game);
+        WorldContext.SetCurrentWorld(World);
+        return World;
+    }
+}
+```
+
+---
+
+## 5. Generate System-Specific Helpers
+
+對 `[system-name]` 或 `all` 模式，為每個系統產生一個 helper：
+
+只讀這件事需要的 GDD 章節：`Grep pattern=&quot;^## ([0-9]+\. )?(Formulas|Edge Cases|Detailed Rules|Detailed Design)&quot; path=&quot;design/gdd/[system].md&quot; output_mode=&quot;content&quot; -A 30`（那個可選的數字，是用來比對反向文件化 GDD 的 `## 4. Formulas`），不要整份讀（每個同類 skill 都是用 grep 抓 GDD 的章節；在 `all` 模式下，整份讀會在每個系統 400 多行的 GDD 上被放大好幾倍）。擷取：
+- 資料型別（實體類型、component 名稱）
+- 公式變數與它們的上下界
+- Edge Cases 裡提到的常見測試情境
+
+產生 `tests/helpers/[system]_factory.[ext]`，裡面是專屬於該系統物件的 factory 函式。
+
+`combat` 系統的範例寫法（Godot/GDScript）：
+
+```gdscript
+## Factory and assertion helpers for Combat system tests.
+## Generated by /test-helpers combat on [date].
+## Based on: design/gdd/combat.md
+
+class_name CombatTestFactory
+extends RefCounted
+
+const DAMAGE_MIN := 0
+const DAMAGE_MAX := 999  # From GDD: damage formula upper bound
+
+## Create a minimal attacker object for damage formula tests.
+static func make_attacker(attack: float = 10.0, crit_chance: float = 0.0) -&gt; Node:
+    var attacker = Node.new()
+    attacker.set_meta(&quot;attack&quot;, attack)
+    attacker.set_meta(&quot;crit_chance&quot;, crit_chance)
+    return attacker
+
+## Create a minimal target object for damage receive tests.
+static func make_target(defense: float = 0.0, health: float = 100.0) -&gt; Node:
+    var target = Node.new()
+    target.set_meta(&quot;defense&quot;, defense)
+    target.set_meta(&quot;health&quot;, health)
+    target.set_meta(&quot;max_health&quot;, health)
+    return target
+
+## Assert damage output is within GDD-specified bounds.
+static func assert_damage_in_bounds(damage: float) -&gt; void:
+    GameAssertions.assert_in_range(damage, DAMAGE_MIN, DAMAGE_MAX, &quot;damage&quot;)
+```
+
+---
+
+## 6. Write Output
+
+呈現一份將要建立的東西的摘要：
+
+```
+## Test Helpers to Create
+
+Base helpers (engine: [engine], helper root: [helper root]):
+- [helper root]/game_assertions.[ext]
+- [helper root]/game_factory.[ext]
+[engine-specific extras]
+
+System helpers ([mode]):
+- [helper root]/[system]_factory.[ext]  ← from [system] GDD
+```
+
+問：「May I write these helper files to `[helper root]`?」
+
+**絕對不要覆蓋既有檔案。** 如果檔案已經存在，就回報：
+「Skipping `[path]` — already exists. Remove the file manually if you want it
+regenerated.」
+
+寫完之後：Verdict: **COMPLETE** — helper files created.
+
+「Helper files created. To use them in a test:
+- Godot: `class_name` is auto-imported — no explicit import needed
+- Unity: Add `using` directive or reference the test assembly
+- Unreal: `#include \&quot;Tests/Helpers/GameTestHelpers.h\&quot;` (from inside the module)」
+
+---
+
+## Collaborative Protocol
+
+- **絕對不要覆蓋既有的 helper**：它們可能含有手寫的客製內容。只產生還不存在的新檔案
+- **產生的程式碼只是起點**：產生的 factory 函式為了簡單用 metadata 的寫法；程式碼存在之後，再依實際的類別結構調整
+- **Helper 應該反映 GDD**：helper 裡的上下界與常數，要能追溯到 GDD 的 Formulas 章節，不是自己編的數值
+- **寫入前要先問**：在 `tests/` 底下建立檔案之前，一定要先確認
+
+## Next Steps
+
+- 如果測試框架還沒建好骨架，跑 `/test-setup`。
+- 用 `/dev-story` 實作 story：helper 能減少新測試檔案的樣板程式碼。
+- 跑 `/skill-test` 驗證其他可能需要 helper 涵蓋的 skill。</pre></section><section><h2>英文原文</h2><pre>---
+name: test-helpers
+description: &quot;Generate engine-specific test helper libraries — assertion utilities, factory functions, mocks in the engine&#x27;s test folder. Reduces boilerplate.&quot;
+argument-hint: &quot;[system-name | all | scaffold]&quot;
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Bash(bash &quot;*/.claude/skills/test-helpers/../../hooks/yaml-helper.sh&quot; resolve_config *)
+model: sonnet
+---
+
+!`bash &quot;${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh&quot; resolve_config --keys automation`
+
+**Automation mode**: Resolve `modes.automation` (`project.local.yaml` →
+`project.yaml` → default `collaborative`). Every `AskUserQuestion` call and
+every file write follows `.claude/docs/automation-modes.md`
+(collaborative asks always · guided major-only · autonomous logs and proceeds;
+`automation_always_ask` categories always prompt).
+
+# Test Helpers
+
+Writing test cases is faster and more consistent when common setup, teardown,
+and assertion patterns are abstracted into helpers. This skill generates a
+`tests/helpers/` library tailored to the project&#x27;s actual engine, language,
+and systems — so every developer writes less boilerplate and more assertions.
+
+**Output:** engine-specific helper files in the engine&#x27;s **helper root** —
+the only place its test runner compiles them (`.claude/docs/directory-structure.md`):
+
+| Engine | Helper root |
+|---|---|
+| Godot | `tests/helpers/` |
+| Unity | `Assets/Tests/EditMode/Helpers/` — inside the `EditModeTests` assembly `/test-setup` creates. If PlayMode tests need the same helpers, ask before creating `Assets/Tests/Helpers/TestHelpers.asmdef` and referencing it from both test assemblies. |
+| Unreal | `Source/&lt;Module&gt;/Private/Tests/Helpers/` |
+
+`tests/helpers/` below means the helper root for the project&#x27;s engine.
+
+**When to run:**
+- After `/test-setup` scaffolds the framework (first time)
+- When multiple test files repeat the same setup boilerplate
+- When starting to write tests for a new system
+
+---
+
+## Assertions: use the project&#x27;s test framework, never bare `assert()`
+
+**Generated helpers must assert through the configured test framework&#x27;s assertion
+API**, resolved from `testing.framework` — not through GDScript&#x27;s built-in
+`assert()`.
+
+Two things go wrong with a bare `assert()` in a helper, and both are silent:
+
+1. **It aborts the run instead of failing the test.** A framework assertion
+   records a failure and continues, so one broken expectation yields one red test.
+   A bare `assert()` halts execution, so the first failure hides every result
+   after it.
+2. **It is stripped in release builds.** A helper library built on `assert()`
+   stops asserting entirely in exactly the build you most want checked, and does
+   so without any error — the tests still &quot;pass&quot;.
+
+**Look up the assertion form for the configured framework before generating
+code.** Do not copy the forms in this file or in other skills&#x27; examples as
+authoritative — they are illustrative and have drifted (`assert_eq`,
+`assert_true` and `assert_that` all appear across the repo). If you cannot
+confirm the correct API for the project&#x27;s framework, say so and generate no
+helper rather than guessing.
+
+**Helpers must not extend the framework&#x27;s test-suite base class.** A file in
+`tests/helpers/` that extends the suite type is discovered by the runner as a
+test suite containing zero tests. Helpers are plain classes; only real test files
+extend the suite.
+
+---
+
+## 1. Parse Arguments
+
+**Modes:**
+- `/test-helpers [system-name]` — generate helpers for a specific system
+  (e.g., `/test-helpers combat`)
+- `/test-helpers all` — generate helpers for all systems with test files
+- `/test-helpers scaffold` — generate only the base helper library (no
+  system-specific helpers); use this on first run
+- No argument — run `scaffold` if no helpers exist, else `all`
+
+---
+
+## 2. Detect Engine and Language
+
+Read from `project.yaml` first, falling back to `.claude/docs/technical-preferences.md` for any key that is absent or empty:
+- `engine.name` (else the `Engine:` value)
+- `engine.language` (else the `Language:` value)
+- `testing.framework` (else `Framework:` from the Testing section)
+
+If the engine is not configured in either source: &quot;Engine not configured. Run `/setup-engine` first.&quot;
+
+---
+
+## 3. Load Existing Test Patterns
+
+Scan the engine&#x27;s test root for patterns already in use (Godot `tests/`, Unity
+`Assets/Tests/`, Unreal `Source/&lt;Module&gt;/Private/Tests/`):
+
+```
+Glob pattern=&quot;tests/**/*_test.*&quot;                  (Godot)
+Glob pattern=&quot;Assets/Tests/**/*Tests.cs&quot;          (Unity)
+Glob pattern=&quot;Source/*/Private/Tests/**/*.cpp&quot;    (Unreal)
+```
+
+For a representative sample (up to 5 files), read the test files and extract:
+- Setup patterns (how `before_each` / `setUp` / fixtures are written)
+- Common assertion patterns (what is being asserted most often)
+- Object creation patterns (how game objects or scenes are instantiated in tests)
+- Mock/stub patterns (how dependencies are replaced)
+
+This ensures generated helpers match the project&#x27;s existing style, not a
+generic template.
+
+Also read:
+- `design/gdd/systems-index.md` — to know which systems exist
+- In-scope GDD(s) — to understand what data types and values need testing. Read
+  them by section: find the headings you need with the Grep tool (pattern `^#`,
+  content mode) and Read those ranges with offset and limit.
+- `docs/architecture/tr-registry.yaml` — to map requirements to tested systems
+
+---
+
+## 4. Generate Engine-Specific Helpers
+
+### Godot 4 (GDUnit4 / GDScript)
+
+&gt; **`FAIL_IF(...)` in the example below is a PLACEHOLDER, not an API.** It marks
+&gt; the one line you must resolve from the project&#x27;s actual test framework before
+&gt; emitting any of this, per the rule in §2. Substitute the framework&#x27;s real
+&gt; failure call — the form that **registers a failure with the runner and lets the
+&gt; suite continue** — and delete the marker comment.
+&gt;
+&gt; **It is deliberately not spelled `assert_that`, `assert_eq` or `assert_true`.**
+&gt; All three appear somewhere in this repo, they disagree, and **GdUnit4&#x27;s API is
+&gt; not covered by `docs/engine-reference/`** — so writing any of them here would be
+&gt; asserting an API this repo cannot source, in the file whose whole job is to stop
+&gt; people doing that. If you cannot confirm the correct call for the configured
+&gt; framework, §2 already tells you the answer: **generate no helper.** An
+&gt; unresolved `FAIL_IF` reaching disk is a bug; a missing helper is a task.
+&gt;
+&gt; Worked examples must obey §2 too — a bare `assert()` here would be the exact
+&gt; form §2 forbids, sixty lines below §2 forbidding it. A rule stated in prose
+&gt; does not reach its own worked example unless someone makes it.
+
+**Base helper** (`tests/helpers/game_assertions.gd`):
+
+```gdscript
+## Game-specific assertion utilities for [Project Name] tests.
+## Domain-specific helpers built on the project&#x27;s test framework.
+##
+## Usage (static — no instance needed):
+##   GameAssertions.assert_in_range(entity.health, 0, entity.max_health, &quot;health&quot;)
+
+class_name GameAssertions
+extends RefCounted
+
+## Assert a value is within the inclusive range [min_val, max_val].
+## Use for any formula output that has defined bounds in a GDD.
+static func assert_in_range(
+    value: float,
+    min_val: float,
+    max_val: float,
+    label: String = &quot;value&quot;
+) -&gt; void:
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(
+        not (value &gt;= min_val and value &lt;= max_val),
+        &quot;%s %.2f is outside expected range [%.2f, %.2f]&quot; % [label, value, min_val, max_val]
+    )
+
+## Assert a signal was emitted during a callable block.
+## Usage: assert_signal_emitted(entity, &quot;health_changed&quot;, func(): entity.take_damage(10))
+static func assert_signal_emitted(
+    obj: Object,
+    signal_name: String,
+    action: Callable
+) -&gt; void:
+    # A lambda captures a local by value: `emitted = true` inside it would set
+    # the lambda&#x27;s own copy. Mutate a Dictionary it shares instead. `...args`
+    # (4.5+) accepts a signal with any number of arguments.
+    var state := {&quot;emitted&quot;: false}
+    obj.connect(signal_name, func(...args): state.emitted = true)
+    action.call()
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(not state.emitted, &quot;Expected signal &#x27;%s&#x27; to be emitted, but it was not.&quot; % signal_name)
+
+## Assert that a callable does NOT emit a signal.
+static func assert_signal_not_emitted(
+    obj: Object,
+    signal_name: String,
+    action: Callable
+) -&gt; void:
+    var state := {&quot;emitted&quot;: false}  # a Dictionary, as above
+    obj.connect(signal_name, func(...args): state.emitted = true)
+    action.call()
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(state.emitted, &quot;Expected signal &#x27;%s&#x27; NOT to be emitted, but it was.&quot; % signal_name)
+
+## Assert a node exists at path within a parent.
+static func assert_node_exists(parent: Node, path: NodePath) -&gt; void:
+    # FRAMEWORK ASSERT — resolve per the rule above; do not emit `assert()`.
+    FAIL_IF(
+        not parent.has_node(path),
+        &quot;Expected node at path &#x27;%s&#x27; to exist.&quot; % str(path)
+    )
+```
+
+**Factory helper** (`tests/helpers/game_factory.gd`):
+
+```gdscript
+## Factory functions for creating test game objects.
+## Returns minimal objects configured for unit testing (no scene tree required).
+##
+## Usage: var player = GameFactory.make_player(health: 100)
+
+class_name GameFactory
+extends RefCounted
+
+## Create a minimal player-like object for testing.
+## Override fields as needed.
+static func make_player(health: int = 100) -&gt; Node:
+    var player = Node.new()
+    player.set_meta(&quot;health&quot;, health)
+    player.set_meta(&quot;max_health&quot;, health)
+    return player
+```
+
+**Scene helper** (`tests/helpers/scene_runner_helper.gd`):
+
+```gdscript
+## Utilities for scene-based integration tests. For input simulation and frame
+## stepping, use gdUnit4&#x27;s own `scene_runner()` from inside the suite.
+
+class_name SceneRunnerHelper
+extends RefCounted
+
+## Load a scene under `host` — the calling test suite, which passes `self` —
+## and wait one frame for _ready() to complete. A plain class, so the runner
+## never discovers this file as a suite with zero tests.
+static func load_scene_and_wait(host: Node, scene_path: String) -&gt; Node:
+    var scene: Node = load(scene_path).instantiate()
+    host.add_child(scene)
+    await host.get_tree().process_frame
+    return scene
+```
+
+---
+
+### Unity (NUnit / C#)
+
+**Base helper** (`Assets/Tests/EditMode/Helpers/GameAssertions.cs`):
+
+```csharp
+using NUnit.Framework;
+using UnityEngine;
+
+/// &lt;summary&gt;
+/// Game-specific assertion utilities for [Project Name] tests.
+/// Extends NUnit&#x27;s Assert with domain-specific helpers.
+/// &lt;/summary&gt;
+public static class GameAssertions
+{
+    /// &lt;summary&gt;
+    /// Assert a value is within an inclusive range [min, max].
+    /// Use for any formula output defined in GDD Formulas sections.
+    /// &lt;/summary&gt;
+    public static void AssertInRange(float value, float min, float max, string label = &quot;value&quot;)
+    {
+        Assert.That(value, Is.InRange(min, max),
+            $&quot;{label} ({value:F2}) is outside expected range [{min:F2}, {max:F2}]&quot;);
+    }
+
+    /// &lt;summary&gt;Assert a UnityEvent or C# event was raised during an action.&lt;/summary&gt;
+    public static void AssertEventRaised(ref bool wasCalled, System.Action action, string eventName)
+    {
+        wasCalled = false;
+        action();
+        Assert.IsTrue(wasCalled, $&quot;Expected event &#x27;{eventName}&#x27; to be raised, but it was not.&quot;);
+    }
+
+    /// &lt;summary&gt;Assert a component exists on a GameObject.&lt;/summary&gt;
+    public static void AssertHasComponent&lt;T&gt;(GameObject obj) where T : Component
+    {
+        var component = obj.GetComponent&lt;T&gt;();
+        Assert.IsNotNull(component,
+            $&quot;Expected GameObject &#x27;{obj.name}&#x27; to have component {typeof(T).Name}.&quot;);
+    }
+}
+```
+
+**Factory helper** (`Assets/Tests/EditMode/Helpers/GameFactory.cs`):
+
+```csharp
+using UnityEngine;
+
+/// &lt;summary&gt;
+/// Factory methods for creating minimal test objects without loading scenes.
+/// &lt;/summary&gt;
+public static class GameFactory
+{
+    /// &lt;summary&gt;Create a minimal GameObject with a named component for testing.&lt;/summary&gt;
+    public static GameObject MakeGameObject(string name = &quot;TestObject&quot;)
+    {
+        var go = new GameObject(name);
+        return go;
+    }
+
+    /// &lt;summary&gt;
+    /// Create a ScriptableObject of type T for data-driven tests.
+    /// Dispose with Object.DestroyImmediate after test.
+    /// &lt;/summary&gt;
+    public static T MakeScriptableObject&lt;T&gt;() where T : ScriptableObject
+    {
+        return ScriptableObject.CreateInstance&lt;T&gt;();
+    }
+}
+```
+
+---
+
+### Unreal Engine (C++)
+
+**Base helper** (`Source/&lt;Module&gt;/Private/Tests/Helpers/GameTestHelpers.h`):
+
+```cpp
+#pragma once
+
+#include &quot;CoreMinimal.h&quot;
+#include &quot;Misc/AutomationTest.h&quot;
+
+/**
+ * Game-specific assertion macros and helpers for [Project Name] automation tests.
+ * Include in any test file that needs domain-specific assertions.
+ *
+ * Usage:
+ *   GAME_TEST_ASSERT_IN_RANGE(TestName, DamageValue, 10.0f, 50.0f, TEXT(&quot;Damage&quot;));
+ */
+
+// Assert a float value is within inclusive range [Min, Max]
+#define GAME_TEST_ASSERT_IN_RANGE(TestName, Value, Min, Max, Label) \
+    TestTrue( \
+        FString::Printf(TEXT(&quot;%s (%.2f) in range [%.2f, %.2f]&quot;), Label, Value, Min, Max), \
+        (Value) &gt;= (Min) &amp;&amp; (Value) &lt;= (Max) \
+    )
+
+// Assert a UObject pointer is valid (not null, not garbage collected)
+#define GAME_TEST_ASSERT_VALID(TestName, Ptr, Label) \
+    TestTrue( \
+        FString::Printf(TEXT(&quot;%s is valid&quot;), Label), \
+        IsValid(Ptr) \
+    )
+
+// Assert an Actor is in the world (spawned successfully)
+#define GAME_TEST_ASSERT_SPAWNED(TestName, ActorPtr, ClassName) \
+    TestNotNull( \
+        FString::Printf(TEXT(&quot;Spawned actor of class %s&quot;), TEXT(#ClassName)), \
+        ActorPtr \
+    )
+
+/**
+ * Helper to create a minimal test world.
+ * Remember to call World-&gt;DestroyWorld(false) in teardown.
+ */
+namespace GameTestHelpers
+{
+    inline UWorld* CreateTestWorld(const FString&amp; WorldName = TEXT(&quot;TestWorld&quot;))
+    {
+        UWorld* World = UWorld::CreateWorld(EWorldType::Game, false);
+        FWorldContext&amp; WorldContext = GEngine-&gt;CreateNewWorldContext(EWorldType::Game);
+        WorldContext.SetCurrentWorld(World);
+        return World;
+    }
+}
+```
+
+---
+
+## 5. Generate System-Specific Helpers
+
+For `[system-name]` or `all` modes, generate a helper per system:
+
+Read only the GDD sections this needs — `Grep pattern=&quot;^## ([0-9]+\. )?(Formulas|Edge Cases|Detailed Rules|Detailed Design)&quot; path=&quot;design/gdd/[system].md&quot; output_mode=&quot;content&quot; -A 30` (the optional number matches a reverse-documented GDD&#x27;s `## 4. Formulas`) — rather than a full read (every peer skill section-greps GDDs; in `all` mode a full read multiplies across each system&#x27;s 400+-line GDD). Extract:
+- Data types (entity types, component names)
+- Formula variables and their bounds
+- Common test scenarios mentioned in Edge Cases
+
+Generate `tests/helpers/[system]_factory.[ext]` with factory functions
+specific to that system&#x27;s objects.
+
+Example pattern for a `combat` system (Godot/GDScript):
+
+```gdscript
+## Factory and assertion helpers for Combat system tests.
+## Generated by /test-helpers combat on [date].
+## Based on: design/gdd/combat.md
+
+class_name CombatTestFactory
+extends RefCounted
+
+const DAMAGE_MIN := 0
+const DAMAGE_MAX := 999  # From GDD: damage formula upper bound
+
+## Create a minimal attacker object for damage formula tests.
+static func make_attacker(attack: float = 10.0, crit_chance: float = 0.0) -&gt; Node:
+    var attacker = Node.new()
+    attacker.set_meta(&quot;attack&quot;, attack)
+    attacker.set_meta(&quot;crit_chance&quot;, crit_chance)
+    return attacker
+
+## Create a minimal target object for damage receive tests.
+static func make_target(defense: float = 0.0, health: float = 100.0) -&gt; Node:
+    var target = Node.new()
+    target.set_meta(&quot;defense&quot;, defense)
+    target.set_meta(&quot;health&quot;, health)
+    target.set_meta(&quot;max_health&quot;, health)
+    return target
+
+## Assert damage output is within GDD-specified bounds.
+static func assert_damage_in_bounds(damage: float) -&gt; void:
+    GameAssertions.assert_in_range(damage, DAMAGE_MIN, DAMAGE_MAX, &quot;damage&quot;)
+```
+
+---
+
+## 6. Write Output
+
+Present a summary of what will be created:
+
+```
+## Test Helpers to Create
+
+Base helpers (engine: [engine], helper root: [helper root]):
+- [helper root]/game_assertions.[ext]
+- [helper root]/game_factory.[ext]
+[engine-specific extras]
+
+System helpers ([mode]):
+- [helper root]/[system]_factory.[ext]  ← from [system] GDD
+```
+
+Ask: &quot;May I write these helper files to `[helper root]`?&quot;
+
+**Never overwrite existing files.** If a file already exists, report:
+&quot;Skipping `[path]` — already exists. Remove the file manually if you want it
+regenerated.&quot;
+
+After writing: Verdict: **COMPLETE** — helper files created.
+
+&quot;Helper files created. To use them in a test:
+- Godot: `class_name` is auto-imported — no explicit import needed
+- Unity: Add `using` directive or reference the test assembly
+- Unreal: `#include \&quot;Tests/Helpers/GameTestHelpers.h\&quot;` (from inside the module)&quot;
+
+---
+
+## Collaborative Protocol
+
+- **Never overwrite existing helpers** — they may contain hand-written
+  customisations. Only generate new files that don&#x27;t exist yet
+- **Generated code is a starting point** — the generated factory functions use
+  metadata patterns for simplicity; adapt to the actual class structure once
+  the code exists
+- **Helpers should reflect the GDD** — bounds and constants in helpers should
+  trace to GDD Formulas sections, not invented values
+- **Ask before writing** — always confirm before creating files in `tests/`
+
+## Next Steps
+
+- Run `/test-setup` if the test framework has not been scaffolded yet.
+- Use `/dev-story` to implement stories — helpers reduce boilerplate in new test files.
+- Run `/skill-test` to validate other skills that may need helper coverage.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

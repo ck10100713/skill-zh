@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>homelab-network-readiness｜Skill 寫法圖鑑</title>
+<meta name="description" content="動 homelab 的 VLAN、DNS 過濾跟 VPN 之前，先檢查準備度跟回復路徑">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>40</span></a></li><li><a href="../../c/1.html">架構與重構<span>56</span></a></li><li><a href="../../c/2.html">測試與驗證<span>50</span></a></li><li><a href="../../c/3.html">除錯與調查<span>18</span></a></li><li><a href="../../c/4.html">Code Review<span>11</span></a></li><li><a href="../../c/5.html">設計與前端<span>55</span></a></li><li><a href="../../c/6.html">寫作與文件<span>30</span></a></li><li><a href="../../c/7.html">部署與發布<span>15</span></a></li><li><a href="../../c/8.html">安全護欄<span>26</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>8</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>9</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>11</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>27</span></a></li><li><a href="../../c/13.html">資料與分析<span>37</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>94</span></a></li><li><a href="../../c/15.html">商業與營運<span>110</span></a></li><li><a href="../../c/16.html">金融與投資<span>73</span></a></li><li><a href="../../c/17.html">遊戲開發<span>56</span></a></li><li><a href="../../c/18.html">個人與生活<span>12</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>79</span></a></li><li><a href="../../c/20.html">設定與維護<span>36</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>205</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>4</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>3</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>homelab-network-readiness</h1>
+<p class="meta">affaan-m ｜ 雲端與基礎設施 ｜ <a href="https://github.com/affaan-m/everything-claude-code/blob/main/skills/homelab-network-readiness/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">動 homelab 的 VLAN、DNS 過濾跟 VPN 之前，先檢查準備度跟回復路徑</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: homelab-network-readiness
+description: homelab 的 VLAN 分段、本地 DNS 過濾（Pi-hole、AdGuard Home）與 WireGuard 類遠端存取的準備度檢查清單。規劃或審查家用網路變更時使用，例如把單一扁平網路切成 trusted、IoT、guest 或 management VLAN、把 DHCP 搬到本地 resolver，或加 VPN 存取，要在動 router、firewall、DHCP 或 VPN 設定之前用。
+metadata:
+  origin: community
+---
+
+# Homelab Network Readiness
+
+在改動家用或小型實驗室網路之前用這個 skill，特別是同時牽涉 VLAN、
+Pi-hole 或其他本地 DNS resolver、firewall 規則，以及遠端 VPN 存取的情況。
+
+這是規劃與審查用的 skill。除非目標平台、現有拓撲、回復路徑、console 存取方式
+和維護時段全部都已經確定，否則不要把它變成可以直接複製貼上的 router、
+firewall 或 VPN 設定。
+
+## When to Use
+
+- 準備把扁平網路切成 trusted、IoT、guest、server 或
+  management VLAN。
+- 把 DHCP client 搬到 Pi-hole、AdGuard Home、Unbound 或其他本地 DNS
+  resolver。
+- 加入 WireGuard、Tailscale、ZeroTier、OpenVPN 或 router 內建的 VPN 存取。
+- 檢查某個 homelab 變更會不會讓操作者被鎖在 gateway、
+  switch、access point、DNS 伺服器或 VPN 伺服器之外。
+- 把一個不太正式的家用網路想法，變成有驗證證據的分階段遷移計畫。
+
+## Safety Rules
+
+- 第一次回答要保持唯讀：盤點、風險、分階段計畫、驗證，
+  還有回復方式。
+- 不要把 gateway 管理介面、DNS resolver、SSH、NAS console 或 VPN
+  管理介面直接暴露到公網。
+- 沒有確認平台、也沒有回復程序，就不要提供 firewall、NAT、VLAN、DHCP 或 VPN 指令。
+- 在改 management VLAN、trunk port、firewall 預設政策，或 DHCP/DNS 設定之前，
+  一定要有帶外（out-of-band）或人在現場的 console 存取。
+- 在把整個網路指向新的 DNS resolver 或 VPN 路由之前，
+  要先保留一條能回到網際網路的可用路徑。
+- 在操作者明確選擇別的做法之前，把 IoT、guest、攝影機和實驗室伺服器網路
+  都當成不同的信任區。
+
+## Required Inventory
+
+在給出實作步驟之前先收集這些資訊：
+
+| 範圍 | 問題 |
+| --- | --- |
+| Internet edge | modem 或 ONT 是什麼？ISP 的 router 是 bridge 模式，還是仍然在做路由？ |
+| Gateway | 誰負責路由、firewall、DHCP，以及終結 VPN？ |
+| Switching | 哪些 switch port 是 uplink、access port、trunk，或是 unmanaged？ |
+| Wi-Fi | 哪些 SSID 對應到哪些網路？AP 是有線還是 mesh？ |
+| Addressing | 現在有哪些子網？哪些網段會跟 VPN 站點衝突？ |
+| DNS/DHCP | 現在是哪個服務在發 lease 和 resolver 位址？ |
+| Management | 變更之後，操作者要怎麼連到 gateway、switch 和 AP？ |
+| Recovery | 如果 DNS、DHCP、VLAN 或 VPN 路由壞了，本地端能回復什麼？ |
+
+## VLAN And Trust-Zone Plan
+
+先從意圖開始，不要從廠商語法開始。
+
+| 區域 | 典型內容 | 預設政策 |
+| --- | --- | --- |
+| Trusted | 筆電、手機、管理工作站 | 只有需要時才能存取共用服務和管理介面 |
+| Servers | NAS、Home Assistant、實驗室主機、DNS resolver | 只接受來自 trusted client 的狹窄 inbound 流量 |
+| IoT | 電視、智慧插座、攝影機、喇叭 | 只有網際網路存取，另外只開明確列出的例外 |
+| Guest | 訪客裝置 | 只能上網，連不到 LAN |
+| Management | Gateway、switch、AP、controller | 只能從 trusted 的管理裝置連線 |
+| VPN | 遠端 client | 存取範圍跟 trusted client 一樣或更窄 |
+
+在建議 VLAN ID 或子網之前，先確認：
+
+1. Gateway 支援 inter-VLAN routing 和 firewall 規則。
+2. Switch 支援需要的 tagged 與 untagged port 行為。
+3. AP 可以把 SSID 對應到 VLAN。
+4. 操作者知道變更期間自己是從哪個 port 連線進來的。
+5. 改了 trunk 和 SSID 之後，management 網路仍然連得到。
+
+## DNS Filtering Readiness
+
+Pi-hole 或其他本地 resolver 應該當成一個依賴來導入，不要變成
+單點故障。
+
+1. 在把 resolver 放進 DHCP option 之前，先給它保留一個固定位址。
+2. 確認它能解析公開 DNS 和本地的 `home.arpa` 名稱。
+3. 保留 gateway 或第二台 resolver 當作暫時的 fallback。
+4. 在改每個 DHCP scope 之前，先拿一台 client 或一個 VLAN 測試。
+5. 記下哪些網路可以繞過過濾，以及原因。
+6. 檢查封鎖規則不會弄壞 captive portal、公司 VPN、韌體更新，
+   或醫療/保全裝置。
+
+有用的驗證證據：
+
+```text
+Client gets expected DHCP lease
+Client receives expected DNS resolver
+Public DNS lookup succeeds
+Local home.arpa lookup succeeds
+Blocked test domain is blocked only where intended
+Gateway and DNS admin interfaces are not reachable from guest or IoT networks
+```
+
+## Remote Access Readiness
+
+WireGuard 類的存取，要在產生金鑰或開 port 之前，先決定 VPN 可以連到什麼。
+
+| 模式 | 適用時機 | 風險備註 |
+| --- | --- | --- |
+| Split tunnel 到單一子網 | 遠端管理 NAS 或實驗室主機 | 路由清單要保持狹窄 |
+| Split tunnel 到 trusted 服務 | 用 IP 或 DNS 存取特定應用 | 需要精準的 firewall 規則 |
+| Full tunnel | 不受信任的網路或出差 | 頻寬用得更多，DNS 也要負責 |
+| Overlay VPN | 用身分控制讓遠端存取更簡單 | 還是需要檢查 ACL |
+
+在操作者確認以下事項之前，不要建議做 port forwarding：
+
+- VPN endpoint 已經打過 patch，而且有人持續維護。
+- 轉發的 port 只會到 VPN 服務，不會到管理介面。
+- 已經搞清楚 dynamic DNS、公網 IP 行為，以及 ISP 有沒有 CGNAT。
+- 可以撤銷 peer 的金鑰，不用把整個網路重建。
+- 可以用 log 或連線狀態確認誰在什麼時候連線。
+
+## Change Sequence
+
+偏好小而可回復的變更：
+
+1. 把目前的拓撲、IP 規劃、DHCP 設定、DNS 設定和
+   firewall 規則做個快照。
+2. 為 gateway、DNS、controller、AP、NAS 和
+   VPN endpoint 保留基礎設施用的位址。
+3. 建立新的區域或 VLAN，先不要搬任何關鍵裝置。
+4. 搬一台測試用 client，驗證 DHCP、DNS、路由、上網和封鎖
+   行為。
+5. 為必要的流量加上狹窄的 firewall 例外。
+6. 搬一組低風險的裝置。
+7. 加入 VPN 存取，路由和 firewall 政策要用能滿足需求的最窄設定。
+8. 記錄最終狀態、已知的例外，以及回復用的指令或 UI 步驟。
+
+## Review Checklist
+
+- 每個網路都有存在的理由和清楚的信任邊界。
+- 從 guest、IoT 或公網都連不到任何管理介面。
+- DNS 掛掉不會讓操作者失去在本地回復的能力。
+- DHCP scope 的變更在大範圍推行前，先在一台 client 上測過。
+- VPN client 只拿到它們需要的路由和 DNS 設定。
+- 區域之間的 firewall 規則是預設拒絕，再加上有名字的例外。
+- 操作者仍然連得到 gateway、switch、AP、DNS 和 VPN 的管理介面。
+- 回復方式要用所選平台 UI 或 CLI 的同一套用語寫下來。
+
+## Anti-Patterns
+
+- 在還不知道哪些 switch port 和 SSID 承載哪些 VLAN 之前，就先做網路分段。
+- 把管理工作站移出唯一連得到的 management 網路。
+- 在測 fallback DNS 之前，就把所有 DHCP scope 指向 Pi-hole。
+- 把 NAS、DNS、router 或 hypervisor 的管理介面直接公開到
+  網際網路。
+- 把 VPN 存取當成等同於完整的 trusted LAN 存取。
+- 暫時加了 allow-all 的 firewall 規則，然後忘了移除。
+- 沒確認確切的平台語法，就照抄別的廠商或別的韌體版本的指令。
+
+## See Also
+
+- Skill: `homelab-network-setup`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section><section><h2>英文原文</h2><pre>---
+name: homelab-network-readiness
+description: Readiness checklist for homelab VLAN segmentation, local DNS filtering (Pi-hole, AdGuard Home), and WireGuard-style remote access. Use when planning or reviewing home network changes — splitting a flat network into trusted, IoT, guest, or management VLANs, moving DHCP to a local resolver, or adding VPN access — before changing router, firewall, DHCP, or VPN configuration.
+metadata:
+  origin: community
+---
+
+# Homelab Network Readiness
+
+Use this skill before changing a home or small-lab network that mixes VLANs,
+Pi-hole or another local DNS resolver, firewall rules, and remote VPN access.
+
+This is a planning and review skill. Do not turn it into copy-paste router,
+firewall, or VPN configuration unless the target platform, current topology,
+rollback path, console access, and maintenance window are all known.
+
+## When to Use
+
+- Preparing to split a flat network into trusted, IoT, guest, server, or
+  management VLANs.
+- Moving DHCP clients to Pi-hole, AdGuard Home, Unbound, or another local DNS
+  resolver.
+- Adding WireGuard, Tailscale, ZeroTier, OpenVPN, or router-native VPN access.
+- Reviewing whether a homelab change can lock the operator out of the gateway,
+  switch, access point, DNS server, or VPN server.
+- Turning an informal home-network idea into a staged migration plan with
+  validation evidence.
+
+## Safety Rules
+
+- Keep the first answer read-only: inventory, risks, staged plan, validation,
+  and rollback.
+- Do not expose gateway admin panels, DNS resolvers, SSH, NAS consoles, or VPN
+  management UIs directly to the public internet.
+- Do not provide firewall, NAT, VLAN, DHCP, or VPN commands without a confirmed
+  platform and a rollback procedure.
+- Require out-of-band or same-room console access before changing management
+  VLANs, trunk ports, firewall default policies, or DHCP/DNS settings.
+- Keep a working path back to the internet before pointing the whole network at
+  a new DNS resolver or VPN route.
+- Treat IoT, guest, camera, and lab-server networks as different trust zones
+  until the operator explicitly chooses otherwise.
+
+## Required Inventory
+
+Collect this before giving implementation steps:
+
+| Area | Questions |
+| --- | --- |
+| Internet edge | What is the modem or ONT? Is the ISP router bridged or still routing? |
+| Gateway | What routes, firewalls, handles DHCP, and terminates VPNs? |
+| Switching | Which switch ports are uplinks, access ports, trunks, or unmanaged? |
+| Wi-Fi | Which SSIDs map to which networks, and are APs wired or mesh? |
+| Addressing | What subnets exist today, and which ranges conflict with VPN sites? |
+| DNS/DHCP | Which service currently hands out leases and resolver addresses? |
+| Management | How will the operator reach the gateway, switch, and AP after changes? |
+| Recovery | What can be reverted locally if DNS, DHCP, VLANs, or VPN routes break? |
+
+## VLAN And Trust-Zone Plan
+
+Start with intent rather than vendor syntax.
+
+| Zone | Typical contents | Default policy |
+| --- | --- | --- |
+| Trusted | Laptops, phones, admin workstations | Can reach shared services and management only when needed |
+| Servers | NAS, Home Assistant, lab hosts, DNS resolver | Accepts narrow inbound flows from trusted clients |
+| IoT | TVs, smart plugs, cameras, speakers | Internet access plus explicit exceptions only |
+| Guest | Visitor devices | Internet-only, no LAN reachability |
+| Management | Gateway, switches, APs, controllers | Reachable only from trusted admin devices |
+| VPN | Remote clients | Same or narrower access than trusted clients |
+
+Before recommending VLAN IDs or subnets, confirm:
+
+1. The gateway supports inter-VLAN routing and firewall rules.
+2. The switch supports the required tagged and untagged port behavior.
+3. The APs can map SSIDs to VLANs.
+4. The operator knows which port they are connected through during the change.
+5. The management network remains reachable after trunk and SSID changes.
+
+## DNS Filtering Readiness
+
+Pi-hole or another local resolver should be introduced as a dependency, not as a
+single point of failure.
+
+1. Give the resolver a reserved address before using it in DHCP options.
+2. Confirm it can resolve public DNS and local `home.arpa` names.
+3. Keep the gateway or a second resolver available as a temporary fallback.
+4. Test one client or one VLAN before changing every DHCP scope.
+5. Document which networks may bypass filtering and why.
+6. Check that blocking rules do not break captive portals, work VPNs, firmware
+   updates, or medical/security devices.
+
+Useful validation evidence:
+
+```text
+Client gets expected DHCP lease
+Client receives expected DNS resolver
+Public DNS lookup succeeds
+Local home.arpa lookup succeeds
+Blocked test domain is blocked only where intended
+Gateway and DNS admin interfaces are not reachable from guest or IoT networks
+```
+
+## Remote Access Readiness
+
+For WireGuard-style access, decide what the VPN is allowed to reach before
+generating keys or opening ports.
+
+| Mode | Use when | Risk notes |
+| --- | --- | --- |
+| Split tunnel to one subnet | Remote admin for NAS or lab hosts | Keep route list narrow |
+| Split tunnel to trusted services | Access selected apps by IP or DNS | Requires precise firewall rules |
+| Full tunnel | Untrusted networks or travel | More bandwidth and DNS responsibility |
+| Overlay VPN | Simpler remote access with identity controls | Still needs ACL review |
+
+Do not recommend port forwarding until the operator confirms:
+
+- The VPN endpoint is patched and actively maintained.
+- The forwarded port goes only to the VPN service, not an admin UI.
+- Dynamic DNS, public IP behavior, and ISP CGNAT status are understood.
+- Peer keys can be revoked without rebuilding the whole network.
+- Logs or connection status can verify who connected and when.
+
+## Change Sequence
+
+Prefer small, reversible changes:
+
+1. Snapshot the current topology, IP plan, DHCP settings, DNS settings, and
+   firewall rules.
+2. Reserve infrastructure addresses for gateway, DNS, controller, APs, NAS, and
+   VPN endpoint.
+3. Create the new zone or VLAN without moving critical devices.
+4. Move one test client and validate DHCP, DNS, routing, internet, and block
+   behavior.
+5. Add narrow firewall exceptions for required flows.
+6. Move one low-risk device group.
+7. Add VPN access with the narrowest route and firewall policy that satisfies
+   the use case.
+8. Document final state, known exceptions, and rollback commands or UI steps.
+
+## Review Checklist
+
+- Each network has a reason to exist and a clear trust boundary.
+- No management interface is reachable from guest, IoT, or the public internet.
+- DNS failure does not take down the operator&#x27;s ability to recover locally.
+- DHCP scope changes were tested on one client before broad rollout.
+- VPN clients receive only the routes and DNS settings they need.
+- Firewall rules are default-deny between zones, with named exceptions.
+- The operator can still reach gateway, switch, AP, DNS, and VPN admin surfaces.
+- Rollback is documented in the same vocabulary as the chosen platform UI or
+  CLI.
+
+## Anti-Patterns
+
+- Segmenting networks before knowing which switch ports and SSIDs carry which
+  VLANs.
+- Moving the admin workstation off the only reachable management network.
+- Pointing all DHCP scopes at a Pi-hole before testing fallback DNS.
+- Publishing NAS, DNS, router, or hypervisor management directly to the
+  internet.
+- Treating VPN access as equivalent to full trusted-LAN access.
+- Adding allow-all firewall rules temporarily and forgetting to remove them.
+- Copying commands from another vendor or firmware version without checking the
+  exact platform syntax.
+
+## See Also
+
+- Skill: `homelab-network-setup`
+- Skill: `network-config-validation`
+- Skill: `network-interface-health`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>
