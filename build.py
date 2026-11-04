@@ -133,4 +133,11 @@ q.addEventListener('input', async () => {{
 }});
 </script>'''
 write('index.html', shell(TITLE, home, 0))
+
+# README 的來源表跟著 data/ 走
+rows = '\n'.join(f'| {v[0]["author"]} | [{v[0]["repo"]}](https://github.com/{v[0]["repo"]}) | {v[0]["license"]} | {len(v)} |'
+                 for v in sorted(sources.values(), key=lambda v: -len(v)))
+readme = open(f'{ROOT}/README.md').read()
+a, b = readme.index('<!-- sources:start -->'), readme.index('<!-- sources:end -->')
+write('README.md', readme[:a] + f'<!-- sources:start -->\n| 作者 | 來源 | 授權 | 份數 |\n|---|---|---|---|\n{rows}\n' + readme[b:])
 print(f'{len(skills)} skills, {len(sources)} sources')
