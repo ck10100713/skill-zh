@@ -3,13 +3,36 @@ layout: default
 ---
 <h1>{{ site.title }}</h1>
 <p class="summary">{{ site.description }}。</p>
+<input id="q" class="search" type="search" placeholder="搜尋 skill、作者或用途" autocomplete="off">
 {% assign skills = site.pages | where_exp: "p", "p.category" %}
 {% for cat in site.skill_categories %}
+{% assign items = skills | where: "category", cat | sort: "skill" %}
+{% if items.size > 0 %}
+<section class="group">
 <h2 class="cat">{{ cat }}</h2>
 <div class="cards">
-  {% assign items = skills | where: "category", cat | sort: "skill" %}
   {% for p in items %}
   <a href="{{ p.url | relative_url }}"><strong>{{ p.skill }}</strong><small>{{ p.author }}</small><p>{{ p.summary }}</p></a>
   {% endfor %}
 </div>
+</section>
+{% endif %}
 {% endfor %}
+<p id="none" class="summary" hidden>找不到符合的 skill。</p>
+<script>
+// ponytail: 純文字比對，上千筆再考慮索引
+const q = document.getElementById('q');
+q.addEventListener('input', () => {
+  const t = q.value.trim().toLowerCase();
+  let any = false;
+  document.querySelectorAll('.group').forEach(g => {
+    let n = 0;
+    g.querySelectorAll('.cards a').forEach(a => {
+      const hit = !t || a.textContent.toLowerCase().includes(t);
+      a.hidden = !hit; if (hit) n++;
+    });
+    g.hidden = n === 0; if (n) any = true;
+  });
+  document.getElementById('none').hidden = any;
+});
+</script>

@@ -1,11 +1,11 @@
 ---
-layout: default
-skill: frontend-design
-author: Anthropic
-category: 設計
-summary: 做出有主見、不像 AI 套版的前端設計
-source: https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md
-license: Apache-2.0
+layout: "default"
+skill: "frontend-design"
+author: "Anthropic"
+category: "設計與前端"
+summary: "做出有主見、不像 AI 套版的前端設計"
+source: "https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md"
+license: "Apache-2.0"
 ---
 
 <div class="pair" markdown="1">
@@ -13,6 +13,7 @@ license: Apache-2.0
 
 ## 中文翻譯
 
+{% raw %}
 ~~~~~markdown
 ---
 name: frontend-design
@@ -86,12 +87,14 @@ license: 完整條款見 LICENSE.txt
 
 語氣保持口語：平實的動詞、句首大寫（sentence case）、沒有贅字，語氣配合品牌和受眾。讓每個文字元素只做一件事。
 ~~~~~
+{% endraw %}
 
 </section>
 <section markdown="1">
 
 ## 英文原文
 
+{% raw %}
 ~~~~~markdown
 ---
 name: frontend-design
@@ -165,6 +168,7 @@ Treat failure and emptiness as moments for direction, not mood. Explain what wen
 
 Keep the tone conversational: plain verbs, sentence case, no filler, with tone matched to the brand and the audience. Let each written element do exactly one job.
 ~~~~~
+{% endraw %}
 
 </section>
 </div>

@@ -1,11 +1,11 @@
 ---
-layout: default
-skill: grilling
-author: Matt Pocock
-category: 規劃與釐清
-summary: 用設計樹一輪一輪拷問你的想法，直到沒有任何假設
-source: https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md
-license: MIT
+layout: "default"
+skill: "grilling"
+author: "Matt Pocock"
+category: "規劃與釐清"
+summary: "用設計樹一輪一輪拷問你的想法，直到沒有任何假設"
+source: "https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md"
+license: "MIT"
 ---
 
 <div class="pair" markdown="1">
@@ -13,6 +13,7 @@ license: MIT
 
 ## 中文翻譯
 
+{% raw %}
 ~~~~~markdown
 ---
 name: grilling
@@ -45,12 +46,14 @@ description: 針對計畫、決策或想法，毫不留情地拷問使用者。�
 
 前線清空時，這次訪談就結束了：設計樹的每條分支都走過，沒有任何東西被默默假設。在使用者確認你們已經達成共識之前，不要依此採取行動。
 ~~~~~
+{% endraw %}
 
 </section>
 <section markdown="1">
 
 ## 英文原文
 
+{% raw %}
 ~~~~~markdown
 ---
 name: grilling
@@ -83,6 +86,7 @@ Finding _facts_ is your job, never the user's. When a frontier question needs a 
 
 The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
 ~~~~~
+{% endraw %}
 
 </section>
 </div>

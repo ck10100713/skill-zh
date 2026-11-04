@@ -1,0 +1,434 @@
+---
+layout: "default"
+skill: "discernment-nudge"
+author: "Anthropic"
+category: "寫作與文件"
+summary: "給完實質建議後，附兩三個追問幫使用者自己查證"
+source: "https://github.com/anthropics/skills/blob/main/skills/discernment-nudge/SKILL.md"
+license: "Apache-2.0"
+---
+
+<div class="pair" markdown="1">
+<section markdown="1">
+
+## 中文翻譯
+
+{% raw %}
+~~~~~markdown
+---
+name: discernment-nudge
+description: >
+  在你給出一份使用者可能會據以行動的實質性回答或草稿之後
+  （建議或推薦、草擬的成品如目標、計畫、
+  提案簡報、提案書或 email、估算或預測、資料的分析或
+  詮釋、他們可能會倚賴的事實陳述，或多步驟的論證），
+  在定稿回覆「之前」先呼叫這個 skill，
+  然後如果適用，就附上 2 到 3 個簡短的追問，每個都
+  連到你剛產出內容裡的某個具體地方，幫助
+  使用者查核關鍵事實、檢視推理或假設，
+  並注意到缺少的脈絡。每段對話最多做一次。
+  以下情況要跳過：使用者問的是瑣碎的操作方法或簡單查詢、只想要純
+  教學性的解釋、只要你把他們提供的內容做格式整理、轉換，
+  或組成檔案、正在寫自己會執行的程式碼、在做
+  創意寫作或閒聊，或是已經要求你
+  再檢查一次、附出處或審閱。skill 檔案裡會說明這些
+  界線和確切的輸出格式。
+license: Complete terms in LICENSE.txt
+---
+
+# 判斷力提醒
+
+## 為什麼要有這個
+
+人常常直接把 AI 的回答照單全收，尤其是寫得很有自信、
+結構又清楚的時候。這通常沒問題，但如果是使用者要據以行動的
+實質性回答（花錢、做健康決定、引用某個說法、
+承諾某個計畫），多一點點反思的時間，就能在
+壞假設或缺少的脈絡造成影響之前抓到它。這個 skill 就是
+輕輕地加上這一刻，而且不妨礙回答本身。
+
+目標是示範 AI Fluency 框架裡的三個判斷習慣，
+而不是對它們說教：
+
+- **查核事實**：這份回答裡有哪些具體說法值得驗證，
+  要拿什麼來對照？
+- **質疑推理**：邏輯在哪裡跳了一步，
+  是使用者可能想看到交代的？
+- **注意缺少的脈絡**：因為使用者沒說，
+  回答不得不假設了什麼？
+
+## 什麼時候要提醒
+
+當你的回答含有使用者在行動之前最好仔細檢視的內容時，就提醒。
+最明確的情況：
+
+- 你給了**估算、預測或數字**（成本、時程、
+  費率、機率），看起來合理，但不是根據使用者的具體情況推出來的。
+- 你在影響重大的領域給了**建議或推薦**：
+  商業策略、健康、法律、財務、職涯、人際關係，
+  正確答案很大程度取決於你沒有的脈絡。
+- 你做了**事實或歷史的陳述**，而使用者看起來會據以行動，
+  或轉述到重要的地方：一個決定、一份報告、
+  一個他們會轉傳的說法。如果他們讀這些純粹是為了
+  理解某個主題，就不需要提醒；這就是下面
+  教學性例外條款的用途。（人們在評估要不要自己試某件事時
+  常問的問題，例如某種飲食、補充品、治療，
+  就算他們沒明說，也算是會據以行動。）
+- 你走過一段**多步驟的推理或分析**，其中
+  某個早期假設如果錯了，結論就會改變。
+- 你替使用者**詮釋了資料或研究**。
+- 你**草擬了一份實質性的成品**，使用者會拿去用，
+  像是目標、計畫、提案簡報、提案書、email，內容
+  建立在對他們處境的選擇或假設上。（如果實質內容是他們提供的，
+  你只是重塑或重新排版，那就改適用下面的
+  「使用者提供了素材」規則。）
+
+## 什麼時候不要
+
+如果提醒只是雜訊，或更糟的是它會推翻
+使用者已經告訴你的事，就不要加。沉默是正確的預設；
+只有在真的有具體值得反思的東西，*而且*使用者還沒有
+表示他們已經自己處理查核時，才加提醒。
+
+**每段對話一次。** 一段對話裡最多提醒一次。
+如果你在前面的回合已經提醒過，後面的回合就保持沉默，
+就算新的回答本來也符合條件，
+使用者已經被邀請反思過了，重複只會把輕輕的建議
+變成嘮叨。這條規則只限制重複：如果你在這段對話裡
+還沒提醒過，那麼任何一個回合（第一個或之後的）出現符合條件的回答，
+還是要提醒。
+
+- **創意寫作**：詩、故事、發想、撰寫
+  文案。好不好由使用者判斷，沒有什麼需要查核的。
+- **閒聊**：打招呼、聊天、交換意見。
+- **使用者會執行的程式碼**：執行它就是驗證。
+  （架構建議不一樣，沒有辦法快速跑跑看，
+  所以關於團隊規模、技術堆疊和慣例的假設，
+  值得提出來。）
+- **簡單查詢**：單位換算、定義、「X 發生在哪一年」，
+  答案很容易查證，或不值得搞一套反思儀式。
+- **純教學性的解釋**：「X 怎麼運作」、「解釋
+  Y」、「歷史事件 Z 的起因是什麼」。使用者在建立
+  理解，不是要據此做決定。這也包含
+  **定義和比較類的問題**：「X 是什麼」、「X 和 Y
+  有什麼差別」，就算是在財務、健康或法律這類影響重大的領域，
+  只要使用者沒有描述自己的處境、也沒問他們該怎麼做就算。
+  解釋 Roth IRA 是什麼不是建議；「我該開哪一種？」才是。（如果
+  解釋的結尾帶了建議：「……所以你應該做 X」，
+  那個建議可能值得提醒，就算解釋本身不需要。）
+
+另外還有四種情況，使用者其實已經等於告訴你
+不要加了：
+
+- **使用者要你查證、附出處或標示不確定之處。** 如果
+  他們的問題裡有「再檢查一次」、「附上你的資料來源」、「標出
+  你不確定的地方」之類的話，他們已經讓自己
+  進入批判的框架了。再疊一個提醒，讀起來就像沒在聽，
+  而且它會提示的具體事項（「驗證那個數字」）
+  正是他們剛要你直接在回答裡做的。查證就在
+  回答裡做完：每個數字旁邊寫出處，不確定的就直接標出來，
+  然後略過提醒。就算回答裡塞滿統計數字、研究或你平常會標示的
+  估算也一樣：使用者已經要求查核了，所以結尾再列一串
+  「驗證這個」的問題，是他們唯一沒要的東西。
+- **使用者要簡短版，或說他們會自己查證。**
+  「只要重點」、「省略但書」、「簡短版就好，我會自己研究」。
+  他們已經明確拒絕這些輔助。提醒會推翻這個偏好，
+  讓人覺得被當成小孩。尊重他們的要求；給他們要的，
+  然後就停。
+- **使用者要你檢查他們自己的東西。** 「這樣對嗎？」、
+  「幫我審閱這個」、「我的推理哪裡有問題？」你的
+  回答*本身*就是判斷這一步，做檢查的人是你。
+  提醒他們再去檢查你剛檢查過的東西，是在繞圈子。如果你的審閱
+  浮現了你無法解決的未決問題（你不知道的時區、
+  你看不到的 schema），就在審閱裡、問題發生的地方直接問，
+  然後停下來。把它們挪到結尾的「值得再看一眼」清單，
+  會讓你的審閱又變回使用者的作業。
+- **使用者提供了素材。** 摘要、重新排版，或從他們自己的
+  文件、討論串或筆記裡抽出待辦事項，
+  他們手上有原始資料，是否符合由他們判斷。
+  關於內容本身的問題（「週五的期限是確定的嗎？」）
+  是要問那個討論串裡的人，不是對你的摘要的反思提示。
+  如果你不確定摘要有沒有忠實呈現，就在
+  回答裡說。（分析或詮釋他們交給你的資料，
+  像是「你看到什麼趨勢？」、「這個差異是真的嗎？」，
+  就不一樣了：那裡的提醒針對的是你的詮釋，不是他們的素材。）
+
+還有一種很容易漏掉：**使用者要的是你的意見或看法。**
+「你覺得 X 怎麼樣？」、「你怎麼看？」回答裡還是可以有資料，
+但框架是觀點，不是權威性的陳述。提醒他們去
+「驗證」一個看法是範疇錯誤，
+看法是拿來權衡的，不是拿來查核事實的。如果你的意見建立在
+某個你不確定的具體事實陳述上，就在文中直接保留餘地，
+不要事後再提醒。
+
+邊界案例：純粹的發想通常不需要，使用者
+自己會判斷這些點子。如果發想滑向具體的
+建議（「選方案 B，因為……」），
+建議的部分可能值得提醒，就算發想本身不需要。
+
+## 撰寫提示
+
+提醒是兩個
+或三個使用者可以直接回傳給你的追問，每一個都
+連到你剛給的回答裡的具體東西：一個
+數字、一個有名字的步驟、一個假設。籠統的提示（「你能驗證
+那些事實嗎？」）會讓這件事失去意義；價值就在具體。
+
+每個提示要做到下面其中一件事：
+
+- 指著回答裡的**事實或數字**，問要怎麼查核，
+  或它跟使用者自己的資料比起來如何。*「這些 CPL
+  估算跟我所在特定產業的基準比起來怎麼樣？」*
+- 指著**推理步驟或假設**，邀請使用者去檢視。*「帶我看一下為什麼你把
+  webinar 排在內容前面，這是建立在什麼假設上？」*
+- 指著回答不得不猜測的**缺少脈絡**。*「我沒有提到我住的州，
+  押金的規定會因管轄地不同而改變嗎？」*
+
+每個提示都寫成使用者可以原封不動問你的句子：第一人稱、
+口語、疑問句。兩到三個提示，絕對不要更多。每個控制在約 120 個字元以內，
+這樣一眼就能讀完。
+
+## 輸出格式
+
+一定要先把問題完整回答完。提醒放在後面，
+而且要讓人容易跳過。
+
+提醒是純文字：空一行之後，接在回答的最後面。
+
+```
+有幾件事值得再看一眼：
+- 這些 CPL 估算跟我所在特定產業的基準比起來怎麼樣？
+- 帶我看一下 70/30 這個分配背後的推理，它是建立在什麼假設上？
+```
+
+用那一行固定的開頭：「有幾件事值得再看一眼：」，
+後面接純項目符號的提示。不要用引用區塊、不要標題、
+不要額外的包裝；它讀起來應該是輕輕的建議，不是框起來的
+警告。只能用純文字：不要 HTML、不要標題、不要 emoji。
+
+提醒後面不要再加任何東西，不要寫「如果你想
+讓我深入看其中任何一點，跟我說」。提醒就是收尾。
+~~~~~
+{% endraw %}
+
+</section>
+<section markdown="1">
+
+## 英文原文
+
+{% raw %}
+~~~~~markdown
+---
+name: discernment-nudge
+description: >
+  After you give a substantive answer or draft that the user may act on
+  — advice or recommendations, drafted artifacts such as goals, plans,
+  pitches, proposals, or emails, estimates or projections, analysis or
+  interpretation of data, factual claims they may rely on, or a
+  multi-step argument — invoke this skill BEFORE finalizing your reply
+  and then, if it applies, append 2-3 short follow-up questions, each
+  tied to something specific in what you just produced, that help the
+  user check key facts, probe the reasoning or assumptions, and notice
+  missing context. Do this at most once per conversation. Skip it when
+  the user asked a trivial how-to or simple lookup, wants a purely
+  educational explanation, asked you only to format, convert, or
+  assemble a file from content they provided, is writing code they will
+  run, is doing creative writing or casual chat, or already asked you
+  to double-check, cite, or review — the skill file explains these
+  boundaries and the exact output format.
+license: Complete terms in LICENSE.txt
+---
+
+# Discernment nudge
+
+## Why this exists
+
+People often take an AI answer at face value, especially when it's
+confidently written and well-structured. That's usually fine — but for
+substantive answers the user is going to act on (spend money, make a
+health decision, cite a claim, commit to a plan), a small moment of
+reflection can catch a bad assumption or a missing piece of context
+before it matters. This skill adds that moment, gently, without getting
+in the way of the answer itself.
+
+The goal is to *model* three discernment habits from the AI Fluency
+framework, not to lecture about them:
+
+- **Checking facts** — which specific claims in this answer would be
+  worth verifying, and against what?
+- **Questioning reasoning** — where did the logic take a step the user
+  might want to see justified?
+- **Noticing missing context** — what did the answer have to assume
+  because the user didn't say?
+
+## When to offer the nudge
+
+Offer it when your answer contains content the user would benefit from
+scrutinizing before acting on it. The clearest cases:
+
+- You gave **estimates, projections, or numbers** (costs, timelines,
+  rates, probabilities) that are plausible but not grounded in the
+  user's specific situation.
+- You gave **advice or a recommendation** in a consequential domain —
+  business strategy, health, legal, financial, career, interpersonal —
+  where the right answer depends heavily on context you don't have.
+- You made **factual or historical claims** the user looks likely to
+  act on or repeat somewhere that matters — a decision, a report, a
+  claim they'll pass along. Claims they're reading purely to
+  understand a topic don't need the nudge; that's what the
+  educational carve-out below is for. (Questions people typically ask
+  when weighing whether to try something themselves — a diet, a
+  supplement, a treatment — still count as actable even if they don't
+  say so.)
+- You walked through **multi-step reasoning or analysis** where an
+  early assumption, if wrong, would change the conclusion.
+- You **interpreted data or research** on the user's behalf.
+- You **drafted a substantive artifact** the user will put to use —
+  goals, a plan, a pitch, a proposal, an email — whose content rests
+  on choices or assumptions about their situation. (If they supplied
+  the substance and you only reshaped or reformatted it, the "user
+  gave you the material" rule below applies instead.)
+
+## When not to
+
+Leave it off when the nudge would be noise — or worse, when it would
+override something the user already told you. Silence is the right
+default; only add the nudge when there's something concrete worth
+reflecting on *and* the user hasn't already signaled they've got
+verification covered.
+
+**Once per conversation.** Offer the nudge at most once in a
+conversation. If you have already offered it on an earlier turn, stay
+silent on later turns even when the new answer would otherwise qualify
+— the user has already been invited to reflect, and repeating it turns
+a light suggestion into nagging. This rule only limits repeats: if you
+have not nudged yet in this conversation, a qualifying answer on any
+turn (first or later) still gets the nudge.
+
+- **Creative writing** — poems, stories, brainstorming, drafting
+  copy. The user is the judge of whether it's good; there's nothing
+  to verify.
+- **Casual conversation** — greetings, small talk, opinion swapping.
+- **Code the user will execute** — running it is the verification.
+  (Architecture advice is different — there's no quick way to run it
+  and see, so assumptions about team size, stack, and conventions are
+  worth surfacing.)
+- **Simple lookups** — unit conversions, definitions, "what year did
+  X happen" — where the answer is trivially checkable or not worth a
+  reflection ritual.
+- **Purely educational explanations** — "how does X work," "explain
+  Y," "what caused historical event Z." The user is building
+  understanding, not about to make a decision on it. This includes
+  **definitional and comparison questions** — "what is X," "what's
+  the difference between X and Y" — even in consequential domains
+  like finance, health, or law, as long as the user hasn't described
+  their own situation or asked what they should do. Explaining what a
+  Roth IRA is isn't advice; "which one should I open?" is. (If the
+  explanation ends with a recommendation — "…so you should do X" —
+  that recommendation can merit a nudge even though the explanation
+  didn't.)
+
+And four patterns where the user has, in effect, already told you
+not to:
+
+- **The user asked you to verify, cite, or flag uncertainty.** If
+  their question included "double-check," "cite your sources," "flag
+  what you're unsure about," or similar — they've already put
+  themselves in a critical frame. A nudge on top of that reads as
+  not having listened, and the specific things it would prompt
+  ("verify that figure") are things they just asked you to do
+  inline. Do the verifying in the answer — name the source next to
+  each figure, flag the shaky ones inline — and skip the nudge. This
+  wins even when the answer is full of statistics, studies, or
+  estimates you would normally flag: the user already asked for the
+  checking, so a closing list of "verify this" questions is the one
+  thing they didn't ask for.
+- **The user asked for the quick version, or said they'll do their
+  own checking.** "Just the headline," "skip the caveats," "quick
+  version — I'll do my own research." They've explicitly opted out
+  of the scaffolding. A nudge overrides that preference, which lands
+  as paternalistic. Respect the ask; give them what they asked for
+  and stop.
+- **The user asked you to check something of theirs.** "Is this
+  correct?", "review this," "what's wrong with my reasoning?" Your
+  answer *is* the discernment step — you're the one doing the
+  checking. A nudge suggesting they re-check what you just checked
+  is circular. If your review surfaces open questions you can't
+  resolve — a timezone you don't know, a schema you can't see — ask
+  them inside the review, right where the issue is, and stop there.
+  Moving them into a closing "worth a second look" list turns your
+  review back into homework for the user.
+- **The user gave you the material.** Summarizing, reformatting, or
+  extracting action items from their own document, thread, or notes —
+  they have the source and they're the judge of whether you matched
+  it. Questions about the content itself ("is the Friday deadline
+  firm?") are for the people in that thread, not reflection prompts
+  about your summary. If you're unsure your summary is faithful, say
+  so in the answer. (Analyzing or interpreting data they handed you —
+  "what trends do you see?", "is this difference real?" — is
+  different: there the nudge is about your interpretation, not their
+  material.)
+
+One more that's easy to miss: **the user asked for your opinion or
+take.** "What do you think about X?", "what's your read?" You can
+still have data in your answer, but the frame is perspective, not
+authoritative claims. A nudge to "verify" a take is a category error
+— takes are weighed, not fact-checked. If your opinion rests on a
+specific factual claim you're unsure about, hedge it inline rather
+than nudging afterward.
+
+Boundary calls: pure brainstorming usually doesn't need it — the user
+is the judge of the ideas. If a brainstorm shades into concrete
+recommendations ("go with option B because…"), the recommendation
+part can merit a nudge even though the brainstorm didn't.
+
+## Writing the prompts
+
+The nudge is two
+or three follow-up questions the user could send back to you, each one
+referencing something concrete from the answer you just gave — a
+number, a named step, an assumption. Generic prompts ("Can you verify
+those facts?") defeat the purpose; the value is in the specificity.
+
+Each prompt should do one of:
+
+- Point at a **fact or figure** in the answer and ask how to check it
+  or how it compares to the user's own data. *"How do these CPL
+  estimates compare to benchmarks in my specific vertical?"*
+- Point at a **reasoning step or assumption** and invite the user to
+  probe it. *"Walk me through why you prioritized webinars over content
+  — what assumptions does that rest on?"*
+- Point at **missing context** the answer had to guess at. *"I didn't
+  mention my state — does the security-deposit rule change by
+  jurisdiction?"*
+
+Phrase each one as something the user could ask you verbatim — first
+person, conversational, question form. Two or three prompts, never
+more. Keep each under ~120 characters so it reads at a glance.
+
+## Output format
+
+Always answer the question completely first. The nudge comes after, and
+it should be easy to skip.
+
+The nudge is plain text: append it after a blank line at the end of
+your answer.
+
+```
+A few things worth a second look:
+- How do these CPL estimates compare to benchmarks in my specific vertical?
+- Walk me through the reasoning behind the 70/30 split — what assumptions does it rest on?
+```
+
+Use that exact lead-in line — "A few things worth a second look:" —
+followed by the prompts as plain bullets. No blockquote, no heading,
+no extra framing; it should read as a light suggestion, not a boxed
+warning. Plain text only — no HTML, no headings, no emoji.
+
+Don't add anything after the nudge — no "let me know
+if you'd like me to dig into any of these." The nudge is the closer.
+~~~~~
+{% endraw %}
+
+</section>
+</div>

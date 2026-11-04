@@ -17,19 +17,24 @@
   <nav class="side">
     {% assign skills = site.pages | where_exp: "p", "p.category" %}
     {% for cat in site.skill_categories %}
-    <h2>{{ cat }}</h2>
-    <ul>
-      {% assign items = skills | where: "category", cat | sort: "skill" %}
-      {% for p in items %}
-      <li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} aria-current="page"{% endif %}>{{ p.skill }}<span>{{ p.author }}</span></a></li>
-      {% endfor %}
-    </ul>
+    {% assign items = skills | where: "category", cat | sort: "skill" %}
+    {% if items.size > 0 %}
+    {% assign here = items | where: "url", page.url %}
+    <details{% if here.size > 0 %} open{% endif %}>
+      <summary>{{ cat }}<span>{{ items.size }}</span></summary>
+      <ul>
+        {% for p in items %}
+        <li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} aria-current="page"{% endif %}>{{ p.skill }}<span>{{ p.author }}</span></a></li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
     {% endfor %}
   </nav>
   <main class="content">
     {% if page.skill %}
     <h1>{{ page.skill }}</h1>
-    <p class="meta">{{ page.author }} ｜ <a href="{{ page.source }}">原文</a> ｜ {{ page.license }}</p>
+    <p class="meta">{{ page.author }} ｜ {{ page.category }} ｜ <a href="{{ page.source }}">原文</a> ｜ {{ page.license }}</p>
     {% if page.summary %}<p class="summary">{{ page.summary }}</p>{% endif %}
     {% endif %}
     {{ content }}

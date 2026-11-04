@@ -1,11 +1,11 @@
 ---
-layout: default
-skill: verification-before-completion
-author: Jesse Vincent
-category: 測試與驗證
-summary: 沒跑過驗證指令，不准說完成
-source: https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md
-license: MIT
+layout: "default"
+skill: "verification-before-completion"
+author: "Jesse Vincent"
+category: "測試與驗證"
+summary: "沒跑過驗證指令，不准說完成"
+source: "https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md"
+license: "MIT"
 ---
 
 <div class="pair" markdown="1">
@@ -13,6 +13,7 @@ license: MIT
 
 ## 中文翻譯
 
+{% raw %}
 ~~~~~markdown
 ---
 name: verification-before-completion
@@ -135,12 +136,14 @@ description: 當你準備宣稱工作已完成、已修好或已通過時使用�
 - 暗示成功的語氣
 - 「任何」暗示完成或正確的溝通
 ~~~~~
+{% endraw %}
 
 </section>
 <section markdown="1">
 
 ## 英文原文
 
+{% raw %}
 ~~~~~markdown
 ---
 name: verification-before-completion
@@ -263,6 +266,7 @@ Skip any step = lying, not verifying
 - Implications of success
 - ANY communication suggesting completion/correctness
 ~~~~~
+{% endraw %}
 
 </section>
 </div>

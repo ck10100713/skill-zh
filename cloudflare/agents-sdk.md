@@ -1,0 +1,444 @@
+---
+layout: "default"
+skill: "agents-sdk"
+author: "Cloudflare"
+category: "Cloudflare 平台"
+summary: "用 Agents SDK 在 Cloudflare 上建置有狀態的 AI agent"
+source: "https://github.com/cloudflare/skills/blob/main/skills/agents-sdk/SKILL.md"
+license: "Apache-2.0"
+---
+
+<div class="pair" markdown="1">
+<section markdown="1">
+
+## 中文翻譯
+
+{% raw %}
+~~~~~markdown
+---
+name: agents-sdk
+description: 使用 agents 套件建置、除錯或審查 Cloudflare Agents SDK 應用程式。
+---
+
+# Cloudflare Agents SDK
+
+你對 Agents SDK 的知識可能已經過時。任何 Agents SDK 的任務，都要**優先用檢索，不要靠預訓練記憶**。
+
+## Retrieval Sources
+
+Cloudflare docs: https://developers.cloudflare.com/agents/index.md
+
+| 主題 | 文件 URL | 用途 |
+|-------|----------|---------|
+| Getting started | [Quick start](https://developers.cloudflare.com/agents/getting-started/quick-start/index.md) | 第一個 agent、專案設定 |
+| Adding to existing project | [Add to existing project](https://developers.cloudflare.com/agents/getting-started/add-to-existing-project/index.md) | 裝進既有的 Workers app |
+| Configuration | [Configuration](https://developers.cloudflare.com/agents/runtime/operations/configuration/index.md) | `wrangler.jsonc`、binding、assets、部署 |
+| Agent class | [Agents API](https://developers.cloudflare.com/agents/runtime/agents-api/index.md) | Agent 生命週期、模式、陷阱 |
+| State | [Store and sync state](https://developers.cloudflare.com/agents/runtime/lifecycle/state/index.md) | `setState`、`validateStateChange`、持久化 |
+| Routing | [Routing](https://developers.cloudflare.com/agents/runtime/communication/routing/index.md) | URL 模式、`routeAgentRequest` |
+| Callable methods | [Callable methods](https://developers.cloudflare.com/agents/runtime/lifecycle/callable-methods/index.md) | `@callable`、RPC、streaming、timeout |
+| Scheduling | [Schedule tasks](https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/index.md) | `schedule()`、`scheduleEvery()`、cron |
+| Workflows | [Run workflows](https://developers.cloudflare.com/agents/runtime/execution/run-workflows/index.md) | `AgentWorkflow`、持久的多步驟任務 |
+| HTTP/WebSockets | [WebSockets](https://developers.cloudflare.com/agents/runtime/communication/websockets/index.md) | 生命週期 hook、hibernation |
+| Chat agents | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/index.md) | `AIChatAgent`、streaming、工具、持久化 |
+| Client SDK | [Client SDK](https://developers.cloudflare.com/agents/communication-channels/chat/client-sdk/index.md) | `useAgent`、`AgentClient`、state、RPC、HTTP |
+| Client tools | [Client tools](https://developers.cloudflare.com/agents/harnesses/think/client-tools/index.md) | 用戶端工具、`autoContinueAfterToolResult` |
+| Server-driven messages | [Autonomous responses](https://developers.cloudflare.com/agents/communication-channels/chat/autonomous-responses/index.md) | `saveMessages`、`waitUntilStable`、伺服器發起的回合 |
+| Resumable streaming | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/index.md#resumable-streaming) | 斷線時的 stream 復原 |
+| Email | [Email](https://developers.cloudflare.com/agents/communication-channels/email/index.md) | Email routing、安全的回覆 resolver |
+| MCP client | [MCP client](https://developers.cloudflare.com/agents/model-context-protocol/apis/client-api/index.md) | 連到 MCP server |
+| MCP server | [MCP server](https://developers.cloudflare.com/agents/model-context-protocol/apis/handler-api/index.md) | 用 `createMcpHandler` 建置 MCP server |
+| MCP transports | [MCP transports](https://developers.cloudflare.com/agents/model-context-protocol/protocol/transport/index.md) | Streamable HTTP、SSE、RPC transport 選項 |
+| Securing MCP servers | [Securing MCP](https://developers.cloudflare.com/agents/model-context-protocol/guides/securing-mcp-server/index.md) | OAuth、proxy MCP、強化 |
+| Human-in-the-loop | [Human-in-the-loop](https://developers.cloudflare.com/agents/concepts/agentic-patterns/human-in-the-loop/index.md) | Workflow 核准、elicitation、timeout 處理 |
+| Durable execution | [Durable execution](https://developers.cloudflare.com/agents/runtime/execution/durable-execution/index.md) | `runFiber()`、`stash()`、撐過 DO 被驅逐 |
+| Queue | [Queue](https://developers.cloudflare.com/agents/runtime/execution/queue-tasks/index.md) | 內建的 FIFO queue、`queue()` |
+| Retries | [Retries](https://developers.cloudflare.com/agents/runtime/execution/retries/index.md) | `this.retry()`、backoff/jitter |
+| Observability | [Observability](https://developers.cloudflare.com/agents/runtime/operations/observability/index.md) | Diagnostics-channel 事件 |
+| Push notifications | [Push notifications](https://developers.cloudflare.com/agents/communication-channels/webhooks/push-notifications/index.md) | 從 agent 發送 Web Push + VAPID |
+| Webhooks | [Webhooks](https://developers.cloudflare.com/agents/communication-channels/webhooks/index.md) | 接收外部 webhook |
+| Cross-domain auth | [Cross-domain auth](https://developers.cloudflare.com/agents/runtime/operations/cross-domain-authentication/index.md) | WebSocket 驗證、token、CORS |
+| Readonly connections | [Readonly](https://developers.cloudflare.com/agents/runtime/communication/readonly-connections/index.md) | `shouldConnectionBeReadonly` |
+| Voice | [Voice](https://developers.cloudflare.com/agents/communication-channels/voice/index.md) | 實驗性的 STT/TTS、`withVoice` |
+| Browse the web | [Browser tools](https://developers.cloudflare.com/agents/tools/browser/index.md) | 實驗性的 CDP 瀏覽器自動化 |
+| Think | [Think](https://developers.cloudflare.com/agents/harnesses/think/index.md) | 實驗性的高階 chat agent class |
+| Migrations | [AI SDK v5](https://github.com/cloudflare/agents/blob/main/docs/agents/migration-to-ai-sdk-v5.md)、[AI SDK v6](https://github.com/cloudflare/agents/blob/main/docs/agents/migration-to-ai-sdk-v6.md) | 升級 `@cloudflare/ai-chat` |
+
+## Capabilities
+
+Agents SDK 提供：
+
+- **持久狀態**：以 SQLite 為基礎，透過 `setState` 自動同步給 client
+- **Callable RPC**：透過 WebSocket 呼叫的 `@callable()` method
+- **排程**：一次性、週期性（`scheduleEvery`）和 cron 任務
+- **Workflows**：透過 `AgentWorkflow` 做持久的多步驟背景處理
+- **Durable execution**：`runFiber()` / `stash()`，讓工作撐過 DO 被驅逐
+- **Queue**：內建的 FIFO queue，透過 `queue()` 支援重試
+- **Retries**：`this.retry()`，帶指數 backoff 和 jitter
+- **MCP 整合**：連到 MCP server，或用 `createMcpHandler` 自己建一個
+- **Email 處理**：透過安全的 routing 接收並回覆 email
+- **Streaming chat**：`AIChatAgent`，支援可續傳的 stream、訊息持久化、工具
+- **伺服器發起的訊息**：`saveMessages`、`waitUntilStable`，用於 agent 主動發起的回合
+- **React hooks**：給 client app 用的 `useAgent`、`useAgentChat`
+- **Observability**：state、RPC、schedule、生命週期的 `diagnostics_channel` 事件
+- **Push notifications**：從 agent 發送 Web Push + VAPID
+- **Webhooks**：接收並驗證外部 webhook
+- **Voice**（實驗性）：透過 `@cloudflare/voice` 做 STT/TTS
+- **Browser tools**（實驗性）：透過 `agents/browser` 用 CDP 瀏覽網頁
+- **Think**（實驗性）：透過 `@cloudflare/think` 提供的高階 chat agent
+
+## FIRST: Verify Installation
+
+```bash
+npm ls agents  # 應該會顯示 agents 套件
+```
+
+如果沒裝：
+```bash
+npm install agents
+```
+
+Chat agent 要裝：
+```bash
+npm install agents @cloudflare/ai-chat ai @ai-sdk/react
+```
+
+## Wrangler Configuration
+
+```jsonc
+{
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [{ "name": "MyAgent", "class_name": "MyAgent" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyAgent"] }]
+}
+```
+
+**踩雷提醒：**
+- 不要在 tsconfig 啟用 `experimentalDecorators`（會弄壞 `@callable`）
+- 絕對不要改舊的 migration，一律新增新的 tag
+- 每個 agent class 都需要自己的 DO binding + migration 項目
+- 要用 Workers AI 就加上 `"ai": { "binding": "AI" }`
+
+## Agent Class
+
+```typescript
+import { Agent, routeAgentRequest, callable } from "agents";
+
+type State = { count: number };
+
+export class Counter extends Agent<Env, State> {
+  initialState = { count: 0 };
+
+  validateStateChange(nextState: State, source: Connection | "server") {
+    if (nextState.count < 0) throw new Error("Count cannot be negative");
+  }
+
+  onStateUpdate(state: State, source: Connection | "server") {
+    console.log("State updated:", state);
+  }
+
+  @callable()
+  increment() {
+    this.setState({ count: this.state.count + 1 });
+    return this.state.count;
+  }
+}
+
+export default {
+  fetch: (req, env) => routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 })
+};
+```
+
+## Routing
+
+Request 會 route 到 `/agents/{agent-name}/{instance-name}`：
+
+| Class | URL |
+|-------|-----|
+| `Counter` | `/agents/counter/user-123` |
+| `ChatRoom` | `/agents/chat-room/lobby` |
+
+Client：`useAgent({ agent: "Counter", name: "user-123" })`
+
+自訂 routing：用 `getAgentByName(env.MyAgent, "instance-id")`，然後呼叫 `agent.fetch(request)`。
+
+## Core APIs
+
+| 任務 | API |
+|------|-----|
+| 讀取 state | `this.state.count` |
+| 寫入 state | `this.setState({ count: 1 })` |
+| SQL 查詢 | `` this.sql`SELECT * FROM users WHERE id = ${id}` `` |
+| 排程（延遲） | `await this.schedule(60, "task", payload)` |
+| 排程（cron） | `await this.schedule("0 * * * *", "task", payload)` |
+| 排程（間隔） | `await this.scheduleEvery(30, "poll")` |
+| RPC method | `@callable() myMethod() { ... }` |
+| Streaming RPC | `@callable({ streaming: true }) stream(res) { ... }` |
+| 啟動 workflow | `await this.runWorkflow("ProcessingWorkflow", params)` |
+| Durable fiber | `await this.runFiber("name", async (ctx) => { ... })` |
+| 把工作放進 queue | `this.queue("handler", payload)` |
+| 帶 backoff 重試 | `await this.retry(fn, { maxAttempts: 5 })` |
+| 廣播給 client | `this.broadcast(message)` |
+| 取得連線 | `this.getConnections(tag?)` |
+
+## React Client
+
+選擇 client 和目前的連線範例，請讀 [client-sdk.md](references/client-sdk.md)。聊天 UI 和工具，另外也讀 [streaming-chat.md](references/streaming-chat.md)。
+
+## References
+
+### Core
+- **[references/state-scheduling.md](references/state-scheduling.md)**：狀態持久化、排程、SQL
+- **[references/callable.md](references/callable.md)**：RPC method、streaming、timeout
+- **[references/routing.md](references/routing.md)**：URL 模式、自訂 routing、`getAgentByName`
+- **[references/configuration.md](references/configuration.md)**：Wrangler 設定、binding、Vite 設定
+
+### Chat & Streaming
+- **[references/streaming-chat.md](references/streaming-chat.md)**：AIChatAgent、可續傳的 stream、工具
+- **[references/client-sdk.md](references/client-sdk.md)**：`useAgent`、`useAgentChat`、`AgentClient`
+- **[references/server-driven-messages.md](references/server-driven-messages.md)**：觸發模式、`saveMessages`
+- **[references/human-in-the-loop.md](references/human-in-the-loop.md)**：核准流程、`needsApproval`
+
+### Background Processing
+- **[references/workflows.md](references/workflows.md)**：持久的 Workflows 整合
+- **[references/durable-execution.md](references/durable-execution.md)**：`runFiber`、`stash`、撐過被驅逐
+- **[references/queue-retries.md](references/queue-retries.md)**：內建 queue、帶 backoff 重試
+
+### Integrations
+- **[references/mcp.md](references/mcp.md)**：MCP client 和 server、transport、安全強化
+- **[references/email.md](references/email.md)**：Email routing 和處理
+- **[references/webhooks-push.md](references/webhooks-push.md)**：Webhook、push notification
+- **[references/observability.md](references/observability.md)**：Diagnostics-channel 事件
+
+### Experimental
+- **[references/think.md](references/think.md)**：`@cloudflare/think` 高階 chat agent
+- **[references/voice.md](references/voice.md)**：`@cloudflare/voice` STT/TTS
+- **[references/codemode.md](references/codemode.md)**：用於工具編排的 Code Mode
+- **[references/browse-the-web.md](references/browse-the-web.md)**：CDP 瀏覽器工具
+
+## Skill feedback
+
+如果使用者反映這個 skill 給了錯誤或過時的指引，或是缺了資訊，就去讀 [references/skill-feedback.md](references/skill-feedback.md)。
+~~~~~
+{% endraw %}
+
+</section>
+<section markdown="1">
+
+## 英文原文
+
+{% raw %}
+~~~~~markdown
+---
+name: agents-sdk
+description: Build, debug, or review Cloudflare Agents SDK applications using the agents package.
+---
+
+# Cloudflare Agents SDK
+
+Your knowledge of the Agents SDK may be outdated. **Prefer retrieval over pre-training** for any Agents SDK task.
+
+## Retrieval Sources
+
+Cloudflare docs: https://developers.cloudflare.com/agents/index.md
+
+| Topic | Docs URL | Use for |
+|-------|----------|---------|
+| Getting started | [Quick start](https://developers.cloudflare.com/agents/getting-started/quick-start/index.md) | First agent, project setup |
+| Adding to existing project | [Add to existing project](https://developers.cloudflare.com/agents/getting-started/add-to-existing-project/index.md) | Install into existing Workers app |
+| Configuration | [Configuration](https://developers.cloudflare.com/agents/runtime/operations/configuration/index.md) | `wrangler.jsonc`, bindings, assets, deployment |
+| Agent class | [Agents API](https://developers.cloudflare.com/agents/runtime/agents-api/index.md) | Agent lifecycle, patterns, pitfalls |
+| State | [Store and sync state](https://developers.cloudflare.com/agents/runtime/lifecycle/state/index.md) | `setState`, `validateStateChange`, persistence |
+| Routing | [Routing](https://developers.cloudflare.com/agents/runtime/communication/routing/index.md) | URL patterns, `routeAgentRequest` |
+| Callable methods | [Callable methods](https://developers.cloudflare.com/agents/runtime/lifecycle/callable-methods/index.md) | `@callable`, RPC, streaming, timeouts |
+| Scheduling | [Schedule tasks](https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/index.md) | `schedule()`, `scheduleEvery()`, cron |
+| Workflows | [Run workflows](https://developers.cloudflare.com/agents/runtime/execution/run-workflows/index.md) | `AgentWorkflow`, durable multi-step tasks |
+| HTTP/WebSockets | [WebSockets](https://developers.cloudflare.com/agents/runtime/communication/websockets/index.md) | Lifecycle hooks, hibernation |
+| Chat agents | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/index.md) | `AIChatAgent`, streaming, tools, persistence |
+| Client SDK | [Client SDK](https://developers.cloudflare.com/agents/communication-channels/chat/client-sdk/index.md) | `useAgent`, `AgentClient`, state, RPC, HTTP |
+| Client tools | [Client tools](https://developers.cloudflare.com/agents/harnesses/think/client-tools/index.md) | Client-side tools, `autoContinueAfterToolResult` |
+| Server-driven messages | [Autonomous responses](https://developers.cloudflare.com/agents/communication-channels/chat/autonomous-responses/index.md) | `saveMessages`, `waitUntilStable`, server-initiated turns |
+| Resumable streaming | [Chat agents](https://developers.cloudflare.com/agents/communication-channels/chat/chat-agents/index.md#resumable-streaming) | Stream recovery on disconnect |
+| Email | [Email](https://developers.cloudflare.com/agents/communication-channels/email/index.md) | Email routing, secure reply resolver |
+| MCP client | [MCP client](https://developers.cloudflare.com/agents/model-context-protocol/apis/client-api/index.md) | Connecting to MCP servers |
+| MCP server | [MCP server](https://developers.cloudflare.com/agents/model-context-protocol/apis/handler-api/index.md) | Building MCP servers with `createMcpHandler` |
+| MCP transports | [MCP transports](https://developers.cloudflare.com/agents/model-context-protocol/protocol/transport/index.md) | Streamable HTTP, SSE, RPC transport options |
+| Securing MCP servers | [Securing MCP](https://developers.cloudflare.com/agents/model-context-protocol/guides/securing-mcp-server/index.md) | OAuth, proxy MCP, hardening |
+| Human-in-the-loop | [Human-in-the-loop](https://developers.cloudflare.com/agents/concepts/agentic-patterns/human-in-the-loop/index.md) | Workflow approvals, elicitation, timeout handling |
+| Durable execution | [Durable execution](https://developers.cloudflare.com/agents/runtime/execution/durable-execution/index.md) | `runFiber()`, `stash()`, surviving DO eviction |
+| Queue | [Queue](https://developers.cloudflare.com/agents/runtime/execution/queue-tasks/index.md) | Built-in FIFO queue, `queue()` |
+| Retries | [Retries](https://developers.cloudflare.com/agents/runtime/execution/retries/index.md) | `this.retry()`, backoff/jitter |
+| Observability | [Observability](https://developers.cloudflare.com/agents/runtime/operations/observability/index.md) | Diagnostics-channel events |
+| Push notifications | [Push notifications](https://developers.cloudflare.com/agents/communication-channels/webhooks/push-notifications/index.md) | Web Push + VAPID from agents |
+| Webhooks | [Webhooks](https://developers.cloudflare.com/agents/communication-channels/webhooks/index.md) | Receiving external webhooks |
+| Cross-domain auth | [Cross-domain auth](https://developers.cloudflare.com/agents/runtime/operations/cross-domain-authentication/index.md) | WebSocket auth, tokens, CORS |
+| Readonly connections | [Readonly](https://developers.cloudflare.com/agents/runtime/communication/readonly-connections/index.md) | `shouldConnectionBeReadonly` |
+| Voice | [Voice](https://developers.cloudflare.com/agents/communication-channels/voice/index.md) | Experimental STT/TTS, `withVoice` |
+| Browse the web | [Browser tools](https://developers.cloudflare.com/agents/tools/browser/index.md) | Experimental CDP browser automation |
+| Think | [Think](https://developers.cloudflare.com/agents/harnesses/think/index.md) | Experimental higher-level chat agent class |
+| Migrations | [AI SDK v5](https://github.com/cloudflare/agents/blob/main/docs/agents/migration-to-ai-sdk-v5.md), [AI SDK v6](https://github.com/cloudflare/agents/blob/main/docs/agents/migration-to-ai-sdk-v6.md) | Upgrading `@cloudflare/ai-chat` |
+
+## Capabilities
+
+The Agents SDK provides:
+
+- **Persistent state** — SQLite-backed, auto-synced to clients via `setState`
+- **Callable RPC** — `@callable()` methods invoked over WebSocket
+- **Scheduling** — One-time, recurring (`scheduleEvery`), and cron tasks
+- **Workflows** — Durable multi-step background processing via `AgentWorkflow`
+- **Durable execution** — `runFiber()` / `stash()` for work that survives DO eviction
+- **Queue** — Built-in FIFO queue with retries via `queue()`
+- **Retries** — `this.retry()` with exponential backoff and jitter
+- **MCP integration** — Connect to MCP servers or build your own with `createMcpHandler`
+- **Email handling** — Receive and reply to emails with secure routing
+- **Streaming chat** — `AIChatAgent` with resumable streams, message persistence, tools
+- **Server-driven messages** — `saveMessages`, `waitUntilStable` for proactive agent turns
+- **React hooks** — `useAgent`, `useAgentChat` for client apps
+- **Observability** — `diagnostics_channel` events for state, RPC, schedule, lifecycle
+- **Push notifications** — Web Push + VAPID delivery from agents
+- **Webhooks** — Receive and verify external webhooks
+- **Voice** (experimental) — STT/TTS via `@cloudflare/voice`
+- **Browser tools** (experimental) — CDP-powered browsing via `agents/browser`
+- **Think** (experimental) — Higher-level chat agent via `@cloudflare/think`
+
+## FIRST: Verify Installation
+
+```bash
+npm ls agents  # Should show agents package
+```
+
+If not installed:
+```bash
+npm install agents
+```
+
+For chat agents:
+```bash
+npm install agents @cloudflare/ai-chat ai @ai-sdk/react
+```
+
+## Wrangler Configuration
+
+```jsonc
+{
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [{ "name": "MyAgent", "class_name": "MyAgent" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyAgent"] }]
+}
+```
+
+**Gotchas:**
+- Do NOT enable `experimentalDecorators` in tsconfig (breaks `@callable`)
+- Never edit old migrations — always add new tags
+- Each agent class needs its own DO binding + migration entry
+- Add `"ai": { "binding": "AI" }` for Workers AI
+
+## Agent Class
+
+```typescript
+import { Agent, routeAgentRequest, callable } from "agents";
+
+type State = { count: number };
+
+export class Counter extends Agent<Env, State> {
+  initialState = { count: 0 };
+
+  validateStateChange(nextState: State, source: Connection | "server") {
+    if (nextState.count < 0) throw new Error("Count cannot be negative");
+  }
+
+  onStateUpdate(state: State, source: Connection | "server") {
+    console.log("State updated:", state);
+  }
+
+  @callable()
+  increment() {
+    this.setState({ count: this.state.count + 1 });
+    return this.state.count;
+  }
+}
+
+export default {
+  fetch: (req, env) => routeAgentRequest(req, env) ?? new Response("Not found", { status: 404 })
+};
+```
+
+## Routing
+
+Requests route to `/agents/{agent-name}/{instance-name}`:
+
+| Class | URL |
+|-------|-----|
+| `Counter` | `/agents/counter/user-123` |
+| `ChatRoom` | `/agents/chat-room/lobby` |
+
+Client: `useAgent({ agent: "Counter", name: "user-123" })`
+
+Custom routing: use `getAgentByName(env.MyAgent, "instance-id")` then `agent.fetch(request)`.
+
+## Core APIs
+
+| Task | API |
+|------|-----|
+| Read state | `this.state.count` |
+| Write state | `this.setState({ count: 1 })` |
+| SQL query | `` this.sql`SELECT * FROM users WHERE id = ${id}` `` |
+| Schedule (delay) | `await this.schedule(60, "task", payload)` |
+| Schedule (cron) | `await this.schedule("0 * * * *", "task", payload)` |
+| Schedule (interval) | `await this.scheduleEvery(30, "poll")` |
+| RPC method | `@callable() myMethod() { ... }` |
+| Streaming RPC | `@callable({ streaming: true }) stream(res) { ... }` |
+| Start workflow | `await this.runWorkflow("ProcessingWorkflow", params)` |
+| Durable fiber | `await this.runFiber("name", async (ctx) => { ... })` |
+| Enqueue work | `this.queue("handler", payload)` |
+| Retry with backoff | `await this.retry(fn, { maxAttempts: 5 })` |
+| Broadcast to clients | `this.broadcast(message)` |
+| Get connections | `this.getConnections(tag?)` |
+
+## React Client
+
+Read [client-sdk.md](references/client-sdk.md) for client selection and current connection examples. For chat UI and tools, also read [streaming-chat.md](references/streaming-chat.md).
+
+## References
+
+### Core
+- **[references/state-scheduling.md](references/state-scheduling.md)** — State persistence, scheduling, SQL
+- **[references/callable.md](references/callable.md)** — RPC methods, streaming, timeouts
+- **[references/routing.md](references/routing.md)** — URL patterns, custom routing, `getAgentByName`
+- **[references/configuration.md](references/configuration.md)** — Wrangler config, bindings, Vite setup
+
+### Chat & Streaming
+- **[references/streaming-chat.md](references/streaming-chat.md)** — AIChatAgent, resumable streams, tools
+- **[references/client-sdk.md](references/client-sdk.md)** — `useAgent`, `useAgentChat`, `AgentClient`
+- **[references/server-driven-messages.md](references/server-driven-messages.md)** — Trigger patterns, `saveMessages`
+- **[references/human-in-the-loop.md](references/human-in-the-loop.md)** — Approval flows, `needsApproval`
+
+### Background Processing
+- **[references/workflows.md](references/workflows.md)** — Durable Workflows integration
+- **[references/durable-execution.md](references/durable-execution.md)** — `runFiber`, `stash`, surviving eviction
+- **[references/queue-retries.md](references/queue-retries.md)** — Built-in queue, retry with backoff
+
+### Integrations
+- **[references/mcp.md](references/mcp.md)** — MCP client and server, transports, securing
+- **[references/email.md](references/email.md)** — Email routing and handling
+- **[references/webhooks-push.md](references/webhooks-push.md)** — Webhooks, push notifications
+- **[references/observability.md](references/observability.md)** — Diagnostics-channel events
+
+### Experimental
+- **[references/think.md](references/think.md)** — `@cloudflare/think` higher-level chat agent
+- **[references/voice.md](references/voice.md)** — `@cloudflare/voice` STT/TTS
+- **[references/codemode.md](references/codemode.md)** — Code Mode for tool orchestration
+- **[references/browse-the-web.md](references/browse-the-web.md)** — CDP browser tools
+
+## Skill feedback
+
+If the user reports that this skill gave incorrect or outdated guidance, or is missing information, read [references/skill-feedback.md](references/skill-feedback.md).
+~~~~~
+{% endraw %}
+
+</section>
+</div>
