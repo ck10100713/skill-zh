@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-eventhub-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 對 Event Hubs 做高吞吐量事件匯入與 checkpoint">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-eventhub-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-eventhub-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python 對 Event Hubs 做高吞吐量事件匯入與 checkpoint</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-eventhub-py
+description: |
+  Python 版 Azure Event Hubs SDK，用於串流。用於高吞吐量事件匯入、producer、consumer 和 checkpoint。
+  Triggers: &quot;event hubs&quot;, &quot;EventHubProducerClient&quot;, &quot;EventHubConsumerClient&quot;, &quot;streaming&quot;, &quot;partitions&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-eventhub
+---
+
+# Python 版 Azure Event Hubs SDK
+
+用於高吞吐量事件匯入的大數據串流平台。
+
+## 安裝
+
+```bash
+pip install azure-eventhub azure-identity
+# For checkpointing with blob storage
+pip install azure-eventhub-checkpointstoreblob-aio
+```
+
+## 環境變數
+
+```bash
+EVENT_HUB_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # 所有驗證方式都必須設定
+EVENT_HUB_NAME=my-eventhub  # 所有驗證方式都必須設定
+STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # checkpoint 儲存必須設定
+CHECKPOINT_CONTAINER=checkpoints  # checkpoint 儲存必須設定
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個範例都適用兩條規則：**
+&gt;
+&gt; 1. **優先用 `DefaultAzureCredential`。** 它在本機（Azure CLI / VS Code / Developer CLI）和 Azure 上（managed identity、workload identity）都能跑，程式碼不用改。避免用 connection string、帳號金鑰或 API key，因為它們會繞過 Entra 的稽核和輪替。
+&gt;    - 本機開發：`DefaultAzureCredential` 直接可用。
+&gt;    - 正式環境：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限制在正式環境安全的 credential。
+&gt; 2. **每個 client 都用 context manager 包起來**，這樣 HTTP transport、socket 和 token 快取才會確定被釋放：
+&gt;    - 同步：`with &lt;Client&gt;(...) as client:`
+&gt;    - 非同步：`async with &lt;Client&gt;(...) as client:` **而且** `async with DefaultAzureCredential() as credential:`（來自 `azure.identity.aio`）
+&gt;
+&gt; 範例片段可能會簡化這段設定，但正式環境的程式碼一定要遵守這兩條規則。
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.eventhub import EventHubProducerClient, EventHubConsumerClient
+
+# 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或是在正式環境直接用特定的 credential：
+# 參考 https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+namespace = &quot;&lt;namespace&gt;.servicebus.windows.net&quot;
+eventhub_name = &quot;my-eventhub&quot;
+
+# Producer
+with EventHubProducerClient(
+    fully_qualified_namespace=namespace,
+    eventhub_name=eventhub_name,
+    credential=credential
+) as producer:
+    # 在這裡使用 producer（操作請看後面的段落）
+    ...
+
+# Consumer
+with EventHubConsumerClient(
+    fully_qualified_namespace=namespace,
+    eventhub_name=eventhub_name,
+    consumer_group=&quot;$Default&quot;,
+    credential=credential
+) as consumer:
+    # 在這裡使用 consumer（操作請看後面的段落）
+    ...
+```
+
+## Client 類型
+
+| Client | 用途 |
+|--------|---------|
+| `EventHubProducerClient` | 把事件送到 Event Hub |
+| `EventHubConsumerClient` | 從 Event Hub 接收事件 |
+| `BlobCheckpointStore` | 追蹤 consumer 的進度 |
+
+## 送出事件
+
+```python
+from azure.eventhub import EventHubProducerClient, EventData
+from azure.identity import DefaultAzureCredential
+
+with EventHubProducerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    credential=DefaultAzureCredential()
+) as producer:
+    # 建立批次（會處理大小上限）
+    event_data_batch = producer.create_batch()
+    
+    for i in range(10):
+        try:
+            event_data_batch.add(EventData(f&quot;Event {i}&quot;))
+        except ValueError:
+            # 批次滿了：先送出，再建新的
+            producer.send_batch(event_data_batch)
+            event_data_batch = producer.create_batch()
+            event_data_batch.add(EventData(f&quot;Event {i}&quot;))
+    
+    # 送出剩下的
+    producer.send_batch(event_data_batch)
+```
+
+### 送到特定 Partition
+
+```python
+# 用 partition ID
+event_data_batch = producer.create_batch(partition_id=&quot;0&quot;)
+
+# 用 partition key（一致性 hash）
+event_data_batch = producer.create_batch(partition_key=&quot;user-123&quot;)
+```
+
+## 接收事件
+
+### 簡單接收
+
+```python
+from azure.eventhub import EventHubConsumerClient
+
+def on_event(partition_context, event):
+    print(f&quot;Partition: {partition_context.partition_id}&quot;)
+    print(f&quot;Data: {event.body_as_str()}&quot;)
+    partition_context.update_checkpoint(event)
+
+with EventHubConsumerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    consumer_group=&quot;$Default&quot;,
+    credential=DefaultAzureCredential()
+) as consumer:
+    consumer.receive(
+        on_event=on_event,
+        starting_position=&quot;-1&quot;,  # 串流的起點
+    )
+```
+
+### 搭配 Blob Checkpoint Store（正式環境）
+
+```python
+from azure.eventhub import EventHubConsumerClient
+from azure.eventhub.extensions.checkpointstoreblob import BlobCheckpointStore
+from azure.identity import DefaultAzureCredential
+
+checkpoint_store = BlobCheckpointStore(
+    blob_account_url=&quot;https://&lt;account&gt;.blob.core.windows.net&quot;,
+    container_name=&quot;checkpoints&quot;,
+    credential=DefaultAzureCredential()
+)
+
+with EventHubConsumerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    consumer_group=&quot;$Default&quot;,
+    credential=DefaultAzureCredential(),
+    checkpoint_store=checkpoint_store
+) as consumer:
+    def on_event(partition_context, event):
+        print(f&quot;Received: {event.body_as_str()}&quot;)
+        # 處理完之後做 checkpoint
+        partition_context.update_checkpoint(event)
+
+    consumer.receive(on_event=on_event)
+```
+
+## 非同步 Client
+
+```python
+from azure.eventhub.aio import EventHubProducerClient, EventHubConsumerClient
+from azure.identity.aio import DefaultAzureCredential
+import asyncio
+
+async def send_events():
+    credential = DefaultAzureCredential()
+    
+    async with EventHubProducerClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        eventhub_name=&quot;my-eventhub&quot;,
+        credential=credential
+    ) as producer:
+        batch = await producer.create_batch()
+        batch.add(EventData(&quot;Async event&quot;))
+        await producer.send_batch(batch)
+
+async def receive_events():
+    async def on_event(partition_context, event):
+        print(event.body_as_str())
+        await partition_context.update_checkpoint(event)
+    
+    async with EventHubConsumerClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        eventhub_name=&quot;my-eventhub&quot;,
+        consumer_group=&quot;$Default&quot;,
+        credential=DefaultAzureCredential()
+    ) as consumer:
+        await consumer.receive(on_event=on_event)
+
+asyncio.run(send_events())
+```
+
+## 事件屬性
+
+```python
+event = EventData(&quot;My event body&quot;)
+
+# 設定屬性
+event.properties = {&quot;custom_property&quot;: &quot;value&quot;}
+event.content_type = &quot;application/json&quot;
+
+# 讀取屬性（接收時）
+print(event.body_as_str())
+print(event.sequence_number)
+print(event.offset)
+print(event.enqueued_time)
+print(event.partition_key)
+```
+
+## 取得 Event Hub 資訊
+
+```python
+with producer:
+    info = producer.get_eventhub_properties()
+    print(f&quot;Name: {info[&#x27;name&#x27;]}&quot;)
+    print(f&quot;Partitions: {info[&#x27;partition_ids&#x27;]}&quot;)
+    
+    for partition_id in info[&#x27;partition_ids&#x27;]:
+        partition_info = producer.get_partition_properties(partition_id)
+        print(f&quot;Partition {partition_id}: {partition_info[&#x27;last_enqueued_sequence_number&#x27;]}&quot;)
+```
+
+## 最佳實務
+
+1. **同步或非同步選一種，並保持一致。** 同一條呼叫路徑裡不要混用 `azure.xxx` 的同步 client 和 `azure.xxx.aio` 的非同步 client。每個 module 選一種模式。
+2. **client 和非同步 credential 一律用 context manager。** 每個 client 都用 `with Client(...) as client:`（同步）或 `async with Client(...) as client:`（非同步）包起來，才能正確清理。非同步的 `DefaultAzureCredential`（來自 `azure.identity.aio`）也要用 `async with credential:`，這樣 token 和 transport 才會被清掉。
+3. **用 `DefaultAzureCredential`**，在本機開發和 Azure 之間驗證方式可以通用（盡量避免 connection string／API key）。
+4. **送多個事件時用批次**
+5. **正式環境用 checkpoint store**，處理才可靠
+6. **高吞吐量情境用非同步 client**
+7. **用 partition key**，同一個 partition 內才能依序遞送
+8. **處理批次大小上限**：批次滿了會丟 ValueError，要接住
+9. **為不同的應用程式設定適當的 consumer group**
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/checkpointing.md](references/checkpointing.md) | Checkpoint store 模式、blob checkpoint、checkpoint 策略 |
+| [references/partitions.md](references/partitions.md) | Partition 管理、負載平衡、起始位置 |
+| [scripts/setup_consumer.py](scripts/setup_consumer.py) | 查 Event Hub 資訊、設定 consumer，以及收發事件的 CLI |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-eventhub-py
+description: |
+  Azure Event Hubs SDK for Python streaming. Use for high-throughput event ingestion, producers, consumers, and checkpointing.
+  Triggers: &quot;event hubs&quot;, &quot;EventHubProducerClient&quot;, &quot;EventHubConsumerClient&quot;, &quot;streaming&quot;, &quot;partitions&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-eventhub
+---
+
+# Azure Event Hubs SDK for Python
+
+Big data streaming platform for high-throughput event ingestion.
+
+## Installation
+
+```bash
+pip install azure-eventhub azure-identity
+# For checkpointing with blob storage
+pip install azure-eventhub-checkpointstoreblob-aio
+```
+
+## Environment Variables
+
+```bash
+EVENT_HUB_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # Required for all auth methods
+EVENT_HUB_NAME=my-eventhub  # Required for all auth methods
+STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # Required for checkpoint storage
+CHECKPOINT_CONTAINER=checkpoints  # Required for checkpoint storage
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential`.** It works locally (Azure CLI / VS Code / Developer CLI) and in Azure (managed identity, workload identity) with no code change. Avoid connection strings, account/API keys — they bypass Entra audit and rotation.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Wrap every client in a context manager** so HTTP transports, sockets, and token caches are released deterministically:
+&gt;    - Sync: `with &lt;Client&gt;(...) as client:`
+&gt;    - Async: `async with &lt;Client&gt;(...) as client:` **and** `async with DefaultAzureCredential() as credential:` (from `azure.identity.aio`)
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.eventhub import EventHubProducerClient, EventHubConsumerClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+namespace = &quot;&lt;namespace&gt;.servicebus.windows.net&quot;
+eventhub_name = &quot;my-eventhub&quot;
+
+# Producer
+with EventHubProducerClient(
+    fully_qualified_namespace=namespace,
+    eventhub_name=eventhub_name,
+    credential=credential
+) as producer:
+    # Use producer here (see following sections for operations)
+    ...
+
+# Consumer
+with EventHubConsumerClient(
+    fully_qualified_namespace=namespace,
+    eventhub_name=eventhub_name,
+    consumer_group=&quot;$Default&quot;,
+    credential=credential
+) as consumer:
+    # Use consumer here (see following sections for operations)
+    ...
+```
+
+## Client Types
+
+| Client | Purpose |
+|--------|---------|
+| `EventHubProducerClient` | Send events to Event Hub |
+| `EventHubConsumerClient` | Receive events from Event Hub |
+| `BlobCheckpointStore` | Track consumer progress |
+
+## Send Events
+
+```python
+from azure.eventhub import EventHubProducerClient, EventData
+from azure.identity import DefaultAzureCredential
+
+with EventHubProducerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    credential=DefaultAzureCredential()
+) as producer:
+    # Create batch (handles size limits)
+    event_data_batch = producer.create_batch()
+    
+    for i in range(10):
+        try:
+            event_data_batch.add(EventData(f&quot;Event {i}&quot;))
+        except ValueError:
+            # Batch is full, send and create new one
+            producer.send_batch(event_data_batch)
+            event_data_batch = producer.create_batch()
+            event_data_batch.add(EventData(f&quot;Event {i}&quot;))
+    
+    # Send remaining
+    producer.send_batch(event_data_batch)
+```
+
+### Send to Specific Partition
+
+```python
+# By partition ID
+event_data_batch = producer.create_batch(partition_id=&quot;0&quot;)
+
+# By partition key (consistent hashing)
+event_data_batch = producer.create_batch(partition_key=&quot;user-123&quot;)
+```
+
+## Receive Events
+
+### Simple Receive
+
+```python
+from azure.eventhub import EventHubConsumerClient
+
+def on_event(partition_context, event):
+    print(f&quot;Partition: {partition_context.partition_id}&quot;)
+    print(f&quot;Data: {event.body_as_str()}&quot;)
+    partition_context.update_checkpoint(event)
+
+with EventHubConsumerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    consumer_group=&quot;$Default&quot;,
+    credential=DefaultAzureCredential()
+) as consumer:
+    consumer.receive(
+        on_event=on_event,
+        starting_position=&quot;-1&quot;,  # Beginning of stream
+    )
+```
+
+### With Blob Checkpoint Store (Production)
+
+```python
+from azure.eventhub import EventHubConsumerClient
+from azure.eventhub.extensions.checkpointstoreblob import BlobCheckpointStore
+from azure.identity import DefaultAzureCredential
+
+checkpoint_store = BlobCheckpointStore(
+    blob_account_url=&quot;https://&lt;account&gt;.blob.core.windows.net&quot;,
+    container_name=&quot;checkpoints&quot;,
+    credential=DefaultAzureCredential()
+)
+
+with EventHubConsumerClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    eventhub_name=&quot;my-eventhub&quot;,
+    consumer_group=&quot;$Default&quot;,
+    credential=DefaultAzureCredential(),
+    checkpoint_store=checkpoint_store
+) as consumer:
+    def on_event(partition_context, event):
+        print(f&quot;Received: {event.body_as_str()}&quot;)
+        # Checkpoint after processing
+        partition_context.update_checkpoint(event)
+
+    consumer.receive(on_event=on_event)
+```
+
+## Async Client
+
+```python
+from azure.eventhub.aio import EventHubProducerClient, EventHubConsumerClient
+from azure.identity.aio import DefaultAzureCredential
+import asyncio
+
+async def send_events():
+    credential = DefaultAzureCredential()
+    
+    async with EventHubProducerClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        eventhub_name=&quot;my-eventhub&quot;,
+        credential=credential
+    ) as producer:
+        batch = await producer.create_batch()
+        batch.add(EventData(&quot;Async event&quot;))
+        await producer.send_batch(batch)
+
+async def receive_events():
+    async def on_event(partition_context, event):
+        print(event.body_as_str())
+        await partition_context.update_checkpoint(event)
+    
+    async with EventHubConsumerClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        eventhub_name=&quot;my-eventhub&quot;,
+        consumer_group=&quot;$Default&quot;,
+        credential=DefaultAzureCredential()
+    ) as consumer:
+        await consumer.receive(on_event=on_event)
+
+asyncio.run(send_events())
+```
+
+## Event Properties
+
+```python
+event = EventData(&quot;My event body&quot;)
+
+# Set properties
+event.properties = {&quot;custom_property&quot;: &quot;value&quot;}
+event.content_type = &quot;application/json&quot;
+
+# Read properties (on receive)
+print(event.body_as_str())
+print(event.sequence_number)
+print(event.offset)
+print(event.enqueued_time)
+print(event.partition_key)
+```
+
+## Get Event Hub Info
+
+```python
+with producer:
+    info = producer.get_eventhub_properties()
+    print(f&quot;Name: {info[&#x27;name&#x27;]}&quot;)
+    print(f&quot;Partitions: {info[&#x27;partition_ids&#x27;]}&quot;)
+    
+    for partition_id in info[&#x27;partition_ids&#x27;]:
+        partition_info = producer.get_partition_properties(partition_id)
+        print(f&quot;Partition {partition_id}: {partition_info[&#x27;last_enqueued_sequence_number&#x27;]}&quot;)
+```
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.xxx` sync clients with `azure.xxx.aio` async clients in the same call path. Choose one mode per module.
+2. **Always use context managers for clients and async credentials.** Wrap every client in `with Client(...) as client:` (sync) or `async with Client(...) as client:` (async) for proper cleanup. For async `DefaultAzureCredential` from `azure.identity.aio`, also use `async with credential:` so tokens and transports are cleaned up.
+3. **Use `DefaultAzureCredential`** for portable auth across local dev and Azure (avoid connection strings / API keys when possible).
+4. **Use batches** for sending multiple events
+5. **Use checkpoint store** in production for reliable processing
+6. **Use async client** for high-throughput scenarios
+7. **Use partition keys** for ordered delivery within a partition
+8. **Handle batch size limits** — catch ValueError when batch is full
+9. **Set appropriate consumer groups** for different applications
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/checkpointing.md](references/checkpointing.md) | Checkpoint store patterns, blob checkpointing, checkpoint strategies |
+| [references/partitions.md](references/partitions.md) | Partition management, load balancing, starting positions |
+| [scripts/setup_consumer.py](scripts/setup_consumer.py) | CLI for Event Hub info, consumer setup, and event sending/receiving |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

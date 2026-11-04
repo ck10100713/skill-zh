@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-resource-manager-sql-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 透過 ARM 管理 Azure SQL server、資料庫、elastic pool 與防火牆">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-resource-manager-sql-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-resource-manager-sql-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 透過 ARM 管理 Azure SQL server、資料庫、elastic pool 與防火牆</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-resource-manager-sql-dotnet
+description: |
+  .NET 版 Azure SQL 的 Azure Resource Manager SDK。用於 MANAGEMENT PLANE（管理平面）操作：透過 Azure Resource Manager 建立／管理 SQL server、資料庫、elastic pool、防火牆規則與 failover group。NOT 用於 data plane 操作（執行查詢），那種請用 Microsoft.Data.SqlClient。Triggers: &quot;SQL server&quot;, &quot;create SQL database&quot;, &quot;manage SQL resources&quot;, &quot;ARM SQL&quot;, &quot;SqlServerResource&quot;, &quot;provision Azure SQL&quot;, &quot;elastic pool&quot;, &quot;firewall rule&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.Sql
+---
+
+# Azure.ResourceManager.Sql (.NET)
+
+管理平面 SDK，透過 Azure Resource Manager 佈建與管理 Azure SQL 資源。
+
+&gt; **⚠️ 管理平面 vs Data Plane**
+&gt; - **這個 SDK（Azure.ResourceManager.Sql）**：建立 server、資料庫、elastic pool、設定防火牆規則、管理 failover group
+&gt; - **Data Plane SDK（Microsoft.Data.SqlClient）**：執行查詢、stored procedure、管理連線
+
+## 安裝
+
+```bash
+dotnet add package Azure.ResourceManager.Sql
+dotnet add package Azure.Identity
+```
+
+**目前版本**：Stable v1.3.0、Preview v1.4.0-beta.3
+
+## 環境變數
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt;  # 必填：Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境使用 DefaultAzureCredential 時才需要
+AZURE_TENANT_ID=&lt;tenant-id&gt;  # 用於 service principal 驗證（選填）
+AZURE_CLIENT_ID=&lt;client-id&gt;  # 用於 service principal 驗證（選填）
+AZURE_CLIENT_SECRET=&lt;client-secret&gt;  # 用於 service principal 驗證（選填）
+```
+
+## 驗證
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Sql;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// 取得 subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## 資源階層
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── SqlServerResource
+            ├── SqlDatabaseResource
+            ├── ElasticPoolResource
+            │   └── ElasticPoolDatabaseResource
+            ├── SqlFirewallRuleResource
+            ├── FailoverGroupResource
+            ├── ServerBlobAuditingPolicyResource
+            ├── EncryptionProtectorResource
+            └── VirtualNetworkRuleResource
+```
+
+## 核心流程
+
+### 1. 建立 SQL Server
+
+```csharp
+using Azure.ResourceManager.Sql;
+using Azure.ResourceManager.Sql.Models;
+
+// 取得 resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// 定義 server
+var serverData = new SqlServerData(AzureLocation.EastUS)
+{
+    AdministratorLogin = &quot;sqladmin&quot;,
+    AdministratorLoginPassword = &quot;YourSecurePassword123!&quot;,
+    Version = &quot;12.0&quot;,
+    MinimalTlsVersion = SqlMinimalTlsVersion.Tls1_2,
+    PublicNetworkAccess = ServerNetworkAccessFlag.Enabled
+};
+
+// 建立 server（長時間執行的操作）
+var serverCollection = resourceGroup.Value.GetSqlServers();
+var operation = await serverCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-sql-server&quot;,
+    serverData);
+
+SqlServerResource server = operation.Value;
+```
+
+### 2. 建立 SQL 資料庫
+
+```csharp
+var databaseData = new SqlDatabaseData(AzureLocation.EastUS)
+{
+    Sku = new SqlSku(&quot;S0&quot;) { Tier = &quot;Standard&quot; },
+    MaxSizeBytes = 2L * 1024 * 1024 * 1024, // 2 GB
+    Collation = &quot;SQL_Latin1_General_CP1_CI_AS&quot;,
+    RequestedBackupStorageRedundancy = SqlBackupStorageRedundancy.Local
+};
+
+var databaseCollection = server.GetSqlDatabases();
+var dbOperation = await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-database&quot;,
+    databaseData);
+
+SqlDatabaseResource database = dbOperation.Value;
+```
+
+### 3. 建立 Elastic Pool
+
+```csharp
+var poolData = new ElasticPoolData(AzureLocation.EastUS)
+{
+    Sku = new SqlSku(&quot;StandardPool&quot;)
+    {
+        Tier = &quot;Standard&quot;,
+        Capacity = 100 // 100 eDTU
+    },
+    PerDatabaseSettings = new ElasticPoolPerDatabaseSettings
+    {
+        MinCapacity = 0,
+        MaxCapacity = 100
+    }
+};
+
+var poolCollection = server.GetElasticPools();
+var poolOperation = await poolCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-elastic-pool&quot;,
+    poolData);
+
+ElasticPoolResource pool = poolOperation.Value;
+```
+
+### 4. 把資料庫加入 Elastic Pool
+
+```csharp
+var databaseData = new SqlDatabaseData(AzureLocation.EastUS)
+{
+    ElasticPoolId = pool.Id
+};
+
+await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;pooled-database&quot;,
+    databaseData);
+```
+
+### 5. 設定防火牆規則
+
+```csharp
+// 允許 Azure 服務
+var azureServicesRule = new SqlFirewallRuleData
+{
+    StartIPAddress = &quot;0.0.0.0&quot;,
+    EndIPAddress = &quot;0.0.0.0&quot;
+};
+
+var firewallCollection = server.GetSqlFirewallRules();
+await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;AllowAzureServices&quot;,
+    azureServicesRule);
+
+// 允許特定的 IP 範圍
+var clientRule = new SqlFirewallRuleData
+{
+    StartIPAddress = &quot;203.0.113.0&quot;,
+    EndIPAddress = &quot;203.0.113.255&quot;
+};
+
+await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;AllowClientIPs&quot;,
+    clientRule);
+```
+
+### 6. 列出資源
+
+```csharp
+// 列出 subscription 內所有 server
+await foreach (var srv in subscription.GetSqlServersAsync())
+{
+    Console.WriteLine($&quot;Server: {srv.Data.Name} in {srv.Data.Location}&quot;);
+}
+
+// 列出 server 內的資料庫
+await foreach (var db in server.GetSqlDatabases())
+{
+    Console.WriteLine($&quot;Database: {db.Data.Name}, SKU: {db.Data.Sku?.Name}&quot;);
+}
+
+// 列出 elastic pool
+await foreach (var ep in server.GetElasticPools())
+{
+    Console.WriteLine($&quot;Pool: {ep.Data.Name}, DTU: {ep.Data.Sku?.Capacity}&quot;);
+}
+```
+
+### 7. 取得 Connection String
+
+```csharp
+// 組出 connection string（server 的 FQDN 是可預期的）
+var serverFqdn = $&quot;{server.Data.Name}.database.windows.net&quot;;
+var connectionString = $&quot;Server=tcp:{serverFqdn},1433;&quot; +
+    $&quot;Initial Catalog={database.Data.Name};&quot; +
+    &quot;Persist Security Info=False;&quot; +
+    $&quot;User ID={server.Data.AdministratorLogin};&quot; +
+    &quot;Password=&lt;your-password&gt;;&quot; +
+    &quot;MultipleActiveResultSets=False;&quot; +
+    &quot;Encrypt=True;&quot; +
+    &quot;TrustServerCertificate=False;&quot; +
+    &quot;Connection Timeout=30;&quot;;
+```
+
+## 主要型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `ArmClient` | 所有 ARM 操作的進入點 |
+| `SqlServerResource` | 代表一個 Azure SQL server |
+| `SqlServerCollection` | server CRUD 的集合 |
+| `SqlDatabaseResource` | 代表一個 SQL 資料庫 |
+| `SqlDatabaseCollection` | 資料庫 CRUD 的集合 |
+| `ElasticPoolResource` | 代表一個 elastic pool |
+| `ElasticPoolCollection` | elastic pool CRUD 的集合 |
+| `SqlFirewallRuleResource` | 代表一條防火牆規則 |
+| `SqlFirewallRuleCollection` | 防火牆規則 CRUD 的集合 |
+| `SqlServerData` | server 建立／更新的 payload |
+| `SqlDatabaseData` | 資料庫建立／更新的 payload |
+| `ElasticPoolData` | elastic pool 建立／更新的 payload |
+| `SqlFirewallRuleData` | 防火牆規則建立／更新的 payload |
+| `SqlSku` | SKU 設定（tier、capacity） |
+
+## 常見 SKU
+
+### 資料庫 SKU
+
+| SKU 名稱 | 層級 | 說明 |
+|----------|------|-------------|
+| `Basic` | Basic | 5 DTU，最大 2 GB |
+| `S0`-`S12` | Standard | 10-3000 DTU |
+| `P1`-`P15` | Premium | 125-4000 DTU |
+| `GP_Gen5_2` | GeneralPurpose | 以 vCore 為基礎，2 個 vCore |
+| `BC_Gen5_2` | BusinessCritical | 以 vCore 為基礎，2 個 vCore |
+| `HS_Gen5_2` | Hyperscale | 以 vCore 為基礎，2 個 vCore |
+
+### Elastic Pool SKU
+
+| SKU 名稱 | 層級 | 說明 |
+|----------|------|-------------|
+| `BasicPool` | Basic | 50-1600 eDTU |
+| `StandardPool` | Standard | 50-3000 eDTU |
+| `PremiumPool` | Premium | 125-4000 eDTU |
+| `GP_Gen5_2` | GeneralPurpose | 以 vCore 為基礎 |
+| `BC_Gen5_2` | BusinessCritical | 以 vCore 為基礎 |
+
+## 最佳實務
+
+1. **需要等操作完成才能繼續時，用 `WaitUntil.Completed`**
+2. **想自己輪詢或平行執行操作時，用 `WaitUntil.Started`**
+3. **一律使用 `DefaultAzureCredential`**：正式環境絕對不要寫死密碼
+4. **處理 `RequestFailedException`**，因應 ARM API 的錯誤
+5. **使用 `CreateOrUpdateAsync`** 做冪等操作
+6. **透過 `Get*` 方法走訪階層**（例如 `server.GetSqlDatabases()`）
+7. **管理多個資料庫時用 elastic pool**，節省成本
+8. **先設定防火牆規則**，再嘗試連線
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await serverCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, serverName, serverData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Server already exists&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Invalid request: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## 參考檔案
+
+| 檔案 | 何時閱讀 |
+|------|--------------|
+| [references/server-management.md](references/server-management.md) | Server CRUD、管理員憑證、Azure AD 驗證、網路 |
+| [references/database-operations.md](references/database-operations.md) | 資料庫 CRUD、調整規格、備份、還原、複製 |
+| [references/elastic-pools.md](references/elastic-pools.md) | Pool 管理、新增／移除資料庫、調整規格 |
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Microsoft.Data.SqlClient` | Data plane（執行查詢、stored procedure） | `dotnet add package Microsoft.Data.SqlClient` |
+| `Azure.ResourceManager.Sql` | 管理平面（本 SDK） | `dotnet add package Azure.ResourceManager.Sql` |
+| `Microsoft.EntityFrameworkCore.SqlServer` | SQL Server 的 ORM | `dotnet add package Microsoft.EntityFrameworkCore.SqlServer` |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-resource-manager-sql-dotnet
+description: |
+  Azure Resource Manager SDK for Azure SQL in .NET. Use for MANAGEMENT PLANE operations: creating/managing SQL servers, databases, elastic pools, firewall rules, and failover groups via Azure Resource Manager. NOT for data plane operations (executing queries) - use Microsoft.Data.SqlClient for that. Triggers: &quot;SQL server&quot;, &quot;create SQL database&quot;, &quot;manage SQL resources&quot;, &quot;ARM SQL&quot;, &quot;SqlServerResource&quot;, &quot;provision Azure SQL&quot;, &quot;elastic pool&quot;, &quot;firewall rule&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.Sql
+---
+
+# Azure.ResourceManager.Sql (.NET)
+
+Management plane SDK for provisioning and managing Azure SQL resources via Azure Resource Manager.
+
+&gt; **⚠️ Management vs Data Plane**
+&gt; - **This SDK (Azure.ResourceManager.Sql)**: Create servers, databases, elastic pools, configure firewall rules, manage failover groups
+&gt; - **Data Plane SDK (Microsoft.Data.SqlClient)**: Execute queries, stored procedures, manage connections
+
+## Installation
+
+```bash
+dotnet add package Azure.ResourceManager.Sql
+dotnet add package Azure.Identity
+```
+
+**Current Versions**: Stable v1.3.0, Preview v1.4.0-beta.3
+
+## Environment Variables
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt;  # Required: Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+AZURE_TENANT_ID=&lt;tenant-id&gt;  # For service principal auth (optional)
+AZURE_CLIENT_ID=&lt;client-id&gt;  # For service principal auth (optional)
+AZURE_CLIENT_SECRET=&lt;client-secret&gt;  # For service principal auth (optional)
+```
+
+## Authentication
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Sql;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// Get subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## Resource Hierarchy
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── SqlServerResource
+            ├── SqlDatabaseResource
+            ├── ElasticPoolResource
+            │   └── ElasticPoolDatabaseResource
+            ├── SqlFirewallRuleResource
+            ├── FailoverGroupResource
+            ├── ServerBlobAuditingPolicyResource
+            ├── EncryptionProtectorResource
+            └── VirtualNetworkRuleResource
+```
+
+## Core Workflow
+
+### 1. Create SQL Server
+
+```csharp
+using Azure.ResourceManager.Sql;
+using Azure.ResourceManager.Sql.Models;
+
+// Get resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// Define server
+var serverData = new SqlServerData(AzureLocation.EastUS)
+{
+    AdministratorLogin = &quot;sqladmin&quot;,
+    AdministratorLoginPassword = &quot;YourSecurePassword123!&quot;,
+    Version = &quot;12.0&quot;,
+    MinimalTlsVersion = SqlMinimalTlsVersion.Tls1_2,
+    PublicNetworkAccess = ServerNetworkAccessFlag.Enabled
+};
+
+// Create server (long-running operation)
+var serverCollection = resourceGroup.Value.GetSqlServers();
+var operation = await serverCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-sql-server&quot;,
+    serverData);
+
+SqlServerResource server = operation.Value;
+```
+
+### 2. Create SQL Database
+
+```csharp
+var databaseData = new SqlDatabaseData(AzureLocation.EastUS)
+{
+    Sku = new SqlSku(&quot;S0&quot;) { Tier = &quot;Standard&quot; },
+    MaxSizeBytes = 2L * 1024 * 1024 * 1024, // 2 GB
+    Collation = &quot;SQL_Latin1_General_CP1_CI_AS&quot;,
+    RequestedBackupStorageRedundancy = SqlBackupStorageRedundancy.Local
+};
+
+var databaseCollection = server.GetSqlDatabases();
+var dbOperation = await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-database&quot;,
+    databaseData);
+
+SqlDatabaseResource database = dbOperation.Value;
+```
+
+### 3. Create Elastic Pool
+
+```csharp
+var poolData = new ElasticPoolData(AzureLocation.EastUS)
+{
+    Sku = new SqlSku(&quot;StandardPool&quot;)
+    {
+        Tier = &quot;Standard&quot;,
+        Capacity = 100 // 100 eDTUs
+    },
+    PerDatabaseSettings = new ElasticPoolPerDatabaseSettings
+    {
+        MinCapacity = 0,
+        MaxCapacity = 100
+    }
+};
+
+var poolCollection = server.GetElasticPools();
+var poolOperation = await poolCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-elastic-pool&quot;,
+    poolData);
+
+ElasticPoolResource pool = poolOperation.Value;
+```
+
+### 4. Add Database to Elastic Pool
+
+```csharp
+var databaseData = new SqlDatabaseData(AzureLocation.EastUS)
+{
+    ElasticPoolId = pool.Id
+};
+
+await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;pooled-database&quot;,
+    databaseData);
+```
+
+### 5. Configure Firewall Rules
+
+```csharp
+// Allow Azure services
+var azureServicesRule = new SqlFirewallRuleData
+{
+    StartIPAddress = &quot;0.0.0.0&quot;,
+    EndIPAddress = &quot;0.0.0.0&quot;
+};
+
+var firewallCollection = server.GetSqlFirewallRules();
+await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;AllowAzureServices&quot;,
+    azureServicesRule);
+
+// Allow specific IP range
+var clientRule = new SqlFirewallRuleData
+{
+    StartIPAddress = &quot;203.0.113.0&quot;,
+    EndIPAddress = &quot;203.0.113.255&quot;
+};
+
+await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;AllowClientIPs&quot;,
+    clientRule);
+```
+
+### 6. List Resources
+
+```csharp
+// List all servers in subscription
+await foreach (var srv in subscription.GetSqlServersAsync())
+{
+    Console.WriteLine($&quot;Server: {srv.Data.Name} in {srv.Data.Location}&quot;);
+}
+
+// List databases in a server
+await foreach (var db in server.GetSqlDatabases())
+{
+    Console.WriteLine($&quot;Database: {db.Data.Name}, SKU: {db.Data.Sku?.Name}&quot;);
+}
+
+// List elastic pools
+await foreach (var ep in server.GetElasticPools())
+{
+    Console.WriteLine($&quot;Pool: {ep.Data.Name}, DTU: {ep.Data.Sku?.Capacity}&quot;);
+}
+```
+
+### 7. Get Connection String
+
+```csharp
+// Build connection string (server FQDN is predictable)
+var serverFqdn = $&quot;{server.Data.Name}.database.windows.net&quot;;
+var connectionString = $&quot;Server=tcp:{serverFqdn},1433;&quot; +
+    $&quot;Initial Catalog={database.Data.Name};&quot; +
+    &quot;Persist Security Info=False;&quot; +
+    $&quot;User ID={server.Data.AdministratorLogin};&quot; +
+    &quot;Password=&lt;your-password&gt;;&quot; +
+    &quot;MultipleActiveResultSets=False;&quot; +
+    &quot;Encrypt=True;&quot; +
+    &quot;TrustServerCertificate=False;&quot; +
+    &quot;Connection Timeout=30;&quot;;
+```
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `ArmClient` | Entry point for all ARM operations |
+| `SqlServerResource` | Represents an Azure SQL server |
+| `SqlServerCollection` | Collection for server CRUD |
+| `SqlDatabaseResource` | Represents a SQL database |
+| `SqlDatabaseCollection` | Collection for database CRUD |
+| `ElasticPoolResource` | Represents an elastic pool |
+| `ElasticPoolCollection` | Collection for elastic pool CRUD |
+| `SqlFirewallRuleResource` | Represents a firewall rule |
+| `SqlFirewallRuleCollection` | Collection for firewall rule CRUD |
+| `SqlServerData` | Server creation/update payload |
+| `SqlDatabaseData` | Database creation/update payload |
+| `ElasticPoolData` | Elastic pool creation/update payload |
+| `SqlFirewallRuleData` | Firewall rule creation/update payload |
+| `SqlSku` | SKU configuration (tier, capacity) |
+
+## Common SKUs
+
+### Database SKUs
+
+| SKU Name | Tier | Description |
+|----------|------|-------------|
+| `Basic` | Basic | 5 DTUs, 2 GB max |
+| `S0`-`S12` | Standard | 10-3000 DTUs |
+| `P1`-`P15` | Premium | 125-4000 DTUs |
+| `GP_Gen5_2` | GeneralPurpose | vCore-based, 2 vCores |
+| `BC_Gen5_2` | BusinessCritical | vCore-based, 2 vCores |
+| `HS_Gen5_2` | Hyperscale | vCore-based, 2 vCores |
+
+### Elastic Pool SKUs
+
+| SKU Name | Tier | Description |
+|----------|------|-------------|
+| `BasicPool` | Basic | 50-1600 eDTUs |
+| `StandardPool` | Standard | 50-3000 eDTUs |
+| `PremiumPool` | Premium | 125-4000 eDTUs |
+| `GP_Gen5_2` | GeneralPurpose | vCore-based |
+| `BC_Gen5_2` | BusinessCritical | vCore-based |
+
+## Best Practices
+
+1. **Use `WaitUntil.Completed`** for operations that must finish before proceeding
+2. **Use `WaitUntil.Started`** when you want to poll manually or run operations in parallel
+3. **Always use `DefaultAzureCredential`** — never hardcode passwords in production
+4. **Handle `RequestFailedException`** for ARM API errors
+5. **Use `CreateOrUpdateAsync`** for idempotent operations
+6. **Navigate hierarchy** via `Get*` methods (e.g., `server.GetSqlDatabases()`)
+7. **Use elastic pools** for cost optimization when managing multiple databases
+8. **Configure firewall rules** before attempting connections
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await serverCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, serverName, serverData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Server already exists&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Invalid request: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## Reference Files
+
+| File | When to Read |
+|------|--------------|
+| [references/server-management.md](references/server-management.md) | Server CRUD, admin credentials, Azure AD auth, networking |
+| [references/database-operations.md](references/database-operations.md) | Database CRUD, scaling, backup, restore, copy |
+| [references/elastic-pools.md](references/elastic-pools.md) | Pool management, adding/removing databases, scaling |
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Microsoft.Data.SqlClient` | Data plane (execute queries, stored procedures) | `dotnet add package Microsoft.Data.SqlClient` |
+| `Azure.ResourceManager.Sql` | Management plane (this SDK) | `dotnet add package Azure.ResourceManager.Sql` |
+| `Microsoft.EntityFrameworkCore.SqlServer` | ORM for SQL Server | `dotnet add package Microsoft.EntityFrameworkCore.SqlServer` |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

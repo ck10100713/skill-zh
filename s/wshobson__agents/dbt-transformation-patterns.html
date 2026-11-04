@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dbt-transformation-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 dbt 做資料轉換：model 分層、命名、測試、文件和 incremental">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>dbt-transformation-patterns</h1>
+<p class="meta">wshobson ｜ 資料與分析 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/data-engineering/skills/dbt-transformation-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 dbt 做資料轉換：model 分層、命名、測試、文件和 incremental</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: dbt-transformation-patterns
+description: 精通用 dbt（data build tool）做 analytics engineering，涵蓋 model 組織、測試、文件與 incremental 策略。適用於建立資料轉換、建立資料模型，或落實 analytics engineering 最佳實務的時候。
+---
+
+# dbt 轉換模式
+
+可用於 production 的 dbt（data build tool）模式，包含 model 組織、測試策略、文件與 incremental 處理。
+
+## 什麼時候用這個 Skill
+
+- 用 dbt 建立資料轉換 pipeline
+- 把 model 整理成 staging、intermediate、marts 三層
+- 實作資料品質測試
+- 為大型資料集建立 incremental model
+- 為資料模型與 lineage 寫文件
+- 設定 dbt 專案結構
+
+## 核心概念
+
+### 1. Model 分層（Medallion Architecture）
+
+```
+sources/          原始資料定義
+    ↓
+staging/          與來源 1:1，輕度清理
+    ↓
+intermediate/     商業邏輯、join、彙總
+    ↓
+marts/            最終分析用資料表
+```
+
+### 2. 命名慣例
+
+| 層級         | 前綴           | 範例                          |
+| ------------ | -------------- | ----------------------------- |
+| Staging      | `stg_`         | `stg_stripe__payments`        |
+| Intermediate | `int_`         | `int_payments_pivoted`        |
+| Marts        | `dim_`, `fct_` | `dim_customers`, `fct_orders` |
+
+## 快速開始
+
+```yaml
+# dbt_project.yml
+name: &quot;analytics&quot;
+version: &quot;1.0.0&quot;
+profile: &quot;analytics&quot;
+
+model-paths: [&quot;models&quot;]
+analysis-paths: [&quot;analyses&quot;]
+test-paths: [&quot;tests&quot;]
+seed-paths: [&quot;seeds&quot;]
+macro-paths: [&quot;macros&quot;]
+
+vars:
+  start_date: &quot;2020-01-01&quot;
+
+models:
+  analytics:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: ephemeral
+    marts:
+      +materialized: table
+      +schema: analytics
+```
+
+```
+# 專案結構
+models/
+├── staging/
+│   ├── stripe/
+│   │   ├── _stripe__sources.yml
+│   │   ├── _stripe__models.yml
+│   │   ├── stg_stripe__customers.sql
+│   │   └── stg_stripe__payments.sql
+│   └── shopify/
+│       ├── _shopify__sources.yml
+│       └── stg_shopify__orders.sql
+├── intermediate/
+│   └── finance/
+│       └── int_payments_pivoted.sql
+└── marts/
+    ├── core/
+    │   ├── _core__models.yml
+    │   ├── dim_customers.sql
+    │   └── fct_orders.sql
+    └── finance/
+        └── fct_revenue.sql
+```
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`，上面這一層導覽不夠用的時候再去讀那份檔案。
+
+## 最佳實務
+
+### 該做的
+
+- **使用 staging 層**：資料只清一次，到處都能用
+- **積極做測試**：not null、unique、relationships
+- **每樣東西都寫文件**：欄位描述、model 描述
+- **使用 incremental**：資料表超過 100 萬筆時
+- **版本控制**：dbt 專案放在 Git
+
+### 不該做的
+
+- **不要跳過 staging**：從 Raw 直接做到 mart 是技術債
+- **不要寫死日期**：用 `{{ var(&#x27;start_date&#x27;) }}`
+- **不要重複邏輯**：抽成 macro
+- **不要在 prod 測試**：用 dev target
+- **不要忽略 freshness**：要監控來源資料</pre></section><section><h2>英文原文</h2><pre>---
+name: dbt-transformation-patterns
+description: Master dbt (data build tool) for analytics engineering with model organization, testing, documentation, and incremental strategies. Use when building data transformations, creating data models, or implementing analytics engineering best practices.
+---
+
+# dbt Transformation Patterns
+
+Production-ready patterns for dbt (data build tool) including model organization, testing strategies, documentation, and incremental processing.
+
+## When to Use This Skill
+
+- Building data transformation pipelines with dbt
+- Organizing models into staging, intermediate, and marts layers
+- Implementing data quality tests
+- Creating incremental models for large datasets
+- Documenting data models and lineage
+- Setting up dbt project structure
+
+## Core Concepts
+
+### 1. Model Layers (Medallion Architecture)
+
+```
+sources/          Raw data definitions
+    ↓
+staging/          1:1 with source, light cleaning
+    ↓
+intermediate/     Business logic, joins, aggregations
+    ↓
+marts/            Final analytics tables
+```
+
+### 2. Naming Conventions
+
+| Layer        | Prefix         | Example                       |
+| ------------ | -------------- | ----------------------------- |
+| Staging      | `stg_`         | `stg_stripe__payments`        |
+| Intermediate | `int_`         | `int_payments_pivoted`        |
+| Marts        | `dim_`, `fct_` | `dim_customers`, `fct_orders` |
+
+## Quick Start
+
+```yaml
+# dbt_project.yml
+name: &quot;analytics&quot;
+version: &quot;1.0.0&quot;
+profile: &quot;analytics&quot;
+
+model-paths: [&quot;models&quot;]
+analysis-paths: [&quot;analyses&quot;]
+test-paths: [&quot;tests&quot;]
+seed-paths: [&quot;seeds&quot;]
+macro-paths: [&quot;macros&quot;]
+
+vars:
+  start_date: &quot;2020-01-01&quot;
+
+models:
+  analytics:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: ephemeral
+    marts:
+      +materialized: table
+      +schema: analytics
+```
+
+```
+# Project structure
+models/
+├── staging/
+│   ├── stripe/
+│   │   ├── _stripe__sources.yml
+│   │   ├── _stripe__models.yml
+│   │   ├── stg_stripe__customers.sql
+│   │   └── stg_stripe__payments.sql
+│   └── shopify/
+│       ├── _shopify__sources.yml
+│       └── stg_shopify__orders.sql
+├── intermediate/
+│   └── finance/
+│       └── int_payments_pivoted.sql
+└── marts/
+    ├── core/
+    │   ├── _core__models.yml
+    │   ├── dim_customers.sql
+    │   └── fct_orders.sql
+    └── finance/
+        └── fct_revenue.sql
+```
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices
+
+### Do&#x27;s
+
+- **Use staging layer** - Clean data once, use everywhere
+- **Test aggressively** - Not null, unique, relationships
+- **Document everything** - Column descriptions, model descriptions
+- **Use incremental** - For tables &gt; 1M rows
+- **Version control** - dbt project in Git
+
+### Don&#x27;ts
+
+- **Don&#x27;t skip staging** - Raw → mart is tech debt
+- **Don&#x27;t hardcode dates** - Use `{{ var(&#x27;start_date&#x27;) }}`
+- **Don&#x27;t repeat logic** - Extract to macros
+- **Don&#x27;t test in prod** - Use dev target
+- **Don&#x27;t ignore freshness** - Monitor source data</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

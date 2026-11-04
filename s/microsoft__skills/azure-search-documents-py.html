@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-search-documents-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 的 Azure AI Search SDK 做向量、混合、語意搜尋與 indexing">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-search-documents-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-search-documents-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python 的 Azure AI Search SDK 做向量、混合、語意搜尋與 indexing</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-search-documents-py
+description: |
+  Python 版的 Azure AI Search SDK。用於向量搜尋、混合搜尋、語意排序、indexing 和 skillset。
+  Triggers: &quot;azure-search-documents&quot;, &quot;SearchClient&quot;, &quot;SearchIndexClient&quot;, &quot;vector search&quot;, &quot;hybrid search&quot;, &quot;semantic search&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-search-documents
+---
+
+# Python 版 Azure AI Search SDK
+
+全文檢索、向量和混合搜尋，並具備 AI enrichment 能力。
+
+## 安裝
+
+```bash
+pip install azure-search-documents
+```
+
+## 環境變數
+
+```bash
+AZURE_SEARCH_ENDPOINT=https://&lt;service-name&gt;.search.windows.net  # 所有驗證方式都必填
+AZURE_SEARCH_INDEX_NAME=&lt;your-index-name&gt;  # 所有驗證方式都必填
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+AZURE_SEARCH_API_KEY=&lt;your-api-key&gt;  # 只有下面舊式的 API key 驗證才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個程式碼範例都適用兩條規則：**
+&gt;
+&gt; 1. **優先用 `DefaultAzureCredential`。** 它在本機（Azure CLI / VS Code / Developer CLI）和 Azure 上（managed identity、workload identity）都能用，不用改程式碼。避免用 connection string、account key 或 API key，它們會繞過 Entra 的稽核和輪替。
+&gt;    - 本機開發：直接用 `DefaultAzureCredential` 就好。
+&gt;    - Production：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限縮在 production 安全的 credential。
+&gt; 2. **每個 client 都用 context manager 包起來**，這樣 HTTP transport、socket 和 token cache 才會確實釋放：
+&gt;    - 同步：`with &lt;Client&gt;(...) as client:`
+&gt;    - 非同步：`async with &lt;Client&gt;(...) as client:` **而且** `async with DefaultAzureCredential() as credential:`（來自 `azure.identity.aio`）
+&gt;
+&gt; 範例片段可能會簡化這段設定，但 production 的程式碼一定要兩條規則都遵守。
+
+```python
+import os
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.search.documents import SearchClient
+
+# 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在 production 直接用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=credential,
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+### 舊式做法：API Key（既有使用 key 的部署）
+
+新程式碼請用上面的 `DefaultAzureCredential`。只有在既有的部署還在用 key、還沒遷移到 Entra ID 時才用 `AzureKeyCredential`，例如還在進行 Entra 導入的受管制環境。同一個 `AzureKeyCredential` 也能用在 `SearchIndexClient` 和 `SearchIndexerClient` 的管理操作。
+
+```python
+import os
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=AzureKeyCredential(os.environ[&quot;AZURE_SEARCH_API_KEY&quot;]),
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+## Client 類型
+
+| Client | 用途 |
+|--------|---------|
+| `SearchClient` | 搜尋和文件操作 |
+| `SearchIndexClient` | Index 管理、synonym map |
+| `SearchIndexerClient` | Indexer、data source、skillset |
+
+## 建立含向量欄位的 Index
+
+```python
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents.indexes.models import (
+    SearchIndex,
+    SearchField,
+    SearchFieldDataType,
+    VectorSearch,
+    HnswAlgorithmConfiguration,
+    VectorSearchProfile,
+    SearchableField,
+    SimpleField
+)
+
+fields = [
+    SimpleField(name=&quot;id&quot;, type=SearchFieldDataType.String, key=True),
+    SearchableField(name=&quot;title&quot;, type=SearchFieldDataType.String),
+    SearchableField(name=&quot;content&quot;, type=SearchFieldDataType.String),
+    SearchField(
+        name=&quot;content_vector&quot;,
+        type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+        searchable=True,
+        vector_search_dimensions=1536,
+        vector_search_profile_name=&quot;my-vector-profile&quot;
+    )
+]
+
+vector_search = VectorSearch(
+    algorithms=[
+        HnswAlgorithmConfiguration(name=&quot;my-hnsw&quot;)
+    ],
+    profiles=[
+        VectorSearchProfile(
+            name=&quot;my-vector-profile&quot;,
+            algorithm_configuration_name=&quot;my-hnsw&quot;
+        )
+    ]
+)
+
+index = SearchIndex(
+    name=&quot;my-index&quot;,
+    fields=fields,
+    vector_search=vector_search
+)
+
+with SearchIndexClient(endpoint, DefaultAzureCredential()) as index_client:
+    index_client.create_or_update_index(index)
+```
+
+## 上傳文件
+
+```python
+from azure.search.documents import SearchClient
+
+documents = [
+    {
+        &quot;id&quot;: &quot;1&quot;,
+        &quot;title&quot;: &quot;Azure AI Search&quot;,
+        &quot;content&quot;: &quot;Full-text and vector search service&quot;,
+        &quot;content_vector&quot;: [0.1, 0.2, ...]  # 1536 維
+    }
+]
+
+with SearchClient(endpoint, &quot;my-index&quot;, DefaultAzureCredential()) as client:
+    result = client.upload_documents(documents)
+    print(f&quot;Uploaded {len(result)} documents&quot;)
+```
+
+## 關鍵字搜尋
+
+```python
+results = client.search(
+    search_text=&quot;azure search&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}: {result[&#x27;@search.score&#x27;]}&quot;)
+```
+
+## 向量搜尋
+
+```python
+from azure.search.documents.models import VectorizedQuery
+
+# 你的查詢 embedding（1536 維）
+query_vector = get_embedding(&quot;semantic search capabilities&quot;)
+
+vector_query = VectorizedQuery(
+    vector=query_vector,
+    k_nearest_neighbors=10,
+    fields=&quot;content_vector&quot;
+)
+
+results = client.search(
+    vector_queries=[vector_query],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;]
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}: {result[&#x27;@search.score&#x27;]}&quot;)
+```
+
+## 混合搜尋（向量 + 關鍵字）
+
+```python
+from azure.search.documents.models import VectorizedQuery
+
+vector_query = VectorizedQuery(
+    vector=query_vector,
+    k_nearest_neighbors=10,
+    fields=&quot;content_vector&quot;
+)
+
+results = client.search(
+    search_text=&quot;azure search&quot;,
+    vector_queries=[vector_query],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+```
+
+## 語意排序
+
+```python
+from azure.search.documents.models import QueryType
+
+results = client.search(
+    search_text=&quot;what is azure search&quot;,
+    query_type=QueryType.SEMANTIC,
+    semantic_configuration_name=&quot;my-semantic-config&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}&quot;)
+    if result.get(&quot;@search.captions&quot;):
+        print(f&quot;  Caption: {result[&#x27;@search.captions&#x27;][0].text}&quot;)
+```
+
+## Filter
+
+```python
+results = client.search(
+    search_text=&quot;*&quot;,
+    filter=&quot;category eq &#x27;Technology&#x27; and rating gt 4&quot;,
+    order_by=[&quot;rating desc&quot;],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;category&quot;, &quot;rating&quot;]
+)
+```
+
+## Facet
+
+```python
+results = client.search(
+    search_text=&quot;*&quot;,
+    facets=[&quot;category,count:10&quot;, &quot;rating&quot;],
+    top=0  # 只取 facet，不取文件
+)
+
+for facet_name, facet_values in results.get_facets().items():
+    print(f&quot;{facet_name}:&quot;)
+    for facet in facet_values:
+        print(f&quot;  {facet[&#x27;value&#x27;]}: {facet[&#x27;count&#x27;]}&quot;)
+```
+
+## 自動完成與建議
+
+```python
+# Autocomplete
+results = client.autocomplete(
+    search_text=&quot;sea&quot;,
+    suggester_name=&quot;my-suggester&quot;,
+    mode=&quot;twoTerms&quot;
+)
+
+# Suggest
+results = client.suggest(
+    search_text=&quot;sea&quot;,
+    suggester_name=&quot;my-suggester&quot;,
+    select=[&quot;title&quot;]
+)
+```
+
+## 搭配 Skillset 的 Indexer
+
+```python
+from azure.search.documents.indexes import SearchIndexerClient
+from azure.search.documents.indexes.models import (
+    SearchIndexer,
+    SearchIndexerDataSourceConnection,
+    SearchIndexerSkillset,
+    EntityRecognitionSkill,
+    InputFieldMappingEntry,
+    OutputFieldMappingEntry
+)
+
+with SearchIndexerClient(endpoint, DefaultAzureCredential()) as indexer_client:
+    # 用 managed identity（search service 必須在 storage account 上有 RBAC 角色）。避免使用內嵌 key 的 storage connection string。
+    data_source = SearchIndexerDataSourceConnection(
+        name=&quot;my-datasource&quot;,
+        type=&quot;azureblob&quot;,
+        connection_string=&quot;ResourceId=/subscriptions/&lt;sub&gt;/resourceGroups/&lt;rg&gt;/providers/Microsoft.Storage/storageAccounts/&lt;acct&gt;&quot;,
+        container={&quot;name&quot;: &quot;documents&quot;}
+    )
+    indexer_client.create_or_update_data_source_connection(data_source)
+
+    # 建立 skillset
+    skillset = SearchIndexerSkillset(
+        name=&quot;my-skillset&quot;,
+        skills=[
+            EntityRecognitionSkill(
+                inputs=[InputFieldMappingEntry(name=&quot;text&quot;, source=&quot;/document/content&quot;)],
+                outputs=[OutputFieldMappingEntry(name=&quot;organizations&quot;, target_name=&quot;organizations&quot;)]
+            )
+        ]
+    )
+    indexer_client.create_or_update_skillset(skillset)
+
+    # 建立 indexer
+    indexer = SearchIndexer(
+        name=&quot;my-indexer&quot;,
+        data_source_name=&quot;my-datasource&quot;,
+        target_index_name=&quot;my-index&quot;,
+        skillset_name=&quot;my-skillset&quot;
+    )
+    indexer_client.create_or_update_indexer(indexer)
+```
+
+## 最佳實務
+
+1. **同步或非同步選一個，然後保持一致。** 同一條呼叫路徑裡，不要混用 `azure.xxx` 同步 client 和 `azure.xxx.aio` 非同步 client。每個 module 只選一種模式。
+2. **client 和非同步 credential 一律用 context manager。** 每個 client 都用 `with Client(...) as client:`（同步）或 `async with Client(...) as client:`（非同步）包起來。非同步的 `DefaultAzureCredential`（來自 `azure.identity.aio`）也要用 `async with credential:`，token 和 transport 才會清乾淨。
+3. **用混合搜尋**，結合向量和關鍵字，相關性最好
+4. 自然語言查詢要**啟用語意排序**
+5. **分批 index**，每批 100 到 1000 份文件，效率比較好
+6. 排序前**先用 filter** 縮小結果
+7. **向量維度要設成**跟你的 embedding 模型一致
+8. 大規模向量搜尋**用 HNSW 演算法**
+9. **suggester 要在建立 index 時就建好**（之後不能再加）
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/vector-search.md](references/vector-search.md) | HNSW 設定、integrated vectorization、多向量查詢 |
+| [references/semantic-ranking.md](references/semantic-ranking.md) | 語意設定、caption、answer、混合模式 |
+| [scripts/setup_vector_index.py](scripts/setup_vector_index.py) | 建立支援向量的 search index 的 CLI script |
+
+
+---
+
+## 其他 Azure AI Search 模式
+
+# Azure AI Search Python SDK
+
+用 `azure-search-documents` 寫出乾淨、符合 Python 慣用寫法的 Azure AI Search 程式碼。
+
+## 安裝
+
+```bash
+pip install azure-search-documents azure-identity
+```
+
+## 環境變數
+
+```bash
+AZURE_SEARCH_ENDPOINT=https://&lt;search-service&gt;.search.windows.net  # 所有驗證方式都必填
+AZURE_SEARCH_INDEX_NAME=&lt;index-name&gt;  # 所有驗證方式都必填
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+```python
+import os
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.search.documents import SearchClient
+
+# 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在 production 直接用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=credential,
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+## 選擇 Client
+
+| Client | 用途 |
+|--------|---------|
+| `SearchClient` | 查詢 index、上傳／更新／刪除文件 |
+| `SearchIndexClient` | 建立／管理 index、knowledge source、knowledge base |
+| `SearchIndexerClient` | 管理 indexer、skillset、data source |
+| `KnowledgeBaseRetrievalClient` | 用 LLM 驅動問答的 agentic retrieval |
+
+## 建立 Index 的模式
+
+```python
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents.indexes.models import (
+    SearchIndex, SearchField, VectorSearch, VectorSearchProfile,
+    HnswAlgorithmConfiguration, AzureOpenAIVectorizer,
+    AzureOpenAIVectorizerParameters, SemanticSearch,
+    SemanticConfiguration, SemanticPrioritizedFields, SemanticField
+)
+
+index = SearchIndex(
+    name=index_name,
+    fields=[
+        SearchField(name=&quot;id&quot;, type=&quot;Edm.String&quot;, key=True),
+        SearchField(name=&quot;content&quot;, type=&quot;Edm.String&quot;, searchable=True),
+        SearchField(name=&quot;embedding&quot;, type=&quot;Collection(Edm.Single)&quot;,
+                   vector_search_dimensions=3072,
+                   vector_search_profile_name=&quot;vector-profile&quot;),
+    ],
+    vector_search=VectorSearch(
+        profiles=[VectorSearchProfile(
+            name=&quot;vector-profile&quot;,
+            algorithm_configuration_name=&quot;hnsw-algo&quot;,
+            vectorizer_name=&quot;openai-vectorizer&quot;
+        )],
+        algorithms=[HnswAlgorithmConfiguration(name=&quot;hnsw-algo&quot;)],
+        vectorizers=[AzureOpenAIVectorizer(
+            vectorizer_name=&quot;openai-vectorizer&quot;,
+            parameters=AzureOpenAIVectorizerParameters(
+                resource_url=aoai_endpoint,
+                deployment_name=embedding_deployment,
+                model_name=embedding_model
+            )
+        )]
+    ),
+    semantic_search=SemanticSearch(
+        default_configuration_name=&quot;semantic-config&quot;,
+        configurations=[SemanticConfiguration(
+            name=&quot;semantic-config&quot;,
+            prioritized_fields=SemanticPrioritizedFields(
+                content_fields=[SemanticField(field_name=&quot;content&quot;)]
+            )
+        )]
+    )
+)
+
+with SearchIndexClient(endpoint, credential) as index_client:
+    index_client.create_or_update_index(index)
+```
+
+## 文件操作
+
+```python
+from azure.search.documents import SearchIndexingBufferedSender
+
+# 自動分批的批次上傳
+with SearchIndexingBufferedSender(endpoint, index_name, credential) as sender:
+    sender.upload_documents(documents)
+
+# 透過 SearchClient 直接操作
+with SearchClient(endpoint, index_name, credential) as search_client:
+    search_client.upload_documents(documents)      # 新增
+    search_client.merge_documents(documents)       # 更新既有文件
+    search_client.merge_or_upload_documents(documents)  # Upsert
+    search_client.delete_documents(documents)      # 刪除
+```
+
+## 搜尋模式
+
+```python
+# 基本搜尋
+results = search_client.search(search_text=&quot;query&quot;)
+
+# 向量搜尋
+from azure.search.documents.models import VectorizedQuery
+
+results = search_client.search(
+    search_text=None,
+    vector_queries=[VectorizedQuery(
+        vector=embedding,
+        k_nearest_neighbors=5,
+        fields=&quot;embedding&quot;
+    )]
+)
+
+# 混合搜尋（向量 + 關鍵字）
+results = search_client.search(
+    search_text=&quot;query&quot;,
+    vector_queries=[VectorizedQuery(vector=embedding, k_nearest_neighbors=5, fields=&quot;embedding&quot;)],
+    query_type=&quot;semantic&quot;,
+    semantic_configuration_name=&quot;semantic-config&quot;
+)
+
+# 搭配 filter
+results = search_client.search(
+    search_text=&quot;query&quot;,
+    filter=&quot;category eq &#x27;technology&#x27;&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+```
+
+## Agentic Retrieval（Knowledge Base）
+
+要用 LLM 驅動、能合成答案的問答，請看 [references/agentic-retrieval.md](references/agentic-retrieval.md)。
+
+關鍵概念：
+- **Knowledge Source**：指向一個 search index
+- **Knowledge Base**：包裝 knowledge source 加上 LLM，負責查詢規劃和答案合成
+- **輸出模式**：`EXTRACTIVE_DATA`（原始 chunk）或 `ANSWER_SYNTHESIS`（LLM 產生的答案）
+
+## 非同步模式
+
+```python
+from azure.search.documents.aio import SearchClient
+
+async with SearchClient(endpoint, index_name, credential) as client:
+    results = await client.search(search_text=&quot;query&quot;)
+    async for result in results:
+        print(result[&quot;title&quot;])
+```
+
+## 最佳實務
+
+1. endpoint、key 和 deployment 名稱**用環境變數**
+2. 在本機跑的程式碼**用 `DefaultAzureCredential`**（不要用 API key）。在 Azure 上跑的程式碼用特定的 token credential。
+3. 批次上傳**用 `SearchIndexingBufferedSender`**（它會處理分批和重試）
+4. agentic retrieval 的 index **一定要定義 semantic configuration**
+5. 建立 index 用 **`create_or_update_index`**，重跑也不會出問題（idempotent）
+6. 用 context manager 或明確呼叫 `close()` 來**關閉 client**
+
+## 欄位類型參考
+
+| EDM 類型 | Python | 備註 |
+|----------|--------|-------|
+| `Edm.String` | str | 可搜尋的文字 |
+| `Edm.Int32` | int | 整數 |
+| `Edm.Int64` | int | 長整數 |
+| `Edm.Double` | float | 浮點數 |
+| `Edm.Boolean` | bool | True/False |
+| `Edm.DateTimeOffset` | datetime | ISO 8601 |
+| `Collection(Edm.Single)` | List[float] | 向量 embedding |
+| `Collection(Edm.String)` | List[str] | 字串陣列 |
+
+## 錯誤處理
+
+```python
+from azure.core.exceptions import (
+    HttpResponseError,
+    ResourceNotFoundError,
+    ResourceExistsError
+)
+
+try:
+    result = search_client.get_document(key=&quot;123&quot;)
+except ResourceNotFoundError:
+    print(&quot;Document not found&quot;)
+except HttpResponseError as e:
+    print(f&quot;Search error: {e.message}&quot;)
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-search-documents-py
+description: |
+  Azure AI Search SDK for Python. Use for vector search, hybrid search, semantic ranking, indexing, and skillsets.
+  Triggers: &quot;azure-search-documents&quot;, &quot;SearchClient&quot;, &quot;SearchIndexClient&quot;, &quot;vector search&quot;, &quot;hybrid search&quot;, &quot;semantic search&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-search-documents
+---
+
+# Azure AI Search SDK for Python
+
+Full-text, vector, and hybrid search with AI enrichment capabilities.
+
+## Installation
+
+```bash
+pip install azure-search-documents
+```
+
+## Environment Variables
+
+```bash
+AZURE_SEARCH_ENDPOINT=https://&lt;service-name&gt;.search.windows.net  # Required for all auth methods
+AZURE_SEARCH_INDEX_NAME=&lt;your-index-name&gt;  # Required for all auth methods
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+AZURE_SEARCH_API_KEY=&lt;your-api-key&gt;  # Only required for the legacy API-key auth path below
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential`.** It works locally (Azure CLI / VS Code / Developer CLI) and in Azure (managed identity, workload identity) with no code change. Avoid connection strings, account/API keys — they bypass Entra audit and rotation.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Wrap every client in a context manager** so HTTP transports, sockets, and token caches are released deterministically:
+&gt;    - Sync: `with &lt;Client&gt;(...) as client:`
+&gt;    - Async: `async with &lt;Client&gt;(...) as client:` **and** `async with DefaultAzureCredential() as credential:` (from `azure.identity.aio`)
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+```python
+import os
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.search.documents import SearchClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=credential,
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+### Legacy: API Key (existing keyed deployments)
+
+New code should use `DefaultAzureCredential` above. Use `AzureKeyCredential` only if you have an existing keyed deployment that hasn&#x27;t been migrated to Entra ID yet — for example, regulated environments still completing their Entra rollout. The same `AzureKeyCredential` works with `SearchIndexClient` and `SearchIndexerClient` for admin operations.
+
+```python
+import os
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=AzureKeyCredential(os.environ[&quot;AZURE_SEARCH_API_KEY&quot;]),
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+## Client Types
+
+| Client | Purpose |
+|--------|---------|
+| `SearchClient` | Search and document operations |
+| `SearchIndexClient` | Index management, synonym maps |
+| `SearchIndexerClient` | Indexers, data sources, skillsets |
+
+## Create Index with Vector Field
+
+```python
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents.indexes.models import (
+    SearchIndex,
+    SearchField,
+    SearchFieldDataType,
+    VectorSearch,
+    HnswAlgorithmConfiguration,
+    VectorSearchProfile,
+    SearchableField,
+    SimpleField
+)
+
+fields = [
+    SimpleField(name=&quot;id&quot;, type=SearchFieldDataType.String, key=True),
+    SearchableField(name=&quot;title&quot;, type=SearchFieldDataType.String),
+    SearchableField(name=&quot;content&quot;, type=SearchFieldDataType.String),
+    SearchField(
+        name=&quot;content_vector&quot;,
+        type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+        searchable=True,
+        vector_search_dimensions=1536,
+        vector_search_profile_name=&quot;my-vector-profile&quot;
+    )
+]
+
+vector_search = VectorSearch(
+    algorithms=[
+        HnswAlgorithmConfiguration(name=&quot;my-hnsw&quot;)
+    ],
+    profiles=[
+        VectorSearchProfile(
+            name=&quot;my-vector-profile&quot;,
+            algorithm_configuration_name=&quot;my-hnsw&quot;
+        )
+    ]
+)
+
+index = SearchIndex(
+    name=&quot;my-index&quot;,
+    fields=fields,
+    vector_search=vector_search
+)
+
+with SearchIndexClient(endpoint, DefaultAzureCredential()) as index_client:
+    index_client.create_or_update_index(index)
+```
+
+## Upload Documents
+
+```python
+from azure.search.documents import SearchClient
+
+documents = [
+    {
+        &quot;id&quot;: &quot;1&quot;,
+        &quot;title&quot;: &quot;Azure AI Search&quot;,
+        &quot;content&quot;: &quot;Full-text and vector search service&quot;,
+        &quot;content_vector&quot;: [0.1, 0.2, ...]  # 1536 dimensions
+    }
+]
+
+with SearchClient(endpoint, &quot;my-index&quot;, DefaultAzureCredential()) as client:
+    result = client.upload_documents(documents)
+    print(f&quot;Uploaded {len(result)} documents&quot;)
+```
+
+## Keyword Search
+
+```python
+results = client.search(
+    search_text=&quot;azure search&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}: {result[&#x27;@search.score&#x27;]}&quot;)
+```
+
+## Vector Search
+
+```python
+from azure.search.documents.models import VectorizedQuery
+
+# Your query embedding (1536 dimensions)
+query_vector = get_embedding(&quot;semantic search capabilities&quot;)
+
+vector_query = VectorizedQuery(
+    vector=query_vector,
+    k_nearest_neighbors=10,
+    fields=&quot;content_vector&quot;
+)
+
+results = client.search(
+    vector_queries=[vector_query],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;]
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}: {result[&#x27;@search.score&#x27;]}&quot;)
+```
+
+## Hybrid Search (Vector + Keyword)
+
+```python
+from azure.search.documents.models import VectorizedQuery
+
+vector_query = VectorizedQuery(
+    vector=query_vector,
+    k_nearest_neighbors=10,
+    fields=&quot;content_vector&quot;
+)
+
+results = client.search(
+    search_text=&quot;azure search&quot;,
+    vector_queries=[vector_query],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+```
+
+## Semantic Ranking
+
+```python
+from azure.search.documents.models import QueryType
+
+results = client.search(
+    search_text=&quot;what is azure search&quot;,
+    query_type=QueryType.SEMANTIC,
+    semantic_configuration_name=&quot;my-semantic-config&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+
+for result in results:
+    print(f&quot;{result[&#x27;title&#x27;]}&quot;)
+    if result.get(&quot;@search.captions&quot;):
+        print(f&quot;  Caption: {result[&#x27;@search.captions&#x27;][0].text}&quot;)
+```
+
+## Filters
+
+```python
+results = client.search(
+    search_text=&quot;*&quot;,
+    filter=&quot;category eq &#x27;Technology&#x27; and rating gt 4&quot;,
+    order_by=[&quot;rating desc&quot;],
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;category&quot;, &quot;rating&quot;]
+)
+```
+
+## Facets
+
+```python
+results = client.search(
+    search_text=&quot;*&quot;,
+    facets=[&quot;category,count:10&quot;, &quot;rating&quot;],
+    top=0  # Only get facets, no documents
+)
+
+for facet_name, facet_values in results.get_facets().items():
+    print(f&quot;{facet_name}:&quot;)
+    for facet in facet_values:
+        print(f&quot;  {facet[&#x27;value&#x27;]}: {facet[&#x27;count&#x27;]}&quot;)
+```
+
+## Autocomplete &amp; Suggest
+
+```python
+# Autocomplete
+results = client.autocomplete(
+    search_text=&quot;sea&quot;,
+    suggester_name=&quot;my-suggester&quot;,
+    mode=&quot;twoTerms&quot;
+)
+
+# Suggest
+results = client.suggest(
+    search_text=&quot;sea&quot;,
+    suggester_name=&quot;my-suggester&quot;,
+    select=[&quot;title&quot;]
+)
+```
+
+## Indexer with Skillset
+
+```python
+from azure.search.documents.indexes import SearchIndexerClient
+from azure.search.documents.indexes.models import (
+    SearchIndexer,
+    SearchIndexerDataSourceConnection,
+    SearchIndexerSkillset,
+    EntityRecognitionSkill,
+    InputFieldMappingEntry,
+    OutputFieldMappingEntry
+)
+
+with SearchIndexerClient(endpoint, DefaultAzureCredential()) as indexer_client:
+    # Use managed identity (search service must have RBAC role on the storage account). Avoid storage connection strings with embedded keys.
+    data_source = SearchIndexerDataSourceConnection(
+        name=&quot;my-datasource&quot;,
+        type=&quot;azureblob&quot;,
+        connection_string=&quot;ResourceId=/subscriptions/&lt;sub&gt;/resourceGroups/&lt;rg&gt;/providers/Microsoft.Storage/storageAccounts/&lt;acct&gt;&quot;,
+        container={&quot;name&quot;: &quot;documents&quot;}
+    )
+    indexer_client.create_or_update_data_source_connection(data_source)
+
+    # Create skillset
+    skillset = SearchIndexerSkillset(
+        name=&quot;my-skillset&quot;,
+        skills=[
+            EntityRecognitionSkill(
+                inputs=[InputFieldMappingEntry(name=&quot;text&quot;, source=&quot;/document/content&quot;)],
+                outputs=[OutputFieldMappingEntry(name=&quot;organizations&quot;, target_name=&quot;organizations&quot;)]
+            )
+        ]
+    )
+    indexer_client.create_or_update_skillset(skillset)
+
+    # Create indexer
+    indexer = SearchIndexer(
+        name=&quot;my-indexer&quot;,
+        data_source_name=&quot;my-datasource&quot;,
+        target_index_name=&quot;my-index&quot;,
+        skillset_name=&quot;my-skillset&quot;
+    )
+    indexer_client.create_or_update_indexer(indexer)
+```
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.xxx` sync clients with `azure.xxx.aio` async clients in the same call path. Choose one mode per module.
+2. **Always use context managers for clients and async credentials.** Wrap every client in `with Client(...) as client:` (sync) or `async with Client(...) as client:` (async). For async `DefaultAzureCredential` from `azure.identity.aio`, also use `async with credential:` so tokens and transports are cleaned up.
+3. **Use hybrid search** for best relevance combining vector and keyword
+4. **Enable semantic ranking** for natural language queries
+5. **Index in batches** of 100-1000 documents for efficiency
+6. **Use filters** to narrow results before ranking
+7. **Configure vector dimensions** to match your embedding model
+8. **Use HNSW algorithm** for large-scale vector search
+9. **Create suggesters** at index creation time (cannot add later)
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/vector-search.md](references/vector-search.md) | HNSW configuration, integrated vectorization, multi-vector queries |
+| [references/semantic-ranking.md](references/semantic-ranking.md) | Semantic configuration, captions, answers, hybrid patterns |
+| [scripts/setup_vector_index.py](scripts/setup_vector_index.py) | CLI script to create vector-enabled search index |
+
+
+---
+
+## Additional Azure AI Search Patterns
+
+# Azure AI Search Python SDK
+
+Write clean, idiomatic Python code for Azure AI Search using `azure-search-documents`.
+
+## Installation
+
+```bash
+pip install azure-search-documents azure-identity
+```
+
+## Environment Variables
+
+```bash
+AZURE_SEARCH_ENDPOINT=https://&lt;search-service&gt;.search.windows.net  # Required for all auth methods
+AZURE_SEARCH_INDEX_NAME=&lt;index-name&gt;  # Required for all auth methods
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+```python
+import os
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.search.documents import SearchClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+with SearchClient(
+    endpoint=os.environ[&quot;AZURE_SEARCH_ENDPOINT&quot;],
+    index_name=os.environ[&quot;AZURE_SEARCH_INDEX_NAME&quot;],
+    credential=credential,
+) as client:
+    results = list(client.search(search_text=&quot;*&quot;, top=5))
+```
+
+## Client Selection
+
+| Client | Purpose |
+|--------|---------|
+| `SearchClient` | Query indexes, upload/update/delete documents |
+| `SearchIndexClient` | Create/manage indexes, knowledge sources, knowledge bases |
+| `SearchIndexerClient` | Manage indexers, skillsets, data sources |
+| `KnowledgeBaseRetrievalClient` | Agentic retrieval with LLM-powered Q&amp;A |
+
+## Index Creation Pattern
+
+```python
+from azure.search.documents.indexes import SearchIndexClient
+from azure.search.documents.indexes.models import (
+    SearchIndex, SearchField, VectorSearch, VectorSearchProfile,
+    HnswAlgorithmConfiguration, AzureOpenAIVectorizer,
+    AzureOpenAIVectorizerParameters, SemanticSearch,
+    SemanticConfiguration, SemanticPrioritizedFields, SemanticField
+)
+
+index = SearchIndex(
+    name=index_name,
+    fields=[
+        SearchField(name=&quot;id&quot;, type=&quot;Edm.String&quot;, key=True),
+        SearchField(name=&quot;content&quot;, type=&quot;Edm.String&quot;, searchable=True),
+        SearchField(name=&quot;embedding&quot;, type=&quot;Collection(Edm.Single)&quot;,
+                   vector_search_dimensions=3072,
+                   vector_search_profile_name=&quot;vector-profile&quot;),
+    ],
+    vector_search=VectorSearch(
+        profiles=[VectorSearchProfile(
+            name=&quot;vector-profile&quot;,
+            algorithm_configuration_name=&quot;hnsw-algo&quot;,
+            vectorizer_name=&quot;openai-vectorizer&quot;
+        )],
+        algorithms=[HnswAlgorithmConfiguration(name=&quot;hnsw-algo&quot;)],
+        vectorizers=[AzureOpenAIVectorizer(
+            vectorizer_name=&quot;openai-vectorizer&quot;,
+            parameters=AzureOpenAIVectorizerParameters(
+                resource_url=aoai_endpoint,
+                deployment_name=embedding_deployment,
+                model_name=embedding_model
+            )
+        )]
+    ),
+    semantic_search=SemanticSearch(
+        default_configuration_name=&quot;semantic-config&quot;,
+        configurations=[SemanticConfiguration(
+            name=&quot;semantic-config&quot;,
+            prioritized_fields=SemanticPrioritizedFields(
+                content_fields=[SemanticField(field_name=&quot;content&quot;)]
+            )
+        )]
+    )
+)
+
+with SearchIndexClient(endpoint, credential) as index_client:
+    index_client.create_or_update_index(index)
+```
+
+## Document Operations
+
+```python
+from azure.search.documents import SearchIndexingBufferedSender
+
+# Batch upload with automatic batching
+with SearchIndexingBufferedSender(endpoint, index_name, credential) as sender:
+    sender.upload_documents(documents)
+
+# Direct operations via SearchClient
+with SearchClient(endpoint, index_name, credential) as search_client:
+    search_client.upload_documents(documents)      # Add new
+    search_client.merge_documents(documents)       # Update existing
+    search_client.merge_or_upload_documents(documents)  # Upsert
+    search_client.delete_documents(documents)      # Remove
+```
+
+## Search Patterns
+
+```python
+# Basic search
+results = search_client.search(search_text=&quot;query&quot;)
+
+# Vector search
+from azure.search.documents.models import VectorizedQuery
+
+results = search_client.search(
+    search_text=None,
+    vector_queries=[VectorizedQuery(
+        vector=embedding,
+        k_nearest_neighbors=5,
+        fields=&quot;embedding&quot;
+    )]
+)
+
+# Hybrid search (vector + keyword)
+results = search_client.search(
+    search_text=&quot;query&quot;,
+    vector_queries=[VectorizedQuery(vector=embedding, k_nearest_neighbors=5, fields=&quot;embedding&quot;)],
+    query_type=&quot;semantic&quot;,
+    semantic_configuration_name=&quot;semantic-config&quot;
+)
+
+# With filters
+results = search_client.search(
+    search_text=&quot;query&quot;,
+    filter=&quot;category eq &#x27;technology&#x27;&quot;,
+    select=[&quot;id&quot;, &quot;title&quot;, &quot;content&quot;],
+    top=10
+)
+```
+
+## Agentic Retrieval (Knowledge Bases)
+
+For LLM-powered Q&amp;A with answer synthesis, see [references/agentic-retrieval.md](references/agentic-retrieval.md).
+
+Key concepts:
+- **Knowledge Source**: Points to a search index
+- **Knowledge Base**: Wraps knowledge sources + LLM for query planning and synthesis
+- **Output modes**: `EXTRACTIVE_DATA` (raw chunks) or `ANSWER_SYNTHESIS` (LLM-generated answers)
+
+## Async Pattern
+
+```python
+from azure.search.documents.aio import SearchClient
+
+async with SearchClient(endpoint, index_name, credential) as client:
+    results = await client.search(search_text=&quot;query&quot;)
+    async for result in results:
+        print(result[&quot;title&quot;])
+```
+
+## Best Practices
+
+1. **Use environment variables** for endpoints, keys, and deployment names
+2. **Use `DefaultAzureCredential`** for code that runs locally (instead of API keys). Use a specific token credential for code that runs in Azure.
+3. **Use `SearchIndexingBufferedSender`** for batch uploads (handles batching/retries)
+4. **Always define semantic configuration** for agentic retrieval indexes
+5. **Use `create_or_update_index`** for idempotent index creation
+6. **Close clients** with context managers or explicit `close()`
+
+## Field Types Reference
+
+| EDM Type | Python | Notes |
+|----------|--------|-------|
+| `Edm.String` | str | Searchable text |
+| `Edm.Int32` | int | Integer |
+| `Edm.Int64` | int | Long integer |
+| `Edm.Double` | float | Floating point |
+| `Edm.Boolean` | bool | True/False |
+| `Edm.DateTimeOffset` | datetime | ISO 8601 |
+| `Collection(Edm.Single)` | List[float] | Vector embeddings |
+| `Collection(Edm.String)` | List[str] | String arrays |
+
+## Error Handling
+
+```python
+from azure.core.exceptions import (
+    HttpResponseError,
+    ResourceNotFoundError,
+    ResourceExistsError
+)
+
+try:
+    result = search_client.get_document(key=&quot;123&quot;)
+except ResourceNotFoundError:
+    print(&quot;Document not found&quot;)
+except HttpResponseError as e:
+    print(f&quot;Search error: {e.message}&quot;)
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

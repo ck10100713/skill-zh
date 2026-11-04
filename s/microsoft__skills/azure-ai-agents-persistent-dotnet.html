@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-ai-agents-persistent-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 低階 SDK 建立並管理持久化 AI agent、thread 與 run">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-ai-agents-persistent-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-ai-agents-persistent-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 低階 SDK 建立並管理持久化 AI agent、thread 與 run</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-ai-agents-persistent-dotnet
+description: |
+  Azure AI Agents Persistent SDK（.NET 版）。用來建立和管理 AI agent 的低階 SDK，包含 thread、message、run 和工具。用於 agent 的 CRUD、對話 thread、串流回應、function calling、file search 和 code interpreter。Triggers: &quot;PersistentAgentsClient&quot;, &quot;persistent agents&quot;, &quot;agent threads&quot;, &quot;agent runs&quot;, &quot;streaming agents&quot;, &quot;function calling agents .NET&quot;。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.AI.Agents.Persistent
+---
+
+# Azure.AI.Agents.Persistent（.NET）
+
+用來建立和管理持久化 AI agent 的低階 SDK，包含 thread、message、run 和工具。
+
+## 安裝
+
+```bash
+dotnet add package Azure.AI.Agents.Persistent --prerelease
+dotnet add package Azure.Identity
+```
+
+**目前版本**：穩定版 v1.1.0，預覽版 v1.2.0-beta.8
+
+## 環境變數
+
+```bash
+PROJECT_ENDPOINT=https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;  # 必填：Azure AI project endpoint
+MODEL_DEPLOYMENT_NAME=gpt-4o-mini  # 必填：model deployment 名稱
+AZURE_BING_CONNECTION_ID=&lt;bing-connection-resource-id&gt;  # 必填：Bing connection 資源 ID
+AZURE_AI_SEARCH_CONNECTION_ID=&lt;search-connection-resource-id&gt;  # 必填：Azure AI Search connection 資源 ID
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境用 DefaultAzureCredential 時才需要
+```
+
+## 認證
+
+```csharp
+using Azure.AI.Agents.Persistent;
+using Azure.Identity;
+
+var projectEndpoint = Environment.GetEnvironmentVariable(&quot;PROJECT_ENDPOINT&quot;);
+// 本機開發：用 DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在正式環境直接使用指定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+PersistentAgentsClient client = new(projectEndpoint, credential);
+```
+
+## Client 階層
+
+```
+PersistentAgentsClient
+├── Administration  → Agent CRUD 操作
+├── Threads         → Thread 管理
+├── Messages        → Message 操作
+├── Runs            → Run 執行與串流
+├── Files           → 檔案上傳／下載
+└── VectorStores    → Vector store 管理
+```
+
+## 核心流程
+
+### 1. 建立 Agent
+
+```csharp
+var modelDeploymentName = Environment.GetEnvironmentVariable(&quot;MODEL_DEPLOYMENT_NAME&quot;);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Math Tutor&quot;,
+    instructions: &quot;You are a personal math tutor. Write and run code to answer math questions.&quot;,
+    tools: [new CodeInterpreterToolDefinition()]
+);
+```
+
+### 2. 建立 Thread 和 Message
+
+```csharp
+// 建立 thread
+PersistentAgentThread thread = await client.Threads.CreateThreadAsync();
+
+// 建立 message
+await client.Messages.CreateMessageAsync(
+    thread.Id,
+    MessageRole.User,
+    &quot;I need to solve the equation `3x + 11 = 14`. Can you help me?&quot;
+);
+```
+
+### 3. 執行 Agent（輪詢）
+
+```csharp
+// 建立 run
+ThreadRun run = await client.Runs.CreateRunAsync(
+    thread.Id,
+    agent.Id,
+    additionalInstructions: &quot;Please address the user as Jane Doe.&quot;
+);
+
+// 輪詢直到完成
+do
+{
+    await Task.Delay(TimeSpan.FromMilliseconds(500));
+    run = await client.Runs.GetRunAsync(thread.Id, run.Id);
+}
+while (run.Status == RunStatus.Queued || run.Status == RunStatus.InProgress);
+
+// 取得 messages
+await foreach (PersistentThreadMessage message in client.Messages.GetMessagesAsync(
+    threadId: thread.Id, 
+    order: ListSortOrder.Ascending))
+{
+    Console.Write($&quot;{message.Role}: &quot;);
+    foreach (MessageContent content in message.ContentItems)
+    {
+        if (content is MessageTextContent textContent)
+            Console.WriteLine(textContent.Text);
+    }
+}
+```
+
+### 4. 串流回應
+
+```csharp
+AsyncCollectionResult&lt;StreamingUpdate&gt; stream = client.Runs.CreateRunStreamingAsync(
+    thread.Id, 
+    agent.Id
+);
+
+await foreach (StreamingUpdate update in stream)
+{
+    if (update.UpdateKind == StreamingUpdateReason.RunCreated)
+    {
+        Console.WriteLine(&quot;--- Run started! ---&quot;);
+    }
+    else if (update is MessageContentUpdate contentUpdate)
+    {
+        Console.Write(contentUpdate.Text);
+    }
+    else if (update.UpdateKind == StreamingUpdateReason.RunCompleted)
+    {
+        Console.WriteLine(&quot;\n--- Run completed! ---&quot;);
+    }
+}
+```
+
+### 5. Function Calling
+
+```csharp
+// 定義 function tool
+FunctionToolDefinition weatherTool = new(
+    name: &quot;getCurrentWeather&quot;,
+    description: &quot;Gets the current weather at a location.&quot;,
+    parameters: BinaryData.FromObjectAsJson(new
+    {
+        Type = &quot;object&quot;,
+        Properties = new
+        {
+            Location = new { Type = &quot;string&quot;, Description = &quot;City and state, e.g. San Francisco, CA&quot; },
+            Unit = new { Type = &quot;string&quot;, Enum = new[] { &quot;c&quot;, &quot;f&quot; } }
+        },
+        Required = new[] { &quot;location&quot; }
+    }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+);
+
+// 建立帶 function 的 agent
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Weather Bot&quot;,
+    instructions: &quot;You are a weather bot.&quot;,
+    tools: [weatherTool]
+);
+
+// 在輪詢期間處理 function call
+do
+{
+    await Task.Delay(500);
+    run = await client.Runs.GetRunAsync(thread.Id, run.Id);
+
+    if (run.Status == RunStatus.RequiresAction 
+        &amp;&amp; run.RequiredAction is SubmitToolOutputsAction submitAction)
+    {
+        List&lt;ToolOutput&gt; outputs = [];
+        foreach (RequiredToolCall toolCall in submitAction.ToolCalls)
+        {
+            if (toolCall is RequiredFunctionToolCall funcCall)
+            {
+                // 執行函式並取得結果
+                string result = ExecuteFunction(funcCall.Name, funcCall.Arguments);
+                outputs.Add(new ToolOutput(toolCall, result));
+            }
+        }
+        run = await client.Runs.SubmitToolOutputsToRunAsync(run, outputs, toolApprovals: null);
+    }
+}
+while (run.Status == RunStatus.Queued || run.Status == RunStatus.InProgress);
+```
+
+### 6. 搭配 Vector Store 的 File Search
+
+```csharp
+// 上傳檔案
+PersistentAgentFileInfo file = await client.Files.UploadFileAsync(
+    filePath: &quot;document.txt&quot;,
+    purpose: PersistentAgentFilePurpose.Agents
+);
+
+// 建立 vector store
+PersistentAgentsVectorStore vectorStore = await client.VectorStores.CreateVectorStoreAsync(
+    fileIds: [file.Id],
+    name: &quot;my_vector_store&quot;
+);
+
+// 建立 file search 資源
+FileSearchToolResource fileSearchResource = new();
+fileSearchResource.VectorStoreIds.Add(vectorStore.Id);
+
+// 建立帶 file search 的 agent
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Document Assistant&quot;,
+    instructions: &quot;You help users find information in documents.&quot;,
+    tools: [new FileSearchToolDefinition()],
+    toolResources: new ToolResources { FileSearch = fileSearchResource }
+);
+```
+
+### 7. Bing Grounding
+
+```csharp
+var bingConnectionId = Environment.GetEnvironmentVariable(&quot;AZURE_BING_CONNECTION_ID&quot;);
+
+BingGroundingToolDefinition bingTool = new(
+    new BingGroundingSearchToolParameters(
+        [new BingGroundingSearchConfiguration(bingConnectionId)]
+    )
+);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Search Agent&quot;,
+    instructions: &quot;Use Bing to answer questions about current events.&quot;,
+    tools: [bingTool]
+);
+```
+
+### 8. Azure AI Search
+
+```csharp
+AzureAISearchToolResource searchResource = new(
+    connectionId: searchConnectionId,
+    indexName: &quot;my_index&quot;,
+    topK: 5,
+    filter: &quot;category eq &#x27;documentation&#x27;&quot;,
+    queryType: AzureAISearchQueryType.Simple
+);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Search Agent&quot;,
+    instructions: &quot;Search the documentation index to answer questions.&quot;,
+    tools: [new AzureAISearchToolDefinition()],
+    toolResources: new ToolResources { AzureAISearch = searchResource }
+);
+```
+
+### 9. 清理
+
+```csharp
+await client.Threads.DeleteThreadAsync(thread.Id);
+await client.Administration.DeleteAgentAsync(agent.Id);
+await client.VectorStores.DeleteVectorStoreAsync(vectorStore.Id);
+await client.Files.DeleteFileAsync(file.Id);
+```
+
+## 可用工具
+
+| 工具 | Class | 用途 |
+|------|-------|---------|
+| Code Interpreter | `CodeInterpreterToolDefinition` | 執行 Python 程式碼、產生視覺化圖表 |
+| File Search | `FileSearchToolDefinition` | 透過 vector store 搜尋上傳的檔案 |
+| Function Calling | `FunctionToolDefinition` | 呼叫自訂函式 |
+| Bing Grounding | `BingGroundingToolDefinition` | 透過 Bing 搜尋網頁 |
+| Azure AI Search | `AzureAISearchToolDefinition` | 搜尋 Azure AI Search 的 index |
+| OpenAPI | `OpenApiToolDefinition` | 透過 OpenAPI 規格呼叫外部 API |
+| Azure Functions | `AzureFunctionToolDefinition` | 呼叫 Azure Functions |
+| MCP | `MCPToolDefinition` | Model Context Protocol 工具 |
+| SharePoint | `SharepointToolDefinition` | 存取 SharePoint 內容 |
+| Microsoft Fabric | `MicrosoftFabricToolDefinition` | 存取 Fabric 資料 |
+
+## 串流更新類型
+
+| 更新類型 | 說明 |
+|-------------|-------------|
+| `StreamingUpdateReason.RunCreated` | Run 開始 |
+| `StreamingUpdateReason.RunInProgress` | Run 處理中 |
+| `StreamingUpdateReason.RunCompleted` | Run 完成 |
+| `StreamingUpdateReason.RunFailed` | Run 發生錯誤 |
+| `MessageContentUpdate` | 文字內容片段 |
+| `RunStepUpdate` | 步驟狀態變更 |
+
+## 主要型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `PersistentAgentsClient` | 主要進入點 |
+| `PersistentAgent` | 含 model、instructions、工具的 agent |
+| `PersistentAgentThread` | 對話 thread |
+| `PersistentThreadMessage` | Thread 裡的 message |
+| `ThreadRun` | 對 thread 執行 agent |
+| `RunStatus` | Queued、InProgress、RequiresAction、Completed、Failed |
+| `ToolResources` | 合併的工具資源 |
+| `ToolOutput` | Function call 的回應 |
+
+## 最佳實務
+
+1. **一定要 dispose client**：用 `using` 陳述式或明確 dispose
+2. **輪詢要有適當的間隔**：建議每次狀態檢查間隔 500ms
+3. **清理資源**：用完就刪掉 thread 和 agent
+4. **處理所有 run 狀態**：檢查 `RequiresAction`、`Failed`、`Cancelled`
+5. **要即時體驗就用串流**：使用者體驗比輪詢好
+6. **存 ID，不要存物件**：用 ID 參照 agent／thread
+7. **用非同步方法**：所有操作都應該是非同步的
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    var agent = await client.Administration.CreateAgentAsync(...);
+}
+catch (RequestFailedException ex) when (ex.Status == 404)
+{
+    Console.WriteLine(&quot;Resource not found&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Azure.AI.Agents.Persistent` | 低階 agent（本 SDK） | `dotnet add package Azure.AI.Agents.Persistent` |
+| `Azure.AI.Projects` | 高階的 project client | `dotnet add package Azure.AI.Projects` |
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| NuGet 套件 | https://www.nuget.org/packages/Azure.AI.Agents.Persistent |
+| API 參考 | https://learn.microsoft.com/dotnet/api/azure.ai.agents.persistent |
+| GitHub 原始碼 | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.Agents.Persistent |
+| 範例 | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.Agents.Persistent/samples |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-ai-agents-persistent-dotnet
+description: |
+  Azure AI Agents Persistent SDK for .NET. Low-level SDK for creating and managing AI agents with threads, messages, runs, and tools. Use for agent CRUD, conversation threads, streaming responses, function calling, file search, and code interpreter. Triggers: &quot;PersistentAgentsClient&quot;, &quot;persistent agents&quot;, &quot;agent threads&quot;, &quot;agent runs&quot;, &quot;streaming agents&quot;, &quot;function calling agents .NET&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.AI.Agents.Persistent
+---
+
+# Azure.AI.Agents.Persistent (.NET)
+
+Low-level SDK for creating and managing persistent AI agents with threads, messages, runs, and tools.
+
+## Installation
+
+```bash
+dotnet add package Azure.AI.Agents.Persistent --prerelease
+dotnet add package Azure.Identity
+```
+
+**Current Versions**: Stable v1.1.0, Preview v1.2.0-beta.8
+
+## Environment Variables
+
+```bash
+PROJECT_ENDPOINT=https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;  # Required: Azure AI project endpoint
+MODEL_DEPLOYMENT_NAME=gpt-4o-mini  # Required: model deployment name
+AZURE_BING_CONNECTION_ID=&lt;bing-connection-resource-id&gt;  # Required: Bing connection resource ID
+AZURE_AI_SEARCH_CONNECTION_ID=&lt;search-connection-resource-id&gt;  # Required: Azure AI Search connection resource ID
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+```csharp
+using Azure.AI.Agents.Persistent;
+using Azure.Identity;
+
+var projectEndpoint = Environment.GetEnvironmentVariable(&quot;PROJECT_ENDPOINT&quot;);
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+PersistentAgentsClient client = new(projectEndpoint, credential);
+```
+
+## Client Hierarchy
+
+```
+PersistentAgentsClient
+├── Administration  → Agent CRUD operations
+├── Threads         → Thread management
+├── Messages        → Message operations
+├── Runs            → Run execution and streaming
+├── Files           → File upload/download
+└── VectorStores    → Vector store management
+```
+
+## Core Workflow
+
+### 1. Create Agent
+
+```csharp
+var modelDeploymentName = Environment.GetEnvironmentVariable(&quot;MODEL_DEPLOYMENT_NAME&quot;);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Math Tutor&quot;,
+    instructions: &quot;You are a personal math tutor. Write and run code to answer math questions.&quot;,
+    tools: [new CodeInterpreterToolDefinition()]
+);
+```
+
+### 2. Create Thread and Message
+
+```csharp
+// Create thread
+PersistentAgentThread thread = await client.Threads.CreateThreadAsync();
+
+// Create message
+await client.Messages.CreateMessageAsync(
+    thread.Id,
+    MessageRole.User,
+    &quot;I need to solve the equation `3x + 11 = 14`. Can you help me?&quot;
+);
+```
+
+### 3. Run Agent (Polling)
+
+```csharp
+// Create run
+ThreadRun run = await client.Runs.CreateRunAsync(
+    thread.Id,
+    agent.Id,
+    additionalInstructions: &quot;Please address the user as Jane Doe.&quot;
+);
+
+// Poll for completion
+do
+{
+    await Task.Delay(TimeSpan.FromMilliseconds(500));
+    run = await client.Runs.GetRunAsync(thread.Id, run.Id);
+}
+while (run.Status == RunStatus.Queued || run.Status == RunStatus.InProgress);
+
+// Retrieve messages
+await foreach (PersistentThreadMessage message in client.Messages.GetMessagesAsync(
+    threadId: thread.Id, 
+    order: ListSortOrder.Ascending))
+{
+    Console.Write($&quot;{message.Role}: &quot;);
+    foreach (MessageContent content in message.ContentItems)
+    {
+        if (content is MessageTextContent textContent)
+            Console.WriteLine(textContent.Text);
+    }
+}
+```
+
+### 4. Streaming Response
+
+```csharp
+AsyncCollectionResult&lt;StreamingUpdate&gt; stream = client.Runs.CreateRunStreamingAsync(
+    thread.Id, 
+    agent.Id
+);
+
+await foreach (StreamingUpdate update in stream)
+{
+    if (update.UpdateKind == StreamingUpdateReason.RunCreated)
+    {
+        Console.WriteLine(&quot;--- Run started! ---&quot;);
+    }
+    else if (update is MessageContentUpdate contentUpdate)
+    {
+        Console.Write(contentUpdate.Text);
+    }
+    else if (update.UpdateKind == StreamingUpdateReason.RunCompleted)
+    {
+        Console.WriteLine(&quot;\n--- Run completed! ---&quot;);
+    }
+}
+```
+
+### 5. Function Calling
+
+```csharp
+// Define function tool
+FunctionToolDefinition weatherTool = new(
+    name: &quot;getCurrentWeather&quot;,
+    description: &quot;Gets the current weather at a location.&quot;,
+    parameters: BinaryData.FromObjectAsJson(new
+    {
+        Type = &quot;object&quot;,
+        Properties = new
+        {
+            Location = new { Type = &quot;string&quot;, Description = &quot;City and state, e.g. San Francisco, CA&quot; },
+            Unit = new { Type = &quot;string&quot;, Enum = new[] { &quot;c&quot;, &quot;f&quot; } }
+        },
+        Required = new[] { &quot;location&quot; }
+    }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+);
+
+// Create agent with function
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Weather Bot&quot;,
+    instructions: &quot;You are a weather bot.&quot;,
+    tools: [weatherTool]
+);
+
+// Handle function calls during polling
+do
+{
+    await Task.Delay(500);
+    run = await client.Runs.GetRunAsync(thread.Id, run.Id);
+
+    if (run.Status == RunStatus.RequiresAction 
+        &amp;&amp; run.RequiredAction is SubmitToolOutputsAction submitAction)
+    {
+        List&lt;ToolOutput&gt; outputs = [];
+        foreach (RequiredToolCall toolCall in submitAction.ToolCalls)
+        {
+            if (toolCall is RequiredFunctionToolCall funcCall)
+            {
+                // Execute function and get result
+                string result = ExecuteFunction(funcCall.Name, funcCall.Arguments);
+                outputs.Add(new ToolOutput(toolCall, result));
+            }
+        }
+        run = await client.Runs.SubmitToolOutputsToRunAsync(run, outputs, toolApprovals: null);
+    }
+}
+while (run.Status == RunStatus.Queued || run.Status == RunStatus.InProgress);
+```
+
+### 6. File Search with Vector Store
+
+```csharp
+// Upload file
+PersistentAgentFileInfo file = await client.Files.UploadFileAsync(
+    filePath: &quot;document.txt&quot;,
+    purpose: PersistentAgentFilePurpose.Agents
+);
+
+// Create vector store
+PersistentAgentsVectorStore vectorStore = await client.VectorStores.CreateVectorStoreAsync(
+    fileIds: [file.Id],
+    name: &quot;my_vector_store&quot;
+);
+
+// Create file search resource
+FileSearchToolResource fileSearchResource = new();
+fileSearchResource.VectorStoreIds.Add(vectorStore.Id);
+
+// Create agent with file search
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Document Assistant&quot;,
+    instructions: &quot;You help users find information in documents.&quot;,
+    tools: [new FileSearchToolDefinition()],
+    toolResources: new ToolResources { FileSearch = fileSearchResource }
+);
+```
+
+### 7. Bing Grounding
+
+```csharp
+var bingConnectionId = Environment.GetEnvironmentVariable(&quot;AZURE_BING_CONNECTION_ID&quot;);
+
+BingGroundingToolDefinition bingTool = new(
+    new BingGroundingSearchToolParameters(
+        [new BingGroundingSearchConfiguration(bingConnectionId)]
+    )
+);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Search Agent&quot;,
+    instructions: &quot;Use Bing to answer questions about current events.&quot;,
+    tools: [bingTool]
+);
+```
+
+### 8. Azure AI Search
+
+```csharp
+AzureAISearchToolResource searchResource = new(
+    connectionId: searchConnectionId,
+    indexName: &quot;my_index&quot;,
+    topK: 5,
+    filter: &quot;category eq &#x27;documentation&#x27;&quot;,
+    queryType: AzureAISearchQueryType.Simple
+);
+
+PersistentAgent agent = await client.Administration.CreateAgentAsync(
+    model: modelDeploymentName,
+    name: &quot;Search Agent&quot;,
+    instructions: &quot;Search the documentation index to answer questions.&quot;,
+    tools: [new AzureAISearchToolDefinition()],
+    toolResources: new ToolResources { AzureAISearch = searchResource }
+);
+```
+
+### 9. Cleanup
+
+```csharp
+await client.Threads.DeleteThreadAsync(thread.Id);
+await client.Administration.DeleteAgentAsync(agent.Id);
+await client.VectorStores.DeleteVectorStoreAsync(vectorStore.Id);
+await client.Files.DeleteFileAsync(file.Id);
+```
+
+## Available Tools
+
+| Tool | Class | Purpose |
+|------|-------|---------|
+| Code Interpreter | `CodeInterpreterToolDefinition` | Execute Python code, generate visualizations |
+| File Search | `FileSearchToolDefinition` | Search uploaded files via vector stores |
+| Function Calling | `FunctionToolDefinition` | Call custom functions |
+| Bing Grounding | `BingGroundingToolDefinition` | Web search via Bing |
+| Azure AI Search | `AzureAISearchToolDefinition` | Search Azure AI Search indexes |
+| OpenAPI | `OpenApiToolDefinition` | Call external APIs via OpenAPI spec |
+| Azure Functions | `AzureFunctionToolDefinition` | Invoke Azure Functions |
+| MCP | `MCPToolDefinition` | Model Context Protocol tools |
+| SharePoint | `SharepointToolDefinition` | Access SharePoint content |
+| Microsoft Fabric | `MicrosoftFabricToolDefinition` | Access Fabric data |
+
+## Streaming Update Types
+
+| Update Type | Description |
+|-------------|-------------|
+| `StreamingUpdateReason.RunCreated` | Run started |
+| `StreamingUpdateReason.RunInProgress` | Run processing |
+| `StreamingUpdateReason.RunCompleted` | Run finished |
+| `StreamingUpdateReason.RunFailed` | Run errored |
+| `MessageContentUpdate` | Text content chunk |
+| `RunStepUpdate` | Step status change |
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `PersistentAgentsClient` | Main entry point |
+| `PersistentAgent` | Agent with model, instructions, tools |
+| `PersistentAgentThread` | Conversation thread |
+| `PersistentThreadMessage` | Message in thread |
+| `ThreadRun` | Execution of agent against thread |
+| `RunStatus` | Queued, InProgress, RequiresAction, Completed, Failed |
+| `ToolResources` | Combined tool resources |
+| `ToolOutput` | Function call response |
+
+## Best Practices
+
+1. **Always dispose clients** — Use `using` statements or explicit disposal
+2. **Poll with appropriate delays** — 500ms recommended between status checks
+3. **Clean up resources** — Delete threads and agents when done
+4. **Handle all run statuses** — Check for `RequiresAction`, `Failed`, `Cancelled`
+5. **Use streaming for real-time UX** — Better user experience than polling
+6. **Store IDs not objects** — Reference agents/threads by ID
+7. **Use async methods** — All operations should be async
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    var agent = await client.Administration.CreateAgentAsync(...);
+}
+catch (RequestFailedException ex) when (ex.Status == 404)
+{
+    Console.WriteLine(&quot;Resource not found&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Azure.AI.Agents.Persistent` | Low-level agents (this SDK) | `dotnet add package Azure.AI.Agents.Persistent` |
+| `Azure.AI.Projects` | High-level project client | `dotnet add package Azure.AI.Projects` |
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.AI.Agents.Persistent |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.ai.agents.persistent |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.Agents.Persistent |
+| Samples | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.Agents.Persistent/samples |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-file-share-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 TypeScript 操作 Azure SMB 檔案共用、目錄、檔案與 SAS">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-file-share-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-storage-file-share-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 TypeScript 操作 Azure SMB 檔案共用、目錄、檔案與 SAS</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-file-share-ts
+description: |
+  用於 SMB 檔案共用操作的 Azure File Share JavaScript/TypeScript SDK（@azure/storage-file-share）。用於建立 share、管理目錄、上傳／下載檔案，以及處理檔案 metadata。支援 Azure Files 的 SMB 協定情境。Triggers: &quot;file share&quot;, &quot;@azure/storage-file-share&quot;, &quot;ShareServiceClient&quot;, &quot;ShareClient&quot;, &quot;SMB&quot;, &quot;Azure Files&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/storage-file-share&#x27;
+---
+
+# @azure/storage-file-share (TypeScript/JavaScript)
+
+Azure File Share 操作的 SDK，涵蓋 SMB 檔案共用、目錄和檔案操作。
+
+## 安裝
+
+```bash
+npm install @azure/storage-file-share @azure/identity
+```
+
+**目前版本**：12.x  
+**Node.js**：&gt;= 18.0.0
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;account-name&gt;
+AZURE_STORAGE_ACCOUNT_KEY=&lt;account-key&gt;
+# 或用 connection string
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+### Connection String（最簡單）
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+
+const client = ShareServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING!
+);
+```
+
+### StorageSharedKeyCredential（僅限 Node.js）
+
+```typescript
+import { ShareServiceClient, StorageSharedKeyCredential } from &quot;@azure/storage-file-share&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net`,
+  sharedKeyCredential
+);
+```
+
+### Microsoft Entra Token Credential
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net`,
+  credential
+);
+```
+
+### SAS Token
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const sasToken = process.env.AZURE_STORAGE_SAS_TOKEN!;
+
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net${sasToken}`
+);
+```
+
+## Client 階層
+
+```
+ShareServiceClient (account level)
+└── ShareClient (share level)
+    └── ShareDirectoryClient (directory level)
+        └── ShareFileClient (file level)
+```
+
+## Share 操作
+
+### 建立 Share
+
+```typescript
+const shareClient = client.getShareClient(&quot;my-share&quot;);
+await shareClient.create();
+
+// 建立時指定 quota（單位 GB）
+await shareClient.create({ quota: 100 });
+```
+
+### 列出 Share
+
+```typescript
+for await (const share of client.listShares()) {
+  console.log(share.name, share.properties.quota);
+}
+
+// 用 prefix 篩選
+for await (const share of client.listShares({ prefix: &quot;logs-&quot; })) {
+  console.log(share.name);
+}
+```
+
+### 刪除 Share
+
+```typescript
+await shareClient.delete();
+
+// 存在才刪除
+await shareClient.deleteIfExists();
+```
+
+### 取得 Share 屬性
+
+```typescript
+const properties = await shareClient.getProperties();
+console.log(&quot;Quota:&quot;, properties.quota, &quot;GB&quot;);
+console.log(&quot;Last Modified:&quot;, properties.lastModified);
+```
+
+### 設定 Share Quota
+
+```typescript
+await shareClient.setQuota(200); // 200 GB
+```
+
+## 目錄操作
+
+### 建立目錄
+
+```typescript
+const directoryClient = shareClient.getDirectoryClient(&quot;my-directory&quot;);
+await directoryClient.create();
+
+// 建立巢狀目錄
+const nestedDir = shareClient.getDirectoryClient(&quot;parent/child/grandchild&quot;);
+await nestedDir.create();
+```
+
+### 列出目錄和檔案
+
+```typescript
+const directoryClient = shareClient.getDirectoryClient(&quot;my-directory&quot;);
+
+for await (const item of directoryClient.listFilesAndDirectories()) {
+  if (item.kind === &quot;directory&quot;) {
+    console.log(`[DIR] ${item.name}`);
+  } else {
+    console.log(`[FILE] ${item.name} (${item.properties.contentLength} bytes)`);
+  }
+}
+```
+
+### 刪除目錄
+
+```typescript
+await directoryClient.delete();
+
+// 存在才刪除
+await directoryClient.deleteIfExists();
+```
+
+### 檢查目錄是否存在
+
+```typescript
+const exists = await directoryClient.exists();
+if (!exists) {
+  await directoryClient.create();
+}
+```
+
+## 檔案操作
+
+### 上傳檔案（簡單版）
+
+```typescript
+const fileClient = shareClient
+  .getDirectoryClient(&quot;my-directory&quot;)
+  .getFileClient(&quot;my-file.txt&quot;);
+
+// 上傳字串
+const content = &quot;Hello, World!&quot;;
+await fileClient.create(content.length);
+await fileClient.uploadRange(content, 0, content.length);
+```
+
+### 上傳檔案（Node.js，從本機檔案）
+
+```typescript
+import * as fs from &quot;fs&quot;;
+import * as path from &quot;path&quot;;
+
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;uploaded.txt&quot;);
+const localFilePath = &quot;/path/to/local/file.txt&quot;;
+const fileSize = fs.statSync(localFilePath).size;
+
+await fileClient.create(fileSize);
+await fileClient.uploadFile(localFilePath);
+```
+
+### 上傳檔案（Buffer）
+
+```typescript
+const buffer = Buffer.from(&quot;Hello, Azure Files!&quot;);
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;buffer-file.txt&quot;);
+
+await fileClient.create(buffer.length);
+await fileClient.uploadRange(buffer, 0, buffer.length);
+```
+
+### 上傳檔案（Stream）
+
+```typescript
+import * as fs from &quot;fs&quot;;
+
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;streamed.txt&quot;);
+const readStream = fs.createReadStream(&quot;/path/to/local/file.txt&quot;);
+const fileSize = fs.statSync(&quot;/path/to/local/file.txt&quot;).size;
+
+await fileClient.create(fileSize);
+await fileClient.uploadStream(readStream, fileSize, 4 * 1024 * 1024, 4); // 4MB buffer、並行度 4
+```
+
+### 下載檔案
+
+```typescript
+const fileClient = shareClient
+  .getDirectoryClient(&quot;my-directory&quot;)
+  .getFileClient(&quot;my-file.txt&quot;);
+
+const downloadResponse = await fileClient.download();
+
+// 讀成字串
+const chunks: Buffer[] = [];
+for await (const chunk of downloadResponse.readableStreamBody!) {
+  chunks.push(Buffer.from(chunk));
+}
+const content = Buffer.concat(chunks).toString(&quot;utf-8&quot;);
+```
+
+### 下載到檔案（Node.js）
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+await fileClient.downloadToFile(&quot;/path/to/local/destination.txt&quot;);
+```
+
+### 下載到 Buffer（Node.js）
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+const buffer = await fileClient.downloadToBuffer();
+console.log(buffer.toString());
+```
+
+### 刪除檔案
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+await fileClient.delete();
+
+// 存在才刪除
+await fileClient.deleteIfExists();
+```
+
+### 複製檔案
+
+```typescript
+const sourceUrl = &quot;https://account.file.core.windows.net/share/source.txt&quot;;
+const destFileClient = shareClient.rootDirectoryClient.getFileClient(&quot;destination.txt&quot;);
+
+// 開始複製操作
+const copyPoller = await destFileClient.startCopyFromURL(sourceUrl);
+await copyPoller.pollUntilDone();
+```
+
+## 檔案屬性與 Metadata
+
+### 取得檔案屬性
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+const properties = await fileClient.getProperties();
+
+console.log(&quot;Content-Length:&quot;, properties.contentLength);
+console.log(&quot;Content-Type:&quot;, properties.contentType);
+console.log(&quot;Last Modified:&quot;, properties.lastModified);
+console.log(&quot;ETag:&quot;, properties.etag);
+```
+
+### 設定 Metadata
+
+```typescript
+await fileClient.setMetadata({
+  author: &quot;John Doe&quot;,
+  category: &quot;documents&quot;,
+});
+```
+
+### 設定 HTTP Header
+
+```typescript
+await fileClient.setHttpHeaders({
+  fileContentType: &quot;text/plain&quot;,
+  fileCacheControl: &quot;max-age=3600&quot;,
+  fileContentDisposition: &quot;attachment; filename=download.txt&quot;,
+});
+```
+
+## Range 操作
+
+### 上傳 Range
+
+```typescript
+const data = Buffer.from(&quot;partial content&quot;);
+await fileClient.uploadRange(data, 100, data.length); // 從 offset 100 開始寫入
+```
+
+### 下載 Range
+
+```typescript
+const downloadResponse = await fileClient.download(100, 50); // offset 100、長度 50
+```
+
+### 清除 Range
+
+```typescript
+await fileClient.clearRange(0, 100); // 清除前 100 bytes
+```
+
+## Snapshot 操作
+
+### 建立 Snapshot
+
+```typescript
+const snapshotResponse = await shareClient.createSnapshot();
+console.log(&quot;Snapshot:&quot;, snapshotResponse.snapshot);
+```
+
+### 存取 Snapshot
+
+```typescript
+const snapshotShareClient = shareClient.withSnapshot(snapshotResponse.snapshot!);
+const snapshotFileClient = snapshotShareClient.rootDirectoryClient.getFileClient(&quot;file.txt&quot;);
+const content = await snapshotFileClient.downloadToBuffer();
+```
+
+### 刪除 Snapshot
+
+```typescript
+await shareClient.delete({ deleteSnapshots: &quot;include&quot; });
+```
+
+## 產生 SAS Token（僅限 Node.js）
+
+### 產生 File SAS
+
+```typescript
+import {
+  generateFileSASQueryParameters,
+  FileSASPermissions,
+  StorageSharedKeyCredential,
+} from &quot;@azure/storage-file-share&quot;;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+const sasToken = generateFileSASQueryParameters(
+  {
+    shareName: &quot;my-share&quot;,
+    filePath: &quot;my-directory/my-file.txt&quot;,
+    permissions: FileSASPermissions.parse(&quot;r&quot;), // 唯讀
+    expiresOn: new Date(Date.now() + 3600 * 1000), // 1 小時
+  },
+  sharedKeyCredential
+).toString();
+
+const sasUrl = `https://${accountName}.file.core.windows.net/my-share/my-directory/my-file.txt?${sasToken}`;
+```
+
+### 產生 Share SAS
+
+```typescript
+import { ShareSASPermissions, generateFileSASQueryParameters } from &quot;@azure/storage-file-share&quot;;
+
+const sasToken = generateFileSASQueryParameters(
+  {
+    shareName: &quot;my-share&quot;,
+    permissions: ShareSASPermissions.parse(&quot;rcwdl&quot;), // read, create, write, delete, list
+    expiresOn: new Date(Date.now() + 24 * 3600 * 1000), // 24 小時
+  },
+  sharedKeyCredential
+).toString();
+```
+
+## 錯誤處理
+
+```typescript
+import { RestError } from &quot;@azure/storage-file-share&quot;;
+
+try {
+  await shareClient.create();
+} catch (error) {
+  if (error instanceof RestError) {
+    switch (error.statusCode) {
+      case 404:
+        console.log(&quot;Share not found&quot;);
+        break;
+      case 409:
+        console.log(&quot;Share already exists&quot;);
+        break;
+      case 403:
+        console.log(&quot;Access denied&quot;);
+        break;
+      default:
+        console.error(`Storage error ${error.statusCode}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## TypeScript 型別參考
+
+```typescript
+import {
+  // Clients
+  ShareServiceClient,
+  ShareClient,
+  ShareDirectoryClient,
+  ShareFileClient,
+
+  // Authentication
+  StorageSharedKeyCredential,
+  AnonymousCredential,
+
+  // SAS
+  FileSASPermissions,
+  ShareSASPermissions,
+  AccountSASPermissions,
+  AccountSASServices,
+  AccountSASResourceTypes,
+  generateFileSASQueryParameters,
+  generateAccountSASQueryParameters,
+
+  // Options &amp; Responses
+  ShareCreateResponse,
+  FileDownloadResponseModel,
+  DirectoryItem,
+  FileItem,
+  ShareProperties,
+  FileProperties,
+
+  // Errors
+  RestError,
+} from &quot;@azure/storage-file-share&quot;;
+```
+
+## 最佳實務
+
+1. **為了簡單，用 connection string** — 開發時設定最容易
+2. **本機開發用 `DefaultAzureCredential`；production 用 `ManagedIdentityCredential` 或 `WorkloadIdentityCredential`**
+3. **替 share 設定 quota** — 避免意外的儲存費用
+4. **大檔案用串流** — 超過 256MB 的檔案用 `uploadStream`/`downloadToFile`
+5. **部分更新用 range** — 比整個檔案取代更有效率
+6. **重大變更之前先建立 snapshot** — 可以還原到某個時間點
+7. **妥善處理錯誤** — 檢查 `RestError.statusCode` 做對應處理
+8. **用 `*IfExists` 方法** — 讓操作可以重複執行（idempotent）
+
+## 平台差異
+
+| 功能 | Node.js | 瀏覽器 |
+|---------|---------|---------|
+| `StorageSharedKeyCredential` | ✅ | ❌ |
+| `uploadFile()` | ✅ | ❌ |
+| `uploadStream()` | ✅ | ❌ |
+| `downloadToFile()` | ✅ | ❌ |
+| `downloadToBuffer()` | ✅ | ❌ |
+| SAS 產生 | ✅ | ❌ |
+| DefaultAzureCredential | ✅ | ❌ |
+| Anonymous/SAS 存取 | ✅ | ✅ |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-file-share-ts
+description: |
+  Azure File Share JavaScript/TypeScript SDK (@azure/storage-file-share) for SMB file share operations. Use for creating shares, managing directories, uploading/downloading files, and handling file metadata. Supports Azure Files SMB protocol scenarios. Triggers: &quot;file share&quot;, &quot;@azure/storage-file-share&quot;, &quot;ShareServiceClient&quot;, &quot;ShareClient&quot;, &quot;SMB&quot;, &quot;Azure Files&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/storage-file-share&#x27;
+---
+
+# @azure/storage-file-share (TypeScript/JavaScript)
+
+SDK for Azure File Share operations — SMB file shares, directories, and file operations.
+
+## Installation
+
+```bash
+npm install @azure/storage-file-share @azure/identity
+```
+
+**Current Version**: 12.x  
+**Node.js**: &gt;= 18.0.0
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;account-name&gt;
+AZURE_STORAGE_ACCOUNT_KEY=&lt;account-key&gt;
+# OR connection string
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+### Connection String (Simplest)
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+
+const client = ShareServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING!
+);
+```
+
+### StorageSharedKeyCredential (Node.js only)
+
+```typescript
+import { ShareServiceClient, StorageSharedKeyCredential } from &quot;@azure/storage-file-share&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net`,
+  sharedKeyCredential
+);
+```
+
+### Microsoft Entra Token Credential
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net`,
+  credential
+);
+```
+
+### SAS Token
+
+```typescript
+import { ShareServiceClient } from &quot;@azure/storage-file-share&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const sasToken = process.env.AZURE_STORAGE_SAS_TOKEN!;
+
+const client = new ShareServiceClient(
+  `https://${accountName}.file.core.windows.net${sasToken}`
+);
+```
+
+## Client Hierarchy
+
+```
+ShareServiceClient (account level)
+└── ShareClient (share level)
+    └── ShareDirectoryClient (directory level)
+        └── ShareFileClient (file level)
+```
+
+## Share Operations
+
+### Create Share
+
+```typescript
+const shareClient = client.getShareClient(&quot;my-share&quot;);
+await shareClient.create();
+
+// Create with quota (in GB)
+await shareClient.create({ quota: 100 });
+```
+
+### List Shares
+
+```typescript
+for await (const share of client.listShares()) {
+  console.log(share.name, share.properties.quota);
+}
+
+// With prefix filter
+for await (const share of client.listShares({ prefix: &quot;logs-&quot; })) {
+  console.log(share.name);
+}
+```
+
+### Delete Share
+
+```typescript
+await shareClient.delete();
+
+// Delete if exists
+await shareClient.deleteIfExists();
+```
+
+### Get Share Properties
+
+```typescript
+const properties = await shareClient.getProperties();
+console.log(&quot;Quota:&quot;, properties.quota, &quot;GB&quot;);
+console.log(&quot;Last Modified:&quot;, properties.lastModified);
+```
+
+### Set Share Quota
+
+```typescript
+await shareClient.setQuota(200); // 200 GB
+```
+
+## Directory Operations
+
+### Create Directory
+
+```typescript
+const directoryClient = shareClient.getDirectoryClient(&quot;my-directory&quot;);
+await directoryClient.create();
+
+// Create nested directory
+const nestedDir = shareClient.getDirectoryClient(&quot;parent/child/grandchild&quot;);
+await nestedDir.create();
+```
+
+### List Directories and Files
+
+```typescript
+const directoryClient = shareClient.getDirectoryClient(&quot;my-directory&quot;);
+
+for await (const item of directoryClient.listFilesAndDirectories()) {
+  if (item.kind === &quot;directory&quot;) {
+    console.log(`[DIR] ${item.name}`);
+  } else {
+    console.log(`[FILE] ${item.name} (${item.properties.contentLength} bytes)`);
+  }
+}
+```
+
+### Delete Directory
+
+```typescript
+await directoryClient.delete();
+
+// Delete if exists
+await directoryClient.deleteIfExists();
+```
+
+### Check if Directory Exists
+
+```typescript
+const exists = await directoryClient.exists();
+if (!exists) {
+  await directoryClient.create();
+}
+```
+
+## File Operations
+
+### Upload File (Simple)
+
+```typescript
+const fileClient = shareClient
+  .getDirectoryClient(&quot;my-directory&quot;)
+  .getFileClient(&quot;my-file.txt&quot;);
+
+// Upload string
+const content = &quot;Hello, World!&quot;;
+await fileClient.create(content.length);
+await fileClient.uploadRange(content, 0, content.length);
+```
+
+### Upload File (Node.js - from local file)
+
+```typescript
+import * as fs from &quot;fs&quot;;
+import * as path from &quot;path&quot;;
+
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;uploaded.txt&quot;);
+const localFilePath = &quot;/path/to/local/file.txt&quot;;
+const fileSize = fs.statSync(localFilePath).size;
+
+await fileClient.create(fileSize);
+await fileClient.uploadFile(localFilePath);
+```
+
+### Upload File (Buffer)
+
+```typescript
+const buffer = Buffer.from(&quot;Hello, Azure Files!&quot;);
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;buffer-file.txt&quot;);
+
+await fileClient.create(buffer.length);
+await fileClient.uploadRange(buffer, 0, buffer.length);
+```
+
+### Upload File (Stream)
+
+```typescript
+import * as fs from &quot;fs&quot;;
+
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;streamed.txt&quot;);
+const readStream = fs.createReadStream(&quot;/path/to/local/file.txt&quot;);
+const fileSize = fs.statSync(&quot;/path/to/local/file.txt&quot;).size;
+
+await fileClient.create(fileSize);
+await fileClient.uploadStream(readStream, fileSize, 4 * 1024 * 1024, 4); // 4MB buffer, 4 concurrency
+```
+
+### Download File
+
+```typescript
+const fileClient = shareClient
+  .getDirectoryClient(&quot;my-directory&quot;)
+  .getFileClient(&quot;my-file.txt&quot;);
+
+const downloadResponse = await fileClient.download();
+
+// Read as string
+const chunks: Buffer[] = [];
+for await (const chunk of downloadResponse.readableStreamBody!) {
+  chunks.push(Buffer.from(chunk));
+}
+const content = Buffer.concat(chunks).toString(&quot;utf-8&quot;);
+```
+
+### Download to File (Node.js)
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+await fileClient.downloadToFile(&quot;/path/to/local/destination.txt&quot;);
+```
+
+### Download to Buffer (Node.js)
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+const buffer = await fileClient.downloadToBuffer();
+console.log(buffer.toString());
+```
+
+### Delete File
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+await fileClient.delete();
+
+// Delete if exists
+await fileClient.deleteIfExists();
+```
+
+### Copy File
+
+```typescript
+const sourceUrl = &quot;https://account.file.core.windows.net/share/source.txt&quot;;
+const destFileClient = shareClient.rootDirectoryClient.getFileClient(&quot;destination.txt&quot;);
+
+// Start copy operation
+const copyPoller = await destFileClient.startCopyFromURL(sourceUrl);
+await copyPoller.pollUntilDone();
+```
+
+## File Properties &amp; Metadata
+
+### Get File Properties
+
+```typescript
+const fileClient = shareClient.rootDirectoryClient.getFileClient(&quot;my-file.txt&quot;);
+const properties = await fileClient.getProperties();
+
+console.log(&quot;Content-Length:&quot;, properties.contentLength);
+console.log(&quot;Content-Type:&quot;, properties.contentType);
+console.log(&quot;Last Modified:&quot;, properties.lastModified);
+console.log(&quot;ETag:&quot;, properties.etag);
+```
+
+### Set Metadata
+
+```typescript
+await fileClient.setMetadata({
+  author: &quot;John Doe&quot;,
+  category: &quot;documents&quot;,
+});
+```
+
+### Set HTTP Headers
+
+```typescript
+await fileClient.setHttpHeaders({
+  fileContentType: &quot;text/plain&quot;,
+  fileCacheControl: &quot;max-age=3600&quot;,
+  fileContentDisposition: &quot;attachment; filename=download.txt&quot;,
+});
+```
+
+## Range Operations
+
+### Upload Range
+
+```typescript
+const data = Buffer.from(&quot;partial content&quot;);
+await fileClient.uploadRange(data, 100, data.length); // Write at offset 100
+```
+
+### Download Range
+
+```typescript
+const downloadResponse = await fileClient.download(100, 50); // offset 100, length 50
+```
+
+### Clear Range
+
+```typescript
+await fileClient.clearRange(0, 100); // Clear first 100 bytes
+```
+
+## Snapshot Operations
+
+### Create Snapshot
+
+```typescript
+const snapshotResponse = await shareClient.createSnapshot();
+console.log(&quot;Snapshot:&quot;, snapshotResponse.snapshot);
+```
+
+### Access Snapshot
+
+```typescript
+const snapshotShareClient = shareClient.withSnapshot(snapshotResponse.snapshot!);
+const snapshotFileClient = snapshotShareClient.rootDirectoryClient.getFileClient(&quot;file.txt&quot;);
+const content = await snapshotFileClient.downloadToBuffer();
+```
+
+### Delete Snapshot
+
+```typescript
+await shareClient.delete({ deleteSnapshots: &quot;include&quot; });
+```
+
+## SAS Token Generation (Node.js only)
+
+### Generate File SAS
+
+```typescript
+import {
+  generateFileSASQueryParameters,
+  FileSASPermissions,
+  StorageSharedKeyCredential,
+} from &quot;@azure/storage-file-share&quot;;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+const sasToken = generateFileSASQueryParameters(
+  {
+    shareName: &quot;my-share&quot;,
+    filePath: &quot;my-directory/my-file.txt&quot;,
+    permissions: FileSASPermissions.parse(&quot;r&quot;), // read only
+    expiresOn: new Date(Date.now() + 3600 * 1000), // 1 hour
+  },
+  sharedKeyCredential
+).toString();
+
+const sasUrl = `https://${accountName}.file.core.windows.net/my-share/my-directory/my-file.txt?${sasToken}`;
+```
+
+### Generate Share SAS
+
+```typescript
+import { ShareSASPermissions, generateFileSASQueryParameters } from &quot;@azure/storage-file-share&quot;;
+
+const sasToken = generateFileSASQueryParameters(
+  {
+    shareName: &quot;my-share&quot;,
+    permissions: ShareSASPermissions.parse(&quot;rcwdl&quot;), // read, create, write, delete, list
+    expiresOn: new Date(Date.now() + 24 * 3600 * 1000), // 24 hours
+  },
+  sharedKeyCredential
+).toString();
+```
+
+## Error Handling
+
+```typescript
+import { RestError } from &quot;@azure/storage-file-share&quot;;
+
+try {
+  await shareClient.create();
+} catch (error) {
+  if (error instanceof RestError) {
+    switch (error.statusCode) {
+      case 404:
+        console.log(&quot;Share not found&quot;);
+        break;
+      case 409:
+        console.log(&quot;Share already exists&quot;);
+        break;
+      case 403:
+        console.log(&quot;Access denied&quot;);
+        break;
+      default:
+        console.error(`Storage error ${error.statusCode}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## TypeScript Types Reference
+
+```typescript
+import {
+  // Clients
+  ShareServiceClient,
+  ShareClient,
+  ShareDirectoryClient,
+  ShareFileClient,
+
+  // Authentication
+  StorageSharedKeyCredential,
+  AnonymousCredential,
+
+  // SAS
+  FileSASPermissions,
+  ShareSASPermissions,
+  AccountSASPermissions,
+  AccountSASServices,
+  AccountSASResourceTypes,
+  generateFileSASQueryParameters,
+  generateAccountSASQueryParameters,
+
+  // Options &amp; Responses
+  ShareCreateResponse,
+  FileDownloadResponseModel,
+  DirectoryItem,
+  FileItem,
+  ShareProperties,
+  FileProperties,
+
+  // Errors
+  RestError,
+} from &quot;@azure/storage-file-share&quot;;
+```
+
+## Best Practices
+
+1. **Use connection strings for simplicity** — Easiest setup for development
+2. **Use `DefaultAzureCredential` for local development; use `ManagedIdentityCredential` or `WorkloadIdentityCredential` for production**
+3. **Set quotas on shares** — Prevent unexpected storage costs
+4. **Use streaming for large files** — `uploadStream`/`downloadToFile` for files &gt; 256MB
+5. **Use ranges for partial updates** — More efficient than full file replacement
+6. **Create snapshots before major changes** — Point-in-time recovery
+7. **Handle errors gracefully** — Check `RestError.statusCode` for specific handling
+8. **Use `*IfExists` methods** — For idempotent operations
+
+## Platform Differences
+
+| Feature | Node.js | Browser |
+|---------|---------|---------|
+| `StorageSharedKeyCredential` | ✅ | ❌ |
+| `uploadFile()` | ✅ | ❌ |
+| `uploadStream()` | ✅ | ❌ |
+| `downloadToFile()` | ✅ | ❌ |
+| `downloadToBuffer()` | ✅ | ❌ |
+| SAS generation | ✅ | ❌ |
+| DefaultAzureCredential | ✅ | ❌ |
+| Anonymous/SAS access | ✅ | ✅ |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-ecom-bm25｜Skill 寫法圖鑑</title>
+<meta name="description" content="實作 BM25 排序函式，做電商商品搜尋的相關性評分">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-ecom-bm25</h1>
+<p class="meta">asgard-ai-platform ｜ 商業與營運 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-ecom-bm25/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">實作 BM25 排序函式，做電商商品搜尋的相關性評分</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-ecom-bm25&quot;
+description: &quot;實作 BM25 排序函式，用於電商商品搜尋的相關性評分。當使用者需要建立以文字為基礎的商品搜尋引擎、改善搜尋結果相關性，或想把基本 TF-IDF 換成更穩健的排序函式時使用，即使他們說的是『product search ranking』『search relevance』或『BM25 implementation』。&quot;
+metadata:
+  category: &quot;WP-43 電商搜尋演算法&quot;
+  tags: [&quot;ecommerce&quot;, &quot;bm25&quot;, &quot;search&quot;, &quot;information-retrieval&quot;]
+---
+
+# BM25 排序函式
+
+## 概述
+
+BM25（Best Matching 25）是改良版的 TF-IDF 排序函式，加入了詞頻飽和和文件長度正規化。Score = Σ IDF(t) × (TF(t,d) × (k₁+1)) / (TF(t,d) + k₁ × (1 - b + b × |d|/avgdl))。標準參數：k₁=1.2、b=0.75。大多數文字搜尋引擎（Elasticsearch、Solr）的骨幹。
+
+## 何時使用
+
+**觸發條件：**
+- 建立以文字相關性排序的商品搜尋
+- 把基本 TF-IDF 換成文件長度正規化更好的做法
+- 在 Elasticsearch/Solr 裡調整搜尋相關性
+
+**不該使用的情況：**
+- 語意相似度比關鍵字比對更重要時（用 embeddings）
+- 單一欄位的完全比對（用更簡單的方法就夠了）
+
+## 演算法
+
+```
+IRON LAW: BM25 Has Two Critical Parameters — k₁ and b
+k₁ controls term frequency saturation: higher k₁ = more weight to
+repeated terms. k₁=0 ignores TF entirely (boolean).
+b controls document length normalization: b=1 fully normalizes by
+length, b=0 ignores length. Default k₁=1.2, b=0.75 works for most
+cases but MUST be tuned for your specific corpus.
+```
+
+### 階段 1：輸入驗證 + 斷詞
+把每份文件斷成小寫的單字 token。計數之前要**移除停用字**，隨附的 script 會丟掉一份標準的英文停用字清單（`the, a, an,
+and, or, but, of, in, on, at, to, for, with, by, from, as, is, are, was, were,
+be, been, being`）。接著建立反向索引：詞 → (文件, 詞頻) 的清單。計算：文件長度（移除停用字之後）、平均文件長度、每個詞的文件頻率。
+
+&gt; ⚠️ **移除停用字會影響 `|d|` 和 `avgdl`**：因為量長度之前就已經丟掉停用字，
+&gt; 手算 BM25 時如果沒移除，長度正規化會錯，分數會差 3–5%。
+&gt; 如果你是手動重現 BM25 來和 script 比對，要先套用同一份停用字清單，或乾脆直接跑 script。
+
+**關卡：** 索引已建好、統計量已算出、語料庫不是空的。
+
+### 階段 2：核心演算法
+對於包含詞 t₁...tₙ 的查詢 Q，針對文件 d：
+1. 對每個查詢詞 tᵢ：計算 IDF(tᵢ) = log((N - DF(tᵢ) + 0.5) / (DF(tᵢ) + 0.5) + 1)
+2. 計算 TF 部分：(TF(tᵢ,d) × (k₁+1)) / (TF(tᵢ,d) + k₁ × (1 - b + b × |d|/avgdl))
+3. Score(d, Q) = Σᵢ IDF(tᵢ) × TF_component(tᵢ, d)
+4. 依分數由高到低排序文件
+
+&gt; ⚠️ **IDF 變體已鎖定**：BM25 在外面有好幾種 IDF 公式（Robertson-Sparck Jones、
+&gt; 經典 Okapi、Lucene 的平滑 `+1`、BM25+、BM25L）。
+&gt; 這個 skill 和隨附的 script 用的是上面那個 **Lucene 風格的平滑變體**
+&gt; （`log((N - df + 0.5) / (df + 0.5) + 1)`），遇到非常常見的詞也不會得到負的 IDF。
+&gt; 如果你拿分數去和別的引擎（Elasticsearch、Solr、Whoosh）比，即使輸入完全一樣，也可能差 3–5%。
+&gt; 除非你打算全面換掉這個變體，否則不要去「修正」script。
+
+### 階段 3：驗證
+抽樣檢查：查詢「red shoes」時，同時包含「red」和「shoes」的文件應該排在只含其中一個詞的文件前面。同時有這兩個詞的短商品標題，應該排在只零星提到的長描述前面。
+**關卡：** 10 個以上的測試查詢通過相關性抽樣檢查。
+
+### 階段 4：輸出
+回傳排好序的結果，附上分數。
+
+## 輸出格式
+
+```json
+{
+  &quot;results&quot;: [{&quot;doc_id&quot;: &quot;SKU-123&quot;, &quot;score&quot;: 12.5, &quot;title&quot;: &quot;Red Running Shoes&quot;}],
+  &quot;metadata&quot;: {&quot;query&quot;: &quot;red shoes&quot;, &quot;hits&quot;: 85, &quot;k1&quot;: 1.2, &quot;b&quot;: 0.75, &quot;avg_doc_length&quot;: 45}
+}
+```
+
+## 範例
+
+### 輸入輸出範例
+**輸入：** 查詢「wireless earbuds」，語料庫有 1000 筆商品
+**預期：** 標題有「wireless earbuds」的商品排最前面；「wireless headphones」排比較後面（沒有「earbuds」這個詞）。
+
+### 邊界情況
+| 輸入 | 預期 | 原因 |
+|-------|----------|-----|
+| 單字查詢 | 由 IDF 主導排序 | 只有一個詞的 IDF 能拉開差距 |
+| 非常常見的詞（「the」） | IDF 趨近零，影響很小 | IDF 會壓低常見詞 |
+| 文件重複 100 次 | TF 飽和，分數不會是 100 倍 | k₁ 限制了重複的好處 |
+
+## 注意事項
+
+- **多欄位評分**：電商商品有標題、描述、品牌、分類。欄位權重要不同：標題命中 &gt; 描述命中。用欄位加權的 BM25。
+- **同義詞與詞幹還原**：BM25 是關鍵字完全比對。「earphones」不會比對到「earbuds」。要在查詢流程裡加同義詞擴展和詞幹還原。
+- **參數調校**：預設的 k₁=1.2、b=0.75 合理，但不是最佳。要用你自己商品目錄的相關性判斷來調。
+- **數值屬性**：BM25 不處理數值篩選（價格區間、評分）。拿它做文字相關性，再結合數值篩選條件。
+- **零結果查詢**：BM25 查不到東西時，退回模糊比對或語意搜尋，不要顯示空白結果。
+
+## Scripts
+
+| Script | 說明 | 用法 |
+|--------|-------------|-------|
+| `scripts/bm25.py` | 用 BM25 排序函式針對查詢替文件打分 | `python scripts/bm25.py --help` |
+
+執行 `python scripts/bm25.py --verify` 來跑內建的健全性測試。
+
+## 參考資料
+
+- BM25F 多欄位延伸，見 `references/bm25f.md`
+- 參數調校方法論，見 `references/parameter-tuning.md`</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-ecom-bm25&quot;
+description: &quot;Implement BM25 ranking function for e-commerce product search relevance scoring. Use this skill when the user needs to build a text-based product search engine, improve search result relevance, or replace basic TF-IDF with a more robust ranking function — even if they say &#x27;product search ranking&#x27;, &#x27;search relevance&#x27;, or &#x27;BM25 implementation&#x27;.&quot;
+metadata:
+  category: &quot;WP-43 電商搜尋演算法&quot;
+  tags: [&quot;ecommerce&quot;, &quot;bm25&quot;, &quot;search&quot;, &quot;information-retrieval&quot;]
+---
+
+# BM25 Ranking Function
+
+## Overview
+
+BM25 (Best Matching 25) is an improved TF-IDF ranking function that adds term frequency saturation and document length normalization. Score = Σ IDF(t) × (TF(t,d) × (k₁+1)) / (TF(t,d) + k₁ × (1 - b + b × |d|/avgdl)). Standard parameters: k₁=1.2, b=0.75. The backbone of most text search engines (Elasticsearch, Solr).
+
+## When to Use
+
+**Trigger conditions:**
+- Building product search with text-based relevance ranking
+- Replacing basic TF-IDF with better document length normalization
+- Tuning search relevance in Elasticsearch/Solr
+
+**When NOT to use:**
+- When semantic similarity matters more than keyword matching (use embeddings)
+- For single-field exact matching (simpler methods suffice)
+
+## Algorithm
+
+```
+IRON LAW: BM25 Has Two Critical Parameters — k₁ and b
+k₁ controls term frequency saturation: higher k₁ = more weight to
+repeated terms. k₁=0 ignores TF entirely (boolean).
+b controls document length normalization: b=1 fully normalizes by
+length, b=0 ignores length. Default k₁=1.2, b=0.75 works for most
+cases but MUST be tuned for your specific corpus.
+```
+
+### Phase 1: Input Validation + Tokenization
+Tokenize each document to lowercase word tokens. **Remove stop words** before
+counting — the bundled script drops a standard English stop list (`the, a, an,
+and, or, but, of, in, on, at, to, for, with, by, from, as, is, are, was, were,
+be, been, being`). Then build an inverted index: term → list of (document, term
+frequency). Compute: document lengths (post stop-word removal), average document
+length, document frequency per term.
+
+&gt; ⚠️ **Stop-word removal affects `|d|` and `avgdl`**: because stop words are
+&gt; dropped before length is measured, hand-computing BM25 without removing them
+&gt; will give the wrong length normalization and scores will be off by 3–5%.
+&gt; If you&#x27;re reproducing BM25 by hand to compare against the script, apply the
+&gt; same stop list first — or just run the script.
+
+**Gate:** Index built, statistics computed, corpus non-empty.
+
+### Phase 2: Core Algorithm
+For query Q with terms t₁...tₙ against document d:
+1. For each query term tᵢ: compute IDF(tᵢ) = log((N - DF(tᵢ) + 0.5) / (DF(tᵢ) + 0.5) + 1)
+2. Compute TF component: (TF(tᵢ,d) × (k₁+1)) / (TF(tᵢ,d) + k₁ × (1 - b + b × |d|/avgdl))
+3. Score(d, Q) = Σᵢ IDF(tᵢ) × TF_component(tᵢ, d)
+4. Rank documents by score descending
+
+&gt; ⚠️ **IDF variant lock-in**: BM25 has several IDF formulations in the wild
+&gt; (Robertson-Sparck Jones, classic Okapi, Lucene&#x27;s smoothed `+1`, BM25+, BM25L).
+&gt; This skill — and the bundled script — uses the **Lucene-style smoothed variant**
+&gt; shown above (`log((N - df + 0.5) / (df + 0.5) + 1)`), which never returns negative
+&gt; IDF for very common terms. If you compare scores against another engine
+&gt; (Elasticsearch, Solr, Whoosh), they may differ by ~3–5% even on identical inputs.
+&gt; Do not &quot;correct&quot; the script unless you intend to change the variant globally.
+
+### Phase 3: Verification
+Spot-check: query &quot;red shoes&quot; should rank documents containing both &quot;red&quot; and &quot;shoes&quot; higher than documents with only one term. Shorter product titles with both terms should rank above long descriptions with sparse mentions.
+**Gate:** Relevance spot-check passes on 10+ test queries.
+
+### Phase 4: Output
+Return ranked results with scores.
+
+## Output Format
+
+```json
+{
+  &quot;results&quot;: [{&quot;doc_id&quot;: &quot;SKU-123&quot;, &quot;score&quot;: 12.5, &quot;title&quot;: &quot;Red Running Shoes&quot;}],
+  &quot;metadata&quot;: {&quot;query&quot;: &quot;red shoes&quot;, &quot;hits&quot;: 85, &quot;k1&quot;: 1.2, &quot;b&quot;: 0.75, &quot;avg_doc_length&quot;: 45}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** Query &quot;wireless earbuds&quot;, corpus of 1000 product listings
+**Expected:** Products with &quot;wireless earbuds&quot; in title rank highest; &quot;wireless headphones&quot; ranks lower (no &quot;earbuds&quot; term).
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| Single-word query | IDF-dominated ranking | Only one term&#x27;s IDF differentiates |
+| Very common term (&quot;the&quot;) | Near-zero IDF, low impact | IDF suppresses common terms |
+| Document with 100 repetitions | Saturated TF, not 100x score | k₁ caps the benefit of repetition |
+
+## Gotchas
+
+- **Multi-field scoring**: E-commerce products have title, description, brand, category. Weight fields differently: title match &gt; description match. Use field-boosted BM25.
+- **Synonyms and stemming**: BM25 is keyword-exact. &quot;earphones&quot; won&#x27;t match &quot;earbuds.&quot; Add synonym expansion and stemming in the query pipeline.
+- **Parameter tuning**: Default k₁=1.2, b=0.75 is reasonable but not optimal. Tune on relevance judgments specific to your catalog.
+- **Numeric attributes**: BM25 doesn&#x27;t handle numeric filtering (price range, ratings). Use it for text relevance, then combine with numeric filters.
+- **Zero-result queries**: When BM25 returns nothing, fall back to fuzzy matching or semantic search rather than showing empty results.
+
+## Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `scripts/bm25.py` | Score documents against a query using BM25 ranking function | `python scripts/bm25.py --help` |
+
+Run `python scripts/bm25.py --verify` to execute built-in sanity tests.
+
+## References
+
+- For BM25F multi-field extension, see `references/bm25f.md`
+- For parameter tuning methodology, see `references/parameter-tuning.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

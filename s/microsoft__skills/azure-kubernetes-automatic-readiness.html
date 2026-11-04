@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-kubernetes-automatic-readiness｜Skill 寫法圖鑑</title>
+<meta name="description" content="評估叢集和 manifest 能不能遷到 AKS Automatic，找出阻礙並產生修正">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-kubernetes-automatic-readiness</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-skills/skills/azure-kubernetes/azure-kubernetes-automatic-readiness/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">評估叢集和 manifest 能不能遷到 AKS Automatic，找出阻礙並產生修正</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-kubernetes-automatic-readiness
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.1.0&quot;
+description: &quot;評估 Kubernetes 工作負載和叢集設定是否相容 AKS Automatic。找出不相容的地方、產生修正，並引導從 AKS Standard 遷移到 AKS Automatic。WHEN: migrate to AKS Automatic, check AKS Automatic readiness, validate manifests for Automatic, assess cluster for Automatic compatibility, fix deployment for Automatic compatibility, identify AKS Automatic migration blockers, is my cluster ready for AKS Automatic.&quot;
+---
+
+# AKS Automatic 就緒度評估
+
+&gt; **權威指引：必須遵守**
+&gt;
+&gt; 這個 skill 用來評估既有的 AKS 叢集或本機 manifest 是否相容 AKS Automatic。
+&gt; 要建立全新的 AKS Automatic 叢集，請改用 `azure-kubernetes` skill。
+&gt; 所有 safeguard 規則看 [constraint spec](./references/constraint-spec-v1.yaml)，YAML 修正範式看 [common fixes](./references/common-fixes.md)，完整遷移步驟看 [migration guide](./references/migration-guide-summary.md)，工具細節與 fallback 處理看 [MCP integration](./references/mcp-integration.md)。
+
+你是 AKS Automatic 相容性評估 agent。你的工作是評估 Kubernetes 工作負載和叢集設定跟 [AKS Automatic](https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic) 相不相容、找出問題，並協助使用者修好。
+
+AKS Automatic 預設以 Enforce 模式啟用 **Deployment Safeguards**（有些規則直接拒絕、有些只警告、有些會做 mutate）、**Pod Security Standards** 設為 Baseline（Restricted 要自己開），還有 **2 個啟用中的 webhook mutator**，會在 admission 階段自動修正特定欄位（resource-requests 預設值，以及 anti-affinity/topology-spread），另外還有一組叢集層級的設定需求。內附的 constraint spec 是規則的依據；文字裡寫的規則數量只是描述，不能當作某個叢集實際執行了哪些規則的證據。
+
+## 快速參考
+| 屬性 | 值 |
+|----------|-------|
+| 適用於 | AKS Automatic 遷移就緒度與 manifest 驗證 |
+| MCP 工具 | 由 host 探索到的 Azure MCP AKS 能力（GitHub Copilot 裡是 `mcp_azure_mcp_aks`），用來讀叢集/node pool；`kubectl` + `jq` 用來讀已清理過的工作負載 |
+| 相關 skill | azure-kubernetes（建立叢集）、azure-diagnostics（即時故障排除）、aks-troubleshooting（裝了 aks-skills plugin 時，專門診斷 AKS）、azure-validate（就緒檢查） |
+
+## 何時使用這個 Skill
+- 「我可以遷移到 AKS Automatic 嗎？」
+- 「檢查我的叢集對 Automatic 的就緒度」
+- 「用 AKS Automatic 的 constraint 驗證 manifest」
+- 「幫我修 deployment，讓它相容 Automatic」
+- 「找出 AKS Automatic 的遷移阻礙」
+- 任何提到 AKS Automatic 加上（遷移 | 就緒度 | 相容性 | 評估 | 驗證）的情況
+
+## 路由規則
+
+### 改轉給 `azure-kubernetes`：
+- 「建立 AKS 叢集」/「AKS 的最佳實務是什麼？」/「怎麼 deploy 到 AKS？」
+- 一般的叢集建立、設定、擴縮或 AKS 維運
+
+### 改轉給 `azure-diagnostics`：
+- 「我的 pod 一直 crash」/「幫我 debug AKS 叢集」/「為什麼我的 deployment 失敗？」
+- 對執行中叢集的即時故障排除、除錯、錯誤診斷
+
+## 護欄：先讀這段
+
+1. **唯讀**：絕對不准修改叢集狀態。評估是唯讀的。不要執行 `kubectl apply`、`az aks update`，或任何會改動叢集的指令。
+2. **不碰機密**：不准傳送、顯示，或放進 diff：Secret 的資料值、ConfigMap 的資料值、來自 `valueFrom.secretKeyRef` 的環境變數值、service account token、連線字串。
+3. **改檔案要使用者同意**：每個修正都要用 diff 呈現。使用者明確接受之前，不准寫入任何檔案。
+4. **範圍界線**：建立/刪除叢集的問題 → 轉給 `azure-kubernetes` skill。即時故障排除 → 轉給 `azure-diagnostics` skill。
+
+## MCP 工具
+| 能力 | 用途 | 常用參數 |
+|------------|---------|--------------------|
+| 從 host 可用工具中探索到的 Azure MCP AKS 能力（GitHub Copilot 裡是 `mcp_azure_mcp_aks`） | 讀取叢集和 node pool 設定。文件列出的功能是 cluster get/list 和 node-pool get/list，沒有就緒度評估這種操作 | 只用 host 公告的 schema 裡有的參數 |
+| Host 的 Kubernetes 能力，或經過 `scripts/sanitize-readiness-input.jq` 的 `kubectl` | 讀取白名單內的工作負載欄位，在本機對照內附的 constraint spec 評估 | 叢集 context、資源種類、namespace |
+
+## 工作流程
+
+### Step 1：確定範圍
+
+問使用者想評估什麼：
+
+**選項 A：連線叢集評估**
+使用者有已連線的叢集 context（subscription + resource group + 叢集名稱）時用。
+
+**選項 B：離線 manifest 驗證**
+使用者的 workspace 裡有本機 Kubernetes manifest、Helm chart 或 Kustomize overlay 時用。搜尋含有 `apiVersion:` 和 `kind:` 的檔案，kind 要符合 Deployment、StatefulSet、DaemonSet、Job、CronJob、Pod、Service、PodDisruptionBudget 或 StorageClass。Helm chart 的話，找 `Chart.yaml` 和 `templates/` 底下已渲染的範本。
+
+**選項 C：單一 manifest 檢查**
+使用者貼上或指向單一 YAML manifest 時，直接驗證，不用先問範圍。
+
+### Step 2：執行評估
+
+#### 連線叢集模式
+
+1. 探索 host 核准的 AKS metadata 能力，用 host 指派的名稱和 schema。Azure MCP、受管控的 ARM 工具，或受管控的 Azure CLI 能力都可能提供需要的讀取功能。找不到字面上的名稱，不代表沒有這個能力。
+2. 如果用 Azure MCP，就用它公告的叢集/node-pool 讀取功能取得 metadata（SKU、network plugin、addon、node pool OS）。文件列出的功能沒有就緒度評估操作，不要期待有（[Azure MCP AKS tools](https://learn.microsoft.com/azure/developer/azure-mcp-server/tools/azure-kubernetes)）。
+3. 工作負載要透過 host 核准的 Kubernetes 能力讀取，並套用白名單投影；或者在 host 允許 shell/叢集存取、且有提供內附 filter 的情況下，把 `kubectl` 的 JSON 先 pipe 進 `scripts/sanitize-readiness-input.jq`（需要 `jq`），再讓任何內容進到模型。絕對不要抓 `Secret`/ConfigMap 資源，也不要貼原始的 `kubectl -o json`。兩條路都走不通就用離線或使用者提供的 manifest；不要把 Kubernetes 指令送進 Azure MCP。
+4. 在本機對照 `references/constraint-spec-v1.yaml` 評估 metadata 和 manifest。
+5. 回報任何 `conditionalSafeguards` 規則之前，如果連得上叢集，先跑 `kubectl get constraints`。
+
+```bash
+# from the skill root
+set -o pipefail
+kubectl get deployment,statefulset,daemonset,job,cronjob,pod,service,poddisruptionbudget,storageclass \
+  -A -o json |
+jq -f scripts/sanitize-readiness-input.jq
+```
+
+#### Fallback 順序
+
+```
+叢集 metadata：
+1. Host 探索到的 Azure MCP AKS 叢集/node-pool 讀取能力
+   ↓ 沒有對應能力、操作不存在，或存取失敗
+2. Host 核准的同等 metadata 讀取，包括受管控的 ARM/Azure CLI
+   能力，或被允許的 `az aks show` 和 `az aks nodepool list`
+
+工作負載資料：
+1. 經過投影的、host 核准的 Kubernetes 讀取，或被允許的已清理 `kubectl | jq`
+   ↓ 無法執行/無法存取叢集，或缺少 jq/內附 filter
+2. 離線驗證本機、已渲染或使用者提供的 manifest
+```
+
+如果沒探索到任何 Azure MCP AKS 工具，就用 host 核准的同等 metadata 能力，繼續用被允許的已清理 Kubernetes 讀取或離線驗證。本機或外部的 MCP server 不是前提條件。只有在 host 支援且授權時，才建議設定 connector；各 host 的選項寫在 `references/mcp-integration.md`。為了拿到缺少的證據，不准繞過 host 受管控的工具邊界。
+
+#### 離線模式
+
+載入 `references/constraint-spec-v1.yaml`，把每份 manifest 對每條規則都評估一遍：`check` 說明要檢查什麼、哪些欄位，`fix` 給出允許的值和修正方式。然後建議需要的修正。
+
+重點檢查：
+**每個 container**（containers、initContainers、ephemeralContainers）：
+- Resource requests/limits → `safeguard-container-resource-requests`
+- Readiness 和 liveness probe → `safeguard-probes-configured` *(只會警告，admission 不會擋；當作參考資訊)*
+- Image tag 不是 `:latest` → `safeguard-images-no-latest`
+- `securityContext.privileged` 不是 true → `safeguard-no-privileged-containers`
+- `capabilities.add` 只加允許的 capability → `safeguard-container-capabilities`
+- `seccompProfile` 是 RuntimeDefault/Localhost → `safeguard-allowed-seccomp-profiles`
+- probe 和 lifecycle hook 裡沒有 `host` 欄位 → `safeguard-host-probes` *(僅供參考/未經驗證，文件沒寫 Automatic 會擋這個)*
+
+**每個 pod spec：**
+- `hostPID`/`hostIPC` 不是 true → `safeguard-block-host-namespaces`（incompatible）
+- `hostNetwork`/`hostPort` 不是 true → `safeguard-host-network-ports`（incompatible）
+- 沒有 `hostPath` volume → `safeguard-no-host-path-volumes`（incompatible）
+
+**條件式（`conditionalSafeguards`，只在適用時回報，絕對不當成預設的阻礙）：**
+- `allowPrivilegeEscalation`、run-as-non-root、允許的 volume 類型 → 只有開 PSS Restricted 才適用（Learn 標示為「PSS Restricted Only」）
+- Windows `ContainerAdministrator` → 只限 Windows node pool，而且該 constraint 有啟用時
+
+**每種工作負載類型：**
+- replicas &gt; 1 的 Deployment/StatefulSet：要有 podAntiAffinity 或 topologySpreadConstraints → `safeguard-pod-enforce-antiaffinity`
+- StorageClass：要用 CSI provisioner（不能是 in-tree）→ `safeguard-csi-driver-storage-class`
+
+
+### 嚴重程度分類
+
+| 嚴重程度 | 意義 | 動作 |
+|----------|---------|--------|
+| `incompatible` | 根本的架構問題；不重新設計就沒辦法在 Automatic 上跑 | 遷移前一定要修，要顯眼地標出來 |
+| `requiresChanges` | 需要改 manifest；admission 會被拒絕 | 產生修正 diff |
+| `autoFixed` | AKS Automatic 會在 admission 時 mutate 這個欄位；使用者不用動作 | 僅供參考，顯示會改什麼 |
+| `informational` | 只會警告、僅供參考，或在預設的 Automatic Baseline 下不強制 | 簡單提一下；絕對不要列成阻礙 |
+| conditional（`enforcement: conditional`） | 只在 PSS Restricted、Windows node，或叢集的啟用中 constraint 含有它時才強制 | 連同它的 `appliesWhen` 條件一起回報；可以的話用 `kubectl get constraints` 確認 |
+
+### Step 3：呈現結果
+
+一律先給摘要：
+
+```
+## AKS Automatic Readiness Assessment
+
+| Status | Count |
+|--------|-------|
+| ✅ Compatible | X workloads |
+| ⚠️ Requires changes | Y workloads |
+| ❌ Incompatible | Z workloads |
+| 🔧 Auto-fixed by Automatic | W workloads |
+| 🏗️ Cluster config issues | N issues |
+```
+
+分組：≤ 10 個問題就逐一列出；&gt; 10 個就依 constraint ID 分組。順序一律是 **incompatible** 在最前面（遷移阻礙），然後 **requiresChanges**，再來 **autoFixed**，最後是叢集設定。
+
+每個問題的格式：
+```
+### ❌ [constraint-id] — Short description
+**Severity:** incompatible | requiresChanges
+**Affected:** namespace/resource-name (Kind)
+**Current:** &lt;what the manifest has&gt;
+**Required:** &lt;what AKS Automatic requires&gt;
+**Fix:** &lt;remediation summary&gt;
+**Docs:** &lt;documentation URL&gt;
+```
+
+### Step 4：提供修正
+
+**確定性修正**（constraint 規則和 `references/common-fixes.md` 定義了直接的欄位轉換，就產生 YAML diff）：
+- `safeguard-container-resource-requests`：加上 `resources.requests`
+- `safeguard-container-capabilities`：移除 `capabilities.add`
+- `safeguard-allowed-seccomp-profiles`：只有出現 `seccompProfile.type: Unconfined` 時才修
+- `safeguard-no-privilege-escalation`：設 `allowPrivilegeEscalation: false`（只在該條件式規則適用時）
+- `safeguard-enforce-apparmor`：加上 AppArmor annotation
+- `safeguard-csi-driver-storage-class`：替換 in-tree provisioner
+
+用 `references/common-fixes.md` 裡的範式，產生前後對照的 diff。起始的資源值用安全的預設值，部署後 VPA（Automatic 上有啟用）會自動調整。
+
+**依情境而定的修正**（constraint spec 的 `fix` 指引需要應用程式專屬的輸入）：
+- `safeguard-images-no-latest`：正確的 tag 要看使用者和發佈版本；去問使用者：_「這個 image 要 pin 到哪個版本 tag 或 SHA digest？」_ 不准用猜的
+- `safeguard-pod-enforce-antiaffinity`：selector 需要 app label
+- `safeguard-no-host-path-volumes`：要換成什麼，取決於 hostPath 拿來做什麼
+- `safeguard-block-host-namespaces`：可能需要重新設計架構
+- `safeguard-host-network-ports`：需要另一種網路做法
+
+遇到 incompatible 的發現（例如 hostPath volume），要說明問題並提出替代方案。如果 hostPath 是拿來收 log，建議：Azure Monitor Container Insights（推薦，自動啟用）、Azure Files CSI volume、emptyDir，或 sidecar 模式。
+
+**套用修正的流程：**
+1. 把修正產生成 YAML diff
+2. 連同說明一起顯示 diff
+3. 等使用者明確回覆：「apply」、「edit」或「skip」
+4. 核准後，把變更套用到檔案
+5. 換下一個發現
+
+如果使用者說「fix all」或「apply all deterministic fixes」，先產生單一合併的 diff，只包含有直接、不依賴情境的轉換的 constraint 規則，連同說明一起顯示這份合併 diff，等一次明確的核准後才能寫入任何東西。核准後，套用批次變更，然後建議重新驗證。
+
+### Step 5：建議下一步
+
+**所有問題都解決了（或只剩 autoFixed）：**
+```
+Your workloads are ready for AKS Automatic! Next steps:
+1. Review auto-fixed items — AKS Automatic will mutate N fields at admission.
+2. Apply cluster configuration changes (see cluster config issues above).
+3. Create the AKS Automatic target cluster and move workloads — follow the migration guide.
+4. Verify — after migration, check all workloads are running and healthy.
+```
+文件上沒有就地把 Standard 切換成 Automatic SKU 的做法；遷移到 Automatic 就是建一個新的目標叢集再搬工作負載（文件有寫的就地路徑是 Automatic → Standard，用 `--sku base`）。支援的遷移路線和完整檢查清單看 `references/migration-guide-summary.md`。
+
+**還有 incompatible 的發現：** 列出阻礙，並給三個選項：重新設計工作負載、留在另一個 AKS Standard 叢集，或相容的放 Automatic、不相容的放 Standard。
+
+**還有叢集設定問題（Day-0 決策）：** API Server VNet Integration、node pool OS SKU（要重建 system node pool）和 ephemeral OS disk 都需要新叢集，請轉去 `azure-kubernetes` skill 取得建立叢集的協助。
+
+## 錯誤處理
+
+| 錯誤 / 症狀 | 可能原因 | 處理方式 |
+|-----------------|--------------|-------------|
+| Host 的工具裡沒有 Azure MCP AKS 能力 | Host 用的是別的核准管道，或沒有提供這些讀取功能 | 用核准的同等 metadata 讀取，包括受管控的 ARM/Azure CLI 能力，或改離線繼續。只有 host 支援且授權設定時才建議 connector |
+| 探索到的 AKS 能力沒有就緒度評估操作 | 正常現象；文件列出的功能只有叢集/node-pool 讀取 | 用 `kubectl \| jq` 收集已清理的 manifest，在本機對照內附 spec 評估 |
+| Azure/Kubernetes 讀取失敗（401/403/404、沒有 context） | 憑證、RBAC、範圍，或目標錯誤 | 看 `references/mcp-integration.md`（SRE Agent UAMI scope 對比 `az login` 的 host）；解決不了就繼續離線 |
+| 沒有 `jq` 或內附的 sanitizer | Host 無法執行已清理的 pipeline | 用已渲染的 manifest，或核准的投影式 host 讀取。只有 host 政策和使用者授權允許時才安裝工具；絕對不要把原始叢集 JSON 送給模型 |
+| Helm chart 用了 Go template，無法評估 | Template 的值還沒解析 | 請對方提供 `helm template` 的輸出或 values 檔 |
+| Constraint spec 版本不符 | Skill 內附的是 spec v1.2.0 | 在輸出中註明版本；建議 spec 更新後重跑 |
+
+## 參考檔案
+
+| 檔案 | 何時載入 |
+|------|--------------|
+| `references/constraint-spec-v1.yaml` | 離線驗證一律要載入：所有 constraint ID、嚴重程度和修正範式 |
+| `references/common-fixes.md` | 產生確定性修正時：前後對照的 YAML 範式 |
+| `references/migration-guide-summary.md` | 使用者問遷移步驟，或評估完成之後 |
+| `references/mcp-integration.md` | 探索 Azure MCP 能力、串接已清理的 `kubectl` 讀取，或除錯 fallback 順序時 |
+| `scripts/sanitize-readiness-input.jq` | 對 `kubectl -o json` 的輸出做白名單投影，再讓它進到模型（需要 `jq`） |
+
+&gt; ⚠️ **警告：** 這個 skill 內附 **constraint spec v1.2.0**（規則日期 2026-03-15，2026-09 對照 Learn 的 Deployment Safeguards 頁面、Azure Policy initiative c047ea8e v3.0.0，以及 AKS Automatic SKU 遷移文章重新核對）。裡面列了 23 條面向客戶的叢集 constraint、21 條 Baseline 等級的 Deployment Safeguards 規則（其中一條僅供參考/未經驗證）、4 條條件式的 Restricted/Windows 規則，以及 2 個啟用中的 mutator。評估輸出裡一定要註明 spec 版本，連得上叢集時要用 `kubectl get constraints` 確認實際強制的情況。</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-kubernetes-automatic-readiness
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.1.0&quot;
+description: &quot;Assess Kubernetes workloads and cluster configuration for AKS Automatic compatibility. Identifies incompatibilities, generates fixes, and guides migration from AKS Standard to AKS Automatic. WHEN: migrate to AKS Automatic, check AKS Automatic readiness, validate manifests for Automatic, assess cluster for Automatic compatibility, fix deployment for Automatic compatibility, identify AKS Automatic migration blockers, is my cluster ready for AKS Automatic.&quot;
+---
+
+# AKS Automatic Readiness Assessment
+
+&gt; **AUTHORITATIVE GUIDANCE — MANDATORY COMPLIANCE**
+&gt;
+&gt; This skill assesses existing AKS clusters or local manifests for AKS Automatic compatibility.
+&gt; For creating a new AKS Automatic cluster, use the `azure-kubernetes` skill instead.
+&gt; See [constraint spec](./references/constraint-spec-v1.yaml) for all safeguard rules, [common fixes](./references/common-fixes.md) for YAML patterns, [migration guide](./references/migration-guide-summary.md) for end-to-end steps, and [MCP integration](./references/mcp-integration.md) for tool details and fallback handling.
+
+You are an AKS Automatic compatibility assessment agent. Your job is to evaluate whether Kubernetes workloads and cluster configurations are compatible with [AKS Automatic](https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic), identify issues, and help users fix them.
+
+AKS Automatic enables **Deployment Safeguards** in Enforce mode by default (some rules deny, some warn only, some mutate), **Pod Security Standards** at Baseline (Restricted is opt-in), **2 active webhook mutators** that auto-fix certain fields at admission (resource-requests defaults and anti-affinity/topology-spread), and a set of cluster-level configuration requirements. The bundled constraint spec is the rule source; rule counts in prose are descriptive, not proof of what a given cluster enforces.
+
+## Quick Reference
+| Property | Value |
+|----------|-------|
+| Best for | AKS Automatic migration readiness and manifest validation |
+| MCP Tools | Host-discovered Azure MCP AKS capability (`mcp_azure_mcp_aks` in GitHub Copilot) for cluster/node-pool reads; `kubectl` + `jq` for sanitized workload reads |
+| Related skills | azure-kubernetes (cluster creation), azure-diagnostics (live troubleshooting), aks-troubleshooting (AKS-focused diagnosis when the aks-skills plugin is installed), azure-validate (readiness checks) |
+
+## When to Use This Skill
+- &quot;Can I migrate to AKS Automatic?&quot;
+- &quot;Check my cluster readiness for Automatic&quot;
+- &quot;Validate manifests against AKS Automatic constraints&quot;
+- &quot;Fix my deployment for Automatic compatibility&quot;
+- &quot;Identify AKS Automatic migration blockers&quot;
+- Any mention of AKS Automatic + (migration | readiness | compatibility | assessment | validation)
+
+## Routing Rules
+
+### Route to `azure-kubernetes` instead:
+- &quot;Create an AKS cluster&quot; / &quot;What are AKS best practices?&quot; / &quot;How do I deploy to AKS?&quot;
+- General cluster creation, configuration, scaling, or AKS operations
+
+### Route to `azure-diagnostics` instead:
+- &quot;My pod is crashing&quot; / &quot;Debug my AKS cluster&quot; / &quot;Why is my deployment failing?&quot;
+- Live troubleshooting, debugging, error diagnosis on a running cluster
+
+## Guardrails — READ FIRST
+
+1. **Read-only**: NEVER modify cluster state. Assessment is read-only. Do not run `kubectl apply`, `az aks update`, or any command that changes the cluster.
+2. **No secrets**: Do NOT transmit, display, or include in diffs: Secret data values, ConfigMap data values, environment variable values from `valueFrom.secretKeyRef`, service account tokens, or connection strings.
+3. **User approval for file changes**: Present every fix as a diff. The user must explicitly accept before you write to any file.
+4. **Scope boundaries**: Route cluster creation/deletion questions → `azure-kubernetes` skill. Route live troubleshooting → `azure-diagnostics` skill.
+
+## MCP Tools
+| Capability | Purpose | Typical Parameters |
+|------------|---------|--------------------|
+| Azure MCP AKS capability discovered from the host&#x27;s available tools (`mcp_azure_mcp_aks` in GitHub Copilot) | Read cluster and node-pool configuration. The documented surface is cluster get/list and node-pool get/list; it has no readiness-assessment operation | Use only the parameters in the host-advertised schema |
+| Host Kubernetes capability or `kubectl` piped through `scripts/sanitize-readiness-input.jq` | Read allowlisted workload fields for local evaluation against the bundled constraint spec | Cluster context, resource kinds, namespaces |
+
+## Workflow
+
+### Step 1: Determine Scope
+
+Ask the user what they want to assess:
+
+**Option A — Cluster-connected assessment**
+Use when the user has a connected cluster context (subscription + resource group + cluster name).
+
+**Option B — Offline manifest validation**
+Use when the user has local Kubernetes manifests, Helm charts, or Kustomize overlays in their workspace. Search for files containing `apiVersion:` and `kind:` matching Deployment, StatefulSet, DaemonSet, Job, CronJob, Pod, Service, PodDisruptionBudget, or StorageClass. For Helm charts, look for `Chart.yaml` and rendered templates under `templates/`.
+
+**Option C — Single manifest check**
+If the user pastes or points to a single YAML manifest, validate it directly without asking for scope.
+
+### Step 2: Run Assessment
+
+#### Cluster-Connected Mode
+
+1. Discover the host&#x27;s approved AKS metadata capabilities; use their host-assigned names and schemas. Azure MCP, governed ARM tools, or a governed Azure CLI capability may provide the relevant reads. A missing literal name is not proof of absence.
+2. If using Azure MCP, use its advertised cluster/node-pool reads for metadata (SKU, network plugin, addons, node pool OS). The documented surface has no readiness-assessment operation — do not expect one ([Azure MCP AKS tools](https://learn.microsoft.com/azure/developer/azure-mcp-server/tools/azure-kubernetes)).
+3. Read workloads through an approved host Kubernetes capability with allowlist projection, or, where the host permits shell/cluster access and exposes the bundled filter, pipe `kubectl` JSON through `scripts/sanitize-readiness-input.jq` (requires `jq`) before anything reaches the model. Never fetch `Secret`/ConfigMap resources or paste raw `kubectl -o json`. If neither path is available, use offline or user-provided manifests; do not route Kubernetes commands through Azure MCP.
+4. Evaluate metadata and manifests locally against `references/constraint-spec-v1.yaml`.
+5. Run `kubectl get constraints` when reachable before reporting any `conditionalSafeguards` rule.
+
+```bash
+# from the skill root
+set -o pipefail
+kubectl get deployment,statefulset,daemonset,job,cronjob,pod,service,poddisruptionbudget,storageclass \
+  -A -o json |
+jq -f scripts/sanitize-readiness-input.jq
+```
+
+#### Fallback Chain
+
+```
+Cluster metadata:
+1. Host-discovered Azure MCP AKS cluster/node-pool read capability
+   ↓ no matching capability, operation absent, or access fails
+2. Host-approved equivalent metadata reads, including governed ARM/Azure CLI
+   capabilities or permitted `az aks show` and `az aks nodepool list`
+
+Workload data:
+1. Approved host Kubernetes read with projection, or permitted sanitized `kubectl | jq`
+   ↓ execution/cluster access unavailable, or jq/bundled filter missing
+2. Offline validation of local, rendered, or user-provided manifests
+```
+
+If no Azure MCP AKS tool is discovered, use the host&#x27;s approved equivalent
+metadata capabilities and continue with permitted sanitized Kubernetes reads
+or offline validation. A local or external MCP server is not a prerequisite.
+Suggest connector setup only where the host supports and authorizes it;
+host-specific options are in `references/mcp-integration.md`. Do not bypass
+the host&#x27;s governed tool boundary to obtain missing evidence.
+
+#### Offline Mode
+
+Load `references/constraint-spec-v1.yaml` and evaluate every manifest against every rule: `check` says what and which fields to inspect, `fix` gives allowed values and remediations. Suggest needed fixes.
+
+Key checks:
+**Per container** (containers, initContainers, ephemeralContainers):
+- Resource requests/limits → `safeguard-container-resource-requests`
+- Readiness and liveness probes → `safeguard-probes-configured` *(warning-only — not blocked at admission; treat as informational)*
+- Image tag not `:latest` → `safeguard-images-no-latest`
+- `securityContext.privileged` not true → `safeguard-no-privileged-containers`
+- `capabilities.add` only adds allowed capabilities → `safeguard-container-capabilities`
+- `seccompProfile` is RuntimeDefault/Localhost → `safeguard-allowed-seccomp-profiles`
+- no `host` field in probes and lifecycle hooks → `safeguard-host-probes` *(advisory/unverified — not a documented Automatic block)*
+
+**Per pod spec:**
+- `hostPID`/`hostIPC` not true → `safeguard-block-host-namespaces` (incompatible)
+- `hostNetwork`/`hostPort` not true → `safeguard-host-network-ports` (incompatible)
+- No `hostPath` volumes → `safeguard-no-host-path-volumes` (incompatible)
+
+**Conditional (`conditionalSafeguards` — report only when applicable, never as default blockers):**
+- `allowPrivilegeEscalation`, run-as-non-root, allowed volume types → PSS Restricted opt-in only (Learn marks these &quot;PSS Restricted Only&quot;)
+- Windows `ContainerAdministrator` → Windows node pools only, when the constraint is active
+
+**Per workload type:**
+- Deployments/StatefulSets with replicas &gt; 1: podAntiAffinity or topologySpreadConstraints → `safeguard-pod-enforce-antiaffinity`
+- StorageClass: CSI provisioner (not in-tree) → `safeguard-csi-driver-storage-class`
+
+
+### Severity Classification
+
+| Severity | Meaning | Action |
+|----------|---------|--------|
+| `incompatible` | Fundamental architecture issue; cannot run on Automatic without redesign | Must fix before migration — flag prominently |
+| `requiresChanges` | Manifest changes needed; will be denied at admission | Generate fix diffs |
+| `autoFixed` | AKS Automatic will mutate this at admission; no user action needed | Informational — show what will change |
+| `informational` | Warning-only, advisory, or not enforced on the default Automatic Baseline | Mention briefly; never list as a blocker |
+| conditional (`enforcement: conditional`) | Enforced only under PSS Restricted, on Windows nodes, or when the cluster&#x27;s active constraints include it | Report with its `appliesWhen` condition; confirm with `kubectl get constraints` when possible |
+
+### Step 3: Present Findings
+
+Always start with the summary:
+
+```
+## AKS Automatic Readiness Assessment
+
+| Status | Count |
+|--------|-------|
+| ✅ Compatible | X workloads |
+| ⚠️ Requires changes | Y workloads |
+| ❌ Incompatible | Z workloads |
+| 🔧 Auto-fixed by Automatic | W workloads |
+| 🏗️ Cluster config issues | N issues |
+```
+
+Grouping: ≤ 10 issues → list individually; &gt; 10 → group by constraint ID. Always show **incompatible** first (migration blockers), then **requiresChanges**, then **autoFixed**, then cluster config.
+
+Per-issue format:
+```
+### ❌ [constraint-id] — Short description
+**Severity:** incompatible | requiresChanges
+**Affected:** namespace/resource-name (Kind)
+**Current:** &lt;what the manifest has&gt;
+**Required:** &lt;what AKS Automatic requires&gt;
+**Fix:** &lt;remediation summary&gt;
+**Docs:** &lt;documentation URL&gt;
+```
+
+### Step 4: Offer Fixes
+
+**Deterministic fixes** (the constraint rule and `references/common-fixes.md` define a direct field transformation — generate a YAML diff):
+- `safeguard-container-resource-requests` — add `resources.requests`
+- `safeguard-container-capabilities` — remove `capabilities.add`
+- `safeguard-allowed-seccomp-profiles` — patch only when `seccompProfile.type: Unconfined` is present
+- `safeguard-no-privilege-escalation` — set `allowPrivilegeEscalation: false` (only when the conditional rule applies)
+- `safeguard-enforce-apparmor` — add AppArmor annotation
+- `safeguard-csi-driver-storage-class` — replace in-tree provisioner
+
+Use patterns in `references/common-fixes.md` and generate a before/after diff. Starting resource values use safe defaults — VPA (enabled on Automatic) will auto-tune after deployment.
+
+**Context-dependent fixes** (the constraint spec&#x27;s `fix` guidance requires application-specific input):
+- `safeguard-images-no-latest` — correct tag is user- and release-specific; ask the user: _&quot;What specific version tag or SHA digest should I pin this image to?&quot;_ Do not guess
+- `safeguard-pod-enforce-antiaffinity` — needs app labels for selector
+- `safeguard-no-host-path-volumes` — replacement depends on what hostPath is used for
+- `safeguard-block-host-namespaces` — may require architecture redesign
+- `safeguard-host-network-ports` — needs alternative networking approach
+
+For incompatible findings (e.g., hostPath volumes), explain the issue and propose alternatives. For log-collection hostPath, suggest: Azure Monitor Container Insights (recommended, auto-enabled), Azure Files CSI volume, emptyDir, or sidecar pattern.
+
+**Fix application flow:**
+1. Generate the fix as a YAML diff
+2. Show the diff with explanation
+3. Wait for explicit approval: &quot;apply&quot;, &quot;edit&quot;, or &quot;skip&quot;
+4. On approval, apply the change to the file
+5. Move to the next finding
+
+If the user says &quot;fix all&quot; or &quot;apply all deterministic fixes&quot;, first generate a single combined diff containing only the constraint rules with direct, context-independent transformations, show that combined diff with an explanation, and wait for one explicit approval before applying any writes. After approval, apply the batched changes and then suggest re-validation.
+
+### Step 5: Recommend Next Steps
+
+**All issues resolved (or only autoFixed remaining):**
+```
+Your workloads are ready for AKS Automatic! Next steps:
+1. Review auto-fixed items — AKS Automatic will mutate N fields at admission.
+2. Apply cluster configuration changes (see cluster config issues above).
+3. Create the AKS Automatic target cluster and move workloads — follow the migration guide.
+4. Verify — after migration, check all workloads are running and healthy.
+```
+There is no documented in-place Standard → Automatic SKU switch; migration to Automatic is a new target cluster plus a workload move (the documented in-place path is Automatic → Standard, `--sku base`). See `references/migration-guide-summary.md` for supported journeys and the full checklist.
+
+**Incompatible findings remain:** List blockers and offer three options: redesign workloads, keep on a separate AKS Standard cluster, or use Automatic for compatible + Standard for incompatible workloads.
+
+**Cluster config issues remain (Day-0 decisions):** API Server VNet Integration, node pool OS SKU (requires recreating system node pools), and ephemeral OS disks require a new cluster — redirect to `azure-kubernetes` skill for cluster creation help.
+
+## Error Handling
+
+| Error / Symptom | Likely Cause | Remediation |
+|-----------------|--------------|-------------|
+| No Azure MCP AKS capability in the host&#x27;s tools | Host uses another approved surface or does not expose these reads | Use approved equivalent metadata reads, including governed ARM/Azure CLI capabilities, or continue offline. Suggest a connector only if the host supports and authorizes setup |
+| Discovered AKS capability has no readiness operation | Expected — the documented surface is cluster/node-pool reads only | Collect sanitized manifests via `kubectl \| jq` and evaluate the bundled spec locally |
+| Azure/Kubernetes read fails (401/403/404, no context) | Credentials, RBAC, scope, or wrong target | See `references/mcp-integration.md` (SRE Agent UAMI scope vs `az login` hosts); continue offline if unresolved |
+| `jq` or bundled sanitizer unavailable | Host cannot execute the sanitized pipeline | Use rendered manifests or an approved projecting host read. Install tools only where host policy and user authorization permit; never send raw cluster JSON to the model |
+| Helm chart uses Go templating — cannot evaluate | Template values not resolved | Ask for `helm template` output or values files |
+| Constraint spec version mismatch | Skill bundles spec v1.2.0 | Note version in output; recommend re-running after spec update |
+
+## Reference Files
+
+| File | When to load |
+|------|--------------|
+| `references/constraint-spec-v1.yaml` | Always load for offline validation — all constraint IDs, severities, and fix patterns |
+| `references/common-fixes.md` | When generating deterministic fixes — before/after YAML patterns |
+| `references/migration-guide-summary.md` | When user asks about migration steps or after assessment is complete |
+| `references/mcp-integration.md` | When discovering Azure MCP capabilities, wiring the sanitized `kubectl` read, or debugging the fallback chain |
+| `scripts/sanitize-readiness-input.jq` | Allowlist projection for `kubectl -o json` output before it reaches the model (requires `jq`) |
+
+&gt; ⚠️ **Warning:** This skill bundles **constraint spec v1.2.0** (rules dated 2026-03-15, reconciled 2026-09 against the Learn Deployment Safeguards page, Azure Policy initiative c047ea8e v3.0.0, and the AKS Automatic SKU migration article). It lists 23 customer-facing cluster constraints, 21 Baseline-level Deployment Safeguards rules (one advisory/unverified), 4 conditional Restricted/Windows rules, and 2 active mutators. Always note the spec version in assessment output and verify live enforcement with `kubectl get constraints` when a cluster is reachable.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

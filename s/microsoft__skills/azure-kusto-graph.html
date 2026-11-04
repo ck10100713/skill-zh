@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-kusto-graph｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 edges 優先的方式建 Kusto graph，做模式比對、最短路徑和連通元件">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-kusto-graph</h1>
+<p class="meta">Microsoft ｜ 資料與分析 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-kusto-graph-skills/skills/azure-kusto-graph/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 edges 優先的方式建 Kusto graph，做模式比對、最短路徑和連通元件</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-kusto-graph
+description: &quot;用自然語言建立並查詢 Kusto graph。涵蓋暫時性 graph（make-graph）、持久化 graph model/snapshot、模式比對（graph-match）、最短路徑、連通元件，以及 graph 匯出成 table。產生「edges 優先」的思考方式：定義 edges、定義 node lookup、union、make-graph。WHEN: make-graph, graph-match, graph-shortest-paths, graph-to-table, graph-mark-components, persistent graph, graph model, graph snapshot, build a graph from data, find paths between nodes, pattern matching in graph, connected components, transient graph, Kusto graph, KQL graph.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.1&quot;
+---
+
+# Kusto Graph 語意
+
+用 KQL 的 graph 運算子，從表格資料建立暫時性和持久化的 graph。這個 skill 把自然語言轉成「edges 優先」的 graph 建構模式，以及 graph 查詢運算子。
+
+## 啟動條件
+
+使用者有以下情況時用這個 skill：
+- 想從表格資料建立 graph（`make-graph`）
+- 要找資料裡的模式、路徑或關係
+- 提到 `graph-match`、`graph-shortest-paths`、`graph-to-table`、`graph-mark-components`
+- 想建立持久化的 graph model 或 snapshot
+- 說「build a graph」、「find the shortest path」、「find connected components」、「show relationships」
+- 問暫時性 graph 和持久化 graph 的差別
+
+**這不是自然語言轉 KQL 的轉換器。** 輸入通常應該是一個能跑的 KQL 查詢（使用者想把它的結果轉成 graph），加上一段用自然語言描述想要的 graph 結構。只有在能直接對應到已知 table、欄位又很明顯時，才支援基本的自然語言來源需求。一般的自然語言轉 KQL，請用專門的查詢產生 skill（另外提供）。
+
+**搭配的 skill：**
+- `azure-kusto-irql`：可組合的資安查詢基本元件，產出 graph 要用的表格輸入
+- `azure-kusto-irql-graph`：IRQL 的 `Lift_To_Graph` JSON 對應系統，用於在 Kusto Explorer 裡做出型別豐富、帶圖示的 graph
+
+## Edges 優先的做法
+
+在 Kusto 裡建 graph 的基本模式：
+
+```
+1. Define your EDGES       -&gt; src --&gt; dest, with relationship type/properties
+2. Define your NODE LOOKUPS -&gt; display names, types, properties for each node ID
+3. Union edge types         -&gt; if you have multiple relationship types
+4. Union node lookups       -&gt; if you have multiple node types
+5. Call make-graph          -&gt; edges | make-graph Source --&gt; Target with nodes on nodeId
+```
+
+用 `make-graph` 就是這樣思考。Edges 是你在意的關係。Nodes 是 lookup table，替那些 ID 配上臉：顯示名稱、型別、屬性。
+
+## Graph 運算子參考
+
+### `make-graph`：從 table 建立 graph
+
+```kql
+Edges | make-graph SourceId --&gt; TargetId with Nodes on NodeId
+```
+
+- `Edges`：表格來源，每一列是一條 edge
+- `SourceId --&gt; TargetId`：放來源和目標 node ID 的欄位
+- `with Nodes on NodeId`：選用的 node 屬性 table，依 ID join
+- 支援多個 node table：`with Nodes1 on Id1, Nodes2 on Id2`
+- 出現在 edges 裡、但 node table 裡沒有的 node，屬性會是空的
+
+### `graph-match`：找模式
+
+```kql
+G | graph-match (a)-[e]-&gt;(b) where &lt;constraints&gt; project &lt;output&gt;
+```
+
+模式寫法：
+
+| 元素 | 具名 | 匿名 |
+|---|---|---|
+| Node | `(n)` | `()` |
+| Edge 左到右 | `-[e]-&gt;` | `--&gt;` |
+| Edge 右到左 | `&lt;-[e]-` | `&lt;--` |
+| 任一方向 | `-[e]-` | `--` |
+| 可變長度 | `-[e*1..5]-&gt;` | `-[*1..5]-&gt;` |
+
+多跳模式：`(a)-[e1]-&gt;(b)-[e2]-&gt;(c)`
+星狀模式：`(a)--(center)--(b), (c)--(center)--(d)`
+環的控制：`cycles = all | none | unique_edges`（預設：`unique_edges`）
+
+### `graph-shortest-paths`：找最短路徑
+
+```kql
+G | graph-shortest-paths (start)-[e*1..20]-&gt;(end)
+      where start.name == &quot;Alice&quot; and end.name == &quot;Server01&quot;
+      project Path = e, Length = array_length(e)
+```
+
+- 至少要有一條可變長度的 edge
+- `output = any`（預設，每一對回傳一條路徑）或 `output = all`（所有同樣長度的最短路徑）
+- 可變長度 edge 的屬性會以 dynamic array 回傳
+
+### `graph-to-table`：把 graph 匯出成 table
+
+```kql
+G | graph-to-table nodes                                     // 匯出 nodes
+G | graph-to-table edges                                     // 匯出 edges
+G | graph-to-table nodes as N, edges as E                    // 兩個都匯出
+G | graph-to-table nodes with_node_id=Id                     // 包含 node 的 hash ID
+G | graph-to-table edges with_source_id=Src with_target_id=Tgt  // 包含 edge 兩端的 ID
+```
+
+### `graph-mark-components`：找連通元件
+
+```kql
+G | graph-mark-components with_component_id=ComponentId
+  | graph-to-table nodes
+  | summarize Members = make_list(name) by ComponentId
+```
+
+幫每個 node 指派一個 `ComponentId`。同一個連通元件裡的 node 會有相同的 ID。
+
+### `graph()` 函式：查詢持久化 graph
+
+```kql
+graph(&quot;MyGraphModel&quot;)                              // 最新的 snapshot
+graph(&quot;MyGraphModel&quot;, &quot;Snapshot_2025_01&quot;)           // 指定的 snapshot
+graph(&quot;MyGraphModel&quot;, true)                         // 依 model 定義建立暫時性 graph
+```
+
+## 暫時性 Graph
+
+在查詢執行期間動態建立。不用事先設定。適合臨時分析、探索和做原型。
+
+### 範本：基本的雙實體 graph
+
+```kql
+// 1. 定義 edges
+let edges = &lt;SourceTable&gt;
+    | summarize &lt;aggregations&gt; by SourceCol, TargetCol;
+// 2. 定義 node lookup
+let source_nodes = edges
+    | distinct SourceCol
+    | project nodeId = SourceCol, label = SourceCol, nodeType = &quot;&lt;SourceType&gt;&quot;;
+let target_nodes = edges
+    | distinct TargetCol
+    | project nodeId = TargetCol, label = TargetCol, nodeType = &quot;&lt;TargetType&gt;&quot;;
+let all_nodes = union source_nodes, target_nodes;
+// 3. 建立 graph 並查詢
+edges
+| make-graph SourceCol --&gt; TargetCol with all_nodes on nodeId
+| graph-match (s)-[e]-&gt;(t)
+    where &lt;constraints&gt;
+    project Source = s.label, Target = t.label, &lt;edge properties&gt;
+```
+
+### 範本：多種關係的 graph
+
+```kql
+// 多種 edge 類型 -&gt; 用共同的 schema 把它們 union 起來
+let auth_edges = AuthEvents
+    | project Source = username, Target = hostname, edgeType = &quot;authenticates&quot;, ts = timestamp;
+let net_edges = NetworkEvents
+    | project Source = src_ip, Target = url, edgeType = &quot;connects&quot;, ts = timestamp;
+let all_edges = union auth_edges, net_edges;
+// 從所有來源建立 node lookup
+let user_nodes = Employees | project nodeId = username, label = name, nodeType = &quot;User&quot;;
+let host_nodes = AuthEvents | distinct hostname | project nodeId = hostname, label = hostname, nodeType = &quot;Host&quot;;
+let all_nodes = union user_nodes, host_nodes;
+all_edges
+| make-graph Source --&gt; Target with all_nodes on nodeId
+```
+
+## 持久化 Graph
+
+用於大規模、可重複使用的 graph。存在資料庫的 metadata 裡。支援 snapshot，可以做歷史比對。
+
+&gt; **安全：** 建立或修改 graph model 和 snapshot 會改動資料庫。執行 `.create-or-alter graph_model` 或 `.make graph_snapshot` 之前，一定要先顯示完整指令並跟使用者確認。
+
+### Step 1：建立 graph model
+
+```kql
+.create-or-alter graph_model SecurityGraph
+{
+  &quot;Schema&quot;: {
+    &quot;Nodes&quot;: {
+      &quot;User&quot;: {&quot;name&quot;: &quot;string&quot;, &quot;role&quot;: &quot;string&quot;},
+      &quot;Host&quot;: {&quot;hostname&quot;: &quot;string&quot;},
+      &quot;IP&quot;:   {&quot;ip&quot;: &quot;string&quot;}
+    },
+    &quot;Edges&quot;: {
+      &quot;AuthenticatesTo&quot;: {&quot;timestamp&quot;: &quot;datetime&quot;, &quot;result&quot;: &quot;string&quot;},
+      &quot;ConnectsFrom&quot;:    {&quot;timestamp&quot;: &quot;datetime&quot;}
+    }
+  },
+  &quot;Definition&quot;: {
+    &quot;Steps&quot;: [
+      {
+        &quot;Kind&quot;: &quot;AddNodes&quot;,
+        &quot;Query&quot;: &quot;Employees | project name, role&quot;,
+        &quot;NodeIdColumn&quot;: &quot;name&quot;,
+        &quot;Labels&quot;: [&quot;User&quot;]
+      },
+      {
+        &quot;Kind&quot;: &quot;AddNodes&quot;,
+        &quot;Query&quot;: &quot;AuthenticationEvents | distinct hostname | project hostname&quot;,
+        &quot;NodeIdColumn&quot;: &quot;hostname&quot;,
+        &quot;Labels&quot;: [&quot;Host&quot;]
+      },
+      {
+        &quot;Kind&quot;: &quot;AddEdges&quot;,
+        &quot;Query&quot;: &quot;AuthenticationEvents | project username, hostname, timestamp, result&quot;,
+        &quot;SourceColumn&quot;: &quot;username&quot;,
+        &quot;TargetColumn&quot;: &quot;hostname&quot;,
+        &quot;Labels&quot;: [&quot;AuthenticatesTo&quot;]
+      }
+    ]
+  }
+}
+```
+
+### Step 2：建立 snapshot
+
+```kql
+.make graph_snapshot SecurityGraph Snapshot_2025_07
+```
+
+### Step 3：查詢 snapshot
+
+```kql
+graph(&quot;SecurityGraph&quot;)
+| graph-match (user)-[auth]-&gt;(host)
+    where user.role == &quot;Admin&quot; and auth.result == &quot;Failed Login&quot;
+    project User = user.name, Host = host.hostname, Time = auth.timestamp
+```
+
+### 管理指令
+
+&gt; **安全：** 底下所有控制指令都會修改或刪除資料庫物件。絕對不准自動執行 `.drop`、`.create-or-alter graph_model` 或 `.make graph_snapshot`。一定要先顯示完整指令、叢集、資料庫和受影響的物件，取得使用者明確確認後才能執行。
+
+```kql
+.show graph_models                        // 列出所有 model
+.show graph_model SecurityGraph           // 顯示 model 詳細內容
+.show graph_snapshots SecurityGraph       // 列出 snapshot
+.drop graph_snapshot SecurityGraph Snapshot_2025_07  // 刪除 snapshot（先確認！）
+.drop graph_model SecurityGraph           // 刪除 model 和所有 snapshot（先確認！）
+```
+
+## 暫時性 vs 持久化：何時用哪個
+
+| 因素 | 暫時性（`make-graph`） | 持久化（`graph()`） |
+|---|---|---|
+| 設定 | 不用，直接寫在查詢裡 | 要建立 model + snapshot |
+| 生命週期 | 只在查詢執行期間 | 存在資料庫 metadata 裡 |
+| 資料新鮮度 | 永遠是最新的 | 是建立當下的 snapshot |
+| 規模 | 受查詢記憶體限制 | 企業等級 |
+| 重複使用 | 每次查詢都重建 | 使用者/查詢之間共用 |
+| 最適合 | 臨時的 hunt、做原型 | 正式環境的工作流程、dashboard |
+
+## 資安與威脅獵捕範例
+
+### 認證 graph：誰從哪裡登入了什麼
+
+```kql
+let auth_edges = AuthenticationEvents
+    | summarize
+        logins = count(),
+        fails = countif(result == &quot;Failed Login&quot;)
+      by src_ip, username, hostname;
+let ip_nodes = auth_edges | distinct src_ip
+    | project nodeId = src_ip, label = src_ip, nodeType = &quot;IP&quot;;
+let user_nodes = auth_edges | distinct username
+    | project nodeId = username, label = username, nodeType = &quot;User&quot;;
+let host_nodes = auth_edges | distinct hostname
+    | project nodeId = hostname, label = hostname, nodeType = &quot;Host&quot;;
+let all_nodes = union ip_nodes, user_nodes, host_nodes;
+// IP -&gt; User 的 edges
+let ip_user = auth_edges
+    | project Source = src_ip, Target = username, logins, fails;
+// User -&gt; Host 的 edges
+let user_host = auth_edges
+    | project Source = username, Target = hostname, logins, fails;
+union ip_user, user_host
+| make-graph Source --&gt; Target with all_nodes on nodeId
+| graph-match (ip)-[e1]-&gt;(user)-[e2]-&gt;(host)
+    where e2.fails &gt; 20
+    project
+        IP = ip.label,
+        User = user.label,
+        Host = host.label,
+        Failures = e2.fails
+| order by Failures desc
+```
+
+### 橫向移動偵測：使用者共用被入侵的主機
+
+```kql
+// 模式：(user1)-[auth1]-&gt;(host)&lt;-[auth2]-(user2)
+// 兩個使用者都在同一台主機上登入失敗 = 可能是 credential spray
+let edges = AuthenticationEvents
+    | summarize fails = countif(result == &quot;Failed Login&quot;), logins = count()
+      by username, hostname;
+let nodes = union
+    (edges | distinct username | project nodeId = username, nodeType = &quot;User&quot;),
+    (edges | distinct hostname | project nodeId = hostname, nodeType = &quot;Host&quot;);
+edges
+| make-graph username --&gt; hostname with nodes on nodeId
+| graph-match (u1)-[e1]-&gt;(h)&lt;-[e2]-(u2)
+    where u1.nodeId != u2.nodeId and e1.fails &gt; 10 and e2.fails &gt; 10
+    project
+        User1 = u1.nodeId, User2 = u2.nodeId,
+        SharedHost = h.nodeId,
+        User1Fails = e1.fails, User2Fails = e2.fails
+| distinct User1, SharedHost, User2, User1Fails, User2Fails
+| order by User1Fails + User2Fails desc
+```
+
+### 最短攻擊路徑
+
+```kql
+let edges = SecurityEvents
+    | project Source = source_entity, Target = target_entity, action, timestamp;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source),
+    (edges | distinct Target | project nodeId = Target);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-shortest-paths (start)-[e*1..10]-&gt;(end)
+    where start.nodeId == &quot;ExternalIP_1.2.3.4&quot; and end.nodeId == &quot;DatabaseServer&quot;
+    project
+        PathLength = array_length(e),
+        Actions = e.action,
+        Hops = e.Target
+```
+
+### 連通元件：找出孤立的群集
+
+```kql
+let edges = NetworkFlows
+    | project Source = src_ip, Target = dst_ip;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source),
+    (edges | distinct Target | project nodeId = Target);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-mark-components with_component_id = ComponentId
+| graph-to-table nodes
+| summarize Members = make_list(nodeId), Size = count() by ComponentId
+| order by Size desc
+```
+
+### 在 Kusto Explorer 裡視覺化
+
+查詢在 `make-graph` 就結束（後面不要接 `graph-match`），就會觸發 Kusto Explorer 的互動式 graph 視覺化視窗：
+
+```kql
+edges
+| make-graph Source --&gt; Target with all_nodes on nodeId
+// &lt;- 停在這裡。Kusto Explorer 會把 graph 畫出來。
+```
+
+要攤平回 table 給 dashboard 或匯出用，就接 `graph-match | project` 或 `graph-to-table`。
+
+## 搭配 IRQL 使用
+
+處理資安資料時，可以考慮用 `azure-kusto-irql` skill 裡的 IRQL selector（`Get_*`）當資料來源。IRQL 給你統一的 schema，不用背原始的 table 名稱或欄位對應。要有圖示和 node 折疊的豐富視覺化，用 `azure-kusto-irql-graph` skill 的 `Lift_To_Graph` 比較快。
+
+| 做法 | 最適合 |
+|---|---|
+| 原始 `make-graph`（這個 skill） | 完全掌控、持久化 model、最短路徑、連通元件、自訂 schema |
+| `Lift_To_Graph`（`azure-kusto-irql-graph`） | 在 Kusto Explorer 快速做出帶圖示的視覺化、node 折疊 |
+| IRQL `Get_*` -&gt; `make-graph` | 用 IRQL 的統一 schema 當輸入，再用原始 graph 運算子分析 |
+| IRQL `Get_*` -&gt; `Lift_To_Graph` -&gt; `Graph_Render_View` | 從問題到視覺化 graph 最快的路 |
+
+&gt; **注意：** `Lift_To_Graph`、`Graph_Render_View` 和 `Graph_Fold_By_Property` 是 stored function，不是內建運算子。它們已預先部署在 kc7001 範例叢集上，其他叢集可能需要自己部署。function 定義和部署說明見 `azure-kusto-irql-graph/references/DEPLOY_IRQL_FUNCTIONS.md`。
+
+### 範例：IRQL selector -&gt; make-graph -&gt; 最短路徑
+
+IRQL 負責取資料；`make-graph` 負責 graph 分析。這個範例找出從外部 IP 經過認證事件到郵件伺服器的最短路徑：
+
+```kql
+// IRQL 提供統一的欄位（ClientIp, Hostname, Username, Result）
+let auth = Get_Event_Authentication_All
+    | where Result == &quot;Failed Login&quot;;
+let edges = auth
+    | summarize Failures = count() by ClientIp, Hostname;
+let nodes = union
+    (edges | distinct ClientIp | project nodeId = ClientIp, nodeType = &quot;IP&quot;),
+    (edges | distinct Hostname | project nodeId = Hostname, nodeType = &quot;Host&quot;);
+edges
+| make-graph ClientIp --&gt; Hostname with nodes on nodeId
+| graph-shortest-paths (src)-[e*1..5]-&gt;(dest)
+    where src.nodeType == &quot;IP&quot; and dest.nodeId == &quot;MAIL-SERVER01&quot;
+    project
+        SourceIP = src.nodeId,
+        PathLength = array_length(e),
+        Hops = e.Hostname
+```
+
+### 範例：IRQL selector -&gt; make-graph -&gt; 連通元件
+
+找出彼此相連的 IP 和網域群集，這些可能是 C2 基礎設施：
+
+```kql
+let dns = Get_Dns_All;
+let edges = dns | project Source = ClientIp, Target = Domain;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source, nodeType = &quot;IP&quot;),
+    (edges | distinct Target | project nodeId = Target, nodeType = &quot;Domain&quot;);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-mark-components with_component_id = ComponentId
+| graph-to-table nodes
+| summarize
+    IPs = make_set_if(nodeId, nodeType == &quot;IP&quot;),
+    Domains = make_set_if(nodeId, nodeType == &quot;Domain&quot;),
+    Size = count()
+  by ComponentId
+| where Size &gt; 3
+| order by Size desc
+```
+
+### 範例：IRQL + make-graph 整合
+
+結合 IRQL selector 和 `make-graph` 的多來源調查 graph，以及 `Lift_To_Graph` 的視覺化 graph 範例，見 [references/EXAMPLES.md](references/EXAMPLES.md)。
+
+## 實際使用情境
+
+完整的實作範例見 [references/SCENARIOS.md](references/SCENARIOS.md)，包括：
+- 可達性分析（到關鍵資產的最短路徑）
+- 網路分段驗證（連通元件）
+- 被入侵帳號的爆炸半徑（可變長度路徑比對）
+- 給 SOC 團隊的持久化 graph model（graph_model + snapshot）
+
+## 使用的 MCP 工具
+
+| 工具 | 用途 |
+|------|---------|
+| `kusto_query` | 執行 KQL 查詢，包括 `make-graph`、`graph-match` 和管理指令 |
+| `kusto_table_schema_get` | 建立 edge/node 投影之前，先查 table 有哪些欄位 |
+| `kusto_cluster_list` | 列出可用的 ADX 叢集 |
+| `kusto_database_list` | 列出叢集裡的資料庫 |
+
+## 在 Kusto Explorer 裡開啟查詢（僅限 Windows）
+
+&gt; **選用的便利功能。** 預設流程是在對話裡輸出 KQL，讓使用者自己複製到 Kusto Explorer 或 VS Code 的 Kusto 擴充套件。自動啟動只在使用者選擇啟用時才做。
+
+### 預設：在對話裡輸出 KQL
+
+一律輸出完整的 KQL，並清楚標示 Step 1（連線）和 Step 2（查詢）：
+
+```
+// Step 1: Connect to your cluster (skip if already connected)
+// Example: uncomment to connect to the KC7 training cluster
+// #connect cluster(&#x27;kc7001.eastus.kusto.windows.net&#x27;).database(&#x27;ValdyTimes&#x27;)
+// Or replace with your own cluster:
+// #connect cluster(&#x27;&lt;YOUR_CLUSTER&gt;&#x27;).database(&#x27;&lt;YOUR_DATABASE&gt;&#x27;)
+
+// Step 2: Run the query below
+&lt;KQL_QUERY ending at make-graph&gt;
+```
+
+然後緊接著在下面輸出一個 **ADX Web Explorer 版本**，在後面加上 `| graph-to-table nodes as N, edges as E`，因為 ADX Web Explorer 沒辦法直接渲染 `make-graph`：
+
+```
+// ADX Web Explorer version (tabular output):
+&lt;SAME_QUERY&gt;
+| graph-to-table nodes as N, edges as E
+```
+
+這樣輸出在 Kusto Explorer（graph 視覺化）和 ADX Web Explorer（表格結果）都能用，使用者不用改任何東西。
+
+### 選用：儲存並啟動
+
+如果使用者要求把查詢存起來或在 Kusto Explorer 裡開啟，照 [references/KUSTO_EXPLORER_LAUNCH.md](references/KUSTO_EXPLORER_LAUNCH.md) 的流程做。重點規則：
+
+- 寫檔或啟動執行檔之前，**一定要**用 `ask_user` 確認
+- **一定要**把檔案內容顯示在對話裡，讓使用者開啟前能先檢查
+- **絕對不准**用 shell 插值或 here-string，檔案要用 `Set-Content`/`Add-Content` 寫
+- **絕對不准**把查詢編碼進瀏覽器 URL
+- 在 macOS/Linux 上，存成 `.kql` 檔，然後建議用 VS Code 的 Kusto 擴充套件或 ADX Web Explorer
+
+`make-graph` 的視覺化（graph 視窗）要求查詢**結束在 `make-graph`**，不要接 `graph-match`。Kusto Explorer 只有在輸出是 graph 物件（不是 table）時，才會開 graph 視覺化視窗。</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-kusto-graph
+description: &quot;Build and query Kusto graphs from natural language. Covers transient graphs (make-graph), persistent graph models/snapshots, pattern matching (graph-match), shortest paths, connected components, and graph-to-table export. Generates the edges-first thinking: define edges, define node lookups, union, make-graph. WHEN: make-graph, graph-match, graph-shortest-paths, graph-to-table, graph-mark-components, persistent graph, graph model, graph snapshot, build a graph from data, find paths between nodes, pattern matching in graph, connected components, transient graph, Kusto graph, KQL graph.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.1&quot;
+---
+
+# Kusto Graph Semantics
+
+Build transient and persistent graphs from tabular data using KQL graph operators. This skill translates natural language into the edges-first graph construction pattern and graph query operators.
+
+## Activation Triggers
+
+Use this skill when the user:
+- Wants to build a graph from tabular data (`make-graph`)
+- Asks to find patterns, paths, or relationships in data
+- Mentions `graph-match`, `graph-shortest-paths`, `graph-to-table`, `graph-mark-components`
+- Wants to create a persistent graph model or snapshot
+- Says &quot;build a graph&quot;, &quot;find the shortest path&quot;, &quot;find connected components&quot;, &quot;show relationships&quot;
+- Asks about transient vs persistent graphs
+
+**Not a natural-language-to-KQL converter.** The input should generally be a working KQL query whose results the user wants converted to a graph, plus a natural-language description of the desired graph structure. Basic NL source requests are supported only when they map directly to a known table with obvious columns. For general NL-to-KQL conversion, use a dedicated query-generation skill (available separately).
+
+**Complementary skills:**
+- `azure-kusto-irql` -- composable security query primitives that produce the tabular inputs for graphs
+- `azure-kusto-irql-graph` -- IRQL&#x27;s `Lift_To_Graph` JSON mapping system for richly-typed, icon-decorated graphs in Kusto Explorer
+
+## The Edges-First Approach
+
+The fundamental pattern for building graphs in Kusto:
+
+```
+1. Define your EDGES       -&gt; src --&gt; dest, with relationship type/properties
+2. Define your NODE LOOKUPS -&gt; display names, types, properties for each node ID
+3. Union edge types         -&gt; if you have multiple relationship types
+4. Union node lookups       -&gt; if you have multiple node types
+5. Call make-graph          -&gt; edges | make-graph Source --&gt; Target with nodes on nodeId
+```
+
+This is how to think in `make-graph`. Edges are the relationships you care about. Nodes are lookup tables that give those IDs a face -- display names, types, properties.
+
+## Graph Operators Reference
+
+### `make-graph` -- Build a graph from tables
+
+```kql
+Edges | make-graph SourceId --&gt; TargetId with Nodes on NodeId
+```
+
+- `Edges`: tabular source where each row is an edge
+- `SourceId --&gt; TargetId`: columns containing source and target node IDs
+- `with Nodes on NodeId`: optional node property table joined by ID
+- Supports multiple node tables: `with Nodes1 on Id1, Nodes2 on Id2`
+- Nodes appearing in edges but missing from the node table get empty properties
+
+### `graph-match` -- Find patterns
+
+```kql
+G | graph-match (a)-[e]-&gt;(b) where &lt;constraints&gt; project &lt;output&gt;
+```
+
+Pattern notation:
+
+| Element | Named | Anonymous |
+|---|---|---|
+| Node | `(n)` | `()` |
+| Edge left-&gt;right | `-[e]-&gt;` | `--&gt;` |
+| Edge right-&gt;left | `&lt;-[e]-` | `&lt;--` |
+| Any direction | `-[e]-` | `--` |
+| Variable length | `-[e*1..5]-&gt;` | `-[*1..5]-&gt;` |
+
+Multi-hop patterns: `(a)-[e1]-&gt;(b)-[e2]-&gt;(c)`
+Star patterns: `(a)--(center)--(b), (c)--(center)--(d)`
+Cycles control: `cycles = all | none | unique_edges` (default: `unique_edges`)
+
+### `graph-shortest-paths` -- Find shortest paths
+
+```kql
+G | graph-shortest-paths (start)-[e*1..20]-&gt;(end)
+      where start.name == &quot;Alice&quot; and end.name == &quot;Server01&quot;
+      project Path = e, Length = array_length(e)
+```
+
+- Requires at least one variable-length edge
+- `output = any` (default, one path per pair) or `output = all` (all equal-length shortest paths)
+- Variable-length edge properties returned as dynamic arrays
+
+### `graph-to-table` -- Export graph to tables
+
+```kql
+G | graph-to-table nodes                                     // export nodes
+G | graph-to-table edges                                     // export edges
+G | graph-to-table nodes as N, edges as E                    // export both
+G | graph-to-table nodes with_node_id=Id                     // include node hash ID
+G | graph-to-table edges with_source_id=Src with_target_id=Tgt  // include edge endpoint IDs
+```
+
+### `graph-mark-components` -- Find connected components
+
+```kql
+G | graph-mark-components with_component_id=ComponentId
+  | graph-to-table nodes
+  | summarize Members = make_list(name) by ComponentId
+```
+
+Assigns a `ComponentId` to each node. Nodes in the same connected component share the same ID.
+
+### `graph()` function -- Query persistent graphs
+
+```kql
+graph(&quot;MyGraphModel&quot;)                              // latest snapshot
+graph(&quot;MyGraphModel&quot;, &quot;Snapshot_2025_01&quot;)           // specific snapshot
+graph(&quot;MyGraphModel&quot;, true)                         // transient from model definition
+```
+
+## Transient Graphs
+
+Created dynamically during query execution. No setup required. Ideal for ad-hoc analysis, exploration, and prototyping.
+
+### Template: Basic two-entity graph
+
+```kql
+// 1. Define edges
+let edges = &lt;SourceTable&gt;
+    | summarize &lt;aggregations&gt; by SourceCol, TargetCol;
+// 2. Define node lookups
+let source_nodes = edges
+    | distinct SourceCol
+    | project nodeId = SourceCol, label = SourceCol, nodeType = &quot;&lt;SourceType&gt;&quot;;
+let target_nodes = edges
+    | distinct TargetCol
+    | project nodeId = TargetCol, label = TargetCol, nodeType = &quot;&lt;TargetType&gt;&quot;;
+let all_nodes = union source_nodes, target_nodes;
+// 3. Build and query the graph
+edges
+| make-graph SourceCol --&gt; TargetCol with all_nodes on nodeId
+| graph-match (s)-[e]-&gt;(t)
+    where &lt;constraints&gt;
+    project Source = s.label, Target = t.label, &lt;edge properties&gt;
+```
+
+### Template: Multi-relationship graph
+
+```kql
+// Multiple edge types -&gt; union them with a common schema
+let auth_edges = AuthEvents
+    | project Source = username, Target = hostname, edgeType = &quot;authenticates&quot;, ts = timestamp;
+let net_edges = NetworkEvents
+    | project Source = src_ip, Target = url, edgeType = &quot;connects&quot;, ts = timestamp;
+let all_edges = union auth_edges, net_edges;
+// Node lookups from all sources
+let user_nodes = Employees | project nodeId = username, label = name, nodeType = &quot;User&quot;;
+let host_nodes = AuthEvents | distinct hostname | project nodeId = hostname, label = hostname, nodeType = &quot;Host&quot;;
+let all_nodes = union user_nodes, host_nodes;
+all_edges
+| make-graph Source --&gt; Target with all_nodes on nodeId
+```
+
+## Persistent Graphs
+
+For large-scale, reusable graphs. Stored in database metadata. Support snapshots for historical comparison.
+
+&gt; **Safety:** Creating or altering graph models and snapshots modifies the database. Always show the exact command and confirm with the user before executing `.create-or-alter graph_model` or `.make graph_snapshot`.
+
+### Step 1: Create a graph model
+
+```kql
+.create-or-alter graph_model SecurityGraph
+{
+  &quot;Schema&quot;: {
+    &quot;Nodes&quot;: {
+      &quot;User&quot;: {&quot;name&quot;: &quot;string&quot;, &quot;role&quot;: &quot;string&quot;},
+      &quot;Host&quot;: {&quot;hostname&quot;: &quot;string&quot;},
+      &quot;IP&quot;:   {&quot;ip&quot;: &quot;string&quot;}
+    },
+    &quot;Edges&quot;: {
+      &quot;AuthenticatesTo&quot;: {&quot;timestamp&quot;: &quot;datetime&quot;, &quot;result&quot;: &quot;string&quot;},
+      &quot;ConnectsFrom&quot;:    {&quot;timestamp&quot;: &quot;datetime&quot;}
+    }
+  },
+  &quot;Definition&quot;: {
+    &quot;Steps&quot;: [
+      {
+        &quot;Kind&quot;: &quot;AddNodes&quot;,
+        &quot;Query&quot;: &quot;Employees | project name, role&quot;,
+        &quot;NodeIdColumn&quot;: &quot;name&quot;,
+        &quot;Labels&quot;: [&quot;User&quot;]
+      },
+      {
+        &quot;Kind&quot;: &quot;AddNodes&quot;,
+        &quot;Query&quot;: &quot;AuthenticationEvents | distinct hostname | project hostname&quot;,
+        &quot;NodeIdColumn&quot;: &quot;hostname&quot;,
+        &quot;Labels&quot;: [&quot;Host&quot;]
+      },
+      {
+        &quot;Kind&quot;: &quot;AddEdges&quot;,
+        &quot;Query&quot;: &quot;AuthenticationEvents | project username, hostname, timestamp, result&quot;,
+        &quot;SourceColumn&quot;: &quot;username&quot;,
+        &quot;TargetColumn&quot;: &quot;hostname&quot;,
+        &quot;Labels&quot;: [&quot;AuthenticatesTo&quot;]
+      }
+    ]
+  }
+}
+```
+
+### Step 2: Create a snapshot
+
+```kql
+.make graph_snapshot SecurityGraph Snapshot_2025_07
+```
+
+### Step 3: Query the snapshot
+
+```kql
+graph(&quot;SecurityGraph&quot;)
+| graph-match (user)-[auth]-&gt;(host)
+    where user.role == &quot;Admin&quot; and auth.result == &quot;Failed Login&quot;
+    project User = user.name, Host = host.hostname, Time = auth.timestamp
+```
+
+### Management commands
+
+&gt; **Safety:** All control commands below modify or delete database objects. Never execute `.drop`, `.create-or-alter graph_model`, or `.make graph_snapshot` automatically. Always show the exact command, cluster, database, and affected object, then require explicit user confirmation before execution.
+
+```kql
+.show graph_models                        // list all models
+.show graph_model SecurityGraph           // show model details
+.show graph_snapshots SecurityGraph       // list snapshots
+.drop graph_snapshot SecurityGraph Snapshot_2025_07  // delete a snapshot (CONFIRM FIRST)
+.drop graph_model SecurityGraph           // delete model and all snapshots (CONFIRM FIRST)
+```
+
+## Transient vs Persistent: When to Use Which
+
+| Factor | Transient (`make-graph`) | Persistent (`graph()`) |
+|---|---|---|
+| Setup | None -- inline in query | Create model + snapshot |
+| Lifetime | Query execution only | Stored in database metadata |
+| Data freshness | Always current | Snapshot at creation time |
+| Scale | Limited by query memory | Enterprise-scale |
+| Reuse | Rebuilt every query | Shared across users/queries |
+| Best for | Ad-hoc hunts, prototyping | Production workflows, dashboards |
+
+## Security &amp; Threat Hunting Examples
+
+### Authentication graph: who logged into what from where
+
+```kql
+let auth_edges = AuthenticationEvents
+    | summarize
+        logins = count(),
+        fails = countif(result == &quot;Failed Login&quot;)
+      by src_ip, username, hostname;
+let ip_nodes = auth_edges | distinct src_ip
+    | project nodeId = src_ip, label = src_ip, nodeType = &quot;IP&quot;;
+let user_nodes = auth_edges | distinct username
+    | project nodeId = username, label = username, nodeType = &quot;User&quot;;
+let host_nodes = auth_edges | distinct hostname
+    | project nodeId = hostname, label = hostname, nodeType = &quot;Host&quot;;
+let all_nodes = union ip_nodes, user_nodes, host_nodes;
+// IP -&gt; User edges
+let ip_user = auth_edges
+    | project Source = src_ip, Target = username, logins, fails;
+// User -&gt; Host edges
+let user_host = auth_edges
+    | project Source = username, Target = hostname, logins, fails;
+union ip_user, user_host
+| make-graph Source --&gt; Target with all_nodes on nodeId
+| graph-match (ip)-[e1]-&gt;(user)-[e2]-&gt;(host)
+    where e2.fails &gt; 20
+    project
+        IP = ip.label,
+        User = user.label,
+        Host = host.label,
+        Failures = e2.fails
+| order by Failures desc
+```
+
+### Lateral movement detection: users sharing compromised hosts
+
+```kql
+// Pattern: (user1)-[auth1]-&gt;(host)&lt;-[auth2]-(user2)
+// Two users both failing on the same host = possible credential spray
+let edges = AuthenticationEvents
+    | summarize fails = countif(result == &quot;Failed Login&quot;), logins = count()
+      by username, hostname;
+let nodes = union
+    (edges | distinct username | project nodeId = username, nodeType = &quot;User&quot;),
+    (edges | distinct hostname | project nodeId = hostname, nodeType = &quot;Host&quot;);
+edges
+| make-graph username --&gt; hostname with nodes on nodeId
+| graph-match (u1)-[e1]-&gt;(h)&lt;-[e2]-(u2)
+    where u1.nodeId != u2.nodeId and e1.fails &gt; 10 and e2.fails &gt; 10
+    project
+        User1 = u1.nodeId, User2 = u2.nodeId,
+        SharedHost = h.nodeId,
+        User1Fails = e1.fails, User2Fails = e2.fails
+| distinct User1, SharedHost, User2, User1Fails, User2Fails
+| order by User1Fails + User2Fails desc
+```
+
+### Shortest attack path
+
+```kql
+let edges = SecurityEvents
+    | project Source = source_entity, Target = target_entity, action, timestamp;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source),
+    (edges | distinct Target | project nodeId = Target);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-shortest-paths (start)-[e*1..10]-&gt;(end)
+    where start.nodeId == &quot;ExternalIP_1.2.3.4&quot; and end.nodeId == &quot;DatabaseServer&quot;
+    project
+        PathLength = array_length(e),
+        Actions = e.action,
+        Hops = e.Target
+```
+
+### Connected components: find isolated clusters
+
+```kql
+let edges = NetworkFlows
+    | project Source = src_ip, Target = dst_ip;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source),
+    (edges | distinct Target | project nodeId = Target);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-mark-components with_component_id = ComponentId
+| graph-to-table nodes
+| summarize Members = make_list(nodeId), Size = count() by ComponentId
+| order by Size desc
+```
+
+### Visualize in Kusto Explorer
+
+End a query at `make-graph` (without piping to `graph-match`) to trigger Kusto Explorer&#x27;s interactive graph visualization window:
+
+```kql
+edges
+| make-graph Source --&gt; Target with all_nodes on nodeId
+// &lt;- stop here. Kusto Explorer renders the graph visually.
+```
+
+To flatten back to a table for dashboards or export, pipe through `graph-match | project` or `graph-to-table`.
+
+## Using with IRQL
+
+When working with security data, consider using IRQL selectors (`Get_*`) from the `azure-kusto-irql` skill as the data source. IRQL gives you a unified schema without memorizing raw table names or column mappings. For rich visualization with icons and node folding, the `azure-kusto-irql-graph` skill&#x27;s `Lift_To_Graph` is the faster path.
+
+| Approach | Best For |
+|---|---|
+| Raw `make-graph` (this skill) | Full control, persistent models, shortest paths, connected components, custom schemas |
+| `Lift_To_Graph` (`azure-kusto-irql-graph`) | Quick icon-decorated visualization in Kusto Explorer, node folding |
+| IRQL `Get_*` -&gt; `make-graph` | IRQL&#x27;s unified schema as input, then raw graph operators for analysis |
+| IRQL `Get_*` -&gt; `Lift_To_Graph` -&gt; `Graph_Render_View` | Fastest path from question to visual graph |
+
+&gt; **Note:** `Lift_To_Graph`, `Graph_Render_View`, and `Graph_Fold_By_Property` are stored functions, not built-in operators. They are pre-deployed on the kc7001 example cluster but may need deployment on other clusters. See `azure-kusto-irql-graph/references/DEPLOY_IRQL_FUNCTIONS.md` for function definitions and deployment instructions.
+
+### Example: IRQL selectors -&gt; make-graph -&gt; shortest path
+
+IRQL handles the data retrieval; `make-graph` handles the graph analysis. This finds the shortest path from an external IP to a mail server through auth events:
+
+```kql
+// IRQL provides unified columns (ClientIp, Hostname, Username, Result)
+let auth = Get_Event_Authentication_All
+    | where Result == &quot;Failed Login&quot;;
+let edges = auth
+    | summarize Failures = count() by ClientIp, Hostname;
+let nodes = union
+    (edges | distinct ClientIp | project nodeId = ClientIp, nodeType = &quot;IP&quot;),
+    (edges | distinct Hostname | project nodeId = Hostname, nodeType = &quot;Host&quot;);
+edges
+| make-graph ClientIp --&gt; Hostname with nodes on nodeId
+| graph-shortest-paths (src)-[e*1..5]-&gt;(dest)
+    where src.nodeType == &quot;IP&quot; and dest.nodeId == &quot;MAIL-SERVER01&quot;
+    project
+        SourceIP = src.nodeId,
+        PathLength = array_length(e),
+        Hops = e.Hostname
+```
+
+### Example: IRQL selectors -&gt; make-graph -&gt; connected components
+
+Find clusters of IPs and domains that are interconnected -- potential C2 infrastructure:
+
+```kql
+let dns = Get_Dns_All;
+let edges = dns | project Source = ClientIp, Target = Domain;
+let nodes = union
+    (edges | distinct Source | project nodeId = Source, nodeType = &quot;IP&quot;),
+    (edges | distinct Target | project nodeId = Target, nodeType = &quot;Domain&quot;);
+edges
+| make-graph Source --&gt; Target with nodes on nodeId
+| graph-mark-components with_component_id = ComponentId
+| graph-to-table nodes
+| summarize
+    IPs = make_set_if(nodeId, nodeType == &quot;IP&quot;),
+    Domains = make_set_if(nodeId, nodeType == &quot;Domain&quot;),
+    Size = count()
+  by ComponentId
+| where Size &gt; 3
+| order by Size desc
+```
+
+### Example: IRQL + make-graph integration
+
+See [references/EXAMPLES.md](references/EXAMPLES.md) for multi-source investigation graphs combining IRQL selectors with `make-graph`, and `Lift_To_Graph` visual graph examples.
+
+## Practical Usage Scenarios
+
+See [references/SCENARIOS.md](references/SCENARIOS.md) for full worked examples including:
+- Reachability analysis (shortest paths to critical assets)
+- Network segmentation validation (connected components)
+- Blast radius of compromised accounts (variable-length path matching)
+- Persistent graph models for SOC teams (graph_model + snapshots)
+
+## MCP Tools Used
+
+| Tool | Purpose |
+|------|---------|
+| `kusto_query` | Execute KQL queries including `make-graph`, `graph-match`, and management commands |
+| `kusto_table_schema_get` | Discover table columns before building edge/node projections |
+| `kusto_cluster_list` | List available ADX clusters |
+| `kusto_database_list` | List databases in a cluster |
+
+## Opening Queries in Kusto Explorer (Windows Only)
+
+&gt; **Optional convenience feature.** The default workflow is to output the KQL in chat and let the user copy it into Kusto Explorer or the VS Code Kusto extension manually. Auto-launch is opt-in only.
+
+### Default: Output KQL in Chat
+
+Always output the complete KQL with Step 1 (connect) and Step 2 (query) clearly labeled:
+
+```
+// Step 1: Connect to your cluster (skip if already connected)
+// Example: uncomment to connect to the KC7 training cluster
+// #connect cluster(&#x27;kc7001.eastus.kusto.windows.net&#x27;).database(&#x27;ValdyTimes&#x27;)
+// Or replace with your own cluster:
+// #connect cluster(&#x27;&lt;YOUR_CLUSTER&gt;&#x27;).database(&#x27;&lt;YOUR_DATABASE&gt;&#x27;)
+
+// Step 2: Run the query below
+&lt;KQL_QUERY ending at make-graph&gt;
+```
+
+Then immediately below, output an **ADX Web Explorer version** that appends `| graph-to-table nodes as N, edges as E` since ADX Web Explorer cannot render `make-graph` directly:
+
+```
+// ADX Web Explorer version (tabular output):
+&lt;SAME_QUERY&gt;
+| graph-to-table nodes as N, edges as E
+```
+
+This ensures the output works in both Kusto Explorer (graph visualization) and ADX Web Explorer (tabular results) without the user having to modify anything.
+
+### Optional: Save and Launch
+
+If the user asks to save or open the query in Kusto Explorer, follow the procedure in [references/KUSTO_EXPLORER_LAUNCH.md](references/KUSTO_EXPLORER_LAUNCH.md). Key rules:
+
+- **Always** use `ask_user` to confirm before writing files or launching executables
+- **Always** display the file contents in chat so the user can review before opening
+- **Never** use shell interpolation or here-strings — write files via `Set-Content`/`Add-Content`
+- **Never** encode queries into browser URLs
+- On macOS/Linux, save the `.kql` file and suggest the VS Code Kusto extension or ADX Web Explorer
+
+For `make-graph` visualization (the graph window), the query must **end at `make-graph`** — do not pipe to `graph-match`. Kusto Explorer only opens the graph visualization window when the output is a graph object, not a table.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

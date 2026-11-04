@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grafana-dashboards｜Skill 寫法圖鑑</title>
+<meta name="description" content="建立與管理可上 production 的 Grafana dashboard：設計原則、面板、變數和 as-code">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>grafana-dashboards</h1>
+<p class="meta">wshobson ｜ 資料與分析 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/observability-monitoring/skills/grafana-dashboards/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">建立與管理可上 production 的 Grafana dashboard：設計原則、面板、變數和 as-code</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: grafana-dashboards
+description: 為完整的系統 observability 建立並管理可上 production 的 Grafana dashboard。適用於視覺化 Prometheus 指標、建立自訂 dashboard、實作 SLO dashboard 或監控基礎設施的時候。
+---
+
+# Grafana Dashboard
+
+為完整的系統 observability 建立並管理可上 production 的 Grafana dashboard。
+
+## 目的
+
+設計有效的 Grafana dashboard，用來監控應用程式、基礎設施與業務指標。
+
+## 什麼時候用
+
+- 視覺化 Prometheus 指標
+- 建立自訂 dashboard
+- 實作 SLO dashboard
+- 監控基礎設施
+- 追蹤業務 KPI
+
+## Dashboard 設計原則
+
+### 1. 資訊的階層
+
+```
+┌─────────────────────────────────────┐
+│  關鍵指標（大數字）                 │
+├─────────────────────────────────────┤
+│  主要趨勢（時間序列）               │
+├─────────────────────────────────────┤
+│  詳細指標（表格/熱圖）              │
+└─────────────────────────────────────┘
+```
+
+### 2. RED 方法（服務）
+
+- **Rate**：每秒請求數
+- **Errors**：錯誤率
+- **Duration**：延遲/回應時間
+
+### 3. USE 方法（資源）
+
+- **Utilization**：資源忙碌的時間百分比
+- **Saturation**：佇列長度/等待時間
+- **Errors**：錯誤數量
+
+## Dashboard 結構
+
+### API 監控 Dashboard
+
+```json
+{
+  &quot;dashboard&quot;: {
+    &quot;title&quot;: &quot;API Monitoring&quot;,
+    &quot;tags&quot;: [&quot;api&quot;, &quot;production&quot;],
+    &quot;timezone&quot;: &quot;browser&quot;,
+    &quot;refresh&quot;: &quot;30s&quot;,
+    &quot;panels&quot;: [
+      {
+        &quot;title&quot;: &quot;Request Rate&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;sum(rate(http_requests_total[5m])) by (service)&quot;,
+            &quot;legendFormat&quot;: &quot;{{service}}&quot;
+          }
+        ],
+        &quot;gridPos&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 0, &quot;w&quot;: 12, &quot;h&quot;: 8 }
+      },
+      {
+        &quot;title&quot;: &quot;Error Rate %&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;(sum(rate(http_requests_total{status=~\&quot;5..\&quot;}[5m])) / sum(rate(http_requests_total[5m]))) * 100&quot;,
+            &quot;legendFormat&quot;: &quot;Error Rate&quot;
+          }
+        ],
+        &quot;alert&quot;: {
+          &quot;conditions&quot;: [
+            {
+              &quot;evaluator&quot;: { &quot;params&quot;: [5], &quot;type&quot;: &quot;gt&quot; },
+              &quot;operator&quot;: { &quot;type&quot;: &quot;and&quot; },
+              &quot;query&quot;: { &quot;params&quot;: [&quot;A&quot;, &quot;5m&quot;, &quot;now&quot;] },
+              &quot;type&quot;: &quot;query&quot;
+            }
+          ]
+        },
+        &quot;gridPos&quot;: { &quot;x&quot;: 12, &quot;y&quot;: 0, &quot;w&quot;: 12, &quot;h&quot;: 8 }
+      },
+      {
+        &quot;title&quot;: &quot;P95 Latency&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service))&quot;,
+            &quot;legendFormat&quot;: &quot;{{service}}&quot;
+          }
+        ],
+        &quot;gridPos&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 8, &quot;w&quot;: 24, &quot;h&quot;: 8 }
+      }
+    ]
+  }
+}
+```
+
+## 面板類型
+
+### 1. Stat 面板（單一數值）
+
+```json
+{
+  &quot;type&quot;: &quot;stat&quot;,
+  &quot;title&quot;: &quot;Total Requests&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;sum(http_requests_total)&quot;
+    }
+  ],
+  &quot;options&quot;: {
+    &quot;reduceOptions&quot;: {
+      &quot;values&quot;: false,
+      &quot;calcs&quot;: [&quot;lastNotNull&quot;]
+    },
+    &quot;orientation&quot;: &quot;auto&quot;,
+    &quot;textMode&quot;: &quot;auto&quot;,
+    &quot;colorMode&quot;: &quot;value&quot;
+  },
+  &quot;fieldConfig&quot;: {
+    &quot;defaults&quot;: {
+      &quot;thresholds&quot;: {
+        &quot;mode&quot;: &quot;absolute&quot;,
+        &quot;steps&quot;: [
+          { &quot;value&quot;: 0, &quot;color&quot;: &quot;green&quot; },
+          { &quot;value&quot;: 80, &quot;color&quot;: &quot;yellow&quot; },
+          { &quot;value&quot;: 90, &quot;color&quot;: &quot;red&quot; }
+        ]
+      }
+    }
+  }
+}
+```
+
+### 2. 時間序列圖
+
+```json
+{
+  &quot;type&quot;: &quot;graph&quot;,
+  &quot;title&quot;: &quot;CPU Usage&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\&quot;idle\&quot;}[5m])) * 100)&quot;
+    }
+  ],
+  &quot;yaxes&quot;: [
+    { &quot;format&quot;: &quot;percent&quot;, &quot;max&quot;: 100, &quot;min&quot;: 0 },
+    { &quot;format&quot;: &quot;short&quot; }
+  ]
+}
+```
+
+### 3. 表格面板
+
+```json
+{
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;title&quot;: &quot;Service Status&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;up&quot;,
+      &quot;format&quot;: &quot;table&quot;,
+      &quot;instant&quot;: true
+    }
+  ],
+  &quot;transformations&quot;: [
+    {
+      &quot;id&quot;: &quot;organize&quot;,
+      &quot;options&quot;: {
+        &quot;excludeByName&quot;: { &quot;Time&quot;: true },
+        &quot;indexByName&quot;: {},
+        &quot;renameByName&quot;: {
+          &quot;instance&quot;: &quot;Instance&quot;,
+          &quot;job&quot;: &quot;Service&quot;,
+          &quot;Value&quot;: &quot;Status&quot;
+        }
+      }
+    }
+  ]
+}
+```
+
+### 4. 熱圖
+
+```json
+{
+  &quot;type&quot;: &quot;heatmap&quot;,
+  &quot;title&quot;: &quot;Latency Heatmap&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;sum(rate(http_request_duration_seconds_bucket[5m])) by (le)&quot;,
+      &quot;format&quot;: &quot;heatmap&quot;
+    }
+  ],
+  &quot;dataFormat&quot;: &quot;tsbuckets&quot;,
+  &quot;yAxis&quot;: {
+    &quot;format&quot;: &quot;s&quot;
+  }
+}
+```
+
+## 變數
+
+### Query 變數
+
+```json
+{
+  &quot;templating&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;name&quot;: &quot;namespace&quot;,
+        &quot;type&quot;: &quot;query&quot;,
+        &quot;datasource&quot;: &quot;Prometheus&quot;,
+        &quot;query&quot;: &quot;label_values(kube_pod_info, namespace)&quot;,
+        &quot;refresh&quot;: 1,
+        &quot;multi&quot;: false
+      },
+      {
+        &quot;name&quot;: &quot;service&quot;,
+        &quot;type&quot;: &quot;query&quot;,
+        &quot;datasource&quot;: &quot;Prometheus&quot;,
+        &quot;query&quot;: &quot;label_values(kube_service_info{namespace=\&quot;$namespace\&quot;}, service)&quot;,
+        &quot;refresh&quot;: 1,
+        &quot;multi&quot;: true
+      }
+    ]
+  }
+}
+```
+
+### 在查詢中使用變數
+
+```
+sum(rate(http_requests_total{namespace=&quot;$namespace&quot;, service=~&quot;$service&quot;}[5m]))
+```
+
+## Dashboard 中的警報
+
+```json
+{
+  &quot;alert&quot;: {
+    &quot;name&quot;: &quot;High Error Rate&quot;,
+    &quot;conditions&quot;: [
+      {
+        &quot;evaluator&quot;: {
+          &quot;params&quot;: [5],
+          &quot;type&quot;: &quot;gt&quot;
+        },
+        &quot;operator&quot;: { &quot;type&quot;: &quot;and&quot; },
+        &quot;query&quot;: {
+          &quot;params&quot;: [&quot;A&quot;, &quot;5m&quot;, &quot;now&quot;]
+        },
+        &quot;reducer&quot;: { &quot;type&quot;: &quot;avg&quot; },
+        &quot;type&quot;: &quot;query&quot;
+      }
+    ],
+    &quot;executionErrorState&quot;: &quot;alerting&quot;,
+    &quot;for&quot;: &quot;5m&quot;,
+    &quot;frequency&quot;: &quot;1m&quot;,
+    &quot;message&quot;: &quot;Error rate is above 5%&quot;,
+    &quot;noDataState&quot;: &quot;no_data&quot;,
+    &quot;notifications&quot;: [{ &quot;uid&quot;: &quot;slack-channel&quot; }]
+  }
+}
+```
+
+## Dashboard Provisioning
+
+**dashboards.yml：**
+
+```yaml
+apiVersion: 1
+
+providers:
+  - name: &quot;default&quot;
+    orgId: 1
+    folder: &quot;General&quot;
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards
+```
+
+## 常見的 Dashboard 模式
+
+### 基礎設施 Dashboard
+
+**主要面板：**
+
+- 每個節點的 CPU 使用率
+- 每個節點的記憶體用量
+- 磁碟 I/O
+- 網路流量
+- 依 namespace 區分的 Pod 數量
+- 節點狀態
+
+### 資料庫 Dashboard
+
+**主要面板：**
+
+- 每秒查詢數
+- Connection pool 使用量
+- 查詢延遲（P50、P95、P99）
+- 活躍連線數
+- 資料庫大小
+- 複寫延遲
+- 慢查詢
+
+### 應用程式 Dashboard
+
+**主要面板：**
+
+- 請求速率
+- 錯誤率
+- 回應時間（百分位數）
+- 活躍使用者/session
+- 快取命中率
+- 佇列長度
+
+## 最佳實務
+
+1. **從範本開始**（Grafana 社群的 dashboard）
+2. **面板與變數的命名要一致**
+3. **把相關的指標放在同一個 row**
+4. **設定適當的時間範圍**（預設：最近 6 小時）
+5. **使用變數**增加彈性
+6. **加上面板描述**提供脈絡
+7. **正確設定單位**
+8. **為顏色設定有意義的門檻**
+9. **跨 dashboard 使用一致的顏色**
+10. **用不同的時間範圍測試**
+
+## Dashboard as Code
+
+### Terraform Provisioning
+
+```hcl
+resource &quot;grafana_dashboard&quot; &quot;api_monitoring&quot; {
+  config_json = file(&quot;${path.module}/dashboards/api-monitoring.json&quot;)
+  folder      = grafana_folder.monitoring.id
+}
+
+resource &quot;grafana_folder&quot; &quot;monitoring&quot; {
+  title = &quot;Production Monitoring&quot;
+}
+```
+
+### Ansible Provisioning
+
+```yaml
+- name: Deploy Grafana dashboards
+  copy:
+    src: &quot;{{ item }}&quot;
+    dest: /etc/grafana/dashboards/
+  with_fileglob:
+    - &quot;dashboards/*.json&quot;
+  notify: restart grafana
+```
+
+
+## 相關 Skill
+
+- `prometheus-configuration`：用於指標收集
+- `slo-implementation`：用於 SLO dashboard</pre></section><section><h2>英文原文</h2><pre>---
+name: grafana-dashboards
+description: Create and manage production Grafana dashboards for real-time visualization of system and application metrics. Use when building monitoring dashboards, visualizing metrics, or creating operational observability interfaces.
+---
+
+# Grafana Dashboards
+
+Create and manage production-ready Grafana dashboards for comprehensive system observability.
+
+## Purpose
+
+Design effective Grafana dashboards for monitoring applications, infrastructure, and business metrics.
+
+## When to Use
+
+- Visualize Prometheus metrics
+- Create custom dashboards
+- Implement SLO dashboards
+- Monitor infrastructure
+- Track business KPIs
+
+## Dashboard Design Principles
+
+### 1. Hierarchy of Information
+
+```
+┌─────────────────────────────────────┐
+│  Critical Metrics (Big Numbers)     │
+├─────────────────────────────────────┤
+│  Key Trends (Time Series)           │
+├─────────────────────────────────────┤
+│  Detailed Metrics (Tables/Heatmaps) │
+└─────────────────────────────────────┘
+```
+
+### 2. RED Method (Services)
+
+- **Rate** - Requests per second
+- **Errors** - Error rate
+- **Duration** - Latency/response time
+
+### 3. USE Method (Resources)
+
+- **Utilization** - % time resource is busy
+- **Saturation** - Queue length/wait time
+- **Errors** - Error count
+
+## Dashboard Structure
+
+### API Monitoring Dashboard
+
+```json
+{
+  &quot;dashboard&quot;: {
+    &quot;title&quot;: &quot;API Monitoring&quot;,
+    &quot;tags&quot;: [&quot;api&quot;, &quot;production&quot;],
+    &quot;timezone&quot;: &quot;browser&quot;,
+    &quot;refresh&quot;: &quot;30s&quot;,
+    &quot;panels&quot;: [
+      {
+        &quot;title&quot;: &quot;Request Rate&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;sum(rate(http_requests_total[5m])) by (service)&quot;,
+            &quot;legendFormat&quot;: &quot;{{service}}&quot;
+          }
+        ],
+        &quot;gridPos&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 0, &quot;w&quot;: 12, &quot;h&quot;: 8 }
+      },
+      {
+        &quot;title&quot;: &quot;Error Rate %&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;(sum(rate(http_requests_total{status=~\&quot;5..\&quot;}[5m])) / sum(rate(http_requests_total[5m]))) * 100&quot;,
+            &quot;legendFormat&quot;: &quot;Error Rate&quot;
+          }
+        ],
+        &quot;alert&quot;: {
+          &quot;conditions&quot;: [
+            {
+              &quot;evaluator&quot;: { &quot;params&quot;: [5], &quot;type&quot;: &quot;gt&quot; },
+              &quot;operator&quot;: { &quot;type&quot;: &quot;and&quot; },
+              &quot;query&quot;: { &quot;params&quot;: [&quot;A&quot;, &quot;5m&quot;, &quot;now&quot;] },
+              &quot;type&quot;: &quot;query&quot;
+            }
+          ]
+        },
+        &quot;gridPos&quot;: { &quot;x&quot;: 12, &quot;y&quot;: 0, &quot;w&quot;: 12, &quot;h&quot;: 8 }
+      },
+      {
+        &quot;title&quot;: &quot;P95 Latency&quot;,
+        &quot;type&quot;: &quot;graph&quot;,
+        &quot;targets&quot;: [
+          {
+            &quot;expr&quot;: &quot;histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service))&quot;,
+            &quot;legendFormat&quot;: &quot;{{service}}&quot;
+          }
+        ],
+        &quot;gridPos&quot;: { &quot;x&quot;: 0, &quot;y&quot;: 8, &quot;w&quot;: 24, &quot;h&quot;: 8 }
+      }
+    ]
+  }
+}
+```
+
+## Panel Types
+
+### 1. Stat Panel (Single Value)
+
+```json
+{
+  &quot;type&quot;: &quot;stat&quot;,
+  &quot;title&quot;: &quot;Total Requests&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;sum(http_requests_total)&quot;
+    }
+  ],
+  &quot;options&quot;: {
+    &quot;reduceOptions&quot;: {
+      &quot;values&quot;: false,
+      &quot;calcs&quot;: [&quot;lastNotNull&quot;]
+    },
+    &quot;orientation&quot;: &quot;auto&quot;,
+    &quot;textMode&quot;: &quot;auto&quot;,
+    &quot;colorMode&quot;: &quot;value&quot;
+  },
+  &quot;fieldConfig&quot;: {
+    &quot;defaults&quot;: {
+      &quot;thresholds&quot;: {
+        &quot;mode&quot;: &quot;absolute&quot;,
+        &quot;steps&quot;: [
+          { &quot;value&quot;: 0, &quot;color&quot;: &quot;green&quot; },
+          { &quot;value&quot;: 80, &quot;color&quot;: &quot;yellow&quot; },
+          { &quot;value&quot;: 90, &quot;color&quot;: &quot;red&quot; }
+        ]
+      }
+    }
+  }
+}
+```
+
+### 2. Time Series Graph
+
+```json
+{
+  &quot;type&quot;: &quot;graph&quot;,
+  &quot;title&quot;: &quot;CPU Usage&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\&quot;idle\&quot;}[5m])) * 100)&quot;
+    }
+  ],
+  &quot;yaxes&quot;: [
+    { &quot;format&quot;: &quot;percent&quot;, &quot;max&quot;: 100, &quot;min&quot;: 0 },
+    { &quot;format&quot;: &quot;short&quot; }
+  ]
+}
+```
+
+### 3. Table Panel
+
+```json
+{
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;title&quot;: &quot;Service Status&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;up&quot;,
+      &quot;format&quot;: &quot;table&quot;,
+      &quot;instant&quot;: true
+    }
+  ],
+  &quot;transformations&quot;: [
+    {
+      &quot;id&quot;: &quot;organize&quot;,
+      &quot;options&quot;: {
+        &quot;excludeByName&quot;: { &quot;Time&quot;: true },
+        &quot;indexByName&quot;: {},
+        &quot;renameByName&quot;: {
+          &quot;instance&quot;: &quot;Instance&quot;,
+          &quot;job&quot;: &quot;Service&quot;,
+          &quot;Value&quot;: &quot;Status&quot;
+        }
+      }
+    }
+  ]
+}
+```
+
+### 4. Heatmap
+
+```json
+{
+  &quot;type&quot;: &quot;heatmap&quot;,
+  &quot;title&quot;: &quot;Latency Heatmap&quot;,
+  &quot;targets&quot;: [
+    {
+      &quot;expr&quot;: &quot;sum(rate(http_request_duration_seconds_bucket[5m])) by (le)&quot;,
+      &quot;format&quot;: &quot;heatmap&quot;
+    }
+  ],
+  &quot;dataFormat&quot;: &quot;tsbuckets&quot;,
+  &quot;yAxis&quot;: {
+    &quot;format&quot;: &quot;s&quot;
+  }
+}
+```
+
+## Variables
+
+### Query Variables
+
+```json
+{
+  &quot;templating&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;name&quot;: &quot;namespace&quot;,
+        &quot;type&quot;: &quot;query&quot;,
+        &quot;datasource&quot;: &quot;Prometheus&quot;,
+        &quot;query&quot;: &quot;label_values(kube_pod_info, namespace)&quot;,
+        &quot;refresh&quot;: 1,
+        &quot;multi&quot;: false
+      },
+      {
+        &quot;name&quot;: &quot;service&quot;,
+        &quot;type&quot;: &quot;query&quot;,
+        &quot;datasource&quot;: &quot;Prometheus&quot;,
+        &quot;query&quot;: &quot;label_values(kube_service_info{namespace=\&quot;$namespace\&quot;}, service)&quot;,
+        &quot;refresh&quot;: 1,
+        &quot;multi&quot;: true
+      }
+    ]
+  }
+}
+```
+
+### Use Variables in Queries
+
+```
+sum(rate(http_requests_total{namespace=&quot;$namespace&quot;, service=~&quot;$service&quot;}[5m]))
+```
+
+## Alerts in Dashboards
+
+```json
+{
+  &quot;alert&quot;: {
+    &quot;name&quot;: &quot;High Error Rate&quot;,
+    &quot;conditions&quot;: [
+      {
+        &quot;evaluator&quot;: {
+          &quot;params&quot;: [5],
+          &quot;type&quot;: &quot;gt&quot;
+        },
+        &quot;operator&quot;: { &quot;type&quot;: &quot;and&quot; },
+        &quot;query&quot;: {
+          &quot;params&quot;: [&quot;A&quot;, &quot;5m&quot;, &quot;now&quot;]
+        },
+        &quot;reducer&quot;: { &quot;type&quot;: &quot;avg&quot; },
+        &quot;type&quot;: &quot;query&quot;
+      }
+    ],
+    &quot;executionErrorState&quot;: &quot;alerting&quot;,
+    &quot;for&quot;: &quot;5m&quot;,
+    &quot;frequency&quot;: &quot;1m&quot;,
+    &quot;message&quot;: &quot;Error rate is above 5%&quot;,
+    &quot;noDataState&quot;: &quot;no_data&quot;,
+    &quot;notifications&quot;: [{ &quot;uid&quot;: &quot;slack-channel&quot; }]
+  }
+}
+```
+
+## Dashboard Provisioning
+
+**dashboards.yml:**
+
+```yaml
+apiVersion: 1
+
+providers:
+  - name: &quot;default&quot;
+    orgId: 1
+    folder: &quot;General&quot;
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards
+```
+
+## Common Dashboard Patterns
+
+### Infrastructure Dashboard
+
+**Key Panels:**
+
+- CPU utilization per node
+- Memory usage per node
+- Disk I/O
+- Network traffic
+- Pod count by namespace
+- Node status
+
+### Database Dashboard
+
+**Key Panels:**
+
+- Queries per second
+- Connection pool usage
+- Query latency (P50, P95, P99)
+- Active connections
+- Database size
+- Replication lag
+- Slow queries
+
+### Application Dashboard
+
+**Key Panels:**
+
+- Request rate
+- Error rate
+- Response time (percentiles)
+- Active users/sessions
+- Cache hit rate
+- Queue length
+
+## Best Practices
+
+1. **Start with templates** (Grafana community dashboards)
+2. **Use consistent naming** for panels and variables
+3. **Group related metrics** in rows
+4. **Set appropriate time ranges** (default: Last 6 hours)
+5. **Use variables** for flexibility
+6. **Add panel descriptions** for context
+7. **Configure units** correctly
+8. **Set meaningful thresholds** for colors
+9. **Use consistent colors** across dashboards
+10. **Test with different time ranges**
+
+## Dashboard as Code
+
+### Terraform Provisioning
+
+```hcl
+resource &quot;grafana_dashboard&quot; &quot;api_monitoring&quot; {
+  config_json = file(&quot;${path.module}/dashboards/api-monitoring.json&quot;)
+  folder      = grafana_folder.monitoring.id
+}
+
+resource &quot;grafana_folder&quot; &quot;monitoring&quot; {
+  title = &quot;Production Monitoring&quot;
+}
+```
+
+### Ansible Provisioning
+
+```yaml
+- name: Deploy Grafana dashboards
+  copy:
+    src: &quot;{{ item }}&quot;
+    dest: /etc/grafana/dashboards/
+  with_fileglob:
+    - &quot;dashboards/*.json&quot;
+  notify: restart grafana
+```
+
+
+## Related Skills
+
+- `prometheus-configuration` - For metric collection
+- `slo-implementation` - For SLO dashboards</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

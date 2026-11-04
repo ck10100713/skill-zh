@@ -1,0 +1,317 @@
+---
+name: cloud-solution-architect
+description: >-
+  讓 agent 變身成 Cloud Solution Architect，遵循 Azure Architecture Center 的最佳實務。
+  設計雲端架構、審查系統設計、選擇架構風格、套用 cloud design pattern、做技術選型，
+  或進行 Well-Architected Framework 審查時使用。
+---
+
+# Cloud Solution Architect
+
+## Overview
+
+依照 Azure Architecture Center 的最佳實務，設計符合 well-architected、可上正式環境的雲端系統。這個 skill 提供：
+
+- Azure 應用程式的 **10 條設計原則**
+- **6 種架構風格**與選擇指引
+- 對應 WAF 支柱的 **44 個 cloud design pattern**
+- 運算、儲存、資料、訊息的**技術選型框架**
+- 要避開的**效能反模式**
+- 系統化驗證設計的**架構審查流程**
+
+---
+
+## Ten Design Principles for Azure Applications
+
+| # | Principle | Key Tactics |
+|---|-----------|-------------|
+| 1 | **Design for self-healing** | 退避重試、circuit breaker、bulkhead 隔離、health endpoint 監控、優雅降級 |
+| 2 | **Make all things redundant** | 消除單點故障、使用 availability zone、多 region 部署、資料複寫 |
+| 3 | **Minimize coordination** | 服務解耦、使用非同步訊息、接受最終一致性、使用 domain event |
+| 4 | **Design to scale out** | 水平擴展、autoscaling 規則、stateless 服務、避免 session stickiness、工作負載分區 |
+| 5 | **Partition around limits** | 資料分區（shard/hash/range）、遵守運算與網路上限、靜態內容用 CDN |
+| 6 | **Design for operations** | 結構化 log、分散式 tracing、metrics 與 dashboard、runbook 自動化、infrastructure as code |
+| 7 | **Use managed services** | PaaS 優先於 IaaS、降低維運負擔、善用內建的 HA/DR/擴展 |
+| 8 | **Use an identity service** | Microsoft Entra ID、managed identity、RBAC、不存放憑證、zero-trust 原則 |
+| 9 | **Design for evolution** | 鬆耦合、API 版本管理、向後相容、整合用非同步訊息、feature flag |
+| 10 | **Build for business needs** | 定義 SLA/SLO、訂出 RTO/RPO 目標、domain-driven design、成本建模、composite SLA |
+
+---
+
+## Architecture Styles
+
+| Style | Description | When to Use | Key Services |
+|-------|-------------|-------------|--------------|
+| **N-tier** | 水平分層（展示層、商業邏輯層、資料層） | 傳統企業應用、lift-and-shift | App Service, SQL Database, VNets |
+| **Web-Queue-Worker** | Web 前端 → 訊息佇列 → 後端 worker | 中等複雜度、有長時間任務的應用 | App Service, Service Bus, Functions |
+| **Microservices** | 小型自主服務、bounded context、獨立部署 | 複雜領域、團隊要獨立擴展 | AKS, Container Apps, API Management |
+| **Event-driven** | Pub/sub 模型、事件的生產者與消費者 | 即時處理、IoT、reactive 系統 | Event Hubs, Event Grid, Functions |
+| **Big data** | 批次 + 串流處理管線 | 分析、ML 管線、大規模資料 | Synapse, Data Factory, Databricks |
+| **Big compute** | HPC、平行處理 | 模擬、建模、渲染、基因體 | Batch, CycleCloud, HPC VMs |
+
+### Selection Criteria
+
+- **Domain complexity** → Microservices（高）、N-tier（低到中）
+- **Team autonomy** → Microservices（獨立團隊）、N-tier（單一團隊）
+- **Data volume** → Big data（TB 以上）、其他（GB）
+- **Latency requirements** → Event-driven（即時）、Web-Queue-Worker（可容忍延遲）
+
+---
+
+## Cloud Design Patterns
+
+44 個 pattern 依主要關注點分類。WAF 支柱對應：**R**=Reliability、**S**=Security、**CO**=Cost Optimization、**OE**=Operational Excellence、**PE**=Performance Efficiency。
+
+### Messaging & Communication
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Asynchronous Request-Reply** | 用 polling 或 callback 把 request/response 解耦 | R, PE |
+| **Claim Check** | 拆開大型訊息，payload 另外存放，只傳參照 | R, PE |
+| **Choreography** | 服務透過事件彼此協調，沒有中央 orchestrator | R, OE |
+| **Competing Consumers** | 多個 consumer 同時處理共用佇列裡的訊息 | R, PE |
+| **Messaging Bridge** | 連接彼此不相容的訊息系統 | R, OE |
+| **Pipes and Filters** | 把複雜處理拆成可重複使用的 filter 階段 | R, OE |
+| **Priority Queue** | 替請求排優先順序，讓高優先的工作先處理 | R, PE |
+| **Publisher/Subscriber** | 透過 topic/subscription 讓傳送端和接收端解耦 | R, PE |
+| **Queue-Based Load Leveling** | 用佇列緩衝請求，讓間歇性的負載變平滑 | R, PE |
+| **Sequential Convoy** | 相關訊息依序處理，同時允許不同群組平行處理 | R, PE |
+
+### Reliability & Resilience
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Bulkhead** | 依工作負載隔離資源，避免連鎖失敗 | R |
+| **Circuit Breaker** | 停止呼叫出問題的服務，快速失敗以保護資源 | R |
+| **Compensating Transaction** | 後面的步驟失敗時，撤銷先前已 commit 的步驟 | R |
+| **Health Endpoint Monitoring** | 為 load balancer 和 orchestrator 提供健康檢查 | R, OE |
+| **Leader Election** | 透過選出 leader 來協調分散式 instance | R |
+| **Retry** | 用指數退避重試來處理暫時性錯誤 | R |
+| **Saga** | 用補償交易管理微服務之間的資料一致性 | R |
+| **Scheduler Agent Supervisor** | 協調分散式動作，並處理重試與失敗 | R |
+
+### Data Management
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Cache-Aside** | 需要時才從資料儲存載入資料到快取 | PE |
+| **CQRS** | 讀取模型和寫入模型分開，可各自擴展 | PE, R |
+| **Event Sourcing** | 把狀態存成只能追加的 domain event 序列 | R, OE |
+| **Index Table** | 為資料儲存中常查詢的欄位建立索引 | PE |
+| **Materialized View** | 預先計算資料的 view，讓查詢更有效率 | PE |
+| **Sharding** | 把資料分散到多個分區，提升規模與效能 | PE, R |
+| **Static Content Hosting** | 直接從雲端儲存或 CDN 提供靜態內容 | PE, CO |
+| **Valet Key** | 授予用戶端對儲存資源有限的直接存取權 | S, PE |
+
+### Design & Structure
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Ambassador** | 把橫切關注點交給輔助的 sidecar proxy | OE |
+| **Anti-Corruption Layer** | 在新系統和舊系統的模型之間做轉換 | OE, R |
+| **Backends for Frontends** | 依前端類型（mobile、web 等）各建一個後端 | OE, PE |
+| **Compute Resource Consolidation** | 把多個工作負載合併到較少的運算 instance | CO |
+| **External Configuration Store** | 把設定從部署套件中抽出來 | OE |
+| **Sidecar** | 把輔助元件和主服務部署在一起 | OE |
+| **Strangler Fig** | 一塊一塊替換，逐步遷移舊系統 | OE, R |
+
+### Security & Access
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Federated Identity** | 把驗證委派給外部 identity provider | S |
+| **Gatekeeper** | 用專門的 broker 驗證請求，保護服務 | S |
+| **Quarantine** | 外部資產先隔離並驗證，確認後才允許使用 | S |
+| **Rate Limiting** | 控制 consumer 消耗資源的速率 | R, S |
+| **Throttling** | 控制資源消耗，在負載下維持 SLA | R, PE |
+
+### Deployment & Scaling
+
+| Pattern | Summary | Pillars |
+|---------|---------|---------|
+| **Deployment Stamps** | 部署多份彼此獨立的應用程式元件副本 | R, PE |
+| **Edge Workload Configuration** | 在各式各樣的邊緣裝置上，用不同方式設定工作負載 | OE |
+| **Gateway Aggregation** | 把多個後端呼叫整合成單一用戶端請求 | PE |
+| **Gateway Offloading** | 把共用功能（SSL、auth）交給 gateway 處理 | OE, S |
+| **Gateway Routing** | 用單一 endpoint 把請求路由到多個後端 | OE |
+| **Geode** | 把後端部署到多個 region，做 active-active 服務 | R, PE |
+
+詳細的實作指引見 [Design Patterns Reference](./references/design-patterns.md)。
+
+---
+
+## Technology Choices
+
+### Decision Framework
+
+每個技術領域都照這個順序評估：**requirements → constraints → tradeoffs → select**。
+
+| Area | Key Options | Selection Criteria |
+|------|-------------|-------------------|
+| **Compute** | App Service, Functions, Container Apps, AKS, VMs, Batch | 託管模式、擴展、成本、團隊技能 |
+| **Storage** | Blob Storage, Data Lake, Files, Disks, Managed Lustre | 存取模式、吞吐量、成本層級 |
+| **Data stores** | SQL Database, Cosmos DB, PostgreSQL, Redis, Table Storage | 一致性模型、查詢模式、規模 |
+| **Messaging** | Service Bus, Event Hubs, Event Grid, Queue Storage | 順序性、吞吐量、pub/sub 還是 queue |
+| **Networking** | Front Door, Application Gateway, Load Balancer, Traffic Manager | 全球還是區域、L4 還是 L7、WAF |
+| **AI services** | Azure OpenAI, AI Search, AI Foundry, Document Intelligence | 模型需求、資料 grounding、orchestration |
+| **Containers** | Container Apps, AKS, Container Instances | 維運控制力還是簡單好用 |
+
+詳細的決策樹見 [Technology Choices Reference](./references/technology-choices.md)。
+
+---
+
+## Best Practices
+
+| Practice | Key Guidance |
+|----------|-------------|
+| **API design** | RESTful 慣例、以資源為導向的 URI、HATEOAS、用 URL path 或 header 做版本管理 |
+| **API implementation** | 非同步操作、分頁、idempotent 的 PUT/DELETE、content negotiation、ETag 快取 |
+| **Autoscaling** | 依 metrics（CPU、佇列深度、自訂）擴展、cool-down 期間、預測式擴展、scale-in 保護 |
+| **Background jobs** | 使用佇列或排程觸發、idempotent 處理、處理 poison message、優雅關閉 |
+| **Caching** | Cache-aside pattern、TTL 策略、快取失效策略、多 instance 用分散式快取 |
+| **CDN** | 卸載靜態資源、用帶版本的 URL 做 cache-busting、地理分散、強制 HTTPS |
+| **Data partitioning** | 水平（sharding）、垂直、功能性分區；挑選 partition key 讓資料均勻分布 |
+| **Partitioning strategies** | Hash-based、range-based、directory-based；重新平衡的做法、避免跨分區查詢 |
+| **Host name preservation** | 經過 proxy/gateway 時保留原始 host header，cookie、redirect、auth 流程才不會壞 |
+| **Message encoding** | Schema 演進（Avro/Protobuf）、向後/向前相容、schema registry |
+| **Monitoring & diagnostics** | 結構化 log、分散式 tracing（W3C Trace Context）、metrics、警報、dashboard |
+| **Transient fault handling** | 指數退避 + jitter 重試、circuit breaker、idempotency key、timeout 預算 |
+
+實作細節見 [Best Practices Reference](./references/best-practices.md)。
+
+---
+
+## Performance Antipatterns
+
+避開這些在高負載下會拖垮效能的常見做法：
+
+| Antipattern | Problem | Fix |
+|-------------|---------|-----|
+| **Busy Database** | 把太多處理丟給資料庫 | 把邏輯移到應用層，使用快取 |
+| **Busy Front End** | 在前端的 request thread 上做吃資源的工作 | 卸載給背景 worker/佇列 |
+| **Chatty I/O** | 大量小型 I/O 請求，而不是少量大型請求 | 批次請求、用 bulk API、緩衝寫入 |
+| **Extraneous Fetching** | 取回超過需要的資料 | 只投影需要的欄位、分頁、在伺服器端過濾 |
+| **Improper Instantiation** | 每個請求都重新建立昂貴的物件 | 用 singleton、connection pooling、HttpClientFactory |
+| **Monolithic Persistence** | 所有資料類型都放同一個資料儲存 | Polyglot persistence，每種工作負載用合適的儲存 |
+| **No Caching** | 重複取回沒變過的資料 | Cache-aside pattern、CDN、output caching、Redis |
+| **Noisy Neighbor** | 單一租戶吃光所有共用資源 | Bulkhead 隔離、每個租戶的配額、throttling |
+| **Retry Storm** | 激進的重試壓垮正在恢復的服務 | 指數退避 + jitter、circuit breaker、retry 預算 |
+| **Synchronous I/O** | thread 被 I/O 操作卡住 | Async/await、non-blocking I/O、reactive streams |
+
+---
+
+## Mission-Critical Design
+
+針對目標 **99.99% 以上 SLO** 的工作負載，要處理這些設計面向：
+
+| Design Area | Key Considerations |
+|-------------|-------------------|
+| **Application platform** | 多 region active-active、availability zone、有 zone redundancy 的 Container Apps 或 AKS |
+| **Application design** | Stateless 服務、idempotent 操作、優雅降級、bulkhead 隔離 |
+| **Networking** | Azure Front Door（全球 LB）、DDoS Protection、private endpoint、備援連線 |
+| **Data platform** | 多 region Cosmos DB、zone-redundant SQL、非同步複寫、衝突解決 |
+| **Deployment & testing** | Blue-green 部署、canary release、chaos engineering、自動 rollback |
+| **Health modeling** | 複合健康分數、追蹤相依服務健康狀態、自動修復、SLI dashboard |
+| **Security** | Zero-trust、處處用 managed identity、金鑰輪替、WAF 策略、threat modeling |
+| **Operational procedures** | 自動化 runbook、事故應變 playbook、game day、postmortem |
+
+詳細指引見 [Mission-Critical Reference](./references/mission-critical.md)。
+
+---
+
+## Well-Architected Framework (WAF) Pillars
+
+每個架構決策都要用五大支柱逐一評估：
+
+| Pillar | Focus | Key Questions |
+|--------|-------|---------------|
+| **Reliability** | 韌性、可用性、災難復原 | RTO/RPO 是多少？怎麼處理失敗？有沒有備援？ |
+| **Security** | 威脅防護、身分、資料保護 | 身分有被管理嗎？資料有加密嗎？有網路控管嗎？ |
+| **Cost Optimization** | 成本管理、效率、right-sizing | 運算資源大小合適嗎？有買 reserved instance 嗎？有浪費嗎？ |
+| **Operational Excellence** | 監控、部署、自動化 | 部署自動化了嗎？有 observability 嗎？有 runbook 嗎？ |
+| **Performance Efficiency** | 擴展、負載測試、效能目標 | 能水平擴展嗎？有效能基準線嗎？有用快取嗎？ |
+
+### WAF Tradeoff Matrix
+
+| Optimizing for... | May impact... |
+|-------------------|---------------|
+| Reliability（備援） | Cost（需要更多資源） |
+| Security（隔離） | Performance（多了延遲） |
+| Cost（整併） | Reliability（共用故障域） |
+| Performance（快取） | Cost（快取基礎設施）、Reliability（資料過期） |
+
+---
+
+## Architecture Review Workflow
+
+審查或設計系統時，照這套結構化流程走：
+
+### Step 1: Identify Requirements
+
+```
+Functional: What must the system do?
+Non-functional:
+  - Availability target (e.g., 99.9%, 99.99%)
+  - Latency requirements (p50, p95, p99)
+  - Throughput (requests/sec, messages/sec)
+  - Data residency and compliance
+  - Recovery targets (RTO, RPO)
+  - Cost constraints
+```
+
+### Step 2: Select Architecture Style
+
+用上面的選擇準則表，把需求對應到架構風格。
+
+### Step 3: Choose Technology Stack
+
+用技術選型的決策框架。優先選 managed service（PaaS），不要選 IaaS。
+
+### Step 4: Apply Design Patterns
+
+根據找出來的關注點，從 44 個 cloud design pattern 挑出相關的。
+
+### Step 5: Address Cross-Cutting Concerns
+
+- **Identity & access** — Microsoft Entra ID、managed identity、RBAC
+- **Monitoring** — Application Insights、Azure Monitor、Log Analytics
+- **Security** — 網路分段、靜態與傳輸中加密、Key Vault
+- **CI/CD** — GitHub Actions、Azure DevOps Pipelines、infrastructure as code
+
+### Step 6: Validate Against WAF Pillars
+
+逐一系統化檢視每個支柱，tradeoff 要明確寫下來。
+
+### Step 7: Document Decisions
+
+用 Architecture Decision Records（ADR）：
+
+```markdown
+# ADR-NNN: [Decision Title]
+
+## Status: [Proposed | Accepted | Deprecated]
+
+## Context
+[What is the issue we're addressing?]
+
+## Decision
+[What did we decide and why?]
+
+## Consequences
+[What are the positive and negative impacts?]
+```
+
+---
+
+## References
+
+- [Design Patterns Reference](./references/design-patterns.md) — 各 pattern 的詳細實作
+- [Technology Choices Reference](./references/technology-choices.md) — Azure 服務的決策樹
+- [Best Practices Reference](./references/best-practices.md) — 實作指引
+- [Mission-Critical Reference](./references/mission-critical.md) — 高可用性設計
+
+---
+
+## Source
+
+內容源自 [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)，這是 Microsoft 官方的 Azure 雲端解決方案架構指引。涵蓋設計原則、架構風格、cloud design pattern、技術選型、最佳實務、效能反模式、mission-critical 設計，以及 Well-Architected Framework。

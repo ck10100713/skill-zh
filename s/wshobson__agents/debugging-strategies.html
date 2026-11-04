@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debugging-strategies｜Skill 寫法圖鑑</title>
+<meta name="description" content="系統化除錯方法：重現、收集資訊、提假設、驗證，加上各類 bug 的對策">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>debugging-strategies</h1>
+<p class="meta">wshobson ｜ 除錯與調查 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/developer-essentials/skills/debugging-strategies/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">系統化除錯方法：重現、收集資訊、提假設、驗證，加上各類 bug 的對策</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: debugging-strategies
+description: 精通系統化除錯技巧、profiling 工具與根因分析，能在任何 codebase 或技術棧中有效率地追出 bug。適用於調查 bug、效能問題或非預期行為的時候。
+---
+
+# 除錯策略
+
+用經過驗證的策略、強大的工具和有條理的方法，把除錯從令人沮喪的亂猜，變成系統化的問題解決。
+
+## 什麼時候用這個 Skill
+
+- 追查難抓的 bug
+- 調查效能問題
+- 理解不熟悉的 codebase
+- 除錯 production 問題
+- 分析 crash dump 與 stack trace
+- Profiling 應用程式效能
+- 調查記憶體洩漏
+- 除錯分散式系統
+
+## 核心原則
+
+### 1. 科學方法
+
+**1. 觀察**：實際的行為是什麼？
+**2. 提出假設**：可能是什麼造成的？
+**3. 實驗**：測試你的假設
+**4. 分析**：結果證實還是推翻了你的理論？
+**5. 重複**：一直做到找出根因為止
+
+### 2. 除錯心態
+
+**不要預設：**
+
+- 「不可能是 X」：不，就是有可能
+- 「我沒動過 Y」：還是要檢查
+- 「在我的機器上是好的」：去查為什麼
+
+**要做：**
+
+- 穩定地重現問題
+- 隔離問題
+- 做詳細的筆記
+- 質疑每一件事
+- 卡住的時候休息一下
+
+### 3. 橡皮鴨除錯法
+
+把你的程式碼和問題大聲講出來（對橡皮鴨、同事，或自己都行），常常就會發現問題在哪。
+
+## 系統化除錯流程
+
+### 階段 1：重現
+
+```markdown
+## 重現檢查表
+
+1. **你能重現嗎？**
+   - 每次都會？有時候？隨機發生？
+   - 需要特定條件嗎？
+   - 別人也能重現嗎？
+
+2. **建立最小重現案例**
+   - 簡化到最小的範例
+   - 移除不相關的程式碼
+   - 隔離問題
+
+3. **記錄步驟**
+   - 寫下確切的步驟
+   - 記下環境細節
+   - 擷取錯誤訊息
+```
+
+### 階段 2：收集資訊
+
+```markdown
+## 資訊收集
+
+1. **錯誤訊息**
+   - 完整的 stack trace
+   - 錯誤碼
+   - Console/log 輸出
+
+2. **環境**
+   - 作業系統版本
+   - 語言/runtime 版本
+   - 相依套件的版本
+   - 環境變數
+
+3. **最近的變更**
+   - Git 歷史
+   - Deploy 時間線
+   - 設定變更
+
+4. **範圍**
+   - 影響所有使用者還是特定使用者？
+   - 所有瀏覽器還是特定瀏覽器？
+   - 只有 production 還是 dev 也會？
+```
+
+### 階段 3：形成假設
+
+```markdown
+## 形成假設
+
+根據收集到的資訊，問自己：
+
+1. **什麼改變了？**
+   - 最近的程式碼變更
+   - 相依套件更新
+   - 基礎設施變更
+
+2. **有什麼不一樣？**
+   - 正常 vs 異常的環境
+   - 正常 vs 異常的使用者
+   - 之前 vs 之後
+
+3. **可能在哪裡出問題？**
+   - 輸入驗證
+   - 商業邏輯
+   - 資料層
+   - 外部服務
+```
+
+### 階段 4：測試與驗證
+
+```markdown
+## 測試策略
+
+1. **二分搜尋**
+   - 把一半的程式碼註解掉
+   - 縮小問題區段的範圍
+   - 重複直到找到
+
+2. **加 log**
+   - 在關鍵位置放 console.log/print
+   - 追蹤變數的值
+   - 追蹤執行流程
+
+3. **隔離元件**
+   - 個別測試每個部分
+   - Mock 相依項目
+   - 移除複雜度
+
+4. **比較正常與異常**
+   - Diff 設定
+   - Diff 環境
+   - Diff 資料
+```
+
+在挑選除錯工具，或進行 bisect、differential、trace、記憶體分析之前，先讀 `references/tools-and-techniques.md`。
+
+## 依問題類型的除錯模式
+
+### 模式 1：間歇性 bug
+
+```markdown
+## 不穩定 bug 的對策
+
+1. **加上大量 log**
+   - 記錄時間資訊
+   - 記錄所有狀態轉換
+   - 記錄外部互動
+
+2. **找 race condition**
+   - 對共享狀態的並行存取
+   - 非同步操作以錯誤的順序完成
+   - 缺少同步機制
+
+3. **檢查時間相依性**
+   - setTimeout/setInterval
+   - Promise 的 resolve 順序
+   - Animation frame 的時機
+
+4. **壓力測試**
+   - 跑很多次
+   - 改變時間
+   - 模擬負載
+```
+
+### 模式 2：效能問題
+
+```markdown
+## 效能除錯
+
+1. **先 profile**
+   - 不要盲目最佳化
+   - 前後都要量測
+   - 找出瓶頸
+
+2. **常見元凶**
+   - N+1 query
+   - 不必要的 re-render
+   - 大量資料處理
+   - 同步 I/O
+
+3. **工具**
+   - 瀏覽器 DevTools 的 Performance 分頁
+   - Lighthouse
+   - Python：cProfile、line_profiler
+   - Node：clinic.js、0x
+```
+
+### 模式 3：Production bug
+
+```markdown
+## Production 除錯
+
+1. **蒐集證據**
+   - 錯誤追蹤（Sentry、Bugsnag）
+   - 應用程式 log
+   - 使用者回報
+   - 指標/監控
+
+2. **在本機重現**
+   - 使用 production 資料（匿名化後）
+   - 對齊環境
+   - 照著確切的步驟做
+
+3. **安全地調查**
+   - 不要動 production
+   - 使用 feature flag
+   - 加上監控/log
+   - 在 staging 測試修正
+```
+
+## 最佳實務
+
+1. **先重現**：重現不了就修不了
+2. **隔離問題**：一直拿掉複雜度，直到剩下最小案例
+3. **讀錯誤訊息**：它們通常很有用
+4. **檢查最近的變更**：大部分 bug 都是最近才出現的
+5. **用版本控制**：Git bisect、blame、history
+6. **休息一下**：換個腦袋更容易看出問題
+7. **記錄發現**：幫未來的自己一個忙
+8. **修根因**：不要只修症狀
+
+## 常見的除錯錯誤
+
+- **一次改很多東西**：一次只改一件事
+- **不讀錯誤訊息**：要讀完整的 stack trace
+- **以為問題很複雜**：通常很簡單
+- **在 prod 留著 debug log**：出貨前要移除
+- **不用 debugger**：console.log 不一定是最好的
+- **太早放棄**：堅持會有回報
+- **沒測試修正**：要驗證它真的有效
+
+## 快速除錯檢查表
+
+```markdown
+## 卡住的時候，檢查：
+
+- [ ] 拼字錯誤（變數名稱打錯）
+- [ ] 大小寫（fileName vs filename）
+- [ ] Null/undefined 值
+- [ ] 陣列索引差一
+- [ ] 非同步時機（race condition）
+- [ ] Scope 問題（closure、hoisting）
+- [ ] 型別不符
+- [ ] 缺少相依套件
+- [ ] 環境變數
+- [ ] 檔案路徑（絕對 vs 相對）
+- [ ] 快取問題（清除快取）
+- [ ] 過期資料（重新整理資料庫）
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: debugging-strategies
+description: Master systematic debugging techniques, profiling tools, and root cause analysis to efficiently track down bugs across any codebase or technology stack. Use when investigating bugs, performance issues, or unexpected behavior.
+---
+
+# Debugging Strategies
+
+Transform debugging from frustrating guesswork into systematic problem-solving with proven strategies, powerful tools, and methodical approaches.
+
+## When to Use This Skill
+
+- Tracking down elusive bugs
+- Investigating performance issues
+- Understanding unfamiliar codebases
+- Debugging production issues
+- Analyzing crash dumps and stack traces
+- Profiling application performance
+- Investigating memory leaks
+- Debugging distributed systems
+
+## Core Principles
+
+### 1. The Scientific Method
+
+**1. Observe**: What&#x27;s the actual behavior?
+**2. Hypothesize**: What could be causing it?
+**3. Experiment**: Test your hypothesis
+**4. Analyze**: Did it prove/disprove your theory?
+**5. Repeat**: Until you find the root cause
+
+### 2. Debugging Mindset
+
+**Don&#x27;t Assume:**
+
+- &quot;It can&#x27;t be X&quot; - Yes it can
+- &quot;I didn&#x27;t change Y&quot; - Check anyway
+- &quot;It works on my machine&quot; - Find out why
+
+**Do:**
+
+- Reproduce consistently
+- Isolate the problem
+- Keep detailed notes
+- Question everything
+- Take breaks when stuck
+
+### 3. Rubber Duck Debugging
+
+Explain your code and problem out loud (to a rubber duck, colleague, or yourself). Often reveals the issue.
+
+## Systematic Debugging Process
+
+### Phase 1: Reproduce
+
+```markdown
+## Reproduction Checklist
+
+1. **Can you reproduce it?**
+   - Always? Sometimes? Randomly?
+   - Specific conditions needed?
+   - Can others reproduce it?
+
+2. **Create minimal reproduction**
+   - Simplify to smallest example
+   - Remove unrelated code
+   - Isolate the problem
+
+3. **Document steps**
+   - Write down exact steps
+   - Note environment details
+   - Capture error messages
+```
+
+### Phase 2: Gather Information
+
+```markdown
+## Information Collection
+
+1. **Error Messages**
+   - Full stack trace
+   - Error codes
+   - Console/log output
+
+2. **Environment**
+   - OS version
+   - Language/runtime version
+   - Dependencies versions
+   - Environment variables
+
+3. **Recent Changes**
+   - Git history
+   - Deployment timeline
+   - Configuration changes
+
+4. **Scope**
+   - Affects all users or specific ones?
+   - All browsers or specific ones?
+   - Production only or also dev?
+```
+
+### Phase 3: Form Hypothesis
+
+```markdown
+## Hypothesis Formation
+
+Based on gathered info, ask:
+
+1. **What changed?**
+   - Recent code changes
+   - Dependency updates
+   - Infrastructure changes
+
+2. **What&#x27;s different?**
+   - Working vs broken environment
+   - Working vs broken user
+   - Before vs after
+
+3. **Where could this fail?**
+   - Input validation
+   - Business logic
+   - Data layer
+   - External services
+```
+
+### Phase 4: Test &amp; Verify
+
+```markdown
+## Testing Strategies
+
+1. **Binary Search**
+   - Comment out half the code
+   - Narrow down problematic section
+   - Repeat until found
+
+2. **Add Logging**
+   - Strategic console.log/print
+   - Track variable values
+   - Trace execution flow
+
+3. **Isolate Components**
+   - Test each piece separately
+   - Mock dependencies
+   - Remove complexity
+
+4. **Compare Working vs Broken**
+   - Diff configurations
+   - Diff environments
+   - Diff data
+```
+
+Before selecting debugging tools or performing bisect, differential, trace, or memory analysis, read `references/tools-and-techniques.md`.
+
+## Debugging Patterns by Issue Type
+
+### Pattern 1: Intermittent Bugs
+
+```markdown
+## Strategies for Flaky Bugs
+
+1. **Add extensive logging**
+   - Log timing information
+   - Log all state transitions
+   - Log external interactions
+
+2. **Look for race conditions**
+   - Concurrent access to shared state
+   - Async operations completing out of order
+   - Missing synchronization
+
+3. **Check timing dependencies**
+   - setTimeout/setInterval
+   - Promise resolution order
+   - Animation frame timing
+
+4. **Stress test**
+   - Run many times
+   - Vary timing
+   - Simulate load
+```
+
+### Pattern 2: Performance Issues
+
+```markdown
+## Performance Debugging
+
+1. **Profile first**
+   - Don&#x27;t optimize blindly
+   - Measure before and after
+   - Find bottlenecks
+
+2. **Common culprits**
+   - N+1 queries
+   - Unnecessary re-renders
+   - Large data processing
+   - Synchronous I/O
+
+3. **Tools**
+   - Browser DevTools Performance tab
+   - Lighthouse
+   - Python: cProfile, line_profiler
+   - Node: clinic.js, 0x
+```
+
+### Pattern 3: Production Bugs
+
+```markdown
+## Production Debugging
+
+1. **Gather evidence**
+   - Error tracking (Sentry, Bugsnag)
+   - Application logs
+   - User reports
+   - Metrics/monitoring
+
+2. **Reproduce locally**
+   - Use production data (anonymized)
+   - Match environment
+   - Follow exact steps
+
+3. **Safe investigation**
+   - Don&#x27;t change production
+   - Use feature flags
+   - Add monitoring/logging
+   - Test fixes in staging
+```
+
+## Best Practices
+
+1. **Reproduce First**: Can&#x27;t fix what you can&#x27;t reproduce
+2. **Isolate the Problem**: Remove complexity until minimal case
+3. **Read Error Messages**: They&#x27;re usually helpful
+4. **Check Recent Changes**: Most bugs are recent
+5. **Use Version Control**: Git bisect, blame, history
+6. **Take Breaks**: Fresh eyes see better
+7. **Document Findings**: Help future you
+8. **Fix Root Cause**: Not just symptoms
+
+## Common Debugging Mistakes
+
+- **Making Multiple Changes**: Change one thing at a time
+- **Not Reading Error Messages**: Read the full stack trace
+- **Assuming It&#x27;s Complex**: Often it&#x27;s simple
+- **Debug Logging in Prod**: Remove before shipping
+- **Not Using Debugger**: console.log isn&#x27;t always best
+- **Giving Up Too Soon**: Persistence pays off
+- **Not Testing the Fix**: Verify it actually works
+
+## Quick Debugging Checklist
+
+```markdown
+## When Stuck, Check:
+
+- [ ] Spelling errors (typos in variable names)
+- [ ] Case sensitivity (fileName vs filename)
+- [ ] Null/undefined values
+- [ ] Array index off-by-one
+- [ ] Async timing (race conditions)
+- [ ] Scope issues (closure, hoisting)
+- [ ] Type mismatches
+- [ ] Missing dependencies
+- [ ] Environment variables
+- [ ] File paths (absolute vs relative)
+- [ ] Cache issues (clear cache)
+- [ ] Stale data (refresh database)
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

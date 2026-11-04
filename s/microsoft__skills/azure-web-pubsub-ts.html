@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-web-pubsub-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Azure Web PubSub SDK 做 WebSocket 即時訊息、群組與通知">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-web-pubsub-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-web-pubsub-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Azure Web PubSub SDK 做 WebSocket 即時訊息、群組與通知</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-web-pubsub-ts
+description: 用 Azure Web PubSub 的 JavaScript SDK（@azure/web-pubsub、@azure/web-pubsub-client）建立即時訊息應用程式。實作 WebSocket 即時功能、pub/sub 訊息、群組聊天或即時通知時使用。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/web-pubsub, @azure/web-pubsub-client&#x27;
+---
+
+# Azure Web PubSub SDKs for TypeScript
+
+用 WebSocket 連線加 pub/sub 模式做即時訊息。
+
+## Installation
+
+```bash
+# 伺服器端管理
+npm install @azure/web-pubsub @azure/identity
+
+# 用戶端即時訊息
+npm install @azure/web-pubsub-client
+
+# 事件處理用的 Express middleware
+npm install @azure/web-pubsub-express
+```
+
+## Environment Variables
+
+```bash
+WEBPUBSUB_CONNECTION_STRING=Endpoint=https://&lt;resource&gt;.webpubsub.azure.com;AccessKey=&lt;key&gt;;Version=1.0;
+WEBPUBSUB_ENDPOINT=https://&lt;resource&gt;.webpubsub.azure.com
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## Server-Side: WebPubSubServiceClient
+
+### Authentication
+
+```typescript
+import { WebPubSubServiceClient, AzureKeyCredential } from &quot;@azure/web-pubsub&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或是在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+// Connection string
+const client = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_CONNECTION_STRING!,
+  &quot;chat&quot;  // hub 名稱
+);
+
+// Microsoft Entra Token Credential（建議使用）
+const client2 = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_ENDPOINT!,
+  credential,
+  &quot;chat&quot;
+);
+
+// AzureKeyCredential
+const client3 = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_ENDPOINT!,
+  new AzureKeyCredential(&quot;&lt;access-key&gt;&quot;),
+  &quot;chat&quot;
+);
+```
+
+### Generate Client Access Token
+
+```typescript
+// 基本 token
+const token = await client.getClientAccessToken();
+console.log(token.url);  // wss://...?access_token=...
+
+// 帶 user ID 的 token
+const userToken = await client.getClientAccessToken({
+  userId: &quot;user123&quot;,
+});
+
+// 帶權限的 token
+const permToken = await client.getClientAccessToken({
+  userId: &quot;user123&quot;,
+  roles: [
+    &quot;webpubsub.joinLeaveGroup&quot;,
+    &quot;webpubsub.sendToGroup&quot;,
+    &quot;webpubsub.sendToGroup.chat-room&quot;,  // 指定群組
+  ],
+  groups: [&quot;chat-room&quot;],  // 連線時自動加入
+  expirationTimeInMinutes: 60,
+});
+```
+
+### Send Messages
+
+```typescript
+// 廣播給 hub 內所有連線
+await client.sendToAll({ message: &quot;Hello everyone!&quot; });
+await client.sendToAll(&quot;Plain text&quot;, { contentType: &quot;text/plain&quot; });
+
+// 傳給特定使用者（該使用者的所有連線）
+await client.sendToUser(&quot;user123&quot;, { message: &quot;Hello!&quot; });
+
+// 傳給特定連線
+await client.sendToConnection(&quot;connectionId&quot;, { data: &quot;Direct message&quot; });
+
+// 加 filter 傳送（OData 語法）
+await client.sendToAll({ message: &quot;Filtered&quot; }, {
+  filter: &quot;userId ne &#x27;admin&#x27;&quot;,
+});
+```
+
+### Group Management
+
+```typescript
+const group = client.group(&quot;chat-room&quot;);
+
+// 把使用者或連線加進群組
+await group.addUser(&quot;user123&quot;);
+await group.addConnection(&quot;connectionId&quot;);
+
+// 從群組移除
+await group.removeUser(&quot;user123&quot;);
+
+// 傳給群組
+await group.sendToAll({ message: &quot;Group message&quot; });
+
+// 關閉群組內所有連線
+await group.closeAllConnections({ reason: &quot;Maintenance&quot; });
+```
+
+### Connection Management
+
+```typescript
+// 檢查是否存在
+const userExists = await client.userExists(&quot;user123&quot;);
+const connExists = await client.connectionExists(&quot;connectionId&quot;);
+
+// 關閉連線
+await client.closeConnection(&quot;connectionId&quot;, { reason: &quot;Kicked&quot; });
+await client.closeUserConnections(&quot;user123&quot;);
+await client.closeAllConnections();
+
+// 權限
+await client.grantPermission(&quot;connectionId&quot;, &quot;sendToGroup&quot;, { targetName: &quot;chat&quot; });
+await client.revokePermission(&quot;connectionId&quot;, &quot;sendToGroup&quot;, { targetName: &quot;chat&quot; });
+```
+
+## Client-Side: WebPubSubClient
+
+### Connect
+
+```typescript
+import { WebPubSubClient } from &quot;@azure/web-pubsub-client&quot;;
+
+// 直接給 URL
+const client = new WebPubSubClient(&quot;&lt;client-access-url&gt;&quot;);
+
+// 從 negotiate endpoint 動態取得 URL
+const client2 = new WebPubSubClient({
+  getClientAccessUrl: async () =&gt; {
+    const response = await fetch(&quot;/negotiate&quot;);
+    const { url } = await response.json();
+    return url;
+  },
+});
+
+// 一定要在 start 之前註冊 handler
+client.on(&quot;connected&quot;, (e) =&gt; {
+  console.log(`Connected: ${e.connectionId}`);
+});
+
+client.on(&quot;group-message&quot;, (e) =&gt; {
+  console.log(`${e.message.group}: ${e.message.data}`);
+});
+
+await client.start();
+```
+
+### Send Messages
+
+```typescript
+// 先加入群組
+await client.joinGroup(&quot;chat-room&quot;);
+
+// 傳給群組
+await client.sendToGroup(&quot;chat-room&quot;, &quot;Hello!&quot;, &quot;text&quot;);
+await client.sendToGroup(&quot;chat-room&quot;, { type: &quot;message&quot;, content: &quot;Hi&quot; }, &quot;json&quot;);
+
+// 傳送選項
+await client.sendToGroup(&quot;chat-room&quot;, &quot;Hello&quot;, &quot;text&quot;, {
+  noEcho: true,        // 不要回傳給寄件者
+  fireAndForget: true, // 不等 ack
+});
+
+// 傳事件給伺服器
+await client.sendEvent(&quot;userAction&quot;, { action: &quot;typing&quot; }, &quot;json&quot;);
+```
+
+### Event Handlers
+
+```typescript
+// 連線生命週期
+client.on(&quot;connected&quot;, (e) =&gt; {
+  console.log(`Connected: ${e.connectionId}, User: ${e.userId}`);
+});
+
+client.on(&quot;disconnected&quot;, (e) =&gt; {
+  console.log(`Disconnected: ${e.message}`);
+});
+
+client.on(&quot;stopped&quot;, () =&gt; {
+  console.log(&quot;Client stopped&quot;);
+});
+
+// 訊息
+client.on(&quot;group-message&quot;, (e) =&gt; {
+  console.log(`[${e.message.group}] ${e.message.fromUserId}: ${e.message.data}`);
+});
+
+client.on(&quot;server-message&quot;, (e) =&gt; {
+  console.log(`Server: ${e.message.data}`);
+});
+
+// 重新加入失敗
+client.on(&quot;rejoin-group-failed&quot;, (e) =&gt; {
+  console.log(`Failed to rejoin ${e.group}: ${e.error}`);
+});
+```
+
+## Express Event Handler
+
+```typescript
+import express from &quot;express&quot;;
+import { WebPubSubEventHandler } from &quot;@azure/web-pubsub-express&quot;;
+
+const app = express();
+
+const handler = new WebPubSubEventHandler(&quot;chat&quot;, {
+  path: &quot;/api/webpubsub/hubs/chat/&quot;,
+  
+  // 阻塞式：核准或拒絕連線
+  handleConnect: (req, res) =&gt; {
+    if (!req.claims?.sub) {
+      res.fail(401, &quot;Authentication required&quot;);
+      return;
+    }
+    res.success({
+      userId: req.claims.sub[0],
+      groups: [&quot;general&quot;],
+      roles: [&quot;webpubsub.sendToGroup&quot;],
+    });
+  },
+  
+  // 阻塞式：處理自訂事件
+  handleUserEvent: (req, res) =&gt; {
+    console.log(`Event from ${req.context.userId}:`, req.data);
+    res.success(`Received: ${req.data}`, &quot;text&quot;);
+  },
+  
+  // 非阻塞式
+  onConnected: (req) =&gt; {
+    console.log(`Client connected: ${req.context.connectionId}`);
+  },
+  
+  onDisconnected: (req) =&gt; {
+    console.log(`Client disconnected: ${req.context.connectionId}`);
+  },
+});
+
+app.use(handler.getMiddleware());
+
+// Negotiate endpoint
+app.get(&quot;/negotiate&quot;, async (req, res) =&gt; {
+  const token = await serviceClient.getClientAccessToken({
+    userId: req.user?.id,
+  });
+  res.json({ url: token.url });
+});
+
+app.listen(8080);
+```
+
+## Key Types
+
+```typescript
+// 伺服器端
+import {
+  WebPubSubServiceClient,
+  WebPubSubGroup,
+  GenerateClientTokenOptions,
+  HubSendToAllOptions,
+} from &quot;@azure/web-pubsub&quot;;
+
+// 用戶端
+import {
+  WebPubSubClient,
+  WebPubSubClientOptions,
+  OnConnectedArgs,
+  OnGroupDataMessageArgs,
+} from &quot;@azure/web-pubsub-client&quot;;
+
+// Express
+import {
+  WebPubSubEventHandler,
+  ConnectRequest,
+  UserEventRequest,
+  ConnectResponseHandler,
+} from &quot;@azure/web-pubsub-express&quot;;
+```
+
+## Best Practices
+
+1. **使用 Microsoft Entra Token Credential** - 本機開發用 `DefaultAzureCredential`；正式環境用 `ManagedIdentityCredential` 或 `WorkloadIdentityCredential`
+2. **在 start 之前註冊 handler** - 才不會漏掉一開始的事件
+3. **用 group 當作頻道** - 依主題或房間整理訊息
+4. **處理重新連線** - 用戶端預設會自動重連
+5. **在 handleConnect 裡驗證** - 盡早拒絕未授權的連線
+6. **使用 noEcho** - 需要時避免訊息回傳給寄件者</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-web-pubsub-ts
+description: Build real-time messaging applications using Azure Web PubSub SDKs for JavaScript (@azure/web-pubsub, @azure/web-pubsub-client). Use when implementing WebSocket-based real-time features, pub/sub messaging, group chat, or live notifications.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/web-pubsub, @azure/web-pubsub-client&#x27;
+---
+
+# Azure Web PubSub SDKs for TypeScript
+
+Real-time messaging with WebSocket connections and pub/sub patterns.
+
+## Installation
+
+```bash
+# Server-side management
+npm install @azure/web-pubsub @azure/identity
+
+# Client-side real-time messaging
+npm install @azure/web-pubsub-client
+
+# Express middleware for event handlers
+npm install @azure/web-pubsub-express
+```
+
+## Environment Variables
+
+```bash
+WEBPUBSUB_CONNECTION_STRING=Endpoint=https://&lt;resource&gt;.webpubsub.azure.com;AccessKey=&lt;key&gt;;Version=1.0;
+WEBPUBSUB_ENDPOINT=https://&lt;resource&gt;.webpubsub.azure.com
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Server-Side: WebPubSubServiceClient
+
+### Authentication
+
+```typescript
+import { WebPubSubServiceClient, AzureKeyCredential } from &quot;@azure/web-pubsub&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+// Connection string
+const client = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_CONNECTION_STRING!,
+  &quot;chat&quot;  // hub name
+);
+
+// Microsoft Entra Token Credential (recommended)
+const client2 = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_ENDPOINT!,
+  credential,
+  &quot;chat&quot;
+);
+
+// AzureKeyCredential
+const client3 = new WebPubSubServiceClient(
+  process.env.WEBPUBSUB_ENDPOINT!,
+  new AzureKeyCredential(&quot;&lt;access-key&gt;&quot;),
+  &quot;chat&quot;
+);
+```
+
+### Generate Client Access Token
+
+```typescript
+// Basic token
+const token = await client.getClientAccessToken();
+console.log(token.url);  // wss://...?access_token=...
+
+// Token with user ID
+const userToken = await client.getClientAccessToken({
+  userId: &quot;user123&quot;,
+});
+
+// Token with permissions
+const permToken = await client.getClientAccessToken({
+  userId: &quot;user123&quot;,
+  roles: [
+    &quot;webpubsub.joinLeaveGroup&quot;,
+    &quot;webpubsub.sendToGroup&quot;,
+    &quot;webpubsub.sendToGroup.chat-room&quot;,  // specific group
+  ],
+  groups: [&quot;chat-room&quot;],  // auto-join on connect
+  expirationTimeInMinutes: 60,
+});
+```
+
+### Send Messages
+
+```typescript
+// Broadcast to all connections in hub
+await client.sendToAll({ message: &quot;Hello everyone!&quot; });
+await client.sendToAll(&quot;Plain text&quot;, { contentType: &quot;text/plain&quot; });
+
+// Send to specific user (all their connections)
+await client.sendToUser(&quot;user123&quot;, { message: &quot;Hello!&quot; });
+
+// Send to specific connection
+await client.sendToConnection(&quot;connectionId&quot;, { data: &quot;Direct message&quot; });
+
+// Send with filter (OData syntax)
+await client.sendToAll({ message: &quot;Filtered&quot; }, {
+  filter: &quot;userId ne &#x27;admin&#x27;&quot;,
+});
+```
+
+### Group Management
+
+```typescript
+const group = client.group(&quot;chat-room&quot;);
+
+// Add user/connection to group
+await group.addUser(&quot;user123&quot;);
+await group.addConnection(&quot;connectionId&quot;);
+
+// Remove from group
+await group.removeUser(&quot;user123&quot;);
+
+// Send to group
+await group.sendToAll({ message: &quot;Group message&quot; });
+
+// Close all connections in group
+await group.closeAllConnections({ reason: &quot;Maintenance&quot; });
+```
+
+### Connection Management
+
+```typescript
+// Check existence
+const userExists = await client.userExists(&quot;user123&quot;);
+const connExists = await client.connectionExists(&quot;connectionId&quot;);
+
+// Close connections
+await client.closeConnection(&quot;connectionId&quot;, { reason: &quot;Kicked&quot; });
+await client.closeUserConnections(&quot;user123&quot;);
+await client.closeAllConnections();
+
+// Permissions
+await client.grantPermission(&quot;connectionId&quot;, &quot;sendToGroup&quot;, { targetName: &quot;chat&quot; });
+await client.revokePermission(&quot;connectionId&quot;, &quot;sendToGroup&quot;, { targetName: &quot;chat&quot; });
+```
+
+## Client-Side: WebPubSubClient
+
+### Connect
+
+```typescript
+import { WebPubSubClient } from &quot;@azure/web-pubsub-client&quot;;
+
+// Direct URL
+const client = new WebPubSubClient(&quot;&lt;client-access-url&gt;&quot;);
+
+// Dynamic URL from negotiate endpoint
+const client2 = new WebPubSubClient({
+  getClientAccessUrl: async () =&gt; {
+    const response = await fetch(&quot;/negotiate&quot;);
+    const { url } = await response.json();
+    return url;
+  },
+});
+
+// Register handlers BEFORE starting
+client.on(&quot;connected&quot;, (e) =&gt; {
+  console.log(`Connected: ${e.connectionId}`);
+});
+
+client.on(&quot;group-message&quot;, (e) =&gt; {
+  console.log(`${e.message.group}: ${e.message.data}`);
+});
+
+await client.start();
+```
+
+### Send Messages
+
+```typescript
+// Join group first
+await client.joinGroup(&quot;chat-room&quot;);
+
+// Send to group
+await client.sendToGroup(&quot;chat-room&quot;, &quot;Hello!&quot;, &quot;text&quot;);
+await client.sendToGroup(&quot;chat-room&quot;, { type: &quot;message&quot;, content: &quot;Hi&quot; }, &quot;json&quot;);
+
+// Send options
+await client.sendToGroup(&quot;chat-room&quot;, &quot;Hello&quot;, &quot;text&quot;, {
+  noEcho: true,        // Don&#x27;t echo back to sender
+  fireAndForget: true, // Don&#x27;t wait for ack
+});
+
+// Send event to server
+await client.sendEvent(&quot;userAction&quot;, { action: &quot;typing&quot; }, &quot;json&quot;);
+```
+
+### Event Handlers
+
+```typescript
+// Connection lifecycle
+client.on(&quot;connected&quot;, (e) =&gt; {
+  console.log(`Connected: ${e.connectionId}, User: ${e.userId}`);
+});
+
+client.on(&quot;disconnected&quot;, (e) =&gt; {
+  console.log(`Disconnected: ${e.message}`);
+});
+
+client.on(&quot;stopped&quot;, () =&gt; {
+  console.log(&quot;Client stopped&quot;);
+});
+
+// Messages
+client.on(&quot;group-message&quot;, (e) =&gt; {
+  console.log(`[${e.message.group}] ${e.message.fromUserId}: ${e.message.data}`);
+});
+
+client.on(&quot;server-message&quot;, (e) =&gt; {
+  console.log(`Server: ${e.message.data}`);
+});
+
+// Rejoin failure
+client.on(&quot;rejoin-group-failed&quot;, (e) =&gt; {
+  console.log(`Failed to rejoin ${e.group}: ${e.error}`);
+});
+```
+
+## Express Event Handler
+
+```typescript
+import express from &quot;express&quot;;
+import { WebPubSubEventHandler } from &quot;@azure/web-pubsub-express&quot;;
+
+const app = express();
+
+const handler = new WebPubSubEventHandler(&quot;chat&quot;, {
+  path: &quot;/api/webpubsub/hubs/chat/&quot;,
+  
+  // Blocking: approve/reject connection
+  handleConnect: (req, res) =&gt; {
+    if (!req.claims?.sub) {
+      res.fail(401, &quot;Authentication required&quot;);
+      return;
+    }
+    res.success({
+      userId: req.claims.sub[0],
+      groups: [&quot;general&quot;],
+      roles: [&quot;webpubsub.sendToGroup&quot;],
+    });
+  },
+  
+  // Blocking: handle custom events
+  handleUserEvent: (req, res) =&gt; {
+    console.log(`Event from ${req.context.userId}:`, req.data);
+    res.success(`Received: ${req.data}`, &quot;text&quot;);
+  },
+  
+  // Non-blocking
+  onConnected: (req) =&gt; {
+    console.log(`Client connected: ${req.context.connectionId}`);
+  },
+  
+  onDisconnected: (req) =&gt; {
+    console.log(`Client disconnected: ${req.context.connectionId}`);
+  },
+});
+
+app.use(handler.getMiddleware());
+
+// Negotiate endpoint
+app.get(&quot;/negotiate&quot;, async (req, res) =&gt; {
+  const token = await serviceClient.getClientAccessToken({
+    userId: req.user?.id,
+  });
+  res.json({ url: token.url });
+});
+
+app.listen(8080);
+```
+
+## Key Types
+
+```typescript
+// Server
+import {
+  WebPubSubServiceClient,
+  WebPubSubGroup,
+  GenerateClientTokenOptions,
+  HubSendToAllOptions,
+} from &quot;@azure/web-pubsub&quot;;
+
+// Client
+import {
+  WebPubSubClient,
+  WebPubSubClientOptions,
+  OnConnectedArgs,
+  OnGroupDataMessageArgs,
+} from &quot;@azure/web-pubsub-client&quot;;
+
+// Express
+import {
+  WebPubSubEventHandler,
+  ConnectRequest,
+  UserEventRequest,
+  ConnectResponseHandler,
+} from &quot;@azure/web-pubsub-express&quot;;
+```
+
+## Best Practices
+
+1. **Use Microsoft Entra Token Credential** - Use `DefaultAzureCredential` for local development; use `ManagedIdentityCredential` or `WorkloadIdentityCredential` for production
+2. **Register handlers before start** - Don&#x27;t miss initial events
+3. **Use groups for channels** - Organize messages by topic/room
+4. **Handle reconnection** - Client auto-reconnects by default
+5. **Validate in handleConnect** - Reject unauthorized connections early
+6. **Use noEcho** - Prevent message echo back to sender when needed</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

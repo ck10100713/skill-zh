@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-compute-batch-java｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Java 的 Azure Batch SDK 執行大規模平行與 HPC 批次作業">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-compute-batch-java</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-java/skills/azure-compute-batch-java/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Java 的 Azure Batch SDK 執行大規模平行與 HPC 批次作業</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-compute-batch-java
+description: |-
+  Azure Batch SDK for Java。用 pool、job、task 和運算節點執行大規模平行運算與 HPC 批次作業。
+  Triggers: &quot;BatchClient java&quot;, &quot;azure batch java&quot;, &quot;batch pool java&quot;, &quot;batch job java&quot;, &quot;HPC java&quot;, &quot;parallel computing java&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+---
+
+# Azure Batch SDK for Java
+
+在 Azure 上執行大規模平行運算與高效能運算（HPC）批次作業的 client library。
+
+## Installation
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-compute-batch&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-beta.5&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## Prerequisites
+
+- Azure Batch 帳號
+- 已設定好運算節點的 pool
+- Azure subscription
+
+## Environment Variables
+
+```bash
+AZURE_BATCH_ENDPOINT=https://&lt;account&gt;.&lt;region&gt;.batch.azure.com  # 所有驗證方式都需要
+AZURE_BATCH_ACCOUNT=&lt;account-name&gt;  # 只有 shared key 驗證才需要
+AZURE_BATCH_ACCESS_KEY=&lt;account-key&gt;  # 只有 shared key 驗證才需要
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## Client Creation
+
+### With Microsoft Entra ID (Recommended)
+
+```java
+import com.azure.compute.batch.BatchClient;
+import com.azure.compute.batch.BatchClientBuilder;
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// 或在 production 直接用指定的 credential：
+// 參考 https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+BatchClient batchClient = new BatchClientBuilder()
+    .credential(credential)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildClient();
+```
+
+### Async Client
+
+```java
+import com.azure.compute.batch.BatchAsyncClient;
+
+BatchAsyncClient batchAsyncClient = new BatchClientBuilder()
+    .credential(credential)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildAsyncClient();
+```
+
+### With Shared Key Credentials
+
+```java
+import com.azure.core.credential.AzureNamedKeyCredential;
+
+String accountName = System.getenv(&quot;AZURE_BATCH_ACCOUNT&quot;);
+String accountKey = System.getenv(&quot;AZURE_BATCH_ACCESS_KEY&quot;);
+AzureNamedKeyCredential sharedKeyCreds = new AzureNamedKeyCredential(accountName, accountKey);
+
+BatchClient batchClient = new BatchClientBuilder()
+    .credential(sharedKeyCreds)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildClient();
+```
+
+## Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| Pool | 執行 task 的運算節點集合 |
+| Job | task 的邏輯分組 |
+| Task | 運算單位（指令/script） |
+| Node | 執行 task 的 VM |
+| Job Schedule | 週期性建立 job |
+
+## Pool Operations
+
+### Create Pool
+
+```java
+import com.azure.compute.batch.models.*;
+
+batchClient.createPool(new BatchPoolCreateParameters(&quot;myPoolId&quot;, &quot;STANDARD_DC2s_V2&quot;)
+    .setVirtualMachineConfiguration(
+        new VirtualMachineConfiguration(
+            new BatchVmImageReference()
+                .setPublisher(&quot;Canonical&quot;)
+                .setOffer(&quot;UbuntuServer&quot;)
+                .setSku(&quot;22_04-lts&quot;)
+                .setVersion(&quot;latest&quot;),
+            &quot;batch.node.ubuntu 22.04&quot;))
+    .setTargetDedicatedNodes(2)
+    .setTargetLowPriorityNodes(0), null);
+```
+
+### Get Pool
+
+```java
+BatchPool pool = batchClient.getPool(&quot;myPoolId&quot;);
+System.out.println(&quot;Pool state: &quot; + pool.getState());
+System.out.println(&quot;Current dedicated nodes: &quot; + pool.getCurrentDedicatedNodes());
+```
+
+### List Pools
+
+```java
+import com.azure.core.http.rest.PagedIterable;
+
+PagedIterable&lt;BatchPool&gt; pools = batchClient.listPools();
+for (BatchPool pool : pools) {
+    System.out.println(&quot;Pool: &quot; + pool.getId() + &quot;, State: &quot; + pool.getState());
+}
+```
+
+### Resize Pool
+
+```java
+import com.azure.core.util.polling.SyncPoller;
+
+BatchPoolResizeParameters resizeParams = new BatchPoolResizeParameters()
+    .setTargetDedicatedNodes(4)
+    .setTargetLowPriorityNodes(2);
+
+SyncPoller&lt;BatchPool, BatchPool&gt; poller = batchClient.beginResizePool(&quot;myPoolId&quot;, resizeParams);
+poller.waitForCompletion();
+BatchPool resizedPool = poller.getFinalResult();
+```
+
+### Enable AutoScale
+
+```java
+BatchPoolEnableAutoScaleParameters autoScaleParams = new BatchPoolEnableAutoScaleParameters()
+    .setAutoScaleEvaluationInterval(Duration.ofMinutes(5))
+    .setAutoScaleFormula(&quot;$TargetDedicatedNodes = min(10, $PendingTasks.GetSample(TimeInterval_Minute * 5));&quot;);
+
+batchClient.enablePoolAutoScale(&quot;myPoolId&quot;, autoScaleParams);
+```
+
+### Delete Pool
+
+```java
+SyncPoller&lt;BatchPool, Void&gt; deletePoller = batchClient.beginDeletePool(&quot;myPoolId&quot;);
+deletePoller.waitForCompletion();
+```
+
+## Job Operations
+
+### Create Job
+
+```java
+batchClient.createJob(
+    new BatchJobCreateParameters(&quot;myJobId&quot;, new BatchPoolInfo().setPoolId(&quot;myPoolId&quot;))
+        .setPriority(100)
+        .setConstraints(new BatchJobConstraints()
+            .setMaxWallClockTime(Duration.ofHours(24))
+            .setMaxTaskRetryCount(3)),
+    null);
+```
+
+### Get Job
+
+```java
+BatchJob job = batchClient.getJob(&quot;myJobId&quot;, null, null);
+System.out.println(&quot;Job state: &quot; + job.getState());
+```
+
+### List Jobs
+
+```java
+PagedIterable&lt;BatchJob&gt; jobs = batchClient.listJobs(new BatchJobsListOptions());
+for (BatchJob job : jobs) {
+    System.out.println(&quot;Job: &quot; + job.getId() + &quot;, State: &quot; + job.getState());
+}
+```
+
+### Get Task Counts
+
+```java
+BatchTaskCountsResult counts = batchClient.getJobTaskCounts(&quot;myJobId&quot;);
+System.out.println(&quot;Active: &quot; + counts.getTaskCounts().getActive());
+System.out.println(&quot;Running: &quot; + counts.getTaskCounts().getRunning());
+System.out.println(&quot;Completed: &quot; + counts.getTaskCounts().getCompleted());
+```
+
+### Terminate Job
+
+```java
+BatchJobTerminateParameters terminateParams = new BatchJobTerminateParameters()
+    .setTerminationReason(&quot;Manual termination&quot;);
+BatchJobTerminateOptions options = new BatchJobTerminateOptions().setParameters(terminateParams);
+
+SyncPoller&lt;BatchJob, BatchJob&gt; poller = batchClient.beginTerminateJob(&quot;myJobId&quot;, options, null);
+poller.waitForCompletion();
+```
+
+### Delete Job
+
+```java
+SyncPoller&lt;BatchJob, Void&gt; deletePoller = batchClient.beginDeleteJob(&quot;myJobId&quot;);
+deletePoller.waitForCompletion();
+```
+
+## Task Operations
+
+### Create Single Task
+
+```java
+BatchTaskCreateParameters task = new BatchTaskCreateParameters(&quot;task1&quot;, &quot;echo &#x27;Hello World&#x27;&quot;);
+batchClient.createTask(&quot;myJobId&quot;, task);
+```
+
+### Create Task with Exit Conditions
+
+```java
+batchClient.createTask(&quot;myJobId&quot;, new BatchTaskCreateParameters(&quot;task2&quot;, &quot;cmd /c exit 3&quot;)
+    .setExitConditions(new ExitConditions()
+        .setExitCodeRanges(Arrays.asList(
+            new ExitCodeRangeMapping(2, 4, 
+                new ExitOptions().setJobAction(BatchJobActionKind.TERMINATE)))))
+    .setUserIdentity(new UserIdentity()
+        .setAutoUser(new AutoUserSpecification()
+            .setScope(AutoUserScope.TASK)
+            .setElevationLevel(ElevationLevel.NON_ADMIN))),
+    null);
+```
+
+### Create Task Collection (up to 100)
+
+```java
+List&lt;BatchTaskCreateParameters&gt; taskList = Arrays.asList(
+    new BatchTaskCreateParameters(&quot;task1&quot;, &quot;echo Task 1&quot;),
+    new BatchTaskCreateParameters(&quot;task2&quot;, &quot;echo Task 2&quot;),
+    new BatchTaskCreateParameters(&quot;task3&quot;, &quot;echo Task 3&quot;)
+);
+BatchTaskGroup taskGroup = new BatchTaskGroup(taskList);
+BatchCreateTaskCollectionResult result = batchClient.createTaskCollection(&quot;myJobId&quot;, taskGroup);
+```
+
+### Create Many Tasks (no limit)
+
+```java
+List&lt;BatchTaskCreateParameters&gt; tasks = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; 1000; i++) {
+    tasks.add(new BatchTaskCreateParameters(&quot;task&quot; + i, &quot;echo Task &quot; + i));
+}
+batchClient.createTasks(&quot;myJobId&quot;, tasks);
+```
+
+### Get Task
+
+```java
+BatchTask task = batchClient.getTask(&quot;myJobId&quot;, &quot;task1&quot;);
+System.out.println(&quot;Task state: &quot; + task.getState());
+System.out.println(&quot;Exit code: &quot; + task.getExecutionInfo().getExitCode());
+```
+
+### List Tasks
+
+```java
+PagedIterable&lt;BatchTask&gt; tasks = batchClient.listTasks(&quot;myJobId&quot;);
+for (BatchTask task : tasks) {
+    System.out.println(&quot;Task: &quot; + task.getId() + &quot;, State: &quot; + task.getState());
+}
+```
+
+### Get Task Output
+
+```java
+import com.azure.core.util.BinaryData;
+import java.nio.charset.StandardCharsets;
+
+BinaryData stdout = batchClient.getTaskFile(&quot;myJobId&quot;, &quot;task1&quot;, &quot;stdout.txt&quot;);
+System.out.println(new String(stdout.toBytes(), StandardCharsets.UTF_8));
+```
+
+### Terminate Task
+
+```java
+batchClient.terminateTask(&quot;myJobId&quot;, &quot;task1&quot;, null, null);
+```
+
+## Node Operations
+
+### List Nodes
+
+```java
+PagedIterable&lt;BatchNode&gt; nodes = batchClient.listNodes(&quot;myPoolId&quot;, new BatchNodesListOptions());
+for (BatchNode node : nodes) {
+    System.out.println(&quot;Node: &quot; + node.getId() + &quot;, State: &quot; + node.getState());
+}
+```
+
+### Reboot Node
+
+```java
+SyncPoller&lt;BatchNode, BatchNode&gt; rebootPoller = batchClient.beginRebootNode(&quot;myPoolId&quot;, &quot;nodeId&quot;);
+rebootPoller.waitForCompletion();
+```
+
+### Get Remote Login Settings
+
+```java
+BatchNodeRemoteLoginSettings settings = batchClient.getNodeRemoteLoginSettings(&quot;myPoolId&quot;, &quot;nodeId&quot;);
+System.out.println(&quot;IP: &quot; + settings.getRemoteLoginIpAddress());
+System.out.println(&quot;Port: &quot; + settings.getRemoteLoginPort());
+```
+
+## Job Schedule Operations
+
+### Create Job Schedule
+
+```java
+batchClient.createJobSchedule(new BatchJobScheduleCreateParameters(&quot;myScheduleId&quot;,
+    new BatchJobScheduleConfiguration()
+        .setRecurrenceInterval(Duration.ofHours(6))
+        .setDoNotRunUntil(OffsetDateTime.now().plusDays(1)),
+    new BatchJobSpecification(new BatchPoolInfo().setPoolId(&quot;myPoolId&quot;))
+        .setPriority(50)),
+    null);
+```
+
+### Get Job Schedule
+
+```java
+BatchJobSchedule schedule = batchClient.getJobSchedule(&quot;myScheduleId&quot;);
+System.out.println(&quot;Schedule state: &quot; + schedule.getState());
+```
+
+## Error Handling
+
+```java
+import com.azure.compute.batch.models.BatchErrorException;
+import com.azure.compute.batch.models.BatchError;
+
+try {
+    batchClient.getPool(&quot;nonexistent-pool&quot;);
+} catch (BatchErrorException e) {
+    BatchError error = e.getValue();
+    System.err.println(&quot;Error code: &quot; + error.getCode());
+    System.err.println(&quot;Message: &quot; + error.getMessage().getValue());
+    
+    if (&quot;PoolNotFound&quot;.equals(error.getCode())) {
+        System.err.println(&quot;The specified pool does not exist.&quot;);
+    }
+}
+```
+
+## Best Practices
+
+1. **用 Entra ID**：驗證時比 shared key 更好
+2. **pool 用 management SDK**：`azure-resourcemanager-batch` 支援 managed identity
+3. **批次建立 task**：多個 task 用 `createTaskCollection` 或 `createTasks`
+4. **正確處理 LRO**：pool 調整大小、刪除都是長時間執行的操作
+5. **監控 task 數量**：用 `getJobTaskCounts` 追蹤進度
+6. **設定限制條件**：設定 `maxWallClockTime` 和 `maxTaskRetryCount`
+7. **用 low-priority 節點**：容錯型工作負載可以省成本
+8. **開啟 autoscale**：依工作負載動態調整 pool 大小
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| Maven Package | https://central.sonatype.com/artifact/com.azure/azure-compute-batch |
+| GitHub | https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/batch/azure-compute-batch |
+| API Documentation | https://learn.microsoft.com/java/api/com.azure.compute.batch |
+| Product Docs | https://learn.microsoft.com/azure/batch/ |
+| REST API | https://learn.microsoft.com/rest/api/batchservice/ |
+| Samples | https://github.com/azure/azure-batch-samples |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-compute-batch-java
+description: |-
+  Azure Batch SDK for Java. Run large-scale parallel and HPC batch jobs with pools, jobs, tasks, and compute nodes.
+  Triggers: &quot;BatchClient java&quot;, &quot;azure batch java&quot;, &quot;batch pool java&quot;, &quot;batch job java&quot;, &quot;HPC java&quot;, &quot;parallel computing java&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+---
+
+# Azure Batch SDK for Java
+
+Client library for running large-scale parallel and high-performance computing (HPC) batch jobs in Azure.
+
+## Installation
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-compute-batch&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-beta.5&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## Prerequisites
+
+- Azure Batch account
+- Pool configured with compute nodes
+- Azure subscription
+
+## Environment Variables
+
+```bash
+AZURE_BATCH_ENDPOINT=https://&lt;account&gt;.&lt;region&gt;.batch.azure.com  # Required for all auth methods
+AZURE_BATCH_ACCOUNT=&lt;account-name&gt;  # Only required for shared key auth
+AZURE_BATCH_ACCESS_KEY=&lt;account-key&gt;  # Only required for shared key auth
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Client Creation
+
+### With Microsoft Entra ID (Recommended)
+
+```java
+import com.azure.compute.batch.BatchClient;
+import com.azure.compute.batch.BatchClientBuilder;
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+BatchClient batchClient = new BatchClientBuilder()
+    .credential(credential)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildClient();
+```
+
+### Async Client
+
+```java
+import com.azure.compute.batch.BatchAsyncClient;
+
+BatchAsyncClient batchAsyncClient = new BatchClientBuilder()
+    .credential(credential)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildAsyncClient();
+```
+
+### With Shared Key Credentials
+
+```java
+import com.azure.core.credential.AzureNamedKeyCredential;
+
+String accountName = System.getenv(&quot;AZURE_BATCH_ACCOUNT&quot;);
+String accountKey = System.getenv(&quot;AZURE_BATCH_ACCESS_KEY&quot;);
+AzureNamedKeyCredential sharedKeyCreds = new AzureNamedKeyCredential(accountName, accountKey);
+
+BatchClient batchClient = new BatchClientBuilder()
+    .credential(sharedKeyCreds)
+    .endpoint(System.getenv(&quot;AZURE_BATCH_ENDPOINT&quot;))
+    .buildClient();
+```
+
+## Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| Pool | Collection of compute nodes that run tasks |
+| Job | Logical grouping of tasks |
+| Task | Unit of computation (command/script) |
+| Node | VM that executes tasks |
+| Job Schedule | Recurring job creation |
+
+## Pool Operations
+
+### Create Pool
+
+```java
+import com.azure.compute.batch.models.*;
+
+batchClient.createPool(new BatchPoolCreateParameters(&quot;myPoolId&quot;, &quot;STANDARD_DC2s_V2&quot;)
+    .setVirtualMachineConfiguration(
+        new VirtualMachineConfiguration(
+            new BatchVmImageReference()
+                .setPublisher(&quot;Canonical&quot;)
+                .setOffer(&quot;UbuntuServer&quot;)
+                .setSku(&quot;22_04-lts&quot;)
+                .setVersion(&quot;latest&quot;),
+            &quot;batch.node.ubuntu 22.04&quot;))
+    .setTargetDedicatedNodes(2)
+    .setTargetLowPriorityNodes(0), null);
+```
+
+### Get Pool
+
+```java
+BatchPool pool = batchClient.getPool(&quot;myPoolId&quot;);
+System.out.println(&quot;Pool state: &quot; + pool.getState());
+System.out.println(&quot;Current dedicated nodes: &quot; + pool.getCurrentDedicatedNodes());
+```
+
+### List Pools
+
+```java
+import com.azure.core.http.rest.PagedIterable;
+
+PagedIterable&lt;BatchPool&gt; pools = batchClient.listPools();
+for (BatchPool pool : pools) {
+    System.out.println(&quot;Pool: &quot; + pool.getId() + &quot;, State: &quot; + pool.getState());
+}
+```
+
+### Resize Pool
+
+```java
+import com.azure.core.util.polling.SyncPoller;
+
+BatchPoolResizeParameters resizeParams = new BatchPoolResizeParameters()
+    .setTargetDedicatedNodes(4)
+    .setTargetLowPriorityNodes(2);
+
+SyncPoller&lt;BatchPool, BatchPool&gt; poller = batchClient.beginResizePool(&quot;myPoolId&quot;, resizeParams);
+poller.waitForCompletion();
+BatchPool resizedPool = poller.getFinalResult();
+```
+
+### Enable AutoScale
+
+```java
+BatchPoolEnableAutoScaleParameters autoScaleParams = new BatchPoolEnableAutoScaleParameters()
+    .setAutoScaleEvaluationInterval(Duration.ofMinutes(5))
+    .setAutoScaleFormula(&quot;$TargetDedicatedNodes = min(10, $PendingTasks.GetSample(TimeInterval_Minute * 5));&quot;);
+
+batchClient.enablePoolAutoScale(&quot;myPoolId&quot;, autoScaleParams);
+```
+
+### Delete Pool
+
+```java
+SyncPoller&lt;BatchPool, Void&gt; deletePoller = batchClient.beginDeletePool(&quot;myPoolId&quot;);
+deletePoller.waitForCompletion();
+```
+
+## Job Operations
+
+### Create Job
+
+```java
+batchClient.createJob(
+    new BatchJobCreateParameters(&quot;myJobId&quot;, new BatchPoolInfo().setPoolId(&quot;myPoolId&quot;))
+        .setPriority(100)
+        .setConstraints(new BatchJobConstraints()
+            .setMaxWallClockTime(Duration.ofHours(24))
+            .setMaxTaskRetryCount(3)),
+    null);
+```
+
+### Get Job
+
+```java
+BatchJob job = batchClient.getJob(&quot;myJobId&quot;, null, null);
+System.out.println(&quot;Job state: &quot; + job.getState());
+```
+
+### List Jobs
+
+```java
+PagedIterable&lt;BatchJob&gt; jobs = batchClient.listJobs(new BatchJobsListOptions());
+for (BatchJob job : jobs) {
+    System.out.println(&quot;Job: &quot; + job.getId() + &quot;, State: &quot; + job.getState());
+}
+```
+
+### Get Task Counts
+
+```java
+BatchTaskCountsResult counts = batchClient.getJobTaskCounts(&quot;myJobId&quot;);
+System.out.println(&quot;Active: &quot; + counts.getTaskCounts().getActive());
+System.out.println(&quot;Running: &quot; + counts.getTaskCounts().getRunning());
+System.out.println(&quot;Completed: &quot; + counts.getTaskCounts().getCompleted());
+```
+
+### Terminate Job
+
+```java
+BatchJobTerminateParameters terminateParams = new BatchJobTerminateParameters()
+    .setTerminationReason(&quot;Manual termination&quot;);
+BatchJobTerminateOptions options = new BatchJobTerminateOptions().setParameters(terminateParams);
+
+SyncPoller&lt;BatchJob, BatchJob&gt; poller = batchClient.beginTerminateJob(&quot;myJobId&quot;, options, null);
+poller.waitForCompletion();
+```
+
+### Delete Job
+
+```java
+SyncPoller&lt;BatchJob, Void&gt; deletePoller = batchClient.beginDeleteJob(&quot;myJobId&quot;);
+deletePoller.waitForCompletion();
+```
+
+## Task Operations
+
+### Create Single Task
+
+```java
+BatchTaskCreateParameters task = new BatchTaskCreateParameters(&quot;task1&quot;, &quot;echo &#x27;Hello World&#x27;&quot;);
+batchClient.createTask(&quot;myJobId&quot;, task);
+```
+
+### Create Task with Exit Conditions
+
+```java
+batchClient.createTask(&quot;myJobId&quot;, new BatchTaskCreateParameters(&quot;task2&quot;, &quot;cmd /c exit 3&quot;)
+    .setExitConditions(new ExitConditions()
+        .setExitCodeRanges(Arrays.asList(
+            new ExitCodeRangeMapping(2, 4, 
+                new ExitOptions().setJobAction(BatchJobActionKind.TERMINATE)))))
+    .setUserIdentity(new UserIdentity()
+        .setAutoUser(new AutoUserSpecification()
+            .setScope(AutoUserScope.TASK)
+            .setElevationLevel(ElevationLevel.NON_ADMIN))),
+    null);
+```
+
+### Create Task Collection (up to 100)
+
+```java
+List&lt;BatchTaskCreateParameters&gt; taskList = Arrays.asList(
+    new BatchTaskCreateParameters(&quot;task1&quot;, &quot;echo Task 1&quot;),
+    new BatchTaskCreateParameters(&quot;task2&quot;, &quot;echo Task 2&quot;),
+    new BatchTaskCreateParameters(&quot;task3&quot;, &quot;echo Task 3&quot;)
+);
+BatchTaskGroup taskGroup = new BatchTaskGroup(taskList);
+BatchCreateTaskCollectionResult result = batchClient.createTaskCollection(&quot;myJobId&quot;, taskGroup);
+```
+
+### Create Many Tasks (no limit)
+
+```java
+List&lt;BatchTaskCreateParameters&gt; tasks = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; 1000; i++) {
+    tasks.add(new BatchTaskCreateParameters(&quot;task&quot; + i, &quot;echo Task &quot; + i));
+}
+batchClient.createTasks(&quot;myJobId&quot;, tasks);
+```
+
+### Get Task
+
+```java
+BatchTask task = batchClient.getTask(&quot;myJobId&quot;, &quot;task1&quot;);
+System.out.println(&quot;Task state: &quot; + task.getState());
+System.out.println(&quot;Exit code: &quot; + task.getExecutionInfo().getExitCode());
+```
+
+### List Tasks
+
+```java
+PagedIterable&lt;BatchTask&gt; tasks = batchClient.listTasks(&quot;myJobId&quot;);
+for (BatchTask task : tasks) {
+    System.out.println(&quot;Task: &quot; + task.getId() + &quot;, State: &quot; + task.getState());
+}
+```
+
+### Get Task Output
+
+```java
+import com.azure.core.util.BinaryData;
+import java.nio.charset.StandardCharsets;
+
+BinaryData stdout = batchClient.getTaskFile(&quot;myJobId&quot;, &quot;task1&quot;, &quot;stdout.txt&quot;);
+System.out.println(new String(stdout.toBytes(), StandardCharsets.UTF_8));
+```
+
+### Terminate Task
+
+```java
+batchClient.terminateTask(&quot;myJobId&quot;, &quot;task1&quot;, null, null);
+```
+
+## Node Operations
+
+### List Nodes
+
+```java
+PagedIterable&lt;BatchNode&gt; nodes = batchClient.listNodes(&quot;myPoolId&quot;, new BatchNodesListOptions());
+for (BatchNode node : nodes) {
+    System.out.println(&quot;Node: &quot; + node.getId() + &quot;, State: &quot; + node.getState());
+}
+```
+
+### Reboot Node
+
+```java
+SyncPoller&lt;BatchNode, BatchNode&gt; rebootPoller = batchClient.beginRebootNode(&quot;myPoolId&quot;, &quot;nodeId&quot;);
+rebootPoller.waitForCompletion();
+```
+
+### Get Remote Login Settings
+
+```java
+BatchNodeRemoteLoginSettings settings = batchClient.getNodeRemoteLoginSettings(&quot;myPoolId&quot;, &quot;nodeId&quot;);
+System.out.println(&quot;IP: &quot; + settings.getRemoteLoginIpAddress());
+System.out.println(&quot;Port: &quot; + settings.getRemoteLoginPort());
+```
+
+## Job Schedule Operations
+
+### Create Job Schedule
+
+```java
+batchClient.createJobSchedule(new BatchJobScheduleCreateParameters(&quot;myScheduleId&quot;,
+    new BatchJobScheduleConfiguration()
+        .setRecurrenceInterval(Duration.ofHours(6))
+        .setDoNotRunUntil(OffsetDateTime.now().plusDays(1)),
+    new BatchJobSpecification(new BatchPoolInfo().setPoolId(&quot;myPoolId&quot;))
+        .setPriority(50)),
+    null);
+```
+
+### Get Job Schedule
+
+```java
+BatchJobSchedule schedule = batchClient.getJobSchedule(&quot;myScheduleId&quot;);
+System.out.println(&quot;Schedule state: &quot; + schedule.getState());
+```
+
+## Error Handling
+
+```java
+import com.azure.compute.batch.models.BatchErrorException;
+import com.azure.compute.batch.models.BatchError;
+
+try {
+    batchClient.getPool(&quot;nonexistent-pool&quot;);
+} catch (BatchErrorException e) {
+    BatchError error = e.getValue();
+    System.err.println(&quot;Error code: &quot; + error.getCode());
+    System.err.println(&quot;Message: &quot; + error.getMessage().getValue());
+    
+    if (&quot;PoolNotFound&quot;.equals(error.getCode())) {
+        System.err.println(&quot;The specified pool does not exist.&quot;);
+    }
+}
+```
+
+## Best Practices
+
+1. **Use Entra ID** — Preferred over shared key for authentication
+2. **Use management SDK for pools** — `azure-resourcemanager-batch` supports managed identities
+3. **Batch task creation** — Use `createTaskCollection` or `createTasks` for multiple tasks
+4. **Handle LRO properly** — Pool resize, delete operations are long-running
+5. **Monitor task counts** — Use `getJobTaskCounts` to track progress
+6. **Set constraints** — Configure `maxWallClockTime` and `maxTaskRetryCount`
+7. **Use low-priority nodes** — Cost savings for fault-tolerant workloads
+8. **Enable autoscale** — Dynamically adjust pool size based on workload
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| Maven Package | https://central.sonatype.com/artifact/com.azure/azure-compute-batch |
+| GitHub | https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/batch/azure-compute-batch |
+| API Documentation | https://learn.microsoft.com/java/api/com.azure.compute.batch |
+| Product Docs | https://learn.microsoft.com/azure/batch/ |
+| REST API | https://learn.microsoft.com/rest/api/batchservice/ |
+| Samples | https://github.com/azure/azure-batch-samples |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

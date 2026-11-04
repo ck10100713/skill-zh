@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>error-handling-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="錯誤處理模式：exception 與 Result、錯誤分類、retry 和除錯友善的訊息">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>error-handling-patterns</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/developer-essentials/skills/error-handling-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">錯誤處理模式：exception 與 Result、錯誤分類、retry 和除錯友善的訊息</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: error-handling-patterns
+description: 用穩健的錯誤處理策略打造有韌性的應用，優雅地處理失敗並提供絕佳的除錯體驗。適用於在新功能中實作錯誤處理、設計能容錯的 API、除錯 production 問題的時候。
+---
+
+# 錯誤處理模式
+
+用穩健的錯誤處理策略打造有韌性的應用，優雅地處理失敗並提供絕佳的除錯體驗。
+
+## 什麼時候用這個 Skill
+
+- 在新功能中實作錯誤處理
+- 設計能容錯的 API
+- 除錯 production 問題
+- 提升應用程式的可靠度
+- 為使用者與開發者寫出更好的錯誤訊息
+- 實作 retry 與 circuit breaker 模式
+- 處理非同步/並行的錯誤
+- 建構容錯的分散式系統
+
+## 核心概念
+
+### 1. 錯誤處理的哲學
+
+**Exception vs Result 型別：**
+
+- **Exception**：傳統的 try-catch，會打斷控制流程
+- **Result 型別**：明確表示成功/失敗，函數式的做法
+- **錯誤碼**：C 風格，需要紀律
+- **Option/Maybe 型別**：用於可為 null 的值
+
+**什麼時候用哪個：**
+
+- Exception：非預期的錯誤、例外狀況
+- Result 型別：預期內的錯誤、驗證失敗
+- Panic/Crash：無法復原的錯誤、程式 bug
+
+### 2. 錯誤分類
+
+**可復原的錯誤：**
+
+- 網路 timeout
+- 檔案不存在
+- 無效的使用者輸入
+- API 速率限制
+
+**無法復原的錯誤：**
+
+- 記憶體不足
+- Stack overflow
+- 程式 bug（null pointer 等）
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`，上面這一層導覽不夠用的時候再去讀那份檔案。
+
+## 最佳實務
+
+1. **快速失敗**：及早驗證輸入，快速失敗
+2. **保留 context**：包含 stack trace、metadata、時間戳
+3. **有意義的訊息**：說明發生了什麼事，以及怎麼修
+4. **適度記 log**：錯誤就記 log，預期內的失敗不要洗版
+5. **在對的層級處理**：在你能有意義地處理的地方才 catch
+6. **清理資源**：使用 try-finally、context manager、defer
+7. **不要吞掉錯誤**：要記 log 或重新丟出，不要默默忽略
+8. **型別安全的錯誤**：可以的話用具型別的錯誤
+
+```python
+# 良好的錯誤處理範例
+def process_order(order_id: str) -&gt; Order:
+    &quot;&quot;&quot;以完整的錯誤處理來處理訂單。&quot;&quot;&quot;
+    try:
+        # 驗證輸入
+        if not order_id:
+            raise ValidationError(&quot;Order ID is required&quot;)
+
+        # 取得訂單
+        order = db.get_order(order_id)
+        if not order:
+            raise NotFoundError(&quot;Order&quot;, order_id)
+
+        # 處理付款
+        try:
+            payment_result = payment_service.charge(order.total)
+        except PaymentServiceError as e:
+            # 記 log 並包裝外部服務的錯誤
+            logger.error(f&quot;Payment failed for order {order_id}: {e}&quot;)
+            raise ExternalServiceError(
+                f&quot;Payment processing failed&quot;,
+                service=&quot;payment_service&quot;,
+                details={&quot;order_id&quot;: order_id, &quot;amount&quot;: order.total}
+            ) from e
+
+        # 更新訂單
+        order.status = &quot;completed&quot;
+        order.payment_id = payment_result.id
+        db.save(order)
+
+        return order
+
+    except ApplicationError:
+        # 重新丟出已知的應用程式錯誤
+        raise
+    except Exception as e:
+        # 記錄非預期的錯誤
+        logger.exception(f&quot;Unexpected error processing order {order_id}&quot;)
+        raise ApplicationError(
+            &quot;Order processing failed&quot;,
+            code=&quot;INTERNAL_ERROR&quot;
+        ) from e
+```
+
+## 常見陷阱
+
+- **捕捉範圍太廣**：`except Exception` 會藏住 bug
+- **空的 catch 區塊**：默默吞掉錯誤
+- **記 log 又重新丟出**：會產生重複的 log
+- **沒有清理**：忘記關閉檔案、連線
+- **糟糕的錯誤訊息**：「發生錯誤」一點用也沒有
+- **回傳錯誤碼**：改用 exception 或 Result 型別
+- **忽略非同步錯誤**：未處理的 promise rejection</pre></section><section><h2>英文原文</h2><pre>---
+name: error-handling-patterns
+description: Master error handling patterns across languages including exceptions, Result types, error propagation, and graceful degradation to build resilient applications. Use when implementing error handling, designing APIs, or improving application reliability.
+---
+
+# Error Handling Patterns
+
+Build resilient applications with robust error handling strategies that gracefully handle failures and provide excellent debugging experiences.
+
+## When to Use This Skill
+
+- Implementing error handling in new features
+- Designing error-resilient APIs
+- Debugging production issues
+- Improving application reliability
+- Creating better error messages for users and developers
+- Implementing retry and circuit breaker patterns
+- Handling async/concurrent errors
+- Building fault-tolerant distributed systems
+
+## Core Concepts
+
+### 1. Error Handling Philosophies
+
+**Exceptions vs Result Types:**
+
+- **Exceptions**: Traditional try-catch, disrupts control flow
+- **Result Types**: Explicit success/failure, functional approach
+- **Error Codes**: C-style, requires discipline
+- **Option/Maybe Types**: For nullable values
+
+**When to Use Each:**
+
+- Exceptions: Unexpected errors, exceptional conditions
+- Result Types: Expected errors, validation failures
+- Panics/Crashes: Unrecoverable errors, programming bugs
+
+### 2. Error Categories
+
+**Recoverable Errors:**
+
+- Network timeouts
+- Missing files
+- Invalid user input
+- API rate limits
+
+**Unrecoverable Errors:**
+
+- Out of memory
+- Stack overflow
+- Programming bugs (null pointer, etc.)
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices
+
+1. **Fail Fast**: Validate input early, fail quickly
+2. **Preserve Context**: Include stack traces, metadata, timestamps
+3. **Meaningful Messages**: Explain what happened and how to fix it
+4. **Log Appropriately**: Error = log, expected failure = don&#x27;t spam logs
+5. **Handle at Right Level**: Catch where you can meaningfully handle
+6. **Clean Up Resources**: Use try-finally, context managers, defer
+7. **Don&#x27;t Swallow Errors**: Log or re-throw, don&#x27;t silently ignore
+8. **Type-Safe Errors**: Use typed errors when possible
+
+```python
+# Good error handling example
+def process_order(order_id: str) -&gt; Order:
+    &quot;&quot;&quot;Process order with comprehensive error handling.&quot;&quot;&quot;
+    try:
+        # Validate input
+        if not order_id:
+            raise ValidationError(&quot;Order ID is required&quot;)
+
+        # Fetch order
+        order = db.get_order(order_id)
+        if not order:
+            raise NotFoundError(&quot;Order&quot;, order_id)
+
+        # Process payment
+        try:
+            payment_result = payment_service.charge(order.total)
+        except PaymentServiceError as e:
+            # Log and wrap external service error
+            logger.error(f&quot;Payment failed for order {order_id}: {e}&quot;)
+            raise ExternalServiceError(
+                f&quot;Payment processing failed&quot;,
+                service=&quot;payment_service&quot;,
+                details={&quot;order_id&quot;: order_id, &quot;amount&quot;: order.total}
+            ) from e
+
+        # Update order
+        order.status = &quot;completed&quot;
+        order.payment_id = payment_result.id
+        db.save(order)
+
+        return order
+
+    except ApplicationError:
+        # Re-raise known application errors
+        raise
+    except Exception as e:
+        # Log unexpected errors
+        logger.exception(f&quot;Unexpected error processing order {order_id}&quot;)
+        raise ApplicationError(
+            &quot;Order processing failed&quot;,
+            code=&quot;INTERNAL_ERROR&quot;
+        ) from e
+```
+
+## Common Pitfalls
+
+- **Catching Too Broadly**: `except Exception` hides bugs
+- **Empty Catch Blocks**: Silently swallowing errors
+- **Logging and Re-throwing**: Creates duplicate log entries
+- **Not Cleaning Up**: Forgetting to close files, connections
+- **Poor Error Messages**: &quot;Error occurred&quot; is not helpful
+- **Returning Error Codes**: Use exceptions or Result types
+- **Ignoring Async Errors**: Unhandled promise rejections</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

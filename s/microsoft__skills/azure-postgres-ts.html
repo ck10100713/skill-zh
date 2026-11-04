@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-postgres-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 node-postgres 連 Azure PostgreSQL，含 connection pool 與 Entra 免密碼驗證">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-postgres-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-postgres-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 node-postgres 連 Azure PostgreSQL，含 connection pool 與 Entra 免密碼驗證</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-postgres-ts
+description: |
+  用 pg（node-postgres）套件，從 Node.js/TypeScript 連線到 Azure Database for PostgreSQL Flexible Server。用於 PostgreSQL 查詢、connection pooling、transaction，以及 Microsoft Entra ID（免密碼）驗證。Triggers: &quot;PostgreSQL&quot;, &quot;postgres&quot;, &quot;pg client&quot;, &quot;node-postgres&quot;, &quot;Azure PostgreSQL connection&quot;, &quot;PostgreSQL TypeScript&quot;, &quot;pg Pool&quot;, &quot;passwordless postgres&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: pg
+---
+
+# Azure PostgreSQL for TypeScript (node-postgres)
+
+用 `pg`（node-postgres）套件連線到 Azure Database for PostgreSQL Flexible Server，支援密碼與 Microsoft Entra ID（免密碼）驗證。
+
+## 安裝
+
+```bash
+npm install pg @azure/identity
+npm install -D @types/pg
+```
+
+## 環境變數
+
+```bash
+# 必填
+AZURE_POSTGRESQL_HOST=&lt;server&gt;.postgres.database.azure.com
+AZURE_POSTGRESQL_DATABASE=&lt;database&gt;
+AZURE_POSTGRESQL_PORT=5432
+
+# 密碼驗證用
+AZURE_POSTGRESQL_USER=&lt;username&gt;
+AZURE_POSTGRESQL_PASSWORD=&lt;password&gt;
+
+# Entra ID 驗證用
+AZURE_POSTGRESQL_USER=&lt;entra-user&gt;@&lt;server&gt;   # 例如 user@contoso.com
+AZURE_POSTGRESQL_CLIENTID=&lt;managed-identity-client-id&gt;  # 用於 user-assigned identity
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+### 選項 1：密碼驗證
+
+```typescript
+import { Client, Pool } from &quot;pg&quot;;
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: Number(process.env.AZURE_POSTGRESQL_PORT) || 5432,
+  ssl: { rejectUnauthorized: true }  // Azure 必須設定
+});
+
+await client.connect();
+```
+
+### 選項 2：Microsoft Entra ID（免密碼）- 建議
+
+```typescript
+import { Client, Pool } from &quot;pg&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+// 使用 user-assigned managed identity 時
+// const credential = new DefaultAzureCredential({
+//   managedIdentityClientId: process.env.AZURE_POSTGRESQL_CLIENTID
+// });
+
+// 取得 Azure PostgreSQL 的 access token
+const tokenResponse = await credential.getToken(
+  &quot;https://ossrdbms-aad.database.windows.net/.default&quot;
+);
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,  // Entra ID 使用者
+  password: tokenResponse.token,             // 把 token 當作密碼
+  port: Number(process.env.AZURE_POSTGRESQL_PORT) || 5432,
+  ssl: { rejectUnauthorized: true }
+});
+
+await client.connect();
+```
+
+## 核心流程
+
+### 1. 單一 Client 連線
+
+```typescript
+import { Client } from &quot;pg&quot;;
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: 5432,
+  ssl: { rejectUnauthorized: true }
+});
+
+try {
+  await client.connect();
+  
+  const result = await client.query(&quot;SELECT NOW() as current_time&quot;);
+  console.log(result.rows[0].current_time);
+} finally {
+  await client.end();  // 一定要關閉連線
+}
+```
+
+### 2. Connection Pool（正式環境建議使用）
+
+```typescript
+import { Pool } from &quot;pg&quot;;
+
+const pool = new Pool({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: 5432,
+  ssl: { rejectUnauthorized: true },
+  
+  // Pool 設定
+  max: 20,                    // pool 中的最大連線數
+  idleTimeoutMillis: 30000,   // 閒置 30 秒後關閉閒置連線
+  connectionTimeoutMillis: 10000  // 建立新連線的 timeout
+});
+
+// 用 pool 查詢（自動取得並釋放連線）
+const result = await pool.query(&quot;SELECT * FROM users WHERE id = $1&quot;, [userId]);
+
+// 為多個查詢明確借出連線
+const client = await pool.connect();
+try {
+  const res1 = await client.query(&quot;SELECT * FROM users&quot;);
+  const res2 = await client.query(&quot;SELECT * FROM orders&quot;);
+} finally {
+  client.release();  // 把連線還給 pool
+}
+
+// shutdown 時清理
+await pool.end();
+```
+
+### 3. 參數化查詢（防止 SQL Injection）
+
+```typescript
+// 一律使用參數化查詢，絕對不要直接串接使用者輸入
+const userId = 123;
+const email = &quot;user@example.com&quot;;
+
+// 單一參數
+const result = await pool.query(
+  &quot;SELECT * FROM users WHERE id = $1&quot;,
+  [userId]
+);
+
+// 多個參數
+const result = await pool.query(
+  &quot;INSERT INTO users (email, name, created_at) VALUES ($1, $2, NOW()) RETURNING *&quot;,
+  [email, &quot;John Doe&quot;]
+);
+
+// 陣列參數
+const ids = [1, 2, 3, 4, 5];
+const result = await pool.query(
+  &quot;SELECT * FROM users WHERE id = ANY($1::int[])&quot;,
+  [ids]
+);
+```
+
+### 4. Transaction
+
+```typescript
+const client = await pool.connect();
+
+try {
+  await client.query(&quot;BEGIN&quot;);
+  
+  const userResult = await client.query(
+    &quot;INSERT INTO users (email) VALUES ($1) RETURNING id&quot;,
+    [&quot;user@example.com&quot;]
+  );
+  const userId = userResult.rows[0].id;
+  
+  await client.query(
+    &quot;INSERT INTO orders (user_id, total) VALUES ($1, $2)&quot;,
+    [userId, 99.99]
+  );
+  
+  await client.query(&quot;COMMIT&quot;);
+} catch (error) {
+  await client.query(&quot;ROLLBACK&quot;);
+  throw error;
+} finally {
+  client.release();
+}
+```
+
+### 5. Transaction 輔助函式
+
+```typescript
+async function withTransaction&lt;T&gt;(
+  pool: Pool,
+  fn: (client: PoolClient) =&gt; Promise&lt;T&gt;
+): Promise&lt;T&gt; {
+  const client = await pool.connect();
+  try {
+    await client.query(&quot;BEGIN&quot;);
+    const result = await fn(client);
+    await client.query(&quot;COMMIT&quot;);
+    return result;
+  } catch (error) {
+    await client.query(&quot;ROLLBACK&quot;);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// 用法
+const order = await withTransaction(pool, async (client) =&gt; {
+  const user = await client.query(
+    &quot;INSERT INTO users (email) VALUES ($1) RETURNING *&quot;,
+    [&quot;user@example.com&quot;]
+  );
+  const order = await client.query(
+    &quot;INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING *&quot;,
+    [user.rows[0].id, 99.99]
+  );
+  return order.rows[0];
+});
+```
+
+### 6. 搭配 TypeScript 的型別化查詢
+
+```typescript
+import { Pool, QueryResult } from &quot;pg&quot;;
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  created_at: Date;
+}
+
+// 替查詢結果指定型別
+const result: QueryResult&lt;User&gt; = await pool.query&lt;User&gt;(
+  &quot;SELECT * FROM users WHERE id = $1&quot;,
+  [userId]
+);
+
+const user: User | undefined = result.rows[0];
+
+// 型別安全的 insert
+async function createUser(
+  pool: Pool,
+  email: string,
+  name: string
+): Promise&lt;User&gt; {
+  const result = await pool.query&lt;User&gt;(
+    &quot;INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *&quot;,
+    [email, name]
+  );
+  return result.rows[0];
+}
+```
+
+## 搭配 Entra ID Token 更新的 Pool
+
+長時間執行的應用程式，token 會過期，需要更新：
+
+```typescript
+import { Pool, PoolConfig } from &quot;pg&quot;;
+import { DefaultAzureCredential, AccessToken } from &quot;@azure/identity&quot;;
+
+class AzurePostgresPool {
+  private pool: Pool | null = null;
+  private credential: DefaultAzureCredential;
+  private tokenExpiry: Date | null = null;
+  private config: Omit&lt;PoolConfig, &quot;password&quot;&gt;;
+
+  constructor(config: Omit&lt;PoolConfig, &quot;password&quot;&gt;) {
+    this.credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+    this.config = config;
+  }
+
+  private async getToken(): Promise&lt;string&gt; {
+    const tokenResponse = await this.credential.getToken(
+      &quot;https://ossrdbms-aad.database.windows.net/.default&quot;
+    );
+    this.tokenExpiry = new Date(tokenResponse.expiresOnTimestamp);
+    return tokenResponse.token;
+  }
+
+  private isTokenExpired(): boolean {
+    if (!this.tokenExpiry) return true;
+    // 在過期前 5 分鐘更新
+    return new Date() &gt;= new Date(this.tokenExpiry.getTime() - 5 * 60 * 1000);
+  }
+
+  async getPool(): Promise&lt;Pool&gt; {
+    if (this.pool &amp;&amp; !this.isTokenExpired()) {
+      return this.pool;
+    }
+
+    // token 過期時關閉現有的 pool
+    if (this.pool) {
+      await this.pool.end();
+    }
+
+    const token = await this.getToken();
+    this.pool = new Pool({
+      ...this.config,
+      password: token
+    });
+
+    return this.pool;
+  }
+
+  async query&lt;T&gt;(text: string, params?: any[]): Promise&lt;QueryResult&lt;T&gt;&gt; {
+    const pool = await this.getPool();
+    return pool.query&lt;T&gt;(text, params);
+  }
+
+  async end(): Promise&lt;void&gt; {
+    if (this.pool) {
+      await this.pool.end();
+      this.pool = null;
+    }
+  }
+}
+
+// 用法
+const azurePool = new AzurePostgresPool({
+  host: process.env.AZURE_POSTGRESQL_HOST!,
+  database: process.env.AZURE_POSTGRESQL_DATABASE!,
+  user: process.env.AZURE_POSTGRESQL_USER!,
+  port: 5432,
+  ssl: { rejectUnauthorized: true },
+  max: 20
+});
+
+const result = await azurePool.query(&quot;SELECT NOW()&quot;);
+```
+
+## 錯誤處理
+
+```typescript
+import { DatabaseError } from &quot;pg&quot;;
+
+try {
+  await pool.query(&quot;INSERT INTO users (email) VALUES ($1)&quot;, [email]);
+} catch (error) {
+  if (error instanceof DatabaseError) {
+    switch (error.code) {
+      case &quot;23505&quot;:  // unique_violation（違反唯一約束）
+        console.error(&quot;Duplicate entry:&quot;, error.detail);
+        break;
+      case &quot;23503&quot;:  // foreign_key_violation（違反外鍵約束）
+        console.error(&quot;Foreign key constraint failed:&quot;, error.detail);
+        break;
+      case &quot;42P01&quot;:  // undefined_table（資料表不存在）
+        console.error(&quot;Table does not exist:&quot;, error.message);
+        break;
+      case &quot;28P01&quot;:  // invalid_password（密碼錯誤）
+        console.error(&quot;Authentication failed&quot;);
+        break;
+      case &quot;57P03&quot;:  // cannot_connect_now（server 啟動中）
+        console.error(&quot;Server unavailable, retry later&quot;);
+        break;
+      default:
+        console.error(`PostgreSQL error ${error.code}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## Connection String 格式
+
+```typescript
+// 替代做法：使用 connection string
+const pool = new Pool({
+  connectionString: `postgres://${user}:${password}@${host}:${port}/${database}?sslmode=require`
+});
+
+// 要求 SSL（Azure）
+const connectionString = 
+  `postgres://user:password@server.postgres.database.azure.com:5432/mydb?sslmode=require`;
+```
+
+## Pool 事件
+
+```typescript
+const pool = new Pool({ /* config */ });
+
+pool.on(&quot;connect&quot;, (client) =&gt; {
+  console.log(&quot;New client connected to pool&quot;);
+});
+
+pool.on(&quot;acquire&quot;, (client) =&gt; {
+  console.log(&quot;Client checked out from pool&quot;);
+});
+
+pool.on(&quot;release&quot;, (err, client) =&gt; {
+  console.log(&quot;Client returned to pool&quot;);
+});
+
+pool.on(&quot;remove&quot;, (client) =&gt; {
+  console.log(&quot;Client removed from pool&quot;);
+});
+
+pool.on(&quot;error&quot;, (err, client) =&gt; {
+  console.error(&quot;Unexpected pool error:&quot;, err);
+});
+```
+
+## Azure 專屬設定
+
+| 設定 | 值 | 說明 |
+|---------|-------|-------------|
+| `ssl.rejectUnauthorized` | `true` | Azure 一律使用 SSL |
+| 預設 port | `5432` | 標準 PostgreSQL port |
+| PgBouncer port | `6432` | 啟用 PgBouncer 時使用 |
+| Token scope | `https://ossrdbms-aad.database.windows.net/.default` | Entra ID token scope |
+| Token 有效期 | 約 1 小時 | 過期前要更新 |
+
+## Pool 大小建議
+
+| 工作負載 | `max` | `idleTimeoutMillis` |
+|----------|-------|---------------------|
+| 輕量（dev/test） | 5-10 | 30000 |
+| 中等（正式環境） | 20-30 | 30000 |
+| 重度（高並行） | 50-100 | 10000 |
+
+&gt; **Note**：Azure PostgreSQL 的連線數上限依 SKU 而定。請確認你那個層級的最大連線數。
+
+## 最佳實務
+
+1. **正式環境的應用程式一律使用 connection pool**
+2. **使用參數化查詢**：絕對不要直接串接使用者輸入
+3. **一律關閉連線**：用 `try/finally` 或 connection pool
+4. **啟用 SSL**：Azure 必須設定（`ssl: { rejectUnauthorized: true }`）
+5. **處理 token 更新**：Entra ID token 約 1 小時後過期
+6. **設定連線 timeout**：避免網路問題造成卡住
+7. **使用 transaction**：用於多個語句的操作
+8. **監控 pool 指標**：追蹤 `pool.totalCount`、`pool.idleCount`、`pool.waitingCount`
+9. **優雅地 shutdown**：應用程式結束時呼叫 `pool.end()`
+10. **使用 TypeScript generic**：替查詢結果加上型別，更安全
+
+## 主要型別
+
+```typescript
+import {
+  Client,
+  Pool,
+  PoolClient,
+  PoolConfig,
+  QueryResult,
+  QueryResultRow,
+  DatabaseError,
+  QueryConfig
+} from &quot;pg&quot;;
+```
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| node-postgres 文件 | https://node-postgres.com |
+| npm 套件 | https://www.npmjs.com/package/pg |
+| GitHub 儲存庫 | https://github.com/brianc/node-postgres |
+| Azure PostgreSQL 文件 | https://learn.microsoft.com/azure/postgresql/flexible-server/ |
+| 免密碼連線 | https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-connect-with-managed-identity |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-postgres-ts
+description: |
+  Connect to Azure Database for PostgreSQL Flexible Server from Node.js/TypeScript using the pg (node-postgres) package. Use for PostgreSQL queries, connection pooling, transactions, and Microsoft Entra ID (passwordless) authentication. Triggers: &quot;PostgreSQL&quot;, &quot;postgres&quot;, &quot;pg client&quot;, &quot;node-postgres&quot;, &quot;Azure PostgreSQL connection&quot;, &quot;PostgreSQL TypeScript&quot;, &quot;pg Pool&quot;, &quot;passwordless postgres&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: pg
+---
+
+# Azure PostgreSQL for TypeScript (node-postgres)
+
+Connect to Azure Database for PostgreSQL Flexible Server using the `pg` (node-postgres) package with support for password and Microsoft Entra ID (passwordless) authentication.
+
+## Installation
+
+```bash
+npm install pg @azure/identity
+npm install -D @types/pg
+```
+
+## Environment Variables
+
+```bash
+# Required
+AZURE_POSTGRESQL_HOST=&lt;server&gt;.postgres.database.azure.com
+AZURE_POSTGRESQL_DATABASE=&lt;database&gt;
+AZURE_POSTGRESQL_PORT=5432
+
+# For password authentication
+AZURE_POSTGRESQL_USER=&lt;username&gt;
+AZURE_POSTGRESQL_PASSWORD=&lt;password&gt;
+
+# For Entra ID authentication
+AZURE_POSTGRESQL_USER=&lt;entra-user&gt;@&lt;server&gt;   # e.g., user@contoso.com
+AZURE_POSTGRESQL_CLIENTID=&lt;managed-identity-client-id&gt;  # For user-assigned identity
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+### Option 1: Password Authentication
+
+```typescript
+import { Client, Pool } from &quot;pg&quot;;
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: Number(process.env.AZURE_POSTGRESQL_PORT) || 5432,
+  ssl: { rejectUnauthorized: true }  // Required for Azure
+});
+
+await client.connect();
+```
+
+### Option 2: Microsoft Entra ID (Passwordless) - Recommended
+
+```typescript
+import { Client, Pool } from &quot;pg&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+// For user-assigned managed identity
+// const credential = new DefaultAzureCredential({
+//   managedIdentityClientId: process.env.AZURE_POSTGRESQL_CLIENTID
+// });
+
+// Acquire access token for Azure PostgreSQL
+const tokenResponse = await credential.getToken(
+  &quot;https://ossrdbms-aad.database.windows.net/.default&quot;
+);
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,  // Entra ID user
+  password: tokenResponse.token,             // Token as password
+  port: Number(process.env.AZURE_POSTGRESQL_PORT) || 5432,
+  ssl: { rejectUnauthorized: true }
+});
+
+await client.connect();
+```
+
+## Core Workflows
+
+### 1. Single Client Connection
+
+```typescript
+import { Client } from &quot;pg&quot;;
+
+const client = new Client({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: 5432,
+  ssl: { rejectUnauthorized: true }
+});
+
+try {
+  await client.connect();
+  
+  const result = await client.query(&quot;SELECT NOW() as current_time&quot;);
+  console.log(result.rows[0].current_time);
+} finally {
+  await client.end();  // Always close connection
+}
+```
+
+### 2. Connection Pool (Recommended for Production)
+
+```typescript
+import { Pool } from &quot;pg&quot;;
+
+const pool = new Pool({
+  host: process.env.AZURE_POSTGRESQL_HOST,
+  database: process.env.AZURE_POSTGRESQL_DATABASE,
+  user: process.env.AZURE_POSTGRESQL_USER,
+  password: process.env.AZURE_POSTGRESQL_PASSWORD,
+  port: 5432,
+  ssl: { rejectUnauthorized: true },
+  
+  // Pool configuration
+  max: 20,                    // Maximum connections in pool
+  idleTimeoutMillis: 30000,   // Close idle connections after 30s
+  connectionTimeoutMillis: 10000  // Timeout for new connections
+});
+
+// Query using pool (automatically acquires and releases connection)
+const result = await pool.query(&quot;SELECT * FROM users WHERE id = $1&quot;, [userId]);
+
+// Explicit checkout for multiple queries
+const client = await pool.connect();
+try {
+  const res1 = await client.query(&quot;SELECT * FROM users&quot;);
+  const res2 = await client.query(&quot;SELECT * FROM orders&quot;);
+} finally {
+  client.release();  // Return connection to pool
+}
+
+// Cleanup on shutdown
+await pool.end();
+```
+
+### 3. Parameterized Queries (Prevent SQL Injection)
+
+```typescript
+// ALWAYS use parameterized queries - never concatenate user input
+const userId = 123;
+const email = &quot;user@example.com&quot;;
+
+// Single parameter
+const result = await pool.query(
+  &quot;SELECT * FROM users WHERE id = $1&quot;,
+  [userId]
+);
+
+// Multiple parameters
+const result = await pool.query(
+  &quot;INSERT INTO users (email, name, created_at) VALUES ($1, $2, NOW()) RETURNING *&quot;,
+  [email, &quot;John Doe&quot;]
+);
+
+// Array parameter
+const ids = [1, 2, 3, 4, 5];
+const result = await pool.query(
+  &quot;SELECT * FROM users WHERE id = ANY($1::int[])&quot;,
+  [ids]
+);
+```
+
+### 4. Transactions
+
+```typescript
+const client = await pool.connect();
+
+try {
+  await client.query(&quot;BEGIN&quot;);
+  
+  const userResult = await client.query(
+    &quot;INSERT INTO users (email) VALUES ($1) RETURNING id&quot;,
+    [&quot;user@example.com&quot;]
+  );
+  const userId = userResult.rows[0].id;
+  
+  await client.query(
+    &quot;INSERT INTO orders (user_id, total) VALUES ($1, $2)&quot;,
+    [userId, 99.99]
+  );
+  
+  await client.query(&quot;COMMIT&quot;);
+} catch (error) {
+  await client.query(&quot;ROLLBACK&quot;);
+  throw error;
+} finally {
+  client.release();
+}
+```
+
+### 5. Transaction Helper Function
+
+```typescript
+async function withTransaction&lt;T&gt;(
+  pool: Pool,
+  fn: (client: PoolClient) =&gt; Promise&lt;T&gt;
+): Promise&lt;T&gt; {
+  const client = await pool.connect();
+  try {
+    await client.query(&quot;BEGIN&quot;);
+    const result = await fn(client);
+    await client.query(&quot;COMMIT&quot;);
+    return result;
+  } catch (error) {
+    await client.query(&quot;ROLLBACK&quot;);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Usage
+const order = await withTransaction(pool, async (client) =&gt; {
+  const user = await client.query(
+    &quot;INSERT INTO users (email) VALUES ($1) RETURNING *&quot;,
+    [&quot;user@example.com&quot;]
+  );
+  const order = await client.query(
+    &quot;INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING *&quot;,
+    [user.rows[0].id, 99.99]
+  );
+  return order.rows[0];
+});
+```
+
+### 6. Typed Queries with TypeScript
+
+```typescript
+import { Pool, QueryResult } from &quot;pg&quot;;
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  created_at: Date;
+}
+
+// Type the query result
+const result: QueryResult&lt;User&gt; = await pool.query&lt;User&gt;(
+  &quot;SELECT * FROM users WHERE id = $1&quot;,
+  [userId]
+);
+
+const user: User | undefined = result.rows[0];
+
+// Type-safe insert
+async function createUser(
+  pool: Pool,
+  email: string,
+  name: string
+): Promise&lt;User&gt; {
+  const result = await pool.query&lt;User&gt;(
+    &quot;INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *&quot;,
+    [email, name]
+  );
+  return result.rows[0];
+}
+```
+
+## Pool with Entra ID Token Refresh
+
+For long-running applications, tokens expire and need refresh:
+
+```typescript
+import { Pool, PoolConfig } from &quot;pg&quot;;
+import { DefaultAzureCredential, AccessToken } from &quot;@azure/identity&quot;;
+
+class AzurePostgresPool {
+  private pool: Pool | null = null;
+  private credential: DefaultAzureCredential;
+  private tokenExpiry: Date | null = null;
+  private config: Omit&lt;PoolConfig, &quot;password&quot;&gt;;
+
+  constructor(config: Omit&lt;PoolConfig, &quot;password&quot;&gt;) {
+    this.credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+    this.config = config;
+  }
+
+  private async getToken(): Promise&lt;string&gt; {
+    const tokenResponse = await this.credential.getToken(
+      &quot;https://ossrdbms-aad.database.windows.net/.default&quot;
+    );
+    this.tokenExpiry = new Date(tokenResponse.expiresOnTimestamp);
+    return tokenResponse.token;
+  }
+
+  private isTokenExpired(): boolean {
+    if (!this.tokenExpiry) return true;
+    // Refresh 5 minutes before expiry
+    return new Date() &gt;= new Date(this.tokenExpiry.getTime() - 5 * 60 * 1000);
+  }
+
+  async getPool(): Promise&lt;Pool&gt; {
+    if (this.pool &amp;&amp; !this.isTokenExpired()) {
+      return this.pool;
+    }
+
+    // Close existing pool if token expired
+    if (this.pool) {
+      await this.pool.end();
+    }
+
+    const token = await this.getToken();
+    this.pool = new Pool({
+      ...this.config,
+      password: token
+    });
+
+    return this.pool;
+  }
+
+  async query&lt;T&gt;(text: string, params?: any[]): Promise&lt;QueryResult&lt;T&gt;&gt; {
+    const pool = await this.getPool();
+    return pool.query&lt;T&gt;(text, params);
+  }
+
+  async end(): Promise&lt;void&gt; {
+    if (this.pool) {
+      await this.pool.end();
+      this.pool = null;
+    }
+  }
+}
+
+// Usage
+const azurePool = new AzurePostgresPool({
+  host: process.env.AZURE_POSTGRESQL_HOST!,
+  database: process.env.AZURE_POSTGRESQL_DATABASE!,
+  user: process.env.AZURE_POSTGRESQL_USER!,
+  port: 5432,
+  ssl: { rejectUnauthorized: true },
+  max: 20
+});
+
+const result = await azurePool.query(&quot;SELECT NOW()&quot;);
+```
+
+## Error Handling
+
+```typescript
+import { DatabaseError } from &quot;pg&quot;;
+
+try {
+  await pool.query(&quot;INSERT INTO users (email) VALUES ($1)&quot;, [email]);
+} catch (error) {
+  if (error instanceof DatabaseError) {
+    switch (error.code) {
+      case &quot;23505&quot;:  // unique_violation
+        console.error(&quot;Duplicate entry:&quot;, error.detail);
+        break;
+      case &quot;23503&quot;:  // foreign_key_violation
+        console.error(&quot;Foreign key constraint failed:&quot;, error.detail);
+        break;
+      case &quot;42P01&quot;:  // undefined_table
+        console.error(&quot;Table does not exist:&quot;, error.message);
+        break;
+      case &quot;28P01&quot;:  // invalid_password
+        console.error(&quot;Authentication failed&quot;);
+        break;
+      case &quot;57P03&quot;:  // cannot_connect_now (server starting)
+        console.error(&quot;Server unavailable, retry later&quot;);
+        break;
+      default:
+        console.error(`PostgreSQL error ${error.code}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## Connection String Format
+
+```typescript
+// Alternative: Use connection string
+const pool = new Pool({
+  connectionString: `postgres://${user}:${password}@${host}:${port}/${database}?sslmode=require`
+});
+
+// With SSL required (Azure)
+const connectionString = 
+  `postgres://user:password@server.postgres.database.azure.com:5432/mydb?sslmode=require`;
+```
+
+## Pool Events
+
+```typescript
+const pool = new Pool({ /* config */ });
+
+pool.on(&quot;connect&quot;, (client) =&gt; {
+  console.log(&quot;New client connected to pool&quot;);
+});
+
+pool.on(&quot;acquire&quot;, (client) =&gt; {
+  console.log(&quot;Client checked out from pool&quot;);
+});
+
+pool.on(&quot;release&quot;, (err, client) =&gt; {
+  console.log(&quot;Client returned to pool&quot;);
+});
+
+pool.on(&quot;remove&quot;, (client) =&gt; {
+  console.log(&quot;Client removed from pool&quot;);
+});
+
+pool.on(&quot;error&quot;, (err, client) =&gt; {
+  console.error(&quot;Unexpected pool error:&quot;, err);
+});
+```
+
+## Azure-Specific Configuration
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| `ssl.rejectUnauthorized` | `true` | Always use SSL for Azure |
+| Default port | `5432` | Standard PostgreSQL port |
+| PgBouncer port | `6432` | Use when PgBouncer enabled |
+| Token scope | `https://ossrdbms-aad.database.windows.net/.default` | Entra ID token scope |
+| Token lifetime | ~1 hour | Refresh before expiry |
+
+## Pool Sizing Guidelines
+
+| Workload | `max` | `idleTimeoutMillis` |
+|----------|-------|---------------------|
+| Light (dev/test) | 5-10 | 30000 |
+| Medium (production) | 20-30 | 30000 |
+| Heavy (high concurrency) | 50-100 | 10000 |
+
+&gt; **Note**: Azure PostgreSQL has connection limits based on SKU. Check your tier&#x27;s max connections.
+
+## Best Practices
+
+1. **Always use connection pools** for production applications
+2. **Use parameterized queries** - Never concatenate user input
+3. **Always close connections** - Use `try/finally` or connection pools
+4. **Enable SSL** - Required for Azure (`ssl: { rejectUnauthorized: true }`)
+5. **Handle token refresh** - Entra ID tokens expire after ~1 hour
+6. **Set connection timeouts** - Avoid hanging on network issues
+7. **Use transactions** - For multi-statement operations
+8. **Monitor pool metrics** - Track `pool.totalCount`, `pool.idleCount`, `pool.waitingCount`
+9. **Graceful shutdown** - Call `pool.end()` on application termination
+10. **Use TypeScript generics** - Type your query results for safety
+
+## Key Types
+
+```typescript
+import {
+  Client,
+  Pool,
+  PoolClient,
+  PoolConfig,
+  QueryResult,
+  QueryResultRow,
+  DatabaseError,
+  QueryConfig
+} from &quot;pg&quot;;
+```
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| node-postgres Docs | https://node-postgres.com |
+| npm Package | https://www.npmjs.com/package/pg |
+| GitHub Repository | https://github.com/brianc/node-postgres |
+| Azure PostgreSQL Docs | https://learn.microsoft.com/azure/postgresql/flexible-server/ |
+| Passwordless Connection | https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-connect-with-managed-identity |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

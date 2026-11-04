@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-servicebus-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 操作 Service Bus 的 queue、topic、session 與 dead letter">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-servicebus-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-servicebus-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python 操作 Service Bus 的 queue、topic、session 與 dead letter</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-servicebus-py
+description: |
+  Python 版的 Azure Service Bus 訊息 SDK。用於 queue、topic、subscription 和企業級訊息模式。
+  Triggers: &quot;service bus&quot;, &quot;ServiceBusClient&quot;, &quot;queue&quot;, &quot;topic&quot;, &quot;subscription&quot;, &quot;message broker&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-servicebus
+---
+
+# Python 版 Azure Service Bus SDK
+
+企業級訊息服務，用 queue 和 pub/sub topic 做可靠的雲端通訊。
+
+## 安裝
+
+```bash
+pip install azure-servicebus azure-identity
+```
+
+## 環境變數
+
+```bash
+SERVICEBUS_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # 所有驗證方式都必填
+SERVICEBUS_QUEUE_NAME=myqueue  # queue 操作必填
+SERVICEBUS_TOPIC_NAME=mytopic  # topic 操作必填
+SERVICEBUS_SUBSCRIPTION_NAME=mysubscription  # subscription 操作必填
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個程式碼範例都適用兩條規則：**
+&gt;
+&gt; 1. **優先用 `DefaultAzureCredential`。** 它在本機（Azure CLI / VS Code / Developer CLI）和 Azure 上（managed identity、workload identity）都能用，不用改程式碼。避免用 connection string、account key 或 API key，它們會繞過 Entra 的稽核和輪替。
+&gt;    - 本機開發：直接用 `DefaultAzureCredential` 就好。
+&gt;    - Production：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限縮在 production 安全的 credential。
+&gt; 2. **每個 client 都用 context manager 包起來**，這樣 HTTP transport、socket 和 token cache 才會確實釋放：
+&gt;    - 同步：`with &lt;Client&gt;(...) as client:`
+&gt;    - 非同步：`async with &lt;Client&gt;(...) as client:` **而且** `async with DefaultAzureCredential() as credential:`（來自 `azure.identity.aio`）
+&gt;
+&gt; 範例片段可能會簡化這段設定，但 production 的程式碼一定要兩條規則都遵守。
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.servicebus import ServiceBusClient
+
+# 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在 production 直接用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+namespace = &quot;&lt;namespace&gt;.servicebus.windows.net&quot;
+
+with ServiceBusClient(
+    fully_qualified_namespace=namespace,
+    credential=credential
+) as client:
+    # 在這裡使用 client（各種操作請看後面的章節）
+    ...
+```
+
+## Client 類型
+
+| Client | 用途 | 取得方式 |
+|--------|---------|----------|
+| `ServiceBusClient` | 連線管理 | 直接建立實例 |
+| `ServiceBusSender` | 傳送訊息 | `client.get_queue_sender()` / `get_topic_sender()` |
+| `ServiceBusReceiver` | 接收訊息 | `client.get_queue_receiver()` / `get_subscription_receiver()` |
+
+## 傳送訊息（非同步）
+
+```python
+import asyncio
+from azure.servicebus.aio import ServiceBusClient
+from azure.servicebus import ServiceBusMessage
+from azure.identity.aio import DefaultAzureCredential
+
+async def send_messages():
+    credential = DefaultAzureCredential()
+    
+    async with ServiceBusClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        credential=credential
+    ) as client:
+        sender = client.get_queue_sender(queue_name=&quot;myqueue&quot;)
+        
+        async with sender:
+            # 單一訊息
+            message = ServiceBusMessage(&quot;Hello, Service Bus!&quot;)
+            await sender.send_messages(message)
+            
+            # 一批訊息
+            messages = [ServiceBusMessage(f&quot;Message {i}&quot;) for i in range(10)]
+            await sender.send_messages(messages)
+            
+            # Message batch（用來控制大小）
+            batch = await sender.create_message_batch()
+            for i in range(100):
+                try:
+                    batch.add_message(ServiceBusMessage(f&quot;Batch message {i}&quot;))
+                except ValueError:  # Batch 滿了
+                    await sender.send_messages(batch)
+                    batch = await sender.create_message_batch()
+                    batch.add_message(ServiceBusMessage(f&quot;Batch message {i}&quot;))
+            await sender.send_messages(batch)
+
+asyncio.run(send_messages())
+```
+
+## 接收訊息（非同步）
+
+```python
+async def receive_messages():
+    credential = DefaultAzureCredential()
+    
+    async with ServiceBusClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        credential=credential
+    ) as client:
+        receiver = client.get_queue_receiver(queue_name=&quot;myqueue&quot;)
+        
+        async with receiver:
+            # 批次接收
+            messages = await receiver.receive_messages(
+                max_message_count=10,
+                max_wait_time=5  # 秒
+            )
+            
+            for msg in messages:
+                print(f&quot;Received: {str(msg)}&quot;)
+                await receiver.complete_message(msg)  # 從 queue 移除
+
+asyncio.run(receive_messages())
+```
+
+## 接收模式
+
+| 模式 | 行為 | 使用情境 |
+|------|----------|----------|
+| `PEEK_LOCK`（預設） | 訊息會被鎖住，必須 complete 或 abandon | 可靠處理 |
+| `RECEIVE_AND_DELETE` | 一接收就立刻移除 | 最多一次（at-most-once）傳遞 |
+
+```python
+from azure.servicebus import ServiceBusReceiveMode
+
+receiver = client.get_queue_receiver(
+    queue_name=&quot;myqueue&quot;,
+    receive_mode=ServiceBusReceiveMode.RECEIVE_AND_DELETE
+)
+```
+
+## 訊息結算（Settlement）
+
+```python
+async with receiver:
+    messages = await receiver.receive_messages(max_message_count=1)
+    
+    for msg in messages:
+        try:
+            # 處理訊息...
+            await receiver.complete_message(msg)  # 成功 - 從 queue 移除
+        except ProcessingError:
+            await receiver.abandon_message(msg)  # 稍後重試
+        except PermanentError:
+            await receiver.dead_letter_message(
+                msg,
+                reason=&quot;ProcessingFailed&quot;,
+                error_description=&quot;Could not process&quot;
+            )
+```
+
+| 動作 | 效果 |
+|--------|--------|
+| `complete_message()` | 從 queue 移除（成功） |
+| `abandon_message()` | 釋放 lock，立刻重試 |
+| `dead_letter_message()` | 移到 dead-letter queue |
+| `defer_message()` | 先擱置，之後用 sequence number 接收 |
+
+## Topic 與 Subscription
+
+```python
+# 傳送到 topic
+sender = client.get_topic_sender(topic_name=&quot;mytopic&quot;)
+async with sender:
+    await sender.send_messages(ServiceBusMessage(&quot;Topic message&quot;))
+
+# 從 subscription 接收
+receiver = client.get_subscription_receiver(
+    topic_name=&quot;mytopic&quot;,
+    subscription_name=&quot;mysubscription&quot;
+)
+async with receiver:
+    messages = await receiver.receive_messages(max_message_count=10)
+```
+
+## Session（FIFO）
+
+```python
+# 帶 session 傳送
+message = ServiceBusMessage(&quot;Session message&quot;)
+message.session_id = &quot;order-123&quot;
+await sender.send_messages(message)
+
+# 從特定 session 接收
+receiver = client.get_queue_receiver(
+    queue_name=&quot;session-queue&quot;,
+    session_id=&quot;order-123&quot;
+)
+
+# 從下一個可用的 session 接收
+from azure.servicebus import NEXT_AVAILABLE_SESSION
+receiver = client.get_queue_receiver(
+    queue_name=&quot;session-queue&quot;,
+    session_id=NEXT_AVAILABLE_SESSION
+)
+```
+
+## 排程訊息
+
+```python
+from datetime import datetime, timedelta, timezone
+
+message = ServiceBusMessage(&quot;Scheduled message&quot;)
+scheduled_time = datetime.now(timezone.utc) + timedelta(minutes=10)
+
+# 排程訊息
+sequence_number = await sender.schedule_messages(message, scheduled_time)
+
+# 取消排程的訊息
+await sender.cancel_scheduled_messages(sequence_number)
+```
+
+## Dead-Letter Queue
+
+```python
+from azure.servicebus import ServiceBusSubQueue
+
+# 從 dead-letter queue 接收
+dlq_receiver = client.get_queue_receiver(
+    queue_name=&quot;myqueue&quot;,
+    sub_queue=ServiceBusSubQueue.DEAD_LETTER
+)
+
+async with dlq_receiver:
+    messages = await dlq_receiver.receive_messages(max_message_count=10)
+    for msg in messages:
+        print(f&quot;Dead-lettered: {msg.dead_letter_reason}&quot;)
+        await dlq_receiver.complete_message(msg)
+```
+
+## 同步 Client（適合簡單的 script）
+
+```python
+from azure.servicebus import ServiceBusClient, ServiceBusMessage
+from azure.identity import DefaultAzureCredential
+
+with ServiceBusClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    credential=DefaultAzureCredential()
+) as client:
+    with client.get_queue_sender(&quot;myqueue&quot;) as sender:
+        sender.send_messages(ServiceBusMessage(&quot;Sync message&quot;))
+    
+    with client.get_queue_receiver(&quot;myqueue&quot;) as receiver:
+        for msg in receiver:
+            print(str(msg))
+            receiver.complete_message(msg)
+```
+
+## 最佳實務
+
+1. **同步或非同步選一個，然後保持一致。** 同一條呼叫路徑裡，不要混用 `azure.xxx` 同步 client 和 `azure.xxx.aio` 非同步 client。每個 module 只選一種模式。
+2. **client 和非同步 credential 一律用 context manager。** 每個 client 都用 `with Client(...) as client:`（同步）或 `async with Client(...) as client:`（非同步）包起來，才能正確清理。非同步的 `DefaultAzureCredential`（來自 `azure.identity.aio`）也要用 `async with credential:`，token 和 transport 才會清乾淨。
+3. **用 `DefaultAzureCredential`**，在本機開發和 Azure 之間都能用同一套驗證（盡量避免 connection string／API key）。
+4. production 的工作負載**用非同步 client**
+5. 處理成功後要 **complete 訊息**
+6. poison message 要**用 dead-letter queue**
+7. 要依序、FIFO 處理就**用 session**
+8. 高吞吐量的情境**用 message batch**
+9. **設定 `max_wait_time`**，避免無限期卡住
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/patterns.md](references/patterns.md) | Competing consumer、session、重試模式、request-response、交易 |
+| [references/dead-letter.md](references/dead-letter.md) | DLQ 處理、poison message、重新處理策略 |
+| [scripts/setup_servicebus.py](scripts/setup_servicebus.py) | 管理 queue／topic／subscription 和監控 DLQ 的 CLI |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-servicebus-py
+description: |
+  Azure Service Bus SDK for Python messaging. Use for queues, topics, subscriptions, and enterprise messaging patterns.
+  Triggers: &quot;service bus&quot;, &quot;ServiceBusClient&quot;, &quot;queue&quot;, &quot;topic&quot;, &quot;subscription&quot;, &quot;message broker&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-servicebus
+---
+
+# Azure Service Bus SDK for Python
+
+Enterprise messaging for reliable cloud communication with queues and pub/sub topics.
+
+## Installation
+
+```bash
+pip install azure-servicebus azure-identity
+```
+
+## Environment Variables
+
+```bash
+SERVICEBUS_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # Required for all auth methods
+SERVICEBUS_QUEUE_NAME=myqueue  # Required for queue operations
+SERVICEBUS_TOPIC_NAME=mytopic  # Required for topic operations
+SERVICEBUS_SUBSCRIPTION_NAME=mysubscription  # Required for subscription operations
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential`.** It works locally (Azure CLI / VS Code / Developer CLI) and in Azure (managed identity, workload identity) with no code change. Avoid connection strings, account/API keys — they bypass Entra audit and rotation.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Wrap every client in a context manager** so HTTP transports, sockets, and token caches are released deterministically:
+&gt;    - Sync: `with &lt;Client&gt;(...) as client:`
+&gt;    - Async: `async with &lt;Client&gt;(...) as client:` **and** `async with DefaultAzureCredential() as credential:` (from `azure.identity.aio`)
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.servicebus import ServiceBusClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+namespace = &quot;&lt;namespace&gt;.servicebus.windows.net&quot;
+
+with ServiceBusClient(
+    fully_qualified_namespace=namespace,
+    credential=credential
+) as client:
+    # Use client here (see following sections for operations)
+    ...
+```
+
+## Client Types
+
+| Client | Purpose | Get From |
+|--------|---------|----------|
+| `ServiceBusClient` | Connection management | Direct instantiation |
+| `ServiceBusSender` | Send messages | `client.get_queue_sender()` / `get_topic_sender()` |
+| `ServiceBusReceiver` | Receive messages | `client.get_queue_receiver()` / `get_subscription_receiver()` |
+
+## Send Messages (Async)
+
+```python
+import asyncio
+from azure.servicebus.aio import ServiceBusClient
+from azure.servicebus import ServiceBusMessage
+from azure.identity.aio import DefaultAzureCredential
+
+async def send_messages():
+    credential = DefaultAzureCredential()
+    
+    async with ServiceBusClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        credential=credential
+    ) as client:
+        sender = client.get_queue_sender(queue_name=&quot;myqueue&quot;)
+        
+        async with sender:
+            # Single message
+            message = ServiceBusMessage(&quot;Hello, Service Bus!&quot;)
+            await sender.send_messages(message)
+            
+            # Batch of messages
+            messages = [ServiceBusMessage(f&quot;Message {i}&quot;) for i in range(10)]
+            await sender.send_messages(messages)
+            
+            # Message batch (for size control)
+            batch = await sender.create_message_batch()
+            for i in range(100):
+                try:
+                    batch.add_message(ServiceBusMessage(f&quot;Batch message {i}&quot;))
+                except ValueError:  # Batch full
+                    await sender.send_messages(batch)
+                    batch = await sender.create_message_batch()
+                    batch.add_message(ServiceBusMessage(f&quot;Batch message {i}&quot;))
+            await sender.send_messages(batch)
+
+asyncio.run(send_messages())
+```
+
+## Receive Messages (Async)
+
+```python
+async def receive_messages():
+    credential = DefaultAzureCredential()
+    
+    async with ServiceBusClient(
+        fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+        credential=credential
+    ) as client:
+        receiver = client.get_queue_receiver(queue_name=&quot;myqueue&quot;)
+        
+        async with receiver:
+            # Receive batch
+            messages = await receiver.receive_messages(
+                max_message_count=10,
+                max_wait_time=5  # seconds
+            )
+            
+            for msg in messages:
+                print(f&quot;Received: {str(msg)}&quot;)
+                await receiver.complete_message(msg)  # Remove from queue
+
+asyncio.run(receive_messages())
+```
+
+## Receive Modes
+
+| Mode | Behavior | Use Case |
+|------|----------|----------|
+| `PEEK_LOCK` (default) | Message locked, must complete/abandon | Reliable processing |
+| `RECEIVE_AND_DELETE` | Removed immediately on receive | At-most-once delivery |
+
+```python
+from azure.servicebus import ServiceBusReceiveMode
+
+receiver = client.get_queue_receiver(
+    queue_name=&quot;myqueue&quot;,
+    receive_mode=ServiceBusReceiveMode.RECEIVE_AND_DELETE
+)
+```
+
+## Message Settlement
+
+```python
+async with receiver:
+    messages = await receiver.receive_messages(max_message_count=1)
+    
+    for msg in messages:
+        try:
+            # Process message...
+            await receiver.complete_message(msg)  # Success - remove from queue
+        except ProcessingError:
+            await receiver.abandon_message(msg)  # Retry later
+        except PermanentError:
+            await receiver.dead_letter_message(
+                msg,
+                reason=&quot;ProcessingFailed&quot;,
+                error_description=&quot;Could not process&quot;
+            )
+```
+
+| Action | Effect |
+|--------|--------|
+| `complete_message()` | Remove from queue (success) |
+| `abandon_message()` | Release lock, retry immediately |
+| `dead_letter_message()` | Move to dead-letter queue |
+| `defer_message()` | Set aside, receive by sequence number |
+
+## Topics and Subscriptions
+
+```python
+# Send to topic
+sender = client.get_topic_sender(topic_name=&quot;mytopic&quot;)
+async with sender:
+    await sender.send_messages(ServiceBusMessage(&quot;Topic message&quot;))
+
+# Receive from subscription
+receiver = client.get_subscription_receiver(
+    topic_name=&quot;mytopic&quot;,
+    subscription_name=&quot;mysubscription&quot;
+)
+async with receiver:
+    messages = await receiver.receive_messages(max_message_count=10)
+```
+
+## Sessions (FIFO)
+
+```python
+# Send with session
+message = ServiceBusMessage(&quot;Session message&quot;)
+message.session_id = &quot;order-123&quot;
+await sender.send_messages(message)
+
+# Receive from specific session
+receiver = client.get_queue_receiver(
+    queue_name=&quot;session-queue&quot;,
+    session_id=&quot;order-123&quot;
+)
+
+# Receive from next available session
+from azure.servicebus import NEXT_AVAILABLE_SESSION
+receiver = client.get_queue_receiver(
+    queue_name=&quot;session-queue&quot;,
+    session_id=NEXT_AVAILABLE_SESSION
+)
+```
+
+## Scheduled Messages
+
+```python
+from datetime import datetime, timedelta, timezone
+
+message = ServiceBusMessage(&quot;Scheduled message&quot;)
+scheduled_time = datetime.now(timezone.utc) + timedelta(minutes=10)
+
+# Schedule message
+sequence_number = await sender.schedule_messages(message, scheduled_time)
+
+# Cancel scheduled message
+await sender.cancel_scheduled_messages(sequence_number)
+```
+
+## Dead-Letter Queue
+
+```python
+from azure.servicebus import ServiceBusSubQueue
+
+# Receive from dead-letter queue
+dlq_receiver = client.get_queue_receiver(
+    queue_name=&quot;myqueue&quot;,
+    sub_queue=ServiceBusSubQueue.DEAD_LETTER
+)
+
+async with dlq_receiver:
+    messages = await dlq_receiver.receive_messages(max_message_count=10)
+    for msg in messages:
+        print(f&quot;Dead-lettered: {msg.dead_letter_reason}&quot;)
+        await dlq_receiver.complete_message(msg)
+```
+
+## Sync Client (for simple scripts)
+
+```python
+from azure.servicebus import ServiceBusClient, ServiceBusMessage
+from azure.identity import DefaultAzureCredential
+
+with ServiceBusClient(
+    fully_qualified_namespace=&quot;&lt;namespace&gt;.servicebus.windows.net&quot;,
+    credential=DefaultAzureCredential()
+) as client:
+    with client.get_queue_sender(&quot;myqueue&quot;) as sender:
+        sender.send_messages(ServiceBusMessage(&quot;Sync message&quot;))
+    
+    with client.get_queue_receiver(&quot;myqueue&quot;) as receiver:
+        for msg in receiver:
+            print(str(msg))
+            receiver.complete_message(msg)
+```
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.xxx` sync clients with `azure.xxx.aio` async clients in the same call path. Choose one mode per module.
+2. **Always use context managers for clients and async credentials.** Wrap every client in `with Client(...) as client:` (sync) or `async with Client(...) as client:` (async) for proper cleanup. For async `DefaultAzureCredential` from `azure.identity.aio`, also use `async with credential:` so tokens and transports are cleaned up.
+3. **Use `DefaultAzureCredential`** for portable auth across local dev and Azure (avoid connection strings / API keys when possible).
+4. **Use async client** for production workloads
+5. **Complete messages** after successful processing
+6. **Use dead-letter queue** for poison messages
+7. **Use sessions** for ordered, FIFO processing
+8. **Use message batches** for high-throughput scenarios
+9. **Set `max_wait_time`** to avoid infinite blocking
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/patterns.md](references/patterns.md) | Competing consumers, sessions, retry patterns, request-response, transactions |
+| [references/dead-letter.md](references/dead-letter.md) | DLQ handling, poison messages, reprocessing strategies |
+| [scripts/setup_servicebus.py](scripts/setup_servicebus.py) | CLI for queue/topic/subscription management and DLQ monitoring |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

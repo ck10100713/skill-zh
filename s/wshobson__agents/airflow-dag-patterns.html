@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>airflow-dag-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 operator、sensor、測試和部署的最佳實務，建構可上線的 Airflow DAG">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>airflow-dag-patterns</h1>
+<p class="meta">wshobson ｜ 資料與分析 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/data-engineering/skills/airflow-dag-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 operator、sensor、測試和部署的最佳實務，建構可上線的 Airflow DAG</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: airflow-dag-patterns
+description: 用 operator、sensor、測試和部署的最佳實務，建構可上線的 Apache Airflow DAG。在建立資料 pipeline、編排工作流程或排程批次作業時使用。
+---
+
+# Apache Airflow DAG 模式
+
+可上線的 Apache Airflow 模式，涵蓋 DAG 設計、operator、sensor、測試和部署策略。
+
+## 何時使用這個 Skill
+
+- 用 Airflow 建立資料 pipeline 編排
+- 設計 DAG 結構和相依關係
+- 實作自訂的 operator 和 sensor
+- 在本機測試 Airflow DAG
+- 在正式環境架設 Airflow
+- 除錯失敗的 DAG 執行
+
+## 核心概念
+
+### 1. DAG 設計原則
+
+| 原則       | 說明                         |
+| --------------- | ----------------------------------- |
+| **Idempotent**  | 跑兩次得到相同結果  |
+| **Atomic**      | task 要嘛完全成功，要嘛完全失敗    |
+| **Incremental** | 只處理新增或有變動的資料       |
+| **Observable**  | 每一步都有 log、metric、警報 |
+
+### 2. Task 相依關係
+
+```python
+# Linear
+task1 &gt;&gt; task2 &gt;&gt; task3
+
+# Fan-out
+task1 &gt;&gt; [task2, task3, task4]
+
+# Fan-in
+[task1, task2, task3] &gt;&gt; task4
+
+# Complex
+task1 &gt;&gt; task2 &gt;&gt; task4
+task1 &gt;&gt; task3 &gt;&gt; task4
+```
+
+## 快速開始
+
+```python
+# dags/example_dag.py
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.empty import EmptyOperator
+
+default_args = {
+    &#x27;owner&#x27;: &#x27;data-team&#x27;,
+    &#x27;depends_on_past&#x27;: False,
+    &#x27;email_on_failure&#x27;: True,
+    &#x27;email_on_retry&#x27;: False,
+    &#x27;retries&#x27;: 3,
+    &#x27;retry_delay&#x27;: timedelta(minutes=5),
+    &#x27;retry_exponential_backoff&#x27;: True,
+    &#x27;max_retry_delay&#x27;: timedelta(hours=1),
+}
+
+with DAG(
+    dag_id=&#x27;example_etl&#x27;,
+    default_args=default_args,
+    description=&#x27;Example ETL pipeline&#x27;,
+    schedule=&#x27;0 6 * * *&#x27;,  # 每天早上 6 點
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+    tags=[&#x27;etl&#x27;, &#x27;example&#x27;],
+    max_active_runs=1,
+) as dag:
+
+    start = EmptyOperator(task_id=&#x27;start&#x27;)
+
+    def extract_data(**context):
+        execution_date = context[&#x27;ds&#x27;]
+        # 在這裡寫 extract 邏輯
+        return {&#x27;records&#x27;: 1000}
+
+    extract = PythonOperator(
+        task_id=&#x27;extract&#x27;,
+        python_callable=extract_data,
+    )
+
+    end = EmptyOperator(task_id=&#x27;end&#x27;)
+
+    start &gt;&gt; extract &gt;&gt; end
+```
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`。上面的導覽層不夠用時，再讀那個檔案。
+
+## 最佳實務
+
+### 該做的
+
+- **用 TaskFlow API** - 程式碼更乾淨，XCom 自動處理
+- **設定 timeout** - 避免殭屍 task
+- **用 `mode=&#x27;reschedule&#x27;`** - 給 sensor 用，釋放 worker
+- **測試 DAG** - 單元測試和整合測試
+- **Idempotent 的 task** - 重試起來很安全
+
+### 不該做的
+
+- **不要用 `depends_on_past=True`** - 會造成瓶頸
+- **不要寫死日期** - 用 `{{ ds }}` macro
+- **不要用全域 state** - task 應該是無狀態的
+- **不要盲目跳過 catchup** - 要先理解影響
+- **不要把繁重的邏輯放在 DAG 檔案裡** - 從模組 import</pre></section><section><h2>英文原文</h2><pre>---
+name: airflow-dag-patterns
+description: Build production Apache Airflow DAGs with best practices for operators, sensors, testing, and deployment. Use when creating data pipelines, orchestrating workflows, or scheduling batch jobs.
+---
+
+# Apache Airflow DAG Patterns
+
+Production-ready patterns for Apache Airflow including DAG design, operators, sensors, testing, and deployment strategies.
+
+## When to Use This Skill
+
+- Creating data pipeline orchestration with Airflow
+- Designing DAG structures and dependencies
+- Implementing custom operators and sensors
+- Testing Airflow DAGs locally
+- Setting up Airflow in production
+- Debugging failed DAG runs
+
+## Core Concepts
+
+### 1. DAG Design Principles
+
+| Principle       | Description                         |
+| --------------- | ----------------------------------- |
+| **Idempotent**  | Running twice produces same result  |
+| **Atomic**      | Tasks succeed or fail completely    |
+| **Incremental** | Process only new/changed data       |
+| **Observable**  | Logs, metrics, alerts at every step |
+
+### 2. Task Dependencies
+
+```python
+# Linear
+task1 &gt;&gt; task2 &gt;&gt; task3
+
+# Fan-out
+task1 &gt;&gt; [task2, task3, task4]
+
+# Fan-in
+[task1, task2, task3] &gt;&gt; task4
+
+# Complex
+task1 &gt;&gt; task2 &gt;&gt; task4
+task1 &gt;&gt; task3 &gt;&gt; task4
+```
+
+## Quick Start
+
+```python
+# dags/example_dag.py
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.empty import EmptyOperator
+
+default_args = {
+    &#x27;owner&#x27;: &#x27;data-team&#x27;,
+    &#x27;depends_on_past&#x27;: False,
+    &#x27;email_on_failure&#x27;: True,
+    &#x27;email_on_retry&#x27;: False,
+    &#x27;retries&#x27;: 3,
+    &#x27;retry_delay&#x27;: timedelta(minutes=5),
+    &#x27;retry_exponential_backoff&#x27;: True,
+    &#x27;max_retry_delay&#x27;: timedelta(hours=1),
+}
+
+with DAG(
+    dag_id=&#x27;example_etl&#x27;,
+    default_args=default_args,
+    description=&#x27;Example ETL pipeline&#x27;,
+    schedule=&#x27;0 6 * * *&#x27;,  # Daily at 6 AM
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+    tags=[&#x27;etl&#x27;, &#x27;example&#x27;],
+    max_active_runs=1,
+) as dag:
+
+    start = EmptyOperator(task_id=&#x27;start&#x27;)
+
+    def extract_data(**context):
+        execution_date = context[&#x27;ds&#x27;]
+        # Extract logic here
+        return {&#x27;records&#x27;: 1000}
+
+    extract = PythonOperator(
+        task_id=&#x27;extract&#x27;,
+        python_callable=extract_data,
+    )
+
+    end = EmptyOperator(task_id=&#x27;end&#x27;)
+
+    start &gt;&gt; extract &gt;&gt; end
+```
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices
+
+### Do&#x27;s
+
+- **Use TaskFlow API** - Cleaner code, automatic XCom
+- **Set timeouts** - Prevent zombie tasks
+- **Use `mode=&#x27;reschedule&#x27;`** - For sensors, free up workers
+- **Test DAGs** - Unit tests and integration tests
+- **Idempotent tasks** - Safe to retry
+
+### Don&#x27;ts
+
+- **Don&#x27;t use `depends_on_past=True`** - Creates bottlenecks
+- **Don&#x27;t hardcode dates** - Use `{{ ds }}` macros
+- **Don&#x27;t use global state** - Tasks should be stateless
+- **Don&#x27;t skip catchup blindly** - Understand implications
+- **Don&#x27;t put heavy logic in DAG file** - Import from modules</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

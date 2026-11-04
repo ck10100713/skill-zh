@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-kusto-irql-graph｜Skill 寫法圖鑑</title>
+<meta name="description" content="把 KQL/IRQL 查詢結果用 Lift_To_Graph 轉成 Kusto Explorer 的視覺化 graph">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-kusto-irql-graph</h1>
+<p class="meta">Microsoft ｜ 資料與分析 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-kusto-graph-skills/skills/azure-kusto-irql-graph/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">把 KQL/IRQL 查詢結果用 Lift_To_Graph 轉成 Kusto Explorer 的視覺化 graph</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-kusto-irql-graph
+description: &quot;把 IRQL graph function 套用到 KQL 或 IRQL 的查詢結果上，用於 Kusto Explorer 視覺化。產生 Lift_To_Graph 對應，並組合 Graph_Render_View、Graph_Fold_By_Property、Extract_Node_*、Enrich_Node_* 和 Enrich_Graph_* 的呼叫。接受使用者提供的查詢，或有限度的基本自然語言來源需求；它不是通用的自然語言轉 KQL/IRQL skill。WHEN: Lift_To_Graph, Graph_Render_View, Graph_Fold_By_Property, IRQL graph enrichment, graph mapping for existing query results, icon-decorated graph, fold graph nodes. 要做原生 make-graph 分析、graph-match、最短路徑、連通元件或持久化 graph，請用 azure-kusto-graph。&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.1&quot;
+---
+
+# IRQL Graph Function：從查詢結果到視覺化
+
+把 IRQL graph function 家族套用到表格結果上。給定一個 KQL 或 IRQL 查詢，加上使用者對 graph 的描述，就產生 `Lift_To_Graph` 對應，並只組合需要的 stored graph function，在 Kusto Explorer 裡做視覺化、折疊、擷取或補充。來源查詢不一定要用 IRQL。
+
+## 範圍與路由
+
+| 需求 | 用哪個 |
+|---|---|
+| 把使用者提供的 KQL/IRQL 結果列轉成帶圖示的視覺化 graph | 這個 skill：`Lift_To_Graph` + `Graph_Render_View` |
+| 折疊 node，或套用 `Extract_Node_*`、`Enrich_Node_*`、`Enrich_Graph_*` | 這個 skill |
+| 用 `make-graph`、`graph-match`、最短路徑、連通元件、graph model 或 snapshot | `azure-kusto-graph` |
+| 從自然語言寫出不簡單的 KQL/IRQL 調查查詢 | 先用 Kusto 或 IRQL 的查詢產生 skill，再用這個 skill |
+
+如果需求同時有視覺化和原生 graph 分析，視覺化的 lift/render 部分用這個 skill，運算子語意用 `azure-kusto-graph`。除非使用者要求用原生 graph 運算子，否則不要把 graph-lift function 換成手工建的 edges 優先 graph。
+
+## 輸入約定
+
+- **偏好的輸入**：一個能跑、會產出表格結果的 KQL/IRQL 查詢，加上一段自然語言，描述想要的 node、edge、標籤、圖示、擷取、補充或折疊。
+- 這個 skill **不是自然語言轉 KQL 或轉 IRQL 的轉換器**。它把既有的查詢結果轉成 graph 視覺化。一般的自然語言轉 KQL 或轉 IRQL，請用專門的查詢產生 skill（另外提供）。
+- 保留使用者提供的查詢裡的取資料、join、過濾和聚合。只加 graph 對應需要的投影或合成 ID。
+- 只有在能直接對應到單一已知 table 或 IRQL `Get_*` selector、欄位很明顯、過濾條件也簡單時，才支援基本的自然語言來源需求。要說明你假設的來源，不准自己編 join、schema 或調查邏輯。
+- 不簡單的查詢建構，先用另一個 Kusto/IRQL 查詢產生 skill，再把這個 skill 套到它的輸出上。
+- 如果沒有查詢或輸出 schema，來源又不簡單，產生對應之前要先請使用者提供 KQL 查詢或它的結果欄位。
+
+## 啟動條件
+
+使用者有以下情況時用這個 skill：
+- 提供 KQL/IRQL 結果，並要求 IRQL graph 視覺化或對應
+- 提到 `Lift_To_Graph`、`Graph_Render_View` 或 `Graph_Fold_By_Property`
+- 要在 Kusto Explorer 裡做帶圖示的 node/edge 對應
+- 想依共同屬性折疊/收合 node
+- 要求透過 `Extract_Node_*`、`Enrich_Node_*` 或 `Enrich_Graph_*` 做 graph 擷取或補充
+
+只為了 `graph-match`、graph 路徑/元件、持久化 graph 或一般的 `make-graph` 建構，不要啟動這個 skill；這些屬於 `azure-kusto-graph`。
+
+**這不是自然語言轉 KQL/IRQL 的轉換器。** 輸入通常應該是一個能跑的 KQL 或 IRQL 查詢，它的結果需要 graph 視覺化。基本的自然語言來源需求只適用於單一 table/selector 這種簡單情況。一般的自然語言轉 KQL 或轉 IRQL，請用專門的查詢產生 skill（另外提供）。
+
+## 環境
+
+- **叢集**：`https://kc7001.eastus.kusto.windows.net`
+- **資料庫**：`ValdyTimes`、`JoJosHospital`（graph function 已預先部署）
+- **渲染**：Kusto Explorer 桌面應用程式（make-graph 視覺化視窗）
+- **工具**：`kusto_query`（透過 Azure MCP Server）
+
+### Function 前置檢查
+
+`Lift_To_Graph` 和 `Graph_Render_View` 是 stored function，不是 Kusto 內建運算子。對目標資料庫產生或執行 lift pipeline 之前，先檢查部署了什麼：
+
+```kql
+.show functions
+| where Name in~ (&quot;Lift_To_Graph&quot;, &quot;Graph_Render_View&quot;, &quot;Graph_Fold_By_Property&quot;)
+| project Name
+```
+
+- `Lift_To_Graph` 和 `Graph_Render_View` 是必要的。
+- 只有要求折疊時才需要 `Graph_Fold_By_Property`。
+- 用任何 `Extract_Node_*`、`Enrich_Node_*` 或 `Enrich_Graph_*` function 之前都要先檢查；不可用的話就省略選用的補充，除非使用者要你部署它。
+- 如果缺了必要的 function，而你有權限修改資料庫，**部署之前先請使用者確認**。然後用 [references/DEPLOY_IRQL_FUNCTIONS.md](references/DEPLOY_IRQL_FUNCTIONS.md) 裡的 `.create-or-alter function` 定義。執行相關的 `.create-or-alter` 區塊，再重跑前置檢查確認。
+- 如果沒有修改權限，告訴使用者缺哪些 function，並指引他們看 `references/DEPLOY_IRQL_FUNCTIONS.md` 手動部署。
+
+## IRQL Graph Function 家族
+
+### `Lift_To_Graph(T, mappingJson)`
+
+把任何表格形式的 KQL 結果轉成統一的 node + edge table。
+
+**輸入**：任意 table `T` + 一個 JSON 對應字串。
+**輸出**：`EntityType` 是 `&quot;node&quot;` 或 `&quot;edge&quot;` 的列，可直接給 `make-graph` 用。
+
+### `Graph_Render_View(T)`
+
+接收 `Lift_To_Graph` 的輸出，把 node/edge 拆開，呼叫 `make-graph` 開啟 Kusto Explorer 的 graph 視窗。
+
+### `Graph_Fold_By_Property(T, NodeType, PropertyName)`
+
+把某個型別、屬性值相同的 node 收合成單一 node。edge 會自動重新接線。
+
+### Graph 擷取與補充 Function
+
+這些是額外的 stored function，必須已經部署在目標資料庫上。它們**不**包含在 `references/DEPLOY_IRQL_FUNCTIONS.md` 裡。放進 pipeline 之前，先用 `.show functions` 確認可不可用。
+
+| Function | 操作 | 關鍵屬性 |
+|---|---|---|
+| `Extract_Node_Email_Sender_Domain(T, displayName)` | 在 node 屬性裡加上 `Domain` | `EmailSender` |
+| `Extract_Node_Employee_Firstname(T, displayName)` | 在 node 屬性裡加上 `Firstname` | `Name` |
+| `Extract_Node_Event_Network_Domain(T, displayName)` | 在 node 屬性裡加上 `DomainName` | `Url` |
+| `Enrich_Node_Ip_Employee(T, displayName)` | 在 IP node 上加員工資訊 | `ClientIp` |
+| `Enrich_Node_Username_Employee(T, displayName)` | 在使用者 node 上加員工資訊 | `Username` |
+| `Enrich_Node_Event_Authentication_Username(T, displayName)` | 加上認證上下文 | `Username` |
+| `Enrich_Node_Ip_Domain(T, displayName)` | 加上 DNS 網域 | `ClientIp` |
+| `Enrich_Node_Ip_Event_NetworkOutbound(T, displayName)` | 加上對外事件 | `ClientIp` |
+| `Enrich_Graph_Ip_Employee(T, mappingJson)` | 用員工 node 擴充 graph | `ClientIp` |
+| `Enrich_Graph_Username_Employee(T, mappingJson)` | 用員工 node 擴充 graph | `Username` |
+| `Enrich_Graph_Event_Authentication_Username(T, mappingJson)` | 用認證 node 擴充 | `Username` |
+
+## 對應 JSON Schema
+
+JSON 對應有兩個陣列：`node_types` 和 `edges`。
+
+### `node_types[]`
+
+| 欄位 | 必填 | 說明 |
+|---|---|---|
+| `type` | 是 | Node 型別標籤（例如 `&quot;User&quot;`、`&quot;Host&quot;`、`&quot;IP&quot;`） |
+| `id` | 是 | Node ID 的前綴；通常跟 type 一樣 |
+| `key` | 是 | 欄位名稱，它的值會成為 node 的身分 |
+| `props` | 是 | 要當作 node 屬性帶過去的欄位陣列 |
+| `defaults` | 否 | null/空屬性的備用值物件 |
+| `defIcon` | 否 | 這個 node 型別的預設圖示 URL |
+| `displayName` | 否 | 用來當顯示標籤的欄位（預設是 `id`） |
+| `color` | 否 | 取顏色的來源欄位 |
+| `size` | 否 | 取大小的來源欄位 |
+
+### `edges[]`
+
+| 欄位 | 必填 | 說明 |
+|---|---|---|
+| `type` | 是 | Edge 型別標籤（例如 `&quot;AuthenticatesTo&quot;`、`&quot;SentEmail&quot;`） |
+| `source` | 是 | `{&quot;id&quot;: &quot;&lt;prefix&gt;&quot;, &quot;type&quot;: &quot;&lt;NodeType&gt;&quot;}` |
+| `target` | 是 | `{&quot;id&quot;: &quot;&lt;prefix&gt;&quot;, &quot;type&quot;: &quot;&lt;NodeType&gt;&quot;}` |
+| `props` | 否 | 要當作 edge 屬性帶過去的欄位陣列 |
+| `displayName` | 否 | Edge 標籤用的欄位 |
+| `color` | 否 | Edge 顏色用的欄位 |
+
+### 圖示庫
+
+圖示用 `https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/` 裡的：
+- IP：`Public-IP-Addresses-(Classic).svg`
+- Host/VM：`Virtual-Machine.svg`
+- User：`Users.svg`
+- Email：`Mailbox.svg`（或 `azure-cds/command-1070-Mail.svg`）
+- Process：`App-Services.svg`
+- File：`Storage-Accounts.svg`
+- Alert：`Activity-Log.svg`
+- Domain：`DNS-Zones.svg`
+
+## 對應產生規則
+
+給定使用者提供的查詢欄位和對 graph 的描述，依下面步驟產生對應 JSON：
+
+1. **找出實體** -&gt; 每個不同的名詞變成一個 `node_type`
+2. **找出關係** -&gt; 每個動詞/介系詞變成一條 `edge`
+3. **對應到欄位** -&gt; 用提供的查詢實際產出的欄位；絕對不要假設有不存在的欄位
+4. **設定方向** -&gt; source 是動作的執行者，target 是被作用的對象
+5. **加上屬性** -&gt; 納入跟調查有關的欄位（時間戳、結果、hash）
+6. **指定圖示** -&gt; 依實體類型從上面的圖示集挑
+
+### 欄位參考（IRQL 統一 schema）
+
+| 實體 | Key 欄位 | 可用屬性 |
+|---|---|---|
+| User | `Username` | `Username`, `Name`, `Role`, `Email` |
+| Host | `Hostname` | `Hostname` |
+| IP | `ClientIp` | `ClientIp` |
+| Email Message | `Subject` | `EnvTime`, `Subject`, `Verdict`, `Url` |
+| Sender | `EmailSender` | `EmailSender`, `Domain` |
+| Recipient | `EmailRecipient` | `EmailRecipient` |
+| Process | `ProcessName` | `EnvTime`, `ProcessName`, `ProcessCommandLine`, `ProcessHash` |
+| File | `Filename` | `EnvTime`, `Filename`, `Path`, `Sha256` |
+| Domain | `DomainName` | `DomainName` |
+| Auth Event | （合成 ID） | `EnvTime`, `UserAgent`, `Result`, `Description` |
+
+## Function 選擇
+
+1. 從使用者提供的 KQL/IRQL 表格 pipeline 開始。
+2. 用 `Lift_To_Graph(mapping)` 建立 graph 實體。
+3. 只有在使用者要求、且跟對應的 key 相容時，才加 `Extract_Node_*`、`Enrich_Node_*` 或 `Enrich_Graph_*`。
+4. 只有要求分組/收合時，才加 `Graph_Fold_By_Property()`。
+5. 視覺化輸出以 `Graph_Render_View()` 結尾。
+6. 對 pipeline 選用的每個 stored function 做前置檢查。
+
+## Pipeline 模式
+
+```kql
+// 1. 保留使用者提供的 KQL 或 IRQL 查詢
+&lt;input query&gt;
+// 2. Lift 成 graph
+| invoke Lift_To_Graph(&lt;mapping_json&gt;)
+// 3. 選用：擷取或補充 graph 實體
+| invoke &lt;Extract_Node_* | Enrich_Node_* | Enrich_Graph_*&gt;()
+// 4. 選用：有要求才折疊 node
+| invoke Graph_Fold_By_Property(&quot;&lt;NodeType&gt;&quot;, &quot;&lt;PropertyName&gt;&quot;)
+// 5. 渲染
+| invoke Graph_Render_View()
+```
+
+## 範例
+
+更多 prompt 和實作範例見 [references/EXAMPLES.md](references/EXAMPLES.md)。
+
+### 認證 graph：IP -&gt; AuthEvent -&gt; User -&gt; Host
+
+**輸入查詢**：`Get_Event_Authentication_All | where Result == &quot;Failed Login&quot; | take 200`
+
+**Graph 需求**：「顯示 IP、認證事件、使用者和主機；依結果折疊事件。」
+
+```kql
+let auth_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;SrcIp&quot;,&quot;id&quot;:&quot;SrcIp&quot;,&quot;key&quot;:&quot;ClientIp&quot;,&quot;props&quot;:[&quot;ClientIp&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Public-IP-Addresses-(Classic).svg&quot;},{&quot;type&quot;:&quot;Host&quot;,&quot;id&quot;:&quot;Host&quot;,&quot;key&quot;:&quot;Hostname&quot;,&quot;props&quot;:[&quot;Hostname&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Virtual-Machine.svg&quot;},{&quot;type&quot;:&quot;User&quot;,&quot;id&quot;:&quot;User&quot;,&quot;key&quot;:&quot;Username&quot;,&quot;props&quot;:[&quot;Username&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Users.svg&quot;},{&quot;type&quot;:&quot;AuthEvent&quot;,&quot;id&quot;:&quot;AuthEvent&quot;,&quot;key&quot;:&quot;AuthEventId&quot;,&quot;props&quot;:[&quot;AuthEventId&quot;,&quot;EnvTime&quot;,&quot;UserAgent&quot;,&quot;Result&quot;,&quot;Description&quot;],&quot;defaults&quot;:{&quot;Result&quot;:&quot;unknown&quot;},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Activity-Log.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;RequestsAuth&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;SrcIp&quot;,&quot;type&quot;:&quot;SrcIp&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;TargetsUser&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;User&quot;,&quot;type&quot;:&quot;User&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;AgainstHost&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Host&quot;,&quot;type&quot;:&quot;Host&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_Authentication_All
+| extend AuthEventId = strcat(Username, &quot;_&quot;, Hostname, &quot;_&quot;, EnvTime)
+| where Result == &quot;Failed Login&quot;
+| take 200
+| invoke Lift_To_Graph(auth_mapping)
+| invoke Graph_Fold_By_Property(&quot;AuthEvent&quot;, &quot;Result&quot;)
+| invoke Graph_Render_View()
+```
+
+### Email graph：Sender -&gt; Message -&gt; Recipient
+
+**輸入查詢**：`Get_Email_All | take 400`
+
+**Graph 需求**：「視覺化寄件者到信件到收件者的流向，並依 verdict 折疊信件。」
+
+```kql
+let mail_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;EmailMessage&quot;,&quot;id&quot;:&quot;Message&quot;,&quot;key&quot;:&quot;Subject&quot;,&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Subject&quot;,&quot;Verdict&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Media-File.svg&quot;},{&quot;type&quot;:&quot;Sender&quot;,&quot;id&quot;:&quot;Email&quot;,&quot;key&quot;:&quot;EmailSender&quot;,&quot;props&quot;:[&quot;EmailSender&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/command-1070-Mail.svg&quot;},{&quot;type&quot;:&quot;Recipient&quot;,&quot;id&quot;:&quot;Email&quot;,&quot;key&quot;:&quot;EmailRecipient&quot;,&quot;props&quot;:[&quot;EmailRecipient&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/command-1070-Mail.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;SentBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Message&quot;,&quot;type&quot;:&quot;EmailMessage&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;Sender&quot;},&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Verdict&quot;]},{&quot;type&quot;:&quot;DeliveredTo&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Message&quot;,&quot;type&quot;:&quot;EmailMessage&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;Recipient&quot;},&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Verdict&quot;]}]}&#x27;;
+Get_Email_All
+| take 400
+| invoke Lift_To_Graph(mail_mapping)
+| invoke Graph_Fold_By_Property(&quot;EmailMessage&quot;, &quot;Verdict&quot;)
+| invoke Graph_Render_View()
+```
+
+### 可疑網域調查（端到端）
+
+**基本來源需求**：「用這些可疑網域的對外網路事件，畫出 IP 到網域的連線，並補上員工姓名。」
+
+這是有限度的 fallback：一個已知 selector、一個 extractor、一個直接的過濾條件。
+
+```kql
+let suspicious_domain_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;IP&quot;,&quot;id&quot;:&quot;IP&quot;,&quot;key&quot;:&quot;ClientIp&quot;,&quot;props&quot;:[&quot;ClientIp&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Public-IP-Addresses-(Classic).svg&quot;},{&quot;type&quot;:&quot;Domain&quot;,&quot;id&quot;:&quot;Domain&quot;,&quot;key&quot;:&quot;DomainName&quot;,&quot;props&quot;:[&quot;DomainName&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/DNS-Zones.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;ConnectsTo&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;IP&quot;,&quot;type&quot;:&quot;IP&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Domain&quot;,&quot;type&quot;:&quot;Domain&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_NetworkOutbound
+| invoke Extract_Event_Network_Domain()
+| where DomainName has_any (&quot;raisinkanes.com&quot;, &quot;nothing-to-see-here.net&quot;, &quot;totally-legit-domain.com&quot;)
+| invoke Lift_To_Graph(suspicious_domain_mapping)
+| invoke Enrich_Node_Ip_Employee(&quot;Name&quot;)
+| invoke Graph_Fold_By_Property(&quot;Domain&quot;, &quot;DomainName&quot;)
+| invoke Graph_Render_View()
+```
+
+### Process 執行 graph：User -&gt; Process -&gt; ParentProcess
+
+**輸入查詢**：`Get_Event_Process_All | where ProcessCommandLine has &quot;powershell&quot; | take 300`
+
+**Graph 需求**：「視覺化 process、父 process、主機和使用者之間的關係。」
+
+```kql
+let proc_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;Process&quot;,&quot;id&quot;:&quot;Proc&quot;,&quot;key&quot;:&quot;ProcessName&quot;,&quot;props&quot;:[&quot;ProcessName&quot;,&quot;ProcessCommandLine&quot;,&quot;ProcessHash&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/App-Services.svg&quot;},{&quot;type&quot;:&quot;ParentProcess&quot;,&quot;id&quot;:&quot;Proc&quot;,&quot;key&quot;:&quot;ParentProcessName&quot;,&quot;props&quot;:[&quot;ParentProcessName&quot;,&quot;ParentProcessHash&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/App-Services.svg&quot;},{&quot;type&quot;:&quot;Host&quot;,&quot;id&quot;:&quot;Host&quot;,&quot;key&quot;:&quot;Hostname&quot;,&quot;props&quot;:[&quot;Hostname&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Virtual-Machine.svg&quot;},{&quot;type&quot;:&quot;User&quot;,&quot;id&quot;:&quot;User&quot;,&quot;key&quot;:&quot;Username&quot;,&quot;props&quot;:[&quot;Username&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Users.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;SpawnedBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;ParentProcess&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;RanOn&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Host&quot;,&quot;type&quot;:&quot;Host&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;ExecutedBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;User&quot;,&quot;type&quot;:&quot;User&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_Process_All
+| where ProcessCommandLine has &quot;powershell&quot;
+| take 300
+| invoke Lift_To_Graph(proc_mapping)
+| invoke Graph_Render_View()
+```
+
+## 查詢結果 -&gt; 對應的轉換
+
+使用者提供查詢並描述想要的 graph 時：
+
+1. 檢查查詢最後輸出的欄位
+2. 解析實體名詞和關係動詞
+3. 只用那些欄位產生對應 JSON
+4. 保留使用者提供的 pipeline，在後面加上 `Lift_To_Graph()`
+5. 結尾放上 `Graph_Render_View()`
+6. 如果使用者提到分組/收合，而且該 function 存在，就加上 `Graph_Fold_By_Property()`
+
+必要 function 的前置檢查通過之後，輸出完整的 KQL：使用者提供的查詢，加上用字串 `let` 綁定內嵌的對應 JSON。如果無法檢查目標資料庫，就清楚標示尚未驗證的 function 相依性。
+
+## 在 Kusto Explorer 裡開啟查詢（僅限 Windows）
+
+&gt; **選用的便利功能。** 預設流程是在對話裡輸出 KQL，讓使用者自己複製到 Kusto Explorer 或 VS Code 的 Kusto 擴充套件。自動啟動只在使用者選擇啟用時才做。
+
+一律在對話回覆裡輸出完整的 KQL 查詢，並清楚標示 Step 1（連線）和 Step 2（查詢）：
+
+```
+// Step 1: Connect to your cluster (skip if already connected)
+// Example: uncomment to connect to the KC7 training cluster
+// #connect cluster(&#x27;kc7001.eastus.kusto.windows.net&#x27;).database(&#x27;ValdyTimes&#x27;)
+// Or replace with your own cluster:
+// #connect cluster(&#x27;&lt;YOUR_CLUSTER&gt;&#x27;).database(&#x27;&lt;YOUR_DATABASE&gt;&#x27;)
+
+// Step 2: Run the query below
+&lt;KQL_QUERY&gt;
+```
+
+如果使用者要求存檔或在 Kusto Explorer 裡開啟，照 [references/KUSTO_EXPLORER_LAUNCH.md](references/KUSTO_EXPLORER_LAUNCH.md) 的流程做。重點規則：
+
+- 寫檔或啟動執行檔之前，用 `ask_user` 確認
+- 把檔案內容顯示在對話裡，讓使用者開啟前能先檢查
+- 絕對不准用 shell 插值或 here-string，檔案要用 `Set-Content`/`Add-Content` 寫
+- 絕對不准把查詢編碼進瀏覽器 URL
+- 在 macOS/Linux 上，存成 `.kql` 檔，然後建議用 VS Code 的 Kusto 擴充套件或 ADX Web Explorer</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-kusto-irql-graph
+description: &quot;Apply IRQL graph functions to KQL or IRQL query results for Kusto Explorer visualization. Generates Lift_To_Graph mappings and composes Graph_Render_View, Graph_Fold_By_Property, Extract_Node_*, Enrich_Node_*, and Enrich_Graph_* calls. Accepts a supplied query or limited basic natural-language source request; it is not a general natural-language-to-KQL/IRQL skill. WHEN: Lift_To_Graph, Graph_Render_View, Graph_Fold_By_Property, IRQL graph enrichment, graph mapping for existing query results, icon-decorated graph, fold graph nodes. Use azure-kusto-graph for native make-graph analysis, graph-match, shortest paths, components, or persistent graphs.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.1&quot;
+---
+
+# IRQL Graph Functions -- Query Results to Visualization
+
+Apply the IRQL graph function family to tabular results. Given a KQL or IRQL query and the user&#x27;s graph description, generate a `Lift_To_Graph` mapping and compose only the stored graph functions needed to visualize, fold, extract, or enrich the graph in Kusto Explorer. The source query does not need to use IRQL.
+
+## Scope and Routing
+
+| Request | Use |
+|---|---|
+| Turn supplied KQL/IRQL rows into an icon-decorated visual graph | This skill: `Lift_To_Graph` + `Graph_Render_View` |
+| Fold nodes or apply `Extract_Node_*`, `Enrich_Node_*`, or `Enrich_Graph_*` | This skill |
+| Use `make-graph`, `graph-match`, shortest paths, connected components, graph models, or snapshots | `azure-kusto-graph` |
+| Author a non-trivial KQL/IRQL investigation from natural language | A Kusto or IRQL query-generation skill, then this skill |
+
+If a request mixes visualization and native graph analysis, use this skill for the lift/render portion and `azure-kusto-graph` for operator semantics. Do not replace graph-lift functions with a hand-built edges-first graph unless the user asks for native graph operators.
+
+## Input Contract
+
+- **Preferred input**: a working KQL/IRQL query that produces tabular results, plus a natural-language description of the desired nodes, edges, labels, icons, extracts, enrichments, or folds.
+- This skill is **not a natural-language-to-KQL or NL-to-IRQL converter**. It transforms existing query results into graph visualizations. For general NL-to-KQL or NL-to-IRQL conversion, use a dedicated query-generation skill (available separately).
+- Preserve the supplied query&#x27;s retrieval, joins, filters, and aggregations. Add only projections or synthetic IDs required by the graph mapping.
+- A basic natural-language source request is supported only when it maps directly to one known table or IRQL `Get_*` selector with obvious columns and simple filters. State the assumed source, and do not invent joins, schema, or investigation logic.
+- For non-trivial query construction, use a separate Kusto/IRQL query-generation skill first, then apply this skill to its output.
+- If no query or output schema is available and the source is not trivial, request the KQL query or its result columns before generating a mapping.
+
+## Activation Triggers
+
+Use this skill when the user:
+- Supplies KQL/IRQL results and asks for an IRQL graph visualization or mapping
+- Mentions `Lift_To_Graph`, `Graph_Render_View`, or `Graph_Fold_By_Property`
+- Asks for icon-decorated node/edge mappings in Kusto Explorer
+- Wants to fold/collapse nodes by a shared property
+- Requests graph extraction or enrichment through `Extract_Node_*`, `Enrich_Node_*`, or `Enrich_Graph_*`
+
+Do not activate this skill solely for `graph-match`, graph paths/components, persistent graphs, or generic `make-graph` construction; those belong to `azure-kusto-graph`.
+
+**Not a natural-language-to-KQL/IRQL converter.** The input should generally be a working KQL or IRQL query whose results need graph visualization. Basic NL source requests work only for trivial single-table/selector cases. For general NL-to-KQL or NL-to-IRQL, use a dedicated query-generation skill (available separately).
+
+## Environment
+
+- **Cluster**: `https://kc7001.eastus.kusto.windows.net`
+- **Databases**: `ValdyTimes`, `JoJosHospital` (graph functions pre-deployed)
+- **Rendering**: Kusto Explorer desktop app (make-graph visualization window)
+- **Tool**: `kusto_query` (via Azure MCP Server)
+
+### Function Preflight
+
+`Lift_To_Graph` and `Graph_Render_View` are stored functions, not built-in Kusto operators. Before generating or running a lift pipeline against a target database, check what is deployed:
+
+```kql
+.show functions
+| where Name in~ (&quot;Lift_To_Graph&quot;, &quot;Graph_Render_View&quot;, &quot;Graph_Fold_By_Property&quot;)
+| project Name
+```
+
+- `Lift_To_Graph` and `Graph_Render_View` are required.
+- `Graph_Fold_By_Property` is required only when folding is requested.
+- Check any `Extract_Node_*`, `Enrich_Node_*`, or `Enrich_Graph_*` function before using it; omit optional enrichment when unavailable unless the user wants it deployed.
+- If a required function is missing and you have permission to alter the database, **ask the user for confirmation before deploying**. Then use the `.create-or-alter function` definitions in [references/DEPLOY_IRQL_FUNCTIONS.md](references/DEPLOY_IRQL_FUNCTIONS.md). Run the relevant `.create-or-alter` block, then rerun the preflight check to confirm.
+- If you do not have alter permissions, tell the user which functions are missing and point them to `references/DEPLOY_IRQL_FUNCTIONS.md` for manual deployment.
+
+## IRQL Graph Function Family
+
+### `Lift_To_Graph(T, mappingJson)`
+
+Transforms any tabular KQL result into a unified node + edge table.
+
+**Input**: Any table `T` + a JSON mapping string.
+**Output**: Rows with `EntityType` = `&quot;node&quot;` or `&quot;edge&quot;`, ready for `make-graph`.
+
+### `Graph_Render_View(T)`
+
+Takes `Lift_To_Graph` output, splits nodes/edges, and calls `make-graph` to open Kusto Explorer&#x27;s graph window.
+
+### `Graph_Fold_By_Property(T, NodeType, PropertyName)`
+
+Collapses nodes of a given type sharing a property value into a single node. Rewires edges automatically.
+
+### Graph Extraction and Enrichment Functions
+
+These are additional stored functions that must already be deployed on the target database. They are **not** bundled in `references/DEPLOY_IRQL_FUNCTIONS.md`. Use `.show functions` to verify availability before including in a pipeline.
+
+| Function | Operation | Key Property |
+|---|---|---|
+| `Extract_Node_Email_Sender_Domain(T, displayName)` | Adds `Domain` to node props | `EmailSender` |
+| `Extract_Node_Employee_Firstname(T, displayName)` | Adds `Firstname` to node props | `Name` |
+| `Extract_Node_Event_Network_Domain(T, displayName)` | Adds `DomainName` to node props | `Url` |
+| `Enrich_Node_Ip_Employee(T, displayName)` | Adds employee info to IP nodes | `ClientIp` |
+| `Enrich_Node_Username_Employee(T, displayName)` | Adds employee info to user nodes | `Username` |
+| `Enrich_Node_Event_Authentication_Username(T, displayName)` | Adds auth context | `Username` |
+| `Enrich_Node_Ip_Domain(T, displayName)` | Adds DNS domains | `ClientIp` |
+| `Enrich_Node_Ip_Event_NetworkOutbound(T, displayName)` | Adds outbound events | `ClientIp` |
+| `Enrich_Graph_Ip_Employee(T, mappingJson)` | Expands graph with employee nodes | `ClientIp` |
+| `Enrich_Graph_Username_Employee(T, mappingJson)` | Expands graph with employee nodes | `Username` |
+| `Enrich_Graph_Event_Authentication_Username(T, mappingJson)` | Expands with auth nodes | `Username` |
+
+## Mapping JSON Schema
+
+The JSON mapping has two arrays: `node_types` and `edges`.
+
+### `node_types[]`
+
+| Field | Required | Description |
+|---|---|---|
+| `type` | Yes | Node type label (e.g. `&quot;User&quot;`, `&quot;Host&quot;`, `&quot;IP&quot;`) |
+| `id` | Yes | Prefix for node ID; usually same as type |
+| `key` | Yes | Column name whose value becomes the node&#x27;s identity |
+| `props` | Yes | Array of columns to carry as node properties |
+| `defaults` | No | Object of fallback values for null/empty properties |
+| `defIcon` | No | Default icon URL for this node type |
+| `displayName` | No | Column to use for display label (defaults to `id`) |
+| `color` | No | Column to source color from |
+| `size` | No | Column to source size from |
+
+### `edges[]`
+
+| Field | Required | Description |
+|---|---|---|
+| `type` | Yes | Edge type label (e.g. `&quot;AuthenticatesTo&quot;`, `&quot;SentEmail&quot;`) |
+| `source` | Yes | `{&quot;id&quot;: &quot;&lt;prefix&gt;&quot;, &quot;type&quot;: &quot;&lt;NodeType&gt;&quot;}` |
+| `target` | Yes | `{&quot;id&quot;: &quot;&lt;prefix&gt;&quot;, &quot;type&quot;: &quot;&lt;NodeType&gt;&quot;}` |
+| `props` | No | Array of columns to carry as edge properties |
+| `displayName` | No | Column for edge label |
+| `color` | No | Column for edge color |
+
+### Icon Repository
+
+Use icons from `https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/`:
+- IP: `Public-IP-Addresses-(Classic).svg`
+- Host/VM: `Virtual-Machine.svg`
+- User: `Users.svg`
+- Email: `Mailbox.svg` (or `azure-cds/command-1070-Mail.svg`)
+- Process: `App-Services.svg`
+- File: `Storage-Accounts.svg`
+- Alert: `Activity-Log.svg`
+- Domain: `DNS-Zones.svg`
+
+## Mapping Generation Rules
+
+Given the supplied query columns and the user&#x27;s graph description, generate the mapping JSON by:
+
+1. **Identify entities** -&gt; each distinct noun becomes a `node_type`
+2. **Identify relationships** -&gt; each verb/preposition becomes an `edge`
+3. **Map to columns** -&gt; use actual columns produced by the supplied query; never assume unavailable columns
+4. **Set direction** -&gt; source is the actor, target is the acted-upon
+5. **Add properties** -&gt; include columns relevant to investigation (timestamps, results, hashes)
+6. **Assign icons** -&gt; pick from the icon set above based on entity type
+
+### Column Reference (IRQL unified schema)
+
+| Entity | Key Column | Available Props |
+|---|---|---|
+| User | `Username` | `Username`, `Name`, `Role`, `Email` |
+| Host | `Hostname` | `Hostname` |
+| IP | `ClientIp` | `ClientIp` |
+| Email Message | `Subject` | `EnvTime`, `Subject`, `Verdict`, `Url` |
+| Sender | `EmailSender` | `EmailSender`, `Domain` |
+| Recipient | `EmailRecipient` | `EmailRecipient` |
+| Process | `ProcessName` | `EnvTime`, `ProcessName`, `ProcessCommandLine`, `ProcessHash` |
+| File | `Filename` | `EnvTime`, `Filename`, `Path`, `Sha256` |
+| Domain | `DomainName` | `DomainName` |
+| Auth Event | (synthetic ID) | `EnvTime`, `UserAgent`, `Result`, `Description` |
+
+## Function Selection
+
+1. Start with the supplied KQL/IRQL tabular pipeline.
+2. Use `Lift_To_Graph(mapping)` to create graph entities.
+3. Add `Extract_Node_*`, `Enrich_Node_*`, or `Enrich_Graph_*` only when requested and compatible with the mapped keys.
+4. Add `Graph_Fold_By_Property()` only when grouping/collapse is requested.
+5. End visual output with `Graph_Render_View()`.
+6. Preflight the exact stored functions selected for the pipeline.
+
+## Pipeline Pattern
+
+```kql
+// 1. Preserve the supplied KQL or IRQL query
+&lt;input query&gt;
+// 2. Lift to graph
+| invoke Lift_To_Graph(&lt;mapping_json&gt;)
+// 3. Optionally extract or enrich graph entities
+| invoke &lt;Extract_Node_* | Enrich_Node_* | Enrich_Graph_*&gt;()
+// 4. Optionally fold nodes when requested
+| invoke Graph_Fold_By_Property(&quot;&lt;NodeType&gt;&quot;, &quot;&lt;PropertyName&gt;&quot;)
+// 5. Render
+| invoke Graph_Render_View()
+```
+
+## Examples
+
+For additional prompts and worked examples, see [references/EXAMPLES.md](references/EXAMPLES.md).
+
+### Authentication graph: IP -&gt; AuthEvent -&gt; User -&gt; Host
+
+**Input query**: `Get_Event_Authentication_All | where Result == &quot;Failed Login&quot; | take 200`
+
+**Graph request**: &quot;Show IPs, authentication events, users, and hosts; fold events by result.&quot;
+
+```kql
+let auth_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;SrcIp&quot;,&quot;id&quot;:&quot;SrcIp&quot;,&quot;key&quot;:&quot;ClientIp&quot;,&quot;props&quot;:[&quot;ClientIp&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Public-IP-Addresses-(Classic).svg&quot;},{&quot;type&quot;:&quot;Host&quot;,&quot;id&quot;:&quot;Host&quot;,&quot;key&quot;:&quot;Hostname&quot;,&quot;props&quot;:[&quot;Hostname&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Virtual-Machine.svg&quot;},{&quot;type&quot;:&quot;User&quot;,&quot;id&quot;:&quot;User&quot;,&quot;key&quot;:&quot;Username&quot;,&quot;props&quot;:[&quot;Username&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Users.svg&quot;},{&quot;type&quot;:&quot;AuthEvent&quot;,&quot;id&quot;:&quot;AuthEvent&quot;,&quot;key&quot;:&quot;AuthEventId&quot;,&quot;props&quot;:[&quot;AuthEventId&quot;,&quot;EnvTime&quot;,&quot;UserAgent&quot;,&quot;Result&quot;,&quot;Description&quot;],&quot;defaults&quot;:{&quot;Result&quot;:&quot;unknown&quot;},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Activity-Log.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;RequestsAuth&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;SrcIp&quot;,&quot;type&quot;:&quot;SrcIp&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;TargetsUser&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;User&quot;,&quot;type&quot;:&quot;User&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;AgainstHost&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;AuthEvent&quot;,&quot;type&quot;:&quot;AuthEvent&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Host&quot;,&quot;type&quot;:&quot;Host&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_Authentication_All
+| extend AuthEventId = strcat(Username, &quot;_&quot;, Hostname, &quot;_&quot;, EnvTime)
+| where Result == &quot;Failed Login&quot;
+| take 200
+| invoke Lift_To_Graph(auth_mapping)
+| invoke Graph_Fold_By_Property(&quot;AuthEvent&quot;, &quot;Result&quot;)
+| invoke Graph_Render_View()
+```
+
+### Email graph: Sender -&gt; Message -&gt; Recipient
+
+**Input query**: `Get_Email_All | take 400`
+
+**Graph request**: &quot;Visualize sender-to-message-to-recipient flow and fold messages by verdict.&quot;
+
+```kql
+let mail_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;EmailMessage&quot;,&quot;id&quot;:&quot;Message&quot;,&quot;key&quot;:&quot;Subject&quot;,&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Subject&quot;,&quot;Verdict&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Media-File.svg&quot;},{&quot;type&quot;:&quot;Sender&quot;,&quot;id&quot;:&quot;Email&quot;,&quot;key&quot;:&quot;EmailSender&quot;,&quot;props&quot;:[&quot;EmailSender&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/command-1070-Mail.svg&quot;},{&quot;type&quot;:&quot;Recipient&quot;,&quot;id&quot;:&quot;Email&quot;,&quot;key&quot;:&quot;EmailRecipient&quot;,&quot;props&quot;:[&quot;EmailRecipient&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/command-1070-Mail.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;SentBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Message&quot;,&quot;type&quot;:&quot;EmailMessage&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;Sender&quot;},&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Verdict&quot;]},{&quot;type&quot;:&quot;DeliveredTo&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Message&quot;,&quot;type&quot;:&quot;EmailMessage&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;Recipient&quot;},&quot;props&quot;:[&quot;EnvTime&quot;,&quot;Verdict&quot;]}]}&#x27;;
+Get_Email_All
+| take 400
+| invoke Lift_To_Graph(mail_mapping)
+| invoke Graph_Fold_By_Property(&quot;EmailMessage&quot;, &quot;Verdict&quot;)
+| invoke Graph_Render_View()
+```
+
+### Suspicious domain investigation (end-to-end)
+
+**Basic source request**: &quot;Use outbound network events for these suspicious domains and graph IP-to-domain connections enriched with employee names.&quot;
+
+This is the limited fallback: one known selector, one extractor, and one direct filter.
+
+```kql
+let suspicious_domain_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;IP&quot;,&quot;id&quot;:&quot;IP&quot;,&quot;key&quot;:&quot;ClientIp&quot;,&quot;props&quot;:[&quot;ClientIp&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Public-IP-Addresses-(Classic).svg&quot;},{&quot;type&quot;:&quot;Domain&quot;,&quot;id&quot;:&quot;Domain&quot;,&quot;key&quot;:&quot;DomainName&quot;,&quot;props&quot;:[&quot;DomainName&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/DNS-Zones.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;ConnectsTo&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;IP&quot;,&quot;type&quot;:&quot;IP&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Domain&quot;,&quot;type&quot;:&quot;Domain&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_NetworkOutbound
+| invoke Extract_Event_Network_Domain()
+| where DomainName has_any (&quot;raisinkanes.com&quot;, &quot;nothing-to-see-here.net&quot;, &quot;totally-legit-domain.com&quot;)
+| invoke Lift_To_Graph(suspicious_domain_mapping)
+| invoke Enrich_Node_Ip_Employee(&quot;Name&quot;)
+| invoke Graph_Fold_By_Property(&quot;Domain&quot;, &quot;DomainName&quot;)
+| invoke Graph_Render_View()
+```
+
+### Process execution graph: User -&gt; Process -&gt; ParentProcess
+
+**Input query**: `Get_Event_Process_All | where ProcessCommandLine has &quot;powershell&quot; | take 300`
+
+**Graph request**: &quot;Visualize process, parent process, host, and user relationships.&quot;
+
+```kql
+let proc_mapping = &#x27;{&quot;node_types&quot;:[{&quot;type&quot;:&quot;Process&quot;,&quot;id&quot;:&quot;Proc&quot;,&quot;key&quot;:&quot;ProcessName&quot;,&quot;props&quot;:[&quot;ProcessName&quot;,&quot;ProcessCommandLine&quot;,&quot;ProcessHash&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/App-Services.svg&quot;},{&quot;type&quot;:&quot;ParentProcess&quot;,&quot;id&quot;:&quot;Proc&quot;,&quot;key&quot;:&quot;ParentProcessName&quot;,&quot;props&quot;:[&quot;ParentProcessName&quot;,&quot;ParentProcessHash&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/App-Services.svg&quot;},{&quot;type&quot;:&quot;Host&quot;,&quot;id&quot;:&quot;Host&quot;,&quot;key&quot;:&quot;Hostname&quot;,&quot;props&quot;:[&quot;Hostname&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Virtual-Machine.svg&quot;},{&quot;type&quot;:&quot;User&quot;,&quot;id&quot;:&quot;User&quot;,&quot;key&quot;:&quot;Username&quot;,&quot;props&quot;:[&quot;Username&quot;],&quot;defaults&quot;:{},&quot;defIcon&quot;:&quot;https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Users.svg&quot;}],&quot;edges&quot;:[{&quot;type&quot;:&quot;SpawnedBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;ParentProcess&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;RanOn&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;Host&quot;,&quot;type&quot;:&quot;Host&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]},{&quot;type&quot;:&quot;ExecutedBy&quot;,&quot;source&quot;:{&quot;id&quot;:&quot;Proc&quot;,&quot;type&quot;:&quot;Process&quot;},&quot;target&quot;:{&quot;id&quot;:&quot;User&quot;,&quot;type&quot;:&quot;User&quot;},&quot;props&quot;:[&quot;EnvTime&quot;]}]}&#x27;;
+Get_Event_Process_All
+| where ProcessCommandLine has &quot;powershell&quot;
+| take 300
+| invoke Lift_To_Graph(proc_mapping)
+| invoke Graph_Render_View()
+```
+
+## Query Results -&gt; Mapping Translation
+
+When the user supplies a query and describes the graph:
+
+1. Inspect the query&#x27;s final output columns
+2. Parse the entity nouns and relationship verbs
+3. Generate the mapping JSON using only those columns
+4. Preserve the supplied pipeline and append `Lift_To_Graph()`
+5. Include `Graph_Render_View()` at the end
+6. If the user mentions grouping/collapsing and the function exists, add `Graph_Fold_By_Property()`
+
+Output the complete KQL -- the supplied query plus mapping JSON inline as a string `let` binding -- after the required-function preflight passes. Clearly mark unverified function dependencies when the target database cannot be checked.
+
+## Opening Queries in Kusto Explorer (Windows Only)
+
+&gt; **Optional convenience feature.** The default workflow is to output the KQL in chat and let the user copy it into Kusto Explorer or the VS Code Kusto extension manually. Auto-launch is opt-in only.
+
+Always output the complete KQL query in the chat response with Step 1 (connect) and Step 2 (query) clearly labeled:
+
+```
+// Step 1: Connect to your cluster (skip if already connected)
+// Example: uncomment to connect to the KC7 training cluster
+// #connect cluster(&#x27;kc7001.eastus.kusto.windows.net&#x27;).database(&#x27;ValdyTimes&#x27;)
+// Or replace with your own cluster:
+// #connect cluster(&#x27;&lt;YOUR_CLUSTER&gt;&#x27;).database(&#x27;&lt;YOUR_DATABASE&gt;&#x27;)
+
+// Step 2: Run the query below
+&lt;KQL_QUERY&gt;
+```
+
+If the user asks to save or open in Kusto Explorer, follow the procedure in [references/KUSTO_EXPLORER_LAUNCH.md](references/KUSTO_EXPLORER_LAUNCH.md). Key rules:
+
+- Use `ask_user` to confirm before writing files or launching executables
+- Display file contents in chat so the user can review before opening
+- Never use shell interpolation or here-strings — write files via `Set-Content`/`Add-Content`
+- Never encode queries into browser URLs
+- On macOS/Linux, save the `.kql` file and suggest the VS Code Kusto extension or ADX Web Explorer</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

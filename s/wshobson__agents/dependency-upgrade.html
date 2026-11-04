@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dependency-upgrade｜Skill 寫法圖鑑</title>
+<meta name="description" content="大版本相依套件升級：相容性分析、分階段升級、測試和 rollback 計畫">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>dependency-upgrade</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/framework-migration/skills/dependency-upgrade/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">大版本相依套件升級：相容性分析、分階段升級、測試和 rollback 計畫</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: dependency-upgrade
+description: 管理大版本的相依套件升級，包含相容性分析、分階段 rollout 與完整測試。適用於升級 framework 版本、更新大版本相依套件，或處理函式庫 breaking change 的時候。
+---
+
+# 相依套件升級
+
+精通大版本相依套件升級、相容性分析、分階段升級策略與完整的測試做法。
+
+## 什麼時候用這個 Skill
+
+- 升級 framework 大版本
+- 更新有安全漏洞的相依套件
+- 把老舊的相依套件現代化
+- 解決相依套件衝突
+- 規劃漸進式的升級路徑
+- 測試相容性矩陣
+- 自動化相依套件更新
+
+## Semantic Versioning 複習
+
+```
+MAJOR.MINOR.PATCH（例如 2.3.1）
+
+MAJOR：Breaking change
+MINOR：新功能，向下相容
+PATCH：Bug 修正，向下相容
+
+^2.3.1 = &gt;=2.3.1 &lt;3.0.0（minor 更新）
+~2.3.1 = &gt;=2.3.1 &lt;2.4.0（patch 更新）
+2.3.1 = 固定版本
+```
+
+## 相依套件分析
+
+### 稽核相依套件
+
+```bash
+# npm
+npm outdated
+npm audit
+npm audit fix
+
+# yarn
+yarn outdated
+yarn audit
+
+# 檢查大版本更新
+npx npm-check-updates
+npx npm-check-updates -u  # 更新 package.json
+```
+
+### 分析相依樹
+
+```bash
+# 查看某個套件為什麼被安裝
+npm ls package-name
+yarn why package-name
+
+# 找出重複的套件
+npm dedupe
+yarn dedupe
+
+# 視覺化相依關係
+npx madge --image graph.png src/
+```
+
+## 相容性矩陣
+
+```javascript
+// compatibility-matrix.js
+const compatibilityMatrix = {
+  react: {
+    &quot;16.x&quot;: {
+      &quot;react-dom&quot;: &quot;^16.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^11.0.0&quot;,
+    },
+    &quot;17.x&quot;: {
+      &quot;react-dom&quot;: &quot;^17.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0 || ^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^12.0.0&quot;,
+    },
+    &quot;18.x&quot;: {
+      &quot;react-dom&quot;: &quot;^18.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^13.0.0&quot;,
+    },
+  },
+};
+
+function checkCompatibility(packages) {
+  // 對照矩陣驗證套件版本
+}
+```
+
+## 分階段升級策略
+
+### 階段 1：規劃
+
+```bash
+# 1. 找出目前的版本
+npm list --depth=0
+
+# 2. 檢查 breaking change
+# 讀 CHANGELOG.md 和 MIGRATION.md
+
+# 3. 建立升級計畫
+echo &quot;升級順序：
+1. TypeScript
+2. React
+3. React Router
+4. Testing libraries
+5. Build tools&quot; &gt; UPGRADE_PLAN.md
+```
+
+### 階段 2：漸進式更新
+
+```bash
+# 不要一次升級所有東西！
+
+# 步驟 1：更新 TypeScript
+npm install typescript@latest
+
+# 測試
+npm run test
+npm run build
+
+# 步驟 2：更新 React（一次升一個大版本）
+npm install react@17 react-dom@17
+
+# 再測試一次
+npm run test
+
+# 步驟 3：繼續處理其他套件
+npm install react-router-dom@6
+
+# 以此類推...
+```
+
+### 階段 3：驗證
+
+```javascript
+// tests/compatibility.test.js
+describe(&quot;Dependency Compatibility&quot;, () =&gt; {
+  it(&quot;should have compatible React versions&quot;, () =&gt; {
+    const reactVersion = require(&quot;react/package.json&quot;).version;
+    const reactDomVersion = require(&quot;react-dom/package.json&quot;).version;
+
+    expect(reactVersion).toBe(reactDomVersion);
+  });
+
+  it(&quot;should not have peer dependency warnings&quot;, () =&gt; {
+    // 執行 npm ls 並檢查有沒有警告
+  });
+});
+```
+
+## 處理 Breaking Change
+
+### 找出 Breaking Change
+
+```bash
+# 直接查看 changelog
+curl https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
+```
+
+### 用 Codemod 自動修正
+
+```bash
+# 用 transform URL 執行 jscodeshift
+npx jscodeshift -t &lt;transform-url&gt; &lt;path&gt;
+
+# 範例：重新命名不安全的 lifecycle 方法
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/
+
+# 針對 TypeScript 檔案
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --parser=tsx src/
+
+# Dry run，預覽變更
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --dry src/
+```
+
+### 自訂的 Migration Script
+
+```javascript
+// migration-script.js
+const fs = require(&quot;fs&quot;);
+const glob = require(&quot;glob&quot;);
+
+glob(&quot;src/**/*.tsx&quot;, (err, files) =&gt; {
+  files.forEach((file) =&gt; {
+    let content = fs.readFileSync(file, &quot;utf8&quot;);
+
+    // 把舊 API 換成新 API
+    content = content.replace(
+      /componentWillMount/g,
+      &quot;UNSAFE_componentWillMount&quot;,
+    );
+
+    // 更新 import
+    content = content.replace(
+      /import { Component } from &#x27;react&#x27;/g,
+      &quot;import React, { Component } from &#x27;react&#x27;&quot;,
+    );
+
+    fs.writeFileSync(file, content);
+  });
+});
+```
+
+## 測試策略
+
+### 單元測試
+
+```javascript
+// 確保升級前後測試都通過
+npm run test
+
+// 需要的話更新測試工具
+npm install @testing-library/react@latest
+```
+
+### 整合測試
+
+```javascript
+// tests/integration/app.test.js
+describe(&quot;App Integration&quot;, () =&gt; {
+  it(&quot;should render without crashing&quot;, () =&gt; {
+    render(&lt;App /&gt;);
+  });
+
+  it(&quot;should handle navigation&quot;, () =&gt; {
+    const { getByText } = render(&lt;App /&gt;);
+    fireEvent.click(getByText(&quot;Navigate&quot;));
+    expect(screen.getByText(&quot;New Page&quot;)).toBeInTheDocument();
+  });
+});
+```
+
+### 視覺迴歸測試
+
+```javascript
+// visual-regression.test.js
+describe(&quot;Visual Regression&quot;, () =&gt; {
+  it(&quot;should match snapshot&quot;, () =&gt; {
+    const { container } = render(&lt;App /&gt;);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});
+```
+
+### E2E 測試
+
+```javascript
+// cypress/e2e/app.cy.js
+describe(&quot;E2E Tests&quot;, () =&gt; {
+  it(&quot;should complete user flow&quot;, () =&gt; {
+    cy.visit(&quot;/&quot;);
+    cy.get(&#x27;[data-testid=&quot;login&quot;]&#x27;).click();
+    cy.get(&#x27;input[name=&quot;email&quot;]&#x27;).type(&quot;user@example.com&quot;);
+    cy.get(&#x27;button[type=&quot;submit&quot;]&#x27;).click();
+    cy.url().should(&quot;include&quot;, &quot;/dashboard&quot;);
+  });
+});
+```
+
+## 自動化相依套件更新
+
+### Renovate 設定
+
+```json
+// renovate.json
+{
+  &quot;extends&quot;: [&quot;config:base&quot;],
+  &quot;packageRules&quot;: [
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;minor&quot;, &quot;patch&quot;],
+      &quot;automerge&quot;: true
+    },
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;major&quot;],
+      &quot;automerge&quot;: false,
+      &quot;labels&quot;: [&quot;major-update&quot;]
+    }
+  ],
+  &quot;schedule&quot;: [&quot;before 3am on Monday&quot;],
+  &quot;timezone&quot;: &quot;America/New_York&quot;
+}
+```
+
+### Dependabot 設定
+
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: &quot;npm&quot;
+    directory: &quot;/&quot;
+    schedule:
+      interval: &quot;weekly&quot;
+    open-pull-requests-limit: 5
+    reviewers:
+      - &quot;team-leads&quot;
+    commit-message:
+      prefix: &quot;chore&quot;
+      include: &quot;scope&quot;
+```
+
+## Rollback 計畫
+
+```javascript
+// rollback.sh
+#!/bin/bash
+
+# 保存目前狀態
+git stash
+git checkout -b upgrade-branch
+
+# 嘗試升級
+npm install package@latest
+
+# 跑測試
+if npm run test; then
+  echo &quot;升級成功&quot;
+  git add package.json package-lock.json
+  git commit -m &quot;chore: upgrade package&quot;
+else
+  echo &quot;升級失敗，正在 rollback&quot;
+  git checkout main
+  git branch -D upgrade-branch
+  npm install  # 從 package-lock.json 還原
+fi
+```
+
+## 常見升級模式
+
+### Lock File 管理
+
+```bash
+# npm
+npm install --package-lock-only  # 只更新 lock file
+npm ci  # 從 lock file 乾淨安裝
+
+# yarn
+yarn install --frozen-lockfile  # CI 模式
+yarn upgrade-interactive  # 互動式升級
+```
+
+### Peer Dependency 處理
+
+```bash
+# npm 7+：嚴格的 peer dependency
+npm install --legacy-peer-deps  # 忽略 peer dependency
+
+# npm 8+：覆寫 peer dependency
+npm install --force
+```
+
+### Workspace 升級
+
+```bash
+# 更新所有 workspace 套件
+npm install --workspaces
+
+# 更新特定 workspace
+npm install package@latest --workspace=packages/app
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: dependency-upgrade
+description: Manage major dependency version upgrades with compatibility analysis, staged rollout, and comprehensive testing. Use when upgrading framework versions, updating major dependencies, or managing breaking changes in libraries.
+---
+
+# Dependency Upgrade
+
+Master major dependency version upgrades, compatibility analysis, staged upgrade strategies, and comprehensive testing approaches.
+
+## When to Use This Skill
+
+- Upgrading major framework versions
+- Updating security-vulnerable dependencies
+- Modernizing legacy dependencies
+- Resolving dependency conflicts
+- Planning incremental upgrade paths
+- Testing compatibility matrices
+- Automating dependency updates
+
+## Semantic Versioning Review
+
+```
+MAJOR.MINOR.PATCH (e.g., 2.3.1)
+
+MAJOR: Breaking changes
+MINOR: New features, backward compatible
+PATCH: Bug fixes, backward compatible
+
+^2.3.1 = &gt;=2.3.1 &lt;3.0.0 (minor updates)
+~2.3.1 = &gt;=2.3.1 &lt;2.4.0 (patch updates)
+2.3.1 = exact version
+```
+
+## Dependency Analysis
+
+### Audit Dependencies
+
+```bash
+# npm
+npm outdated
+npm audit
+npm audit fix
+
+# yarn
+yarn outdated
+yarn audit
+
+# Check for major updates
+npx npm-check-updates
+npx npm-check-updates -u  # Update package.json
+```
+
+### Analyze Dependency Tree
+
+```bash
+# See why a package is installed
+npm ls package-name
+yarn why package-name
+
+# Find duplicate packages
+npm dedupe
+yarn dedupe
+
+# Visualize dependencies
+npx madge --image graph.png src/
+```
+
+## Compatibility Matrix
+
+```javascript
+// compatibility-matrix.js
+const compatibilityMatrix = {
+  react: {
+    &quot;16.x&quot;: {
+      &quot;react-dom&quot;: &quot;^16.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^11.0.0&quot;,
+    },
+    &quot;17.x&quot;: {
+      &quot;react-dom&quot;: &quot;^17.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0 || ^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^12.0.0&quot;,
+    },
+    &quot;18.x&quot;: {
+      &quot;react-dom&quot;: &quot;^18.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^13.0.0&quot;,
+    },
+  },
+};
+
+function checkCompatibility(packages) {
+  // Validate package versions against matrix
+}
+```
+
+## Staged Upgrade Strategy
+
+### Phase 1: Planning
+
+```bash
+# 1. Identify current versions
+npm list --depth=0
+
+# 2. Check for breaking changes
+# Read CHANGELOG.md and MIGRATION.md
+
+# 3. Create upgrade plan
+echo &quot;Upgrade order:
+1. TypeScript
+2. React
+3. React Router
+4. Testing libraries
+5. Build tools&quot; &gt; UPGRADE_PLAN.md
+```
+
+### Phase 2: Incremental Updates
+
+```bash
+# Don&#x27;t upgrade everything at once!
+
+# Step 1: Update TypeScript
+npm install typescript@latest
+
+# Test
+npm run test
+npm run build
+
+# Step 2: Update React (one major version at a time)
+npm install react@17 react-dom@17
+
+# Test again
+npm run test
+
+# Step 3: Continue with other packages
+npm install react-router-dom@6
+
+# And so on...
+```
+
+### Phase 3: Validation
+
+```javascript
+// tests/compatibility.test.js
+describe(&quot;Dependency Compatibility&quot;, () =&gt; {
+  it(&quot;should have compatible React versions&quot;, () =&gt; {
+    const reactVersion = require(&quot;react/package.json&quot;).version;
+    const reactDomVersion = require(&quot;react-dom/package.json&quot;).version;
+
+    expect(reactVersion).toBe(reactDomVersion);
+  });
+
+  it(&quot;should not have peer dependency warnings&quot;, () =&gt; {
+    // Run npm ls and check for warnings
+  });
+});
+```
+
+## Breaking Change Handling
+
+### Identifying Breaking Changes
+
+```bash
+# Check the changelog directly
+curl https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
+```
+
+### Codemod for Automated Fixes
+
+```bash
+# Run jscodeshift with transform URL
+npx jscodeshift -t &lt;transform-url&gt; &lt;path&gt;
+
+# Example: Rename unsafe lifecycle methods
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/
+
+# For TypeScript files
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --parser=tsx src/
+
+# Dry run to preview changes
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --dry src/
+```
+
+### Custom Migration Script
+
+```javascript
+// migration-script.js
+const fs = require(&quot;fs&quot;);
+const glob = require(&quot;glob&quot;);
+
+glob(&quot;src/**/*.tsx&quot;, (err, files) =&gt; {
+  files.forEach((file) =&gt; {
+    let content = fs.readFileSync(file, &quot;utf8&quot;);
+
+    // Replace old API with new API
+    content = content.replace(
+      /componentWillMount/g,
+      &quot;UNSAFE_componentWillMount&quot;,
+    );
+
+    // Update imports
+    content = content.replace(
+      /import { Component } from &#x27;react&#x27;/g,
+      &quot;import React, { Component } from &#x27;react&#x27;&quot;,
+    );
+
+    fs.writeFileSync(file, content);
+  });
+});
+```
+
+## Testing Strategy
+
+### Unit Tests
+
+```javascript
+// Ensure tests pass before and after upgrade
+npm run test
+
+// Update test utilities if needed
+npm install @testing-library/react@latest
+```
+
+### Integration Tests
+
+```javascript
+// tests/integration/app.test.js
+describe(&quot;App Integration&quot;, () =&gt; {
+  it(&quot;should render without crashing&quot;, () =&gt; {
+    render(&lt;App /&gt;);
+  });
+
+  it(&quot;should handle navigation&quot;, () =&gt; {
+    const { getByText } = render(&lt;App /&gt;);
+    fireEvent.click(getByText(&quot;Navigate&quot;));
+    expect(screen.getByText(&quot;New Page&quot;)).toBeInTheDocument();
+  });
+});
+```
+
+### Visual Regression Tests
+
+```javascript
+// visual-regression.test.js
+describe(&quot;Visual Regression&quot;, () =&gt; {
+  it(&quot;should match snapshot&quot;, () =&gt; {
+    const { container } = render(&lt;App /&gt;);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});
+```
+
+### E2E Tests
+
+```javascript
+// cypress/e2e/app.cy.js
+describe(&quot;E2E Tests&quot;, () =&gt; {
+  it(&quot;should complete user flow&quot;, () =&gt; {
+    cy.visit(&quot;/&quot;);
+    cy.get(&#x27;[data-testid=&quot;login&quot;]&#x27;).click();
+    cy.get(&#x27;input[name=&quot;email&quot;]&#x27;).type(&quot;user@example.com&quot;);
+    cy.get(&#x27;button[type=&quot;submit&quot;]&#x27;).click();
+    cy.url().should(&quot;include&quot;, &quot;/dashboard&quot;);
+  });
+});
+```
+
+## Automated Dependency Updates
+
+### Renovate Configuration
+
+```json
+// renovate.json
+{
+  &quot;extends&quot;: [&quot;config:base&quot;],
+  &quot;packageRules&quot;: [
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;minor&quot;, &quot;patch&quot;],
+      &quot;automerge&quot;: true
+    },
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;major&quot;],
+      &quot;automerge&quot;: false,
+      &quot;labels&quot;: [&quot;major-update&quot;]
+    }
+  ],
+  &quot;schedule&quot;: [&quot;before 3am on Monday&quot;],
+  &quot;timezone&quot;: &quot;America/New_York&quot;
+}
+```
+
+### Dependabot Configuration
+
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: &quot;npm&quot;
+    directory: &quot;/&quot;
+    schedule:
+      interval: &quot;weekly&quot;
+    open-pull-requests-limit: 5
+    reviewers:
+      - &quot;team-leads&quot;
+    commit-message:
+      prefix: &quot;chore&quot;
+      include: &quot;scope&quot;
+```
+
+## Rollback Plan
+
+```javascript
+// rollback.sh
+#!/bin/bash
+
+# Save current state
+git stash
+git checkout -b upgrade-branch
+
+# Attempt upgrade
+npm install package@latest
+
+# Run tests
+if npm run test; then
+  echo &quot;Upgrade successful&quot;
+  git add package.json package-lock.json
+  git commit -m &quot;chore: upgrade package&quot;
+else
+  echo &quot;Upgrade failed, rolling back&quot;
+  git checkout main
+  git branch -D upgrade-branch
+  npm install  # Restore from package-lock.json
+fi
+```
+
+## Common Upgrade Patterns
+
+### Lock File Management
+
+```bash
+# npm
+npm install --package-lock-only  # Update lock file only
+npm ci  # Clean install from lock file
+
+# yarn
+yarn install --frozen-lockfile  # CI mode
+yarn upgrade-interactive  # Interactive upgrades
+```
+
+### Peer Dependency Resolution
+
+```bash
+# npm 7+: strict peer dependencies
+npm install --legacy-peer-deps  # Ignore peer deps
+
+# npm 8+: override peer dependencies
+npm install --force
+```
+
+### Workspace Upgrades
+
+```bash
+# Update all workspace packages
+npm install --workspaces
+
+# Update specific workspace
+npm install package@latest --workspace=packages/app
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bash-defensive-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="寫可上線等級 Bash script 的防禦式技巧：strict mode、錯誤攔截、安全處理暫存檔">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>bash-defensive-patterns</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/shell-scripting/skills/bash-defensive-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">寫可上線等級 Bash script 的防禦式技巧：strict mode、錯誤攔截、安全處理暫存檔</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: bash-defensive-patterns
+description: 掌握可上線等級 script 的防禦式 Bash 程式設計技巧。在撰寫穩健的 shell script、CI/CD pipeline，或需要容錯與安全的系統工具時使用。
+---
+
+# Bash 防禦式模式
+
+用防禦式程式設計技巧、錯誤處理和安全最佳實務，撰寫可上線的 Bash script 的完整指引，用來避開常見陷阱並確保可靠性。
+
+## 何時使用這個 Skill
+
+- 撰寫正式環境的自動化 script
+- 建構 CI/CD pipeline 的 script
+- 建立系統管理的工具
+- 開發有錯誤韌性的部署自動化
+- 撰寫必須安全處理邊界情況的 script
+- 建構好維護的 shell script 函式庫
+- 實作完整的 logging 和監控
+- 建立必須跨不同平台運作的 script
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`。上面的導覽層不夠用時，再讀那個檔案。
+
+## 最佳實務摘要
+
+1. **一律使用 strict mode** - `set -Eeuo pipefail`
+2. **所有變數都要加引號** - `&quot;$variable&quot;` 可以防止 word splitting
+3. **用 [[]] 做條件判斷** - 比 [ ] 更穩健
+4. **實作錯誤攔截** - 優雅地抓到並處理錯誤
+5. **驗證所有輸入** - 檢查檔案是否存在、權限、格式
+6. **用函式做重複使用** - 用有意義的名稱當前綴
+7. **實作結構化的 logging** - 包含時間戳記和等級
+8. **支援 dry-run 模式** - 讓使用者預覽變更
+9. **安全地處理暫存檔** - 用 mktemp，並用 trap 清理
+10. **設計成 idempotent** - script 重跑應該是安全的
+11. **記錄需求** - 列出相依套件和最低版本
+12. **測試錯誤路徑** - 確保錯誤處理確實能運作
+13. **用 `command -v`** - 檢查執行檔時比 `which` 更安全
+14. **優先用 printf，不要用 echo** - 跨系統的行為更可預測</pre></section><section><h2>英文原文</h2><pre>---
+name: bash-defensive-patterns
+description: Master defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or system utilities requiring fault tolerance and safety.
+---
+
+# Bash Defensive Patterns
+
+Comprehensive guidance for writing production-ready Bash scripts using defensive programming techniques, error handling, and safety best practices to prevent common pitfalls and ensure reliability.
+
+## When to Use This Skill
+
+- Writing production automation scripts
+- Building CI/CD pipeline scripts
+- Creating system administration utilities
+- Developing error-resilient deployment automation
+- Writing scripts that must handle edge cases safely
+- Building maintainable shell script libraries
+- Implementing comprehensive logging and monitoring
+- Creating scripts that must work across different platforms
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Best Practices Summary
+
+1. **Always use strict mode** - `set -Eeuo pipefail`
+2. **Quote all variables** - `&quot;$variable&quot;` prevents word splitting
+3. **Use [[]] conditionals** - More robust than [ ]
+4. **Implement error trapping** - Catch and handle errors gracefully
+5. **Validate all inputs** - Check file existence, permissions, formats
+6. **Use functions for reusability** - Prefix with meaningful names
+7. **Implement structured logging** - Include timestamps and levels
+8. **Support dry-run mode** - Allow users to preview changes
+9. **Handle temporary files safely** - Use mktemp, cleanup with trap
+10. **Design for idempotency** - Scripts should be safe to rerun
+11. **Document requirements** - List dependencies and minimum versions
+12. **Test error paths** - Ensure error handling works correctly
+13. **Use `command -v`** - Safer than `which` for checking executables
+14. **Prefer printf over echo** - More predictable across systems</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

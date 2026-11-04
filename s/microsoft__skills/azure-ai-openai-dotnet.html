@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-ai-openai-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET SDK 呼叫 Azure OpenAI，做聊天、embedding、圖片和語音">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-ai-openai-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-ai-openai-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET SDK 呼叫 Azure OpenAI，做聊天、embedding、圖片和語音</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-ai-openai-dotnet
+description: |
+  Azure OpenAI SDK（.NET 版）。Azure OpenAI 和 OpenAI 服務的 client 函式庫。用於 chat completion、embedding、圖片生成、音訊轉錄和 assistant。Triggers: &quot;Azure OpenAI&quot;, &quot;AzureOpenAIClient&quot;, &quot;ChatClient&quot;, &quot;chat completions .NET&quot;, &quot;GPT-4&quot;, &quot;embeddings&quot;, &quot;DALL-E&quot;, &quot;Whisper&quot;, &quot;OpenAI .NET&quot;。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.AI.OpenAI
+---
+
+# Azure.AI.OpenAI（.NET）
+
+Azure OpenAI Service 的 client 函式庫，可存取 OpenAI 模型，包括 GPT-4、GPT-4o、embedding、DALL-E 和 Whisper。
+
+## 安裝
+
+```bash
+dotnet add package Azure.AI.OpenAI
+
+# 為了相容 OpenAI（非 Azure）
+dotnet add package OpenAI
+```
+
+**目前版本**：2.1.0（穩定版）
+
+## 環境變數
+
+```bash
+AZURE_OPENAI_ENDPOINT=https://&lt;resource-name&gt;.openai.azure.com  # 必填：Azure OpenAI endpoint
+AZURE_OPENAI_API_KEY=&lt;api-key&gt;  # 只有用 AzureKeyCredential 認證時才需要
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini  # 必填：model deployment 名稱
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境用 DefaultAzureCredential 時才需要
+```
+
+## Client 階層
+
+```
+AzureOpenAIClient（最上層）
+├── GetChatClient(deploymentName)      → ChatClient
+├── GetEmbeddingClient(deploymentName) → EmbeddingClient
+├── GetImageClient(deploymentName)     → ImageClient
+├── GetAudioClient(deploymentName)     → AudioClient
+└── GetAssistantClient()               → AssistantClient
+```
+
+## 認證
+
+### API Key 認證
+
+```csharp
+using Azure;
+using Azure.AI.OpenAI;
+
+AzureOpenAIClient client = new(
+    new Uri(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_ENDPOINT&quot;)!),
+    new AzureKeyCredential(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_API_KEY&quot;)!));
+```
+
+### Microsoft Entra Token Credential
+
+```csharp
+using Azure.Identity;
+using Azure.AI.OpenAI;
+
+// 本機開發：用 DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在正式環境直接使用指定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+AzureOpenAIClient client = new(
+    new Uri(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_ENDPOINT&quot;)!),
+    credential);
+```
+
+### 直接用 OpenAI SDK 連 Azure
+
+```csharp
+using Azure.Identity;
+using OpenAI;
+using OpenAI.Chat;
+using System.ClientModel.Primitives;
+
+#pragma warning disable OPENAI001
+
+BearerTokenPolicy tokenPolicy = new(
+    new DefaultAzureCredential(),
+    &quot;https://cognitiveservices.azure.com/.default&quot;);
+
+ChatClient client = new(
+    model: &quot;gpt-4o-mini&quot;,
+    authenticationPolicy: tokenPolicy,
+    options: new OpenAIClientOptions()
+    {
+        Endpoint = new Uri(&quot;https://YOUR-RESOURCE.openai.azure.com/openai/v1&quot;)
+    });
+```
+
+## Chat Completion
+
+### 基本 Chat
+
+```csharp
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
+
+AzureOpenAIClient azureClient = new(
+    new Uri(endpoint),
+    new DefaultAzureCredential());
+
+ChatClient chatClient = azureClient.GetChatClient(&quot;gpt-4o-mini&quot;);
+
+ChatCompletion completion = chatClient.CompleteChat(
+[
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;What is Azure OpenAI?&quot;)
+]);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
+### 非同步 Chat
+
+```csharp
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+[
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;Explain cloud computing in simple terms.&quot;)
+]);
+
+Console.WriteLine($&quot;Response: {completion.Content[0].Text}&quot;);
+Console.WriteLine($&quot;Tokens used: {completion.Usage.TotalTokenCount}&quot;);
+```
+
+### 串流 Chat
+
+```csharp
+await foreach (StreamingChatCompletionUpdate update 
+    in chatClient.CompleteChatStreamingAsync(messages))
+{
+    if (update.ContentUpdate.Count &gt; 0)
+    {
+        Console.Write(update.ContentUpdate[0].Text);
+    }
+}
+```
+
+### 帶選項的 Chat
+
+```csharp
+ChatCompletionOptions options = new()
+{
+    MaxOutputTokenCount = 1000,
+    Temperature = 0.7f,
+    TopP = 0.95f,
+    FrequencyPenalty = 0,
+    PresencePenalty = 0
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(messages, options);
+```
+
+### 多輪對話
+
+```csharp
+List&lt;ChatMessage&gt; messages = new()
+{
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;Hi, can you help me?&quot;),
+    new AssistantChatMessage(&quot;Of course! What do you need help with?&quot;),
+    new UserChatMessage(&quot;What&#x27;s the capital of France?&quot;)
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(messages);
+messages.Add(new AssistantChatMessage(completion.Content[0].Text));
+```
+
+## 結構化輸出（JSON Schema）
+
+```csharp
+using System.Text.Json;
+
+ChatCompletionOptions options = new()
+{
+    ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+        jsonSchemaFormatName: &quot;math_reasoning&quot;,
+        jsonSchema: BinaryData.FromBytes(&quot;&quot;&quot;
+            {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;steps&quot;: {
+                        &quot;type&quot;: &quot;array&quot;,
+                        &quot;items&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;explanation&quot;: { &quot;type&quot;: &quot;string&quot; },
+                                &quot;output&quot;: { &quot;type&quot;: &quot;string&quot; }
+                            },
+                            &quot;required&quot;: [&quot;explanation&quot;, &quot;output&quot;],
+                            &quot;additionalProperties&quot;: false
+                        }
+                    },
+                    &quot;final_answer&quot;: { &quot;type&quot;: &quot;string&quot; }
+                },
+                &quot;required&quot;: [&quot;steps&quot;, &quot;final_answer&quot;],
+                &quot;additionalProperties&quot;: false
+            }
+            &quot;&quot;&quot;u8.ToArray()),
+        jsonSchemaIsStrict: true)
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;How can I solve 8x + 7 = -23?&quot;)],
+    options);
+
+using JsonDocument json = JsonDocument.Parse(completion.Content[0].Text);
+Console.WriteLine($&quot;Answer: {json.RootElement.GetProperty(&quot;final_answer&quot;)}&quot;);
+```
+
+## 推理模型（o1、o4-mini）
+
+```csharp
+ChatCompletionOptions options = new()
+{
+    ReasoningEffortLevel = ChatReasoningEffortLevel.Low,
+    MaxOutputTokenCount = 100000
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+[
+    new DeveloperChatMessage(&quot;You are a helpful assistant&quot;),
+    new UserChatMessage(&quot;Explain the theory of relativity&quot;)
+], options);
+```
+
+## Azure AI Search 整合（RAG）
+
+```csharp
+using Azure.AI.OpenAI.Chat;
+
+#pragma warning disable AOAI001
+
+ChatCompletionOptions options = new();
+options.AddDataSource(new AzureSearchChatDataSource()
+{
+    Endpoint = new Uri(searchEndpoint),
+    IndexName = searchIndex,
+    Authentication = DataSourceAuthentication.FromApiKey(searchKey)
+});
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;What health plans are available?&quot;)],
+    options);
+
+ChatMessageContext context = completion.GetMessageContext();
+if (context?.Intent is not null)
+{
+    Console.WriteLine($&quot;Intent: {context.Intent}&quot;);
+}
+foreach (ChatCitation citation in context?.Citations ?? [])
+{
+    Console.WriteLine($&quot;Citation: {citation.Content}&quot;);
+}
+```
+
+## Embedding
+
+```csharp
+using OpenAI.Embeddings;
+
+EmbeddingClient embeddingClient = azureClient.GetEmbeddingClient(&quot;text-embedding-ada-002&quot;);
+
+OpenAIEmbedding embedding = await embeddingClient.GenerateEmbeddingAsync(&quot;Hello, world!&quot;);
+ReadOnlyMemory&lt;float&gt; vector = embedding.ToFloats();
+
+Console.WriteLine($&quot;Embedding dimensions: {vector.Length}&quot;);
+```
+
+### 批次 Embedding
+
+```csharp
+List&lt;string&gt; inputs = new()
+{
+    &quot;First document text&quot;,
+    &quot;Second document text&quot;,
+    &quot;Third document text&quot;
+};
+
+OpenAIEmbeddingCollection embeddings = await embeddingClient.GenerateEmbeddingsAsync(inputs);
+
+foreach (OpenAIEmbedding emb in embeddings)
+{
+    Console.WriteLine($&quot;Index {emb.Index}: {emb.ToFloats().Length} dimensions&quot;);
+}
+```
+
+## 圖片生成（DALL-E）
+
+```csharp
+using OpenAI.Images;
+
+ImageClient imageClient = azureClient.GetImageClient(&quot;dall-e-3&quot;);
+
+GeneratedImage image = await imageClient.GenerateImageAsync(
+    &quot;A futuristic city skyline at sunset&quot;,
+    new ImageGenerationOptions
+    {
+        Size = GeneratedImageSize.W1024xH1024,
+        Quality = GeneratedImageQuality.High,
+        Style = GeneratedImageStyle.Vivid
+    });
+
+Console.WriteLine($&quot;Image URL: {image.ImageUri}&quot;);
+```
+
+## 音訊（Whisper）
+
+### 轉錄
+
+```csharp
+using OpenAI.Audio;
+
+AudioClient audioClient = azureClient.GetAudioClient(&quot;whisper&quot;);
+
+AudioTranscription transcription = await audioClient.TranscribeAudioAsync(
+    &quot;audio.mp3&quot;,
+    new AudioTranscriptionOptions
+    {
+        ResponseFormat = AudioTranscriptionFormat.Verbose,
+        Language = &quot;en&quot;
+    });
+
+Console.WriteLine(transcription.Text);
+```
+
+### 文字轉語音
+
+```csharp
+BinaryData speech = await audioClient.GenerateSpeechAsync(
+    &quot;Hello, welcome to Azure OpenAI!&quot;,
+    GeneratedSpeechVoice.Alloy,
+    new SpeechGenerationOptions
+    {
+        SpeedRatio = 1.0f,
+        ResponseFormat = GeneratedSpeechFormat.Mp3
+    });
+
+await File.WriteAllBytesAsync(&quot;output.mp3&quot;, speech.ToArray());
+```
+
+## Function Calling（工具）
+
+```csharp
+ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
+    functionName: &quot;get_current_weather&quot;,
+    functionDescription: &quot;Get the current weather in a given location&quot;,
+    functionParameters: BinaryData.FromString(&quot;&quot;&quot;
+        {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;location&quot;: {
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;description&quot;: &quot;The city and state, e.g. San Francisco, CA&quot;
+                },
+                &quot;unit&quot;: {
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;enum&quot;: [&quot;celsius&quot;, &quot;fahrenheit&quot;]
+                }
+            },
+            &quot;required&quot;: [&quot;location&quot;]
+        }
+        &quot;&quot;&quot;));
+
+ChatCompletionOptions options = new()
+{
+    Tools = { getCurrentWeatherTool }
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;What&#x27;s the weather in Seattle?&quot;)],
+    options);
+
+if (completion.FinishReason == ChatFinishReason.ToolCalls)
+{
+    foreach (ChatToolCall toolCall in completion.ToolCalls)
+    {
+        Console.WriteLine($&quot;Function: {toolCall.FunctionName}&quot;);
+        Console.WriteLine($&quot;Arguments: {toolCall.FunctionArguments}&quot;);
+    }
+}
+```
+
+## 主要型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `AzureOpenAIClient` | Azure OpenAI 的最上層 client |
+| `ChatClient` | Chat completion |
+| `EmbeddingClient` | 文字 embedding |
+| `ImageClient` | 圖片生成（DALL-E） |
+| `AudioClient` | 音訊轉錄／TTS |
+| `ChatCompletion` | Chat 回應 |
+| `ChatCompletionOptions` | 請求設定 |
+| `StreamingChatCompletionUpdate` | 串流回應片段 |
+| `ChatMessage` | 訊息的基底型別 |
+| `SystemChatMessage` | System prompt |
+| `UserChatMessage` | 使用者輸入 |
+| `AssistantChatMessage` | Assistant 回應 |
+| `DeveloperChatMessage` | Developer 訊息（推理模型用） |
+| `ChatTool` | Function／工具定義 |
+| `ChatToolCall` | 工具呼叫請求 |
+
+## 最佳實務
+
+1. **正式環境用 Entra ID**：避免用 API key，改用 `DefaultAzureCredential`
+2. **重複使用 client 實例**：建立一次，在各個請求間共用
+3. **處理速率限制**：遇到 429 錯誤要實作 exponential backoff
+4. **長回應用串流**：用 `CompleteChatStreamingAsync` 體驗比較好
+5. **設定適當的 timeout**：長的 completion 可能需要更長的 timeout
+6. **使用結構化輸出**：JSON schema 能確保回應格式一致
+7. **監控 token 用量**：追蹤 `completion.Usage` 來管理成本
+8. **驗證 tool call**：執行前一定要驗證函式的參數
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    ChatCompletion completion = await chatClient.CompleteChatAsync(messages);
+}
+catch (RequestFailedException ex) when (ex.Status == 429)
+{
+    Console.WriteLine(&quot;Rate limited. Retry after delay.&quot;);
+    await Task.Delay(TimeSpan.FromSeconds(10));
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Bad request: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Azure OpenAI error: {ex.Status} - {ex.Message}&quot;);
+}
+```
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Azure.AI.OpenAI` | Azure OpenAI client（本 SDK） | `dotnet add package Azure.AI.OpenAI` |
+| `OpenAI` | OpenAI 相容 | `dotnet add package OpenAI` |
+| `Azure.Identity` | 認證 | `dotnet add package Azure.Identity` |
+| `Azure.Search.Documents` | 給 RAG 用的 AI Search | `dotnet add package Azure.Search.Documents` |
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| NuGet 套件 | https://www.nuget.org/packages/Azure.AI.OpenAI |
+| API 參考 | https://learn.microsoft.com/dotnet/api/azure.ai.openai |
+| 遷移指南（1.0→2.0） | https://learn.microsoft.com/azure/ai-services/openai/how-to/dotnet-migration |
+| 快速開始 | https://learn.microsoft.com/azure/ai-services/openai/quickstart |
+| GitHub 原始碼 | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-ai-openai-dotnet
+description: |
+  Azure OpenAI SDK for .NET. Client library for Azure OpenAI and OpenAI services. Use for chat completions, embeddings, image generation, audio transcription, and assistants. Triggers: &quot;Azure OpenAI&quot;, &quot;AzureOpenAIClient&quot;, &quot;ChatClient&quot;, &quot;chat completions .NET&quot;, &quot;GPT-4&quot;, &quot;embeddings&quot;, &quot;DALL-E&quot;, &quot;Whisper&quot;, &quot;OpenAI .NET&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.AI.OpenAI
+---
+
+# Azure.AI.OpenAI (.NET)
+
+Client library for Azure OpenAI Service providing access to OpenAI models including GPT-4, GPT-4o, embeddings, DALL-E, and Whisper.
+
+## Installation
+
+```bash
+dotnet add package Azure.AI.OpenAI
+
+# For OpenAI (non-Azure) compatibility
+dotnet add package OpenAI
+```
+
+**Current Version**: 2.1.0 (stable)
+
+## Environment Variables
+
+```bash
+AZURE_OPENAI_ENDPOINT=https://&lt;resource-name&gt;.openai.azure.com  # Required: Azure OpenAI endpoint
+AZURE_OPENAI_API_KEY=&lt;api-key&gt;  # Only required for AzureKeyCredential auth
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini  # Required: model deployment name
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Client Hierarchy
+
+```
+AzureOpenAIClient (top-level)
+├── GetChatClient(deploymentName)      → ChatClient
+├── GetEmbeddingClient(deploymentName) → EmbeddingClient
+├── GetImageClient(deploymentName)     → ImageClient
+├── GetAudioClient(deploymentName)     → AudioClient
+└── GetAssistantClient()               → AssistantClient
+```
+
+## Authentication
+
+### API Key Authentication
+
+```csharp
+using Azure;
+using Azure.AI.OpenAI;
+
+AzureOpenAIClient client = new(
+    new Uri(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_ENDPOINT&quot;)!),
+    new AzureKeyCredential(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_API_KEY&quot;)!));
+```
+
+### Microsoft Entra Token Credential
+
+```csharp
+using Azure.Identity;
+using Azure.AI.OpenAI;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+AzureOpenAIClient client = new(
+    new Uri(Environment.GetEnvironmentVariable(&quot;AZURE_OPENAI_ENDPOINT&quot;)!),
+    credential);
+```
+
+### Using OpenAI SDK Directly with Azure
+
+```csharp
+using Azure.Identity;
+using OpenAI;
+using OpenAI.Chat;
+using System.ClientModel.Primitives;
+
+#pragma warning disable OPENAI001
+
+BearerTokenPolicy tokenPolicy = new(
+    new DefaultAzureCredential(),
+    &quot;https://cognitiveservices.azure.com/.default&quot;);
+
+ChatClient client = new(
+    model: &quot;gpt-4o-mini&quot;,
+    authenticationPolicy: tokenPolicy,
+    options: new OpenAIClientOptions()
+    {
+        Endpoint = new Uri(&quot;https://YOUR-RESOURCE.openai.azure.com/openai/v1&quot;)
+    });
+```
+
+## Chat Completions
+
+### Basic Chat
+
+```csharp
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
+
+AzureOpenAIClient azureClient = new(
+    new Uri(endpoint),
+    new DefaultAzureCredential());
+
+ChatClient chatClient = azureClient.GetChatClient(&quot;gpt-4o-mini&quot;);
+
+ChatCompletion completion = chatClient.CompleteChat(
+[
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;What is Azure OpenAI?&quot;)
+]);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
+### Async Chat
+
+```csharp
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+[
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;Explain cloud computing in simple terms.&quot;)
+]);
+
+Console.WriteLine($&quot;Response: {completion.Content[0].Text}&quot;);
+Console.WriteLine($&quot;Tokens used: {completion.Usage.TotalTokenCount}&quot;);
+```
+
+### Streaming Chat
+
+```csharp
+await foreach (StreamingChatCompletionUpdate update 
+    in chatClient.CompleteChatStreamingAsync(messages))
+{
+    if (update.ContentUpdate.Count &gt; 0)
+    {
+        Console.Write(update.ContentUpdate[0].Text);
+    }
+}
+```
+
+### Chat with Options
+
+```csharp
+ChatCompletionOptions options = new()
+{
+    MaxOutputTokenCount = 1000,
+    Temperature = 0.7f,
+    TopP = 0.95f,
+    FrequencyPenalty = 0,
+    PresencePenalty = 0
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(messages, options);
+```
+
+### Multi-turn Conversation
+
+```csharp
+List&lt;ChatMessage&gt; messages = new()
+{
+    new SystemChatMessage(&quot;You are a helpful assistant.&quot;),
+    new UserChatMessage(&quot;Hi, can you help me?&quot;),
+    new AssistantChatMessage(&quot;Of course! What do you need help with?&quot;),
+    new UserChatMessage(&quot;What&#x27;s the capital of France?&quot;)
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(messages);
+messages.Add(new AssistantChatMessage(completion.Content[0].Text));
+```
+
+## Structured Outputs (JSON Schema)
+
+```csharp
+using System.Text.Json;
+
+ChatCompletionOptions options = new()
+{
+    ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+        jsonSchemaFormatName: &quot;math_reasoning&quot;,
+        jsonSchema: BinaryData.FromBytes(&quot;&quot;&quot;
+            {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;steps&quot;: {
+                        &quot;type&quot;: &quot;array&quot;,
+                        &quot;items&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;explanation&quot;: { &quot;type&quot;: &quot;string&quot; },
+                                &quot;output&quot;: { &quot;type&quot;: &quot;string&quot; }
+                            },
+                            &quot;required&quot;: [&quot;explanation&quot;, &quot;output&quot;],
+                            &quot;additionalProperties&quot;: false
+                        }
+                    },
+                    &quot;final_answer&quot;: { &quot;type&quot;: &quot;string&quot; }
+                },
+                &quot;required&quot;: [&quot;steps&quot;, &quot;final_answer&quot;],
+                &quot;additionalProperties&quot;: false
+            }
+            &quot;&quot;&quot;u8.ToArray()),
+        jsonSchemaIsStrict: true)
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;How can I solve 8x + 7 = -23?&quot;)],
+    options);
+
+using JsonDocument json = JsonDocument.Parse(completion.Content[0].Text);
+Console.WriteLine($&quot;Answer: {json.RootElement.GetProperty(&quot;final_answer&quot;)}&quot;);
+```
+
+## Reasoning Models (o1, o4-mini)
+
+```csharp
+ChatCompletionOptions options = new()
+{
+    ReasoningEffortLevel = ChatReasoningEffortLevel.Low,
+    MaxOutputTokenCount = 100000
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+[
+    new DeveloperChatMessage(&quot;You are a helpful assistant&quot;),
+    new UserChatMessage(&quot;Explain the theory of relativity&quot;)
+], options);
+```
+
+## Azure AI Search Integration (RAG)
+
+```csharp
+using Azure.AI.OpenAI.Chat;
+
+#pragma warning disable AOAI001
+
+ChatCompletionOptions options = new();
+options.AddDataSource(new AzureSearchChatDataSource()
+{
+    Endpoint = new Uri(searchEndpoint),
+    IndexName = searchIndex,
+    Authentication = DataSourceAuthentication.FromApiKey(searchKey)
+});
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;What health plans are available?&quot;)],
+    options);
+
+ChatMessageContext context = completion.GetMessageContext();
+if (context?.Intent is not null)
+{
+    Console.WriteLine($&quot;Intent: {context.Intent}&quot;);
+}
+foreach (ChatCitation citation in context?.Citations ?? [])
+{
+    Console.WriteLine($&quot;Citation: {citation.Content}&quot;);
+}
+```
+
+## Embeddings
+
+```csharp
+using OpenAI.Embeddings;
+
+EmbeddingClient embeddingClient = azureClient.GetEmbeddingClient(&quot;text-embedding-ada-002&quot;);
+
+OpenAIEmbedding embedding = await embeddingClient.GenerateEmbeddingAsync(&quot;Hello, world!&quot;);
+ReadOnlyMemory&lt;float&gt; vector = embedding.ToFloats();
+
+Console.WriteLine($&quot;Embedding dimensions: {vector.Length}&quot;);
+```
+
+### Batch Embeddings
+
+```csharp
+List&lt;string&gt; inputs = new()
+{
+    &quot;First document text&quot;,
+    &quot;Second document text&quot;,
+    &quot;Third document text&quot;
+};
+
+OpenAIEmbeddingCollection embeddings = await embeddingClient.GenerateEmbeddingsAsync(inputs);
+
+foreach (OpenAIEmbedding emb in embeddings)
+{
+    Console.WriteLine($&quot;Index {emb.Index}: {emb.ToFloats().Length} dimensions&quot;);
+}
+```
+
+## Image Generation (DALL-E)
+
+```csharp
+using OpenAI.Images;
+
+ImageClient imageClient = azureClient.GetImageClient(&quot;dall-e-3&quot;);
+
+GeneratedImage image = await imageClient.GenerateImageAsync(
+    &quot;A futuristic city skyline at sunset&quot;,
+    new ImageGenerationOptions
+    {
+        Size = GeneratedImageSize.W1024xH1024,
+        Quality = GeneratedImageQuality.High,
+        Style = GeneratedImageStyle.Vivid
+    });
+
+Console.WriteLine($&quot;Image URL: {image.ImageUri}&quot;);
+```
+
+## Audio (Whisper)
+
+### Transcription
+
+```csharp
+using OpenAI.Audio;
+
+AudioClient audioClient = azureClient.GetAudioClient(&quot;whisper&quot;);
+
+AudioTranscription transcription = await audioClient.TranscribeAudioAsync(
+    &quot;audio.mp3&quot;,
+    new AudioTranscriptionOptions
+    {
+        ResponseFormat = AudioTranscriptionFormat.Verbose,
+        Language = &quot;en&quot;
+    });
+
+Console.WriteLine(transcription.Text);
+```
+
+### Text-to-Speech
+
+```csharp
+BinaryData speech = await audioClient.GenerateSpeechAsync(
+    &quot;Hello, welcome to Azure OpenAI!&quot;,
+    GeneratedSpeechVoice.Alloy,
+    new SpeechGenerationOptions
+    {
+        SpeedRatio = 1.0f,
+        ResponseFormat = GeneratedSpeechFormat.Mp3
+    });
+
+await File.WriteAllBytesAsync(&quot;output.mp3&quot;, speech.ToArray());
+```
+
+## Function Calling (Tools)
+
+```csharp
+ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
+    functionName: &quot;get_current_weather&quot;,
+    functionDescription: &quot;Get the current weather in a given location&quot;,
+    functionParameters: BinaryData.FromString(&quot;&quot;&quot;
+        {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+                &quot;location&quot;: {
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;description&quot;: &quot;The city and state, e.g. San Francisco, CA&quot;
+                },
+                &quot;unit&quot;: {
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;enum&quot;: [&quot;celsius&quot;, &quot;fahrenheit&quot;]
+                }
+            },
+            &quot;required&quot;: [&quot;location&quot;]
+        }
+        &quot;&quot;&quot;));
+
+ChatCompletionOptions options = new()
+{
+    Tools = { getCurrentWeatherTool }
+};
+
+ChatCompletion completion = await chatClient.CompleteChatAsync(
+    [new UserChatMessage(&quot;What&#x27;s the weather in Seattle?&quot;)],
+    options);
+
+if (completion.FinishReason == ChatFinishReason.ToolCalls)
+{
+    foreach (ChatToolCall toolCall in completion.ToolCalls)
+    {
+        Console.WriteLine($&quot;Function: {toolCall.FunctionName}&quot;);
+        Console.WriteLine($&quot;Arguments: {toolCall.FunctionArguments}&quot;);
+    }
+}
+```
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `AzureOpenAIClient` | Top-level client for Azure OpenAI |
+| `ChatClient` | Chat completions |
+| `EmbeddingClient` | Text embeddings |
+| `ImageClient` | Image generation (DALL-E) |
+| `AudioClient` | Audio transcription/TTS |
+| `ChatCompletion` | Chat response |
+| `ChatCompletionOptions` | Request configuration |
+| `StreamingChatCompletionUpdate` | Streaming response chunk |
+| `ChatMessage` | Base message type |
+| `SystemChatMessage` | System prompt |
+| `UserChatMessage` | User input |
+| `AssistantChatMessage` | Assistant response |
+| `DeveloperChatMessage` | Developer message (reasoning models) |
+| `ChatTool` | Function/tool definition |
+| `ChatToolCall` | Tool invocation request |
+
+## Best Practices
+
+1. **Use Entra ID in production** — Avoid API keys; use `DefaultAzureCredential`
+2. **Reuse client instances** — Create once, share across requests
+3. **Handle rate limits** — Implement exponential backoff for 429 errors
+4. **Stream for long responses** — Use `CompleteChatStreamingAsync` for better UX
+5. **Set appropriate timeouts** — Long completions may need extended timeouts
+6. **Use structured outputs** — JSON schema ensures consistent response format
+7. **Monitor token usage** — Track `completion.Usage` for cost management
+8. **Validate tool calls** — Always validate function arguments before execution
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    ChatCompletion completion = await chatClient.CompleteChatAsync(messages);
+}
+catch (RequestFailedException ex) when (ex.Status == 429)
+{
+    Console.WriteLine(&quot;Rate limited. Retry after delay.&quot;);
+    await Task.Delay(TimeSpan.FromSeconds(10));
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Bad request: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Azure OpenAI error: {ex.Status} - {ex.Message}&quot;);
+}
+```
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Azure.AI.OpenAI` | Azure OpenAI client (this SDK) | `dotnet add package Azure.AI.OpenAI` |
+| `OpenAI` | OpenAI compatibility | `dotnet add package OpenAI` |
+| `Azure.Identity` | Authentication | `dotnet add package Azure.Identity` |
+| `Azure.Search.Documents` | AI Search for RAG | `dotnet add package Azure.Search.Documents` |
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.AI.OpenAI |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.ai.openai |
+| Migration Guide (1.0→2.0) | https://learn.microsoft.com/azure/ai-services/openai/how-to/dotnet-migration |
+| Quickstart | https://learn.microsoft.com/azure/ai-services/openai/quickstart |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-blob-java｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Java 對 Azure Blob Storage 上傳、下載、列出與管理檔案">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-blob-java</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-java/skills/azure-storage-blob-java/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Java 對 Azure Blob Storage 上傳、下載、列出與管理檔案</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-blob-java
+description: 用 Java 版的 Azure Storage Blob SDK 建構 blob 儲存應用。用於在 Azure Blob Storage 上傳、下載或管理檔案、操作 container，或實作串流資料操作。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-storage-blob
+---
+
+# Java 版 Azure Storage Blob SDK
+
+用 Java 版的 Azure Storage Blob SDK 建構 blob 儲存應用。
+
+## 安裝
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-storage-blob&lt;/artifactId&gt;
+    &lt;version&gt;12.33.0&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## 建立 Client
+
+### BlobServiceClient
+
+```java
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+
+// 用 SAS token
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;storage-account-url&gt;&quot;)
+    .sasToken(&quot;&lt;sas-token&gt;&quot;)
+    .buildClient();
+
+// 用 connection string
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .buildClient();
+```
+
+### 搭配 DefaultAzureCredential
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;storage-account-url&gt;&quot;)
+    .credential(credential)
+    .buildClient();
+```
+
+### BlobContainerClient
+
+```java
+import com.azure.storage.blob.BlobContainerClient;
+
+// 從 service client 取得
+BlobContainerClient containerClient = serviceClient.getBlobContainerClient(&quot;mycontainer&quot;);
+
+// 直接建構
+BlobContainerClient containerClient = new BlobContainerClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .containerName(&quot;mycontainer&quot;)
+    .buildClient();
+```
+
+### BlobClient
+
+```java
+import com.azure.storage.blob.BlobClient;
+
+// 從 container client 取得
+BlobClient blobClient = containerClient.getBlobClient(&quot;myblob.txt&quot;);
+
+// 含目錄結構
+BlobClient blobClient = containerClient.getBlobClient(&quot;folder/subfolder/myblob.txt&quot;);
+
+// 直接建構
+BlobClient blobClient = new BlobClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .containerName(&quot;mycontainer&quot;)
+    .blobName(&quot;myblob.txt&quot;)
+    .buildClient();
+```
+
+## 核心模式
+
+### 建立 Container
+
+```java
+// 建立 container
+serviceClient.createBlobContainer(&quot;mycontainer&quot;);
+
+// 不存在才建立
+BlobContainerClient container = serviceClient.createBlobContainerIfNotExists(&quot;mycontainer&quot;);
+
+// 從 container client 建立
+containerClient.create();
+containerClient.createIfNotExists();
+```
+
+### 上傳資料
+
+```java
+import com.azure.core.util.BinaryData;
+
+// 上傳字串
+String data = &quot;Hello, Azure Blob Storage!&quot;;
+blobClient.upload(BinaryData.fromString(data));
+
+// 上傳並允許覆寫
+blobClient.upload(BinaryData.fromString(data), true);
+```
+
+### 從檔案上傳
+
+```java
+blobClient.uploadFromFile(&quot;local-file.txt&quot;);
+
+// 允許覆寫
+blobClient.uploadFromFile(&quot;local-file.txt&quot;, true);
+```
+
+### 從 Stream 上傳
+
+```java
+import com.azure.storage.blob.specialized.BlockBlobClient;
+
+BlockBlobClient blockBlobClient = blobClient.getBlockBlobClient();
+
+try (ByteArrayInputStream dataStream = new ByteArrayInputStream(data.getBytes())) {
+    blockBlobClient.upload(dataStream, data.length());
+}
+```
+
+### 帶選項上傳
+
+```java
+import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
+
+BlobHttpHeaders headers = new BlobHttpHeaders()
+    .setContentType(&quot;text/plain&quot;)
+    .setCacheControl(&quot;max-age=3600&quot;);
+
+Map&lt;String, String&gt; metadata = Map.of(&quot;author&quot;, &quot;john&quot;, &quot;version&quot;, &quot;1.0&quot;);
+
+try (InputStream stream = new FileInputStream(&quot;large-file.bin&quot;)) {
+    BlobParallelUploadOptions options = new BlobParallelUploadOptions(stream)
+        .setHeaders(headers)
+        .setMetadata(metadata);
+    
+    blobClient.uploadWithResponse(options, null, Context.NONE);
+}
+```
+
+### 不存在才上傳
+
+```java
+import com.azure.storage.blob.models.BlobRequestConditions;
+
+BlobParallelUploadOptions options = new BlobParallelUploadOptions(inputStream, length)
+    .setRequestConditions(new BlobRequestConditions().setIfNoneMatch(&quot;*&quot;));
+
+blobClient.uploadWithResponse(options, null, Context.NONE);
+```
+
+### 下載資料
+
+```java
+// 下載成 BinaryData
+BinaryData content = blobClient.downloadContent();
+String text = content.toString();
+
+// 下載到檔案
+blobClient.downloadToFile(&quot;downloaded-file.txt&quot;);
+```
+
+### 下載到 Stream
+
+```java
+try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+    blobClient.downloadStream(outputStream);
+    byte[] data = outputStream.toByteArray();
+}
+```
+
+### 用 InputStream 下載
+
+```java
+import com.azure.storage.blob.specialized.BlobInputStream;
+
+try (BlobInputStream blobIS = blobClient.openInputStream()) {
+    byte[] buffer = new byte[1024];
+    int bytesRead;
+    while ((bytesRead = blobIS.read(buffer)) != -1) {
+        // 處理 buffer
+    }
+}
+```
+
+### 透過 OutputStream 上傳
+
+```java
+import com.azure.storage.blob.specialized.BlobOutputStream;
+
+try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
+    blobOS.write(&quot;Data to upload&quot;.getBytes());
+}
+```
+
+### 列出 Blob
+
+```java
+import com.azure.storage.blob.models.BlobItem;
+
+// 列出所有 blob
+for (BlobItem blobItem : containerClient.listBlobs()) {
+    System.out.println(&quot;Blob: &quot; + blobItem.getName());
+}
+
+// 用 prefix 列出（虛擬目錄）
+import com.azure.storage.blob.models.ListBlobsOptions;
+
+ListBlobsOptions options = new ListBlobsOptions().setPrefix(&quot;folder/&quot;);
+for (BlobItem blobItem : containerClient.listBlobs(options, null)) {
+    System.out.println(&quot;Blob: &quot; + blobItem.getName());
+}
+```
+
+### 依階層列出 Blob
+
+```java
+import com.azure.storage.blob.models.BlobListDetails;
+
+String delimiter = &quot;/&quot;;
+ListBlobsOptions options = new ListBlobsOptions()
+    .setPrefix(&quot;data/&quot;)
+    .setDetails(new BlobListDetails().setRetrieveMetadata(true));
+
+for (BlobItem item : containerClient.listBlobsByHierarchy(delimiter, options, null)) {
+    if (item.isPrefix()) {
+        System.out.println(&quot;Directory: &quot; + item.getName());
+    } else {
+        System.out.println(&quot;Blob: &quot; + item.getName());
+    }
+}
+```
+
+### 刪除 Blob
+
+```java
+blobClient.delete();
+
+// 存在才刪除
+blobClient.deleteIfExists();
+
+// 連同 snapshot 一起刪除
+import com.azure.storage.blob.models.DeleteSnapshotsOptionType;
+blobClient.deleteWithResponse(DeleteSnapshotsOptionType.INCLUDE, null, null, Context.NONE);
+```
+
+### 複製 Blob
+
+```java
+import com.azure.storage.blob.models.BlobCopyInfo;
+import com.azure.core.util.polling.SyncPoller;
+
+// 非同步複製（大型 blob 或跨 account）
+SyncPoller&lt;BlobCopyInfo, Void&gt; poller = blobClient.beginCopy(&quot;&lt;source-blob-url&gt;&quot;, Duration.ofSeconds(1));
+poller.waitForCompletion();
+
+// 從 URL 同步複製（同一個 account）
+blobClient.copyFromUrl(&quot;&lt;source-blob-url&gt;&quot;);
+```
+
+### 產生 SAS Token
+
+```java
+import com.azure.storage.blob.sas.*;
+import java.time.OffsetDateTime;
+
+// Blob 層級的 SAS
+BlobSasPermission permissions = new BlobSasPermission().setReadPermission(true);
+OffsetDateTime expiry = OffsetDateTime.now().plusDays(1);
+
+BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(expiry, permissions);
+String sasToken = blobClient.generateSas(sasValues);
+
+// Container 層級的 SAS
+BlobContainerSasPermission containerPermissions = new BlobContainerSasPermission()
+    .setReadPermission(true)
+    .setListPermission(true);
+    
+BlobServiceSasSignatureValues containerSasValues = new BlobServiceSasSignatureValues(expiry, containerPermissions);
+String containerSas = containerClient.generateSas(containerSasValues);
+```
+
+### Blob 屬性與 Metadata
+
+```java
+import com.azure.storage.blob.models.BlobProperties;
+
+// 取得屬性
+BlobProperties properties = blobClient.getProperties();
+System.out.println(&quot;Size: &quot; + properties.getBlobSize());
+System.out.println(&quot;Content-Type: &quot; + properties.getContentType());
+System.out.println(&quot;Last Modified: &quot; + properties.getLastModified());
+
+// 設定 metadata
+Map&lt;String, String&gt; metadata = Map.of(&quot;key1&quot;, &quot;value1&quot;, &quot;key2&quot;, &quot;value2&quot;);
+blobClient.setMetadata(metadata);
+
+// 設定 HTTP header
+BlobHttpHeaders headers = new BlobHttpHeaders()
+    .setContentType(&quot;application/json&quot;)
+    .setCacheControl(&quot;max-age=86400&quot;);
+blobClient.setHttpHeaders(headers);
+```
+
+### Blob Lease
+
+```java
+import com.azure.storage.blob.specialized.BlobLeaseClient;
+import com.azure.storage.blob.specialized.BlobLeaseClientBuilder;
+
+BlobLeaseClient leaseClient = new BlobLeaseClientBuilder()
+    .blobClient(blobClient)
+    .buildClient();
+
+// 取得 lease（-1 表示無限期）
+String leaseId = leaseClient.acquireLease(60);
+
+// 續期 lease
+leaseClient.renewLease();
+
+// 釋放 lease
+leaseClient.releaseLease();
+```
+
+## 錯誤處理
+
+```java
+import com.azure.storage.blob.models.BlobStorageException;
+
+try {
+    blobClient.download(outputStream);
+} catch (BlobStorageException e) {
+    System.out.println(&quot;Status: &quot; + e.getStatusCode());
+    System.out.println(&quot;Error code: &quot; + e.getErrorCode());
+    // 404 = 找不到 blob
+    // 409 = 衝突（lease 等）
+}
+```
+
+## Proxy 設定
+
+```java
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
+import java.net.InetSocketAddress;
+
+ProxyOptions proxyOptions = new ProxyOptions(
+    ProxyOptions.Type.HTTP,
+    new InetSocketAddress(&quot;localhost&quot;, 8888));
+
+BlobServiceClient client = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;endpoint&gt;&quot;)
+    .sasToken(&quot;&lt;sas-token&gt;&quot;)
+    .httpClient(new NettyAsyncHttpClientBuilder().proxy(proxyOptions).build())
+    .buildClient();
+```
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...  # Entra ID 驗證的替代方案
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # 所有驗證方式都必填
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 觸發用語
+
+- &quot;Azure Blob Storage Java&quot;
+- &quot;upload download blob&quot;
+- &quot;blob container SDK&quot;
+- &quot;storage streaming&quot;
+- &quot;SAS token generation&quot;
+- &quot;blob metadata properties&quot;</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-blob-java
+description: Build blob storage applications with Azure Storage Blob SDK for Java. Use when uploading, downloading, or managing files in Azure Blob Storage, working with containers, or implementing streaming data operations.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-storage-blob
+---
+
+# Azure Storage Blob SDK for Java
+
+Build blob storage applications using the Azure Storage Blob SDK for Java.
+
+## Installation
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-storage-blob&lt;/artifactId&gt;
+    &lt;version&gt;12.33.0&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## Client Creation
+
+### BlobServiceClient
+
+```java
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+
+// With SAS token
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;storage-account-url&gt;&quot;)
+    .sasToken(&quot;&lt;sas-token&gt;&quot;)
+    .buildClient();
+
+// With connection string
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .buildClient();
+```
+
+### With DefaultAzureCredential
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+BlobServiceClient serviceClient = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;storage-account-url&gt;&quot;)
+    .credential(credential)
+    .buildClient();
+```
+
+### BlobContainerClient
+
+```java
+import com.azure.storage.blob.BlobContainerClient;
+
+// From service client
+BlobContainerClient containerClient = serviceClient.getBlobContainerClient(&quot;mycontainer&quot;);
+
+// Direct construction
+BlobContainerClient containerClient = new BlobContainerClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .containerName(&quot;mycontainer&quot;)
+    .buildClient();
+```
+
+### BlobClient
+
+```java
+import com.azure.storage.blob.BlobClient;
+
+// From container client
+BlobClient blobClient = containerClient.getBlobClient(&quot;myblob.txt&quot;);
+
+// With directory structure
+BlobClient blobClient = containerClient.getBlobClient(&quot;folder/subfolder/myblob.txt&quot;);
+
+// Direct construction
+BlobClient blobClient = new BlobClientBuilder()
+    .connectionString(&quot;&lt;connection-string&gt;&quot;)
+    .containerName(&quot;mycontainer&quot;)
+    .blobName(&quot;myblob.txt&quot;)
+    .buildClient();
+```
+
+## Core Patterns
+
+### Create Container
+
+```java
+// Create container
+serviceClient.createBlobContainer(&quot;mycontainer&quot;);
+
+// Create if not exists
+BlobContainerClient container = serviceClient.createBlobContainerIfNotExists(&quot;mycontainer&quot;);
+
+// From container client
+containerClient.create();
+containerClient.createIfNotExists();
+```
+
+### Upload Data
+
+```java
+import com.azure.core.util.BinaryData;
+
+// Upload string
+String data = &quot;Hello, Azure Blob Storage!&quot;;
+blobClient.upload(BinaryData.fromString(data));
+
+// Upload with overwrite
+blobClient.upload(BinaryData.fromString(data), true);
+```
+
+### Upload from File
+
+```java
+blobClient.uploadFromFile(&quot;local-file.txt&quot;);
+
+// With overwrite
+blobClient.uploadFromFile(&quot;local-file.txt&quot;, true);
+```
+
+### Upload from Stream
+
+```java
+import com.azure.storage.blob.specialized.BlockBlobClient;
+
+BlockBlobClient blockBlobClient = blobClient.getBlockBlobClient();
+
+try (ByteArrayInputStream dataStream = new ByteArrayInputStream(data.getBytes())) {
+    blockBlobClient.upload(dataStream, data.length());
+}
+```
+
+### Upload with Options
+
+```java
+import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
+
+BlobHttpHeaders headers = new BlobHttpHeaders()
+    .setContentType(&quot;text/plain&quot;)
+    .setCacheControl(&quot;max-age=3600&quot;);
+
+Map&lt;String, String&gt; metadata = Map.of(&quot;author&quot;, &quot;john&quot;, &quot;version&quot;, &quot;1.0&quot;);
+
+try (InputStream stream = new FileInputStream(&quot;large-file.bin&quot;)) {
+    BlobParallelUploadOptions options = new BlobParallelUploadOptions(stream)
+        .setHeaders(headers)
+        .setMetadata(metadata);
+    
+    blobClient.uploadWithResponse(options, null, Context.NONE);
+}
+```
+
+### Upload if Not Exists
+
+```java
+import com.azure.storage.blob.models.BlobRequestConditions;
+
+BlobParallelUploadOptions options = new BlobParallelUploadOptions(inputStream, length)
+    .setRequestConditions(new BlobRequestConditions().setIfNoneMatch(&quot;*&quot;));
+
+blobClient.uploadWithResponse(options, null, Context.NONE);
+```
+
+### Download Data
+
+```java
+// Download to BinaryData
+BinaryData content = blobClient.downloadContent();
+String text = content.toString();
+
+// Download to file
+blobClient.downloadToFile(&quot;downloaded-file.txt&quot;);
+```
+
+### Download to Stream
+
+```java
+try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+    blobClient.downloadStream(outputStream);
+    byte[] data = outputStream.toByteArray();
+}
+```
+
+### Download with InputStream
+
+```java
+import com.azure.storage.blob.specialized.BlobInputStream;
+
+try (BlobInputStream blobIS = blobClient.openInputStream()) {
+    byte[] buffer = new byte[1024];
+    int bytesRead;
+    while ((bytesRead = blobIS.read(buffer)) != -1) {
+        // Process buffer
+    }
+}
+```
+
+### Upload via OutputStream
+
+```java
+import com.azure.storage.blob.specialized.BlobOutputStream;
+
+try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
+    blobOS.write(&quot;Data to upload&quot;.getBytes());
+}
+```
+
+### List Blobs
+
+```java
+import com.azure.storage.blob.models.BlobItem;
+
+// List all blobs
+for (BlobItem blobItem : containerClient.listBlobs()) {
+    System.out.println(&quot;Blob: &quot; + blobItem.getName());
+}
+
+// List with prefix (virtual directory)
+import com.azure.storage.blob.models.ListBlobsOptions;
+
+ListBlobsOptions options = new ListBlobsOptions().setPrefix(&quot;folder/&quot;);
+for (BlobItem blobItem : containerClient.listBlobs(options, null)) {
+    System.out.println(&quot;Blob: &quot; + blobItem.getName());
+}
+```
+
+### List Blobs by Hierarchy
+
+```java
+import com.azure.storage.blob.models.BlobListDetails;
+
+String delimiter = &quot;/&quot;;
+ListBlobsOptions options = new ListBlobsOptions()
+    .setPrefix(&quot;data/&quot;)
+    .setDetails(new BlobListDetails().setRetrieveMetadata(true));
+
+for (BlobItem item : containerClient.listBlobsByHierarchy(delimiter, options, null)) {
+    if (item.isPrefix()) {
+        System.out.println(&quot;Directory: &quot; + item.getName());
+    } else {
+        System.out.println(&quot;Blob: &quot; + item.getName());
+    }
+}
+```
+
+### Delete Blob
+
+```java
+blobClient.delete();
+
+// Delete if exists
+blobClient.deleteIfExists();
+
+// Delete with snapshots
+import com.azure.storage.blob.models.DeleteSnapshotsOptionType;
+blobClient.deleteWithResponse(DeleteSnapshotsOptionType.INCLUDE, null, null, Context.NONE);
+```
+
+### Copy Blob
+
+```java
+import com.azure.storage.blob.models.BlobCopyInfo;
+import com.azure.core.util.polling.SyncPoller;
+
+// Async copy (for large blobs or cross-account)
+SyncPoller&lt;BlobCopyInfo, Void&gt; poller = blobClient.beginCopy(&quot;&lt;source-blob-url&gt;&quot;, Duration.ofSeconds(1));
+poller.waitForCompletion();
+
+// Sync copy from URL (for same account)
+blobClient.copyFromUrl(&quot;&lt;source-blob-url&gt;&quot;);
+```
+
+### Generate SAS Token
+
+```java
+import com.azure.storage.blob.sas.*;
+import java.time.OffsetDateTime;
+
+// Blob-level SAS
+BlobSasPermission permissions = new BlobSasPermission().setReadPermission(true);
+OffsetDateTime expiry = OffsetDateTime.now().plusDays(1);
+
+BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(expiry, permissions);
+String sasToken = blobClient.generateSas(sasValues);
+
+// Container-level SAS
+BlobContainerSasPermission containerPermissions = new BlobContainerSasPermission()
+    .setReadPermission(true)
+    .setListPermission(true);
+    
+BlobServiceSasSignatureValues containerSasValues = new BlobServiceSasSignatureValues(expiry, containerPermissions);
+String containerSas = containerClient.generateSas(containerSasValues);
+```
+
+### Blob Properties and Metadata
+
+```java
+import com.azure.storage.blob.models.BlobProperties;
+
+// Get properties
+BlobProperties properties = blobClient.getProperties();
+System.out.println(&quot;Size: &quot; + properties.getBlobSize());
+System.out.println(&quot;Content-Type: &quot; + properties.getContentType());
+System.out.println(&quot;Last Modified: &quot; + properties.getLastModified());
+
+// Set metadata
+Map&lt;String, String&gt; metadata = Map.of(&quot;key1&quot;, &quot;value1&quot;, &quot;key2&quot;, &quot;value2&quot;);
+blobClient.setMetadata(metadata);
+
+// Set HTTP headers
+BlobHttpHeaders headers = new BlobHttpHeaders()
+    .setContentType(&quot;application/json&quot;)
+    .setCacheControl(&quot;max-age=86400&quot;);
+blobClient.setHttpHeaders(headers);
+```
+
+### Lease Blob
+
+```java
+import com.azure.storage.blob.specialized.BlobLeaseClient;
+import com.azure.storage.blob.specialized.BlobLeaseClientBuilder;
+
+BlobLeaseClient leaseClient = new BlobLeaseClientBuilder()
+    .blobClient(blobClient)
+    .buildClient();
+
+// Acquire lease (-1 for infinite)
+String leaseId = leaseClient.acquireLease(60);
+
+// Renew lease
+leaseClient.renewLease();
+
+// Release lease
+leaseClient.releaseLease();
+```
+
+## Error Handling
+
+```java
+import com.azure.storage.blob.models.BlobStorageException;
+
+try {
+    blobClient.download(outputStream);
+} catch (BlobStorageException e) {
+    System.out.println(&quot;Status: &quot; + e.getStatusCode());
+    System.out.println(&quot;Error code: &quot; + e.getErrorCode());
+    // 404 = Blob not found
+    // 409 = Conflict (lease, etc.)
+}
+```
+
+## Proxy Configuration
+
+```java
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
+import java.net.InetSocketAddress;
+
+ProxyOptions proxyOptions = new ProxyOptions(
+    ProxyOptions.Type.HTTP,
+    new InetSocketAddress(&quot;localhost&quot;, 8888));
+
+BlobServiceClient client = new BlobServiceClientBuilder()
+    .endpoint(&quot;&lt;endpoint&gt;&quot;)
+    .sasToken(&quot;&lt;sas-token&gt;&quot;)
+    .httpClient(new NettyAsyncHttpClientBuilder().proxy(proxyOptions).build())
+    .buildClient();
+```
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...  # Alternative to Entra ID auth
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # Required for all auth methods
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Trigger Phrases
+
+- &quot;Azure Blob Storage Java&quot;
+- &quot;upload download blob&quot;
+- &quot;blob container SDK&quot;
+- &quot;storage streaming&quot;
+- &quot;SAS token generation&quot;
+- &quot;blob metadata properties&quot;</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

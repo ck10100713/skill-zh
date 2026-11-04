@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-resource-manager-redis-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 透過 ARM 管理 Azure Cache for Redis，含 key、防火牆與 geo-replication">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-resource-manager-redis-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-resource-manager-redis-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 透過 ARM 管理 Azure Cache for Redis，含 key、防火牆與 geo-replication</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-resource-manager-redis-dotnet
+description: |
+  .NET 版 Redis 的 Azure Resource Manager SDK。用於 MANAGEMENT PLANE（管理平面）操作：透過 Azure Resource Manager 建立／管理 Azure Cache for Redis instance、防火牆規則、access key、patch 排程、linked server（geo-replication）與 private endpoint。NOT 用於 data plane 操作（get/set key、pub/sub），那種請用 StackExchange.Redis。Triggers: &quot;Redis cache&quot;, &quot;create Redis&quot;, &quot;manage Redis&quot;, &quot;ARM Redis&quot;, &quot;RedisResource&quot;, &quot;provision Redis&quot;, &quot;Azure Cache for Redis&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.Redis
+---
+
+# Azure.ResourceManager.Redis (.NET)
+
+管理平面 SDK，透過 Azure Resource Manager 佈建與管理 Azure Cache for Redis 資源。
+
+&gt; **⚠️ 管理平面 vs Data Plane**
+&gt; - **這個 SDK（Azure.ResourceManager.Redis）**：建立 cache、設定防火牆規則、管理 access key、設定 geo-replication
+&gt; - **Data Plane SDK（StackExchange.Redis）**：get/set key、pub/sub、stream、Lua script
+
+## 安裝
+
+```bash
+dotnet add package Azure.ResourceManager.Redis
+dotnet add package Azure.Identity
+```
+
+**目前版本**：1.5.1 (Stable)  
+**API 版本**：2024-11-01  
+**目標 Framework**：.NET 8.0、.NET Standard 2.0
+
+## 環境變數
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt;  # 必填：Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境使用 DefaultAzureCredential 時才需要
+AZURE_TENANT_ID=&lt;tenant-id&gt;  # 用於 service principal 驗證（選填）
+AZURE_CLIENT_ID=&lt;client-id&gt;  # 用於 service principal 驗證（選填）
+AZURE_CLIENT_SECRET=&lt;client-secret&gt;  # 用於 service principal 驗證（選填）
+```
+
+## 驗證
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Redis;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// 取得 subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## 資源階層
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── RedisResource
+            ├── RedisFirewallRuleResource
+            ├── RedisPatchScheduleResource
+            ├── RedisLinkedServerWithPropertyResource
+            ├── RedisPrivateEndpointConnectionResource
+            └── RedisCacheAccessPolicyResource
+```
+
+## 核心流程
+
+### 1. 建立 Redis Cache
+
+```csharp
+using Azure.ResourceManager.Redis;
+using Azure.ResourceManager.Redis.Models;
+
+// 取得 resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// 定義 cache 設定
+var cacheData = new RedisCreateOrUpdateContent(
+    location: AzureLocation.EastUS,
+    sku: new RedisSku(RedisSkuName.Standard, RedisSkuFamily.BasicOrStandard, 1))
+{
+    EnableNonSslPort = false,
+    MinimumTlsVersion = RedisTlsVersion.Tls1_2,
+    RedisConfiguration = new RedisCommonConfiguration
+    {
+        MaxMemoryPolicy = &quot;volatile-lru&quot;
+    },
+    Tags =
+    {
+        [&quot;environment&quot;] = &quot;production&quot;
+    }
+};
+
+// 建立 cache（長時間執行的操作）
+var cacheCollection = resourceGroup.Value.GetAllRedis();
+var operation = await cacheCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-redis-cache&quot;,
+    cacheData);
+
+RedisResource cache = operation.Value;
+Console.WriteLine($&quot;Cache created: {cache.Data.HostName}&quot;);
+```
+
+### 2. 取得 Redis Cache
+
+```csharp
+// 取得既有的 cache
+var cache = await resourceGroup.Value
+    .GetRedisAsync(&quot;my-redis-cache&quot;);
+
+Console.WriteLine($&quot;Host: {cache.Value.Data.HostName}&quot;);
+Console.WriteLine($&quot;Port: {cache.Value.Data.Port}&quot;);
+Console.WriteLine($&quot;SSL Port: {cache.Value.Data.SslPort}&quot;);
+Console.WriteLine($&quot;Provisioning State: {cache.Value.Data.ProvisioningState}&quot;);
+```
+
+### 3. 更新 Redis Cache
+
+```csharp
+var patchData = new RedisPatch
+{
+    Sku = new RedisSku(RedisSkuName.Standard, RedisSkuFamily.BasicOrStandard, 2),
+    RedisConfiguration = new RedisCommonConfiguration
+    {
+        MaxMemoryPolicy = &quot;allkeys-lru&quot;
+    }
+};
+
+var updateOperation = await cache.Value.UpdateAsync(
+    WaitUntil.Completed,
+    patchData);
+```
+
+### 4. 刪除 Redis Cache
+
+```csharp
+await cache.Value.DeleteAsync(WaitUntil.Completed);
+```
+
+### 5. 取得 Access Key
+
+```csharp
+var keys = await cache.Value.GetKeysAsync();
+Console.WriteLine($&quot;Primary Key: {keys.Value.PrimaryKey}&quot;);
+Console.WriteLine($&quot;Secondary Key: {keys.Value.SecondaryKey}&quot;);
+```
+
+### 6. 重新產生 Access Key
+
+```csharp
+var regenerateContent = new RedisRegenerateKeyContent(RedisRegenerateKeyType.Primary);
+var newKeys = await cache.Value.RegenerateKeyAsync(regenerateContent);
+Console.WriteLine($&quot;New Primary Key: {newKeys.Value.PrimaryKey}&quot;);
+```
+
+### 7. 管理防火牆規則
+
+```csharp
+// 建立防火牆規則
+var firewallData = new RedisFirewallRuleData(
+    startIP: System.Net.IPAddress.Parse(&quot;10.0.0.1&quot;),
+    endIP: System.Net.IPAddress.Parse(&quot;10.0.0.255&quot;));
+
+var firewallCollection = cache.Value.GetRedisFirewallRules();
+var firewallOperation = await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;allow-internal-network&quot;,
+    firewallData);
+
+// 列出所有防火牆規則
+await foreach (var rule in firewallCollection.GetAllAsync())
+{
+    Console.WriteLine($&quot;Rule: {rule.Data.Name} ({rule.Data.StartIP} - {rule.Data.EndIP})&quot;);
+}
+
+// 刪除防火牆規則
+var ruleToDelete = await firewallCollection.GetAsync(&quot;allow-internal-network&quot;);
+await ruleToDelete.Value.DeleteAsync(WaitUntil.Completed);
+```
+
+### 8. 設定 Patch 排程（Premium SKU）
+
+```csharp
+// Patch 排程需要 Premium SKU
+var scheduleData = new RedisPatchScheduleData(
+    new[]
+    {
+        new RedisPatchScheduleSetting(RedisDayOfWeek.Saturday, 2) // 週六凌晨 2 點
+        {
+            MaintenanceWindow = TimeSpan.FromHours(5)
+        },
+        new RedisPatchScheduleSetting(RedisDayOfWeek.Sunday, 2) // 週日凌晨 2 點
+        {
+            MaintenanceWindow = TimeSpan.FromHours(5)
+        }
+    });
+
+var scheduleCollection = cache.Value.GetRedisPatchSchedules();
+await scheduleCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    RedisPatchScheduleDefaultName.Default,
+    scheduleData);
+```
+
+### 9. 匯入／匯出資料（Premium SKU）
+
+```csharp
+// 從 blob storage 匯入資料
+var importContent = new ImportRdbContent(
+    files: new[] { &quot;https://mystorageaccount.blob.core.windows.net/container/dump.rdb&quot; },
+    format: &quot;RDB&quot;);
+
+await cache.Value.ImportDataAsync(WaitUntil.Completed, importContent);
+
+// 匯出資料到 blob storage
+var exportContent = new ExportRdbContent(
+    prefix: &quot;backup&quot;,
+    container: &quot;https://mystorageaccount.blob.core.windows.net/container?sastoken&quot;,
+    format: &quot;RDB&quot;);
+
+await cache.Value.ExportDataAsync(WaitUntil.Completed, exportContent);
+```
+
+### 10. 強制重新開機
+
+```csharp
+var rebootContent = new RedisRebootContent
+{
+    RebootType = RedisRebootType.AllNodes,
+    ShardId = 0 // 用於 cluster 模式的 cache
+};
+
+await cache.Value.ForceRebootAsync(rebootContent);
+```
+
+## SKU 參考
+
+| SKU | Family | 容量 | 功能 |
+|-----|--------|----------|----------|
+| Basic | C | 0-6 | 單一節點、沒有 SLA，只適合開發／測試 |
+| Standard | C | 0-6 | 兩個節點（primary/replica）、有 SLA |
+| Premium | P | 1-5 | Clustering、geo-replication、VNet、persistence |
+
+**容量大小（Family C，Basic/Standard）**：
+- C0: 250 MB
+- C1: 1 GB
+- C2: 2.5 GB
+- C3: 6 GB
+- C4: 13 GB
+- C5: 26 GB
+- C6: 53 GB
+
+**容量大小（Family P，Premium）**：
+- P1：每個 shard 6 GB
+- P2：每個 shard 13 GB
+- P3：每個 shard 26 GB
+- P4：每個 shard 53 GB
+- P5：每個 shard 120 GB
+
+## 主要型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `ArmClient` | 所有 ARM 操作的進入點 |
+| `RedisResource` | 代表一個 Redis cache instance |
+| `RedisCollection` | cache CRUD 操作的集合 |
+| `RedisFirewallRuleResource` | 用於 IP 過濾的防火牆規則 |
+| `RedisPatchScheduleResource` | 維護時段設定 |
+| `RedisLinkedServerWithPropertyResource` | Geo-replication 的 linked server |
+| `RedisPrivateEndpointConnectionResource` | Private endpoint 連線 |
+| `RedisCacheAccessPolicyResource` | RBAC 存取政策 |
+| `RedisCreateOrUpdateContent` | 建立 cache 的 payload |
+| `RedisPatch` | 更新 cache 的 payload |
+| `RedisSku` | SKU 設定（name、family、capacity） |
+| `RedisAccessKeys` | Primary 與 secondary access key |
+| `RedisRegenerateKeyContent` | 重新產生 key 的請求 |
+
+## 最佳實務
+
+1. **需要等操作完成才能繼續時，用 `WaitUntil.Completed`**
+2. **想自己輪詢或平行執行操作時，用 `WaitUntil.Started`**
+3. **一律使用 `DefaultAzureCredential`**：絕對不要寫死 key
+4. **處理 `RequestFailedException`**，因應 ARM API 的錯誤
+5. **使用 `CreateOrUpdateAsync`** 做冪等操作
+6. **透過 `Get*` 方法走訪階層**（例如 `cache.GetRedisFirewallRules()`）
+7. **需要 geo-replication、clustering 或 persistence 的正式環境工作負載，用 Premium SKU**
+8. **TLS 最低用 1.2**：設定 `MinimumTlsVersion = RedisTlsVersion.Tls1_2`
+9. **停用非 SSL port**：為了安全，設定 `EnableNonSslPort = false`
+10. **定期輪替 key**：用 `RegenerateKeyAsync`，並更新 connection string
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await cacheCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, cacheName, cacheData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Cache already exists&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Invalid configuration: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## 常見陷阱
+
+1. **SKU 不能降級**：不能從 Premium 降到 Standard/Basic
+2. **Clustering 需要 Premium**：shard 設定只有 Premium SKU 才有
+3. **Geo-replication 需要 Premium**：linked server 只能用在 Premium cache
+4. **VNet injection 需要 Premium**：虛擬網路支援僅限 Premium
+5. **Patch 排程需要 Premium**：維護時段只有 Premium 才能設定
+6. **Cache 名稱必須全域唯一**：Redis cache 名稱在所有 Azure subscription 中都不能重複
+7. **佈建時間很長**：建立 cache 可能要 15-20 分鐘；非同步模式用 `WaitUntil.Started`
+
+## 用 StackExchange.Redis 連線（Data Plane）
+
+用這個管理 SDK 建立 cache 之後，用 StackExchange.Redis 做資料操作：
+
+```csharp
+using StackExchange.Redis;
+
+// 從管理 SDK 取得連線資訊
+var cache = await resourceGroup.Value.GetRedisAsync(&quot;my-redis-cache&quot;);
+var keys = await cache.Value.GetKeysAsync();
+
+// 用 StackExchange.Redis 連線
+var connectionString = $&quot;{cache.Value.Data.HostName}:{cache.Value.Data.SslPort},password={keys.Value.PrimaryKey},ssl=True,abortConnect=False&quot;;
+var connection = ConnectionMultiplexer.Connect(connectionString);
+var db = connection.GetDatabase();
+
+// 資料操作
+await db.StringSetAsync(&quot;key&quot;, &quot;value&quot;);
+var value = await db.StringGetAsync(&quot;key&quot;);
+```
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `StackExchange.Redis` | Data plane（get/set、pub/sub、stream） | `dotnet add package StackExchange.Redis` |
+| `Azure.ResourceManager.Redis` | 管理平面（本 SDK） | `dotnet add package Azure.ResourceManager.Redis` |
+| `Microsoft.Azure.StackExchangeRedis` | Azure 專屬的 Redis 擴充 | `dotnet add package Microsoft.Azure.StackExchangeRedis` |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-resource-manager-redis-dotnet
+description: |
+  Azure Resource Manager SDK for Redis in .NET. Use for MANAGEMENT PLANE operations: creating/managing Azure Cache for Redis instances, firewall rules, access keys, patch schedules, linked servers (geo-replication), and private endpoints via Azure Resource Manager. NOT for data plane operations (get/set keys, pub/sub) - use StackExchange.Redis for that. Triggers: &quot;Redis cache&quot;, &quot;create Redis&quot;, &quot;manage Redis&quot;, &quot;ARM Redis&quot;, &quot;RedisResource&quot;, &quot;provision Redis&quot;, &quot;Azure Cache for Redis&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.Redis
+---
+
+# Azure.ResourceManager.Redis (.NET)
+
+Management plane SDK for provisioning and managing Azure Cache for Redis resources via Azure Resource Manager.
+
+&gt; **⚠️ Management vs Data Plane**
+&gt; - **This SDK (Azure.ResourceManager.Redis)**: Create caches, configure firewall rules, manage access keys, set up geo-replication
+&gt; - **Data Plane SDK (StackExchange.Redis)**: Get/set keys, pub/sub, streams, Lua scripts
+
+## Installation
+
+```bash
+dotnet add package Azure.ResourceManager.Redis
+dotnet add package Azure.Identity
+```
+
+**Current Version**: 1.5.1 (Stable)  
+**API Version**: 2024-11-01  
+**Target Frameworks**: .NET 8.0, .NET Standard 2.0
+
+## Environment Variables
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt;  # Required: Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+AZURE_TENANT_ID=&lt;tenant-id&gt;  # For service principal auth (optional)
+AZURE_CLIENT_ID=&lt;client-id&gt;  # For service principal auth (optional)
+AZURE_CLIENT_SECRET=&lt;client-secret&gt;  # For service principal auth (optional)
+```
+
+## Authentication
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Redis;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// Get subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## Resource Hierarchy
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── RedisResource
+            ├── RedisFirewallRuleResource
+            ├── RedisPatchScheduleResource
+            ├── RedisLinkedServerWithPropertyResource
+            ├── RedisPrivateEndpointConnectionResource
+            └── RedisCacheAccessPolicyResource
+```
+
+## Core Workflows
+
+### 1. Create Redis Cache
+
+```csharp
+using Azure.ResourceManager.Redis;
+using Azure.ResourceManager.Redis.Models;
+
+// Get resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// Define cache configuration
+var cacheData = new RedisCreateOrUpdateContent(
+    location: AzureLocation.EastUS,
+    sku: new RedisSku(RedisSkuName.Standard, RedisSkuFamily.BasicOrStandard, 1))
+{
+    EnableNonSslPort = false,
+    MinimumTlsVersion = RedisTlsVersion.Tls1_2,
+    RedisConfiguration = new RedisCommonConfiguration
+    {
+        MaxMemoryPolicy = &quot;volatile-lru&quot;
+    },
+    Tags =
+    {
+        [&quot;environment&quot;] = &quot;production&quot;
+    }
+};
+
+// Create cache (long-running operation)
+var cacheCollection = resourceGroup.Value.GetAllRedis();
+var operation = await cacheCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-redis-cache&quot;,
+    cacheData);
+
+RedisResource cache = operation.Value;
+Console.WriteLine($&quot;Cache created: {cache.Data.HostName}&quot;);
+```
+
+### 2. Get Redis Cache
+
+```csharp
+// Get existing cache
+var cache = await resourceGroup.Value
+    .GetRedisAsync(&quot;my-redis-cache&quot;);
+
+Console.WriteLine($&quot;Host: {cache.Value.Data.HostName}&quot;);
+Console.WriteLine($&quot;Port: {cache.Value.Data.Port}&quot;);
+Console.WriteLine($&quot;SSL Port: {cache.Value.Data.SslPort}&quot;);
+Console.WriteLine($&quot;Provisioning State: {cache.Value.Data.ProvisioningState}&quot;);
+```
+
+### 3. Update Redis Cache
+
+```csharp
+var patchData = new RedisPatch
+{
+    Sku = new RedisSku(RedisSkuName.Standard, RedisSkuFamily.BasicOrStandard, 2),
+    RedisConfiguration = new RedisCommonConfiguration
+    {
+        MaxMemoryPolicy = &quot;allkeys-lru&quot;
+    }
+};
+
+var updateOperation = await cache.Value.UpdateAsync(
+    WaitUntil.Completed,
+    patchData);
+```
+
+### 4. Delete Redis Cache
+
+```csharp
+await cache.Value.DeleteAsync(WaitUntil.Completed);
+```
+
+### 5. Get Access Keys
+
+```csharp
+var keys = await cache.Value.GetKeysAsync();
+Console.WriteLine($&quot;Primary Key: {keys.Value.PrimaryKey}&quot;);
+Console.WriteLine($&quot;Secondary Key: {keys.Value.SecondaryKey}&quot;);
+```
+
+### 6. Regenerate Access Keys
+
+```csharp
+var regenerateContent = new RedisRegenerateKeyContent(RedisRegenerateKeyType.Primary);
+var newKeys = await cache.Value.RegenerateKeyAsync(regenerateContent);
+Console.WriteLine($&quot;New Primary Key: {newKeys.Value.PrimaryKey}&quot;);
+```
+
+### 7. Manage Firewall Rules
+
+```csharp
+// Create firewall rule
+var firewallData = new RedisFirewallRuleData(
+    startIP: System.Net.IPAddress.Parse(&quot;10.0.0.1&quot;),
+    endIP: System.Net.IPAddress.Parse(&quot;10.0.0.255&quot;));
+
+var firewallCollection = cache.Value.GetRedisFirewallRules();
+var firewallOperation = await firewallCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;allow-internal-network&quot;,
+    firewallData);
+
+// List all firewall rules
+await foreach (var rule in firewallCollection.GetAllAsync())
+{
+    Console.WriteLine($&quot;Rule: {rule.Data.Name} ({rule.Data.StartIP} - {rule.Data.EndIP})&quot;);
+}
+
+// Delete firewall rule
+var ruleToDelete = await firewallCollection.GetAsync(&quot;allow-internal-network&quot;);
+await ruleToDelete.Value.DeleteAsync(WaitUntil.Completed);
+```
+
+### 8. Configure Patch Schedule (Premium SKU)
+
+```csharp
+// Patch schedules require Premium SKU
+var scheduleData = new RedisPatchScheduleData(
+    new[]
+    {
+        new RedisPatchScheduleSetting(RedisDayOfWeek.Saturday, 2) // 2 AM Saturday
+        {
+            MaintenanceWindow = TimeSpan.FromHours(5)
+        },
+        new RedisPatchScheduleSetting(RedisDayOfWeek.Sunday, 2) // 2 AM Sunday
+        {
+            MaintenanceWindow = TimeSpan.FromHours(5)
+        }
+    });
+
+var scheduleCollection = cache.Value.GetRedisPatchSchedules();
+await scheduleCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    RedisPatchScheduleDefaultName.Default,
+    scheduleData);
+```
+
+### 9. Import/Export Data (Premium SKU)
+
+```csharp
+// Import data from blob storage
+var importContent = new ImportRdbContent(
+    files: new[] { &quot;https://mystorageaccount.blob.core.windows.net/container/dump.rdb&quot; },
+    format: &quot;RDB&quot;);
+
+await cache.Value.ImportDataAsync(WaitUntil.Completed, importContent);
+
+// Export data to blob storage
+var exportContent = new ExportRdbContent(
+    prefix: &quot;backup&quot;,
+    container: &quot;https://mystorageaccount.blob.core.windows.net/container?sastoken&quot;,
+    format: &quot;RDB&quot;);
+
+await cache.Value.ExportDataAsync(WaitUntil.Completed, exportContent);
+```
+
+### 10. Force Reboot
+
+```csharp
+var rebootContent = new RedisRebootContent
+{
+    RebootType = RedisRebootType.AllNodes,
+    ShardId = 0 // For clustered caches
+};
+
+await cache.Value.ForceRebootAsync(rebootContent);
+```
+
+## SKU Reference
+
+| SKU | Family | Capacity | Features |
+|-----|--------|----------|----------|
+| Basic | C | 0-6 | Single node, no SLA, dev/test only |
+| Standard | C | 0-6 | Two nodes (primary/replica), SLA |
+| Premium | P | 1-5 | Clustering, geo-replication, VNet, persistence |
+
+**Capacity Sizes (Family C - Basic/Standard)**:
+- C0: 250 MB
+- C1: 1 GB
+- C2: 2.5 GB
+- C3: 6 GB
+- C4: 13 GB
+- C5: 26 GB
+- C6: 53 GB
+
+**Capacity Sizes (Family P - Premium)**:
+- P1: 6 GB per shard
+- P2: 13 GB per shard
+- P3: 26 GB per shard
+- P4: 53 GB per shard
+- P5: 120 GB per shard
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `ArmClient` | Entry point for all ARM operations |
+| `RedisResource` | Represents a Redis cache instance |
+| `RedisCollection` | Collection for cache CRUD operations |
+| `RedisFirewallRuleResource` | Firewall rule for IP filtering |
+| `RedisPatchScheduleResource` | Maintenance window configuration |
+| `RedisLinkedServerWithPropertyResource` | Geo-replication linked server |
+| `RedisPrivateEndpointConnectionResource` | Private endpoint connection |
+| `RedisCacheAccessPolicyResource` | RBAC access policy |
+| `RedisCreateOrUpdateContent` | Cache creation payload |
+| `RedisPatch` | Cache update payload |
+| `RedisSku` | SKU configuration (name, family, capacity) |
+| `RedisAccessKeys` | Primary and secondary access keys |
+| `RedisRegenerateKeyContent` | Key regeneration request |
+
+## Best Practices
+
+1. **Use `WaitUntil.Completed`** for operations that must finish before proceeding
+2. **Use `WaitUntil.Started`** when you want to poll manually or run operations in parallel
+3. **Always use `DefaultAzureCredential`** — never hardcode keys
+4. **Handle `RequestFailedException`** for ARM API errors
+5. **Use `CreateOrUpdateAsync`** for idempotent operations
+6. **Navigate hierarchy** via `Get*` methods (e.g., `cache.GetRedisFirewallRules()`)
+7. **Use Premium SKU** for production workloads requiring geo-replication, clustering, or persistence
+8. **Enable TLS 1.2 minimum** — set `MinimumTlsVersion = RedisTlsVersion.Tls1_2`
+9. **Disable non-SSL port** — set `EnableNonSslPort = false` for security
+10. **Rotate keys regularly** — use `RegenerateKeyAsync` and update connection strings
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await cacheCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, cacheName, cacheData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Cache already exists&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 400)
+{
+    Console.WriteLine($&quot;Invalid configuration: {ex.Message}&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## Common Pitfalls
+
+1. **SKU downgrades not allowed** — You cannot downgrade from Premium to Standard/Basic
+2. **Clustering requires Premium** — Shard configuration only available on Premium SKU
+3. **Geo-replication requires Premium** — Linked servers only work with Premium caches
+4. **VNet injection requires Premium** — Virtual network support is Premium-only
+5. **Patch schedules require Premium** — Maintenance windows only configurable on Premium
+6. **Cache name globally unique** — Redis cache names must be unique across all Azure subscriptions
+7. **Long provisioning times** — Cache creation can take 15-20 minutes; use `WaitUntil.Started` for async patterns
+
+## Connecting with StackExchange.Redis (Data Plane)
+
+After creating the cache with this management SDK, use StackExchange.Redis for data operations:
+
+```csharp
+using StackExchange.Redis;
+
+// Get connection info from management SDK
+var cache = await resourceGroup.Value.GetRedisAsync(&quot;my-redis-cache&quot;);
+var keys = await cache.Value.GetKeysAsync();
+
+// Connect with StackExchange.Redis
+var connectionString = $&quot;{cache.Value.Data.HostName}:{cache.Value.Data.SslPort},password={keys.Value.PrimaryKey},ssl=True,abortConnect=False&quot;;
+var connection = ConnectionMultiplexer.Connect(connectionString);
+var db = connection.GetDatabase();
+
+// Data operations
+await db.StringSetAsync(&quot;key&quot;, &quot;value&quot;);
+var value = await db.StringGetAsync(&quot;key&quot;);
+```
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `StackExchange.Redis` | Data plane (get/set, pub/sub, streams) | `dotnet add package StackExchange.Redis` |
+| `Azure.ResourceManager.Redis` | Management plane (this SDK) | `dotnet add package Azure.ResourceManager.Redis` |
+| `Microsoft.Azure.StackExchangeRedis` | Azure-specific Redis extensions | `dotnet add package Microsoft.Azure.StackExchangeRedis` |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-keyvault-certificates-rust｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Rust 在 Key Vault 建立和管理 X.509 憑證">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-keyvault-certificates-rust</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-rust/skills/azure-keyvault-certificates-rust/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Rust 在 Key Vault 建立和管理 X.509 憑證</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-keyvault-certificates-rust
+description: |
+  Rust 用的 Azure Key Vault Certificates 函式庫。建立、管理和使用 X.509 憑證，包含自簽和由 CA 簽發的。
+  Triggers: &quot;keyvault certificates rust&quot;, &quot;CertificateClient rust&quot;, &quot;create certificate rust&quot;, &quot;self-signed certificate rust&quot;, &quot;X.509 rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_security_keyvault_certificates
+---
+
+# Rust 用的 Azure Key Vault Certificates 函式庫
+
+管理用於 TLS/SSL、程式碼簽署和驗證的 X.509 憑證。
+
+這些情況用這個 skill：
+
+- App 需要從 Rust 在 Key Vault 建立或管理 X.509 憑證
+- 需要自簽或由 CA 簽發的憑證
+- 憑證簽發需要用到長時間執行的操作（LRO）
+- 需要用憑證的金鑰來簽署資料
+
+&gt; **重要：** 只能用 [azure-sdk](https://crates.io/users/azure-sdk) 這個 crates.io 使用者發佈的官方 `azure_security_keyvault_certificates` crate。不要用非官方或社群的 crate。官方 crate 的名稱用底線，而且沒有任何一個版本是 0.21.0。
+
+## 安裝
+
+```sh
+cargo add azure_security_keyvault_certificates azure_identity tokio futures
+```
+
+&gt; 如果你的程式碼直接用到 `azure_core` 的型別，要把 `azure_core` 加進 `Cargo.toml`。如果只用 `azure_security_keyvault_certificates` 重新匯出的東西，就不一定要直接依賴 `azure_core`。
+
+## 環境變數
+
+```bash
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net/ # 所有操作都必須設定
+```
+
+## 驗證
+
+Rust 的 Azure SDK 程式碼不能用 `DefaultAzureCredential`，因為 Rust 的 identity crate 沒有提供這個型別。
+
+```rust
+use azure_identity::DeveloperToolsCredential;
+use azure_security_keyvault_certificates::CertificateClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 本機開發：DeveloperToolsCredential。正式環境：用 ManagedIdentityCredential。
+    let credential = DeveloperToolsCredential::new(None)?;
+    let client = CertificateClient::new(
+        &quot;https://&lt;vault-name&gt;.vault.azure.net/&quot;,
+        credential.clone(),
+        None,
+    )?;
+
+    let cert = client
+        .get_certificate(&quot;cert-name&quot;, None)
+        .await?
+        .into_model()?;
+    println!(&quot;Certificate: {:?}&quot;, cert.id);
+    Ok(())
+}
+```
+
+要確認 LRO 和 poller 的用法時，優先看 crate 的 README 和範例，不要從生成的內部型別去推測公開行為。
+
+## 核心流程
+
+### 建立自簽憑證（LRO）
+
+建立憑證是長時間執行的操作。`Poller&lt;T&gt;` 實作了 `IntoFuture`，直接 `.await` 就好：
+
+```rust
+use azure_security_keyvault_certificates::{
+    models::{
+        CertificatePolicy, CreateCertificateParameters, IssuerParameters,
+        X509CertificateProperties,
+    },
+    ResourceExt,
+};
+
+let policy = CertificatePolicy {
+    x509_certificate_properties: Some(X509CertificateProperties {
+        subject: Some(&quot;CN=example.com&quot;.into()),
+        ..Default::default()
+    }),
+    issuer_parameters: Some(IssuerParameters {
+        name: Some(&quot;Self&quot;.into()),
+        ..Default::default()
+    }),
+    ..Default::default()
+};
+let body = CreateCertificateParameters {
+    certificate_policy: Some(policy),
+    ..Default::default()
+};
+
+// Poller 實作了 IntoFuture：直接 await 等它完成
+let cert = client
+    .begin_create_certificate(&quot;cert-name&quot;, body.try_into()?, None)?
+    .await?
+    .into_model()?;
+
+println!(
+    &quot;Name: {:?}, Version: {:?}&quot;,
+    cert.resource_id()?.name,
+    cert.resource_id()?.version,
+);
+```
+
+### 更新憑證屬性
+
+```rust
+use azure_security_keyvault_certificates::models::UpdateCertificatePropertiesParameters;
+use std::collections::HashMap;
+
+#[allow(clippy::needless_update)]
+let params = UpdateCertificatePropertiesParameters {
+    tags: Some(HashMap::from_iter(vec![(&quot;env&quot;.into(), &quot;prod&quot;.into())])),
+    ..Default::default()
+};
+
+client
+    .update_certificate_properties(&quot;cert-name&quot;, params.try_into()?, None)
+    .await?
+    .into_model()?;
+```
+
+### 刪除憑證
+
+```rust
+client.delete_certificate(&quot;cert-name&quot;, None).await?;
+```
+
+### 列出憑證（分頁）
+
+`list_certificate_properties` 回傳 `Pager&lt;T&gt;`，直接迭代 item 就好：
+
+```rust
+use azure_security_keyvault_certificates::ResourceExt;
+use futures::TryStreamExt as _;
+
+let mut pager = client.list_certificate_properties(None)?;
+while let Some(cert) = pager.try_next().await? {
+    println!(&quot;Found: {}&quot;, cert.resource_id()?.name);
+}
+```
+
+## 用憑證的金鑰簽署
+
+Key Vault 裡的憑證有一把對應的金鑰。加密操作要用 Key Vault Keys SDK：
+
+```rust
+use azure_security_keyvault_keys::{
+    models::{KeyClientSignOptions, SignParameters, SignatureAlgorithm},
+    KeyClient,
+};
+
+let key_client = KeyClient::new(
+    &quot;https://&lt;vault-name&gt;.vault.azure.net/&quot;,
+    credential.clone(),
+    None,
+)?;
+
+// 用憑證的 EC 金鑰簽署
+let digest = vec![0u8; 32]; // SHA-256 digest
+let body = SignParameters {
+    algorithm: Some(SignatureAlgorithm::Es256),
+    value: Some(digest),
+};
+
+let result = key_client
+    .sign(
+        &quot;cert-name&quot;,
+        body.try_into()?,
+        Some(KeyClientSignOptions {
+            key_version: Some(&quot;&lt;certificate-version&gt;&quot;.to_string()),
+            ..Default::default()
+        }),
+    )
+    .await?
+    .into_model()?;
+println!(&quot;Signature: {:?}&quot;, result.result);
+```
+
+## 憑證格式
+
+| 格式    | Content Type             | 使用情境                            |
+| ------- | ------------------------ | ----------------------------------- |
+| PKCS#12 | `application/x-pkcs12`   | 憑證和私鑰綁在一起                  |
+| PEM     | `application/x-pem-file` | Base64 編碼，Linux／web 常用        |
+
+## RBAC 角色
+
+用 Entra ID 驗證時，指派下面其中一個角色：
+
+| 角色                             | 權限                |
+| -------------------------------- | ------------------- |
+| `Key Vault Certificate User`     | 使用憑證            |
+| `Key Vault Certificates Officer` | 完整的憑證管理      |
+
+## 最佳實務
+
+1. **用 `cargo add` 管理依賴，不要直接編輯 `Cargo.toml`。** 新增和移除 Rust SDK 依賴一律用 cargo 指令，不要手動改 manifest。
+2. **只有在直接 import `azure_core` 型別時才加 `azure_core`。** 如果你的程式碼 import 了 `azure_core::http::Url`、`azure_core::http::RequestContent` 或 `azure_core::error::ErrorKind`，就要加 `azure_core`，否則直接依賴是選用的。
+3. **本機開發用 `DeveloperToolsCredential`**，**正式環境用 `ManagedIdentityCredential`**，Rust 沒有單一的 `DefaultAzureCredential` 型別
+4. **絕對不要寫死憑證**，用環境變數或 managed identity
+5. **更新 model struct 時用 `..Default::default()`**，並加上 `#[allow(clippy::needless_update)]`
+6. **用 `ResourceExt`** 從 ID 取出憑證的名稱／版本
+7. **LRO**：`begin_create_certificate` 回傳 `Poller`，直接 `.await` 等完成就好（client 很少需要去輪詢狀態）
+8. **重複使用 client**，`CertificateClient` 是 thread-safe 的，建一次就好，在各 task 之間共用
+9. **當 prompt、eval 或 CI 要求 lint 乾淨的輸出時，跑 `cargo clippy -- -D warnings`**
+
+## 參考連結
+
+| 資源          | 連結                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| API Reference | https://docs.rs/azure_security_keyvault_certificates/latest/azure_security_keyvault_certificates        |
+| crates.io     | https://crates.io/crates/azure_security_keyvault_certificates                                           |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/keyvault/azure_security_keyvault_certificates |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-keyvault-certificates-rust
+description: |
+  Azure Key Vault Certificates library for Rust. Create, manage, and use X.509 certificates including self-signed and CA-issued.
+  Triggers: &quot;keyvault certificates rust&quot;, &quot;CertificateClient rust&quot;, &quot;create certificate rust&quot;, &quot;self-signed certificate rust&quot;, &quot;X.509 rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_security_keyvault_certificates
+---
+
+# Azure Key Vault Certificates library for Rust
+
+Manage X.509 certificates for TLS/SSL, code signing, and authentication.
+
+Use this skill when:
+
+- An app needs to create or manage X.509 certificates in Key Vault from Rust
+- You need self-signed or CA-issued certificates
+- You need long-running operations (LRO) for certificate issuance
+- You need to sign data using a certificate&#x27;s key
+
+&gt; **IMPORTANT:** Only use the official `azure_security_keyvault_certificates` crate published by the [azure-sdk](https://crates.io/users/azure-sdk) crates.io user. Do NOT use unofficial or community crates. Official crates use underscores in names and none have version 0.21.0.
+
+## Installation
+
+```sh
+cargo add azure_security_keyvault_certificates azure_identity tokio futures
+```
+
+&gt; If your code uses `azure_core` types directly, add `azure_core` to `Cargo.toml`. If you only use `azure_security_keyvault_certificates` re-exports, direct `azure_core` dependency is optional.
+
+## Environment Variables
+
+```bash
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net/ # Required for all operations
+```
+
+## Authentication
+
+Rust Azure SDK code must not use `DefaultAzureCredential`. The Rust identity crate does not provide that type.
+
+```rust
+use azure_identity::DeveloperToolsCredential;
+use azure_security_keyvault_certificates::CertificateClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Local dev: DeveloperToolsCredential. Production: use ManagedIdentityCredential.
+    let credential = DeveloperToolsCredential::new(None)?;
+    let client = CertificateClient::new(
+        &quot;https://&lt;vault-name&gt;.vault.azure.net/&quot;,
+        credential.clone(),
+        None,
+    )?;
+
+    let cert = client
+        .get_certificate(&quot;cert-name&quot;, None)
+        .await?
+        .into_model()?;
+    println!(&quot;Certificate: {:?}&quot;, cert.id);
+    Ok(())
+}
+```
+
+Prefer the crate README/examples when checking LRO and poller usage rather than inferring public behavior from generated internal types.
+
+## Core Workflow
+
+### Create Self-Signed Certificate (LRO)
+
+Creating a certificate is a long-running operation. `Poller&lt;T&gt;` implements `IntoFuture` — just `.await`:
+
+```rust
+use azure_security_keyvault_certificates::{
+    models::{
+        CertificatePolicy, CreateCertificateParameters, IssuerParameters,
+        X509CertificateProperties,
+    },
+    ResourceExt,
+};
+
+let policy = CertificatePolicy {
+    x509_certificate_properties: Some(X509CertificateProperties {
+        subject: Some(&quot;CN=example.com&quot;.into()),
+        ..Default::default()
+    }),
+    issuer_parameters: Some(IssuerParameters {
+        name: Some(&quot;Self&quot;.into()),
+        ..Default::default()
+    }),
+    ..Default::default()
+};
+let body = CreateCertificateParameters {
+    certificate_policy: Some(policy),
+    ..Default::default()
+};
+
+// Poller implements IntoFuture — await directly for completion
+let cert = client
+    .begin_create_certificate(&quot;cert-name&quot;, body.try_into()?, None)?
+    .await?
+    .into_model()?;
+
+println!(
+    &quot;Name: {:?}, Version: {:?}&quot;,
+    cert.resource_id()?.name,
+    cert.resource_id()?.version,
+);
+```
+
+### Update Certificate Properties
+
+```rust
+use azure_security_keyvault_certificates::models::UpdateCertificatePropertiesParameters;
+use std::collections::HashMap;
+
+#[allow(clippy::needless_update)]
+let params = UpdateCertificatePropertiesParameters {
+    tags: Some(HashMap::from_iter(vec![(&quot;env&quot;.into(), &quot;prod&quot;.into())])),
+    ..Default::default()
+};
+
+client
+    .update_certificate_properties(&quot;cert-name&quot;, params.try_into()?, None)
+    .await?
+    .into_model()?;
+```
+
+### Delete Certificate
+
+```rust
+client.delete_certificate(&quot;cert-name&quot;, None).await?;
+```
+
+### List Certificates (Pagination)
+
+`list_certificate_properties` returns a `Pager&lt;T&gt;` — iterate items directly:
+
+```rust
+use azure_security_keyvault_certificates::ResourceExt;
+use futures::TryStreamExt as _;
+
+let mut pager = client.list_certificate_properties(None)?;
+while let Some(cert) = pager.try_next().await? {
+    println!(&quot;Found: {}&quot;, cert.resource_id()?.name);
+}
+```
+
+## Signing with a Certificate&#x27;s Key
+
+Certificates in Key Vault have an associated key. Use the Key Vault Keys SDK for crypto operations:
+
+```rust
+use azure_security_keyvault_keys::{
+    models::{KeyClientSignOptions, SignParameters, SignatureAlgorithm},
+    KeyClient,
+};
+
+let key_client = KeyClient::new(
+    &quot;https://&lt;vault-name&gt;.vault.azure.net/&quot;,
+    credential.clone(),
+    None,
+)?;
+
+// Sign with the certificate&#x27;s EC key
+let digest = vec![0u8; 32]; // SHA-256 digest
+let body = SignParameters {
+    algorithm: Some(SignatureAlgorithm::Es256),
+    value: Some(digest),
+};
+
+let result = key_client
+    .sign(
+        &quot;cert-name&quot;,
+        body.try_into()?,
+        Some(KeyClientSignOptions {
+            key_version: Some(&quot;&lt;certificate-version&gt;&quot;.to_string()),
+            ..Default::default()
+        }),
+    )
+    .await?
+    .into_model()?;
+println!(&quot;Signature: {:?}&quot;, result.result);
+```
+
+## Certificate Formats
+
+| Format  | Content Type             | Use Case                            |
+| ------- | ------------------------ | ----------------------------------- |
+| PKCS#12 | `application/x-pkcs12`   | Bundled cert + private key          |
+| PEM     | `application/x-pem-file` | Base64-encoded, common in Linux/web |
+
+## RBAC Roles
+
+For Entra ID auth, assign one of these roles:
+
+| Role                             | Access                      |
+| -------------------------------- | --------------------------- |
+| `Key Vault Certificate User`     | Use certificates            |
+| `Key Vault Certificates Officer` | Full certificate management |
+
+## Best Practices
+
+1. **Use `cargo add` to manage dependencies, never edit `Cargo.toml` directly.** Add and remove Rust SDK dependencies with cargo commands instead of manual manifest edits.
+2. **Add `azure_core` only when importing `azure_core` types directly.** If your code imports `azure_core::http::Url`, `azure_core::http::RequestContent`, or `azure_core::error::ErrorKind`, include `azure_core`; otherwise a direct dependency is optional.
+3. **Use `DeveloperToolsCredential`** for local dev, **`ManagedIdentityCredential`** for production — Rust does not provide a single `DefaultAzureCredential` type
+4. **Never hardcode credentials** — use environment variables or managed identity
+5. **Use `..Default::default()`** with `#[allow(clippy::needless_update)]` for model struct updates
+6. **Use `ResourceExt`** to extract certificate name/version from IDs
+7. **LROs** — `begin_create_certificate` returns a `Poller`; just `.await` for completion (clients should rarely poll for status)
+8. **Reuse clients** — `CertificateClient` is thread-safe; create once, share across tasks
+9. **Run `cargo clippy -- -D warnings`** when the prompt, eval, or CI expects lint-clean output
+
+## Reference Links
+
+| Resource      | Link                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| API Reference | https://docs.rs/azure_security_keyvault_certificates/latest/azure_security_keyvault_certificates        |
+| crates.io     | https://crates.io/crates/azure_security_keyvault_certificates                                           |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/keyvault/azure_security_keyvault_certificates |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

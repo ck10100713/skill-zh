@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-image-generator｜Skill 寫法圖鑑</title>
+<meta name="description" content="直接呼叫 Gemini 或 GPT API 生成圖片，含模型選擇與 5 段式 prompt 框架">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>ai-image-generator</h1>
+<p class="meta">jezweb ｜ 設計與前端 ｜ <a href="https://github.com/jezweb/claude-skills/blob/main/plugins/design-assets/skills/ai-image-generator/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">直接呼叫 Gemini 或 GPT API 生成圖片，含模型選擇與 5 段式 prompt 框架</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: ai-image-generator
+description: &quot;直接呼叫 Gemini 或 GPT API 產生 AI 圖片。涵蓋模型選擇（場景用 Gemini；文字渲染、批次變體、多參考圖合成用 GPT Image 2；透明圖示用 GPT Image 1.5）、5 段式 prompt 框架、API 呼叫寫法、多輪編輯和品質檢查。可產出擬真場景、圖示、插畫、OG 圖片、海報、資訊圖和產品照。建網站需要圖片、製作行銷素材或產生視覺內容時使用。觸發詞：&#x27;generate image&#x27;, &#x27;ai image&#x27;, &#x27;create hero image&#x27;, &#x27;make an icon&#x27;, &#x27;generate illustration&#x27;, &#x27;create og image&#x27;, &#x27;poster&#x27;, &#x27;infographic&#x27;, &#x27;image variations&#x27;, &#x27;gpt-image-2&#x27;, &#x27;ai art&#x27;, &#x27;image generation&#x27;。&quot;
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Glob
+  - Grep
+compatibility: claude-code-only
+---
+
+# AI Image Generator
+
+用 AI API（Google Gemini 和 OpenAI GPT）產生圖片。這個 skill 教的是 prompt 寫法和 API 運作細節，讓你直接在 Claude Code 裡產出專業的圖片。
+
+&gt; **託管替代方案**：如果你不想自己管理 API key，[ImageBot](https://imagebot.au) 提供託管的圖片生成服務，附相簿範本和品牌素材包支援。
+
+## 模型選擇
+
+依工作選對模型：
+
+| 需求 | 模型 | 原因 |
+|------|-------|-----|
+| **擬真場景 / 圖庫風格照片** | Gemini 3.1 Flash Image | 景深、複雜度和環境脈絡最好 |
+| **最終交給客戶的場景（要更多細節）** | Gemini 3 Pro Image | 細節更多，風格一致性更好 |
+| **圖片上的文字**（海報、帶文案的 OG、資訊圖） | GPT Image 2 | 文字渲染真的能用，包括多種文字系統 |
+| **10 種變體的風格探索** | GPT Image 2 | 原生批次：一個 prompt 產出 10 個共用構圖和配色的變體 |
+| **多參考圖合成**（產品 + 生活情境） | GPT Image 2 | 能處理跨參考圖的光線、比例和透視 |
+| **透明圖示 / logo** | GPT Image 1.5 | 原生 RGBA alpha，**GPT Image 2 做不到透明** |
+| **快速草稿 / 反覆調整** | Gemini 2.5 Flash Image | 免費額度（每天約 500 張） |
+
+**經驗法則**：任何帶有可讀文字的圖片 → GPT Image 2（除非需要透明，那就用 GPT 1.5）。其他情況 → Gemini。
+
+### 模型 ID
+
+| 模型 | API ID | 供應商 |
+|-------|--------|----------|
+| Gemini 3.1 Flash Image | `gemini-3.1-flash-image-preview` | Google AI |
+| Gemini 3 Pro Image | `gemini-3-pro-image-preview` | Google AI |
+| Gemini 2.5 Flash Image | `gemini-2.5-flash-image` | Google AI |
+| GPT Image 2（預設） | `gpt-image-2` | OpenAI |
+| GPT Image 2（與 ChatGPT 輸出一致） | `chatgpt-image-latest` | OpenAI |
+| GPT Image 1.5（只用於透明） | `gpt-image-1.5` | OpenAI |
+
+**使用前先確認模型 ID**，它們常常更動：
+```bash
+curl -s &quot;https://generativelanguage.googleapis.com/v1beta/models?key=$GEMINI_API_KEY&quot; | python3 -c &quot;import sys,json; [print(m[&#x27;name&#x27;]) for m in json.load(sys.stdin)[&#x27;models&#x27;] if &#x27;image&#x27; in m[&#x27;name&#x27;].lower()]&quot;
+```
+
+## GPT Image 2 的特點
+
+2026-04-22 發布。有三項能力，會改變你什麼時候該選它。
+
+### 1. 文字渲染真的能用
+
+海報、帶標題的 OG 圖片、帶標籤的資訊圖、UI mockup、價格卡片。文字能穩定渲染，包括非拉丁文字（日文、韓文、印地語、孟加拉語）。這是從 Gemini 換過來的主要原因，Gemini 完全渲染不出可讀的文字。
+
+### 2. 多變體批次產生
+
+一個 prompt，一次呼叫最多 10 張圖。變體共用構圖和配色，但細節不同。適合在定案前做風格探索、給客戶 A/B 選項，以及快速發想。
+
+### 3. 多參考圖合成
+
+連同 prompt 一起餵參考圖，像是產品照、生活場景、logo。模型會用正確的光線、比例和透視，把產品放進場景裡。不用多輪編輯就能做「產品放進實際情境」的流程。
+
+### 模式
+
+- **Instant**（預設，所有方案）：不經規劃階段直接生成。快，對大多數情況夠用。
+- **Thinking**（Plus/Pro/Business 方案）：先規劃版面再畫。元素數量重要（「一排 3 個圖示」、「5 個功能重點」）或文字必須落在特定區域時使用。複雜構圖需要重抽的次數比較少。
+
+### 長寬比
+
+從 3:1 超寬到 1:3 超高，加上 1:1、3:2、2:3、16:9、9:16。範圍比其他模型寬，適合網站 banner（超寬 hero）或手機限時動態格式（超高）。
+
+### 解析度
+
+標準最高長邊 2K。4K 為 beta。
+
+### 生成時間
+
+**複雜的 prompt 最多要 2 分鐘。**要做非同步的使用者體驗，不要卡住等回應。顯示進度，或丟到背景再輪詢。
+
+### 限制
+
+- **不支援透明背景。**需要 PNG 透明時，退回用 `gpt-image-1.5`。
+- 在端點能呼叫之前，**可能需要通過 API 組織驗證**：第一次呼叫遇到授權錯誤的話，到 OpenAI 帳號設定裡啟用。
+
+### 價格（每張 1024×1024 圖片）
+
+| 品質 | 費用 |
+|---------|------|
+| Low | $0.006 |
+| Medium | $0.053 |
+| High | $0.211 |
+
+Token 計價：文字輸入 $5/M、文字輸出 $10/M、圖片輸入 $8/M、圖片輸出 $30/M。
+
+## 5 段式 Prompt 框架
+
+照這個順序組 prompt，結果會比較穩定：
+
+### 1. 圖片類型
+先定類型：「A photorealistic photograph」、「An isometric illustration」、「A flat vector icon」
+
+### 2. 主體
+是誰或是什麼，附上具體細節：「of a warm, approachable Australian woman in her early 30s, smiling naturally」
+
+### 3. 環境
+場景和空間關係：「in a bright modern home with terracotta decor on wooden shelves behind her」
+
+### 4. 技術規格
+相機和光線：「Shot at 85mm f/2.0, natural window light, head and shoulders framing」
+
+### 5. 限制
+要排除什麼：「Photorealistic, no text, no watermarks, no logos」
+
+### 範例（好 vs 壞）
+
+```
+BAD — keyword soup:
+&quot;professional woman, spa, warm lighting, high quality, 4K&quot;
+
+GOOD — narrative direction:
+&quot;A professional skin treatment scene in a warm clinical setting.
+A practitioner wearing blue medical gloves uses a microneedling pen
+on the client&#x27;s forehead. The client lies on a white treatment bed,
+eyes closed, relaxed. Warm golden-hour light from a window to the
+left. Terracotta-toned wall visible in the background. Shot at
+85mm f/2.0, shallow depth of field. No text, no watermarks.&quot;
+```
+
+## 工作流程
+
+### 1. 判斷圖片需求
+
+| 用途 | 長寬比 | 模型 |
+|---------|-------------|-------|
+| Hero banner（無文字） | 16:9 或 21:9 | Gemini |
+| 帶標題文案的 hero banner | 16:9 或 3:1 超寬 | GPT Image 2 |
+| 服務卡片 | 4:3 或 3:4 | Gemini |
+| 個人檔案 / 頭像 | 1:1 | Gemini |
+| 圖示 / 徽章（透明） | 1:1 | GPT Image 1.5 |
+| OG / 社群分享（無文字） | 1.91:1 | Gemini |
+| 帶文案的 OG / 社群分享 | 1.91:1 | GPT Image 2 |
+| 海報 / 資訊圖 / 價格卡片 / 任何以文字排版為主的 | 不一定 | GPT Image 2 |
+| 風格探索（同一個概念的 10 種變體） | 任何 | GPT Image 2（批次） |
+| Instagram 貼文 | 1:1 或 4:5 | Gemini |
+| 手機 hero | 9:16 | Gemini |
+
+### 2. 組 Prompt
+
+用 5 段式框架。詳細的攝影參數見 `references/prompting-guide.md`。
+
+### 3. 透過 API 生成
+
+#### Gemini（Python，能正確處理 shell 跳脫）
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys
+
+GEMINI_API_KEY = os.environ.get(&quot;GEMINI_API_KEY&quot;)
+if not GEMINI_API_KEY:
+    print(&quot;Set GEMINI_API_KEY environment variable&quot;); sys.exit(1)
+
+model = &quot;gemini-3.1-flash-image-preview&quot;
+url = f&quot;https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}&quot;
+
+prompt = &quot;&quot;&quot;A professional photograph of a modern co-working space in
+Newcastle, Australia. Natural light floods through floor-to-ceiling
+windows. Three people collaborate at a standing desk — one pointing
+at a laptop screen. Exposed brick wall, potted fiddle-leaf fig,
+coffee cups on the desk. Shot at 35mm f/4.0, environmental portrait
+style. No text, no watermarks, no logos.&quot;&quot;&quot;
+
+payload = json.dumps({
+    &quot;contents&quot;: [{&quot;parts&quot;: [{&quot;text&quot;: prompt}]}],
+    &quot;generationConfig&quot;: {
+        &quot;responseModalities&quot;: [&quot;TEXT&quot;, &quot;IMAGE&quot;],
+        &quot;temperature&quot;: 0.8
+    }
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;User-Agent&quot;: &quot;ImageGen/1.0&quot;
+})
+
+resp = urllib.request.urlopen(req, timeout=120)
+result = json.loads(resp.read())
+
+# Extract image from response
+for part in result[&quot;candidates&quot;][0][&quot;content&quot;][&quot;parts&quot;]:
+    if &quot;inlineData&quot; in part:
+        img_data = base64.b64decode(part[&quot;inlineData&quot;][&quot;data&quot;])
+        output_path = &quot;hero-image.png&quot;
+        with open(output_path, &quot;wb&quot;) as f:
+            f.write(img_data)
+        print(f&quot;Saved: {output_path} ({len(img_data):,} bytes)&quot;)
+        break
+PYEOF
+```
+
+#### GPT Image 1.5：透明圖示
+
+專門在需要透明 PNG 的情況下用 `gpt-image-1.5`。GPT Image 2 做不到透明。
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys
+
+OPENAI_API_KEY = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not OPENAI_API_KEY:
+    print(&quot;Set OPENAI_API_KEY environment variable&quot;); sys.exit(1)
+
+url = &quot;https://api.openai.com/v1/images/generations&quot;
+
+payload = json.dumps({
+    &quot;model&quot;: &quot;gpt-image-1.5&quot;,
+    &quot;prompt&quot;: &quot;A minimal, clean plumbing wrench icon. Flat design, single consistent stroke weight, modern style. On a transparent background.&quot;,
+    &quot;n&quot;: 1,
+    &quot;size&quot;: &quot;1024x1024&quot;,
+    &quot;background&quot;: &quot;transparent&quot;,
+    &quot;output_format&quot;: &quot;png&quot;
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: f&quot;Bearer {OPENAI_API_KEY}&quot;
+})
+
+resp = urllib.request.urlopen(req, timeout=120)
+result = json.loads(resp.read())
+
+img_data = base64.b64decode(result[&quot;data&quot;][0][&quot;b64_json&quot;])
+with open(&quot;icon-wrench.png&quot;, &quot;wb&quot;) as f:
+    f.write(img_data)
+print(f&quot;Saved: icon-wrench.png ({len(img_data):,} bytes)&quot;)
+PYEOF
+```
+
+#### GPT Image 2：文字很多或批次變體
+
+文字必須渲染得可讀，或想一次呼叫拿到 10 個變體時，用 `gpt-image-2`。**不支援透明**，需要透明背景就用上面的 1.5。
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys, pathlib
+
+OPENAI_API_KEY = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not OPENAI_API_KEY:
+    print(&quot;Set OPENAI_API_KEY environment variable&quot;); sys.exit(1)
+
+url = &quot;https://api.openai.com/v1/images/generations&quot;
+
+# 10-variation batch of a pricing card with rendered text
+payload = json.dumps({
+    &quot;model&quot;: &quot;gpt-image-2&quot;,
+    &quot;prompt&quot;: (
+        &quot;A modern pricing card for a web hosting plan. &quot;
+        &quot;Headline &#x27;Starter&#x27; in bold sans-serif. &quot;
+        &quot;Price &#x27;$29/month&#x27; directly below in large type. &quot;
+        &quot;Three feature lines: &#x27;Unlimited bandwidth&#x27;, &#x27;SSD storage&#x27;, &#x27;Free SSL&#x27;. &quot;
+        &quot;Clean flat design, soft drop shadow, deep blue accent colour. &quot;
+        &quot;White card on light grey background.&quot;
+    ),
+    &quot;n&quot;: 10,
+    &quot;size&quot;: &quot;1024x1024&quot;,
+    &quot;quality&quot;: &quot;medium&quot;,
+    &quot;output_format&quot;: &quot;png&quot;
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: f&quot;Bearer {OPENAI_API_KEY}&quot;
+})
+
+# Timeout: up to 2 min for complex prompts
+resp = urllib.request.urlopen(req, timeout=180)
+result = json.loads(resp.read())
+
+pathlib.Path(&quot;variations&quot;).mkdir(exist_ok=True)
+for i, item in enumerate(result[&quot;data&quot;], 1):
+    img_data = base64.b64decode(item[&quot;b64_json&quot;])
+    path = f&quot;variations/pricing-card-{i:02d}.png&quot;
+    with open(path, &quot;wb&quot;) as f:
+        f.write(img_data)
+    print(f&quot;Saved: {path} ({len(img_data):,} bytes)&quot;)
+
+print(f&quot;\nGenerated {len(result[&#x27;data&#x27;])} variants. Pick the best; delete the rest.&quot;)
+PYEOF
+```
+
+**批次流程**：生成 10 張 → 並排檢視 → 挑 1 到 2 張 → 視需要針對勝出的方向用更精準的 prompt 重新生成。比單張生成再反覆調整更快。
+
+### 4. 儲存與最佳化
+
+把生成的圖片存到 `.jez/artifacts/` 或使用者指定的路徑。
+
+後處理（選用）：
+```bash
+# Convert to WebP for web use
+python3 -c &quot;
+from PIL import Image
+img = Image.open(&#x27;hero-image.png&#x27;)
+img.save(&#x27;hero-image.webp&#x27;, &#x27;WEBP&#x27;, quality=85)
+print(f&#x27;WebP: {img.size[0]}x{img.size[1]}&#x27;)
+&quot;
+
+# Trim whitespace from transparent icons
+python3 -c &quot;
+from PIL import Image
+img = Image.open(&#x27;icon.png&#x27;)
+trimmed = img.crop(img.getbbox())
+trimmed.save(&#x27;icon-trimmed.png&#x27;)
+&quot;
+```
+
+### 5. 品質檢查（選用）
+
+把生成的圖片送回視覺模型做 QA：
+
+```python
+# Send to Gemini Flash for critique
+critique_prompt = &quot;&quot;&quot;Review this image for:
+1. AI artifacts (extra fingers, floating objects, text errors)
+2. Technical accuracy (wrong equipment, unsafe positioning)
+3. Composition issues (awkward cropping, cluttered background)
+4. Style consistency with a professional stock photo
+
+List any issues found, or say &#x27;PASS&#x27; if the image is production-ready.&quot;&quot;&quot;
+```
+
+發現問題的話，把它們當成負面指引附加到原本的 prompt，重新生成。
+
+## 多輪編輯
+
+Gemini 支援跨對話輪次編輯已生成的圖片。關鍵要求：**保留模型回應裡的 thought signature**。
+
+```python
+# Turn 1: Generate base image
+contents = [{&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Scene prompt...&quot;}]}]
+
+# The response includes thoughtSignature on parts — preserve them ALL
+
+# Turn 2: Edit the image
+contents = [
+    {&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Original prompt&quot;}]},
+    {&quot;role&quot;: &quot;model&quot;, &quot;parts&quot;: response_parts_with_signatures},  # Keep intact
+    {&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Edit: change the wall colour to blue. Keep everything else exactly the same.&quot;}]}
+]
+```
+
+**編輯 prompt 的寫法**：一定要寫明什麼要「保持不變」，不能只寫要改什麼。模型會把沒列出來的元素當成可以隨意更動。
+
+```
+GOOD: &quot;Edit this image: keep the people, desk, and window unchanged.
+Only change: wall colour from terracotta to ocean blue.&quot;
+
+BAD: &quot;Now make the wall blue.&quot;
+(Model may change everything else too)
+```
+
+## API Key 設定
+
+| 供應商 | 取得 key 的地方 | 環境變數 |
+|----------|-----------|-------------|
+| Google Gemini | [aistudio.google.com](https://aistudio.google.com/apikey) | `GEMINI_API_KEY` |
+| OpenAI | [platform.openai.com](https://platform.openai.com/api-keys) | `OPENAI_API_KEY` |
+
+```bash
+export GEMINI_API_KEY=&quot;your-key-here&quot;
+export OPENAI_API_KEY=&quot;your-key-here&quot;
+```
+
+## 常見錯誤
+
+| 錯誤 | 解法 |
+|---------|-----|
+| Gemini 的 prompt 用 curl 送 | 改用 Python，shell 跳脫遇到單引號會壞掉 |
+| 「Beautiful, professional, high quality」 | 用具體規格：「85mm f/1.8, golden hour light」 |
+| 沒有指定要排除什麼 | 一律以「No text, no watermarks, no logos」結尾 |
+| 向 Gemini 要透明 PNG | Gemini 做不到透明，改用 GPT Image 1.5 搭配 `background: &quot;transparent&quot;` |
+| 向 GPT Image 2 要透明 PNG | GPT Image 2 **做不到透明**，只有這個情況才退回 `gpt-image-1.5` |
+| 用 GPT Image 1.5 生成帶文字的圖 | GPT Image 1.5 的文字渲染不可靠，任何要可讀文字的都用 `gpt-image-2` |
+| 阻塞式呼叫 GPT Image 2 | 複雜 prompt 的生成最多要 2 分鐘，用 180 秒的 timeout，並做非同步的使用者體驗 |
+| 澳洲商家卻用美國預設值 | 明確指定「Australian」加上當地的建築、植被 |
+| 用籠統的資料當模型 ID | 確認目前有效的模型 ID，它們常常更動 |</pre></section><section><h2>英文原文</h2><pre>---
+name: ai-image-generator
+description: &quot;Generate AI images using Gemini or GPT APIs directly. Covers model selection (Gemini for scenes; GPT Image 2 for text rendering, batch variations, multi-reference compositing; GPT Image 1.5 for transparent icons), the 5-part prompting framework, API calling patterns, multi-turn editing, and quality assurance. Produces photorealistic scenes, icons, illustrations, OG images, posters, infographics, and product shots. Use when building websites that need images, creating marketing assets, or generating visual content. Triggers: &#x27;generate image&#x27;, &#x27;ai image&#x27;, &#x27;create hero image&#x27;, &#x27;make an icon&#x27;, &#x27;generate illustration&#x27;, &#x27;create og image&#x27;, &#x27;poster&#x27;, &#x27;infographic&#x27;, &#x27;image variations&#x27;, &#x27;gpt-image-2&#x27;, &#x27;ai art&#x27;, &#x27;image generation&#x27;.&quot;
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Glob
+  - Grep
+compatibility: claude-code-only
+---
+
+# AI Image Generator
+
+Generate images using AI APIs (Google Gemini and OpenAI GPT). This skill teaches the prompting patterns and API mechanics for producing professional images directly from Claude Code.
+
+&gt; **Managed alternative**: If you don&#x27;t want to manage API keys, [ImageBot](https://imagebot.au) provides a managed image generation service with album templates and brand kit support.
+
+## Model Selection
+
+Choose the right model for the job:
+
+| Need | Model | Why |
+|------|-------|-----|
+| **Photorealistic scenes / stock photos** | Gemini 3.1 Flash Image | Best depth, complexity, environmental context |
+| **Final client scenes (higher detail)** | Gemini 3 Pro Image | Higher detail, better style consistency |
+| **Text on images** (posters, OG with copy, infographics) | GPT Image 2 | Text rendering actually works — including multi-script |
+| **10-variation style exploration** | GPT Image 2 | Native batch — one prompt, 10 variants sharing composition + palette |
+| **Multi-reference compositing** (product + lifestyle) | GPT Image 2 | Handles lighting, scale, perspective across references |
+| **Transparent icons / logos** | GPT Image 1.5 | Native RGBA alpha — **GPT Image 2 cannot do transparency** |
+| **Quick drafts / iteration** | Gemini 2.5 Flash Image | Free tier (~500/day) |
+
+**Rule of thumb**: any image with readable text → GPT Image 2 (unless you need transparency, then GPT 1.5). Otherwise → Gemini.
+
+### Model IDs
+
+| Model | API ID | Provider |
+|-------|--------|----------|
+| Gemini 3.1 Flash Image | `gemini-3.1-flash-image-preview` | Google AI |
+| Gemini 3 Pro Image | `gemini-3-pro-image-preview` | Google AI |
+| Gemini 2.5 Flash Image | `gemini-2.5-flash-image` | Google AI |
+| GPT Image 2 (default) | `gpt-image-2` | OpenAI |
+| GPT Image 2 (ChatGPT-parity output) | `chatgpt-image-latest` | OpenAI |
+| GPT Image 1.5 (transparency-only) | `gpt-image-1.5` | OpenAI |
+
+**Verify model IDs before use** — they change frequently:
+```bash
+curl -s &quot;https://generativelanguage.googleapis.com/v1beta/models?key=$GEMINI_API_KEY&quot; | python3 -c &quot;import sys,json; [print(m[&#x27;name&#x27;]) for m in json.load(sys.stdin)[&#x27;models&#x27;] if &#x27;image&#x27; in m[&#x27;name&#x27;].lower()]&quot;
+```
+
+## GPT Image 2 Specifics
+
+Released 2026-04-22. Three capabilities that change when you&#x27;d reach for it.
+
+### 1. Text rendering actually works
+
+Posters, OG images with headlines, infographics with labels, UI mockups, pricing cards. Text is rendered reliably, including non-Latin scripts (Japanese, Korean, Hindi, Bengali). Primary reason to switch from Gemini — Gemini doesn&#x27;t render readable text at all.
+
+### 2. Multi-variation batching
+
+One prompt, up to 10 images in a single call. Variants share composition and palette but differ in detail. Good for style exploration before committing, A/B options for a client, rapid ideation.
+
+### 3. Multi-reference compositing
+
+Feed reference images alongside your prompt — product shots, lifestyle scenes, logos. The model places the product into the scene with correct lighting, scale, perspective. Enables &quot;product in context&quot; workflows without multi-turn editing.
+
+### Modes
+
+- **Instant** (default, all plans) — generates without a planning pass. Fast, good enough for most cases.
+- **Thinking** (Plus/Pro/Business plans) — plans layout before drawing. Use when element counts matter (&quot;3 icons in a row&quot;, &quot;5 feature bullets&quot;) or text must land in specific regions. Fewer re-rolls on complex compositions.
+
+### Aspect ratios
+
+3:1 ultra-wide through 1:3 ultra-tall, plus 1:1, 3:2, 2:3, 16:9, 9:16. Wider range than other models — useful for website banners (ultra-wide hero) or mobile story formats (ultra-tall).
+
+### Resolution
+
+Up to 2K on the long edge standard. 4K in beta.
+
+### Generation time
+
+**Up to 2 minutes on complex prompts.** Build async UX — don&#x27;t block on the response. Show progress or spin off and poll.
+
+### Constraints
+
+- **No transparent backgrounds.** Fall back to `gpt-image-1.5` when you need PNG transparency.
+- **API Org Verification may be required** before the endpoint fires — enable in your OpenAI account settings if you hit auth errors on first call.
+
+### Pricing (per 1024×1024 image)
+
+| Quality | Cost |
+|---------|------|
+| Low | $0.006 |
+| Medium | $0.053 |
+| High | $0.211 |
+
+Token pricing: $5/M text in, $10/M text out, $8/M image in, $30/M image out.
+
+## The 5-Part Prompting Framework
+
+Build prompts in this order for consistent results:
+
+### 1. Image Type
+Set the genre: &quot;A photorealistic photograph&quot;, &quot;An isometric illustration&quot;, &quot;A flat vector icon&quot;
+
+### 2. Subject
+Who or what, with specific details: &quot;of a warm, approachable Australian woman in her early 30s, smiling naturally&quot;
+
+### 3. Environment
+Setting and spatial relationships: &quot;in a bright modern home with terracotta decor on wooden shelves behind her&quot;
+
+### 4. Technical Specs
+Camera and lighting: &quot;Shot at 85mm f/2.0, natural window light, head and shoulders framing&quot;
+
+### 5. Constraints
+What to exclude: &quot;Photorealistic, no text, no watermarks, no logos&quot;
+
+### Example (Good vs Bad)
+
+```
+BAD — keyword soup:
+&quot;professional woman, spa, warm lighting, high quality, 4K&quot;
+
+GOOD — narrative direction:
+&quot;A professional skin treatment scene in a warm clinical setting.
+A practitioner wearing blue medical gloves uses a microneedling pen
+on the client&#x27;s forehead. The client lies on a white treatment bed,
+eyes closed, relaxed. Warm golden-hour light from a window to the
+left. Terracotta-toned wall visible in the background. Shot at
+85mm f/2.0, shallow depth of field. No text, no watermarks.&quot;
+```
+
+## Workflow
+
+### 1. Determine Image Need
+
+| Purpose | Aspect Ratio | Model |
+|---------|-------------|-------|
+| Hero banner (no text) | 16:9 or 21:9 | Gemini |
+| Hero banner with headline copy | 16:9 or 3:1 ultra-wide | GPT Image 2 |
+| Service card | 4:3 or 3:4 | Gemini |
+| Profile / avatar | 1:1 | Gemini |
+| Icon / badge (transparent) | 1:1 | GPT Image 1.5 |
+| OG / social share (no text) | 1.91:1 | Gemini |
+| OG / social share with copy | 1.91:1 | GPT Image 2 |
+| Poster / infographic / pricing card / any typography-heavy | varies | GPT Image 2 |
+| Style exploration (10 variants of one concept) | any | GPT Image 2 (batch) |
+| Instagram post | 1:1 or 4:5 | Gemini |
+| Mobile hero | 9:16 | Gemini |
+
+### 2. Build the Prompt
+
+Use the 5-part framework. Refer to `references/prompting-guide.md` for detailed photography parameters.
+
+### 3. Generate via API
+
+#### Gemini (Python — handles shell escaping correctly)
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys
+
+GEMINI_API_KEY = os.environ.get(&quot;GEMINI_API_KEY&quot;)
+if not GEMINI_API_KEY:
+    print(&quot;Set GEMINI_API_KEY environment variable&quot;); sys.exit(1)
+
+model = &quot;gemini-3.1-flash-image-preview&quot;
+url = f&quot;https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}&quot;
+
+prompt = &quot;&quot;&quot;A professional photograph of a modern co-working space in
+Newcastle, Australia. Natural light floods through floor-to-ceiling
+windows. Three people collaborate at a standing desk — one pointing
+at a laptop screen. Exposed brick wall, potted fiddle-leaf fig,
+coffee cups on the desk. Shot at 35mm f/4.0, environmental portrait
+style. No text, no watermarks, no logos.&quot;&quot;&quot;
+
+payload = json.dumps({
+    &quot;contents&quot;: [{&quot;parts&quot;: [{&quot;text&quot;: prompt}]}],
+    &quot;generationConfig&quot;: {
+        &quot;responseModalities&quot;: [&quot;TEXT&quot;, &quot;IMAGE&quot;],
+        &quot;temperature&quot;: 0.8
+    }
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;User-Agent&quot;: &quot;ImageGen/1.0&quot;
+})
+
+resp = urllib.request.urlopen(req, timeout=120)
+result = json.loads(resp.read())
+
+# Extract image from response
+for part in result[&quot;candidates&quot;][0][&quot;content&quot;][&quot;parts&quot;]:
+    if &quot;inlineData&quot; in part:
+        img_data = base64.b64decode(part[&quot;inlineData&quot;][&quot;data&quot;])
+        output_path = &quot;hero-image.png&quot;
+        with open(output_path, &quot;wb&quot;) as f:
+            f.write(img_data)
+        print(f&quot;Saved: {output_path} ({len(img_data):,} bytes)&quot;)
+        break
+PYEOF
+```
+
+#### GPT Image 1.5 — Transparent Icons
+
+Use `gpt-image-1.5` specifically for the transparent PNG case. GPT Image 2 cannot do transparency.
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys
+
+OPENAI_API_KEY = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not OPENAI_API_KEY:
+    print(&quot;Set OPENAI_API_KEY environment variable&quot;); sys.exit(1)
+
+url = &quot;https://api.openai.com/v1/images/generations&quot;
+
+payload = json.dumps({
+    &quot;model&quot;: &quot;gpt-image-1.5&quot;,
+    &quot;prompt&quot;: &quot;A minimal, clean plumbing wrench icon. Flat design, single consistent stroke weight, modern style. On a transparent background.&quot;,
+    &quot;n&quot;: 1,
+    &quot;size&quot;: &quot;1024x1024&quot;,
+    &quot;background&quot;: &quot;transparent&quot;,
+    &quot;output_format&quot;: &quot;png&quot;
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: f&quot;Bearer {OPENAI_API_KEY}&quot;
+})
+
+resp = urllib.request.urlopen(req, timeout=120)
+result = json.loads(resp.read())
+
+img_data = base64.b64decode(result[&quot;data&quot;][0][&quot;b64_json&quot;])
+with open(&quot;icon-wrench.png&quot;, &quot;wb&quot;) as f:
+    f.write(img_data)
+print(f&quot;Saved: icon-wrench.png ({len(img_data):,} bytes)&quot;)
+PYEOF
+```
+
+#### GPT Image 2 — Text-heavy or Batch Variations
+
+Use `gpt-image-2` when text has to render readably, or when you want 10 variants in one call. **No transparency** — if you need transparent bg, use 1.5 above.
+
+```python
+python3 &lt;&lt; &#x27;PYEOF&#x27;
+import json, base64, urllib.request, os, sys, pathlib
+
+OPENAI_API_KEY = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not OPENAI_API_KEY:
+    print(&quot;Set OPENAI_API_KEY environment variable&quot;); sys.exit(1)
+
+url = &quot;https://api.openai.com/v1/images/generations&quot;
+
+# 10-variation batch of a pricing card with rendered text
+payload = json.dumps({
+    &quot;model&quot;: &quot;gpt-image-2&quot;,
+    &quot;prompt&quot;: (
+        &quot;A modern pricing card for a web hosting plan. &quot;
+        &quot;Headline &#x27;Starter&#x27; in bold sans-serif. &quot;
+        &quot;Price &#x27;$29/month&#x27; directly below in large type. &quot;
+        &quot;Three feature lines: &#x27;Unlimited bandwidth&#x27;, &#x27;SSD storage&#x27;, &#x27;Free SSL&#x27;. &quot;
+        &quot;Clean flat design, soft drop shadow, deep blue accent colour. &quot;
+        &quot;White card on light grey background.&quot;
+    ),
+    &quot;n&quot;: 10,
+    &quot;size&quot;: &quot;1024x1024&quot;,
+    &quot;quality&quot;: &quot;medium&quot;,
+    &quot;output_format&quot;: &quot;png&quot;
+}).encode()
+
+req = urllib.request.Request(url, data=payload, headers={
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: f&quot;Bearer {OPENAI_API_KEY}&quot;
+})
+
+# Timeout: up to 2 min for complex prompts
+resp = urllib.request.urlopen(req, timeout=180)
+result = json.loads(resp.read())
+
+pathlib.Path(&quot;variations&quot;).mkdir(exist_ok=True)
+for i, item in enumerate(result[&quot;data&quot;], 1):
+    img_data = base64.b64decode(item[&quot;b64_json&quot;])
+    path = f&quot;variations/pricing-card-{i:02d}.png&quot;
+    with open(path, &quot;wb&quot;) as f:
+        f.write(img_data)
+    print(f&quot;Saved: {path} ({len(img_data):,} bytes)&quot;)
+
+print(f&quot;\nGenerated {len(result[&#x27;data&#x27;])} variants. Pick the best; delete the rest.&quot;)
+PYEOF
+```
+
+**Batch workflow**: generate 10 → review them side-by-side → pick 1-2 → optionally regenerate with tighter prompt on the winning direction. Faster than single-shot + iterate.
+
+### 4. Save and Optimise
+
+Save generated images to `.jez/artifacts/` or the user&#x27;s specified path.
+
+Post-processing (optional):
+```bash
+# Convert to WebP for web use
+python3 -c &quot;
+from PIL import Image
+img = Image.open(&#x27;hero-image.png&#x27;)
+img.save(&#x27;hero-image.webp&#x27;, &#x27;WEBP&#x27;, quality=85)
+print(f&#x27;WebP: {img.size[0]}x{img.size[1]}&#x27;)
+&quot;
+
+# Trim whitespace from transparent icons
+python3 -c &quot;
+from PIL import Image
+img = Image.open(&#x27;icon.png&#x27;)
+trimmed = img.crop(img.getbbox())
+trimmed.save(&#x27;icon-trimmed.png&#x27;)
+&quot;
+```
+
+### 5. Quality Check (Optional)
+
+Send the generated image back to a vision model for QA:
+
+```python
+# Send to Gemini Flash for critique
+critique_prompt = &quot;&quot;&quot;Review this image for:
+1. AI artifacts (extra fingers, floating objects, text errors)
+2. Technical accuracy (wrong equipment, unsafe positioning)
+3. Composition issues (awkward cropping, cluttered background)
+4. Style consistency with a professional stock photo
+
+List any issues found, or say &#x27;PASS&#x27; if the image is production-ready.&quot;&quot;&quot;
+```
+
+If issues are found, append them as negative guidance to the original prompt and regenerate.
+
+## Multi-Turn Editing
+
+Gemini supports editing a generated image across conversation turns. The key requirement: **preserve thought signatures** from model responses.
+
+```python
+# Turn 1: Generate base image
+contents = [{&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Scene prompt...&quot;}]}]
+
+# The response includes thoughtSignature on parts — preserve them ALL
+
+# Turn 2: Edit the image
+contents = [
+    {&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Original prompt&quot;}]},
+    {&quot;role&quot;: &quot;model&quot;, &quot;parts&quot;: response_parts_with_signatures},  # Keep intact
+    {&quot;role&quot;: &quot;user&quot;, &quot;parts&quot;: [{&quot;text&quot;: &quot;Edit: change the wall colour to blue. Keep everything else exactly the same.&quot;}]}
+]
+```
+
+**Edit prompt pattern**: Always specify what to KEEP unchanged, not just what to change. The model treats unlisted elements as free to modify.
+
+```
+GOOD: &quot;Edit this image: keep the people, desk, and window unchanged.
+Only change: wall colour from terracotta to ocean blue.&quot;
+
+BAD: &quot;Now make the wall blue.&quot;
+(Model may change everything else too)
+```
+
+## API Key Setup
+
+| Provider | Get key at | Env variable |
+|----------|-----------|-------------|
+| Google Gemini | [aistudio.google.com](https://aistudio.google.com/apikey) | `GEMINI_API_KEY` |
+| OpenAI | [platform.openai.com](https://platform.openai.com/api-keys) | `OPENAI_API_KEY` |
+
+```bash
+export GEMINI_API_KEY=&quot;your-key-here&quot;
+export OPENAI_API_KEY=&quot;your-key-here&quot;
+```
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Using curl for Gemini prompts | Use Python — shell escaping breaks on apostrophes |
+| &quot;Beautiful, professional, high quality&quot; | Use concrete specs: &quot;85mm f/1.8, golden hour light&quot; |
+| Not specifying what to exclude | Always end with &quot;No text, no watermarks, no logos&quot; |
+| Requesting transparent PNG from Gemini | Gemini cannot do transparency — use GPT Image 1.5 with `background: &quot;transparent&quot;` |
+| Requesting transparent PNG from GPT Image 2 | GPT Image 2 **cannot do transparency** — fall back to `gpt-image-1.5` for this case only |
+| Using GPT Image 1.5 for text on images | GPT Image 1.5 text rendering is unreliable — use `gpt-image-2` for any readable text |
+| Blocking a request to GPT Image 2 | Generation can take up to 2 min on complex prompts — use 180s timeout, build async UX |
+| American defaults for AU businesses | Explicitly specify &quot;Australian&quot; + local architecture, vegetation |
+| Generic data for model ID | Verify current model IDs — they change frequently |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

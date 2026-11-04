@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cloudflare-api｜Skill 寫法圖鑑</title>
+<meta name="description" content="直接呼叫 Cloudflare REST API 做批次 DNS、WAF、cache 等 wrangler 做不好的操作">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>cloudflare-api</h1>
+<p class="meta">jezweb ｜ Cloudflare 平台 ｜ <a href="https://github.com/jezweb/claude-skills/blob/main/archive/plugins/cloudflare/skills/cloudflare-api/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">直接呼叫 Cloudflare REST API 做批次 DNS、WAF、cache 等 wrangler 做不好的操作</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: cloudflare-api
+description: &quot;直接呼叫 Cloudflare REST API，處理 wrangler 和 MCP 做不好的操作：批次 DNS、custom hostname、email routing、清 cache、WAF 規則、redirect 規則、zone 設定、Worker route、D1 跨資料庫查詢、R2 批次操作、KV 批次讀寫、Vectorize 查詢、Queues，以及全帳號資源盤點。產出 curl 指令或腳本。觸發詞：&#x27;cloudflare api&#x27;, &#x27;bulk dns&#x27;, &#x27;custom hostname&#x27;, &#x27;email routing&#x27;, &#x27;cache purge&#x27;, &#x27;waf rule&#x27;, &#x27;d1 query&#x27;, &#x27;r2 bucket&#x27;, &#x27;kv bulk&#x27;, &#x27;vectorize query&#x27;, &#x27;audit resources&#x27;, &#x27;fleet operation&#x27;。&quot;
+compatibility: claude-code-only
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+
+# Cloudflare API
+
+wrangler CLI 或 MCP server 不適合時，直接呼叫 Cloudflare REST API。用於批次操作、全帳號範圍的變更，以及 wrangler 沒有提供的功能。
+
+## 什麼時候用這個，而不是 Wrangler 或 MCP
+
+| 使用情境 | Wrangler | MCP | 這個 skill |
+|----------|---------|-----|-----------|
+| 部署 Worker | 可以 | 可以 | 不用 |
+| 建立 D1 資料庫 | 可以 | 可以 | 不用 |
+| 批次更新 50 筆 DNS 紀錄 | 慢（一次一筆） | 慢（每筆一次工具呼叫） | 可以：批次腳本 |
+| 白標用的 custom hostname | 不行 | 部分支援 | 可以 |
+| Email routing 規則 | 不行 | 部分支援 | 可以 |
+| WAF/防火牆規則 | 不行 | 可以但很囉嗦 | 可以：直接呼叫 API |
+| 批次 redirect 規則 | 不行 | 一次一筆 | 可以：批次腳本 |
+| 20 個 zone 的 zone 設定 | 不行 | 20 次獨立呼叫 | 可以：全域腳本 |
+| 依 tag/prefix 清 cache | 不行 | 可以 | 可以（要寫腳本時） |
+| Worker route 管理 | 有限 | 可以 | 可以（批次時） |
+| 分析/log 查詢 | 不行 | 部分支援 | 可以：GraphQL |
+| 跨資料庫的 D1 查詢/匯出 | 一次一個 DB | 一次一個 DB | 可以：跨 DB 腳本 |
+| R2 批次物件操作 | 不行 | 一次一個 | 可以：S3 API + 批次 |
+| KV 批次讀/寫/刪 | 一次一筆 | 一次一筆 | 可以：批次 endpoint |
+| Vectorize 查詢/刪除 | 不行 | 只能透過 Worker | 可以：直接呼叫 API |
+| 對 Queue 注入訊息 | 不行 | 只能透過 Worker | 可以：直接呼叫 API |
+| 盤點帳號下的所有資源 | 不行 | 很繁瑣 | 可以：盤點腳本 |
+
+**經驗法則**：單一操作 → MCP 或 wrangler。批次/全帳號/腳本化 → 直接呼叫 API。
+
+## 驗證設定
+
+### API Token（建議）
+
+建立有範圍限制的 token：Dashboard → My Profile → API Tokens → Create Token
+
+```bash
+# Store it
+export CLOUDFLARE_API_TOKEN=&quot;your-token-here&quot;
+
+# Test it
+curl -s &quot;https://api.cloudflare.com/client/v4/user/tokens/verify&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.success&#x27;
+```
+
+**Token 權限範圍**：一律用最小權限。常見的預設組合：
+- &quot;Edit zone DNS&quot;：DNS 操作
+- &quot;Edit zone settings&quot;：zone 設定變更
+- &quot;Edit Cloudflare Workers&quot;：Worker route 管理
+- &quot;Read analytics&quot;：GraphQL 分析
+
+### Account 與 Zone ID
+
+```bash
+# List your zones (find zone IDs)
+curl -s &quot;https://api.cloudflare.com/client/v4/zones?per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {name, id}&#x27;
+
+# Get zone ID by domain name
+ZONE_ID=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones?name=example.com&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[0].id&#x27;)
+```
+
+ID 存在環境變數或設定檔裡，不要寫死在腳本中。
+
+## 工作流程
+
+### 批次 DNS 操作
+
+**一次新增/更新很多筆紀錄**（例如遷移網域、幫新客戶設定）：
+
+```bash
+# Pattern: read records from a file, create in batch
+while IFS=&#x27;,&#x27; read -r type name content proxied; do
+  curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{\&quot;type\&quot;:\&quot;$type\&quot;,\&quot;name\&quot;:\&quot;$name\&quot;,\&quot;content\&quot;:\&quot;$content\&quot;,\&quot;proxied\&quot;:$proxied,\&quot;ttl\&quot;:1}&quot; \
+    | jq &#x27;{name: .result.name, id: .result.id, success: .success}&#x27;
+  sleep 0.25  # Rate limit: 1200 req/5min
+done &lt; dns-records.csv
+```
+
+**匯出 zone 的所有紀錄**（備份或遷移）：
+
+```bash
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?per_page=100&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  | jq -r &#x27;.result[] | [.type, .name, .content, .proxied] | @csv&#x27; &gt; dns-export.csv
+```
+
+**跨紀錄尋找並取代**（例如 IP 遷移）：
+
+```bash
+OLD_IP=&quot;203.0.113.1&quot;
+NEW_IP=&quot;198.51.100.1&quot;
+
+# Find records pointing to old IP
+RECORDS=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?content=$OLD_IP&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[].id&#x27;)
+
+# Update each one
+for RECORD_ID in $RECORDS; do
+  curl -s -X PATCH &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{\&quot;content\&quot;:\&quot;$NEW_IP\&quot;}&quot; | jq &#x27;.success&#x27;
+done
+```
+
+### Custom Hostname（白標的客戶網域）
+
+給 SaaS app 用，客戶使用自己的網域（例如 `app.clientdomain.com` → 你的 Worker）：
+
+```bash
+# Create custom hostname
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;hostname&quot;: &quot;app.clientdomain.com&quot;,
+    &quot;ssl&quot;: {
+      &quot;method&quot;: &quot;http&quot;,
+      &quot;type&quot;: &quot;dv&quot;,
+      &quot;settings&quot;: {
+        &quot;min_tls_version&quot;: &quot;1.2&quot;
+      }
+    }
+  }&#x27; | jq &#x27;{id: .result.id, status: .result.status, ssl_status: .result.ssl.status}&#x27;
+
+# List custom hostnames
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames?per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  | jq &#x27;.result[] | {hostname, status, ssl_status: .ssl.status}&#x27;
+
+# Check status (client needs to add CNAME)
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames/$HOSTNAME_ID&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result.status&#x27;
+```
+
+**客戶端的設定**：他們要加一筆 CNAME：`app.clientdomain.com → your-worker.your-domain.com`
+
+### Email Routing 規則
+
+```bash
+# Enable email routing on zone
+curl -s -X PUT &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/enable&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot;
+
+# Create a routing rule (forward info@ to a real address)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;name&quot;: &quot;Forward info@&quot;,
+    &quot;enabled&quot;: true,
+    &quot;matchers&quot;: [{&quot;type&quot;: &quot;literal&quot;, &quot;field&quot;: &quot;to&quot;, &quot;value&quot;: &quot;info@example.com&quot;}],
+    &quot;actions&quot;: [{&quot;type&quot;: &quot;forward&quot;, &quot;value&quot;: [&quot;real-inbox@gmail.com&quot;]}]
+  }&#x27; | jq &#x27;.success&#x27;
+
+# Create catch-all rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;name&quot;: &quot;Catch-all&quot;,
+    &quot;enabled&quot;: true,
+    &quot;matchers&quot;: [{&quot;type&quot;: &quot;all&quot;}],
+    &quot;actions&quot;: [{&quot;type&quot;: &quot;forward&quot;, &quot;value&quot;: [&quot;catchall@company.com&quot;]}]
+  }&#x27; | jq &#x27;.success&#x27;
+
+# List rules
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {name, enabled, matchers, actions}&#x27;
+```
+
+### 清除 Cache
+
+```bash
+# Purge everything (nuclear option)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;purge_everything&quot;: true}&#x27;
+
+# Purge specific URLs
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;files&quot;: [&quot;https://example.com/styles.css&quot;, &quot;https://example.com/app.js&quot;]}&#x27;
+
+# Purge by cache tag (requires Enterprise or cache tag headers)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;tags&quot;: [&quot;product-123&quot;, &quot;homepage&quot;]}&#x27;
+
+# Purge by prefix
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;prefixes&quot;: [&quot;https://example.com/images/&quot;]}&#x27;
+```
+
+### Redirect 規則（批次）
+
+```bash
+# Create a redirect rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_request_dynamic_redirect/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [
+      {
+        &quot;expression&quot;: &quot;(http.request.uri.path eq \&quot;/old-page\&quot;)&quot;,
+        &quot;description&quot;: &quot;Redirect old-page to new-page&quot;,
+        &quot;action&quot;: &quot;redirect&quot;,
+        &quot;action_parameters&quot;: {
+          &quot;from_value&quot;: {
+            &quot;target_url&quot;: {&quot;value&quot;: &quot;https://example.com/new-page&quot;},
+            &quot;status_code&quot;: 301
+          }
+        }
+      }
+    ]
+  }&#x27;
+```
+
+**批次 redirect**（從 CSV 產生 301）：用程式產生 rules 陣列：
+
+```python
+import json, csv
+
+rules = []
+with open(&#x27;redirects.csv&#x27;) as f:
+    for row in csv.reader(f):
+        old_path, new_url = row
+        rules.append({
+            &quot;expression&quot;: f&#x27;(http.request.uri.path eq &quot;{old_path}&quot;)&#x27;,
+            &quot;description&quot;: f&quot;Redirect {old_path}&quot;,
+            &quot;action&quot;: &quot;redirect&quot;,
+            &quot;action_parameters&quot;: {
+                &quot;from_value&quot;: {
+                    &quot;target_url&quot;: {&quot;value&quot;: new_url},
+                    &quot;status_code&quot;: 301
+                }
+            }
+        })
+print(json.dumps({&quot;rules&quot;: rules}, indent=2))
+```
+
+### Zone 設定（全域）
+
+對多個 zone 套用同樣的設定：
+
+```bash
+# Settings to apply
+SETTINGS=&#x27;{&quot;value&quot;:&quot;full&quot;}&#x27;  # SSL mode: full (strict)
+
+# Get all active zones
+ZONES=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones?status=active&amp;per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[].id&#x27;)
+
+# Apply to each zone
+for ZONE in $ZONES; do
+  curl -s -X PATCH &quot;https://api.cloudflare.com/client/v4/zones/$ZONE/settings/ssl&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;$SETTINGS&quot; | jq &quot;{zone: .result.id, success: .success}&quot;
+  sleep 0.25
+done
+```
+
+常見的全域設定：
+- `ssl`：&quot;full&quot; 或 &quot;strict&quot;
+- `min_tls_version`：&quot;1.2&quot;
+- `always_use_https`：&quot;on&quot;
+- `security_level`：&quot;medium&quot;
+- `browser_cache_ttl`：14400
+
+### WAF / 防火牆規則
+
+```bash
+# Create a WAF custom rule (block by country)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_request_firewall_custom/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [{
+      &quot;expression&quot;: &quot;(ip.geoip.country in {\&quot;RU\&quot; \&quot;CN\&quot;})&quot;,
+      &quot;action&quot;: &quot;block&quot;,
+      &quot;description&quot;: &quot;Block traffic from RU and CN&quot;
+    }]
+  }&#x27;
+
+# Rate limiting rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_ratelimit/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [{
+      &quot;expression&quot;: &quot;(http.request.uri.path contains \&quot;/api/\&quot;)&quot;,
+      &quot;action&quot;: &quot;block&quot;,
+      &quot;ratelimit&quot;: {
+        &quot;characteristics&quot;: [&quot;ip.src&quot;],
+        &quot;period&quot;: 60,
+        &quot;requests_per_period&quot;: 100
+      },
+      &quot;description&quot;: &quot;Rate limit API to 100 req/min per IP&quot;
+    }]
+  }&#x27;
+```
+
+### Worker Route
+
+```bash
+# List routes
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {pattern, id}&#x27;
+
+# Create route
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;pattern&quot;: &quot;api.example.com/*&quot;, &quot;script&quot;: &quot;my-worker&quot;}&#x27;
+
+# Delete route
+curl -s -X DELETE &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes/$ROUTE_ID&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot;
+```
+
+### 分析（GraphQL）
+
+```bash
+# Worker analytics (requests, errors, CPU time)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/graphql&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;query&quot;: &quot;{ viewer { zones(filter: {zoneTag: \&quot;&#x27;$ZONE_ID&#x27;\&quot;}) { httpRequests1dGroups(limit: 7, filter: {date_gt: \&quot;2026-03-10\&quot;}) { dimensions { date } sum { requests pageViews } } } } }&quot;
+  }&#x27; | jq &#x27;.data.viewer.zones[0].httpRequests1dGroups&#x27;
+```
+
+## Rate Limit
+
+| Endpoint | 限制 |
+|---------|-------|
+| 大部分的 API 呼叫 | 1200 requests / 5 分鐘 |
+| DNS 紀錄操作 | 1200 / 5 分鐘（與上面共用額度） |
+| 清 cache | 每天 1000 次 purge 呼叫 |
+| 建立 zone | 每分鐘 5 個 |
+
+**在腳本裡**：持續性的操作，呼叫之間加 `sleep 0.25`。要控制並行度就用 `p-limit` 或 `xargs -P 4`。
+
+## 產生腳本
+
+使用者描述需求後，在 `.jez/scripts/` 裡產生腳本，腳本要：
+- 從環境變數讀 API token（絕對不要寫死）
+- 處理列表操作的分頁
+- 包含錯誤檢查（每次呼叫後用 `jq &#x27;.success&#x27;`）
+- 呼叫之間加上 rate limit 的 sleep
+- 記錄它做了什麼
+- 盡可能支援 `--dry-run`
+
+簡單的操作用 `curl` + `jq`。複雜的邏輯（分頁迴圈、錯誤處理、CSV 處理）用 Python。較大的腳本想要型別安全，就用 TypeScript 搭配 `cloudflare` npm 套件。
+
+## API 參考
+
+Base URL：`https://api.cloudflare.com/client/v4/`
+
+完整文件：`https://developers.cloudflare.com/api/`
+
+API 遵循一致的模式：
+- `GET /zones`：列出
+- `POST /zones`：建立
+- `GET /zones/:id`：讀取
+- `PATCH /zones/:id`：更新
+- `DELETE /zones/:id`：刪除
+- `PUT /zones/:id/settings/:name`：更新設定
+
+每個回應都是 `{ success: bool, errors: [], messages: [], result: {} }`。
+
+## 參考檔案
+
+| 什麼時候 | 讀這個 |
+|------|------|
+| D1、R2、KV、Workers、Vectorize、Queues 的 API 用法 | [references/developer-platform-api.md](references/developer-platform-api.md) |</pre></section><section><h2>英文原文</h2><pre>---
+name: cloudflare-api
+description: &quot;Hit the Cloudflare REST API directly for operations that wrangler and MCP can&#x27;t handle well. Bulk DNS, custom hostnames, email routing, cache purge, WAF rules, redirect rules, zone settings, Worker routes, D1 cross-database queries, R2 bulk operations, KV bulk read/write, Vectorize queries, Queues, and fleet-wide resource audits. Produces curl commands or scripts. Triggers: &#x27;cloudflare api&#x27;, &#x27;bulk dns&#x27;, &#x27;custom hostname&#x27;, &#x27;email routing&#x27;, &#x27;cache purge&#x27;, &#x27;waf rule&#x27;, &#x27;d1 query&#x27;, &#x27;r2 bucket&#x27;, &#x27;kv bulk&#x27;, &#x27;vectorize query&#x27;, &#x27;audit resources&#x27;, &#x27;fleet operation&#x27;.&quot;
+compatibility: claude-code-only
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+
+# Cloudflare API
+
+Hit the Cloudflare REST API directly when wrangler CLI or MCP servers aren&#x27;t the right tool. For bulk operations, fleet-wide changes, and features that wrangler doesn&#x27;t expose.
+
+## When to Use This Instead of Wrangler or MCP
+
+| Use case | Wrangler | MCP | This skill |
+|----------|---------|-----|-----------|
+| Deploy a Worker | Yes | Yes | No |
+| Create a D1 database | Yes | Yes | No |
+| Bulk update 50 DNS records | Slow (one at a time) | Slow (one tool call each) | Yes — batch script |
+| Custom hostnames for white-label | No | Partial | Yes |
+| Email routing rules | No | Partial | Yes |
+| WAF/firewall rules | No | Yes but verbose | Yes — direct API |
+| Redirect rules in bulk | No | One at a time | Yes — batch script |
+| Zone settings across 20 zones | No | 20 separate calls | Yes — fleet script |
+| Cache purge by tag/prefix | No | Yes | Yes (when scripting) |
+| Worker route management | Limited | Yes | Yes (when bulk) |
+| Analytics/logs query | No | Partial | Yes — GraphQL |
+| D1 query/export across databases | One DB at a time | One DB at a time | Yes — cross-DB scripts |
+| R2 bulk object operations | No | One at a time | Yes — S3 API + batch |
+| KV bulk read/write/delete | One at a time | One at a time | Yes — bulk endpoints |
+| Vectorize query/delete | No | Via Worker only | Yes — direct API |
+| Queue message injection | No | Via Worker only | Yes — direct API |
+| Audit all resources in account | No | Tedious | Yes — inventory script |
+
+**Rule of thumb**: Single operations → MCP or wrangler. Bulk/fleet/scripted → API directly.
+
+## Auth Setup
+
+### API Token (recommended)
+
+Create a scoped token at: Dashboard → My Profile → API Tokens → Create Token
+
+```bash
+# Store it
+export CLOUDFLARE_API_TOKEN=&quot;your-token-here&quot;
+
+# Test it
+curl -s &quot;https://api.cloudflare.com/client/v4/user/tokens/verify&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.success&#x27;
+```
+
+**Token scopes**: Always use minimal permissions. Common presets:
+- &quot;Edit zone DNS&quot; — for DNS operations
+- &quot;Edit zone settings&quot; — for zone config changes
+- &quot;Edit Cloudflare Workers&quot; — for Worker route management
+- &quot;Read analytics&quot; — for GraphQL analytics
+
+### Account and Zone IDs
+
+```bash
+# List your zones (find zone IDs)
+curl -s &quot;https://api.cloudflare.com/client/v4/zones?per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {name, id}&#x27;
+
+# Get zone ID by domain name
+ZONE_ID=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones?name=example.com&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[0].id&#x27;)
+```
+
+Store IDs in environment or a config file — don&#x27;t hardcode them in scripts.
+
+## Workflows
+
+### Bulk DNS Operations
+
+**Add/update many records at once** (e.g. migrating a domain, setting up a new client):
+
+```bash
+# Pattern: read records from a file, create in batch
+while IFS=&#x27;,&#x27; read -r type name content proxied; do
+  curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{\&quot;type\&quot;:\&quot;$type\&quot;,\&quot;name\&quot;:\&quot;$name\&quot;,\&quot;content\&quot;:\&quot;$content\&quot;,\&quot;proxied\&quot;:$proxied,\&quot;ttl\&quot;:1}&quot; \
+    | jq &#x27;{name: .result.name, id: .result.id, success: .success}&#x27;
+  sleep 0.25  # Rate limit: 1200 req/5min
+done &lt; dns-records.csv
+```
+
+**Export all records from a zone** (backup or migration):
+
+```bash
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?per_page=100&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  | jq -r &#x27;.result[] | [.type, .name, .content, .proxied] | @csv&#x27; &gt; dns-export.csv
+```
+
+**Find and replace across records** (e.g. IP migration):
+
+```bash
+OLD_IP=&quot;203.0.113.1&quot;
+NEW_IP=&quot;198.51.100.1&quot;
+
+# Find records pointing to old IP
+RECORDS=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?content=$OLD_IP&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[].id&#x27;)
+
+# Update each one
+for RECORD_ID in $RECORDS; do
+  curl -s -X PATCH &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{\&quot;content\&quot;:\&quot;$NEW_IP\&quot;}&quot; | jq &#x27;.success&#x27;
+done
+```
+
+### Custom Hostnames (White-Label Client Domains)
+
+For SaaS apps where clients use their own domain (e.g. `app.clientdomain.com` → your Worker):
+
+```bash
+# Create custom hostname
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;hostname&quot;: &quot;app.clientdomain.com&quot;,
+    &quot;ssl&quot;: {
+      &quot;method&quot;: &quot;http&quot;,
+      &quot;type&quot;: &quot;dv&quot;,
+      &quot;settings&quot;: {
+        &quot;min_tls_version&quot;: &quot;1.2&quot;
+      }
+    }
+  }&#x27; | jq &#x27;{id: .result.id, status: .result.status, ssl_status: .result.ssl.status}&#x27;
+
+# List custom hostnames
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames?per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  | jq &#x27;.result[] | {hostname, status, ssl_status: .ssl.status}&#x27;
+
+# Check status (client needs to add CNAME)
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/custom_hostnames/$HOSTNAME_ID&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result.status&#x27;
+```
+
+**Client setup**: They add a CNAME: `app.clientdomain.com → your-worker.your-domain.com`
+
+### Email Routing Rules
+
+```bash
+# Enable email routing on zone
+curl -s -X PUT &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/enable&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot;
+
+# Create a routing rule (forward info@ to a real address)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;name&quot;: &quot;Forward info@&quot;,
+    &quot;enabled&quot;: true,
+    &quot;matchers&quot;: [{&quot;type&quot;: &quot;literal&quot;, &quot;field&quot;: &quot;to&quot;, &quot;value&quot;: &quot;info@example.com&quot;}],
+    &quot;actions&quot;: [{&quot;type&quot;: &quot;forward&quot;, &quot;value&quot;: [&quot;real-inbox@gmail.com&quot;]}]
+  }&#x27; | jq &#x27;.success&#x27;
+
+# Create catch-all rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;name&quot;: &quot;Catch-all&quot;,
+    &quot;enabled&quot;: true,
+    &quot;matchers&quot;: [{&quot;type&quot;: &quot;all&quot;}],
+    &quot;actions&quot;: [{&quot;type&quot;: &quot;forward&quot;, &quot;value&quot;: [&quot;catchall@company.com&quot;]}]
+  }&#x27; | jq &#x27;.success&#x27;
+
+# List rules
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/rules&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {name, enabled, matchers, actions}&#x27;
+```
+
+### Cache Purge
+
+```bash
+# Purge everything (nuclear option)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;purge_everything&quot;: true}&#x27;
+
+# Purge specific URLs
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;files&quot;: [&quot;https://example.com/styles.css&quot;, &quot;https://example.com/app.js&quot;]}&#x27;
+
+# Purge by cache tag (requires Enterprise or cache tag headers)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;tags&quot;: [&quot;product-123&quot;, &quot;homepage&quot;]}&#x27;
+
+# Purge by prefix
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;prefixes&quot;: [&quot;https://example.com/images/&quot;]}&#x27;
+```
+
+### Redirect Rules (Bulk)
+
+```bash
+# Create a redirect rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_request_dynamic_redirect/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [
+      {
+        &quot;expression&quot;: &quot;(http.request.uri.path eq \&quot;/old-page\&quot;)&quot;,
+        &quot;description&quot;: &quot;Redirect old-page to new-page&quot;,
+        &quot;action&quot;: &quot;redirect&quot;,
+        &quot;action_parameters&quot;: {
+          &quot;from_value&quot;: {
+            &quot;target_url&quot;: {&quot;value&quot;: &quot;https://example.com/new-page&quot;},
+            &quot;status_code&quot;: 301
+          }
+        }
+      }
+    ]
+  }&#x27;
+```
+
+**For bulk redirects** (301s from a CSV), generate the rules array programmatically:
+
+```python
+import json, csv
+
+rules = []
+with open(&#x27;redirects.csv&#x27;) as f:
+    for row in csv.reader(f):
+        old_path, new_url = row
+        rules.append({
+            &quot;expression&quot;: f&#x27;(http.request.uri.path eq &quot;{old_path}&quot;)&#x27;,
+            &quot;description&quot;: f&quot;Redirect {old_path}&quot;,
+            &quot;action&quot;: &quot;redirect&quot;,
+            &quot;action_parameters&quot;: {
+                &quot;from_value&quot;: {
+                    &quot;target_url&quot;: {&quot;value&quot;: new_url},
+                    &quot;status_code&quot;: 301
+                }
+            }
+        })
+print(json.dumps({&quot;rules&quot;: rules}, indent=2))
+```
+
+### Zone Settings (Fleet-Wide)
+
+Apply the same settings across multiple zones:
+
+```bash
+# Settings to apply
+SETTINGS=&#x27;{&quot;value&quot;:&quot;full&quot;}&#x27;  # SSL mode: full (strict)
+
+# Get all active zones
+ZONES=$(curl -s &quot;https://api.cloudflare.com/client/v4/zones?status=active&amp;per_page=50&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq -r &#x27;.result[].id&#x27;)
+
+# Apply to each zone
+for ZONE in $ZONES; do
+  curl -s -X PATCH &quot;https://api.cloudflare.com/client/v4/zones/$ZONE/settings/ssl&quot; \
+    -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;$SETTINGS&quot; | jq &quot;{zone: .result.id, success: .success}&quot;
+  sleep 0.25
+done
+```
+
+Common fleet settings:
+- `ssl` — &quot;full&quot; or &quot;strict&quot;
+- `min_tls_version` — &quot;1.2&quot;
+- `always_use_https` — &quot;on&quot;
+- `security_level` — &quot;medium&quot;
+- `browser_cache_ttl` — 14400
+
+### WAF / Firewall Rules
+
+```bash
+# Create a WAF custom rule (block by country)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_request_firewall_custom/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [{
+      &quot;expression&quot;: &quot;(ip.geoip.country in {\&quot;RU\&quot; \&quot;CN\&quot;})&quot;,
+      &quot;action&quot;: &quot;block&quot;,
+      &quot;description&quot;: &quot;Block traffic from RU and CN&quot;
+    }]
+  }&#x27;
+
+# Rate limiting rule
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_ratelimit/entrypoint&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;rules&quot;: [{
+      &quot;expression&quot;: &quot;(http.request.uri.path contains \&quot;/api/\&quot;)&quot;,
+      &quot;action&quot;: &quot;block&quot;,
+      &quot;ratelimit&quot;: {
+        &quot;characteristics&quot;: [&quot;ip.src&quot;],
+        &quot;period&quot;: 60,
+        &quot;requests_per_period&quot;: 100
+      },
+      &quot;description&quot;: &quot;Rate limit API to 100 req/min per IP&quot;
+    }]
+  }&#x27;
+```
+
+### Worker Routes
+
+```bash
+# List routes
+curl -s &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; | jq &#x27;.result[] | {pattern, id}&#x27;
+
+# Create route
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;pattern&quot;: &quot;api.example.com/*&quot;, &quot;script&quot;: &quot;my-worker&quot;}&#x27;
+
+# Delete route
+curl -s -X DELETE &quot;https://api.cloudflare.com/client/v4/zones/$ZONE_ID/workers/routes/$ROUTE_ID&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot;
+```
+
+### Analytics (GraphQL)
+
+```bash
+# Worker analytics (requests, errors, CPU time)
+curl -s -X POST &quot;https://api.cloudflare.com/client/v4/graphql&quot; \
+  -H &quot;Authorization: Bearer $CLOUDFLARE_API_TOKEN&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;query&quot;: &quot;{ viewer { zones(filter: {zoneTag: \&quot;&#x27;$ZONE_ID&#x27;\&quot;}) { httpRequests1dGroups(limit: 7, filter: {date_gt: \&quot;2026-03-10\&quot;}) { dimensions { date } sum { requests pageViews } } } } }&quot;
+  }&#x27; | jq &#x27;.data.viewer.zones[0].httpRequests1dGroups&#x27;
+```
+
+## Rate Limits
+
+| Endpoint | Limit |
+|---------|-------|
+| Most API calls | 1200 requests / 5 minutes |
+| DNS record operations | 1200 / 5 min (shared with above) |
+| Cache purge | 1000 purge calls / day |
+| Zone creation | 5 per minute |
+
+**In scripts**: Add `sleep 0.25` between calls for sustained operations. Use `p-limit` or `xargs -P 4` for controlled parallelism.
+
+## Script Generation
+
+When the user describes what they need, generate a script in `.jez/scripts/` that:
+- Reads API token from environment (never hardcode)
+- Handles pagination for list operations
+- Includes error checking (`jq &#x27;.success&#x27;` after each call)
+- Adds rate limit sleep between calls
+- Logs what it does
+- Supports `--dry-run` where possible
+
+Prefer `curl` + `jq` for simple operations. Use Python for complex logic (pagination loops, error handling, CSV processing). Use TypeScript with the `cloudflare` npm package for type safety in larger scripts.
+
+## API Reference
+
+Base URL: `https://api.cloudflare.com/client/v4/`
+
+Full docs: `https://developers.cloudflare.com/api/`
+
+The API follows a consistent pattern:
+- `GET /zones` — list
+- `POST /zones` — create
+- `GET /zones/:id` — read
+- `PATCH /zones/:id` — update
+- `DELETE /zones/:id` — delete
+- `PUT /zones/:id/settings/:name` — update setting
+
+Every response has `{ success: bool, errors: [], messages: [], result: {} }`.
+
+## Reference Files
+
+| When | Read |
+|------|------|
+| D1, R2, KV, Workers, Vectorize, Queues API patterns | [references/developer-platform-api.md](references/developer-platform-api.md) |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

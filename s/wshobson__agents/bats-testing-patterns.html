@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bats-testing-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Bats 為 shell script 寫完整的單元測試，含 fixture 和 CI 整合">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>bats-testing-patterns</h1>
+<p class="meta">wshobson ｜ 測試與驗證 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/shell-scripting/skills/bats-testing-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Bats 為 shell script 寫完整的單元測試，含 fixture 和 CI 整合</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: bats-testing-patterns
+description: 掌握 Bash Automated Testing System（Bats），對 shell script 做完整的測試。在為 shell script、CI/CD pipeline 寫測試，或需要對 shell 工具做測試驅動開發時使用。
+---
+
+# Bats 測試模式
+
+用 Bats（Bash Automated Testing System）為 shell script 撰寫完整單元測試的完整指引，包括測試模式、fixture，以及可上線等級的 shell 測試最佳實務。
+
+## 何時使用這個 Skill
+
+- 為 shell script 撰寫單元測試
+- 對 script 實作測試驅動開發（TDD）
+- 在 CI/CD pipeline 裡架設自動化測試
+- 測試邊界情況和錯誤條件
+- 驗證在不同 shell 環境下的行為
+- 為 script 建構好維護的測試套件
+- 為複雜的測試情境建立 fixture
+- 測試多種 shell 方言（bash、sh、dash）
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`。上面的導覽層不夠用時，再讀那個檔案。
+
+## 測試錯誤條件
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Function fails with missing file&quot; {
+    run my_function &quot;/nonexistent/file.txt&quot;
+    [ &quot;$status&quot; -ne 0 ]
+    [[ &quot;$output&quot; == *&quot;not found&quot;* ]]
+}
+
+@test &quot;Function fails with invalid input&quot; {
+    run my_function &quot;&quot;
+    [ &quot;$status&quot; -ne 0 ]
+}
+
+@test &quot;Function fails with permission denied&quot; {
+    touch &quot;$TMPDIR/readonly.txt&quot;
+    chmod 000 &quot;$TMPDIR/readonly.txt&quot;
+    run my_function &quot;$TMPDIR/readonly.txt&quot;
+    [ &quot;$status&quot; -ne 0 ]
+    chmod 644 &quot;$TMPDIR/readonly.txt&quot;  # Cleanup
+}
+
+@test &quot;Function provides helpful error message&quot; {
+    run my_function --invalid-option
+    [ &quot;$status&quot; -ne 0 ]
+    [[ &quot;$output&quot; == *&quot;Usage:&quot;* ]]
+}
+```
+
+### 測試相依套件
+
+```bash
+#!/usr/bin/env bats
+
+setup() {
+    # Check for required tools
+    if ! command -v jq &amp;&gt;/dev/null; then
+        skip &quot;jq is not installed&quot;
+    fi
+
+    export SCRIPT=&quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot;
+}
+
+@test &quot;JSON parsing works&quot; {
+    skip_if ! command -v jq &amp;&gt;/dev/null
+    run my_json_parser &#x27;{&quot;key&quot;: &quot;value&quot;}&#x27;
+    [ &quot;$status&quot; -eq 0 ]
+}
+```
+
+### 測試 Shell 相容性
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Script works in bash&quot; {
+    bash &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+}
+
+@test &quot;Script works in sh (POSIX)&quot; {
+    sh &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+}
+
+@test &quot;Script works in dash&quot; {
+    if command -v dash &amp;&gt;/dev/null; then
+        dash &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+    else
+        skip &quot;dash not installed&quot;
+    fi
+}
+```
+
+### 平行執行
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Multiple independent operations&quot; {
+    run bash -c &#x27;for i in {1..10}; do
+        my_operation &quot;$i&quot; &amp;
+    done
+    wait&#x27;
+    [ &quot;$status&quot; -eq 0 ]
+}
+
+@test &quot;Concurrent file operations&quot; {
+    for i in {1..5}; do
+        my_function &quot;$TMPDIR/file$i&quot; &amp;
+    done
+    wait
+    [ -f &quot;$TMPDIR/file1&quot; ]
+    [ -f &quot;$TMPDIR/file5&quot; ]
+}
+```
+
+## 測試輔助模式
+
+### test_helper.sh
+
+```bash
+#!/usr/bin/env bash
+
+# Source script under test
+export SCRIPT_DIR=&quot;${BATS_TEST_DIRNAME%/*}/bin&quot;
+
+# Common test utilities
+assert_file_exists() {
+    if [ ! -f &quot;$1&quot; ]; then
+        echo &quot;Expected file to exist: $1&quot;
+        return 1
+    fi
+}
+
+assert_file_equals() {
+    local file=&quot;$1&quot;
+    local expected=&quot;$2&quot;
+
+    if [ ! -f &quot;$file&quot; ]; then
+        echo &quot;File does not exist: $file&quot;
+        return 1
+    fi
+
+    local actual=$(cat &quot;$file&quot;)
+    if [ &quot;$actual&quot; != &quot;$expected&quot; ]; then
+        echo &quot;File contents do not match&quot;
+        echo &quot;Expected: $expected&quot;
+        echo &quot;Actual: $actual&quot;
+        return 1
+    fi
+}
+
+# Create temporary test directory
+setup_test_dir() {
+    export TEST_DIR=$(mktemp -d)
+}
+
+cleanup_test_dir() {
+    rm -rf &quot;$TEST_DIR&quot;
+}
+```
+
+## 與 CI/CD 整合
+
+### GitHub Actions Workflow
+
+```yaml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Bats
+        run: |
+          npm install --global bats
+
+      - name: Run Tests
+        run: |
+          bats tests/*.bats
+
+      - name: Run Tests with Tap Reporter
+        run: |
+          bats tests/*.bats --tap | tee test_output.tap
+```
+
+### Makefile 整合
+
+```makefile
+.PHONY: test test-verbose test-tap
+
+test:
+	bats tests/*.bats
+
+test-verbose:
+	bats tests/*.bats --verbose
+
+test-tap:
+	bats tests/*.bats --tap
+
+test-parallel:
+	bats tests/*.bats --parallel 4
+
+coverage: test
+	# Optional: Generate coverage reports
+```
+
+## 最佳實務
+
+1. **一個測試只測一件事** - 單一職責原則
+2. **用描述性的測試名稱** - 清楚說明在測什麼
+3. **測試後要清理** - 一律在 teardown 裡移除暫存檔
+4. **成功和失敗的路徑都要測** - 不要只測 happy path
+5. **Mock 外部相依** - 隔離被測的單元
+6. **複雜的資料用 fixture** - 讓測試更好讀
+7. **在 CI/CD 裡跑測試** - 及早抓到 regression
+8. **跨 shell 方言測試** - 確保可攜性
+9. **讓測試保持快速** - 可以的話平行執行
+10. **記錄複雜的測試設定** - 說明不尋常的寫法</pre></section><section><h2>英文原文</h2><pre>---
+name: bats-testing-patterns
+description: Master Bash Automated Testing System (Bats) for comprehensive shell script testing. Use when writing tests for shell scripts, CI/CD pipelines, or requiring test-driven development of shell utilities.
+---
+
+# Bats Testing Patterns
+
+Comprehensive guidance for writing comprehensive unit tests for shell scripts using Bats (Bash Automated Testing System), including test patterns, fixtures, and best practices for production-grade shell testing.
+
+## When to Use This Skill
+
+- Writing unit tests for shell scripts
+- Implementing test-driven development (TDD) for scripts
+- Setting up automated testing in CI/CD pipelines
+- Testing edge cases and error conditions
+- Validating behavior across different shell environments
+- Building maintainable test suites for scripts
+- Creating fixtures for complex test scenarios
+- Testing multiple shell dialects (bash, sh, dash)
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Testing Error Conditions
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Function fails with missing file&quot; {
+    run my_function &quot;/nonexistent/file.txt&quot;
+    [ &quot;$status&quot; -ne 0 ]
+    [[ &quot;$output&quot; == *&quot;not found&quot;* ]]
+}
+
+@test &quot;Function fails with invalid input&quot; {
+    run my_function &quot;&quot;
+    [ &quot;$status&quot; -ne 0 ]
+}
+
+@test &quot;Function fails with permission denied&quot; {
+    touch &quot;$TMPDIR/readonly.txt&quot;
+    chmod 000 &quot;$TMPDIR/readonly.txt&quot;
+    run my_function &quot;$TMPDIR/readonly.txt&quot;
+    [ &quot;$status&quot; -ne 0 ]
+    chmod 644 &quot;$TMPDIR/readonly.txt&quot;  # Cleanup
+}
+
+@test &quot;Function provides helpful error message&quot; {
+    run my_function --invalid-option
+    [ &quot;$status&quot; -ne 0 ]
+    [[ &quot;$output&quot; == *&quot;Usage:&quot;* ]]
+}
+```
+
+### Testing with Dependencies
+
+```bash
+#!/usr/bin/env bats
+
+setup() {
+    # Check for required tools
+    if ! command -v jq &amp;&gt;/dev/null; then
+        skip &quot;jq is not installed&quot;
+    fi
+
+    export SCRIPT=&quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot;
+}
+
+@test &quot;JSON parsing works&quot; {
+    skip_if ! command -v jq &amp;&gt;/dev/null
+    run my_json_parser &#x27;{&quot;key&quot;: &quot;value&quot;}&#x27;
+    [ &quot;$status&quot; -eq 0 ]
+}
+```
+
+### Testing Shell Compatibility
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Script works in bash&quot; {
+    bash &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+}
+
+@test &quot;Script works in sh (POSIX)&quot; {
+    sh &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+}
+
+@test &quot;Script works in dash&quot; {
+    if command -v dash &amp;&gt;/dev/null; then
+        dash &quot;${BATS_TEST_DIRNAME}/../bin/script.sh&quot; arg1
+    else
+        skip &quot;dash not installed&quot;
+    fi
+}
+```
+
+### Parallel Execution
+
+```bash
+#!/usr/bin/env bats
+
+@test &quot;Multiple independent operations&quot; {
+    run bash -c &#x27;for i in {1..10}; do
+        my_operation &quot;$i&quot; &amp;
+    done
+    wait&#x27;
+    [ &quot;$status&quot; -eq 0 ]
+}
+
+@test &quot;Concurrent file operations&quot; {
+    for i in {1..5}; do
+        my_function &quot;$TMPDIR/file$i&quot; &amp;
+    done
+    wait
+    [ -f &quot;$TMPDIR/file1&quot; ]
+    [ -f &quot;$TMPDIR/file5&quot; ]
+}
+```
+
+## Test Helper Pattern
+
+### test_helper.sh
+
+```bash
+#!/usr/bin/env bash
+
+# Source script under test
+export SCRIPT_DIR=&quot;${BATS_TEST_DIRNAME%/*}/bin&quot;
+
+# Common test utilities
+assert_file_exists() {
+    if [ ! -f &quot;$1&quot; ]; then
+        echo &quot;Expected file to exist: $1&quot;
+        return 1
+    fi
+}
+
+assert_file_equals() {
+    local file=&quot;$1&quot;
+    local expected=&quot;$2&quot;
+
+    if [ ! -f &quot;$file&quot; ]; then
+        echo &quot;File does not exist: $file&quot;
+        return 1
+    fi
+
+    local actual=$(cat &quot;$file&quot;)
+    if [ &quot;$actual&quot; != &quot;$expected&quot; ]; then
+        echo &quot;File contents do not match&quot;
+        echo &quot;Expected: $expected&quot;
+        echo &quot;Actual: $actual&quot;
+        return 1
+    fi
+}
+
+# Create temporary test directory
+setup_test_dir() {
+    export TEST_DIR=$(mktemp -d)
+}
+
+cleanup_test_dir() {
+    rm -rf &quot;$TEST_DIR&quot;
+}
+```
+
+## Integration with CI/CD
+
+### GitHub Actions Workflow
+
+```yaml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Bats
+        run: |
+          npm install --global bats
+
+      - name: Run Tests
+        run: |
+          bats tests/*.bats
+
+      - name: Run Tests with Tap Reporter
+        run: |
+          bats tests/*.bats --tap | tee test_output.tap
+```
+
+### Makefile Integration
+
+```makefile
+.PHONY: test test-verbose test-tap
+
+test:
+	bats tests/*.bats
+
+test-verbose:
+	bats tests/*.bats --verbose
+
+test-tap:
+	bats tests/*.bats --tap
+
+test-parallel:
+	bats tests/*.bats --parallel 4
+
+coverage: test
+	# Optional: Generate coverage reports
+```
+
+## Best Practices
+
+1. **Test one thing per test** - Single responsibility principle
+2. **Use descriptive test names** - Clearly states what is being tested
+3. **Clean up after tests** - Always remove temporary files in teardown
+4. **Test both success and failure paths** - Don&#x27;t just test happy path
+5. **Mock external dependencies** - Isolate unit under test
+6. **Use fixtures for complex data** - Makes tests more readable
+7. **Run tests in CI/CD** - Catch regressions early
+8. **Test across shell dialects** - Ensure portability
+9. **Keep tests fast** - Run in parallel when possible
+10. **Document complex test setup** - Explain unusual patterns</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

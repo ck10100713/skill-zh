@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-resource-lookup｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Azure Resource Graph 列出、尋找跨訂閱的 Azure 資源與孤兒資源">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-resource-lookup</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-skills/skills/azure-resource-lookup/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Azure Resource Graph 列出、尋找跨訂閱的 Azure 資源與孤兒資源</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-resource-lookup
+description: &quot;列出、尋找並顯示跨 subscription 或 resource group 的 Azure 資源。處理像是 \&quot;list the websites in my subscription\&quot;、\&quot;list my web apps\&quot;、\&quot;show my app services\&quot;、\&quot;list virtual machines\&quot;、\&quot;list my VMs\&quot;、\&quot;show storage accounts\&quot;、\&quot;find container apps\&quot;、\&quot;what resources do I have\&quot; 這類 prompt。USE FOR: list websites, list web apps, list app services, show websites in subscription, resource inventory, find resources by tag, tag analysis, orphaned resource discovery (not for cost analysis), unattached disks, count resources by type, cross-subscription lookup, and Azure Resource Graph queries. DO NOT USE FOR: 部署／變更資源（改用 azure-deploy）、成本最佳化（改用選配 azure-cost plugin 裡的 cost-optimization）、非 Azure 的雲。&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.3&quot;
+---
+
+# Azure 資源查詢
+
+列出、尋找並探索跨 subscription 與 resource group 的任何類型 Azure 資源。當專屬的 MCP 工具涵蓋不到該資源類型時，用 Azure Resource Graph (ARG) 做快速的跨範圍查詢。
+
+## 何時使用這個 Skill
+
+使用者想做以下事情時使用這個 skill：
+- **列出任何類型的資源**（VM、web app、storage account、container app、資料庫等）
+- **顯示**特定 subscription 或 resource group 內的資源
+- 查詢**跨多個 subscription** 或多種資源類型的資源
+- 找出**孤兒資源**（沒掛載的磁碟、沒用的 NIC、閒置的 IP）
+- 找出**缺少必要 tag** 或設定的資源
+- 取得橫跨多種類型的**資源清單**
+- 找出處於**特定狀態**的資源（不健康、佈建失敗、已停止）
+- 回答「**我有哪些資源？**」或「**顯示我的 Azure 資源**」
+- **列出 web app、website 或 App Service**
+
+&gt; ⚠️ **警告：**App Service / Web Apps 沒有專屬的 MCP `list` 指令。像 &quot;list websites&quot;、&quot;list web apps&quot; 或 &quot;list app services&quot; 這類 prompt，**一定要**走這個 skill，用 Azure Resource Graph 處理。
+
+&gt; 💡 **提示：**單一資源類型的查詢，先確認有沒有專屬的 MCP 工具可以處理（見下方的路由表）。沒有的話，就用 Azure Resource Graph。
+
+## 快速參考
+
+| 屬性 | 值 |
+|----------|-------|
+| **查詢語言** | KQL（Kusto Query Language 的子集） |
+| **CLI 指令** | `az graph query -q &quot;&lt;KQL&gt;&quot; -o table` |
+| **Extension** | `az extension add --name resource-graph` |
+| **MCP 工具** | `extension_cli_generate`，intent 為 `az graph query` |
+| **最適合** | 跨 subscription 查詢、孤兒資源、tag 稽核 |
+
+## MCP 工具
+
+| 工具 | 用途 | 何時使用 |
+|------|---------|-------------|
+| `extension_cli_generate` | 產生 `az graph query` 指令 | 主要工具：依使用者意圖產生 ARG 查詢 |
+| `mcp_azure_mcp_subscription_list` | 列出可用的 subscription | 查詢前先探索 subscription 範圍 |
+| `mcp_azure_mcp_group_list` | 列出 resource group | 縮小查詢範圍 |
+
+## 流程
+
+### Step 1：確認有沒有專屬的 MCP 工具
+
+單一資源類型的查詢，先確認有沒有專屬的 MCP 工具可以處理：
+
+| 資源類型 | MCP 工具 | 涵蓋範圍 |
+|---|---|---|
+| Virtual Machines | `compute` | ✅ 完整：list、詳細資料、規格大小 |
+| Storage Accounts | `storage` | ✅ 完整：帳號、blob、table |
+| Cosmos DB | `cosmos` | ✅ 完整：帳號、資料庫、查詢 |
+| Key Vault | `keyvault` | ⚠️ 部分：只有 secret/key，不能列出 vault |
+| SQL Databases | `sql` | ⚠️ 部分：需要 resource group 名稱 |
+| Container Registries | `acr` | ✅ 完整：列出 registry |
+| Kubernetes (AKS) | `aks` | ✅ 完整：cluster、node pool |
+| App Service / Web Apps | `appservice` | ❌ 沒有 list 指令，改用 ARG |
+| Container Apps | — | ❌ 沒有 MCP 工具，改用 ARG |
+| Event Hubs | `eventhubs` | ✅ 完整：namespace、hub |
+| Service Bus | `servicebus` | ✅ 完整：queue、topic |
+
+如果有專屬工具且涵蓋完整，就用它。否則進到 Step 2。
+
+### Step 2：產生 ARG 查詢
+
+用 `extension_cli_generate` 來建立 `az graph query` 指令：
+
+```yaml
+mcp_azure_mcp_extension_cli_generate
+  intent: &quot;query Azure Resource Graph to &lt;user&#x27;s request&gt;&quot;
+  cli-type: &quot;az&quot;
+```
+
+常見的 KQL 寫法請看 [Azure Resource Graph Query Patterns](references/azure-resource-graph.md)。
+
+### Step 3：執行並整理結果
+
+執行產生的指令。用 `--query`（JMESPath）來調整輸出的形狀：
+
+```bash
+az graph query -q &quot;&lt;KQL&gt;&quot; --query &quot;data[].{name:name, type:type, rg:resourceGroup}&quot; -o table
+```
+
+用 `--first N` 限制結果數量。用 `--subscriptions` 限定範圍。
+
+## 錯誤處理
+
+| 錯誤 | 原因 | 修復 |
+|-------|-------|-----|
+| `resource-graph extension not found` | 沒安裝 extension | `az extension add --name resource-graph` |
+| `AuthorizationFailed` | 沒有 subscription 的讀取權限 | 檢查 RBAC，需要 Reader 角色 |
+| 查詢出現 `BadRequest` | KQL 語法無效 | 確認資料表／欄位名稱；用 `=~` 做不分大小寫的類型比對 |
+| 結果是空的 | 沒有符合的資源，或範圍錯誤 | 檢查 `--subscriptions` 旗標；確認資源類型拼寫 |
+
+## 限制
+
+- ✅ **一律**用 `=~` 做不分大小寫的類型比對（類型都是小寫）
+- ✅ **一律**用 `--subscriptions` 或 `--first` 限定範圍，尤其是大型 tenant
+- ✅ **優先**用專屬的 MCP 工具處理單一資源類型的查詢
+- ❌ **絕對不要**用 ARG 做即時監控（資料有些許延遲）
+- ❌ **絕對不要**透過 ARG 嘗試做變更（它是唯讀的）</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-resource-lookup
+description: &quot;List, find, and show Azure resources across subscriptions or resource groups. Handles prompts like \&quot;list the websites in my subscription\&quot;, \&quot;list my web apps\&quot;, \&quot;show my app services\&quot;, \&quot;list virtual machines\&quot;, \&quot;list my VMs\&quot;, \&quot;show storage accounts\&quot;, \&quot;find container apps\&quot;, and \&quot;what resources do I have\&quot;. USE FOR: list websites, list web apps, list app services, show websites in subscription, resource inventory, find resources by tag, tag analysis, orphaned resource discovery (not for cost analysis), unattached disks, count resources by type, cross-subscription lookup, and Azure Resource Graph queries. DO NOT USE FOR: deploying/changing resources (use azure-deploy), cost optimization (use cost-optimization from the optional azure-cost plugin), or non-Azure clouds.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.3&quot;
+---
+
+# Azure Resource Lookup
+
+List, find, and discover Azure resources of any type across subscriptions and resource groups. Use Azure Resource Graph (ARG) for fast, cross-cutting queries when dedicated MCP tools don&#x27;t cover the resource type.
+
+## When to Use This Skill
+
+Use this skill when the user wants to:
+- **List resources** of any type (VMs, web apps, storage accounts, container apps, databases, etc.)
+- **Show resources** in a specific subscription or resource group
+- Query resources **across multiple subscriptions** or resource types
+- Find **orphaned resources** (unattached disks, unused NICs, idle IPs)
+- Discover resources **missing required tags** or configurations
+- Get a **resource inventory** spanning multiple types
+- Find resources in a **specific state** (unhealthy, failed provisioning, stopped)
+- Answer &quot;**what resources do I have?**&quot; or &quot;**show me my Azure resources**&quot;
+- **List web apps, websites, or App Services**
+
+&gt; ⚠️ **Warning:** App Service / Web Apps have no dedicated MCP `list` command. Prompts like &quot;list websites&quot;, &quot;list web apps&quot;, or &quot;list app services&quot; **must** route through this skill to use Azure Resource Graph.
+
+&gt; 💡 **Tip:** For single-resource-type queries, first check if a dedicated MCP tool can handle it (see routing table below). If none exists, use Azure Resource Graph.
+
+## Quick Reference
+
+| Property | Value |
+|----------|-------|
+| **Query Language** | KQL (Kusto Query Language subset) |
+| **CLI Command** | `az graph query -q &quot;&lt;KQL&gt;&quot; -o table` |
+| **Extension** | `az extension add --name resource-graph` |
+| **MCP Tool** | `extension_cli_generate` with intent for `az graph query` |
+| **Best For** | Cross-subscription queries, orphaned resources, tag audits |
+
+## MCP Tools
+
+| Tool | Purpose | When to Use |
+|------|---------|-------------|
+| `extension_cli_generate` | Generate `az graph query` commands | Primary tool — generate ARG queries from user intent |
+| `mcp_azure_mcp_subscription_list` | List available subscriptions | Discover subscription scope before querying |
+| `mcp_azure_mcp_group_list` | List resource groups | Narrow query scope |
+
+## Workflow
+
+### Step 1: Check for a Dedicated MCP Tool
+
+For single-resource-type queries, check if a dedicated MCP tool can handle it:
+
+| Resource Type | MCP Tool | Coverage |
+|---|---|---|
+| Virtual Machines | `compute` | ✅ Full — list, details, sizes |
+| Storage Accounts | `storage` | ✅ Full — accounts, blobs, tables |
+| Cosmos DB | `cosmos` | ✅ Full — accounts, databases, queries |
+| Key Vault | `keyvault` | ⚠️ Partial — secrets/keys only, no vault listing |
+| SQL Databases | `sql` | ⚠️ Partial — requires resource group name |
+| Container Registries | `acr` | ✅ Full — list registries |
+| Kubernetes (AKS) | `aks` | ✅ Full — clusters, node pools |
+| App Service / Web Apps | `appservice` | ❌ No list command — use ARG |
+| Container Apps | — | ❌ No MCP tool — use ARG |
+| Event Hubs | `eventhubs` | ✅ Full — namespaces, hubs |
+| Service Bus | `servicebus` | ✅ Full — queues, topics |
+
+If a dedicated tool is available with full coverage, use it. Otherwise proceed to Step 2.
+
+### Step 2: Generate the ARG Query
+
+Use `extension_cli_generate` to build the `az graph query` command:
+
+```yaml
+mcp_azure_mcp_extension_cli_generate
+  intent: &quot;query Azure Resource Graph to &lt;user&#x27;s request&gt;&quot;
+  cli-type: &quot;az&quot;
+```
+
+See [Azure Resource Graph Query Patterns](references/azure-resource-graph.md) for common KQL patterns.
+
+### Step 3: Execute and Format Results
+
+Run the generated command. Use `--query` (JMESPath) to shape output:
+
+```bash
+az graph query -q &quot;&lt;KQL&gt;&quot; --query &quot;data[].{name:name, type:type, rg:resourceGroup}&quot; -o table
+```
+
+Use `--first N` to limit results. Use `--subscriptions` to scope.
+
+## Error Handling
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `resource-graph extension not found` | Extension not installed | `az extension add --name resource-graph` |
+| `AuthorizationFailed` | No read access to subscription | Check RBAC — need Reader role |
+| `BadRequest` on query | Invalid KQL syntax | Verify table/column names; use `=~` for case-insensitive type matching |
+| Empty results | No matching resources or wrong scope | Check `--subscriptions` flag; verify resource type spelling |
+
+## Constraints
+
+- ✅ **Always** use `=~` for case-insensitive type matching (types are lowercase)
+- ✅ **Always** scope queries with `--subscriptions` or `--first` for large tenants
+- ✅ **Prefer** dedicated MCP tools for single-resource-type queries
+- ❌ **Never** use ARG for real-time monitoring (data has slight delay)
+- ❌ **Never** attempt mutations through ARG (read-only)</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>elevenlabs-agents｜Skill 寫法圖鑑</title>
+<meta name="description" content="在 ElevenLabs 平台建構對話式語音 agent，含工具、知識庫、SDK 整合與部署">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>elevenlabs-agents</h1>
+<p class="meta">jezweb ｜ Agent 與工作流 ｜ <a href="https://github.com/jezweb/claude-skills/blob/main/plugins/integrations/skills/elevenlabs-agents/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">在 ElevenLabs 平台建構對話式語音 agent，含工具、知識庫、SDK 整合與部署</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: elevenlabs-agents
+description: &quot;在 ElevenLabs 平台上建構對話式 AI 語音 agent。設定 agent + 工具 + 知識庫、整合 SDK（React / React Native / Swift / JS / 伺服器端）、測試、部署。只要使用者提到 ElevenLabs、建構語音 agent、AI 電話系統、AI 櫃台接待、對話式 AI，或排查已棄用的 @11labs 套件、webhook 錯誤、CSP 違規、localhost allowlist 或工具解析錯誤，就使用。&quot;
+compatibility: claude-code-only
+---
+
+# ElevenLabs Agent Builder
+
+建構可上線的對話式 AI 語音 agent。產出一個設定好工具、知識庫和 SDK 整合的 agent。
+
+## 套件
+
+```bash
+npm install @elevenlabs/react           # React SDK
+npm install @elevenlabs/client          # JavaScript SDK (browser + server)
+npm install @elevenlabs/react-native    # React Native SDK
+npm install @elevenlabs/elevenlabs-js   # Full API (server only)
+npm install -g @elevenlabs/agents-cli   # CLI (&quot;Agents as Code&quot;)
+```
+
+**已棄用：**`@11labs/react`、`@11labs/client`，如果有裝就解除安裝。
+
+**僅限伺服器端的警告：**`@elevenlabs/elevenlabs-js` 用到 Node.js 的 `child_process`，在瀏覽器裡無法運作。瀏覽器環境用 `@elevenlabs/client`，或自己架一台 proxy 伺服器。
+
+## 工作流程
+
+### Step 1：透過 Dashboard 或 CLI 建立 Agent
+
+**Dashboard：** https://elevenlabs.io/app/conversational-ai -&gt; Create Agent
+
+**CLI（Agents as Code）：**
+```bash
+elevenlabs agents init
+elevenlabs agents add &quot;Support Bot&quot; --template customer-service
+# Edit agent_configs/support-bot.json
+elevenlabs agents push --env dev
+```
+
+範本：`default`、`minimal`、`voice-only`、`text-only`、`customer-service`、`assistant`。
+
+設定項目：
+- **聲音**：從 5000 多種聲音中選，或複製聲音
+- **LLM**：GPT、Claude、Gemini 或自訂
+- **System prompt**：使用下面的 6 要素框架
+- **第一句話**：對話開始時 agent 說的話
+
+### Step 2：寫 System Prompt
+
+用 6 要素框架寫出有效的 agent prompt：
+
+**1. Personality**：agent 是誰：
+```
+You are [NAME], a [ROLE] at [COMPANY].
+You have [EXPERIENCE]. Your traits: [LIST TRAITS].
+```
+
+**2. Environment**：溝通的脈絡：
+```
+You&#x27;re communicating via [phone/chat/video].
+Consider [environmental factors]. Adapt to [context].
+```
+
+**3. Tone**：說話模式和正式程度：
+```
+Tone: Professional yet warm. Use contractions for natural speech.
+Avoid jargon. Keep responses to 2-3 sentences. Ask one question at a time.
+```
+
+**4. Goal**：目標和成功標準：
+```
+Primary Goal: Resolve customer issues on the first call.
+Success: Customer verbally confirms issue is resolved.
+```
+
+**5. Guardrails**：界線和倫理：
+```
+Never: provide medical/legal/financial advice, share confidential info.
+Always: verify identity before account access, document interactions.
+Escalation: customer requests manager, issue beyond knowledge base.
+```
+
+**6. Tools**：可用的函式，以及什麼時候用：
+```
+1. lookup_order(order_id) -- Use when customer mentions an order.
+2. transfer_to_supervisor() -- Use when issue requires manager approval.
+Always explain what you&#x27;re doing before calling a tool.
+```
+
+### Step 3：加入工具
+
+**用戶端工具（在瀏覽器執行）：**
+
+```typescript
+const clientTools = {
+  updateCart: {
+    description: &quot;Add or remove items from the shopping cart&quot;,
+    parameters: z.object({
+      action: z.enum([&#x27;add&#x27;, &#x27;remove&#x27;]),
+      item: z.string(),
+      quantity: z.number().min(1)
+    }),
+    handler: async ({ action, item, quantity }) =&gt; {
+      const cart = getCart();
+      action === &#x27;add&#x27; ? cart.add(item, quantity) : cart.remove(item, quantity);
+      return { success: true, total: cart.total, items: cart.items.length };
+    }
+  },
+  navigate: {
+    description: &quot;Navigate user to a different page&quot;,
+    parameters: z.object({ url: z.string().url() }),
+    handler: async ({ url }) =&gt; { window.location.href = url; return { success: true }; }
+  }
+};
+```
+
+**伺服器端工具（webhook）：**
+
+```json
+{
+  &quot;name&quot;: &quot;get_weather&quot;,
+  &quot;description&quot;: &quot;Fetch current weather for a city&quot;,
+  &quot;url&quot;: &quot;https://api.weather.com/v1/current&quot;,
+  &quot;method&quot;: &quot;GET&quot;,
+  &quot;parameters&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;city&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;City name&quot; }
+    },
+    &quot;required&quot;: [&quot;city&quot;]
+  },
+  &quot;headers&quot;: {
+    &quot;Authorization&quot;: &quot;Bearer {{secret__weather_api_key}}&quot;
+  }
+}
+```
+
+webhook header 裡的 API key 用 `{{secret__key_name}}`，絕對不要寫死。
+
+**MCP 工具：關鍵的相容性注意事項：**
+
+ElevenLabs 把它的 MCP 整合標示為「Streamable HTTP」，但**不支援**真正的 MCP 2025-03-26 Streamable HTTP 規格（SSE 回應）。ElevenLabs 要的是：
+
+- 純 JSON 回應（`application/json`），不是 SSE（`text/event-stream`）
+- 協定版本 `2024-11-05`，不是 `2025-03-26`
+- 透過 HTTP 傳送的簡單 JSON-RPC，直接回傳 JSON
+
+**不能用**的東西：
+- 官方 MCP SDK 的 `createMcpHandler`（回傳 SSE）
+- Cloudflare Agents SDK 的 `McpServer.serve()`（回傳 SSE）
+- 任何回傳 `Content-Type: text/event-stream` 的伺服器
+
+適用於 ElevenLabs 的 MCP 伺服器寫法：
+
+```typescript
+import { Hono } from &#x27;hono&#x27;;
+import { cors } from &#x27;hono/cors&#x27;;
+
+const tools = [{
+  name: &quot;my_tool&quot;,
+  description: &quot;Tool description&quot;,
+  inputSchema: {
+    type: &quot;object&quot;,
+    properties: { param1: { type: &quot;string&quot;, description: &quot;Description&quot; } },
+    required: [&quot;param1&quot;]
+  }
+}];
+
+async function handleMCPRequest(request, env) {
+  const { id, method, params } = request;
+  switch (method) {
+    case &#x27;initialize&#x27;:
+      return {
+        jsonrpc: &#x27;2.0&#x27;, id,
+        result: {
+          protocolVersion: &#x27;2024-11-05&#x27;,  // MUST be 2024-11-05
+          serverInfo: { name: &#x27;my-mcp&#x27;, version: &#x27;1.0.0&#x27; },
+          capabilities: { tools: {} }
+        }
+      };
+    case &#x27;tools/list&#x27;:
+      return { jsonrpc: &#x27;2.0&#x27;, id, result: { tools } };
+    case &#x27;tools/call&#x27;:
+      const result = await handleTool(params.name, params.arguments, env);
+      return { jsonrpc: &#x27;2.0&#x27;, id, result };
+    default:
+      return { jsonrpc: &#x27;2.0&#x27;, id, error: { code: -32601, message: `Unknown: ${method}` } };
+  }
+}
+
+const app = new Hono();
+app.use(&#x27;/*&#x27;, cors({ origin: &#x27;*&#x27;, allowMethods: [&#x27;GET&#x27;, &#x27;POST&#x27;, &#x27;OPTIONS&#x27;] }));
+app.post(&#x27;/mcp&#x27;, async (c) =&gt; {
+  const body = await c.req.json();
+  return c.json(await handleMCPRequest(body, c.env));  // Plain JSON, NOT SSE
+});
+export default app;
+```
+
+### Step 4：加入知識庫（RAG）
+
+上傳讓 agent 參考的文件：
+- PDF、文字檔、網頁 URL
+- 透過 dashboard 設定：Agent -&gt; Knowledge Base -&gt; Upload
+- 或透過 API：`POST /v1/convai/knowledge-base/upload`（multipart/form-data）
+- Agent 在對話中會自動搜尋知識庫
+
+### Step 5：整合 SDK
+
+**React**：複製並客製化 `assets/react-sdk-boilerplate.tsx`：
+
+```typescript
+import { useConversation } from &#x27;@elevenlabs/react&#x27;;
+
+const { startConversation, stopConversation, status } = useConversation({
+  agentId: &#x27;your-agent-id&#x27;,
+  signedUrl: &#x27;/api/elevenlabs/auth&#x27;,
+  clientTools,
+  dynamicVariables: {
+    user_name: &#x27;John&#x27;,
+    account_type: &#x27;premium&#x27;,
+  },
+  onEvent: (event) =&gt; { /* transcript, agent_response, tool_call */ },
+});
+```
+
+System prompt 用 `{{user_name}}` 的形式參照動態變數。
+
+**React Native**：見 `assets/react-native-boilerplate.tsx`
+**嵌入 widget**：見 `assets/widget-embed-template.html`
+**Swift**：見 `assets/swift-sdk-boilerplate.swift`
+
+### Step 6：測試
+
+**CLI 測試：**
+
+```bash
+# Run all tests for an agent
+elevenlabs agents test &quot;Support Agent&quot;
+
+# Add a test scenario
+elevenlabs tests add &quot;Refund Request&quot; --template basic-llm
+```
+
+**測試設定：**
+
+```json
+{
+  &quot;name&quot;: &quot;Refund Request Test&quot;,
+  &quot;scenario&quot;: &quot;Customer requests refund for defective product&quot;,
+  &quot;user_input&quot;: &quot;I want a refund for order #12345. The product arrived broken.&quot;,
+  &quot;success_criteria&quot;: [
+    &quot;Agent acknowledges the issue empathetically&quot;,
+    &quot;Agent asks for or uses provided order number&quot;,
+    &quot;Agent verifies order details&quot;,
+    &quot;Agent provides clear next steps or refund timeline&quot;
+  ],
+  &quot;evaluation_type&quot;: &quot;llm&quot;
+}
+```
+
+**工具呼叫測試：**
+
+```json
+{
+  &quot;name&quot;: &quot;Order Lookup Test&quot;,
+  &quot;scenario&quot;: &quot;Customer asks about order status&quot;,
+  &quot;user_input&quot;: &quot;What&#x27;s the status of order ORD-12345?&quot;,
+  &quot;expected_tool_call&quot;: {
+    &quot;tool_name&quot;: &quot;lookup_order&quot;,
+    &quot;parameters&quot;: { &quot;order_id&quot;: &quot;ORD-12345&quot; }
+  }
+}
+```
+
+**API 模擬：**
+
+```typescript
+const simulation = await client.agents.simulate({
+  agent_id: &#x27;agent_123&#x27;,
+  scenario: &#x27;Customer requests refund&#x27;,
+  user_messages: [
+    &quot;I want a refund for order #12345&quot;,
+    &quot;It arrived broken&quot;,
+    &quot;Yes, process the refund&quot;
+  ],
+  success_criteria: [
+    &quot;Agent shows empathy&quot;,
+    &quot;Agent verifies order&quot;,
+    &quot;Agent provides timeline&quot;
+  ]
+});
+console.log(&#x27;Passed:&#x27;, simulation.passed);
+```
+
+**CI/CD 整合：**
+
+```yaml
+name: Test Agent
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install -g @elevenlabs/cli
+      - run: elevenlabs tests push
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      - run: elevenlabs agents test &quot;Support Agent&quot;
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+```
+
+### Step 7：部署
+
+```bash
+# Dry run first (always)
+elevenlabs agents push --env prod --dry-run
+
+# Deploy to production
+elevenlabs agents push --env prod
+```
+
+多環境的工作流程：
+```bash
+elevenlabs agents push --env dev       # Development
+elevenlabs agents push --env staging   # Staging
+elevenlabs agents test &quot;Agent Name&quot;    # Test in staging
+elevenlabs agents push --env prod      # Production
+```
+
+---
+
+## 關鍵寫法
+
+### Signed URL（安全性）
+
+絕對不要在用戶端程式碼裡暴露 API key。用一個伺服器端點：
+
+```typescript
+app.get(&#x27;/api/elevenlabs/auth&#x27;, async (req, res) =&gt; {
+  const response = await fetch(
+    &#x27;https://api.elevenlabs.io/v1/convai/conversation/get-signed-url&#x27;,
+    {
+      headers: { &#x27;xi-api-key&#x27;: process.env.ELEVENLABS_API_KEY },
+      body: JSON.stringify({ agent_id: &#x27;your-agent-id&#x27; }),
+      method: &#x27;POST&#x27;
+    }
+  );
+  const { signed_url } = await response.json();
+  res.json({ signed_url });
+});
+```
+
+### Agent 版本管理（A/B 測試）
+
+Dashboard：Agent -&gt; Versions -&gt; Create Branch。比較指標，讓勝出的版本上線。
+
+### 通話後 Webhook
+
+```json
+{
+  &quot;type&quot;: &quot;post_call_transcription&quot;,
+  &quot;data&quot;: {
+    &quot;conversation_id&quot;: &quot;conv_xyz789&quot;,
+    &quot;transcript&quot;: &quot;...&quot;,
+    &quot;duration_seconds&quot;: 120,
+    &quot;analysis&quot;: { &quot;sentiment&quot;: &quot;positive&quot;, &quot;resolution&quot;: true }
+  }
+}
+```
+
+用 HMAC SHA-256 驗證：
+```typescript
+const hmac = crypto.createHmac(&#x27;sha256&#x27;, process.env.WEBHOOK_SECRET)
+  .update(JSON.stringify(request.body)).digest(&#x27;hex&#x27;);
+if (signature !== hmac) { /* reject */ }
+```
+
+---
+
+## 成本最佳化
+
+模型陣容和價格過時得很快，挑選之前，先到 ElevenLabs dashboard（Agent → LLM 下拉選單）或文件查看最新的清單，不要寫死一個你在這個 session 裡沒驗證過的模型 id。比較持久的選法是：大多數 agent 用目前便宜又快的模型（只有品質需要時才升級），知識庫很大時用長 context 的模型。
+
+主要的省錢方式：
+- **LLM 快取**：重複的 prompt 最多可省 90%（在設定裡啟用）
+- **Prompt 長度**：同樣的指示，150 個 token 比 500 個 token 好
+- **用 RAG，不要塞 context**：用知識庫，不要把 system prompt 塞滿
+- **時長限制**：設定 `max_duration_seconds`，避免對話失控
+- **輪流模式**：「patient」模式 = 較少 LLM 呼叫 = 成本較低
+
+---
+
+## CLI 快速參考
+
+```bash
+elevenlabs auth login                              # Authenticate
+elevenlabs agents init                             # Init project
+elevenlabs agents add &quot;Name&quot; --template default    # Add agent
+elevenlabs agents push --env dev                   # Deploy to dev
+elevenlabs agents push --env prod --dry-run        # Preview prod deploy
+elevenlabs agents push --env prod                  # Deploy to prod
+elevenlabs agents pull                             # Pull from platform
+elevenlabs agents test &quot;Name&quot;                      # Run tests
+elevenlabs agents list                             # List agents
+elevenlabs agents status                           # Check sync status
+elevenlabs agents widget &quot;Name&quot;                    # Generate widget
+elevenlabs tools add-webhook &quot;Name&quot; --config-path tool.json  # Add tool
+elevenlabs tests add &quot;Name&quot; --template basic-llm   # Add test
+```
+
+環境變數：CI/CD 用 `ELEVENLABS_API_KEY`。
+
+---
+
+## 選用參考資料
+
+特殊用途請見：
+- `references/api-reference.md`：以程式管理 agent 的完整 REST API
+- `references/compliance-guide.md`：GDPR、HIPAA、PCI DSS、資料落地
+- `references/workflow-examples.md`：多 agent 路由、轉接升級、多語言
+
+---
+
+## 資源檔
+
+- `assets/react-sdk-boilerplate.tsx`：React 整合範本
+- `assets/react-native-boilerplate.tsx`：React Native 範本
+- `assets/swift-sdk-boilerplate.swift`：Swift/iOS 範本
+- `assets/javascript-sdk-boilerplate.js`：純 JS 範本
+- `assets/widget-embed-template.html`：可嵌入的 widget
+- `assets/system-prompt-template.md`：System prompt 指南
+- `assets/agent-config-schema.json`：設定 schema 參考
+- `assets/ci-cd-example.yml`：CI/CD pipeline 範本</pre></section><section><h2>英文原文</h2><pre>---
+name: elevenlabs-agents
+description: &quot;Build conversational AI voice agents on the ElevenLabs platform. Configure agent + tools + knowledge base, integrate SDK (React / React Native / Swift / JS / server-side), test, deploy. Use whenever the user mentions ElevenLabs, building a voice agent, an AI phone system, an AI receptionist, conversational AI, or troubleshooting deprecated @11labs packages, webhook errors, CSP violations, localhost allowlist, or tool parsing errors.&quot;
+compatibility: claude-code-only
+---
+
+# ElevenLabs Agent Builder
+
+Build a production-ready conversational AI voice agent. Produces a configured agent with tools, knowledge base, and SDK integration.
+
+## Packages
+
+```bash
+npm install @elevenlabs/react           # React SDK
+npm install @elevenlabs/client          # JavaScript SDK (browser + server)
+npm install @elevenlabs/react-native    # React Native SDK
+npm install @elevenlabs/elevenlabs-js   # Full API (server only)
+npm install -g @elevenlabs/agents-cli   # CLI (&quot;Agents as Code&quot;)
+```
+
+**DEPRECATED:** `@11labs/react`, `@11labs/client` -- uninstall if present.
+
+**Server-only warning:** `@elevenlabs/elevenlabs-js` uses Node.js `child_process` and won&#x27;t work in browsers. Use `@elevenlabs/client` for browser environments, or create a proxy server.
+
+## Workflow
+
+### Step 1: Create Agent via Dashboard or CLI
+
+**Dashboard:** https://elevenlabs.io/app/conversational-ai -&gt; Create Agent
+
+**CLI (Agents as Code):**
+```bash
+elevenlabs agents init
+elevenlabs agents add &quot;Support Bot&quot; --template customer-service
+# Edit agent_configs/support-bot.json
+elevenlabs agents push --env dev
+```
+
+Templates: `default`, `minimal`, `voice-only`, `text-only`, `customer-service`, `assistant`.
+
+Configure:
+- **Voice** -- Choose from 5000+ voices or clone
+- **LLM** -- GPT, Claude, Gemini, or custom
+- **System prompt** -- Use the 6-component framework below
+- **First message** -- What the agent says when conversation starts
+
+### Step 2: Write the System Prompt
+
+Use the 6-component framework for effective agent prompts:
+
+**1. Personality** -- who the agent is:
+```
+You are [NAME], a [ROLE] at [COMPANY].
+You have [EXPERIENCE]. Your traits: [LIST TRAITS].
+```
+
+**2. Environment** -- communication context:
+```
+You&#x27;re communicating via [phone/chat/video].
+Consider [environmental factors]. Adapt to [context].
+```
+
+**3. Tone** -- speech patterns and formality:
+```
+Tone: Professional yet warm. Use contractions for natural speech.
+Avoid jargon. Keep responses to 2-3 sentences. Ask one question at a time.
+```
+
+**4. Goal** -- objectives and success criteria:
+```
+Primary Goal: Resolve customer issues on the first call.
+Success: Customer verbally confirms issue is resolved.
+```
+
+**5. Guardrails** -- boundaries and ethics:
+```
+Never: provide medical/legal/financial advice, share confidential info.
+Always: verify identity before account access, document interactions.
+Escalation: customer requests manager, issue beyond knowledge base.
+```
+
+**6. Tools** -- available functions and when to use them:
+```
+1. lookup_order(order_id) -- Use when customer mentions an order.
+2. transfer_to_supervisor() -- Use when issue requires manager approval.
+Always explain what you&#x27;re doing before calling a tool.
+```
+
+### Step 3: Add Tools
+
+**Client-side tools (run in browser):**
+
+```typescript
+const clientTools = {
+  updateCart: {
+    description: &quot;Add or remove items from the shopping cart&quot;,
+    parameters: z.object({
+      action: z.enum([&#x27;add&#x27;, &#x27;remove&#x27;]),
+      item: z.string(),
+      quantity: z.number().min(1)
+    }),
+    handler: async ({ action, item, quantity }) =&gt; {
+      const cart = getCart();
+      action === &#x27;add&#x27; ? cart.add(item, quantity) : cart.remove(item, quantity);
+      return { success: true, total: cart.total, items: cart.items.length };
+    }
+  },
+  navigate: {
+    description: &quot;Navigate user to a different page&quot;,
+    parameters: z.object({ url: z.string().url() }),
+    handler: async ({ url }) =&gt; { window.location.href = url; return { success: true }; }
+  }
+};
+```
+
+**Server-side tools (webhooks):**
+
+```json
+{
+  &quot;name&quot;: &quot;get_weather&quot;,
+  &quot;description&quot;: &quot;Fetch current weather for a city&quot;,
+  &quot;url&quot;: &quot;https://api.weather.com/v1/current&quot;,
+  &quot;method&quot;: &quot;GET&quot;,
+  &quot;parameters&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;city&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;City name&quot; }
+    },
+    &quot;required&quot;: [&quot;city&quot;]
+  },
+  &quot;headers&quot;: {
+    &quot;Authorization&quot;: &quot;Bearer {{secret__weather_api_key}}&quot;
+  }
+}
+```
+
+Use `{{secret__key_name}}` for API keys in webhook headers -- never hardcode.
+
+**MCP Tools -- CRITICAL COMPATIBILITY NOTE:**
+
+ElevenLabs labels their MCP integration as &quot;Streamable HTTP&quot; but does NOT support the actual MCP 2025-03-26 Streamable HTTP spec (SSE responses). ElevenLabs expects:
+
+- Plain JSON responses (`application/json`), NOT SSE (`text/event-stream`)
+- Protocol version `2024-11-05`, NOT `2025-03-26`
+- Simple JSON-RPC over HTTP with direct JSON responses
+
+What does NOT work:
+- Official MCP SDK&#x27;s `createMcpHandler` (returns SSE)
+- Cloudflare Agents SDK `McpServer.serve()` (returns SSE)
+- Any server returning `Content-Type: text/event-stream`
+
+Working MCP server pattern for ElevenLabs:
+
+```typescript
+import { Hono } from &#x27;hono&#x27;;
+import { cors } from &#x27;hono/cors&#x27;;
+
+const tools = [{
+  name: &quot;my_tool&quot;,
+  description: &quot;Tool description&quot;,
+  inputSchema: {
+    type: &quot;object&quot;,
+    properties: { param1: { type: &quot;string&quot;, description: &quot;Description&quot; } },
+    required: [&quot;param1&quot;]
+  }
+}];
+
+async function handleMCPRequest(request, env) {
+  const { id, method, params } = request;
+  switch (method) {
+    case &#x27;initialize&#x27;:
+      return {
+        jsonrpc: &#x27;2.0&#x27;, id,
+        result: {
+          protocolVersion: &#x27;2024-11-05&#x27;,  // MUST be 2024-11-05
+          serverInfo: { name: &#x27;my-mcp&#x27;, version: &#x27;1.0.0&#x27; },
+          capabilities: { tools: {} }
+        }
+      };
+    case &#x27;tools/list&#x27;:
+      return { jsonrpc: &#x27;2.0&#x27;, id, result: { tools } };
+    case &#x27;tools/call&#x27;:
+      const result = await handleTool(params.name, params.arguments, env);
+      return { jsonrpc: &#x27;2.0&#x27;, id, result };
+    default:
+      return { jsonrpc: &#x27;2.0&#x27;, id, error: { code: -32601, message: `Unknown: ${method}` } };
+  }
+}
+
+const app = new Hono();
+app.use(&#x27;/*&#x27;, cors({ origin: &#x27;*&#x27;, allowMethods: [&#x27;GET&#x27;, &#x27;POST&#x27;, &#x27;OPTIONS&#x27;] }));
+app.post(&#x27;/mcp&#x27;, async (c) =&gt; {
+  const body = await c.req.json();
+  return c.json(await handleMCPRequest(body, c.env));  // Plain JSON, NOT SSE
+});
+export default app;
+```
+
+### Step 4: Add Knowledge Base (RAG)
+
+Upload documents for the agent to reference:
+- PDFs, text files, web URLs
+- Configure via dashboard: Agent -&gt; Knowledge Base -&gt; Upload
+- Or via API: `POST /v1/convai/knowledge-base/upload` (multipart/form-data)
+- Agent automatically searches knowledge base during conversation
+
+### Step 5: Integrate SDK
+
+**React** -- copy and customise `assets/react-sdk-boilerplate.tsx`:
+
+```typescript
+import { useConversation } from &#x27;@elevenlabs/react&#x27;;
+
+const { startConversation, stopConversation, status } = useConversation({
+  agentId: &#x27;your-agent-id&#x27;,
+  signedUrl: &#x27;/api/elevenlabs/auth&#x27;,
+  clientTools,
+  dynamicVariables: {
+    user_name: &#x27;John&#x27;,
+    account_type: &#x27;premium&#x27;,
+  },
+  onEvent: (event) =&gt; { /* transcript, agent_response, tool_call */ },
+});
+```
+
+System prompt references dynamic variables as `{{user_name}}`.
+
+**React Native** -- see `assets/react-native-boilerplate.tsx`
+**Widget embed** -- see `assets/widget-embed-template.html`
+**Swift** -- see `assets/swift-sdk-boilerplate.swift`
+
+### Step 6: Test
+
+**CLI testing:**
+
+```bash
+# Run all tests for an agent
+elevenlabs agents test &quot;Support Agent&quot;
+
+# Add a test scenario
+elevenlabs tests add &quot;Refund Request&quot; --template basic-llm
+```
+
+**Test configuration:**
+
+```json
+{
+  &quot;name&quot;: &quot;Refund Request Test&quot;,
+  &quot;scenario&quot;: &quot;Customer requests refund for defective product&quot;,
+  &quot;user_input&quot;: &quot;I want a refund for order #12345. The product arrived broken.&quot;,
+  &quot;success_criteria&quot;: [
+    &quot;Agent acknowledges the issue empathetically&quot;,
+    &quot;Agent asks for or uses provided order number&quot;,
+    &quot;Agent verifies order details&quot;,
+    &quot;Agent provides clear next steps or refund timeline&quot;
+  ],
+  &quot;evaluation_type&quot;: &quot;llm&quot;
+}
+```
+
+**Tool call testing:**
+
+```json
+{
+  &quot;name&quot;: &quot;Order Lookup Test&quot;,
+  &quot;scenario&quot;: &quot;Customer asks about order status&quot;,
+  &quot;user_input&quot;: &quot;What&#x27;s the status of order ORD-12345?&quot;,
+  &quot;expected_tool_call&quot;: {
+    &quot;tool_name&quot;: &quot;lookup_order&quot;,
+    &quot;parameters&quot;: { &quot;order_id&quot;: &quot;ORD-12345&quot; }
+  }
+}
+```
+
+**API simulation:**
+
+```typescript
+const simulation = await client.agents.simulate({
+  agent_id: &#x27;agent_123&#x27;,
+  scenario: &#x27;Customer requests refund&#x27;,
+  user_messages: [
+    &quot;I want a refund for order #12345&quot;,
+    &quot;It arrived broken&quot;,
+    &quot;Yes, process the refund&quot;
+  ],
+  success_criteria: [
+    &quot;Agent shows empathy&quot;,
+    &quot;Agent verifies order&quot;,
+    &quot;Agent provides timeline&quot;
+  ]
+});
+console.log(&#x27;Passed:&#x27;, simulation.passed);
+```
+
+**CI/CD integration:**
+
+```yaml
+name: Test Agent
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install -g @elevenlabs/cli
+      - run: elevenlabs tests push
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      - run: elevenlabs agents test &quot;Support Agent&quot;
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+```
+
+### Step 7: Deploy
+
+```bash
+# Dry run first (always)
+elevenlabs agents push --env prod --dry-run
+
+# Deploy to production
+elevenlabs agents push --env prod
+```
+
+Multi-environment workflow:
+```bash
+elevenlabs agents push --env dev       # Development
+elevenlabs agents push --env staging   # Staging
+elevenlabs agents test &quot;Agent Name&quot;    # Test in staging
+elevenlabs agents push --env prod      # Production
+```
+
+---
+
+## Critical Patterns
+
+### Signed URLs (Security)
+
+Never expose API keys in client code. Use a server endpoint:
+
+```typescript
+app.get(&#x27;/api/elevenlabs/auth&#x27;, async (req, res) =&gt; {
+  const response = await fetch(
+    &#x27;https://api.elevenlabs.io/v1/convai/conversation/get-signed-url&#x27;,
+    {
+      headers: { &#x27;xi-api-key&#x27;: process.env.ELEVENLABS_API_KEY },
+      body: JSON.stringify({ agent_id: &#x27;your-agent-id&#x27; }),
+      method: &#x27;POST&#x27;
+    }
+  );
+  const { signed_url } = await response.json();
+  res.json({ signed_url });
+});
+```
+
+### Agent Versioning (A/B Testing)
+
+Dashboard: Agent -&gt; Versions -&gt; Create Branch. Compare metrics, promote winner.
+
+### Post-Call Webhook
+
+```json
+{
+  &quot;type&quot;: &quot;post_call_transcription&quot;,
+  &quot;data&quot;: {
+    &quot;conversation_id&quot;: &quot;conv_xyz789&quot;,
+    &quot;transcript&quot;: &quot;...&quot;,
+    &quot;duration_seconds&quot;: 120,
+    &quot;analysis&quot;: { &quot;sentiment&quot;: &quot;positive&quot;, &quot;resolution&quot;: true }
+  }
+}
+```
+
+Verify with HMAC SHA-256:
+```typescript
+const hmac = crypto.createHmac(&#x27;sha256&#x27;, process.env.WEBHOOK_SECRET)
+  .update(JSON.stringify(request.body)).digest(&#x27;hex&#x27;);
+if (signature !== hmac) { /* reject */ }
+```
+
+---
+
+## Cost Optimisation
+
+Model lineups and pricing rot fast — check the live list in the ElevenLabs dashboard (Agent → LLM dropdown) or docs before picking, and don&#x27;t hardcode a model id you haven&#x27;t verified this session. The durable picks: a current cheap-fast model for most agents (upgrade only where quality demands it), a long-context model when the knowledge base is large.
+
+Key savings:
+- **LLM caching**: up to 90% on repeated prompts (enable in config)
+- **Prompt length**: 150 tokens &gt; 500 tokens for same instructions
+- **RAG over context**: use knowledge base instead of stuffing system prompt
+- **Duration limits**: set `max_duration_seconds` to prevent runaway conversations
+- **Turn mode**: &quot;patient&quot; mode = fewer LLM calls = lower cost
+
+---
+
+## CLI Quick Reference
+
+```bash
+elevenlabs auth login                              # Authenticate
+elevenlabs agents init                             # Init project
+elevenlabs agents add &quot;Name&quot; --template default    # Add agent
+elevenlabs agents push --env dev                   # Deploy to dev
+elevenlabs agents push --env prod --dry-run        # Preview prod deploy
+elevenlabs agents push --env prod                  # Deploy to prod
+elevenlabs agents pull                             # Pull from platform
+elevenlabs agents test &quot;Name&quot;                      # Run tests
+elevenlabs agents list                             # List agents
+elevenlabs agents status                           # Check sync status
+elevenlabs agents widget &quot;Name&quot;                    # Generate widget
+elevenlabs tools add-webhook &quot;Name&quot; --config-path tool.json  # Add tool
+elevenlabs tests add &quot;Name&quot; --template basic-llm   # Add test
+```
+
+Environment: `ELEVENLABS_API_KEY` for CI/CD.
+
+---
+
+## Optional References
+
+For specialised use cases, see:
+- `references/api-reference.md` -- full REST API for programmatic agent management
+- `references/compliance-guide.md` -- GDPR, HIPAA, PCI DSS, data residency
+- `references/workflow-examples.md` -- multi-agent routing, escalation, multi-language
+
+---
+
+## Asset Files
+
+- `assets/react-sdk-boilerplate.tsx` -- React integration template
+- `assets/react-native-boilerplate.tsx` -- React Native template
+- `assets/swift-sdk-boilerplate.swift` -- Swift/iOS template
+- `assets/javascript-sdk-boilerplate.js` -- Vanilla JS template
+- `assets/widget-embed-template.html` -- Embeddable widget
+- `assets/system-prompt-template.md` -- System prompt guide
+- `assets/agent-config-schema.json` -- Config schema reference
+- `assets/ci-cd-example.yml` -- CI/CD pipeline template</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

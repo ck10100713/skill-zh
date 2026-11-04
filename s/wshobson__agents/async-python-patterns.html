@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>async-python-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="掌握 Python asyncio 和 async/await 模式，打造高效能的非阻塞應用程式">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>async-python-patterns</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/async-python-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">掌握 Python asyncio 和 async/await 模式，打造高效能的非阻塞應用程式</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: async-python-patterns
+description: 掌握 Python asyncio、並行程式設計和 async/await 模式，打造高效能應用程式。在建構 async API、並行系統，或需要非阻塞操作的 I/O 密集應用程式時使用。
+---
+
+# Async Python 模式
+
+用 asyncio、並行程式設計模式和 async/await 實作非同步 Python 應用程式的完整指引，用來建構高效能、非阻塞的系統。
+
+## 何時使用這個 Skill
+
+- 建構 async 的 web API（FastAPI、aiohttp、Sanic）
+- 實作並行的 I/O 操作（資料庫、檔案、網路）
+- 建立發出並行請求的網路爬蟲
+- 開發即時應用程式（WebSocket 伺服器、聊天系統）
+- 同時處理多個獨立的任務
+- 建構用 async 溝通的 microservice
+- 最佳化 I/O 密集的工作負載
+- 實作 async 的背景任務和佇列
+
+## 同步還是非同步的決策指南
+
+採用 async 之前，先想想它是不是適合你的使用情境。
+
+| 使用情境 | 建議做法 |
+|----------|---------------------|
+| 大量並行的網路/資料庫呼叫 | `asyncio` |
+| CPU 密集的運算 | `multiprocessing` 或 thread pool |
+| I/O 加 CPU 混合 | 用 `asyncio.to_thread()` 把 CPU 的工作卸載出去 |
+| 簡單的 script、連線很少 | 同步（比較簡單、比較好除錯） |
+| 高並行的 Web API | Async 框架（FastAPI、aiohttp） |
+
+**關鍵規則：** 同一條呼叫路徑裡，要嘛全部同步，要嘛全部非同步。混用會產生隱藏的阻塞和複雜度。
+
+## 核心概念
+
+### 1. Event Loop
+
+event loop 是 asyncio 的核心，負責管理和排程非同步的 task。
+
+**主要特性：**
+
+- 單執行緒的協作式多工
+- 排程 coroutine 來執行
+- 處理 I/O 操作而不阻塞
+- 管理 callback 和 future
+
+### 2. Coroutine
+
+用 `async def` 定義、可以暫停和恢復的函式。
+
+**語法：**
+
+```python
+async def my_coroutine():
+    result = await some_async_operation()
+    return result
+```
+
+### 3. Task
+
+在 event loop 上並行執行、已排程的 coroutine。
+
+### 4. Future
+
+低階物件，代表非同步操作最終會有的結果。
+
+### 5. Async Context Manager
+
+支援 `async with` 來正確清理的資源。
+
+### 6. Async Iterator
+
+支援 `async for`、用來迭代非同步資料來源的物件。
+
+## 快速開始
+
+```python
+import asyncio
+
+async def main():
+    print(&quot;Hello&quot;)
+    await asyncio.sleep(1)
+    print(&quot;World&quot;)
+
+# Python 3.7+
+asyncio.run(main())
+```
+
+## 基礎模式
+
+### Pattern 1：基本的 Async/Await
+
+```python
+import asyncio
+
+async def fetch_data(url: str) -&gt; dict:
+    &quot;&quot;&quot;Fetch data from URL asynchronously.&quot;&quot;&quot;
+    await asyncio.sleep(1)  # Simulate I/O
+    return {&quot;url&quot;: url, &quot;data&quot;: &quot;result&quot;}
+
+async def main():
+    result = await fetch_data(&quot;https://api.example.com&quot;)
+    print(result)
+
+asyncio.run(main())
+```
+
+### Pattern 2：用 gather() 並行執行
+
+```python
+import asyncio
+from typing import List
+
+async def fetch_user(user_id: int) -&gt; dict:
+    &quot;&quot;&quot;Fetch user data.&quot;&quot;&quot;
+    await asyncio.sleep(0.5)
+    return {&quot;id&quot;: user_id, &quot;name&quot;: f&quot;User {user_id}&quot;}
+
+async def fetch_all_users(user_ids: List[int]) -&gt; List[dict]:
+    &quot;&quot;&quot;Fetch multiple users concurrently.&quot;&quot;&quot;
+    tasks = [fetch_user(uid) for uid in user_ids]
+    results = await asyncio.gather(*tasks)
+    return results
+
+async def main():
+    user_ids = [1, 2, 3, 4, 5]
+    users = await fetch_all_users(user_ids)
+    print(f&quot;Fetched {len(users)} users&quot;)
+
+asyncio.run(main())
+```
+
+### Pattern 3：建立與管理 Task
+
+```python
+import asyncio
+
+async def background_task(name: str, delay: int):
+    &quot;&quot;&quot;Long-running background task.&quot;&quot;&quot;
+    print(f&quot;{name} started&quot;)
+    await asyncio.sleep(delay)
+    print(f&quot;{name} completed&quot;)
+    return f&quot;Result from {name}&quot;
+
+async def main():
+    # Create tasks
+    task1 = asyncio.create_task(background_task(&quot;Task 1&quot;, 2))
+    task2 = asyncio.create_task(background_task(&quot;Task 2&quot;, 1))
+
+    # Do other work
+    print(&quot;Main: doing other work&quot;)
+    await asyncio.sleep(0.5)
+
+    # Wait for tasks
+    result1 = await task1
+    result2 = await task2
+
+    print(f&quot;Results: {result1}, {result2}&quot;)
+
+asyncio.run(main())
+```
+
+### Pattern 4：Async 程式碼的錯誤處理
+
+```python
+import asyncio
+from typing import List, Optional
+
+async def risky_operation(item_id: int) -&gt; dict:
+    &quot;&quot;&quot;Operation that might fail.&quot;&quot;&quot;
+    await asyncio.sleep(0.1)
+    if item_id % 3 == 0:
+        raise ValueError(f&quot;Item {item_id} failed&quot;)
+    return {&quot;id&quot;: item_id, &quot;status&quot;: &quot;success&quot;}
+
+async def safe_operation(item_id: int) -&gt; Optional[dict]:
+    &quot;&quot;&quot;Wrapper with error handling.&quot;&quot;&quot;
+    try:
+        return await risky_operation(item_id)
+    except ValueError as e:
+        print(f&quot;Error: {e}&quot;)
+        return None
+
+async def process_items(item_ids: List[int]):
+    &quot;&quot;&quot;Process multiple items with error handling.&quot;&quot;&quot;
+    tasks = [safe_operation(iid) for iid in item_ids]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Filter out failures
+    successful = [r for r in results if r is not None and not isinstance(r, Exception)]
+    failed = [r for r in results if r is None or isinstance(r, Exception)]
+
+    print(f&quot;Success: {len(successful)}, Failed: {len(failed)}&quot;)
+    return successful
+
+asyncio.run(process_items([1, 2, 3, 4, 5, 6]))
+```
+
+### Pattern 5：逾時處理
+
+```python
+import asyncio
+
+async def slow_operation(delay: int) -&gt; str:
+    &quot;&quot;&quot;Operation that takes time.&quot;&quot;&quot;
+    await asyncio.sleep(delay)
+    return f&quot;Completed after {delay}s&quot;
+
+async def with_timeout():
+    &quot;&quot;&quot;Execute operation with timeout.&quot;&quot;&quot;
+    try:
+        result = await asyncio.wait_for(slow_operation(5), timeout=2.0)
+        print(result)
+    except asyncio.TimeoutError:
+        print(&quot;Operation timed out&quot;)
+
+asyncio.run(with_timeout())
+```
+
+## 詳細的實作範例與模式
+
+詳細的章節（從 `## Advanced Patterns` 開始）放在 `references/details.md`。上面的導覽摘要不夠用時，再讀那個檔案。
+
+## 常見陷阱
+
+### 1. 忘了 await
+
+```python
+# Wrong - returns coroutine object, doesn&#x27;t execute
+result = async_function()
+
+# Correct
+result = await async_function()
+```
+
+### 2. 阻塞 Event Loop
+
+```python
+# Wrong - blocks event loop
+import time
+async def bad():
+    time.sleep(1)  # Blocks!
+
+# Correct
+async def good():
+    await asyncio.sleep(1)  # Non-blocking
+```
+
+### 3. 沒處理取消
+
+```python
+async def cancelable_task():
+    &quot;&quot;&quot;Task that handles cancellation.&quot;&quot;&quot;
+    try:
+        while True:
+            await asyncio.sleep(1)
+            print(&quot;Working...&quot;)
+    except asyncio.CancelledError:
+        print(&quot;Task cancelled, cleaning up...&quot;)
+        # Perform cleanup
+        raise  # Re-raise to propagate cancellation
+```
+
+### 4. 混用同步和非同步程式碼
+
+```python
+# Wrong - can&#x27;t call async from sync directly
+def sync_function():
+    result = await async_function()  # SyntaxError!
+
+# Correct
+def sync_function():
+    result = asyncio.run(async_function())
+```
+
+## 測試 Async 程式碼
+
+```python
+import asyncio
+import pytest
+
+# Using pytest-asyncio
+@pytest.mark.asyncio
+async def test_async_function():
+    &quot;&quot;&quot;Test async function.&quot;&quot;&quot;
+    result = await fetch_data(&quot;https://api.example.com&quot;)
+    assert result is not None
+
+@pytest.mark.asyncio
+async def test_with_timeout():
+    &quot;&quot;&quot;Test with timeout.&quot;&quot;&quot;
+    with pytest.raises(asyncio.TimeoutError):
+        await asyncio.wait_for(slow_operation(5), timeout=1.0)
+```</pre></section><section><h2>英文原文</h2><pre>---
+name: async-python-patterns
+description: Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations.
+---
+
+# Async Python Patterns
+
+Comprehensive guidance for implementing asynchronous Python applications using asyncio, concurrent programming patterns, and async/await for building high-performance, non-blocking systems.
+
+## When to Use This Skill
+
+- Building async web APIs (FastAPI, aiohttp, Sanic)
+- Implementing concurrent I/O operations (database, file, network)
+- Creating web scrapers with concurrent requests
+- Developing real-time applications (WebSocket servers, chat systems)
+- Processing multiple independent tasks simultaneously
+- Building microservices with async communication
+- Optimizing I/O-bound workloads
+- Implementing async background tasks and queues
+
+## Sync vs Async Decision Guide
+
+Before adopting async, consider whether it&#x27;s the right choice for your use case.
+
+| Use Case | Recommended Approach |
+|----------|---------------------|
+| Many concurrent network/DB calls | `asyncio` |
+| CPU-bound computation | `multiprocessing` or thread pool |
+| Mixed I/O + CPU | Offload CPU work with `asyncio.to_thread()` |
+| Simple scripts, few connections | Sync (simpler, easier to debug) |
+| Web APIs with high concurrency | Async frameworks (FastAPI, aiohttp) |
+
+**Key Rule:** Stay fully sync or fully async within a call path. Mixing creates hidden blocking and complexity.
+
+## Core Concepts
+
+### 1. Event Loop
+
+The event loop is the heart of asyncio, managing and scheduling asynchronous tasks.
+
+**Key characteristics:**
+
+- Single-threaded cooperative multitasking
+- Schedules coroutines for execution
+- Handles I/O operations without blocking
+- Manages callbacks and futures
+
+### 2. Coroutines
+
+Functions defined with `async def` that can be paused and resumed.
+
+**Syntax:**
+
+```python
+async def my_coroutine():
+    result = await some_async_operation()
+    return result
+```
+
+### 3. Tasks
+
+Scheduled coroutines that run concurrently on the event loop.
+
+### 4. Futures
+
+Low-level objects representing eventual results of async operations.
+
+### 5. Async Context Managers
+
+Resources that support `async with` for proper cleanup.
+
+### 6. Async Iterators
+
+Objects that support `async for` for iterating over async data sources.
+
+## Quick Start
+
+```python
+import asyncio
+
+async def main():
+    print(&quot;Hello&quot;)
+    await asyncio.sleep(1)
+    print(&quot;World&quot;)
+
+# Python 3.7+
+asyncio.run(main())
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Basic Async/Await
+
+```python
+import asyncio
+
+async def fetch_data(url: str) -&gt; dict:
+    &quot;&quot;&quot;Fetch data from URL asynchronously.&quot;&quot;&quot;
+    await asyncio.sleep(1)  # Simulate I/O
+    return {&quot;url&quot;: url, &quot;data&quot;: &quot;result&quot;}
+
+async def main():
+    result = await fetch_data(&quot;https://api.example.com&quot;)
+    print(result)
+
+asyncio.run(main())
+```
+
+### Pattern 2: Concurrent Execution with gather()
+
+```python
+import asyncio
+from typing import List
+
+async def fetch_user(user_id: int) -&gt; dict:
+    &quot;&quot;&quot;Fetch user data.&quot;&quot;&quot;
+    await asyncio.sleep(0.5)
+    return {&quot;id&quot;: user_id, &quot;name&quot;: f&quot;User {user_id}&quot;}
+
+async def fetch_all_users(user_ids: List[int]) -&gt; List[dict]:
+    &quot;&quot;&quot;Fetch multiple users concurrently.&quot;&quot;&quot;
+    tasks = [fetch_user(uid) for uid in user_ids]
+    results = await asyncio.gather(*tasks)
+    return results
+
+async def main():
+    user_ids = [1, 2, 3, 4, 5]
+    users = await fetch_all_users(user_ids)
+    print(f&quot;Fetched {len(users)} users&quot;)
+
+asyncio.run(main())
+```
+
+### Pattern 3: Task Creation and Management
+
+```python
+import asyncio
+
+async def background_task(name: str, delay: int):
+    &quot;&quot;&quot;Long-running background task.&quot;&quot;&quot;
+    print(f&quot;{name} started&quot;)
+    await asyncio.sleep(delay)
+    print(f&quot;{name} completed&quot;)
+    return f&quot;Result from {name}&quot;
+
+async def main():
+    # Create tasks
+    task1 = asyncio.create_task(background_task(&quot;Task 1&quot;, 2))
+    task2 = asyncio.create_task(background_task(&quot;Task 2&quot;, 1))
+
+    # Do other work
+    print(&quot;Main: doing other work&quot;)
+    await asyncio.sleep(0.5)
+
+    # Wait for tasks
+    result1 = await task1
+    result2 = await task2
+
+    print(f&quot;Results: {result1}, {result2}&quot;)
+
+asyncio.run(main())
+```
+
+### Pattern 4: Error Handling in Async Code
+
+```python
+import asyncio
+from typing import List, Optional
+
+async def risky_operation(item_id: int) -&gt; dict:
+    &quot;&quot;&quot;Operation that might fail.&quot;&quot;&quot;
+    await asyncio.sleep(0.1)
+    if item_id % 3 == 0:
+        raise ValueError(f&quot;Item {item_id} failed&quot;)
+    return {&quot;id&quot;: item_id, &quot;status&quot;: &quot;success&quot;}
+
+async def safe_operation(item_id: int) -&gt; Optional[dict]:
+    &quot;&quot;&quot;Wrapper with error handling.&quot;&quot;&quot;
+    try:
+        return await risky_operation(item_id)
+    except ValueError as e:
+        print(f&quot;Error: {e}&quot;)
+        return None
+
+async def process_items(item_ids: List[int]):
+    &quot;&quot;&quot;Process multiple items with error handling.&quot;&quot;&quot;
+    tasks = [safe_operation(iid) for iid in item_ids]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Filter out failures
+    successful = [r for r in results if r is not None and not isinstance(r, Exception)]
+    failed = [r for r in results if r is None or isinstance(r, Exception)]
+
+    print(f&quot;Success: {len(successful)}, Failed: {len(failed)}&quot;)
+    return successful
+
+asyncio.run(process_items([1, 2, 3, 4, 5, 6]))
+```
+
+### Pattern 5: Timeout Handling
+
+```python
+import asyncio
+
+async def slow_operation(delay: int) -&gt; str:
+    &quot;&quot;&quot;Operation that takes time.&quot;&quot;&quot;
+    await asyncio.sleep(delay)
+    return f&quot;Completed after {delay}s&quot;
+
+async def with_timeout():
+    &quot;&quot;&quot;Execute operation with timeout.&quot;&quot;&quot;
+    try:
+        result = await asyncio.wait_for(slow_operation(5), timeout=2.0)
+        print(result)
+    except asyncio.TimeoutError:
+        print(&quot;Operation timed out&quot;)
+
+asyncio.run(with_timeout())
+```
+
+## Detailed worked examples and patterns
+
+Detailed sections (starting with `## Advanced Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
+
+## Common Pitfalls
+
+### 1. Forgetting await
+
+```python
+# Wrong - returns coroutine object, doesn&#x27;t execute
+result = async_function()
+
+# Correct
+result = await async_function()
+```
+
+### 2. Blocking the Event Loop
+
+```python
+# Wrong - blocks event loop
+import time
+async def bad():
+    time.sleep(1)  # Blocks!
+
+# Correct
+async def good():
+    await asyncio.sleep(1)  # Non-blocking
+```
+
+### 3. Not Handling Cancellation
+
+```python
+async def cancelable_task():
+    &quot;&quot;&quot;Task that handles cancellation.&quot;&quot;&quot;
+    try:
+        while True:
+            await asyncio.sleep(1)
+            print(&quot;Working...&quot;)
+    except asyncio.CancelledError:
+        print(&quot;Task cancelled, cleaning up...&quot;)
+        # Perform cleanup
+        raise  # Re-raise to propagate cancellation
+```
+
+### 4. Mixing Sync and Async Code
+
+```python
+# Wrong - can&#x27;t call async from sync directly
+def sync_function():
+    result = await async_function()  # SyntaxError!
+
+# Correct
+def sync_function():
+    result = asyncio.run(async_function())
+```
+
+## Testing Async Code
+
+```python
+import asyncio
+import pytest
+
+# Using pytest-asyncio
+@pytest.mark.asyncio
+async def test_async_function():
+    &quot;&quot;&quot;Test async function.&quot;&quot;&quot;
+    result = await fetch_data(&quot;https://api.example.com&quot;)
+    assert result is not None
+
+@pytest.mark.asyncio
+async def test_with_timeout():
+    &quot;&quot;&quot;Test with timeout.&quot;&quot;&quot;
+    with pytest.raises(asyncio.TimeoutError):
+        await asyncio.wait_for(slow_operation(5), timeout=1.0)
+```</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

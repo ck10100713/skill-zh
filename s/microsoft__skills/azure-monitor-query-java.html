@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-monitor-query-java｜Skill 寫法圖鑑</title>
+<meta name="description" content="Java 版 Azure Monitor 查詢 SDK，跑 Kusto 與 metric 查詢，已棄用">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-monitor-query-java</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-java/skills/azure-monitor-query-java/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Java 版 Azure Monitor 查詢 SDK，跑 Kusto 與 metric 查詢，已棄用</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-monitor-query-java
+description: |
+  Java 版 Azure Monitor Query SDK。對 Log Analytics workspace 執行 Kusto 查詢，並查詢 Azure 資源的 metric。
+  Triggers: &quot;LogsQueryClient java&quot;, &quot;MetricsQueryClient java&quot;, &quot;kusto query java&quot;, &quot;log analytics java&quot;, &quot;azure monitor query java&quot;.
+  Note: 這個套件已棄用。請遷移到 azure-monitor-query-logs 與 azure-monitor-query-metrics。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-monitor-query
+---
+
+# Azure Monitor Query SDK for Java
+
+&gt; **棄用通知**：這個套件已棄用，請改用：
+&gt; - `azure-monitor-query-logs`：用於 Log Analytics 查詢
+&gt; - `azure-monitor-query-metrics`：用於 metric 查詢
+&gt;
+&gt; 遷移指南：[Logs 遷移](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query-logs/migration-guide.md) | [Metrics 遷移](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query-metrics/migration-guide.md)
+
+用來查詢 Azure Monitor Logs 與 Metrics 的 client library。
+
+## 安裝
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-monitor-query&lt;/artifactId&gt;
+    &lt;version&gt;1.5.9&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+或使用 Azure SDK BOM：
+
+```xml
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.azure&lt;/groupId&gt;
+            &lt;artifactId&gt;azure-sdk-bom&lt;/artifactId&gt;
+            &lt;version&gt;{bom_version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure&lt;/groupId&gt;
+        &lt;artifactId&gt;azure-monitor-query&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+```
+
+## 前置條件
+
+- Log Analytics workspace（用於 log 查詢）
+- Azure 資源（用於 metric 查詢）
+- 具備適當權限的 TokenCredential
+
+## 環境變數
+
+```bash
+LOG_ANALYTICS_WORKSPACE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  # 查詢 Log Analytics workspace 時必填
+AZURE_RESOURCE_ID=/subscriptions/{sub}/resourceGroups/{rg}/providers/{provider}/{resource}  # 針對資源查詢 metric 時必填
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 建立 Client
+
+### LogsQueryClient（同步）
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.azure.monitor.query.LogsQueryClient;
+import com.azure.monitor.query.LogsQueryClientBuilder;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+LogsQueryClient logsClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .buildClient();
+```
+
+### LogsQueryAsyncClient
+
+```java
+import com.azure.monitor.query.LogsQueryAsyncClient;
+
+LogsQueryAsyncClient logsAsyncClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .buildAsyncClient();
+```
+
+### MetricsQueryClient（同步）
+
+```java
+import com.azure.monitor.query.MetricsQueryClient;
+import com.azure.monitor.query.MetricsQueryClientBuilder;
+
+MetricsQueryClient metricsClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .buildClient();
+```
+
+### MetricsQueryAsyncClient
+
+```java
+import com.azure.monitor.query.MetricsQueryAsyncClient;
+
+MetricsQueryAsyncClient metricsAsyncClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .buildAsyncClient();
+```
+
+### 主權雲設定
+
+```java
+// Azure 中國雲：Logs
+LogsQueryClient logsClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .endpoint(&quot;https://api.loganalytics.azure.cn/v1&quot;)
+    .buildClient();
+
+// Azure 中國雲：Metrics
+MetricsQueryClient metricsClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .endpoint(&quot;https://management.chinacloudapi.cn&quot;)
+    .buildClient();
+```
+
+## 關鍵概念
+
+| 概念 | 說明 |
+|---------|-------------|
+| Logs | 透過 Kusto Query Language 取得的 Azure 資源 log 與效能資料 |
+| Metrics | 以固定間隔收集的數值時間序列資料 |
+| Workspace ID | Log Analytics workspace 的識別碼 |
+| Resource ID | 用於 metric 查詢的 Azure 資源 URI |
+| QueryTimeInterval | 查詢的時間範圍 |
+
+## Logs 查詢操作
+
+### 基本查詢
+
+```java
+import com.azure.monitor.query.models.LogsQueryResult;
+import com.azure.monitor.query.models.LogsTableRow;
+import com.azure.monitor.query.models.QueryTimeInterval;
+import java.time.Duration;
+
+LogsQueryResult result = logsClient.queryWorkspace(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | summarize count() by ResourceGroup | top 10 by count_&quot;,
+    new QueryTimeInterval(Duration.ofDays(7))
+);
+
+for (LogsTableRow row : result.getTable().getRows()) {
+    System.out.println(row.getColumnValue(&quot;ResourceGroup&quot;) + &quot;: &quot; + row.getColumnValue(&quot;count_&quot;));
+}
+```
+
+### 用 Resource ID 查詢
+
+```java
+LogsQueryResult result = logsClient.queryResource(
+    &quot;{resource-id}&quot;,
+    &quot;AzureMetrics | where TimeGenerated &gt; ago(1h)&quot;,
+    new QueryTimeInterval(Duration.ofDays(1))
+);
+
+for (LogsTableRow row : result.getTable().getRows()) {
+    System.out.println(row.getColumnValue(&quot;MetricName&quot;) + &quot; &quot; + row.getColumnValue(&quot;Average&quot;));
+}
+```
+
+### 把結果對應到自訂 Model
+
+```java
+// 定義 model class
+public class ActivityLog {
+    private String resourceGroup;
+    private String operationName;
+    
+    public String getResourceGroup() { return resourceGroup; }
+    public String getOperationName() { return operationName; }
+}
+
+// 搭配 model mapping 查詢
+List&lt;ActivityLog&gt; logs = logsClient.queryWorkspace(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | project ResourceGroup, OperationName | take 100&quot;,
+    new QueryTimeInterval(Duration.ofDays(2)),
+    ActivityLog.class
+);
+
+for (ActivityLog log : logs) {
+    System.out.println(log.getOperationName() + &quot; - &quot; + log.getResourceGroup());
+}
+```
+
+### 批次查詢
+
+```java
+import com.azure.monitor.query.models.LogsBatchQuery;
+import com.azure.monitor.query.models.LogsBatchQueryResult;
+import com.azure.monitor.query.models.LogsBatchQueryResultCollection;
+import com.azure.core.util.Context;
+
+LogsBatchQuery batchQuery = new LogsBatchQuery();
+String q1 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;AzureActivity | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+String q2 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;Heartbeat | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+String q3 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;Perf | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+
+LogsBatchQueryResultCollection results = logsClient
+    .queryBatchWithResponse(batchQuery, Context.NONE)
+    .getValue();
+
+LogsBatchQueryResult result1 = results.getResult(q1);
+LogsBatchQueryResult result2 = results.getResult(q2);
+LogsBatchQueryResult result3 = results.getResult(q3);
+
+// 檢查是否有失敗
+if (result3.getQueryResultStatus() == LogsQueryResultStatus.FAILURE) {
+    System.err.println(&quot;Query failed: &quot; + result3.getError().getMessage());
+}
+```
+
+### 帶選項的查詢
+
+```java
+import com.azure.monitor.query.models.LogsQueryOptions;
+import com.azure.core.http.rest.Response;
+
+LogsQueryOptions options = new LogsQueryOptions()
+    .setServerTimeout(Duration.ofMinutes(10))
+    .setIncludeStatistics(true)
+    .setIncludeVisualization(true);
+
+Response&lt;LogsQueryResult&gt; response = logsClient.queryWorkspaceWithResponse(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | summarize count() by bin(TimeGenerated, 1h)&quot;,
+    new QueryTimeInterval(Duration.ofDays(7)),
+    options,
+    Context.NONE
+);
+
+LogsQueryResult result = response.getValue();
+
+// 存取統計資料
+BinaryData statistics = result.getStatistics();
+// 存取視覺化資料
+BinaryData visualization = result.getVisualization();
+```
+
+### 查詢多個 Workspace
+
+```java
+import java.util.Arrays;
+
+LogsQueryOptions options = new LogsQueryOptions()
+    .setAdditionalWorkspaces(Arrays.asList(&quot;{workspace-id-2}&quot;, &quot;{workspace-id-3}&quot;));
+
+Response&lt;LogsQueryResult&gt; response = logsClient.queryWorkspaceWithResponse(
+    &quot;{workspace-id-1}&quot;,
+    &quot;AzureActivity | summarize count() by TenantId&quot;,
+    new QueryTimeInterval(Duration.ofDays(1)),
+    options,
+    Context.NONE
+);
+```
+
+## Metrics 查詢操作
+
+### 基本 Metrics 查詢
+
+```java
+import com.azure.monitor.query.models.MetricsQueryResult;
+import com.azure.monitor.query.models.MetricResult;
+import com.azure.monitor.query.models.TimeSeriesElement;
+import com.azure.monitor.query.models.MetricValue;
+import java.util.Arrays;
+
+MetricsQueryResult result = metricsClient.queryResource(
+    &quot;{resource-uri}&quot;,
+    Arrays.asList(&quot;SuccessfulCalls&quot;, &quot;TotalCalls&quot;)
+);
+
+for (MetricResult metric : result.getMetrics()) {
+    System.out.println(&quot;Metric: &quot; + metric.getMetricName());
+    for (TimeSeriesElement ts : metric.getTimeSeries()) {
+        System.out.println(&quot;  Dimensions: &quot; + ts.getMetadata());
+        for (MetricValue value : ts.getValues()) {
+            System.out.println(&quot;    &quot; + value.getTimeStamp() + &quot;: &quot; + value.getTotal());
+        }
+    }
+}
+```
+
+### 帶聚合的 Metrics
+
+```java
+import com.azure.monitor.query.models.MetricsQueryOptions;
+import com.azure.monitor.query.models.AggregationType;
+
+Response&lt;MetricsQueryResult&gt; response = metricsClient.queryResourceWithResponse(
+    &quot;{resource-id}&quot;,
+    Arrays.asList(&quot;SuccessfulCalls&quot;, &quot;TotalCalls&quot;),
+    new MetricsQueryOptions()
+        .setGranularity(Duration.ofHours(1))
+        .setAggregations(Arrays.asList(AggregationType.AVERAGE, AggregationType.COUNT)),
+    Context.NONE
+);
+
+MetricsQueryResult result = response.getValue();
+```
+
+### 查詢多個資源（MetricsClient）
+
+```java
+import com.azure.monitor.query.MetricsClient;
+import com.azure.monitor.query.MetricsClientBuilder;
+import com.azure.monitor.query.models.MetricsQueryResourcesResult;
+
+MetricsClient metricsClient = new MetricsClientBuilder()
+    .credential(new DefaultAzureCredentialBuilder().build())
+    .endpoint(&quot;{endpoint}&quot;)
+    .buildClient();
+
+MetricsQueryResourcesResult result = metricsClient.queryResources(
+    Arrays.asList(&quot;{resourceId1}&quot;, &quot;{resourceId2}&quot;),
+    Arrays.asList(&quot;{metric1}&quot;, &quot;{metric2}&quot;),
+    &quot;{metricNamespace}&quot;
+);
+
+for (MetricsQueryResult queryResult : result.getMetricsQueryResults()) {
+    for (MetricResult metric : queryResult.getMetrics()) {
+        System.out.println(metric.getMetricName());
+        metric.getTimeSeries().stream()
+            .flatMap(ts -&gt; ts.getValues().stream())
+            .forEach(mv -&gt; System.out.println(
+                mv.getTimeStamp() + &quot; Count=&quot; + mv.getCount() + &quot; Avg=&quot; + mv.getAverage()));
+    }
+}
+```
+
+## 回應結構
+
+### Logs 回應階層
+
+```
+LogsQueryResult
+├── statistics (BinaryData)
+├── visualization (BinaryData)
+├── error
+└── tables (List&lt;LogsTable&gt;)
+    ├── name
+    ├── columns (List&lt;LogsTableColumn&gt;)
+    │   ├── name
+    │   └── type
+    └── rows (List&lt;LogsTableRow&gt;)
+        ├── rowIndex
+        └── rowCells (List&lt;LogsTableCell&gt;)
+```
+
+### Metrics 回應階層
+
+```
+MetricsQueryResult
+├── granularity
+├── timeInterval
+├── namespace
+├── resourceRegion
+└── metrics (List&lt;MetricResult&gt;)
+    ├── id, name, type, unit
+    └── timeSeries (List&lt;TimeSeriesElement&gt;)
+        ├── metadata (dimensions)
+        └── values (List&lt;MetricValue&gt;)
+            ├── timeStamp
+            ├── count, average, total
+            ├── maximum, minimum
+```
+
+## 錯誤處理
+
+```java
+import com.azure.core.exception.HttpResponseException;
+import com.azure.monitor.query.models.LogsQueryResultStatus;
+
+try {
+    LogsQueryResult result = logsClient.queryWorkspace(workspaceId, query, timeInterval);
+    
+    // 檢查部分失敗
+    if (result.getStatus() == LogsQueryResultStatus.PARTIAL_FAILURE) {
+        System.err.println(&quot;Partial failure: &quot; + result.getError().getMessage());
+    }
+} catch (HttpResponseException e) {
+    System.err.println(&quot;Query failed: &quot; + e.getMessage());
+    System.err.println(&quot;Status: &quot; + e.getResponse().getStatusCode());
+}
+```
+
+## 最佳實務
+
+1. **使用批次查詢**：把多個查詢合併成一個請求
+2. **設定適當的 timeout**：長查詢可能需要延長 server timeout
+3. **限制結果大小**：在 Kusto 查詢裡用 `top` 或 `take`
+4. **使用 projection**：用 `project` 只選需要的欄位
+5. **檢查查詢狀態**：優雅地處理 PARTIAL_FAILURE 結果
+6. **快取結果**：Metric 不會常變動，適合時就快取
+7. **遷移到新套件**：規劃遷移到 `azure-monitor-query-logs` 與 `azure-monitor-query-metrics`
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| Maven 套件 | https://central.sonatype.com/artifact/com.azure/azure-monitor-query |
+| GitHub | https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/monitor/azure-monitor-query |
+| API 參考 | https://learn.microsoft.com/java/api/com.azure.monitor.query |
+| Kusto Query Language | https://learn.microsoft.com/azure/data-explorer/kusto/query/ |
+| Log Analytics 限制 | https://learn.microsoft.com/azure/azure-monitor/service-limits#la-query-api |
+| 疑難排解 | https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query/TROUBLESHOOTING.md |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-monitor-query-java
+description: |
+  Azure Monitor Query SDK for Java. Execute Kusto queries against Log Analytics workspaces and query metrics from Azure resources.
+  Triggers: &quot;LogsQueryClient java&quot;, &quot;MetricsQueryClient java&quot;, &quot;kusto query java&quot;, &quot;log analytics java&quot;, &quot;azure monitor query java&quot;.
+  Note: This package is deprecated. Migrate to azure-monitor-query-logs and azure-monitor-query-metrics.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-monitor-query
+---
+
+# Azure Monitor Query SDK for Java
+
+&gt; **DEPRECATION NOTICE**: This package is deprecated in favor of:
+&gt; - `azure-monitor-query-logs` — For Log Analytics queries
+&gt; - `azure-monitor-query-metrics` — For metrics queries
+&gt;
+&gt; See migration guides: [Logs Migration](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query-logs/migration-guide.md) | [Metrics Migration](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query-metrics/migration-guide.md)
+
+Client library for querying Azure Monitor Logs and Metrics.
+
+## Installation
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-monitor-query&lt;/artifactId&gt;
+    &lt;version&gt;1.5.9&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+Or use Azure SDK BOM:
+
+```xml
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.azure&lt;/groupId&gt;
+            &lt;artifactId&gt;azure-sdk-bom&lt;/artifactId&gt;
+            &lt;version&gt;{bom_version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure&lt;/groupId&gt;
+        &lt;artifactId&gt;azure-monitor-query&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+```
+
+## Prerequisites
+
+- Log Analytics workspace (for logs queries)
+- Azure resource (for metrics queries)
+- TokenCredential with appropriate permissions
+
+## Environment Variables
+
+```bash
+LOG_ANALYTICS_WORKSPACE_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  # Required for Log Analytics workspace queries
+AZURE_RESOURCE_ID=/subscriptions/{sub}/resourceGroups/{rg}/providers/{provider}/{resource}  # Required for metrics queries against a resource
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Client Creation
+
+### LogsQueryClient (Sync)
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.azure.monitor.query.LogsQueryClient;
+import com.azure.monitor.query.LogsQueryClientBuilder;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+LogsQueryClient logsClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .buildClient();
+```
+
+### LogsQueryAsyncClient
+
+```java
+import com.azure.monitor.query.LogsQueryAsyncClient;
+
+LogsQueryAsyncClient logsAsyncClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .buildAsyncClient();
+```
+
+### MetricsQueryClient (Sync)
+
+```java
+import com.azure.monitor.query.MetricsQueryClient;
+import com.azure.monitor.query.MetricsQueryClientBuilder;
+
+MetricsQueryClient metricsClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .buildClient();
+```
+
+### MetricsQueryAsyncClient
+
+```java
+import com.azure.monitor.query.MetricsQueryAsyncClient;
+
+MetricsQueryAsyncClient metricsAsyncClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .buildAsyncClient();
+```
+
+### Sovereign Cloud Configuration
+
+```java
+// Azure China Cloud - Logs
+LogsQueryClient logsClient = new LogsQueryClientBuilder()
+    .credential(credential)
+    .endpoint(&quot;https://api.loganalytics.azure.cn/v1&quot;)
+    .buildClient();
+
+// Azure China Cloud - Metrics
+MetricsQueryClient metricsClient = new MetricsQueryClientBuilder()
+    .credential(credential)
+    .endpoint(&quot;https://management.chinacloudapi.cn&quot;)
+    .buildClient();
+```
+
+## Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| Logs | Log and performance data from Azure resources via Kusto Query Language |
+| Metrics | Numeric time-series data collected at regular intervals |
+| Workspace ID | Log Analytics workspace identifier |
+| Resource ID | Azure resource URI for metrics queries |
+| QueryTimeInterval | Time range for the query |
+
+## Logs Query Operations
+
+### Basic Query
+
+```java
+import com.azure.monitor.query.models.LogsQueryResult;
+import com.azure.monitor.query.models.LogsTableRow;
+import com.azure.monitor.query.models.QueryTimeInterval;
+import java.time.Duration;
+
+LogsQueryResult result = logsClient.queryWorkspace(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | summarize count() by ResourceGroup | top 10 by count_&quot;,
+    new QueryTimeInterval(Duration.ofDays(7))
+);
+
+for (LogsTableRow row : result.getTable().getRows()) {
+    System.out.println(row.getColumnValue(&quot;ResourceGroup&quot;) + &quot;: &quot; + row.getColumnValue(&quot;count_&quot;));
+}
+```
+
+### Query by Resource ID
+
+```java
+LogsQueryResult result = logsClient.queryResource(
+    &quot;{resource-id}&quot;,
+    &quot;AzureMetrics | where TimeGenerated &gt; ago(1h)&quot;,
+    new QueryTimeInterval(Duration.ofDays(1))
+);
+
+for (LogsTableRow row : result.getTable().getRows()) {
+    System.out.println(row.getColumnValue(&quot;MetricName&quot;) + &quot; &quot; + row.getColumnValue(&quot;Average&quot;));
+}
+```
+
+### Map Results to Custom Model
+
+```java
+// Define model class
+public class ActivityLog {
+    private String resourceGroup;
+    private String operationName;
+    
+    public String getResourceGroup() { return resourceGroup; }
+    public String getOperationName() { return operationName; }
+}
+
+// Query with model mapping
+List&lt;ActivityLog&gt; logs = logsClient.queryWorkspace(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | project ResourceGroup, OperationName | take 100&quot;,
+    new QueryTimeInterval(Duration.ofDays(2)),
+    ActivityLog.class
+);
+
+for (ActivityLog log : logs) {
+    System.out.println(log.getOperationName() + &quot; - &quot; + log.getResourceGroup());
+}
+```
+
+### Batch Query
+
+```java
+import com.azure.monitor.query.models.LogsBatchQuery;
+import com.azure.monitor.query.models.LogsBatchQueryResult;
+import com.azure.monitor.query.models.LogsBatchQueryResultCollection;
+import com.azure.core.util.Context;
+
+LogsBatchQuery batchQuery = new LogsBatchQuery();
+String q1 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;AzureActivity | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+String q2 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;Heartbeat | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+String q3 = batchQuery.addWorkspaceQuery(&quot;{workspace-id}&quot;, &quot;Perf | count&quot;, new QueryTimeInterval(Duration.ofDays(1)));
+
+LogsBatchQueryResultCollection results = logsClient
+    .queryBatchWithResponse(batchQuery, Context.NONE)
+    .getValue();
+
+LogsBatchQueryResult result1 = results.getResult(q1);
+LogsBatchQueryResult result2 = results.getResult(q2);
+LogsBatchQueryResult result3 = results.getResult(q3);
+
+// Check for failures
+if (result3.getQueryResultStatus() == LogsQueryResultStatus.FAILURE) {
+    System.err.println(&quot;Query failed: &quot; + result3.getError().getMessage());
+}
+```
+
+### Query with Options
+
+```java
+import com.azure.monitor.query.models.LogsQueryOptions;
+import com.azure.core.http.rest.Response;
+
+LogsQueryOptions options = new LogsQueryOptions()
+    .setServerTimeout(Duration.ofMinutes(10))
+    .setIncludeStatistics(true)
+    .setIncludeVisualization(true);
+
+Response&lt;LogsQueryResult&gt; response = logsClient.queryWorkspaceWithResponse(
+    &quot;{workspace-id}&quot;,
+    &quot;AzureActivity | summarize count() by bin(TimeGenerated, 1h)&quot;,
+    new QueryTimeInterval(Duration.ofDays(7)),
+    options,
+    Context.NONE
+);
+
+LogsQueryResult result = response.getValue();
+
+// Access statistics
+BinaryData statistics = result.getStatistics();
+// Access visualization data
+BinaryData visualization = result.getVisualization();
+```
+
+### Query Multiple Workspaces
+
+```java
+import java.util.Arrays;
+
+LogsQueryOptions options = new LogsQueryOptions()
+    .setAdditionalWorkspaces(Arrays.asList(&quot;{workspace-id-2}&quot;, &quot;{workspace-id-3}&quot;));
+
+Response&lt;LogsQueryResult&gt; response = logsClient.queryWorkspaceWithResponse(
+    &quot;{workspace-id-1}&quot;,
+    &quot;AzureActivity | summarize count() by TenantId&quot;,
+    new QueryTimeInterval(Duration.ofDays(1)),
+    options,
+    Context.NONE
+);
+```
+
+## Metrics Query Operations
+
+### Basic Metrics Query
+
+```java
+import com.azure.monitor.query.models.MetricsQueryResult;
+import com.azure.monitor.query.models.MetricResult;
+import com.azure.monitor.query.models.TimeSeriesElement;
+import com.azure.monitor.query.models.MetricValue;
+import java.util.Arrays;
+
+MetricsQueryResult result = metricsClient.queryResource(
+    &quot;{resource-uri}&quot;,
+    Arrays.asList(&quot;SuccessfulCalls&quot;, &quot;TotalCalls&quot;)
+);
+
+for (MetricResult metric : result.getMetrics()) {
+    System.out.println(&quot;Metric: &quot; + metric.getMetricName());
+    for (TimeSeriesElement ts : metric.getTimeSeries()) {
+        System.out.println(&quot;  Dimensions: &quot; + ts.getMetadata());
+        for (MetricValue value : ts.getValues()) {
+            System.out.println(&quot;    &quot; + value.getTimeStamp() + &quot;: &quot; + value.getTotal());
+        }
+    }
+}
+```
+
+### Metrics with Aggregations
+
+```java
+import com.azure.monitor.query.models.MetricsQueryOptions;
+import com.azure.monitor.query.models.AggregationType;
+
+Response&lt;MetricsQueryResult&gt; response = metricsClient.queryResourceWithResponse(
+    &quot;{resource-id}&quot;,
+    Arrays.asList(&quot;SuccessfulCalls&quot;, &quot;TotalCalls&quot;),
+    new MetricsQueryOptions()
+        .setGranularity(Duration.ofHours(1))
+        .setAggregations(Arrays.asList(AggregationType.AVERAGE, AggregationType.COUNT)),
+    Context.NONE
+);
+
+MetricsQueryResult result = response.getValue();
+```
+
+### Query Multiple Resources (MetricsClient)
+
+```java
+import com.azure.monitor.query.MetricsClient;
+import com.azure.monitor.query.MetricsClientBuilder;
+import com.azure.monitor.query.models.MetricsQueryResourcesResult;
+
+MetricsClient metricsClient = new MetricsClientBuilder()
+    .credential(new DefaultAzureCredentialBuilder().build())
+    .endpoint(&quot;{endpoint}&quot;)
+    .buildClient();
+
+MetricsQueryResourcesResult result = metricsClient.queryResources(
+    Arrays.asList(&quot;{resourceId1}&quot;, &quot;{resourceId2}&quot;),
+    Arrays.asList(&quot;{metric1}&quot;, &quot;{metric2}&quot;),
+    &quot;{metricNamespace}&quot;
+);
+
+for (MetricsQueryResult queryResult : result.getMetricsQueryResults()) {
+    for (MetricResult metric : queryResult.getMetrics()) {
+        System.out.println(metric.getMetricName());
+        metric.getTimeSeries().stream()
+            .flatMap(ts -&gt; ts.getValues().stream())
+            .forEach(mv -&gt; System.out.println(
+                mv.getTimeStamp() + &quot; Count=&quot; + mv.getCount() + &quot; Avg=&quot; + mv.getAverage()));
+    }
+}
+```
+
+## Response Structure
+
+### Logs Response Hierarchy
+
+```
+LogsQueryResult
+├── statistics (BinaryData)
+├── visualization (BinaryData)
+├── error
+└── tables (List&lt;LogsTable&gt;)
+    ├── name
+    ├── columns (List&lt;LogsTableColumn&gt;)
+    │   ├── name
+    │   └── type
+    └── rows (List&lt;LogsTableRow&gt;)
+        ├── rowIndex
+        └── rowCells (List&lt;LogsTableCell&gt;)
+```
+
+### Metrics Response Hierarchy
+
+```
+MetricsQueryResult
+├── granularity
+├── timeInterval
+├── namespace
+├── resourceRegion
+└── metrics (List&lt;MetricResult&gt;)
+    ├── id, name, type, unit
+    └── timeSeries (List&lt;TimeSeriesElement&gt;)
+        ├── metadata (dimensions)
+        └── values (List&lt;MetricValue&gt;)
+            ├── timeStamp
+            ├── count, average, total
+            ├── maximum, minimum
+```
+
+## Error Handling
+
+```java
+import com.azure.core.exception.HttpResponseException;
+import com.azure.monitor.query.models.LogsQueryResultStatus;
+
+try {
+    LogsQueryResult result = logsClient.queryWorkspace(workspaceId, query, timeInterval);
+    
+    // Check partial failure
+    if (result.getStatus() == LogsQueryResultStatus.PARTIAL_FAILURE) {
+        System.err.println(&quot;Partial failure: &quot; + result.getError().getMessage());
+    }
+} catch (HttpResponseException e) {
+    System.err.println(&quot;Query failed: &quot; + e.getMessage());
+    System.err.println(&quot;Status: &quot; + e.getResponse().getStatusCode());
+}
+```
+
+## Best Practices
+
+1. **Use batch queries** — Combine multiple queries into a single request
+2. **Set appropriate timeouts** — Long queries may need extended server timeout
+3. **Limit result size** — Use `top` or `take` in Kusto queries
+4. **Use projections** — Select only needed columns with `project`
+5. **Check query status** — Handle PARTIAL_FAILURE results gracefully
+6. **Cache results** — Metrics don&#x27;t change frequently; cache when appropriate
+7. **Migrate to new packages** — Plan migration to `azure-monitor-query-logs` and `azure-monitor-query-metrics`
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| Maven Package | https://central.sonatype.com/artifact/com.azure/azure-monitor-query |
+| GitHub | https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/monitor/azure-monitor-query |
+| API Reference | https://learn.microsoft.com/java/api/com.azure.monitor.query |
+| Kusto Query Language | https://learn.microsoft.com/azure/data-explorer/kusto/query/ |
+| Log Analytics Limits | https://learn.microsoft.com/azure/azure-monitor/service-limits#la-query-api |
+| Troubleshooting | https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/monitor/azure-monitor-query/TROUBLESHOOTING.md |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

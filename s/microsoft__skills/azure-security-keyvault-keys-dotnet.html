@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-security-keyvault-keys-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 管理 Key Vault 金鑰，做加密、簽章與輪替">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-security-keyvault-keys-dotnet</h1>
+<p class="meta">Microsoft ｜ 安全護欄 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-security-keyvault-keys-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 管理 Key Vault 金鑰，做加密、簽章與輪替</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-security-keyvault-keys-dotnet
+description: |
+  .NET 版的 Azure Key Vault Keys SDK。用來管理 Azure Key Vault 和 Managed HSM 裡加密金鑰的 client library。用於建立金鑰、輪替、加密、解密、簽章和驗章。Triggers: &quot;Key Vault keys&quot;, &quot;KeyClient&quot;, &quot;CryptographyClient&quot;, &quot;RSA key&quot;, &quot;EC key&quot;, &quot;encrypt decrypt .NET&quot;, &quot;key rotation&quot;, &quot;HSM&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Security.KeyVault.Keys
+---
+
+# Azure.Security.KeyVault.Keys (.NET)
+
+用來管理 Azure Key Vault 和 Managed HSM 裡加密金鑰的 client library。
+
+## 安裝
+
+```bash
+dotnet add package Azure.Security.KeyVault.Keys
+dotnet add package Azure.Identity
+```
+
+**目前版本**：4.7.0（stable）
+
+## 環境變數
+
+```bash
+KEY_VAULT_NAME=&lt;your-key-vault-name&gt;  # 必填：Key Vault 名稱
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net  # 選填：完整的 Key Vault URL
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## Client 階層
+
+```
+KeyClient (key management)
+├── CreateKey / CreateRsaKey / CreateEcKey
+├── GetKey / GetKeys
+├── UpdateKeyProperties
+├── DeleteKey / PurgeDeletedKey
+├── BackupKey / RestoreKey
+└── GetCryptographyClient() → CryptographyClient
+
+CryptographyClient (cryptographic operations)
+├── Encrypt / Decrypt
+├── WrapKey / UnwrapKey
+├── Sign / Verify
+└── SignData / VerifyData
+
+KeyResolver (key resolution)
+└── Resolve(keyId) → CryptographyClient
+```
+
+## 驗證
+
+### Microsoft Entra Token Credential
+
+```csharp
+using Azure.Identity;
+using Azure.Security.KeyVault.Keys;
+
+var keyVaultName = Environment.GetEnvironmentVariable(&quot;KEY_VAULT_NAME&quot;);
+var kvUri = $&quot;https://{keyVaultName}.vault.azure.net&quot;;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var client = new KeyClient(new Uri(kvUri), credential);
+```
+
+### Service Principal
+
+```csharp
+var credential = new ClientSecretCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    clientSecret: &quot;&lt;client-secret&gt;&quot;);
+
+var client = new KeyClient(new Uri(kvUri), credential);
+```
+
+## 金鑰管理
+
+### 建立金鑰
+
+```csharp
+// 建立 RSA 金鑰
+KeyVaultKey rsaKey = await client.CreateKeyAsync(&quot;my-rsa-key&quot;, KeyType.Rsa);
+Console.WriteLine($&quot;Created key: {rsaKey.Name}, Type: {rsaKey.KeyType}&quot;);
+
+// 用選項建立 RSA 金鑰
+var rsaOptions = new CreateRsaKeyOptions(&quot;my-rsa-key-2048&quot;)
+{
+    KeySize = 2048,
+    HardwareProtected = false, // true 表示由 HSM 支援
+    ExpiresOn = DateTimeOffset.UtcNow.AddYears(1),
+    NotBefore = DateTimeOffset.UtcNow,
+    Enabled = true
+};
+rsaOptions.KeyOperations.Add(KeyOperation.Encrypt);
+rsaOptions.KeyOperations.Add(KeyOperation.Decrypt);
+
+KeyVaultKey rsaKey2 = await client.CreateRsaKeyAsync(rsaOptions);
+
+// 建立 EC 金鑰
+var ecOptions = new CreateEcKeyOptions(&quot;my-ec-key&quot;)
+{
+    CurveName = KeyCurveName.P256,
+    HardwareProtected = true // 由 HSM 支援
+};
+KeyVaultKey ecKey = await client.CreateEcKeyAsync(ecOptions);
+
+// 建立用於 wrap/unwrap 的 Oct（對稱）金鑰
+var octOptions = new CreateOctKeyOptions(&quot;my-oct-key&quot;)
+{
+    KeySize = 256,
+    HardwareProtected = true
+};
+KeyVaultKey octKey = await client.CreateOctKeyAsync(octOptions);
+```
+
+### 取得金鑰
+
+```csharp
+// 取得特定金鑰（最新版本）
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+Console.WriteLine($&quot;Key ID: {key.Id}&quot;);
+Console.WriteLine($&quot;Key Type: {key.KeyType}&quot;);
+Console.WriteLine($&quot;Version: {key.Properties.Version}&quot;);
+
+// 取得特定版本
+KeyVaultKey keyVersion = await client.GetKeyAsync(&quot;my-rsa-key&quot;, &quot;version-id&quot;);
+
+// 列出所有金鑰
+await foreach (KeyProperties keyProps in client.GetPropertiesOfKeysAsync())
+{
+    Console.WriteLine($&quot;Key: {keyProps.Name}, Enabled: {keyProps.Enabled}&quot;);
+}
+
+// 列出金鑰的各個版本
+await foreach (KeyProperties version in client.GetPropertiesOfKeyVersionsAsync(&quot;my-rsa-key&quot;))
+{
+    Console.WriteLine($&quot;Version: {version.Version}, Created: {version.CreatedOn}&quot;);
+}
+```
+
+### 更新金鑰屬性
+
+```csharp
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+
+key.Properties.ExpiresOn = DateTimeOffset.UtcNow.AddYears(2);
+key.Properties.Tags[&quot;environment&quot;] = &quot;production&quot;;
+
+KeyVaultKey updatedKey = await client.UpdateKeyPropertiesAsync(key.Properties);
+```
+
+### 刪除與 Purge 金鑰
+
+```csharp
+// 開始刪除操作
+DeleteKeyOperation operation = await client.StartDeleteKeyAsync(&quot;my-rsa-key&quot;);
+
+// 等刪除完成（purge 之前必須先完成）
+await operation.WaitForCompletionAsync();
+Console.WriteLine($&quot;Deleted key scheduled purge date: {operation.Value.ScheduledPurgeDate}&quot;);
+
+// 立即 purge（如果有啟用 soft-delete）
+await client.PurgeDeletedKeyAsync(&quot;my-rsa-key&quot;);
+
+// 或是復原已刪除的金鑰
+KeyVaultKey recoveredKey = await client.StartRecoverDeletedKeyAsync(&quot;my-rsa-key&quot;);
+```
+
+### 備份與還原
+
+```csharp
+// 備份金鑰
+byte[] backup = await client.BackupKeyAsync(&quot;my-rsa-key&quot;);
+await File.WriteAllBytesAsync(&quot;key-backup.bin&quot;, backup);
+
+// 還原金鑰
+byte[] backupData = await File.ReadAllBytesAsync(&quot;key-backup.bin&quot;);
+KeyVaultKey restoredKey = await client.RestoreKeyBackupAsync(backupData);
+```
+
+## 加密操作
+
+### 取得 CryptographyClient
+
+```csharp
+// 從 KeyClient 取得
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+CryptographyClient cryptoClient = client.GetCryptographyClient(
+    key.Name, 
+    key.Properties.Version);
+
+// 或用 key ID 直接建立
+CryptographyClient cryptoClient = new CryptographyClient(
+    new Uri(&quot;https://myvault.vault.azure.net/keys/my-rsa-key/version&quot;),
+    new DefaultAzureCredential());
+```
+
+### 加密與解密
+
+```csharp
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;Secret message to encrypt&quot;);
+
+// 加密
+EncryptResult encryptResult = await cryptoClient.EncryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    plaintext);
+Console.WriteLine($&quot;Encrypted: {Convert.ToBase64String(encryptResult.Ciphertext)}&quot;);
+
+// 解密
+DecryptResult decryptResult = await cryptoClient.DecryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    encryptResult.Ciphertext);
+string decrypted = Encoding.UTF8.GetString(decryptResult.Plaintext);
+Console.WriteLine($&quot;Decrypted: {decrypted}&quot;);
+```
+
+### Wrap 與 Unwrap 金鑰
+
+```csharp
+// 要 wrap 的金鑰（例如 AES 金鑰）
+byte[] keyToWrap = new byte[32]; // 256-bit 金鑰
+RandomNumberGenerator.Fill(keyToWrap);
+
+// Wrap 金鑰
+WrapResult wrapResult = await cryptoClient.WrapKeyAsync(
+    KeyWrapAlgorithm.RsaOaep256, 
+    keyToWrap);
+
+// Unwrap 金鑰
+UnwrapResult unwrapResult = await cryptoClient.UnwrapKeyAsync(
+    KeyWrapAlgorithm.RsaOaep256, 
+    wrapResult.EncryptedKey);
+```
+
+### 簽章與驗章
+
+```csharp
+// 要簽章的資料
+byte[] data = Encoding.UTF8.GetBytes(&quot;Data to sign&quot;);
+
+// 簽章資料（內部會計算 hash）
+SignResult signResult = await cryptoClient.SignDataAsync(
+    SignatureAlgorithm.RS256, 
+    data);
+
+// 驗證簽章
+VerifyResult verifyResult = await cryptoClient.VerifyDataAsync(
+    SignatureAlgorithm.RS256, 
+    data, 
+    signResult.Signature);
+Console.WriteLine($&quot;Signature valid: {verifyResult.IsValid}&quot;);
+
+// 或是簽章預先算好的 hash
+using var sha256 = SHA256.Create();
+byte[] hash = sha256.ComputeHash(data);
+
+SignResult signHashResult = await cryptoClient.SignAsync(
+    SignatureAlgorithm.RS256, 
+    hash);
+```
+
+## Key Resolver
+
+```csharp
+using Azure.Security.KeyVault.Keys.Cryptography;
+
+var resolver = new KeyResolver(new DefaultAzureCredential());
+
+// 用 ID 解析金鑰，取得 CryptographyClient
+CryptographyClient cryptoClient = await resolver.ResolveAsync(
+    new Uri(&quot;https://myvault.vault.azure.net/keys/my-key/version&quot;));
+
+// 用來加密
+EncryptResult result = await cryptoClient.EncryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    plaintext);
+```
+
+## 金鑰輪替
+
+```csharp
+// 輪替金鑰（會建立新版本）
+KeyVaultKey rotatedKey = await client.RotateKeyAsync(&quot;my-rsa-key&quot;);
+Console.WriteLine($&quot;New version: {rotatedKey.Properties.Version}&quot;);
+
+// 取得輪替政策
+KeyRotationPolicy policy = await client.GetKeyRotationPolicyAsync(&quot;my-rsa-key&quot;);
+
+// 更新輪替政策
+policy.ExpiresIn = &quot;P90D&quot;; // 90 天
+policy.LifetimeActions.Add(new KeyRotationLifetimeAction
+{
+    Action = KeyRotationPolicyAction.Rotate,
+    TimeBeforeExpiry = &quot;P30D&quot; // 到期前 30 天輪替
+});
+
+await client.UpdateKeyRotationPolicyAsync(&quot;my-rsa-key&quot;, policy);
+```
+
+## 金鑰型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `KeyClient` | 金鑰管理操作 |
+| `CryptographyClient` | 加密操作 |
+| `KeyResolver` | 把 key ID 解析成 CryptographyClient |
+| `KeyVaultKey` | 帶有加密素材的金鑰 |
+| `KeyProperties` | 金鑰 metadata（沒有加密素材） |
+| `CreateRsaKeyOptions` | RSA 金鑰建立選項 |
+| `CreateEcKeyOptions` | EC 金鑰建立選項 |
+| `CreateOctKeyOptions` | 對稱金鑰選項 |
+| `EncryptResult` | 加密結果 |
+| `DecryptResult` | 解密結果 |
+| `SignResult` | 簽章結果 |
+| `VerifyResult` | 驗章結果 |
+| `WrapResult` | 金鑰 wrap 結果 |
+| `UnwrapResult` | 金鑰 unwrap 結果 |
+
+## 演算法參考
+
+### 加密演算法
+| 演算法 | 金鑰型別 | 說明 |
+|-----------|----------|-------------|
+| `RsaOaep` | RSA | RSA-OAEP |
+| `RsaOaep256` | RSA | RSA-OAEP-256 |
+| `Rsa15` | RSA | RSA 1.5（舊式） |
+| `A128Gcm` | Oct | AES-128-GCM |
+| `A256Gcm` | Oct | AES-256-GCM |
+
+### 簽章演算法
+| 演算法 | 金鑰型別 | 說明 |
+|-----------|----------|-------------|
+| `RS256` | RSA | RSASSA-PKCS1-v1_5 SHA-256 |
+| `RS384` | RSA | RSASSA-PKCS1-v1_5 SHA-384 |
+| `RS512` | RSA | RSASSA-PKCS1-v1_5 SHA-512 |
+| `PS256` | RSA | RSASSA-PSS SHA-256 |
+| `ES256` | EC | ECDSA P-256 SHA-256 |
+| `ES384` | EC | ECDSA P-384 SHA-384 |
+| `ES512` | EC | ECDSA P-521 SHA-512 |
+
+### 金鑰 Wrap 演算法
+| 演算法 | 金鑰型別 | 說明 |
+|-----------|----------|-------------|
+| `RsaOaep` | RSA | RSA-OAEP |
+| `RsaOaep256` | RSA | RSA-OAEP-256 |
+| `A128KW` | Oct | AES-128 Key Wrap |
+| `A256KW` | Oct | AES-256 Key Wrap |
+
+## 最佳實務
+
+1. **用 Managed Identity** — 優先用 `DefaultAzureCredential`，不要用 secret
+2. **啟用 soft-delete** — 防止誤刪
+3. **用 HSM 支援的金鑰** — 敏感金鑰要設 `HardwareProtected = true`
+4. **實作金鑰輪替** — 用自動輪替政策
+5. **限制金鑰操作** — 只啟用需要的 `KeyOperations`
+6. **設定到期日** — 金鑰一定要設 `ExpiresOn`
+7. **指定版本** — production 要固定在特定版本
+8. **快取 CryptographyClient** — 多次操作時重複使用
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    KeyVaultKey key = await client.GetKeyAsync(&quot;my-key&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 404)
+{
+    Console.WriteLine(&quot;Key not found&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 403)
+{
+    Console.WriteLine(&quot;Access denied - check RBAC permissions&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Key Vault error: {ex.Status} - {ex.Message}&quot;);
+}
+```
+
+## 必要的 RBAC 角色
+
+| 角色 | 權限 |
+|------|-------------|
+| Key Vault Crypto Officer | 完整的金鑰管理 |
+| Key Vault Crypto User | 使用金鑰做加密操作 |
+| Key Vault Reader | 讀取金鑰 metadata |
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Azure.Security.KeyVault.Keys` | Keys（本 SDK） | `dotnet add package Azure.Security.KeyVault.Keys` |
+| `Azure.Security.KeyVault.Secrets` | Secrets | `dotnet add package Azure.Security.KeyVault.Secrets` |
+| `Azure.Security.KeyVault.Certificates` | Certificates | `dotnet add package Azure.Security.KeyVault.Certificates` |
+| `Azure.Identity` | 驗證 | `dotnet add package Azure.Identity` |
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.Security.KeyVault.Keys |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.security.keyvault.keys |
+| Quickstart | https://learn.microsoft.com/azure/key-vault/keys/quick-create-net |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/keyvault/Azure.Security.KeyVault.Keys |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-security-keyvault-keys-dotnet
+description: |
+  Azure Key Vault Keys SDK for .NET. Client library for managing cryptographic keys in Azure Key Vault and Managed HSM. Use for key creation, rotation, encryption, decryption, signing, and verification. Triggers: &quot;Key Vault keys&quot;, &quot;KeyClient&quot;, &quot;CryptographyClient&quot;, &quot;RSA key&quot;, &quot;EC key&quot;, &quot;encrypt decrypt .NET&quot;, &quot;key rotation&quot;, &quot;HSM&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Security.KeyVault.Keys
+---
+
+# Azure.Security.KeyVault.Keys (.NET)
+
+Client library for managing cryptographic keys in Azure Key Vault and Managed HSM.
+
+## Installation
+
+```bash
+dotnet add package Azure.Security.KeyVault.Keys
+dotnet add package Azure.Identity
+```
+
+**Current Version**: 4.7.0 (stable)
+
+## Environment Variables
+
+```bash
+KEY_VAULT_NAME=&lt;your-key-vault-name&gt;  # Required: Key Vault name
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net  # Optional: full Key Vault URL
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Client Hierarchy
+
+```
+KeyClient (key management)
+├── CreateKey / CreateRsaKey / CreateEcKey
+├── GetKey / GetKeys
+├── UpdateKeyProperties
+├── DeleteKey / PurgeDeletedKey
+├── BackupKey / RestoreKey
+└── GetCryptographyClient() → CryptographyClient
+
+CryptographyClient (cryptographic operations)
+├── Encrypt / Decrypt
+├── WrapKey / UnwrapKey
+├── Sign / Verify
+└── SignData / VerifyData
+
+KeyResolver (key resolution)
+└── Resolve(keyId) → CryptographyClient
+```
+
+## Authentication
+
+### Microsoft Entra Token Credential
+
+```csharp
+using Azure.Identity;
+using Azure.Security.KeyVault.Keys;
+
+var keyVaultName = Environment.GetEnvironmentVariable(&quot;KEY_VAULT_NAME&quot;);
+var kvUri = $&quot;https://{keyVaultName}.vault.azure.net&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var client = new KeyClient(new Uri(kvUri), credential);
+```
+
+### Service Principal
+
+```csharp
+var credential = new ClientSecretCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    clientSecret: &quot;&lt;client-secret&gt;&quot;);
+
+var client = new KeyClient(new Uri(kvUri), credential);
+```
+
+## Key Management
+
+### Create Keys
+
+```csharp
+// Create RSA key
+KeyVaultKey rsaKey = await client.CreateKeyAsync(&quot;my-rsa-key&quot;, KeyType.Rsa);
+Console.WriteLine($&quot;Created key: {rsaKey.Name}, Type: {rsaKey.KeyType}&quot;);
+
+// Create RSA key with options
+var rsaOptions = new CreateRsaKeyOptions(&quot;my-rsa-key-2048&quot;)
+{
+    KeySize = 2048,
+    HardwareProtected = false, // true for HSM-backed
+    ExpiresOn = DateTimeOffset.UtcNow.AddYears(1),
+    NotBefore = DateTimeOffset.UtcNow,
+    Enabled = true
+};
+rsaOptions.KeyOperations.Add(KeyOperation.Encrypt);
+rsaOptions.KeyOperations.Add(KeyOperation.Decrypt);
+
+KeyVaultKey rsaKey2 = await client.CreateRsaKeyAsync(rsaOptions);
+
+// Create EC key
+var ecOptions = new CreateEcKeyOptions(&quot;my-ec-key&quot;)
+{
+    CurveName = KeyCurveName.P256,
+    HardwareProtected = true // HSM-backed
+};
+KeyVaultKey ecKey = await client.CreateEcKeyAsync(ecOptions);
+
+// Create Oct (symmetric) key for wrap/unwrap
+var octOptions = new CreateOctKeyOptions(&quot;my-oct-key&quot;)
+{
+    KeySize = 256,
+    HardwareProtected = true
+};
+KeyVaultKey octKey = await client.CreateOctKeyAsync(octOptions);
+```
+
+### Retrieve Keys
+
+```csharp
+// Get specific key (latest version)
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+Console.WriteLine($&quot;Key ID: {key.Id}&quot;);
+Console.WriteLine($&quot;Key Type: {key.KeyType}&quot;);
+Console.WriteLine($&quot;Version: {key.Properties.Version}&quot;);
+
+// Get specific version
+KeyVaultKey keyVersion = await client.GetKeyAsync(&quot;my-rsa-key&quot;, &quot;version-id&quot;);
+
+// List all keys
+await foreach (KeyProperties keyProps in client.GetPropertiesOfKeysAsync())
+{
+    Console.WriteLine($&quot;Key: {keyProps.Name}, Enabled: {keyProps.Enabled}&quot;);
+}
+
+// List key versions
+await foreach (KeyProperties version in client.GetPropertiesOfKeyVersionsAsync(&quot;my-rsa-key&quot;))
+{
+    Console.WriteLine($&quot;Version: {version.Version}, Created: {version.CreatedOn}&quot;);
+}
+```
+
+### Update Key Properties
+
+```csharp
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+
+key.Properties.ExpiresOn = DateTimeOffset.UtcNow.AddYears(2);
+key.Properties.Tags[&quot;environment&quot;] = &quot;production&quot;;
+
+KeyVaultKey updatedKey = await client.UpdateKeyPropertiesAsync(key.Properties);
+```
+
+### Delete and Purge Keys
+
+```csharp
+// Start delete operation
+DeleteKeyOperation operation = await client.StartDeleteKeyAsync(&quot;my-rsa-key&quot;);
+
+// Wait for deletion to complete (required before purge)
+await operation.WaitForCompletionAsync();
+Console.WriteLine($&quot;Deleted key scheduled purge date: {operation.Value.ScheduledPurgeDate}&quot;);
+
+// Purge immediately (if soft-delete is enabled)
+await client.PurgeDeletedKeyAsync(&quot;my-rsa-key&quot;);
+
+// Or recover deleted key
+KeyVaultKey recoveredKey = await client.StartRecoverDeletedKeyAsync(&quot;my-rsa-key&quot;);
+```
+
+### Backup and Restore
+
+```csharp
+// Backup key
+byte[] backup = await client.BackupKeyAsync(&quot;my-rsa-key&quot;);
+await File.WriteAllBytesAsync(&quot;key-backup.bin&quot;, backup);
+
+// Restore key
+byte[] backupData = await File.ReadAllBytesAsync(&quot;key-backup.bin&quot;);
+KeyVaultKey restoredKey = await client.RestoreKeyBackupAsync(backupData);
+```
+
+## Cryptographic Operations
+
+### Get CryptographyClient
+
+```csharp
+// From KeyClient
+KeyVaultKey key = await client.GetKeyAsync(&quot;my-rsa-key&quot;);
+CryptographyClient cryptoClient = client.GetCryptographyClient(
+    key.Name, 
+    key.Properties.Version);
+
+// Or create directly with key ID
+CryptographyClient cryptoClient = new CryptographyClient(
+    new Uri(&quot;https://myvault.vault.azure.net/keys/my-rsa-key/version&quot;),
+    new DefaultAzureCredential());
+```
+
+### Encrypt and Decrypt
+
+```csharp
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;Secret message to encrypt&quot;);
+
+// Encrypt
+EncryptResult encryptResult = await cryptoClient.EncryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    plaintext);
+Console.WriteLine($&quot;Encrypted: {Convert.ToBase64String(encryptResult.Ciphertext)}&quot;);
+
+// Decrypt
+DecryptResult decryptResult = await cryptoClient.DecryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    encryptResult.Ciphertext);
+string decrypted = Encoding.UTF8.GetString(decryptResult.Plaintext);
+Console.WriteLine($&quot;Decrypted: {decrypted}&quot;);
+```
+
+### Wrap and Unwrap Keys
+
+```csharp
+// Key to wrap (e.g., AES key)
+byte[] keyToWrap = new byte[32]; // 256-bit key
+RandomNumberGenerator.Fill(keyToWrap);
+
+// Wrap key
+WrapResult wrapResult = await cryptoClient.WrapKeyAsync(
+    KeyWrapAlgorithm.RsaOaep256, 
+    keyToWrap);
+
+// Unwrap key
+UnwrapResult unwrapResult = await cryptoClient.UnwrapKeyAsync(
+    KeyWrapAlgorithm.RsaOaep256, 
+    wrapResult.EncryptedKey);
+```
+
+### Sign and Verify
+
+```csharp
+// Data to sign
+byte[] data = Encoding.UTF8.GetBytes(&quot;Data to sign&quot;);
+
+// Sign data (computes hash internally)
+SignResult signResult = await cryptoClient.SignDataAsync(
+    SignatureAlgorithm.RS256, 
+    data);
+
+// Verify signature
+VerifyResult verifyResult = await cryptoClient.VerifyDataAsync(
+    SignatureAlgorithm.RS256, 
+    data, 
+    signResult.Signature);
+Console.WriteLine($&quot;Signature valid: {verifyResult.IsValid}&quot;);
+
+// Or sign pre-computed hash
+using var sha256 = SHA256.Create();
+byte[] hash = sha256.ComputeHash(data);
+
+SignResult signHashResult = await cryptoClient.SignAsync(
+    SignatureAlgorithm.RS256, 
+    hash);
+```
+
+## Key Resolver
+
+```csharp
+using Azure.Security.KeyVault.Keys.Cryptography;
+
+var resolver = new KeyResolver(new DefaultAzureCredential());
+
+// Resolve key by ID to get CryptographyClient
+CryptographyClient cryptoClient = await resolver.ResolveAsync(
+    new Uri(&quot;https://myvault.vault.azure.net/keys/my-key/version&quot;));
+
+// Use for encryption
+EncryptResult result = await cryptoClient.EncryptAsync(
+    EncryptionAlgorithm.RsaOaep256, 
+    plaintext);
+```
+
+## Key Rotation
+
+```csharp
+// Rotate key (creates new version)
+KeyVaultKey rotatedKey = await client.RotateKeyAsync(&quot;my-rsa-key&quot;);
+Console.WriteLine($&quot;New version: {rotatedKey.Properties.Version}&quot;);
+
+// Get rotation policy
+KeyRotationPolicy policy = await client.GetKeyRotationPolicyAsync(&quot;my-rsa-key&quot;);
+
+// Update rotation policy
+policy.ExpiresIn = &quot;P90D&quot;; // 90 days
+policy.LifetimeActions.Add(new KeyRotationLifetimeAction
+{
+    Action = KeyRotationPolicyAction.Rotate,
+    TimeBeforeExpiry = &quot;P30D&quot; // Rotate 30 days before expiry
+});
+
+await client.UpdateKeyRotationPolicyAsync(&quot;my-rsa-key&quot;, policy);
+```
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `KeyClient` | Key management operations |
+| `CryptographyClient` | Cryptographic operations |
+| `KeyResolver` | Resolve key ID to CryptographyClient |
+| `KeyVaultKey` | Key with cryptographic material |
+| `KeyProperties` | Key metadata (no crypto material) |
+| `CreateRsaKeyOptions` | RSA key creation options |
+| `CreateEcKeyOptions` | EC key creation options |
+| `CreateOctKeyOptions` | Symmetric key options |
+| `EncryptResult` | Encryption result |
+| `DecryptResult` | Decryption result |
+| `SignResult` | Signing result |
+| `VerifyResult` | Verification result |
+| `WrapResult` | Key wrap result |
+| `UnwrapResult` | Key unwrap result |
+
+## Algorithms Reference
+
+### Encryption Algorithms
+| Algorithm | Key Type | Description |
+|-----------|----------|-------------|
+| `RsaOaep` | RSA | RSA-OAEP |
+| `RsaOaep256` | RSA | RSA-OAEP-256 |
+| `Rsa15` | RSA | RSA 1.5 (legacy) |
+| `A128Gcm` | Oct | AES-128-GCM |
+| `A256Gcm` | Oct | AES-256-GCM |
+
+### Signature Algorithms
+| Algorithm | Key Type | Description |
+|-----------|----------|-------------|
+| `RS256` | RSA | RSASSA-PKCS1-v1_5 SHA-256 |
+| `RS384` | RSA | RSASSA-PKCS1-v1_5 SHA-384 |
+| `RS512` | RSA | RSASSA-PKCS1-v1_5 SHA-512 |
+| `PS256` | RSA | RSASSA-PSS SHA-256 |
+| `ES256` | EC | ECDSA P-256 SHA-256 |
+| `ES384` | EC | ECDSA P-384 SHA-384 |
+| `ES512` | EC | ECDSA P-521 SHA-512 |
+
+### Key Wrap Algorithms
+| Algorithm | Key Type | Description |
+|-----------|----------|-------------|
+| `RsaOaep` | RSA | RSA-OAEP |
+| `RsaOaep256` | RSA | RSA-OAEP-256 |
+| `A128KW` | Oct | AES-128 Key Wrap |
+| `A256KW` | Oct | AES-256 Key Wrap |
+
+## Best Practices
+
+1. **Use Managed Identity** — Prefer `DefaultAzureCredential` over secrets
+2. **Enable soft-delete** — Protect against accidental deletion
+3. **Use HSM-backed keys** — Set `HardwareProtected = true` for sensitive keys
+4. **Implement key rotation** — Use automatic rotation policies
+5. **Limit key operations** — Only enable required `KeyOperations`
+6. **Set expiration dates** — Always set `ExpiresOn` for keys
+7. **Use specific versions** — Pin to versions in production
+8. **Cache CryptographyClient** — Reuse for multiple operations
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    KeyVaultKey key = await client.GetKeyAsync(&quot;my-key&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 404)
+{
+    Console.WriteLine(&quot;Key not found&quot;);
+}
+catch (RequestFailedException ex) when (ex.Status == 403)
+{
+    Console.WriteLine(&quot;Access denied - check RBAC permissions&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;Key Vault error: {ex.Status} - {ex.Message}&quot;);
+}
+```
+
+## Required RBAC Roles
+
+| Role | Permissions |
+|------|-------------|
+| Key Vault Crypto Officer | Full key management |
+| Key Vault Crypto User | Use keys for crypto operations |
+| Key Vault Reader | Read key metadata |
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Azure.Security.KeyVault.Keys` | Keys (this SDK) | `dotnet add package Azure.Security.KeyVault.Keys` |
+| `Azure.Security.KeyVault.Secrets` | Secrets | `dotnet add package Azure.Security.KeyVault.Secrets` |
+| `Azure.Security.KeyVault.Certificates` | Certificates | `dotnet add package Azure.Security.KeyVault.Certificates` |
+| `Azure.Identity` | Authentication | `dotnet add package Azure.Identity` |
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.Security.KeyVault.Keys |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.security.keyvault.keys |
+| Quickstart | https://learn.microsoft.com/azure/key-vault/keys/quick-create-net |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/keyvault/Azure.Security.KeyVault.Keys |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

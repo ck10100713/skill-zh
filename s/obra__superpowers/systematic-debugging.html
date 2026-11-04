@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>systematic-debugging｜Skill 寫法圖鑑</title>
+<meta name="description" content="遇到 bug 先查 root cause，四階段流程走完才准修">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>systematic-debugging</h1>
+<p class="meta">Jesse Vincent ｜ 除錯與調查 ｜ <a href="https://github.com/obra/superpowers/blob/main/skills/systematic-debugging/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">遇到 bug 先查 root cause，四階段流程走完才准修</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: systematic-debugging
+description: 遇到任何 bug、測試失敗或非預期行為時，在提出修正方案之前使用
+---
+
+# Systematic Debugging
+
+## 概述
+
+**核心原則：** 嘗試修正之前，一定要先找出 root cause。只修表面症狀就是失敗。
+
+**違反這個流程的字面規定，就是違反除錯的精神。**
+
+## 鐵律
+
+```
+NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+```
+
+階段 1 還沒完成，你就不能提出修正方案。
+
+## 何時使用
+
+任何技術問題都要用：
+- 測試失敗
+- 正式環境的 bug
+- 非預期的行為
+- 效能問題
+- Build 失敗
+- 整合問題
+
+**尤其要在這些時候用：**
+- 有時間壓力（緊急狀況特別容易讓人想用猜的）
+- 「只要快速修一下」看起來很明顯
+- 你已經試過好幾個修正
+- 前一個修正沒有用
+- 你沒有完全理解這個問題
+
+**這些時候也不要跳過：**
+- 問題看起來很簡單（簡單的 bug 也有 root cause）
+- 你很趕（趕只保證重工）
+- 主管要它「現在」就修好（系統化的做法比亂試更快）
+
+## 四個階段
+
+進入下一個階段之前，你一定要先完成每個階段。
+
+### 階段 1：Root Cause 調查
+
+**嘗試「任何」修正之前：**
+
+1. **仔細讀錯誤訊息**
+   - 不要略過錯誤或警告
+   - 它們常常就包含確切的解法
+   - 完整讀完 stack trace
+   - 記下行號、檔案路徑、錯誤碼
+
+2. **穩定地重現**
+   - 你能可靠地觸發它嗎？
+   - 確切的步驟是什麼？
+   - 每次都會發生嗎？
+   - 如果無法重現 → 收集更多資料，不要用猜的
+
+3. **檢查最近的變更**
+   - 什麼改變可能造成這個問題？
+   - Git diff、最近的 commit
+   - 新的依賴、設定變更
+   - 環境差異
+
+4. **在多元件系統中收集證據**
+
+   **當系統有多個元件時（CI → build → signing、API → service → database）：**
+
+   **提出修正方案之前，先加上診斷用的 instrumentation：**
+   ```
+   For EACH component boundary:
+     - Log what data enters component
+     - Log what data exits component
+     - Verify environment/config propagation
+     - Check state at each layer
+
+   Run once to gather evidence showing WHERE it breaks
+   THEN analyze evidence to identify failing component
+   THEN investigate that specific component
+   ```
+
+   **範例（多層系統）：**
+   ```bash
+   # Layer 1: Workflow
+   echo &quot;=== Secrets available in workflow: ===&quot;
+   echo &quot;IDENTITY: $([ -n &quot;${IDENTITY:-}&quot; ] &amp;&amp; echo SET || echo UNSET)&quot;
+
+   # Layer 2: Build script
+   echo &quot;=== Env vars in build script: ===&quot;
+   printenv IDENTITY &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo &quot;IDENTITY in environment&quot; || echo &quot;IDENTITY not in environment&quot;
+
+   # Layer 3: Signing script
+   echo &quot;=== Keychain state: ===&quot;
+   security list-keychains
+   security find-identity -v
+
+   # Layer 4: Actual signing
+   codesign --sign &quot;$IDENTITY&quot; --verbose=4 &quot;$APP&quot;
+   ```
+
+   **這會揭露：** 是哪一層失敗（secrets → workflow ✓，workflow → build ✗）
+
+5. **追蹤資料流**
+
+   **當錯誤在 call stack 很深的地方：**
+
+   完整的反向追蹤技巧，見這個目錄裡的 `root-cause-tracing.md`。
+
+   **快速版：**
+   - 壞掉的值是從哪裡來的？
+   - 是誰帶著這個壞值呼叫它的？
+   - 持續往上追，直到找到源頭
+   - 在源頭修，不要在症狀那裡修
+
+### 階段 2：模式分析
+
+**修正之前先找出模式：**
+
+1. **找出能運作的範例**
+   - 在同一個程式碼庫裡找類似、而且能運作的程式碼
+   - 有什麼東西跟壞掉的很像，卻是能運作的？
+
+2. **對照參考資料**
+   - 如果你在實作某個模式，要「完整」讀完參考實作
+   - 不要略讀，每一行都要讀
+   - 套用之前，要完全理解這個模式
+
+3. **找出差異**
+   - 能運作的和壞掉的之間有什麼不同？
+   - 列出每一個差異，不管多小
+   - 不要假設「那個不會有影響」
+
+4. **理解依賴**
+   - 它還需要哪些其他元件？
+   - 需要哪些設定、config、環境？
+   - 它做了哪些假設？
+
+### 階段 3：假設與測試
+
+**科學方法：**
+
+1. **形成單一假設**
+   - 清楚陳述：「I think X is the root cause because Y」
+   - 寫下來
+   - 要具體，不要含糊
+
+2. **用最小的方式測試**
+   - 做出「最小」的可能改動來測試假設
+   - 一次一個變數
+   - 不要同時修好幾件事
+
+3. **繼續之前先驗證**
+   - 有效嗎？有 → 階段 4
+   - 沒效？形成「新的」假設
+   - 不要在上面再疊更多修正
+
+4. **當你不知道的時候**
+   - 說「I don&#x27;t understand X」
+   - 不要假裝知道
+   - 求助
+   - 做更多研究
+
+### 階段 4：實作
+
+**修 root cause，不要修症狀：**
+
+1. **建立會失敗的測試案例**
+   - 盡可能最簡單的重現
+   - 可以的話用自動化測試
+   - 沒有框架就用一次性的測試 script
+   - 修正之前「一定要有」
+   - 用 `superpowers:test-driven-development` skill 來寫出像樣的失敗測試
+
+2. **實作單一修正**
+   - 處理你找到的 root cause
+   - 一次「一個」改動
+   - 不要有「反正我在這裡就順便」的改進
+   - 不要夾帶重構
+
+3. **驗證修正**
+   - 測試現在通過了嗎？
+   - 沒有弄壞其他測試嗎？
+   - 問題真的解決了嗎？
+   - 宣稱成功之前，用 `superpowers:verification-before-completion` skill
+
+4. **如果修正沒有用**
+   - 停
+   - 數一下：你已經試過幾個修正了？
+   - 如果 &lt; 3：回到階段 1，用新的資訊重新分析
+   - **如果 ≥ 3：停下來，質疑架構（下面的步驟 5）**
+   - 沒有架構層級的討論，不要嘗試第 4 個修正
+
+5. **如果 3 個以上的修正都失敗了：質疑架構**
+
+   **指出架構問題的模式：**
+   - 每個修正都在不同的地方揭露新的共享狀態／耦合／問題
+   - 修正需要「大規模重構」才能實作
+   - 每個修正都在別處製造新的症狀
+
+   **停下來，質疑根本：**
+   - 這個模式在根本上是健全的嗎？
+   - 我們是不是「只因為慣性就繼續用它」？
+   - 我們應該重構架構，還是繼續修症狀？
+
+   **在嘗試更多修正之前，先跟你的搭檔討論**
+
+   這不是失敗的假設，這是錯誤的架構。
+
+## 警訊：停下來，照流程走
+
+如果你發現自己在想：
+- 「先快速修一下，之後再調查」
+- 「就試著改 X 看看有沒有用」
+- 「一次加好幾個改動，然後跑測試」
+- 「跳過測試，我手動驗證」
+- 「大概是 X，我來修它」
+- 「我沒有完全理解，但這可能有用」
+- 「模式說 X，但我要用不同的方式調整它」
+- 「主要的問題在這裡：[沒有調查就列出一堆修正]」
+- 追蹤資料流之前就提出解決方案
+- **「再試一次修正」（當你已經試過 2 次以上）**
+- **每個修正都在不同的地方揭露新問題**
+
+**這些全部都表示：停。回到階段 1。**
+
+**如果 3 個以上的修正都失敗了：** 質疑架構（見階段 4.5）
+
+## 你的搭檔的訊號：你做錯了
+
+**留意這些導正：**
+- 「Is that not happening?」：你沒有驗證就假設了
+- 「Will it show us...?」：你本來應該加上收集證據的步驟
+- 「Stop guessing」：你在還沒理解的情況下提出修正
+- 「Ultra-think this」：質疑根本，不只是症狀
+- 「We&#x27;re stuck?」（沮喪的語氣）：你的做法行不通
+
+**看到這些時：** 停。回到階段 1。
+
+## 常見的合理化藉口
+
+| 藉口 | 現實 |
+|--------|---------|
+| 「問題很簡單，不需要流程」 | 簡單的問題也有 root cause。簡單的 bug 用流程也很快。 |
+| 「很緊急，沒時間走流程」 | 系統化除錯比猜了再試的亂撞更「快」。 |
+| 「先試這個，之後再調查」 | 第一個修正會定下模式。從一開始就做對。 |
+| 「確認修正有用之後我再寫測試」 | 沒測試過的修正不會穩。先寫測試才能證明。 |
+| 「一次做多個修正可以省時間」 | 無法隔離是哪個有用。還會製造新 bug。 |
+| 「參考資料太長，我改編一下模式」 | 只理解一部分，保證出 bug。完整讀完它。 |
+| 「我看到問題了，我來修」 | 看到症狀 ≠ 理解 root cause。 |
+| 「再試一次修正」（失敗 2 次以上之後） | 3 次以上失敗 = 架構問題。質疑模式，不要再修。 |
+
+## 快速參考
+
+| 階段 | 關鍵活動 | 成功標準 |
+|-------|---------------|------------------|
+| **1. Root Cause** | 讀錯誤、重現、檢查變更、收集證據 | 理解「是什麼」和「為什麼」 |
+| **2. 模式** | 找能運作的範例、比較 | 找出差異 |
+| **3. 假設** | 形成理論、最小化測試 | 確認，或形成新的假設 |
+| **4. 實作** | 建立測試、修正、驗證 | Bug 解決、測試通過 |
+
+## 當流程揭露「沒有 Root Cause」
+
+如果系統化的調查揭露，這個問題確實是環境性的、取決於時序，或來自外部：
+
+1. 你已經完成這個流程了
+2. 記錄你調查過什麼
+3. 實作適當的處理（retry、timeout、錯誤訊息）
+4. 加上監控／logging，供未來調查
+
+**但是：** 95% 的「沒有 root cause」案例，都是調查不完整。
+
+## 輔助技巧
+
+這些技巧是系統化除錯的一部分，放在這個目錄裡：
+
+- **`root-cause-tracing.md`** - 沿著 call stack 往回追 bug，找出原始的觸發點
+- **`defense-in-depth.md`** - 找到 root cause 之後，在多個層級加上驗證
+- **`condition-based-waiting.md`** - 把任意的 timeout 換成條件輪詢</pre></section><section><h2>英文原文</h2><pre>---
+name: systematic-debugging
+description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+---
+
+# Systematic Debugging
+
+## Overview
+
+**Core principle:** ALWAYS find root cause before attempting fixes. Symptom fixes are failure.
+
+**Violating the letter of this process is violating the spirit of debugging.**
+
+## The Iron Law
+
+```
+NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+```
+
+If you haven&#x27;t completed Phase 1, you cannot propose fixes.
+
+## When to Use
+
+Use for ANY technical issue:
+- Test failures
+- Bugs in production
+- Unexpected behavior
+- Performance problems
+- Build failures
+- Integration issues
+
+**Use this ESPECIALLY when:**
+- Under time pressure (emergencies make guessing tempting)
+- &quot;Just one quick fix&quot; seems obvious
+- You&#x27;ve already tried multiple fixes
+- Previous fix didn&#x27;t work
+- You don&#x27;t fully understand the issue
+
+**Don&#x27;t skip when:**
+- Issue seems simple (simple bugs have root causes too)
+- You&#x27;re in a hurry (rushing guarantees rework)
+- Manager wants it fixed NOW (systematic is faster than thrashing)
+
+## The Four Phases
+
+You MUST complete each phase before proceeding to the next.
+
+### Phase 1: Root Cause Investigation
+
+**BEFORE attempting ANY fix:**
+
+1. **Read Error Messages Carefully**
+   - Don&#x27;t skip past errors or warnings
+   - They often contain the exact solution
+   - Read stack traces completely
+   - Note line numbers, file paths, error codes
+
+2. **Reproduce Consistently**
+   - Can you trigger it reliably?
+   - What are the exact steps?
+   - Does it happen every time?
+   - If not reproducible → gather more data, don&#x27;t guess
+
+3. **Check Recent Changes**
+   - What changed that could cause this?
+   - Git diff, recent commits
+   - New dependencies, config changes
+   - Environmental differences
+
+4. **Gather Evidence in Multi-Component Systems**
+
+   **WHEN system has multiple components (CI → build → signing, API → service → database):**
+
+   **BEFORE proposing fixes, add diagnostic instrumentation:**
+   ```
+   For EACH component boundary:
+     - Log what data enters component
+     - Log what data exits component
+     - Verify environment/config propagation
+     - Check state at each layer
+
+   Run once to gather evidence showing WHERE it breaks
+   THEN analyze evidence to identify failing component
+   THEN investigate that specific component
+   ```
+
+   **Example (multi-layer system):**
+   ```bash
+   # Layer 1: Workflow
+   echo &quot;=== Secrets available in workflow: ===&quot;
+   echo &quot;IDENTITY: $([ -n &quot;${IDENTITY:-}&quot; ] &amp;&amp; echo SET || echo UNSET)&quot;
+
+   # Layer 2: Build script
+   echo &quot;=== Env vars in build script: ===&quot;
+   printenv IDENTITY &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo &quot;IDENTITY in environment&quot; || echo &quot;IDENTITY not in environment&quot;
+
+   # Layer 3: Signing script
+   echo &quot;=== Keychain state: ===&quot;
+   security list-keychains
+   security find-identity -v
+
+   # Layer 4: Actual signing
+   codesign --sign &quot;$IDENTITY&quot; --verbose=4 &quot;$APP&quot;
+   ```
+
+   **This reveals:** Which layer fails (secrets → workflow ✓, workflow → build ✗)
+
+5. **Trace Data Flow**
+
+   **WHEN error is deep in call stack:**
+
+   See `root-cause-tracing.md` in this directory for the complete backward tracing technique.
+
+   **Quick version:**
+   - Where does bad value originate?
+   - What called this with bad value?
+   - Keep tracing up until you find the source
+   - Fix at source, not at symptom
+
+### Phase 2: Pattern Analysis
+
+**Find the pattern before fixing:**
+
+1. **Find Working Examples**
+   - Locate similar working code in same codebase
+   - What works that&#x27;s similar to what&#x27;s broken?
+
+2. **Compare Against References**
+   - If implementing pattern, read reference implementation COMPLETELY
+   - Don&#x27;t skim - read every line
+   - Understand the pattern fully before applying
+
+3. **Identify Differences**
+   - What&#x27;s different between working and broken?
+   - List every difference, however small
+   - Don&#x27;t assume &quot;that can&#x27;t matter&quot;
+
+4. **Understand Dependencies**
+   - What other components does this need?
+   - What settings, config, environment?
+   - What assumptions does it make?
+
+### Phase 3: Hypothesis and Testing
+
+**Scientific method:**
+
+1. **Form Single Hypothesis**
+   - State clearly: &quot;I think X is the root cause because Y&quot;
+   - Write it down
+   - Be specific, not vague
+
+2. **Test Minimally**
+   - Make the SMALLEST possible change to test hypothesis
+   - One variable at a time
+   - Don&#x27;t fix multiple things at once
+
+3. **Verify Before Continuing**
+   - Did it work? Yes → Phase 4
+   - Didn&#x27;t work? Form NEW hypothesis
+   - DON&#x27;T add more fixes on top
+
+4. **When You Don&#x27;t Know**
+   - Say &quot;I don&#x27;t understand X&quot;
+   - Don&#x27;t pretend to know
+   - Ask for help
+   - Research more
+
+### Phase 4: Implementation
+
+**Fix the root cause, not the symptom:**
+
+1. **Create Failing Test Case**
+   - Simplest possible reproduction
+   - Automated test if possible
+   - One-off test script if no framework
+   - MUST have before fixing
+   - Use the `superpowers:test-driven-development` skill for writing proper failing tests
+
+2. **Implement Single Fix**
+   - Address the root cause identified
+   - ONE change at a time
+   - No &quot;while I&#x27;m here&quot; improvements
+   - No bundled refactoring
+
+3. **Verify Fix**
+   - Test passes now?
+   - No other tests broken?
+   - Issue actually resolved?
+   - Use the `superpowers:verification-before-completion` skill before claiming success
+
+4. **If Fix Doesn&#x27;t Work**
+   - STOP
+   - Count: How many fixes have you tried?
+   - If &lt; 3: Return to Phase 1, re-analyze with new information
+   - **If ≥ 3: STOP and question the architecture (step 5 below)**
+   - DON&#x27;T attempt Fix #4 without architectural discussion
+
+5. **If 3+ Fixes Failed: Question Architecture**
+
+   **Pattern indicating architectural problem:**
+   - Each fix reveals new shared state/coupling/problem in different place
+   - Fixes require &quot;massive refactoring&quot; to implement
+   - Each fix creates new symptoms elsewhere
+
+   **STOP and question fundamentals:**
+   - Is this pattern fundamentally sound?
+   - Are we &quot;sticking with it through sheer inertia&quot;?
+   - Should we refactor architecture vs. continue fixing symptoms?
+
+   **Discuss with your human partner before attempting more fixes**
+
+   This is NOT a failed hypothesis - this is a wrong architecture.
+
+## Red Flags - STOP and Follow Process
+
+If you catch yourself thinking:
+- &quot;Quick fix for now, investigate later&quot;
+- &quot;Just try changing X and see if it works&quot;
+- &quot;Add multiple changes, run tests&quot;
+- &quot;Skip the test, I&#x27;ll manually verify&quot;
+- &quot;It&#x27;s probably X, let me fix that&quot;
+- &quot;I don&#x27;t fully understand but this might work&quot;
+- &quot;Pattern says X but I&#x27;ll adapt it differently&quot;
+- &quot;Here are the main problems: [lists fixes without investigation]&quot;
+- Proposing solutions before tracing data flow
+- **&quot;One more fix attempt&quot; (when already tried 2+)**
+- **Each fix reveals new problem in different place**
+
+**ALL of these mean: STOP. Return to Phase 1.**
+
+**If 3+ fixes failed:** Question the architecture (see Phase 4.5)
+
+## your human partner&#x27;s Signals You&#x27;re Doing It Wrong
+
+**Watch for these redirections:**
+- &quot;Is that not happening?&quot; - You assumed without verifying
+- &quot;Will it show us...?&quot; - You should have added evidence gathering
+- &quot;Stop guessing&quot; - You&#x27;re proposing fixes without understanding
+- &quot;Ultra-think this&quot; - Question fundamentals, not just symptoms
+- &quot;We&#x27;re stuck?&quot; (frustrated) - Your approach isn&#x27;t working
+
+**When you see these:** STOP. Return to Phase 1.
+
+## Common Rationalizations
+
+| Excuse | Reality |
+|--------|---------|
+| &quot;Issue is simple, don&#x27;t need process&quot; | Simple issues have root causes too. Process is fast for simple bugs. |
+| &quot;Emergency, no time for process&quot; | Systematic debugging is FASTER than guess-and-check thrashing. |
+| &quot;Just try this first, then investigate&quot; | First fix sets the pattern. Do it right from the start. |
+| &quot;I&#x27;ll write test after confirming fix works&quot; | Untested fixes don&#x27;t stick. Test first proves it. |
+| &quot;Multiple fixes at once saves time&quot; | Can&#x27;t isolate what worked. Causes new bugs. |
+| &quot;Reference too long, I&#x27;ll adapt the pattern&quot; | Partial understanding guarantees bugs. Read it completely. |
+| &quot;I see the problem, let me fix it&quot; | Seeing symptoms ≠ understanding root cause. |
+| &quot;One more fix attempt&quot; (after 2+ failures) | 3+ failures = architectural problem. Question pattern, don&#x27;t fix again. |
+
+## Quick Reference
+
+| Phase | Key Activities | Success Criteria |
+|-------|---------------|------------------|
+| **1. Root Cause** | Read errors, reproduce, check changes, gather evidence | Understand WHAT and WHY |
+| **2. Pattern** | Find working examples, compare | Identify differences |
+| **3. Hypothesis** | Form theory, test minimally | Confirmed or new hypothesis |
+| **4. Implementation** | Create test, fix, verify | Bug resolved, tests pass |
+
+## When Process Reveals &quot;No Root Cause&quot;
+
+If systematic investigation reveals issue is truly environmental, timing-dependent, or external:
+
+1. You&#x27;ve completed the process
+2. Document what you investigated
+3. Implement appropriate handling (retry, timeout, error message)
+4. Add monitoring/logging for future investigation
+
+**But:** 95% of &quot;no root cause&quot; cases are incomplete investigation.
+
+## Supporting Techniques
+
+These techniques are part of systematic debugging and available in this directory:
+
+- **`root-cause-tracing.md`** - Trace bugs backward through call stack to find original trigger
+- **`defense-in-depth.md`** - Add validation at multiple layers after finding root cause
+- **`condition-based-waiting.md`** - Replace arbitrary timeouts with condition polling</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

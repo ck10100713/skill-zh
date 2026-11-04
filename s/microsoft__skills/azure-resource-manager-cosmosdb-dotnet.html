@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-resource-manager-cosmosdb-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 透過 ARM 建立與管理 Cosmos DB 帳號、資料庫和 throughput">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-resource-manager-cosmosdb-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-resource-manager-cosmosdb-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 透過 ARM 建立與管理 Cosmos DB 帳號、資料庫和 throughput</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-resource-manager-cosmosdb-dotnet
+description: |
+  .NET 版 Cosmos DB 的 Azure Resource Manager SDK。用於 MANAGEMENT PLANE（管理平面）操作：透過 Azure Resource Manager 建立／管理 Cosmos DB 帳號、資料庫、container、throughput 設定與 RBAC。NOT 用於 data plane 操作（文件的 CRUD），那種請用 Microsoft.Azure.Cosmos。Triggers: &quot;Cosmos DB account&quot;, &quot;create Cosmos account&quot;, &quot;manage Cosmos resources&quot;, &quot;ARM Cosmos&quot;, &quot;CosmosDBAccountResource&quot;, &quot;provision Cosmos DB&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.CosmosDB
+---
+
+# Azure.ResourceManager.CosmosDB (.NET)
+
+管理平面 SDK，透過 Azure Resource Manager 佈建與管理 Azure Cosmos DB 資源。
+
+&gt; **⚠️ 管理平面 vs Data Plane**
+&gt; - **這個 SDK（Azure.ResourceManager.CosmosDB）**：建立帳號、資料庫、container、設定 throughput、管理 RBAC
+&gt; - **Data Plane SDK（Microsoft.Azure.Cosmos）**：文件的 CRUD 操作、查詢、執行 stored procedure
+
+## 安裝
+
+```bash
+dotnet add package Azure.ResourceManager.CosmosDB
+dotnet add package Azure.Identity
+```
+
+**目前版本**：Stable v1.4.0、Preview v1.4.0-beta.13
+
+## 環境變數
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt; # 必填：Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境使用 DefaultAzureCredential 時才需要
+AZURE_TENANT_ID=&lt;tenant-id&gt; # 用於 service principal 驗證（選填）
+AZURE_CLIENT_ID=&lt;client-id&gt; # 用於 service principal 驗證（選填）
+AZURE_CLIENT_SECRET=&lt;client-secret&gt; # 用於 service principal 驗證（選填）
+```
+
+## 驗證
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.CosmosDB;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// 取得 subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## 資源階層
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── CosmosDBAccountResource
+            ├── CosmosDBSqlDatabaseResource
+            │   └── CosmosDBSqlContainerResource
+            │       ├── CosmosDBSqlStoredProcedureResource
+            │       ├── CosmosDBSqlTriggerResource
+            │       └── CosmosDBSqlUserDefinedFunctionResource
+            ├── CassandraKeyspaceResource
+            ├── GremlinDatabaseResource
+            ├── MongoDBDatabaseResource
+            └── CosmosDBTableResource
+```
+
+## 核心流程
+
+### 1. 建立 Cosmos DB 帳號
+
+```csharp
+using Azure.ResourceManager.CosmosDB;
+using Azure.ResourceManager.CosmosDB.Models;
+
+// 取得 resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// 定義帳號
+var accountData = new CosmosDBAccountCreateOrUpdateContent(
+    location: AzureLocation.EastUS,
+    locations: new[]
+    {
+        new CosmosDBAccountLocation
+        {
+            LocationName = AzureLocation.EastUS,
+            FailoverPriority = 0,
+            IsZoneRedundant = false
+        }
+    })
+{
+    Kind = CosmosDBAccountKind.GlobalDocumentDB,
+    ConsistencyPolicy = new ConsistencyPolicy(DefaultConsistencyLevel.Session),
+    EnableAutomaticFailover = true
+};
+
+// 建立帳號（長時間執行的操作）
+var accountCollection = resourceGroup.Value.GetCosmosDBAccounts();
+var operation = await accountCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-cosmos-account&quot;,
+    accountData);
+
+CosmosDBAccountResource account = operation.Value;
+```
+
+### 2. 建立 SQL 資料庫
+
+```csharp
+var databaseData = new CosmosDBSqlDatabaseCreateOrUpdateContent(
+    new CosmosDBSqlDatabaseResourceInfo(&quot;my-database&quot;));
+
+var databaseCollection = account.GetCosmosDBSqlDatabases();
+var dbOperation = await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-database&quot;,
+    databaseData);
+
+CosmosDBSqlDatabaseResource database = dbOperation.Value;
+```
+
+### 3. 建立 SQL Container
+
+```csharp
+var containerData = new CosmosDBSqlContainerCreateOrUpdateContent(
+    new CosmosDBSqlContainerResourceInfo(&quot;my-container&quot;)
+    {
+        PartitionKey = new CosmosDBContainerPartitionKey
+        {
+            Paths = { &quot;/partitionKey&quot; },
+            Kind = CosmosDBPartitionKind.Hash
+        },
+        IndexingPolicy = new CosmosDBIndexingPolicy
+        {
+            Automatic = true,
+            IndexingMode = CosmosDBIndexingMode.Consistent
+        },
+        DefaultTtl = 86400 // 24 小時
+    });
+
+var containerCollection = database.GetCosmosDBSqlContainers();
+var containerOperation = await containerCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-container&quot;,
+    containerData);
+
+CosmosDBSqlContainerResource container = containerOperation.Value;
+```
+
+### 4. 設定 Throughput
+
+```csharp
+// 手動 throughput
+var throughputData = new ThroughputSettingsUpdateData(
+    new ThroughputSettingsResourceInfo
+    {
+        Throughput = 400
+    });
+
+// Autoscale throughput
+var autoscaleData = new ThroughputSettingsUpdateData(
+    new ThroughputSettingsResourceInfo
+    {
+        AutoscaleSettings = new AutoscaleSettingsResourceInfo
+        {
+            MaxThroughput = 4000
+        }
+    });
+
+// 套用到資料庫
+await database.CreateOrUpdateCosmosDBSqlDatabaseThroughputAsync(
+    WaitUntil.Completed,
+    throughputData);
+```
+
+### 5. 取得連線資訊
+
+```csharp
+// 取得 key
+var keys = await account.GetKeysAsync();
+Console.WriteLine($&quot;Primary Key: {keys.Value.PrimaryMasterKey}&quot;);
+
+// 取得連線字串
+var connectionStrings = await account.GetConnectionStringsAsync();
+foreach (var cs in connectionStrings.Value.ConnectionStrings)
+{
+    Console.WriteLine($&quot;{cs.Description}: {cs.ConnectionString}&quot;);
+}
+```
+
+## 主要型別參考
+
+| 型別 | 用途 |
+|------|---------|
+| `ArmClient` | 所有 ARM 操作的進入點 |
+| `CosmosDBAccountResource` | 代表一個 Cosmos DB 帳號 |
+| `CosmosDBAccountCollection` | 帳號 CRUD 的集合 |
+| `CosmosDBSqlDatabaseResource` | SQL API 資料庫 |
+| `CosmosDBSqlContainerResource` | SQL API container |
+| `CosmosDBAccountCreateOrUpdateContent` | 建立帳號的 payload |
+| `CosmosDBSqlDatabaseCreateOrUpdateContent` | 建立資料庫的 payload |
+| `CosmosDBSqlContainerCreateOrUpdateContent` | 建立 container 的 payload |
+| `ThroughputSettingsUpdateData` | Throughput 設定 |
+
+## 最佳實務
+
+1. **需要等操作完成才能繼續時，用 `WaitUntil.Completed`**
+2. **想自己輪詢或平行執行操作時，用 `WaitUntil.Started`**
+3. **使用 `DefaultAzureCredential`**：絕對不要寫死 key
+4. **處理 `RequestFailedException`**，因應 ARM API 的錯誤
+5. **使用 `CreateOrUpdateAsync`** 做冪等操作
+6. **透過 `Get*` 方法走訪階層**（例如 `account.GetCosmosDBSqlDatabases()`）
+
+## 錯誤處理
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await accountCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, accountName, accountData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Account already exists&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## 參考檔案
+
+| 檔案 | 何時閱讀 |
+|------|--------------|
+| [references/account-management.md](references/account-management.md) | 帳號 CRUD、failover、key、連線字串、網路 |
+| [references/sql-resources.md](references/sql-resources.md) | SQL 資料庫、container、stored procedure、trigger、UDF |
+| [references/throughput.md](references/throughput.md) | 手動／autoscale throughput、模式間的遷移 |
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Microsoft.Azure.Cosmos` | Data plane（文件 CRUD、查詢） | `dotnet add package Microsoft.Azure.Cosmos` |
+| `Azure.ResourceManager.CosmosDB` | 管理平面（本 SDK） | `dotnet add package Azure.ResourceManager.CosmosDB` |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-resource-manager-cosmosdb-dotnet
+description: |
+  Azure Resource Manager SDK for Cosmos DB in .NET. Use for MANAGEMENT PLANE operations: creating/managing Cosmos DB accounts, databases, containers, throughput settings, and RBAC via Azure Resource Manager. NOT for data plane operations (CRUD on documents) - use Microsoft.Azure.Cosmos for that. Triggers: &quot;Cosmos DB account&quot;, &quot;create Cosmos account&quot;, &quot;manage Cosmos resources&quot;, &quot;ARM Cosmos&quot;, &quot;CosmosDBAccountResource&quot;, &quot;provision Cosmos DB&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.ResourceManager.CosmosDB
+---
+
+# Azure.ResourceManager.CosmosDB (.NET)
+
+Management plane SDK for provisioning and managing Azure Cosmos DB resources via Azure Resource Manager.
+
+&gt; **⚠️ Management vs Data Plane**
+&gt; - **This SDK (Azure.ResourceManager.CosmosDB)**: Create accounts, databases, containers, configure throughput, manage RBAC
+&gt; - **Data Plane SDK (Microsoft.Azure.Cosmos)**: CRUD operations on documents, queries, stored procedures execution
+
+## Installation
+
+```bash
+dotnet add package Azure.ResourceManager.CosmosDB
+dotnet add package Azure.Identity
+```
+
+**Current Versions**: Stable v1.4.0, Preview v1.4.0-beta.13
+
+## Environment Variables
+
+```bash
+AZURE_SUBSCRIPTION_ID=&lt;your-subscription-id&gt; # Required: Azure subscription ID
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+AZURE_TENANT_ID=&lt;tenant-id&gt; # For service principal auth (optional)
+AZURE_CLIENT_ID=&lt;client-id&gt; # For service principal auth (optional)
+AZURE_CLIENT_SECRET=&lt;client-secret&gt; # For service principal auth (optional)
+```
+
+## Authentication
+
+```csharp
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.CosmosDB;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+var armClient = new ArmClient(credential);
+
+// Get subscription
+var subscriptionId = Environment.GetEnvironmentVariable(&quot;AZURE_SUBSCRIPTION_ID&quot;);
+var subscription = armClient.GetSubscriptionResource(
+    new ResourceIdentifier($&quot;/subscriptions/{subscriptionId}&quot;));
+```
+
+## Resource Hierarchy
+
+```
+ArmClient
+└── SubscriptionResource
+    └── ResourceGroupResource
+        └── CosmosDBAccountResource
+            ├── CosmosDBSqlDatabaseResource
+            │   └── CosmosDBSqlContainerResource
+            │       ├── CosmosDBSqlStoredProcedureResource
+            │       ├── CosmosDBSqlTriggerResource
+            │       └── CosmosDBSqlUserDefinedFunctionResource
+            ├── CassandraKeyspaceResource
+            ├── GremlinDatabaseResource
+            ├── MongoDBDatabaseResource
+            └── CosmosDBTableResource
+```
+
+## Core Workflow
+
+### 1. Create Cosmos DB Account
+
+```csharp
+using Azure.ResourceManager.CosmosDB;
+using Azure.ResourceManager.CosmosDB.Models;
+
+// Get resource group
+var resourceGroup = await subscription
+    .GetResourceGroupAsync(&quot;my-resource-group&quot;);
+
+// Define account
+var accountData = new CosmosDBAccountCreateOrUpdateContent(
+    location: AzureLocation.EastUS,
+    locations: new[]
+    {
+        new CosmosDBAccountLocation
+        {
+            LocationName = AzureLocation.EastUS,
+            FailoverPriority = 0,
+            IsZoneRedundant = false
+        }
+    })
+{
+    Kind = CosmosDBAccountKind.GlobalDocumentDB,
+    ConsistencyPolicy = new ConsistencyPolicy(DefaultConsistencyLevel.Session),
+    EnableAutomaticFailover = true
+};
+
+// Create account (long-running operation)
+var accountCollection = resourceGroup.Value.GetCosmosDBAccounts();
+var operation = await accountCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-cosmos-account&quot;,
+    accountData);
+
+CosmosDBAccountResource account = operation.Value;
+```
+
+### 2. Create SQL Database
+
+```csharp
+var databaseData = new CosmosDBSqlDatabaseCreateOrUpdateContent(
+    new CosmosDBSqlDatabaseResourceInfo(&quot;my-database&quot;));
+
+var databaseCollection = account.GetCosmosDBSqlDatabases();
+var dbOperation = await databaseCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-database&quot;,
+    databaseData);
+
+CosmosDBSqlDatabaseResource database = dbOperation.Value;
+```
+
+### 3. Create SQL Container
+
+```csharp
+var containerData = new CosmosDBSqlContainerCreateOrUpdateContent(
+    new CosmosDBSqlContainerResourceInfo(&quot;my-container&quot;)
+    {
+        PartitionKey = new CosmosDBContainerPartitionKey
+        {
+            Paths = { &quot;/partitionKey&quot; },
+            Kind = CosmosDBPartitionKind.Hash
+        },
+        IndexingPolicy = new CosmosDBIndexingPolicy
+        {
+            Automatic = true,
+            IndexingMode = CosmosDBIndexingMode.Consistent
+        },
+        DefaultTtl = 86400 // 24 hours
+    });
+
+var containerCollection = database.GetCosmosDBSqlContainers();
+var containerOperation = await containerCollection.CreateOrUpdateAsync(
+    WaitUntil.Completed,
+    &quot;my-container&quot;,
+    containerData);
+
+CosmosDBSqlContainerResource container = containerOperation.Value;
+```
+
+### 4. Configure Throughput
+
+```csharp
+// Manual throughput
+var throughputData = new ThroughputSettingsUpdateData(
+    new ThroughputSettingsResourceInfo
+    {
+        Throughput = 400
+    });
+
+// Autoscale throughput
+var autoscaleData = new ThroughputSettingsUpdateData(
+    new ThroughputSettingsResourceInfo
+    {
+        AutoscaleSettings = new AutoscaleSettingsResourceInfo
+        {
+            MaxThroughput = 4000
+        }
+    });
+
+// Apply to database
+await database.CreateOrUpdateCosmosDBSqlDatabaseThroughputAsync(
+    WaitUntil.Completed,
+    throughputData);
+```
+
+### 5. Get Connection Information
+
+```csharp
+// Get keys
+var keys = await account.GetKeysAsync();
+Console.WriteLine($&quot;Primary Key: {keys.Value.PrimaryMasterKey}&quot;);
+
+// Get connection strings
+var connectionStrings = await account.GetConnectionStringsAsync();
+foreach (var cs in connectionStrings.Value.ConnectionStrings)
+{
+    Console.WriteLine($&quot;{cs.Description}: {cs.ConnectionString}&quot;);
+}
+```
+
+## Key Types Reference
+
+| Type | Purpose |
+|------|---------|
+| `ArmClient` | Entry point for all ARM operations |
+| `CosmosDBAccountResource` | Represents a Cosmos DB account |
+| `CosmosDBAccountCollection` | Collection for account CRUD |
+| `CosmosDBSqlDatabaseResource` | SQL API database |
+| `CosmosDBSqlContainerResource` | SQL API container |
+| `CosmosDBAccountCreateOrUpdateContent` | Account creation payload |
+| `CosmosDBSqlDatabaseCreateOrUpdateContent` | Database creation payload |
+| `CosmosDBSqlContainerCreateOrUpdateContent` | Container creation payload |
+| `ThroughputSettingsUpdateData` | Throughput configuration |
+
+## Best Practices
+
+1. **Use `WaitUntil.Completed`** for operations that must finish before proceeding
+2. **Use `WaitUntil.Started`** when you want to poll manually or run operations in parallel
+3. **Use `DefaultAzureCredential`** — never hardcode keys
+4. **Handle `RequestFailedException`** for ARM API errors
+5. **Use `CreateOrUpdateAsync`** for idempotent operations
+6. **Navigate hierarchy** via `Get*` methods (e.g., `account.GetCosmosDBSqlDatabases()`)
+
+## Error Handling
+
+```csharp
+using Azure;
+
+try
+{
+    var operation = await accountCollection.CreateOrUpdateAsync(
+        WaitUntil.Completed, accountName, accountData);
+}
+catch (RequestFailedException ex) when (ex.Status == 409)
+{
+    Console.WriteLine(&quot;Account already exists&quot;);
+}
+catch (RequestFailedException ex)
+{
+    Console.WriteLine($&quot;ARM Error: {ex.Status} - {ex.ErrorCode}: {ex.Message}&quot;);
+}
+```
+
+## Reference Files
+
+| File | When to Read |
+|------|--------------|
+| [references/account-management.md](references/account-management.md) | Account CRUD, failover, keys, connection strings, networking |
+| [references/sql-resources.md](references/sql-resources.md) | SQL databases, containers, stored procedures, triggers, UDFs |
+| [references/throughput.md](references/throughput.md) | Manual/autoscale throughput, migration between modes |
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Microsoft.Azure.Cosmos` | Data plane (document CRUD, queries) | `dotnet add package Microsoft.Azure.Cosmos` |
+| `Azure.ResourceManager.CosmosDB` | Management plane (this SDK) | `dotnet add package Azure.ResourceManager.CosmosDB` |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

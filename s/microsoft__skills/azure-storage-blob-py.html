@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-blob-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 對 Azure Blob Storage 上傳、下載、列出與管理 blob">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-blob-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-storage-blob-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python 對 Azure Blob Storage 上傳、下載、列出與管理 blob</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-blob-py
+description: |
+  Python 版的 Azure Blob Storage SDK。用於上傳、下載、列出 blob、管理 container 和 blob 生命週期。
+  Triggers: &quot;blob storage&quot;, &quot;BlobServiceClient&quot;, &quot;ContainerClient&quot;, &quot;BlobClient&quot;, &quot;upload blob&quot;, &quot;download blob&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-storage-blob
+---
+
+# Python 版 Azure Blob Storage SDK
+
+Azure Blob Storage 的 client library，Blob Storage 是用來存放非結構化資料的物件儲存。
+
+## 安裝
+
+```bash
+pip install azure-storage-blob azure-identity
+```
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;your-storage-account&gt;  # 所有驗證方式都必填
+# 或用完整 URL
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # account name 的替代方案
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個程式碼範例都適用兩條規則：**
+&gt;
+&gt; 1. **優先用 `DefaultAzureCredential`。** 它在本機（Azure CLI / VS Code / Developer CLI）和 Azure 上（managed identity、workload identity）都能用，不用改程式碼。避免用 connection string、account key 或 API key，它們會繞過 Entra 的稽核和輪替。
+&gt;    - 本機開發：直接用 `DefaultAzureCredential` 就好。
+&gt;    - Production：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限縮在 production 安全的 credential。
+&gt; 2. **每個 client 都用 context manager 包起來**，這樣 HTTP transport、socket 和 token cache 才會確實釋放：
+&gt;    - 同步：`with &lt;Client&gt;(...) as client:`
+&gt;    - 非同步：`async with &lt;Client&gt;(...) as client:` **而且** `async with DefaultAzureCredential() as credential:`（來自 `azure.identity.aio`）
+&gt;
+&gt; 範例片段可能會簡化這段設定，但 production 的程式碼一定要兩條規則都遵守。
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.storage.blob import BlobServiceClient
+
+# 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在 production 直接用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+account_url = &quot;https://&lt;account&gt;.blob.core.windows.net&quot;
+
+with BlobServiceClient(account_url, credential=credential) as blob_service_client:
+    # 在這裡使用 blob_service_client（各種操作請看後面的章節）
+    ...
+```
+
+## Client 階層
+
+| Client | 用途 | 取得方式 |
+|--------|---------|----------|
+| `BlobServiceClient` | Account 層級的操作 | 直接建立實例 |
+| `ContainerClient` | Container 操作 | `blob_service_client.get_container_client()` |
+| `BlobClient` | 單一 blob 的操作 | `container_client.get_blob_client()` |
+
+## 核心工作流程
+
+### 建立 Container
+
+```python
+container_client = blob_service_client.get_container_client(&quot;mycontainer&quot;)
+container_client.create_container()
+```
+
+### 上傳 Blob
+
+```python
+# 從檔案路徑
+blob_client = blob_service_client.get_blob_client(
+    container=&quot;mycontainer&quot;,
+    blob=&quot;sample.txt&quot;
+)
+
+with open(&quot;./local-file.txt&quot;, &quot;rb&quot;) as data:
+    blob_client.upload_blob(data, overwrite=True)
+
+# 從 bytes/字串
+blob_client.upload_blob(b&quot;Hello, World!&quot;, overwrite=True)
+
+# 從 stream
+import io
+stream = io.BytesIO(b&quot;Stream content&quot;)
+blob_client.upload_blob(stream, overwrite=True)
+```
+
+### 下載 Blob
+
+```python
+blob_client = blob_service_client.get_blob_client(
+    container=&quot;mycontainer&quot;,
+    blob=&quot;sample.txt&quot;
+)
+
+# 下載到檔案
+with open(&quot;./downloaded.txt&quot;, &quot;wb&quot;) as file:
+    download_stream = blob_client.download_blob()
+    file.write(download_stream.readall())
+
+# 下載到記憶體
+download_stream = blob_client.download_blob()
+content = download_stream.readall()  # bytes
+
+# 讀進既有的 buffer
+stream = io.BytesIO()
+num_bytes = blob_client.download_blob().readinto(stream)
+```
+
+### 列出 Blob
+
+```python
+container_client = blob_service_client.get_container_client(&quot;mycontainer&quot;)
+
+# 列出所有 blob
+for blob in container_client.list_blobs():
+    print(f&quot;{blob.name} - {blob.size} bytes&quot;)
+
+# 用 prefix 列出（類似資料夾）
+for blob in container_client.list_blobs(name_starts_with=&quot;logs/&quot;):
+    print(blob.name)
+
+# 走訪 blob 階層（虛擬目錄）
+for item in container_client.walk_blobs(delimiter=&quot;/&quot;):
+    if item.get(&quot;prefix&quot;):
+        print(f&quot;Directory: {item[&#x27;prefix&#x27;]}&quot;)
+    else:
+        print(f&quot;Blob: {item.name}&quot;)
+```
+
+### 刪除 Blob
+
+```python
+blob_client.delete_blob()
+
+# 連同 snapshot 一起刪除
+blob_client.delete_blob(delete_snapshots=&quot;include&quot;)
+```
+
+## 效能調校
+
+```python
+# 為大型上傳／下載設定 chunk 大小
+with BlobClient(
+    account_url=account_url,
+    container_name=&quot;mycontainer&quot;,
+    blob_name=&quot;large-file.zip&quot;,
+    credential=credential,
+    max_block_size=4 * 1024 * 1024,  # 4 MiB 的 block
+    max_single_put_size=64 * 1024 * 1024  # 單次上傳上限 64 MiB
+) as blob_client:
+    # 平行上傳
+    blob_client.upload_blob(data, max_concurrency=4)
+
+    # 平行下載
+    download_stream = blob_client.download_blob(max_concurrency=4)
+```
+
+## SAS Token（User Delegation）
+
+SAS token 要用 Microsoft Entra ID 簽署的 **user delegation key** 來產生，絕對不要用 account key。這樣 SAS 的核發才會綁在 Entra 的稽核和輪替機制上。
+
+```python
+from datetime import datetime, timedelta, timezone
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import (
+    BlobServiceClient,
+    BlobSasPermissions,
+    generate_blob_sas,
+)
+
+now = datetime.now(timezone.utc)
+account_url = &quot;https://&lt;account&gt;.blob.core.windows.net&quot;
+
+with BlobServiceClient(account_url, credential=DefaultAzureCredential()) as service:
+    # 取得 user delegation key（最長有效 7 天）。呼叫者需要在 storage account 上
+    # 擁有 &quot;Storage Blob Delegator&quot; 角色。
+    udk = service.get_user_delegation_key(
+        key_start_time=now,
+        key_expiry_time=now + timedelta(hours=1),
+    )
+
+    sas_token = generate_blob_sas(
+        account_name=&quot;&lt;account&gt;&quot;,
+        container_name=&quot;mycontainer&quot;,
+        blob_name=&quot;sample.txt&quot;,
+        user_delegation_key=udk,
+        permission=BlobSasPermissions(read=True),
+        expiry=now + timedelta(hours=1),
+    )
+
+blob_url = f&quot;{account_url}/mycontainer/sample.txt?{sas_token}&quot;
+```
+
+## Blob 屬性與 Metadata
+
+```python
+# 取得屬性
+properties = blob_client.get_blob_properties()
+print(f&quot;Size: {properties.size}&quot;)
+print(f&quot;Content-Type: {properties.content_settings.content_type}&quot;)
+print(f&quot;Last modified: {properties.last_modified}&quot;)
+
+# 設定 metadata
+blob_client.set_blob_metadata(metadata={&quot;category&quot;: &quot;logs&quot;, &quot;year&quot;: &quot;2024&quot;})
+
+# 設定 content type
+from azure.storage.blob import ContentSettings
+blob_client.set_http_headers(
+    content_settings=ContentSettings(content_type=&quot;application/json&quot;)
+)
+```
+
+## 非同步 Client
+
+```python
+from azure.identity.aio import DefaultAzureCredential
+from azure.storage.blob.aio import BlobServiceClient
+
+async def upload_async():
+    async with DefaultAzureCredential() as credential:
+        async with BlobServiceClient(account_url, credential=credential) as client:
+            blob_client = client.get_blob_client(&quot;mycontainer&quot;, &quot;sample.txt&quot;)
+            
+            with open(&quot;./file.txt&quot;, &quot;rb&quot;) as data:
+                await blob_client.upload_blob(data, overwrite=True)
+
+# 非同步下載
+async def download_async():
+    async with BlobServiceClient(account_url, credential=credential) as client:
+        blob_client = client.get_blob_client(&quot;mycontainer&quot;, &quot;sample.txt&quot;)
+        
+        stream = await blob_client.download_blob()
+        data = await stream.readall()
+```
+
+## 最佳實務
+
+1. **同步或非同步選一個，然後保持一致。** 同一條呼叫路徑裡，不要混用 `azure.storage.blob` 同步 client 和 `azure.storage.blob.aio` 非同步 client。每個 module 只選一種模式。
+2. **client 和非同步 credential 一律用 context manager。** 每個 client 都用 `with BlobServiceClient(...) as client:`（同步）或 `async with BlobServiceClient(...) as client:`（非同步）包起來。非同步的 `DefaultAzureCredential`（來自 `azure.identity.aio`）也要用 `async with credential:`，token 和 transport 才會清乾淨。
+3. 在本機跑的程式碼**用 `DefaultAzureCredential`**（不要用 connection string）。在 Azure 上跑的程式碼用特定的 token credential。
+4. 重新上傳時，**明確設定 `overwrite=True`**
+5. 大檔案傳輸**用 `max_concurrency`**
+6. **優先用 `readinto()`** 而不是 `readall()`，比較省記憶體
+7. 階層式列出**用 `walk_blobs()`**
+8. 給網頁提供的 blob **設定適當的 content type**
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | 能力索引，對應主要流程和非主要流程的參考文件。 |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | 專屬的非主要流程範例（metadata/屬性和非同步模式）。 |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-blob-py
+description: |
+  Azure Blob Storage SDK for Python. Use for uploading, downloading, listing blobs, managing containers, and blob lifecycle.
+  Triggers: &quot;blob storage&quot;, &quot;BlobServiceClient&quot;, &quot;ContainerClient&quot;, &quot;BlobClient&quot;, &quot;upload blob&quot;, &quot;download blob&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-storage-blob
+---
+
+# Azure Blob Storage SDK for Python
+
+Client library for Azure Blob Storage — object storage for unstructured data.
+
+## Installation
+
+```bash
+pip install azure-storage-blob azure-identity
+```
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;your-storage-account&gt;  # Required for all auth methods
+# Or use full URL
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.blob.core.windows.net  # Alternative to account name
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential`.** It works locally (Azure CLI / VS Code / Developer CLI) and in Azure (managed identity, workload identity) with no code change. Avoid connection strings, account/API keys — they bypass Entra audit and rotation.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Wrap every client in a context manager** so HTTP transports, sockets, and token caches are released deterministically:
+&gt;    - Sync: `with &lt;Client&gt;(...) as client:`
+&gt;    - Async: `async with &lt;Client&gt;(...) as client:` **and** `async with DefaultAzureCredential() as credential:` (from `azure.identity.aio`)
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.storage.blob import BlobServiceClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+account_url = &quot;https://&lt;account&gt;.blob.core.windows.net&quot;
+
+with BlobServiceClient(account_url, credential=credential) as blob_service_client:
+    # Use blob_service_client here (see following sections for operations)
+    ...
+```
+
+## Client Hierarchy
+
+| Client | Purpose | Get From |
+|--------|---------|----------|
+| `BlobServiceClient` | Account-level operations | Direct instantiation |
+| `ContainerClient` | Container operations | `blob_service_client.get_container_client()` |
+| `BlobClient` | Single blob operations | `container_client.get_blob_client()` |
+
+## Core Workflow
+
+### Create Container
+
+```python
+container_client = blob_service_client.get_container_client(&quot;mycontainer&quot;)
+container_client.create_container()
+```
+
+### Upload Blob
+
+```python
+# From file path
+blob_client = blob_service_client.get_blob_client(
+    container=&quot;mycontainer&quot;,
+    blob=&quot;sample.txt&quot;
+)
+
+with open(&quot;./local-file.txt&quot;, &quot;rb&quot;) as data:
+    blob_client.upload_blob(data, overwrite=True)
+
+# From bytes/string
+blob_client.upload_blob(b&quot;Hello, World!&quot;, overwrite=True)
+
+# From stream
+import io
+stream = io.BytesIO(b&quot;Stream content&quot;)
+blob_client.upload_blob(stream, overwrite=True)
+```
+
+### Download Blob
+
+```python
+blob_client = blob_service_client.get_blob_client(
+    container=&quot;mycontainer&quot;,
+    blob=&quot;sample.txt&quot;
+)
+
+# To file
+with open(&quot;./downloaded.txt&quot;, &quot;wb&quot;) as file:
+    download_stream = blob_client.download_blob()
+    file.write(download_stream.readall())
+
+# To memory
+download_stream = blob_client.download_blob()
+content = download_stream.readall()  # bytes
+
+# Read into existing buffer
+stream = io.BytesIO()
+num_bytes = blob_client.download_blob().readinto(stream)
+```
+
+### List Blobs
+
+```python
+container_client = blob_service_client.get_container_client(&quot;mycontainer&quot;)
+
+# List all blobs
+for blob in container_client.list_blobs():
+    print(f&quot;{blob.name} - {blob.size} bytes&quot;)
+
+# List with prefix (folder-like)
+for blob in container_client.list_blobs(name_starts_with=&quot;logs/&quot;):
+    print(blob.name)
+
+# Walk blob hierarchy (virtual directories)
+for item in container_client.walk_blobs(delimiter=&quot;/&quot;):
+    if item.get(&quot;prefix&quot;):
+        print(f&quot;Directory: {item[&#x27;prefix&#x27;]}&quot;)
+    else:
+        print(f&quot;Blob: {item.name}&quot;)
+```
+
+### Delete Blob
+
+```python
+blob_client.delete_blob()
+
+# Delete with snapshots
+blob_client.delete_blob(delete_snapshots=&quot;include&quot;)
+```
+
+## Performance Tuning
+
+```python
+# Configure chunk sizes for large uploads/downloads
+with BlobClient(
+    account_url=account_url,
+    container_name=&quot;mycontainer&quot;,
+    blob_name=&quot;large-file.zip&quot;,
+    credential=credential,
+    max_block_size=4 * 1024 * 1024,  # 4 MiB blocks
+    max_single_put_size=64 * 1024 * 1024  # 64 MiB single upload limit
+) as blob_client:
+    # Parallel upload
+    blob_client.upload_blob(data, max_concurrency=4)
+
+    # Parallel download
+    download_stream = blob_client.download_blob(max_concurrency=4)
+```
+
+## SAS Tokens (User Delegation)
+
+Generate SAS tokens with a **user delegation key** signed by Microsoft Entra ID — never with an account key. This keeps SAS issuance tied to Entra audit/rotation.
+
+```python
+from datetime import datetime, timedelta, timezone
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import (
+    BlobServiceClient,
+    BlobSasPermissions,
+    generate_blob_sas,
+)
+
+now = datetime.now(timezone.utc)
+account_url = &quot;https://&lt;account&gt;.blob.core.windows.net&quot;
+
+with BlobServiceClient(account_url, credential=DefaultAzureCredential()) as service:
+    # Get a user delegation key (valid up to 7 days). Caller needs the
+    # &quot;Storage Blob Delegator&quot; role on the storage account.
+    udk = service.get_user_delegation_key(
+        key_start_time=now,
+        key_expiry_time=now + timedelta(hours=1),
+    )
+
+    sas_token = generate_blob_sas(
+        account_name=&quot;&lt;account&gt;&quot;,
+        container_name=&quot;mycontainer&quot;,
+        blob_name=&quot;sample.txt&quot;,
+        user_delegation_key=udk,
+        permission=BlobSasPermissions(read=True),
+        expiry=now + timedelta(hours=1),
+    )
+
+blob_url = f&quot;{account_url}/mycontainer/sample.txt?{sas_token}&quot;
+```
+
+## Blob Properties and Metadata
+
+```python
+# Get properties
+properties = blob_client.get_blob_properties()
+print(f&quot;Size: {properties.size}&quot;)
+print(f&quot;Content-Type: {properties.content_settings.content_type}&quot;)
+print(f&quot;Last modified: {properties.last_modified}&quot;)
+
+# Set metadata
+blob_client.set_blob_metadata(metadata={&quot;category&quot;: &quot;logs&quot;, &quot;year&quot;: &quot;2024&quot;})
+
+# Set content type
+from azure.storage.blob import ContentSettings
+blob_client.set_http_headers(
+    content_settings=ContentSettings(content_type=&quot;application/json&quot;)
+)
+```
+
+## Async Client
+
+```python
+from azure.identity.aio import DefaultAzureCredential
+from azure.storage.blob.aio import BlobServiceClient
+
+async def upload_async():
+    async with DefaultAzureCredential() as credential:
+        async with BlobServiceClient(account_url, credential=credential) as client:
+            blob_client = client.get_blob_client(&quot;mycontainer&quot;, &quot;sample.txt&quot;)
+            
+            with open(&quot;./file.txt&quot;, &quot;rb&quot;) as data:
+                await blob_client.upload_blob(data, overwrite=True)
+
+# Download async
+async def download_async():
+    async with BlobServiceClient(account_url, credential=credential) as client:
+        blob_client = client.get_blob_client(&quot;mycontainer&quot;, &quot;sample.txt&quot;)
+        
+        stream = await blob_client.download_blob()
+        data = await stream.readall()
+```
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.storage.blob` sync clients with `azure.storage.blob.aio` async clients in the same call path. Choose one mode per module.
+2. **Always use context managers for clients and async credentials.** Wrap every client in `with BlobServiceClient(...) as client:` (sync) or `async with BlobServiceClient(...) as client:` (async). For async `DefaultAzureCredential` from `azure.identity.aio`, also use `async with credential:` so tokens and transports are cleaned up.
+3. **Use `DefaultAzureCredential`** for code that runs locally (instead of connection strings). Use a specific token credential for code that runs in Azure.
+4. **Set `overwrite=True`** explicitly when re-uploading
+5. **Use `max_concurrency`** for large file transfers
+6. **Prefer `readinto()`** over `readall()` for memory efficiency
+7. **Use `walk_blobs()`** for hierarchical listing
+8. **Set appropriate content types** for web-served blobs
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | Capability index mapping hero flows and non-hero references. |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | Dedicated non-hero examples (metadata/properties and async patterns). |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

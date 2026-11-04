@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-queue-rust｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Rust 對 Azure Queue Storage 傳送、接收與刪除訊息">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-queue-rust</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-rust/skills/azure-storage-queue-rust/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Rust 對 Azure Queue Storage 傳送、接收與刪除訊息</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-queue-rust
+description: |
+  Rust 版的 Azure Queue Storage library。傳送、接收並管理 queue 訊息。
+  Triggers: &quot;queue storage rust&quot;, &quot;QueueClient rust&quot;, &quot;send message rust&quot;, &quot;receive messages rust&quot;, &quot;QueueServiceClient rust&quot;, &quot;queue rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_storage_queue
+---
+
+# Rust 版 Azure Queue Storage library
+
+Azure Queue Storage 的 client library，用來傳送、接收並管理 queue 訊息。
+
+在這些情況下使用這個 skill：
+
+- 應用程式要用 Rust 從 Azure Queue Storage 傳送或接收訊息
+- 需要建立或管理 queue
+- 需要 peek、接收或刪除 queue 訊息
+- queue 操作需要 RBAC 驗證
+
+&gt; **重要：** 只能用 [azure-sdk](https://crates.io/users/azure-sdk) 這個 crates.io 使用者發布的官方 `azure_storage_queue` crate。絕對不要用非官方或社群的 crate。官方 crate 的名稱用底線，而且沒有任何一個版本是 0.21.0。
+
+## 安裝
+
+```sh
+cargo add azure_storage_queue azure_identity azure_core tokio
+```
+
+&gt; 如果你的程式碼直接用到 `azure_core` 的型別，要把 `azure_core` 加進 `Cargo.toml`。如果只用 `azure_storage_queue` re-export 出來的東西，直接依賴 `azure_core` 是選用的。
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_QUEUE_ENDPOINT=https://&lt;account&gt;.queue.core.windows.net/ # 所有操作都必填
+```
+
+## 驗證
+
+Rust 的 Azure SDK 程式碼不能用 `DefaultAzureCredential`。Rust 的 identity crate 沒有提供這個型別。
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::QueueServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 本機開發：DeveloperToolsCredential。Production：用 ManagedIdentityCredential。
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+
+    // 用名稱衍生出 queue client。
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+    Ok(())
+}
+```
+
+不要從自動產生的內部 model 名稱去推測公開的 SDK 型別。確認 queue client 的方法簽章和訊息／結果的形狀時，優先參考 crate 的 README／範例。
+
+## Client 類型
+
+| Client               | 用途                               | 取得方式                                   |
+| -------------------- | ------------------------------------- | ---------------------------------------- |
+| `QueueServiceClient` | Account 層級的操作、列出 queue | `QueueServiceClient::new()`              |
+| `QueueClient`        | Queue 操作、傳送／接收／刪除 | `service_client.queue_client(&quot;&lt;name&gt;&quot;)?` |
+
+## 核心工作流程
+
+### 傳送訊息
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::{models::QueueMessage, QueueServiceClient};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+
+    #[allow(clippy::needless_update)]
+    let message = QueueMessage {
+        message_text: Some(&quot;hello world&quot;.to_string()),
+        ..Default::default()
+    };
+    queue_client.send_message(message.try_into()?, None).await?;
+    Ok(())
+}
+```
+
+### 接收訊息
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::QueueServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+
+    let response = queue_client.receive_messages(None).await?;
+    let messages = response.into_model()?;
+    for msg in messages.items.unwrap_or_default() {
+        println!(&quot;{}&quot;, msg.message_text.as_deref().unwrap_or(&quot;&lt;empty&gt;&quot;));
+    }
+    Ok(())
+}
+```
+
+### 刪除訊息
+
+接收訊息之後，用訊息 ID 和 pop receipt 來刪除它：
+
+```rust
+let response = queue_client.receive_messages(None).await?;
+let messages = response.into_model()?;
+for msg in messages.items.unwrap_or_default() {
+    if let (Some(id), Some(pop_receipt)) = (&amp;msg.message_id, &amp;msg.pop_receipt) {
+        queue_client.delete_message(id, pop_receipt, None).await?;
+    }
+}
+```
+
+### Peek 訊息
+
+Peek 訊息但不把它們從 queue 移除：
+
+```rust
+let response = queue_client.peek_messages(None).await?;
+let messages = response.into_model()?;
+for msg in messages.items.unwrap_or_default() {
+    println!(&quot;Peeked: {}&quot;, msg.message_text.as_deref().unwrap_or(&quot;&lt;empty&gt;&quot;));
+}
+```
+
+## RBAC 角色
+
+用 Entra ID 驗證時，要把下列其中一個角色指派給該身分：
+
+| 角色                                   | 存取權限                 |
+| -------------------------------------- | ---------------------- |
+| `Storage Queue Data Reader`            | 讀取和 peek 訊息 |
+| `Storage Queue Data Contributor`       | 讀寫訊息    |
+| `Storage Queue Data Message Sender`    | 只能傳送訊息     |
+| `Storage Queue Data Message Processor` | 接收和刪除     |
+
+## 最佳實務
+
+1. **用 `cargo add` 管理相依套件，不要直接編輯 `Cargo.toml`。** 新增和移除 Rust SDK 的相依套件，要用 cargo 指令，不要手動改 manifest。
+2. **只有在直接 import `azure_core` 型別時才加 `azure_core`。** 如果你的程式碼 import 了 `azure_core::http::Url`、`azure_core::http::RequestContent` 或 `azure_core::error::ErrorKind`，就要加 `azure_core`；否則直接依賴是選用的。
+3. 本機開發**用 `DeveloperToolsCredential`**，production 用 **`ManagedIdentityCredential`**。Rust 沒有提供單一的 `DefaultAzureCredential` 型別
+4. **絕對不要把憑證寫死**，要用環境變數或 managed identity
+5. **指派 RBAC 角色**，確保該身分有適當的 queue data 角色
+6. **用 `QueueServiceClient` 當進入點**，再透過 `queue_client()` 從它衍生出 `QueueClient`
+7. **處理完要刪除訊息**，用 `receive_messages` 回傳的訊息 ID 和 pop receipt
+8. **重複使用 client**，client 是 thread-safe 的，建立一次，在各個 task 之間共用
+9. 當 prompt、eval 或 CI 要求 lint 乾淨的輸出時，**要跑 `cargo clippy -- -D warnings`**
+10. **讓 `#[non_exhaustive]` 的 SDK model 面向未來**：model struct 的 initializer（例如 `QueueMessage`）最後要加 `..Default::default()`（並加上 `#[allow(clippy::needless_update)]`），比對 SDK enum 時要用 `_` 萬用分支，這樣服務之後新增欄位或 variant 時，你的 build 才不會壞
+
+## 參考連結
+
+| 資源      | 連結                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------- |
+| API Reference | https://docs.rs/crate/azure_storage_queue/latest                                      |
+| crates.io     | https://crates.io/crates/azure_storage_queue                                          |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/storage/azure_storage_queue |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-queue-rust
+description: |
+  Azure Queue Storage library for Rust. Send, receive, and manage queue messages.
+  Triggers: &quot;queue storage rust&quot;, &quot;QueueClient rust&quot;, &quot;send message rust&quot;, &quot;receive messages rust&quot;, &quot;QueueServiceClient rust&quot;, &quot;queue rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_storage_queue
+---
+
+# Azure Queue Storage library for Rust
+
+Client library for Azure Queue Storage — send, receive, and manage queue messages.
+
+Use this skill when:
+
+- An app needs to send or receive messages from Azure Queue Storage in Rust
+- You need to create or manage queues
+- You need to peek, receive, or delete queue messages
+- You need RBAC-based auth for queue operations
+
+&gt; **IMPORTANT:** Only use the official `azure_storage_queue` crate published by the [azure-sdk](https://crates.io/users/azure-sdk) crates.io user. Do NOT use unofficial or community crates. Official crates use underscores in names and none have version 0.21.0.
+
+## Installation
+
+```sh
+cargo add azure_storage_queue azure_identity azure_core tokio
+```
+
+&gt; If your code uses `azure_core` types directly, add `azure_core` to `Cargo.toml`. If you only use `azure_storage_queue` re-exports, direct `azure_core` dependency is optional.
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_QUEUE_ENDPOINT=https://&lt;account&gt;.queue.core.windows.net/ # Required for all operations
+```
+
+## Authentication
+
+Rust Azure SDK code must not use `DefaultAzureCredential`. The Rust identity crate does not provide that type.
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::QueueServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Local dev: DeveloperToolsCredential. Production: use ManagedIdentityCredential.
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+
+    // Derive a queue client by name.
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+    Ok(())
+}
+```
+
+Do not infer public SDK types from generated internal model names. Prefer the crate README/examples when checking queue client method signatures and message/result shapes.
+
+## Client Types
+
+| Client               | Purpose                               | Access                                   |
+| -------------------- | ------------------------------------- | ---------------------------------------- |
+| `QueueServiceClient` | Account-level operations, list queues | `QueueServiceClient::new()`              |
+| `QueueClient`        | Queue operations, send/receive/delete | `service_client.queue_client(&quot;&lt;name&gt;&quot;)?` |
+
+## Core Workflow
+
+### Send a Message
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::{models::QueueMessage, QueueServiceClient};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+
+    #[allow(clippy::needless_update)]
+    let message = QueueMessage {
+        message_text: Some(&quot;hello world&quot;.to_string()),
+        ..Default::default()
+    };
+    queue_client.send_message(message.try_into()?, None).await?;
+    Ok(())
+}
+```
+
+### Receive Messages
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_queue::QueueServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.queue.core.windows.net/&quot;)?;
+    let service_client = QueueServiceClient::new(service_url, Some(credential), None)?;
+    let queue_client = service_client.queue_client(&quot;&lt;queue_name&gt;&quot;)?;
+
+    let response = queue_client.receive_messages(None).await?;
+    let messages = response.into_model()?;
+    for msg in messages.items.unwrap_or_default() {
+        println!(&quot;{}&quot;, msg.message_text.as_deref().unwrap_or(&quot;&lt;empty&gt;&quot;));
+    }
+    Ok(())
+}
+```
+
+### Delete a Message
+
+After receiving a message, delete it using the message ID and pop receipt:
+
+```rust
+let response = queue_client.receive_messages(None).await?;
+let messages = response.into_model()?;
+for msg in messages.items.unwrap_or_default() {
+    if let (Some(id), Some(pop_receipt)) = (&amp;msg.message_id, &amp;msg.pop_receipt) {
+        queue_client.delete_message(id, pop_receipt, None).await?;
+    }
+}
+```
+
+### Peek Messages
+
+Peek at messages without removing them from the queue:
+
+```rust
+let response = queue_client.peek_messages(None).await?;
+let messages = response.into_model()?;
+for msg in messages.items.unwrap_or_default() {
+    println!(&quot;Peeked: {}&quot;, msg.message_text.as_deref().unwrap_or(&quot;&lt;empty&gt;&quot;));
+}
+```
+
+## RBAC Roles
+
+For Entra ID auth, assign one of these roles to the identity:
+
+| Role                                   | Access                 |
+| -------------------------------------- | ---------------------- |
+| `Storage Queue Data Reader`            | Read and peek messages |
+| `Storage Queue Data Contributor`       | Read/write messages    |
+| `Storage Queue Data Message Sender`    | Send messages only     |
+| `Storage Queue Data Message Processor` | Receive and delete     |
+
+## Best Practices
+
+1. **Use `cargo add` to manage dependencies, never edit `Cargo.toml` directly.** Add and remove Rust SDK dependencies with cargo commands instead of manual manifest edits.
+2. **Add `azure_core` only when importing `azure_core` types directly.** If your code imports `azure_core::http::Url`, `azure_core::http::RequestContent`, or `azure_core::error::ErrorKind`, include `azure_core`; otherwise a direct dependency is optional.
+3. **Use `DeveloperToolsCredential`** for local dev, **`ManagedIdentityCredential`** for production — Rust does not provide a single `DefaultAzureCredential` type
+4. **Never hardcode credentials** — use environment variables or managed identity
+5. **Assign RBAC roles** — ensure appropriate queue data roles for the identity
+6. **Use `QueueServiceClient` as the entry point** and derive `QueueClient` from it via `queue_client()`
+7. **Delete messages after processing** — use the message ID and pop receipt from `receive_messages`
+8. **Reuse clients** — clients are thread-safe; create once, share across tasks
+9. **Run `cargo clippy -- -D warnings`** when the prompt, eval, or CI expects lint-clean output
+10. **Future-proof `#[non_exhaustive]` SDK models** — end model-struct initializers (e.g. `QueueMessage`) with `..Default::default()` (add `#[allow(clippy::needless_update)]`) and use a `_` wildcard arm when matching SDK enums, so new service-added fields/variants don&#x27;t break your build
+
+## Reference Links
+
+| Resource      | Link                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------- |
+| API Reference | https://docs.rs/crate/azure_storage_queue/latest                                      |
+| crates.io     | https://crates.io/crates/azure_storage_queue                                          |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/storage/azure_storage_queue |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

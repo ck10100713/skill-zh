@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-servicebus-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 TypeScript 操作 Service Bus 的 queue、topic、session 與 dead letter">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-servicebus-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-servicebus-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 TypeScript 操作 Service Bus 的 queue、topic、session 與 dead letter</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-servicebus-ts
+description: 用 JavaScript 版的 Azure Service Bus SDK（@azure/service-bus）建構訊息應用。用於實作 queue、topic/subscription、訊息 session、dead-letter 處理或企業級訊息模式。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/service-bus&#x27;
+---
+
+# TypeScript 版 Azure Service Bus SDK
+
+用 queue、topic 和 subscription 做企業級訊息服務。
+
+## 安裝
+
+```bash
+npm install @azure/service-bus @azure/identity
+```
+
+## 環境變數
+
+```bash
+SERVICEBUS_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net
+SERVICEBUS_QUEUE_NAME=my-queue
+SERVICEBUS_TOPIC_NAME=my-topic
+SERVICEBUS_SUBSCRIPTION_NAME=my-subscription
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+```typescript
+import { ServiceBusClient } from &quot;@azure/service-bus&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const fullyQualifiedNamespace = process.env.SERVICEBUS_NAMESPACE!;
+const client = new ServiceBusClient(fullyQualifiedNamespace, credential);
+```
+
+## 核心工作流程
+
+### 傳送訊息到 Queue
+
+```typescript
+const sender = client.createSender(&quot;my-queue&quot;);
+
+// 單一訊息
+await sender.sendMessages({
+  body: { orderId: &quot;12345&quot;, amount: 99.99 },
+  contentType: &quot;application/json&quot;,
+});
+
+// 批次訊息
+const batch = await sender.createMessageBatch();
+batch.tryAddMessage({ body: &quot;Message 1&quot; });
+batch.tryAddMessage({ body: &quot;Message 2&quot; });
+await sender.sendMessages(batch);
+
+await sender.close();
+```
+
+### 從 Queue 接收訊息
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+// 批次接收
+const messages = await receiver.receiveMessages(10, { maxWaitTimeInMs: 5000 });
+for (const message of messages) {
+  console.log(`Received: ${message.body}`);
+  await receiver.completeMessage(message);
+}
+
+await receiver.close();
+```
+
+### 訂閱訊息（事件驅動）
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+const subscription = receiver.subscribe({
+  processMessage: async (message) =&gt; {
+    console.log(`Processing: ${message.body}`);
+    // 成功時訊息會自動 complete
+  },
+  processError: async (args) =&gt; {
+    console.error(`Error: ${args.error}`);
+  },
+});
+
+// 一段時間後停止
+setTimeout(async () =&gt; {
+  await subscription.close();
+  await receiver.close();
+}, 60000);
+```
+
+### Topic 與 Subscription
+
+```typescript
+// 傳送到 topic
+const topicSender = client.createSender(&quot;my-topic&quot;);
+await topicSender.sendMessages({
+  body: { event: &quot;order.created&quot;, data: { orderId: &quot;123&quot; } },
+  applicationProperties: { eventType: &quot;order.created&quot; },
+});
+
+// 從 subscription 接收
+const subscriptionReceiver = client.createReceiver(&quot;my-topic&quot;, &quot;my-subscription&quot;);
+const messages = await subscriptionReceiver.receiveMessages(10);
+```
+
+## 訊息 Session
+
+```typescript
+// 傳送 session 訊息
+const sender = client.createSender(&quot;session-queue&quot;);
+await sender.sendMessages({
+  body: { step: 1, data: &quot;First step&quot; },
+  sessionId: &quot;workflow-123&quot;,
+});
+
+// 接收 session 訊息
+const sessionReceiver = await client.acceptSession(&quot;session-queue&quot;, &quot;workflow-123&quot;);
+const messages = await sessionReceiver.receiveMessages(10);
+
+// 取得／設定 session state
+const state = await sessionReceiver.getSessionState();
+await sessionReceiver.setSessionState(Buffer.from(JSON.stringify({ progress: 50 })));
+
+await sessionReceiver.close();
+```
+
+## Dead-Letter 處理
+
+```typescript
+// 移到 dead-letter
+await receiver.deadLetterMessage(message, {
+  deadLetterReason: &quot;Validation failed&quot;,
+  deadLetterErrorDescription: &quot;Missing required field: orderId&quot;,
+});
+
+// 處理 dead-letter queue
+const dlqReceiver = client.createReceiver(&quot;my-queue&quot;, { subQueueType: &quot;deadLetter&quot; });
+const dlqMessages = await dlqReceiver.receiveMessages(10);
+for (const msg of dlqMessages) {
+  console.log(`DLQ Reason: ${msg.deadLetterReason}`);
+  // 重新處理或記錄
+  await dlqReceiver.completeMessage(msg);
+}
+```
+
+## 排程訊息
+
+```typescript
+const sender = client.createSender(&quot;my-queue&quot;);
+
+// 排程在未來傳送
+const scheduledTime = new Date(Date.now() + 60000); // 從現在起 1 分鐘後
+const sequenceNumber = await sender.scheduleMessages(
+  { body: &quot;Delayed message&quot; },
+  scheduledTime
+);
+
+// 取消排程的訊息
+await sender.cancelScheduledMessages(sequenceNumber);
+```
+
+## 訊息延後（Deferral）
+
+```typescript
+// 延後訊息，稍後再處理
+await receiver.deferMessage(message);
+
+// 用 sequence number 接收被延後的訊息
+const deferredMessage = await receiver.receiveDeferredMessages(message.sequenceNumber!);
+await receiver.completeMessage(deferredMessage[0]);
+```
+
+## Peek 訊息（不會移除）
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+// Peek，不移除訊息
+const peekedMessages = await receiver.peekMessages(10);
+for (const msg of peekedMessages) {
+  console.log(`Peeked: ${msg.body}`);
+}
+```
+
+## 重要型別
+
+```typescript
+import {
+  ServiceBusClient,
+  ServiceBusSender,
+  ServiceBusReceiver,
+  ServiceBusSessionReceiver,
+  ServiceBusMessage,
+  ServiceBusReceivedMessage,
+  ProcessMessageCallback,
+  ProcessErrorCallback,
+} from &quot;@azure/service-bus&quot;;
+```
+
+## 接收模式
+
+```typescript
+// Peek-Lock（預設）- 訊息會被鎖住，直到 complete／abandon
+const receiver = client.createReceiver(&quot;my-queue&quot;, { receiveMode: &quot;peekLock&quot; });
+await receiver.completeMessage(message);   // 從 queue 移除
+await receiver.abandonMessage(message);    // 放回 queue
+await receiver.deferMessage(message);      // 延後處理
+await receiver.deadLetterMessage(message); // 移到 DLQ
+
+// Receive-and-Delete - 訊息一接收就立刻移除
+const receiver = client.createReceiver(&quot;my-queue&quot;, { receiveMode: &quot;receiveAndDelete&quot; });
+```
+
+## 最佳實務
+
+1. **用 Microsoft Entra Token Credential** - 本機開發用 `DefaultAzureCredential`；production 用 `ManagedIdentityCredential` 或 `WorkloadIdentityCredential`
+2. **重複使用 client** - `ServiceBusClient` 只建立一次，讓各個 sender／receiver 共用
+3. **關閉資源** - sender／receiver 用完一定要關閉
+4. **處理錯誤** - subscription receiver 要實作 `processError` callback
+5. **要順序就用 session** - 當同一組訊息的順序很重要時
+6. **設定 dead-letter** - DLQ 裡的訊息一定要處理
+7. **批次傳送** - 多則訊息用 `createMessageBatch()`
+
+## 參考文件
+
+詳細的模式請看：
+
+- [Queues vs Topics Patterns](references/queues-topics.md) - Queue／topic 模式、session、接收模式、訊息結算
+- [Error Handling and Reliability](references/error-handling.md) - ServiceBusError 代碼、DLQ 處理、lock 續期、graceful shutdown</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-servicebus-ts
+description: Build messaging applications using Azure Service Bus SDK for JavaScript (@azure/service-bus). Use when implementing queues, topics/subscriptions, message sessions, dead-letter handling, or enterprise messaging patterns.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/service-bus&#x27;
+---
+
+# Azure Service Bus SDK for TypeScript
+
+Enterprise messaging with queues, topics, and subscriptions.
+
+## Installation
+
+```bash
+npm install @azure/service-bus @azure/identity
+```
+
+## Environment Variables
+
+```bash
+SERVICEBUS_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net
+SERVICEBUS_QUEUE_NAME=my-queue
+SERVICEBUS_TOPIC_NAME=my-topic
+SERVICEBUS_SUBSCRIPTION_NAME=my-subscription
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+```typescript
+import { ServiceBusClient } from &quot;@azure/service-bus&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const fullyQualifiedNamespace = process.env.SERVICEBUS_NAMESPACE!;
+const client = new ServiceBusClient(fullyQualifiedNamespace, credential);
+```
+
+## Core Workflow
+
+### Send Messages to Queue
+
+```typescript
+const sender = client.createSender(&quot;my-queue&quot;);
+
+// Single message
+await sender.sendMessages({
+  body: { orderId: &quot;12345&quot;, amount: 99.99 },
+  contentType: &quot;application/json&quot;,
+});
+
+// Batch messages
+const batch = await sender.createMessageBatch();
+batch.tryAddMessage({ body: &quot;Message 1&quot; });
+batch.tryAddMessage({ body: &quot;Message 2&quot; });
+await sender.sendMessages(batch);
+
+await sender.close();
+```
+
+### Receive Messages from Queue
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+// Receive batch
+const messages = await receiver.receiveMessages(10, { maxWaitTimeInMs: 5000 });
+for (const message of messages) {
+  console.log(`Received: ${message.body}`);
+  await receiver.completeMessage(message);
+}
+
+await receiver.close();
+```
+
+### Subscribe to Messages (Event-Driven)
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+const subscription = receiver.subscribe({
+  processMessage: async (message) =&gt; {
+    console.log(`Processing: ${message.body}`);
+    // Message auto-completed on success
+  },
+  processError: async (args) =&gt; {
+    console.error(`Error: ${args.error}`);
+  },
+});
+
+// Stop after some time
+setTimeout(async () =&gt; {
+  await subscription.close();
+  await receiver.close();
+}, 60000);
+```
+
+### Topics and Subscriptions
+
+```typescript
+// Send to topic
+const topicSender = client.createSender(&quot;my-topic&quot;);
+await topicSender.sendMessages({
+  body: { event: &quot;order.created&quot;, data: { orderId: &quot;123&quot; } },
+  applicationProperties: { eventType: &quot;order.created&quot; },
+});
+
+// Receive from subscription
+const subscriptionReceiver = client.createReceiver(&quot;my-topic&quot;, &quot;my-subscription&quot;);
+const messages = await subscriptionReceiver.receiveMessages(10);
+```
+
+## Message Sessions
+
+```typescript
+// Send session message
+const sender = client.createSender(&quot;session-queue&quot;);
+await sender.sendMessages({
+  body: { step: 1, data: &quot;First step&quot; },
+  sessionId: &quot;workflow-123&quot;,
+});
+
+// Receive session messages
+const sessionReceiver = await client.acceptSession(&quot;session-queue&quot;, &quot;workflow-123&quot;);
+const messages = await sessionReceiver.receiveMessages(10);
+
+// Get/set session state
+const state = await sessionReceiver.getSessionState();
+await sessionReceiver.setSessionState(Buffer.from(JSON.stringify({ progress: 50 })));
+
+await sessionReceiver.close();
+```
+
+## Dead-Letter Handling
+
+```typescript
+// Move to dead-letter
+await receiver.deadLetterMessage(message, {
+  deadLetterReason: &quot;Validation failed&quot;,
+  deadLetterErrorDescription: &quot;Missing required field: orderId&quot;,
+});
+
+// Process dead-letter queue
+const dlqReceiver = client.createReceiver(&quot;my-queue&quot;, { subQueueType: &quot;deadLetter&quot; });
+const dlqMessages = await dlqReceiver.receiveMessages(10);
+for (const msg of dlqMessages) {
+  console.log(`DLQ Reason: ${msg.deadLetterReason}`);
+  // Reprocess or log
+  await dlqReceiver.completeMessage(msg);
+}
+```
+
+## Scheduled Messages
+
+```typescript
+const sender = client.createSender(&quot;my-queue&quot;);
+
+// Schedule for future delivery
+const scheduledTime = new Date(Date.now() + 60000); // 1 minute from now
+const sequenceNumber = await sender.scheduleMessages(
+  { body: &quot;Delayed message&quot; },
+  scheduledTime
+);
+
+// Cancel scheduled message
+await sender.cancelScheduledMessages(sequenceNumber);
+```
+
+## Message Deferral
+
+```typescript
+// Defer message for later
+await receiver.deferMessage(message);
+
+// Receive deferred message by sequence number
+const deferredMessage = await receiver.receiveDeferredMessages(message.sequenceNumber!);
+await receiver.completeMessage(deferredMessage[0]);
+```
+
+## Peek Messages (Non-Destructive)
+
+```typescript
+const receiver = client.createReceiver(&quot;my-queue&quot;);
+
+// Peek without removing
+const peekedMessages = await receiver.peekMessages(10);
+for (const msg of peekedMessages) {
+  console.log(`Peeked: ${msg.body}`);
+}
+```
+
+## Key Types
+
+```typescript
+import {
+  ServiceBusClient,
+  ServiceBusSender,
+  ServiceBusReceiver,
+  ServiceBusSessionReceiver,
+  ServiceBusMessage,
+  ServiceBusReceivedMessage,
+  ProcessMessageCallback,
+  ProcessErrorCallback,
+} from &quot;@azure/service-bus&quot;;
+```
+
+## Receive Modes
+
+```typescript
+// Peek-Lock (default) - message locked until completed/abandoned
+const receiver = client.createReceiver(&quot;my-queue&quot;, { receiveMode: &quot;peekLock&quot; });
+await receiver.completeMessage(message);   // Remove from queue
+await receiver.abandonMessage(message);    // Return to queue
+await receiver.deferMessage(message);      // Defer for later
+await receiver.deadLetterMessage(message); // Move to DLQ
+
+// Receive-and-Delete - message removed immediately
+const receiver = client.createReceiver(&quot;my-queue&quot;, { receiveMode: &quot;receiveAndDelete&quot; });
+```
+
+## Best Practices
+
+1. **Use Microsoft Entra Token Credential** - Use `DefaultAzureCredential` for local development; use `ManagedIdentityCredential` or `WorkloadIdentityCredential` for production
+2. **Reuse clients** - Create `ServiceBusClient` once, share across senders/receivers
+3. **Close resources** - Always close senders/receivers when done
+4. **Handle errors** - Implement `processError` callback for subscription receivers
+5. **Use sessions for ordering** - When message order matters within a group
+6. **Configure dead-letter** - Always handle DLQ messages
+7. **Batch sends** - Use `createMessageBatch()` for multiple messages
+
+## Reference Documentation
+
+For detailed patterns, see:
+
+- [Queues vs Topics Patterns](references/queues-topics.md) - Queue/topic patterns, sessions, receive modes, message settlement
+- [Error Handling and Reliability](references/error-handling.md) - ServiceBusError codes, DLQ handling, lock renewal, graceful shutdown</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

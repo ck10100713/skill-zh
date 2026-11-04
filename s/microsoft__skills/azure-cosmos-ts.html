@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-cosmos-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 TypeScript 操作 Cosmos DB 做文件 CRUD、查詢和批次操作">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-cosmos-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-cosmos-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 TypeScript 操作 Cosmos DB 做文件 CRUD、查詢和批次操作</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-cosmos-ts
+description: |
+  Azure Cosmos DB 的 JavaScript/TypeScript SDK（@azure/cosmos），處理 data plane 操作。用於文件 CRUD、查詢、批次操作和 container 管理。Triggers: &quot;Cosmos DB&quot;, &quot;@azure/cosmos&quot;, &quot;CosmosClient&quot;, &quot;document CRUD&quot;, &quot;NoSQL queries&quot;, &quot;bulk operations&quot;, &quot;partition key&quot;, &quot;container.items&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/cosmos&#x27;
+---
+
+# @azure/cosmos (TypeScript/JavaScript)
+
+Azure Cosmos DB NoSQL API 的 data plane SDK，處理文件 CRUD、查詢和批次操作。
+
+&gt; **⚠️ Data plane 與 Management plane 的差別**
+&gt; - **這個 SDK (@azure/cosmos)**：文件 CRUD、查詢、stored procedure
+&gt; - **Management SDK (@azure/arm-cosmosdb)**：透過 ARM 建立帳號、資料庫、container
+
+## 安裝
+
+```bash
+npm install @azure/cosmos @azure/identity
+```
+
+**目前版本**：4.9.0  
+**Node.js**：&gt;= 20.0.0
+
+## 環境變數
+
+```bash
+COSMOS_ENDPOINT=https://&lt;account&gt;.documents.azure.com:443/
+COSMOS_DATABASE=&lt;database-name&gt;
+COSMOS_CONTAINER=&lt;container-name&gt;
+# 只有金鑰驗證才需要（優先用 AAD）
+COSMOS_KEY=&lt;account-key&gt;
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+### Microsoft Entra Token Credential（建議）
+
+```typescript
+import { CosmosClient } from &quot;@azure/cosmos&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或是在正式環境直接用特定的 credential：
+// 參考 https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const client = new CosmosClient({
+  endpoint: process.env.COSMOS_ENDPOINT!,
+  aadCredentials: credential,
+});
+```
+
+### 金鑰驗證
+
+```typescript
+import { CosmosClient } from &quot;@azure/cosmos&quot;;
+
+// 選項 1：Endpoint + Key
+const client = new CosmosClient({
+  endpoint: process.env.COSMOS_ENDPOINT!,
+  key: process.env.COSMOS_KEY!,
+});
+
+// 選項 2：Connection String
+const client = new CosmosClient(process.env.COSMOS_CONNECTION_STRING!);
+```
+
+## 資源階層
+
+```
+CosmosClient
+└── Database
+    └── Container
+        ├── Items (documents)
+        ├── Scripts (stored procedures, triggers, UDFs)
+        └── Conflicts
+```
+
+## 核心操作
+
+### 資料庫與 Container 設定
+
+```typescript
+const { database } = await client.databases.createIfNotExists({
+  id: &quot;my-database&quot;,
+});
+
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;my-container&quot;,
+  partitionKey: { paths: [&quot;/partitionKey&quot;] },
+});
+```
+
+### 建立文件
+
+```typescript
+interface Product {
+  id: string;
+  partitionKey: string;
+  name: string;
+  price: number;
+}
+
+const item: Product = {
+  id: &quot;product-1&quot;,
+  partitionKey: &quot;electronics&quot;,
+  name: &quot;Laptop&quot;,
+  price: 999.99,
+};
+
+const { resource } = await container.items.create&lt;Product&gt;(item);
+```
+
+### 讀取文件
+
+```typescript
+const { resource } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;) // id, partitionKey
+  .read&lt;Product&gt;();
+
+if (resource) {
+  console.log(resource.name);
+}
+```
+
+### 更新文件（Replace）
+
+```typescript
+const { resource: existing } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .read&lt;Product&gt;();
+
+if (existing) {
+  existing.price = 899.99;
+  const { resource: updated } = await container
+    .item(&quot;product-1&quot;, &quot;electronics&quot;)
+    .replace&lt;Product&gt;(existing);
+}
+```
+
+### Upsert 文件
+
+```typescript
+const item: Product = {
+  id: &quot;product-1&quot;,
+  partitionKey: &quot;electronics&quot;,
+  name: &quot;Laptop Pro&quot;,
+  price: 1299.99,
+};
+
+const { resource } = await container.items.upsert&lt;Product&gt;(item);
+```
+
+### 刪除文件
+
+```typescript
+await container.item(&quot;product-1&quot;, &quot;electronics&quot;).delete();
+```
+
+### Patch 文件（局部更新）
+
+```typescript
+import { PatchOperation } from &quot;@azure/cosmos&quot;;
+
+const operations: PatchOperation[] = [
+  { op: &quot;replace&quot;, path: &quot;/price&quot;, value: 799.99 },
+  { op: &quot;add&quot;, path: &quot;/discount&quot;, value: true },
+  { op: &quot;remove&quot;, path: &quot;/oldField&quot; },
+];
+
+const { resource } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .patch&lt;Product&gt;(operations);
+```
+
+## 查詢
+
+### 簡單查詢
+
+```typescript
+const { resources } = await container.items
+  .query&lt;Product&gt;(&quot;SELECT * FROM c WHERE c.price &lt; 1000&quot;)
+  .fetchAll();
+```
+
+### 參數化查詢（建議）
+
+```typescript
+import { SqlQuerySpec } from &quot;@azure/cosmos&quot;;
+
+const querySpec: SqlQuerySpec = {
+  query: &quot;SELECT * FROM c WHERE c.partitionKey = @category AND c.price &lt; @maxPrice&quot;,
+  parameters: [
+    { name: &quot;@category&quot;, value: &quot;electronics&quot; },
+    { name: &quot;@maxPrice&quot;, value: 1000 },
+  ],
+};
+
+const { resources } = await container.items
+  .query&lt;Product&gt;(querySpec)
+  .fetchAll();
+```
+
+### 分頁查詢
+
+```typescript
+const queryIterator = container.items.query&lt;Product&gt;(querySpec, {
+  maxItemCount: 10, // 每頁幾筆
+});
+
+while (queryIterator.hasMoreResults()) {
+  const { resources, continuationToken } = await queryIterator.fetchNext();
+  console.log(`Page with ${resources?.length} items`);
+  // 需要的話，用 continuationToken 取下一頁
+}
+```
+
+### 跨 Partition 查詢
+
+```typescript
+const { resources } = await container.items
+  .query&lt;Product&gt;(
+    &quot;SELECT * FROM c WHERE c.price &gt; 500&quot;,
+    { enableCrossPartitionQuery: true }
+  )
+  .fetchAll();
+```
+
+## 批次操作
+
+### 執行批次操作
+
+```typescript
+import { BulkOperationType, OperationInput } from &quot;@azure/cosmos&quot;;
+
+const operations: OperationInput[] = [
+  {
+    operationType: BulkOperationType.Create,
+    resourceBody: { id: &quot;1&quot;, partitionKey: &quot;cat-a&quot;, name: &quot;Item 1&quot; },
+  },
+  {
+    operationType: BulkOperationType.Upsert,
+    resourceBody: { id: &quot;2&quot;, partitionKey: &quot;cat-a&quot;, name: &quot;Item 2&quot; },
+  },
+  {
+    operationType: BulkOperationType.Read,
+    id: &quot;3&quot;,
+    partitionKey: &quot;cat-b&quot;,
+  },
+  {
+    operationType: BulkOperationType.Replace,
+    id: &quot;4&quot;,
+    partitionKey: &quot;cat-b&quot;,
+    resourceBody: { id: &quot;4&quot;, partitionKey: &quot;cat-b&quot;, name: &quot;Updated&quot; },
+  },
+  {
+    operationType: BulkOperationType.Delete,
+    id: &quot;5&quot;,
+    partitionKey: &quot;cat-c&quot;,
+  },
+  {
+    operationType: BulkOperationType.Patch,
+    id: &quot;6&quot;,
+    partitionKey: &quot;cat-c&quot;,
+    resourceBody: {
+      operations: [{ op: &quot;replace&quot;, path: &quot;/name&quot;, value: &quot;Patched&quot; }],
+    },
+  },
+];
+
+const response = await container.items.executeBulkOperations(operations);
+
+response.forEach((result, index) =&gt; {
+  if (result.statusCode &gt;= 200 &amp;&amp; result.statusCode &lt; 300) {
+    console.log(`Operation ${index} succeeded`);
+  } else {
+    console.error(`Operation ${index} failed: ${result.statusCode}`);
+  }
+});
+```
+
+## Partition Key
+
+### 單一 Partition Key
+
+```typescript
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;products&quot;,
+  partitionKey: { paths: [&quot;/category&quot;] },
+});
+```
+
+### 階層式 Partition Key（MultiHash）
+
+```typescript
+import { PartitionKeyDefinitionVersion, PartitionKeyKind } from &quot;@azure/cosmos&quot;;
+
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;orders&quot;,
+  partitionKey: {
+    paths: [&quot;/tenantId&quot;, &quot;/userId&quot;, &quot;/sessionId&quot;],
+    version: PartitionKeyDefinitionVersion.V2,
+    kind: PartitionKeyKind.MultiHash,
+  },
+});
+
+// 操作時要傳入 partition key 值的陣列
+const { resource } = await container.items.create({
+  id: &quot;order-1&quot;,
+  tenantId: &quot;tenant-a&quot;,
+  userId: &quot;user-123&quot;,
+  sessionId: &quot;session-xyz&quot;,
+  total: 99.99,
+});
+
+// 用階層式 partition key 讀取
+const { resource: order } = await container
+  .item(&quot;order-1&quot;, [&quot;tenant-a&quot;, &quot;user-123&quot;, &quot;session-xyz&quot;])
+  .read();
+```
+
+## 錯誤處理
+
+```typescript
+import { ErrorResponse } from &quot;@azure/cosmos&quot;;
+
+try {
+  const { resource } = await container.item(&quot;missing&quot;, &quot;pk&quot;).read();
+} catch (error) {
+  if (error instanceof ErrorResponse) {
+    switch (error.code) {
+      case 404:
+        console.log(&quot;Document not found&quot;);
+        break;
+      case 409:
+        console.log(&quot;Conflict - document already exists&quot;);
+        break;
+      case 412:
+        console.log(&quot;Precondition failed (ETag mismatch)&quot;);
+        break;
+      case 429:
+        console.log(&quot;Rate limited - retry after:&quot;, error.retryAfterInMs);
+        break;
+      default:
+        console.error(`Cosmos error ${error.code}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## 樂觀並行控制（ETag）
+
+```typescript
+// 連同 ETag 一起讀取
+const { resource, etag } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .read&lt;Product&gt;();
+
+if (resource &amp;&amp; etag) {
+  resource.price = 899.99;
+  
+  try {
+    // 只有 ETag 相符才 replace
+    await container.item(&quot;product-1&quot;, &quot;electronics&quot;).replace(resource, {
+      accessCondition: { type: &quot;IfMatch&quot;, condition: etag },
+    });
+  } catch (error) {
+    if (error instanceof ErrorResponse &amp;&amp; error.code === 412) {
+      console.log(&quot;Document was modified by another process&quot;);
+    }
+  }
+}
+```
+
+## TypeScript 型別參考
+
+```typescript
+import {
+  // Client 與資源
+  CosmosClient,
+  Database,
+  Container,
+  Item,
+  Items,
+  
+  // 操作
+  OperationInput,
+  BulkOperationType,
+  PatchOperation,
+  
+  // 查詢
+  SqlQuerySpec,
+  SqlParameter,
+  FeedOptions,
+  
+  // Partition Key
+  PartitionKeyDefinition,
+  PartitionKeyDefinitionVersion,
+  PartitionKeyKind,
+  
+  // 回應
+  ItemResponse,
+  FeedResponse,
+  ResourceResponse,
+  
+  // 錯誤
+  ErrorResponse,
+} from &quot;@azure/cosmos&quot;;
+```
+
+## 最佳實務
+
+1. **用 Microsoft Entra Token Credential**：本機開發用 `DefaultAzureCredential`，正式環境用 `ManagedIdentityCredential` 或 `WorkloadIdentityCredential`
+2. **一律用參數化查詢**：能防 injection，也有助於 plan 快取
+3. **指定 partition key**：盡量避免跨 partition 查詢
+4. **用批次操作**：要寫入多筆時用 `executeBulkOperations`
+5. **處理 429 錯誤**：實作帶 exponential backoff 的重試邏輯
+6. **用 ETag 做並行控制**：避免並行情境下更新被覆蓋
+7. **關閉時要關 client**：在清理階段呼叫 `client.dispose()`
+
+## 常見模式
+
+### Service Layer 模式
+
+```typescript
+export class ProductService {
+  private container: Container;
+
+  constructor(client: CosmosClient) {
+    this.container = client
+      .database(process.env.COSMOS_DATABASE!)
+      .container(process.env.COSMOS_CONTAINER!);
+  }
+
+  async getById(id: string, category: string): Promise&lt;Product | null&gt; {
+    try {
+      const { resource } = await this.container
+        .item(id, category)
+        .read&lt;Product&gt;();
+      return resource ?? null;
+    } catch (error) {
+      if (error instanceof ErrorResponse &amp;&amp; error.code === 404) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async create(product: Omit&lt;Product, &quot;id&quot;&gt;): Promise&lt;Product&gt; {
+    const item = { ...product, id: crypto.randomUUID() };
+    const { resource } = await this.container.items.create&lt;Product&gt;(item);
+    return resource!;
+  }
+
+  async findByCategory(category: string): Promise&lt;Product[]&gt; {
+    const querySpec: SqlQuerySpec = {
+      query: &quot;SELECT * FROM c WHERE c.partitionKey = @category&quot;,
+      parameters: [{ name: &quot;@category&quot;, value: category }],
+    };
+    const { resources } = await this.container.items
+      .query&lt;Product&gt;(querySpec)
+      .fetchAll();
+    return resources;
+  }
+}
+```
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `@azure/cosmos` | Data plane（本 SDK） | `npm install @azure/cosmos` |
+| `@azure/arm-cosmosdb` | Management plane (ARM) | `npm install @azure/arm-cosmosdb` |
+| `@azure/identity` | 驗證 | `npm install @azure/identity` |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-cosmos-ts
+description: |
+  Azure Cosmos DB JavaScript/TypeScript SDK (@azure/cosmos) for data plane operations. Use for CRUD operations on documents, queries, bulk operations, and container management. Triggers: &quot;Cosmos DB&quot;, &quot;@azure/cosmos&quot;, &quot;CosmosClient&quot;, &quot;document CRUD&quot;, &quot;NoSQL queries&quot;, &quot;bulk operations&quot;, &quot;partition key&quot;, &quot;container.items&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/cosmos&#x27;
+---
+
+# @azure/cosmos (TypeScript/JavaScript)
+
+Data plane SDK for Azure Cosmos DB NoSQL API operations — CRUD on documents, queries, bulk operations.
+
+&gt; **⚠️ Data vs Management Plane**
+&gt; - **This SDK (@azure/cosmos)**: CRUD operations on documents, queries, stored procedures
+&gt; - **Management SDK (@azure/arm-cosmosdb)**: Create accounts, databases, containers via ARM
+
+## Installation
+
+```bash
+npm install @azure/cosmos @azure/identity
+```
+
+**Current Version**: 4.9.0  
+**Node.js**: &gt;= 20.0.0
+
+## Environment Variables
+
+```bash
+COSMOS_ENDPOINT=https://&lt;account&gt;.documents.azure.com:443/
+COSMOS_DATABASE=&lt;database-name&gt;
+COSMOS_CONTAINER=&lt;container-name&gt;
+# For key-based auth only (prefer AAD)
+COSMOS_KEY=&lt;account-key&gt;
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+### Microsoft Entra Token Credential (Recommended)
+
+```typescript
+import { CosmosClient } from &quot;@azure/cosmos&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const client = new CosmosClient({
+  endpoint: process.env.COSMOS_ENDPOINT!,
+  aadCredentials: credential,
+});
+```
+
+### Key-Based Authentication
+
+```typescript
+import { CosmosClient } from &quot;@azure/cosmos&quot;;
+
+// Option 1: Endpoint + Key
+const client = new CosmosClient({
+  endpoint: process.env.COSMOS_ENDPOINT!,
+  key: process.env.COSMOS_KEY!,
+});
+
+// Option 2: Connection String
+const client = new CosmosClient(process.env.COSMOS_CONNECTION_STRING!);
+```
+
+## Resource Hierarchy
+
+```
+CosmosClient
+└── Database
+    └── Container
+        ├── Items (documents)
+        ├── Scripts (stored procedures, triggers, UDFs)
+        └── Conflicts
+```
+
+## Core Operations
+
+### Database &amp; Container Setup
+
+```typescript
+const { database } = await client.databases.createIfNotExists({
+  id: &quot;my-database&quot;,
+});
+
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;my-container&quot;,
+  partitionKey: { paths: [&quot;/partitionKey&quot;] },
+});
+```
+
+### Create Document
+
+```typescript
+interface Product {
+  id: string;
+  partitionKey: string;
+  name: string;
+  price: number;
+}
+
+const item: Product = {
+  id: &quot;product-1&quot;,
+  partitionKey: &quot;electronics&quot;,
+  name: &quot;Laptop&quot;,
+  price: 999.99,
+};
+
+const { resource } = await container.items.create&lt;Product&gt;(item);
+```
+
+### Read Document
+
+```typescript
+const { resource } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;) // id, partitionKey
+  .read&lt;Product&gt;();
+
+if (resource) {
+  console.log(resource.name);
+}
+```
+
+### Update Document (Replace)
+
+```typescript
+const { resource: existing } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .read&lt;Product&gt;();
+
+if (existing) {
+  existing.price = 899.99;
+  const { resource: updated } = await container
+    .item(&quot;product-1&quot;, &quot;electronics&quot;)
+    .replace&lt;Product&gt;(existing);
+}
+```
+
+### Upsert Document
+
+```typescript
+const item: Product = {
+  id: &quot;product-1&quot;,
+  partitionKey: &quot;electronics&quot;,
+  name: &quot;Laptop Pro&quot;,
+  price: 1299.99,
+};
+
+const { resource } = await container.items.upsert&lt;Product&gt;(item);
+```
+
+### Delete Document
+
+```typescript
+await container.item(&quot;product-1&quot;, &quot;electronics&quot;).delete();
+```
+
+### Patch Document (Partial Update)
+
+```typescript
+import { PatchOperation } from &quot;@azure/cosmos&quot;;
+
+const operations: PatchOperation[] = [
+  { op: &quot;replace&quot;, path: &quot;/price&quot;, value: 799.99 },
+  { op: &quot;add&quot;, path: &quot;/discount&quot;, value: true },
+  { op: &quot;remove&quot;, path: &quot;/oldField&quot; },
+];
+
+const { resource } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .patch&lt;Product&gt;(operations);
+```
+
+## Queries
+
+### Simple Query
+
+```typescript
+const { resources } = await container.items
+  .query&lt;Product&gt;(&quot;SELECT * FROM c WHERE c.price &lt; 1000&quot;)
+  .fetchAll();
+```
+
+### Parameterized Query (Recommended)
+
+```typescript
+import { SqlQuerySpec } from &quot;@azure/cosmos&quot;;
+
+const querySpec: SqlQuerySpec = {
+  query: &quot;SELECT * FROM c WHERE c.partitionKey = @category AND c.price &lt; @maxPrice&quot;,
+  parameters: [
+    { name: &quot;@category&quot;, value: &quot;electronics&quot; },
+    { name: &quot;@maxPrice&quot;, value: 1000 },
+  ],
+};
+
+const { resources } = await container.items
+  .query&lt;Product&gt;(querySpec)
+  .fetchAll();
+```
+
+### Query with Pagination
+
+```typescript
+const queryIterator = container.items.query&lt;Product&gt;(querySpec, {
+  maxItemCount: 10, // Items per page
+});
+
+while (queryIterator.hasMoreResults()) {
+  const { resources, continuationToken } = await queryIterator.fetchNext();
+  console.log(`Page with ${resources?.length} items`);
+  // Use continuationToken for next page if needed
+}
+```
+
+### Cross-Partition Query
+
+```typescript
+const { resources } = await container.items
+  .query&lt;Product&gt;(
+    &quot;SELECT * FROM c WHERE c.price &gt; 500&quot;,
+    { enableCrossPartitionQuery: true }
+  )
+  .fetchAll();
+```
+
+## Bulk Operations
+
+### Execute Bulk Operations
+
+```typescript
+import { BulkOperationType, OperationInput } from &quot;@azure/cosmos&quot;;
+
+const operations: OperationInput[] = [
+  {
+    operationType: BulkOperationType.Create,
+    resourceBody: { id: &quot;1&quot;, partitionKey: &quot;cat-a&quot;, name: &quot;Item 1&quot; },
+  },
+  {
+    operationType: BulkOperationType.Upsert,
+    resourceBody: { id: &quot;2&quot;, partitionKey: &quot;cat-a&quot;, name: &quot;Item 2&quot; },
+  },
+  {
+    operationType: BulkOperationType.Read,
+    id: &quot;3&quot;,
+    partitionKey: &quot;cat-b&quot;,
+  },
+  {
+    operationType: BulkOperationType.Replace,
+    id: &quot;4&quot;,
+    partitionKey: &quot;cat-b&quot;,
+    resourceBody: { id: &quot;4&quot;, partitionKey: &quot;cat-b&quot;, name: &quot;Updated&quot; },
+  },
+  {
+    operationType: BulkOperationType.Delete,
+    id: &quot;5&quot;,
+    partitionKey: &quot;cat-c&quot;,
+  },
+  {
+    operationType: BulkOperationType.Patch,
+    id: &quot;6&quot;,
+    partitionKey: &quot;cat-c&quot;,
+    resourceBody: {
+      operations: [{ op: &quot;replace&quot;, path: &quot;/name&quot;, value: &quot;Patched&quot; }],
+    },
+  },
+];
+
+const response = await container.items.executeBulkOperations(operations);
+
+response.forEach((result, index) =&gt; {
+  if (result.statusCode &gt;= 200 &amp;&amp; result.statusCode &lt; 300) {
+    console.log(`Operation ${index} succeeded`);
+  } else {
+    console.error(`Operation ${index} failed: ${result.statusCode}`);
+  }
+});
+```
+
+## Partition Keys
+
+### Simple Partition Key
+
+```typescript
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;products&quot;,
+  partitionKey: { paths: [&quot;/category&quot;] },
+});
+```
+
+### Hierarchical Partition Key (MultiHash)
+
+```typescript
+import { PartitionKeyDefinitionVersion, PartitionKeyKind } from &quot;@azure/cosmos&quot;;
+
+const { container } = await database.containers.createIfNotExists({
+  id: &quot;orders&quot;,
+  partitionKey: {
+    paths: [&quot;/tenantId&quot;, &quot;/userId&quot;, &quot;/sessionId&quot;],
+    version: PartitionKeyDefinitionVersion.V2,
+    kind: PartitionKeyKind.MultiHash,
+  },
+});
+
+// Operations require array of partition key values
+const { resource } = await container.items.create({
+  id: &quot;order-1&quot;,
+  tenantId: &quot;tenant-a&quot;,
+  userId: &quot;user-123&quot;,
+  sessionId: &quot;session-xyz&quot;,
+  total: 99.99,
+});
+
+// Read with hierarchical partition key
+const { resource: order } = await container
+  .item(&quot;order-1&quot;, [&quot;tenant-a&quot;, &quot;user-123&quot;, &quot;session-xyz&quot;])
+  .read();
+```
+
+## Error Handling
+
+```typescript
+import { ErrorResponse } from &quot;@azure/cosmos&quot;;
+
+try {
+  const { resource } = await container.item(&quot;missing&quot;, &quot;pk&quot;).read();
+} catch (error) {
+  if (error instanceof ErrorResponse) {
+    switch (error.code) {
+      case 404:
+        console.log(&quot;Document not found&quot;);
+        break;
+      case 409:
+        console.log(&quot;Conflict - document already exists&quot;);
+        break;
+      case 412:
+        console.log(&quot;Precondition failed (ETag mismatch)&quot;);
+        break;
+      case 429:
+        console.log(&quot;Rate limited - retry after:&quot;, error.retryAfterInMs);
+        break;
+      default:
+        console.error(`Cosmos error ${error.code}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## Optimistic Concurrency (ETags)
+
+```typescript
+// Read with ETag
+const { resource, etag } = await container
+  .item(&quot;product-1&quot;, &quot;electronics&quot;)
+  .read&lt;Product&gt;();
+
+if (resource &amp;&amp; etag) {
+  resource.price = 899.99;
+  
+  try {
+    // Replace only if ETag matches
+    await container.item(&quot;product-1&quot;, &quot;electronics&quot;).replace(resource, {
+      accessCondition: { type: &quot;IfMatch&quot;, condition: etag },
+    });
+  } catch (error) {
+    if (error instanceof ErrorResponse &amp;&amp; error.code === 412) {
+      console.log(&quot;Document was modified by another process&quot;);
+    }
+  }
+}
+```
+
+## TypeScript Types Reference
+
+```typescript
+import {
+  // Client &amp; Resources
+  CosmosClient,
+  Database,
+  Container,
+  Item,
+  Items,
+  
+  // Operations
+  OperationInput,
+  BulkOperationType,
+  PatchOperation,
+  
+  // Queries
+  SqlQuerySpec,
+  SqlParameter,
+  FeedOptions,
+  
+  // Partition Keys
+  PartitionKeyDefinition,
+  PartitionKeyDefinitionVersion,
+  PartitionKeyKind,
+  
+  // Responses
+  ItemResponse,
+  FeedResponse,
+  ResourceResponse,
+  
+  // Errors
+  ErrorResponse,
+} from &quot;@azure/cosmos&quot;;
+```
+
+## Best Practices
+
+1. **Use Microsoft Entra Token Credential** — Use `DefaultAzureCredential` for local development; use `ManagedIdentityCredential` or `WorkloadIdentityCredential` for production
+2. **Always use parameterized queries** — Prevents injection, improves plan caching
+3. **Specify partition key** — Avoid cross-partition queries when possible
+4. **Use bulk operations** — For multiple writes, use `executeBulkOperations`
+5. **Handle 429 errors** — Implement retry logic with exponential backoff
+6. **Use ETags for concurrency** — Prevent lost updates in concurrent scenarios
+7. **Close client on shutdown** — Call `client.dispose()` in cleanup
+
+## Common Patterns
+
+### Service Layer Pattern
+
+```typescript
+export class ProductService {
+  private container: Container;
+
+  constructor(client: CosmosClient) {
+    this.container = client
+      .database(process.env.COSMOS_DATABASE!)
+      .container(process.env.COSMOS_CONTAINER!);
+  }
+
+  async getById(id: string, category: string): Promise&lt;Product | null&gt; {
+    try {
+      const { resource } = await this.container
+        .item(id, category)
+        .read&lt;Product&gt;();
+      return resource ?? null;
+    } catch (error) {
+      if (error instanceof ErrorResponse &amp;&amp; error.code === 404) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async create(product: Omit&lt;Product, &quot;id&quot;&gt;): Promise&lt;Product&gt; {
+    const item = { ...product, id: crypto.randomUUID() };
+    const { resource } = await this.container.items.create&lt;Product&gt;(item);
+    return resource!;
+  }
+
+  async findByCategory(category: string): Promise&lt;Product[]&gt; {
+    const querySpec: SqlQuerySpec = {
+      query: &quot;SELECT * FROM c WHERE c.partitionKey = @category&quot;,
+      parameters: [{ name: &quot;@category&quot;, value: category }],
+    };
+    const { resources } = await this.container.items
+      .query&lt;Product&gt;(querySpec)
+      .fetchAll();
+    return resources;
+  }
+}
+```
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `@azure/cosmos` | Data plane (this SDK) | `npm install @azure/cosmos` |
+| `@azure/arm-cosmosdb` | Management plane (ARM) | `npm install @azure/arm-cosmosdb` |
+| `@azure/identity` | Authentication | `npm install @azure/identity` |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

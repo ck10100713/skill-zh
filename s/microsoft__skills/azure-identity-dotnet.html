@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-identity-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 的 Azure Identity 處理 DefaultAzureCredential 和 managed identity 驗證">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-identity-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-identity-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 的 Azure Identity 處理 DefaultAzureCredential 和 managed identity 驗證</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-identity-dotnet
+description: |
+  .NET 版 Azure Identity 函式庫。用 Microsoft Entra ID 為 Azure SDK client 做驗證的函式庫。用於 DefaultAzureCredential、managed identity、service principal 和開發者 credential。Triggers: &quot;Azure Identity&quot;, &quot;DefaultAzureCredential&quot;, &quot;ManagedIdentityCredential&quot;, &quot;ClientSecretCredential&quot;, &quot;authentication .NET&quot;, &quot;Azure auth&quot;, &quot;credential chain&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Identity
+---
+
+# .NET 版 Azure Identity 函式庫
+
+用 Microsoft Entra ID 為 Azure SDK client 做驗證的函式庫。
+
+## 安裝
+
+```bash
+dotnet add package Azure.Identity
+
+# For ASP.NET Core integration
+dotnet add package Microsoft.Extensions.Azure
+
+# For brokered authentication and Visual Studio Code credential support
+dotnet add package Azure.Identity.Broker
+```
+
+## 環境變數
+
+### 使用 Secret 的 Service Principal
+
+```bash
+AZURE_CLIENT_ID=&lt;application-client-id&gt;
+AZURE_TENANT_ID=&lt;directory-tenant-id&gt;
+AZURE_CLIENT_SECRET=&lt;client-secret-value&gt;
+```
+
+### 使用憑證的 Service Principal
+
+```bash
+AZURE_CLIENT_ID=&lt;application-client-id&gt;
+AZURE_TENANT_ID=&lt;directory-tenant-id&gt;
+AZURE_CLIENT_CERTIFICATE_PATH=&lt;path-to-pfx-or-pem&gt;
+AZURE_CLIENT_CERTIFICATE_PASSWORD=&lt;certificate-password&gt;  # 選填
+```
+
+### Managed Identity
+
+```bash
+AZURE_CLIENT_ID=&lt;user-assigned-managed-identity-client-id&gt;  # 只有 user-assigned 才需要
+```
+
+## DefaultAzureCredential
+
+大多數情境建議用的 credential。它會依序嘗試多種驗證方式。目前的 credential chain 順序和預設值，請看 [DefaultAzureCredential 概觀](https://aka.ms/azsdk/net/identity/credential-chains#defaultazurecredential-overview)。
+
+### 基本用法
+
+```csharp
+using Azure.Identity;
+using Azure.Storage.Blobs;
+
+var credential = new DefaultAzureCredential();
+var blobClient = new BlobServiceClient(
+    new Uri(&quot;https://myaccount.blob.core.windows.net&quot;),
+    credential);
+```
+
+### 搭配 Dependency Injection 的 ASP.NET Core
+
+```csharp
+using Azure.Identity;
+using Microsoft.Extensions.Azure;
+
+builder.Services.AddAzureClients(clientBuilder =&gt;
+{
+    clientBuilder.AddBlobServiceClient(
+        new Uri(&quot;https://myaccount.blob.core.windows.net&quot;));
+    clientBuilder.AddSecretClient(
+        new Uri(&quot;https://myvault.vault.azure.net&quot;));
+    
+    // 預設使用 DefaultAzureCredential
+    clientBuilder.UseCredential(new DefaultAzureCredential());
+});
+```
+
+### 自訂 DefaultAzureCredential
+
+```csharp
+var credential = new DefaultAzureCredential(
+    new DefaultAzureCredentialOptions
+    {
+        ExcludeEnvironmentCredential = true,
+        ExcludeManagedIdentityCredential = false,
+        ExcludeVisualStudioCredential = false,
+        ExcludeAzureCliCredential = false,
+        ExcludeInteractiveBrowserCredential = false, // 啟用互動式
+        TenantId = &quot;&lt;tenant-id&gt;&quot;,
+        ManagedIdentityClientId = &quot;&lt;user-assigned-mi-client-id&gt;&quot;
+    });
+```
+
+## Credential 類型
+
+### ManagedIdentityCredential（正式環境）
+
+```csharp
+// System-assigned managed identity
+var credential = new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned);
+
+// 用 client ID 指定 user-assigned
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedClientId(&quot;&lt;client-id&gt;&quot;));
+
+// 用 resource ID 指定 user-assigned
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedResourceId(&quot;&lt;resource-id&gt;&quot;));
+
+// 用 object ID 指定 user-assigned
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedObjectId(&quot;&lt;object-id&gt;&quot;));
+```
+
+### ClientSecretCredential
+
+```csharp
+var credential = new ClientSecretCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    clientSecret: &quot;&lt;client-secret&gt;&quot;);
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    credential);
+```
+
+### ClientCertificateCredential
+
+```csharp
+var certificate = X509CertificateLoader.LoadCertificateFromFile(&quot;MyCertificate.pfx&quot;);
+var credential = new ClientCertificateCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    certificate);
+```
+
+### ChainedTokenCredential（自訂 Chain）
+
+```csharp
+var credential = new ChainedTokenCredential(
+    new ManagedIdentityCredential(),
+    new AzureCliCredential());
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    credential);
+```
+
+### 開發者 Credential
+
+```csharp
+// Azure CLI
+var credential = new AzureCliCredential();
+
+// Azure PowerShell
+var credential = new AzurePowerShellCredential();
+
+// Azure Developer CLI (azd)
+var credential = new AzureDeveloperCliCredential();
+
+// Visual Studio
+var credential = new VisualStudioCredential();
+
+// Interactive Browser
+var credential = new InteractiveBrowserCredential();
+```
+
+## 依環境設定
+
+```csharp
+// 正式環境 vs 開發環境
+TokenCredential credential = builder.Environment.IsProduction()
+    ? new ManagedIdentityCredential(&quot;&lt;client-id&gt;&quot;)
+    : new DefaultAzureCredential();
+```
+
+## 主權雲端
+
+```csharp
+var credential = new DefaultAzureCredential(
+    new DefaultAzureCredentialOptions
+    {
+        AuthorityHost = AzureAuthorityHosts.AzureGovernment
+    });
+
+// 可用的 authority host：
+// AzureAuthorityHosts.AzurePublicCloud (default)
+// AzureAuthorityHosts.AzureGovernment
+// AzureAuthorityHosts.AzureChina
+```
+
+## Credential 類型參考
+
+| 分類 | Credential | 用途 |
+|----------|------------|---------|
+| **Chain** | `DefaultAzureCredential` | 預先設定好的 chain，從開發一路用到正式 |
+| | `ChainedTokenCredential` | 自訂 credential chain |
+| **Azure 託管** | `ManagedIdentityCredential` | Azure managed identity |
+| | `WorkloadIdentityCredential` | Kubernetes workload identity |
+| | `EnvironmentCredential` | 環境變數 |
+| **Service Principal** | `ClientSecretCredential` | Client ID + secret |
+| | `ClientCertificateCredential` | Client ID + 憑證 |
+| | `ClientAssertionCredential` | 簽署過的 client assertion |
+| **使用者** | `InteractiveBrowserCredential` | 透過瀏覽器驗證 |
+| | `DeviceCodeCredential` | Device code 流程 |
+| | `OnBehalfOfCredential` | 委派身分 |
+| **開發者** | `AzureCliCredential` | Azure CLI |
+| | `AzurePowerShellCredential` | Azure PowerShell |
+| | `AzureDeveloperCliCredential` | Azure Developer CLI |
+| | `VisualStudioCredential` | Visual Studio |
+
+## 最佳實務
+
+### 1. 正式環境用確定性的 Credential
+
+```csharp
+// 開發
+var devCredential = new DefaultAzureCredential();
+
+// 正式環境：用特定的 credential
+var prodCredential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedClientId(&quot;&lt;client-id&gt;&quot;));
+```
+
+### 2. 重複使用 Credential 實例
+
+```csharp
+// 好的做法：單一 credential 實例在各 client 之間共用
+var credential = new DefaultAzureCredential();
+var blobClient = new BlobServiceClient(blobUri, credential);
+var secretClient = new SecretClient(vaultUri, credential);
+```
+
+### 3. 設定重試 Policy
+
+```csharp
+var options = new ManagedIdentityCredentialOptions(
+    ManagedIdentityId.FromUserAssignedClientId(clientId))
+{
+    Retry =
+    {
+        MaxRetries = 3,
+        Delay = TimeSpan.FromSeconds(0.5),
+    }
+};
+var credential = new ManagedIdentityCredential(options);
+```
+
+### 4. 除錯時啟用 Logging
+
+```csharp
+using Azure.Core.Diagnostics;
+
+using AzureEventSourceListener listener = new((args, message) =&gt;
+{
+    if (args is { EventSource.Name: &quot;Azure-Identity&quot; })
+    {
+        Console.WriteLine(message);
+    }
+}, EventLevel.LogAlways);
+```
+
+## 錯誤處理
+
+```csharp
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    new DefaultAzureCredential());
+
+try
+{
+    KeyVaultSecret secret = await client.GetSecretAsync(&quot;secret1&quot;);
+}
+catch (AuthenticationFailedException e)
+{
+    Console.WriteLine($&quot;Authentication Failed: {e.Message}&quot;);
+}
+catch (CredentialUnavailableException e)
+{
+    Console.WriteLine($&quot;Credential Unavailable: {e.Message}&quot;);
+}
+```
+
+## 主要 Exception
+
+| Exception | 說明 |
+|-----------|-------------|
+| `AuthenticationFailedException` | 驗證錯誤的基底 exception |
+| `CredentialUnavailableException` | Credential 在目前環境無法驗證 |
+| `AuthenticationRequiredException` | 需要互動式驗證 |
+
+## Managed Identity 支援
+
+支援的 Azure 服務：
+- Azure App Service 和 Azure Functions
+- Azure Arc
+- Azure Cloud Shell
+- Azure Kubernetes Service (AKS)
+- Azure Service Fabric
+- Azure Virtual Machines
+- Azure Virtual Machine Scale Sets
+
+## Thread Safety
+
+所有 credential 實作都是 thread-safe 的。單一 credential 實例可以安全地在多個 client 和 thread 之間共用。
+
+## 相關套件
+
+| 套件                         | 用途                          | 安裝                                            |
+|------------------------------|-------------------------------|-------------------------------------------------|
+| `Azure.Identity`             | 驗證（本函式庫）              | `dotnet add package Azure.Identity`             |
+| `Microsoft.Extensions.Azure` | DI 整合                       | `dotnet add package Microsoft.Extensions.Azure` |
+| `Azure.Identity.Broker`      | Brokered 驗證                 | `dotnet add package Azure.Identity.Broker`      |
+
+## 參考連結
+
+| 資源 | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.Identity |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.identity |
+| Credential Chains | https://aka.ms/azsdk/net/identity/credential-chains |
+| Best Practices | https://learn.microsoft.com/dotnet/azure/sdk/authentication/best-practices |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/identity/Azure.Identity |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-identity-dotnet
+description: |
+  Azure Identity library for .NET. Authentication library for Azure SDK clients using Microsoft Entra ID. Use for DefaultAzureCredential, managed identity, service principals, and developer credentials. Triggers: &quot;Azure Identity&quot;, &quot;DefaultAzureCredential&quot;, &quot;ManagedIdentityCredential&quot;, &quot;ClientSecretCredential&quot;, &quot;authentication .NET&quot;, &quot;Azure auth&quot;, &quot;credential chain&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Identity
+---
+
+# Azure Identity library for .NET
+
+Authentication library for Azure SDK clients using Microsoft Entra ID.
+
+## Installation
+
+```bash
+dotnet add package Azure.Identity
+
+# For ASP.NET Core integration
+dotnet add package Microsoft.Extensions.Azure
+
+# For brokered authentication and Visual Studio Code credential support
+dotnet add package Azure.Identity.Broker
+```
+
+## Environment Variables
+
+### Service Principal with Secret
+
+```bash
+AZURE_CLIENT_ID=&lt;application-client-id&gt;
+AZURE_TENANT_ID=&lt;directory-tenant-id&gt;
+AZURE_CLIENT_SECRET=&lt;client-secret-value&gt;
+```
+
+### Service Principal with Certificate
+
+```bash
+AZURE_CLIENT_ID=&lt;application-client-id&gt;
+AZURE_TENANT_ID=&lt;directory-tenant-id&gt;
+AZURE_CLIENT_CERTIFICATE_PATH=&lt;path-to-pfx-or-pem&gt;
+AZURE_CLIENT_CERTIFICATE_PASSWORD=&lt;certificate-password&gt;  # Optional
+```
+
+### Managed Identity
+
+```bash
+AZURE_CLIENT_ID=&lt;user-assigned-managed-identity-client-id&gt;  # Only for user-assigned
+```
+
+## DefaultAzureCredential
+
+The recommended credential for most scenarios. Tries multiple authentication methods in order. See [DefaultAzureCredential overview](https://aka.ms/azsdk/net/identity/credential-chains#defaultazurecredential-overview) for the current credential chain order and defaults.
+
+### Basic Usage
+
+```csharp
+using Azure.Identity;
+using Azure.Storage.Blobs;
+
+var credential = new DefaultAzureCredential();
+var blobClient = new BlobServiceClient(
+    new Uri(&quot;https://myaccount.blob.core.windows.net&quot;),
+    credential);
+```
+
+### ASP.NET Core with Dependency Injection
+
+```csharp
+using Azure.Identity;
+using Microsoft.Extensions.Azure;
+
+builder.Services.AddAzureClients(clientBuilder =&gt;
+{
+    clientBuilder.AddBlobServiceClient(
+        new Uri(&quot;https://myaccount.blob.core.windows.net&quot;));
+    clientBuilder.AddSecretClient(
+        new Uri(&quot;https://myvault.vault.azure.net&quot;));
+    
+    // Uses DefaultAzureCredential by default
+    clientBuilder.UseCredential(new DefaultAzureCredential());
+});
+```
+
+### Customizing DefaultAzureCredential
+
+```csharp
+var credential = new DefaultAzureCredential(
+    new DefaultAzureCredentialOptions
+    {
+        ExcludeEnvironmentCredential = true,
+        ExcludeManagedIdentityCredential = false,
+        ExcludeVisualStudioCredential = false,
+        ExcludeAzureCliCredential = false,
+        ExcludeInteractiveBrowserCredential = false, // Enable interactive
+        TenantId = &quot;&lt;tenant-id&gt;&quot;,
+        ManagedIdentityClientId = &quot;&lt;user-assigned-mi-client-id&gt;&quot;
+    });
+```
+
+## Credential Types
+
+### ManagedIdentityCredential (Production)
+
+```csharp
+// System-assigned managed identity
+var credential = new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned);
+
+// User-assigned by client ID
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedClientId(&quot;&lt;client-id&gt;&quot;));
+
+// User-assigned by resource ID
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedResourceId(&quot;&lt;resource-id&gt;&quot;));
+
+// User-assigned by object ID
+var credential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedObjectId(&quot;&lt;object-id&gt;&quot;));
+```
+
+### ClientSecretCredential
+
+```csharp
+var credential = new ClientSecretCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    clientSecret: &quot;&lt;client-secret&gt;&quot;);
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    credential);
+```
+
+### ClientCertificateCredential
+
+```csharp
+var certificate = X509CertificateLoader.LoadCertificateFromFile(&quot;MyCertificate.pfx&quot;);
+var credential = new ClientCertificateCredential(
+    tenantId: &quot;&lt;tenant-id&gt;&quot;,
+    clientId: &quot;&lt;client-id&gt;&quot;,
+    certificate);
+```
+
+### ChainedTokenCredential (Custom Chain)
+
+```csharp
+var credential = new ChainedTokenCredential(
+    new ManagedIdentityCredential(),
+    new AzureCliCredential());
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    credential);
+```
+
+### Developer Credentials
+
+```csharp
+// Azure CLI
+var credential = new AzureCliCredential();
+
+// Azure PowerShell
+var credential = new AzurePowerShellCredential();
+
+// Azure Developer CLI (azd)
+var credential = new AzureDeveloperCliCredential();
+
+// Visual Studio
+var credential = new VisualStudioCredential();
+
+// Interactive Browser
+var credential = new InteractiveBrowserCredential();
+```
+
+## Environment-Based Configuration
+
+```csharp
+// Production vs Development
+TokenCredential credential = builder.Environment.IsProduction()
+    ? new ManagedIdentityCredential(&quot;&lt;client-id&gt;&quot;)
+    : new DefaultAzureCredential();
+```
+
+## Sovereign Clouds
+
+```csharp
+var credential = new DefaultAzureCredential(
+    new DefaultAzureCredentialOptions
+    {
+        AuthorityHost = AzureAuthorityHosts.AzureGovernment
+    });
+
+// Available authority hosts:
+// AzureAuthorityHosts.AzurePublicCloud (default)
+// AzureAuthorityHosts.AzureGovernment
+// AzureAuthorityHosts.AzureChina
+```
+
+## Credential Types Reference
+
+| Category | Credential | Purpose |
+|----------|------------|---------|
+| **Chains** | `DefaultAzureCredential` | Preconfigured chain for dev-to-prod |
+| | `ChainedTokenCredential` | Custom credential chain |
+| **Azure-Hosted** | `ManagedIdentityCredential` | Azure managed identity |
+| | `WorkloadIdentityCredential` | Kubernetes workload identity |
+| | `EnvironmentCredential` | Environment variables |
+| **Service Principal** | `ClientSecretCredential` | Client ID + secret |
+| | `ClientCertificateCredential` | Client ID + certificate |
+| | `ClientAssertionCredential` | Signed client assertion |
+| **User** | `InteractiveBrowserCredential` | Browser-based auth |
+| | `DeviceCodeCredential` | Device code flow |
+| | `OnBehalfOfCredential` | Delegated identity |
+| **Developer** | `AzureCliCredential` | Azure CLI |
+| | `AzurePowerShellCredential` | Azure PowerShell |
+| | `AzureDeveloperCliCredential` | Azure Developer CLI |
+| | `VisualStudioCredential` | Visual Studio |
+
+## Best Practices
+
+### 1. Use Deterministic Credentials in Production
+
+```csharp
+// Development
+var devCredential = new DefaultAzureCredential();
+
+// Production - use specific credential
+var prodCredential = new ManagedIdentityCredential(
+    ManagedIdentityId.FromUserAssignedClientId(&quot;&lt;client-id&gt;&quot;));
+```
+
+### 2. Reuse Credential Instances
+
+```csharp
+// Good: Single credential instance shared across clients
+var credential = new DefaultAzureCredential();
+var blobClient = new BlobServiceClient(blobUri, credential);
+var secretClient = new SecretClient(vaultUri, credential);
+```
+
+### 3. Configure Retry Policies
+
+```csharp
+var options = new ManagedIdentityCredentialOptions(
+    ManagedIdentityId.FromUserAssignedClientId(clientId))
+{
+    Retry =
+    {
+        MaxRetries = 3,
+        Delay = TimeSpan.FromSeconds(0.5),
+    }
+};
+var credential = new ManagedIdentityCredential(options);
+```
+
+### 4. Enable Logging for Debugging
+
+```csharp
+using Azure.Core.Diagnostics;
+
+using AzureEventSourceListener listener = new((args, message) =&gt;
+{
+    if (args is { EventSource.Name: &quot;Azure-Identity&quot; })
+    {
+        Console.WriteLine(message);
+    }
+}, EventLevel.LogAlways);
+```
+
+## Error Handling
+
+```csharp
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+var client = new SecretClient(
+    new Uri(&quot;https://myvault.vault.azure.net&quot;),
+    new DefaultAzureCredential());
+
+try
+{
+    KeyVaultSecret secret = await client.GetSecretAsync(&quot;secret1&quot;);
+}
+catch (AuthenticationFailedException e)
+{
+    Console.WriteLine($&quot;Authentication Failed: {e.Message}&quot;);
+}
+catch (CredentialUnavailableException e)
+{
+    Console.WriteLine($&quot;Credential Unavailable: {e.Message}&quot;);
+}
+```
+
+## Key Exceptions
+
+| Exception | Description |
+|-----------|-------------|
+| `AuthenticationFailedException` | Base exception for authentication errors |
+| `CredentialUnavailableException` | Credential cannot authenticate in current environment |
+| `AuthenticationRequiredException` | Interactive authentication is required |
+
+## Managed Identity Support
+
+Supported Azure services:
+- Azure App Service and Azure Functions
+- Azure Arc
+- Azure Cloud Shell
+- Azure Kubernetes Service (AKS)
+- Azure Service Fabric
+- Azure Virtual Machines
+- Azure Virtual Machine Scale Sets
+
+## Thread Safety
+
+All credential implementations are thread-safe. A single credential instance can be safely shared across multiple clients and threads.
+
+## Related packages
+
+| Package                      | Purpose                       | Install                                         |
+|------------------------------|-------------------------------|-------------------------------------------------|
+| `Azure.Identity`             | Authentication (this library) | `dotnet add package Azure.Identity`             |
+| `Microsoft.Extensions.Azure` | DI integration                | `dotnet add package Microsoft.Extensions.Azure` |
+| `Azure.Identity.Broker`      | Brokered auth                 | `dotnet add package Azure.Identity.Broker`      |
+
+## Reference Links
+
+| Resource | URL |
+|----------|-----|
+| NuGet Package | https://www.nuget.org/packages/Azure.Identity |
+| API Reference | https://learn.microsoft.com/dotnet/api/azure.identity |
+| Credential Chains | https://aka.ms/azsdk/net/identity/credential-chains |
+| Best Practices | https://learn.microsoft.com/dotnet/azure/sdk/authentication/best-practices |
+| GitHub Source | https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/identity/Azure.Identity |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

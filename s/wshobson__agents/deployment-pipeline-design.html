@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>deployment-pipeline-design｜Skill 寫法圖鑑</title>
+<meta name="description" content="設計多階段 CI/CD pipeline：審核關卡、canary 和 blue-green、rollback">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>deployment-pipeline-design</h1>
+<p class="meta">wshobson ｜ 部署與發布 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/cicd-automation/skills/deployment-pipeline-design/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">設計多階段 CI/CD pipeline：審核關卡、canary 和 blue-green、rollback</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: deployment-pipeline-design
+description: 設計帶有審核關卡、安全檢查與 deploy 編排的多階段 CI/CD pipeline。適用於設計零停機 deploy pipeline、實作 canary rollout 策略、建立多環境 promotion 流程，或除錯 CI/CD 中失敗的 deploy 關卡。
+---
+
+# Deploy Pipeline 設計
+
+多階段 CI/CD pipeline 的架構模式，包含審核關卡、deploy 策略與環境 promotion 流程。
+
+## 目的
+
+透過適當的階段劃分、自動化品質關卡與漸進式交付策略，設計出穩健又安全、兼顧速度與安全性的 deploy pipeline。這個 skill 同時涵蓋 pipeline 架構的結構設計，以及讓 production deploy 可靠的營運模式。
+
+## 輸入 / 輸出
+
+### 你要提供的東西
+
+- **應用程式類型**：語言/runtime、容器化或 bare-metal、monolith 或 microservices
+- **Deploy 目標**：Kubernetes、ECS、VM、serverless，或 platform-as-a-service
+- **環境拓樸**：環境數量（dev/staging/prod）、region 配置、air-gap 需求
+- **Rollout 需求**：可接受的停機時間、rollback SLA、流量切分需求、偏好 canary 還是 blue-green
+- **關卡限制**：審核的團隊、要求的測試覆蓋率門檻、合規掃描（SAST、DAST、SCA）
+- **監控堆疊**：Prometheus、Datadog、CloudWatch，或其他用於自動 promotion 決策的指標來源
+
+### 這個 Skill 會產出什麼
+
+- **Pipeline 設定**：階段定義、job 相依關係、平行度與快取策略
+- **Deploy 策略**：選定的 rollout 模式，並附上註解過的設定（canary 權重、blue-green 切換、rolling 參數）
+- **健康檢查設定**：淺層與深層的 readiness probe、deploy 後的 smoke test 腳本
+- **關卡定義**：自動化的指標門檻與人工審核流程
+- **Rollback 計畫**：自動 rollback 的觸發條件與手動 runbook 步驟
+
+## 什麼時候用
+
+- 為新服務或平台 migration 設計 CI/CD 架構
+- 在環境之間實作 deploy 關卡
+- 設定強制安全掃描的多環境 pipeline
+- 用 canary 或 blue-green 策略建立漸進式交付
+- 除錯各階段都成功、但 production 行為不對的 pipeline
+- 透過指標惡化時自動 rollback，縮短平均復原時間
+
+## 詳細模式與實作範例
+
+詳細的模式文件放在 `references/details.md`，上面這一層導覽不夠用的時候再去讀那份檔案。
+
+## 疑難排解
+
+### Pipeline 裡健康檢查通過，但 production 的服務卻不健康
+
+Pipeline 的健康檢查打的是淺層的 `/ping` endpoint，就算資料庫連不上它也會回 200。要改用會驗證實際相依項目的深層 readiness 檢查（見上面的健康檢查章節）。
+
+### Canary deploy 永遠沒有 promote 到 100%
+
+Argo Rollouts 需要有效的 `AnalysisTemplate` 才能自動 promote。如果 Prometheus query 沒有回傳資料（例如 metric 名稱改了），分析會一直是 inconclusive，promotion 就卡住。加上 `inconclusiveLimit`，讓 rollout 快速失敗，不要一直掛著：
+
+```yaml
+spec:
+  metrics:
+  - name: error-rate
+    failureCondition: &quot;result[0] &gt; 0.05&quot;
+    inconclusiveLimit: 2   # inconclusive 兩次後就失敗，不要無限期掛著
+    provider:
+      prometheus:
+        query: |
+          sum(rate(http_requests_total{status=~&quot;5..&quot;}[2m]))
+          / sum(rate(http_requests_total[2m]))
+```
+
+### Staging deploy 成功，但 production job 一直沒啟動
+
+檢查 production 環境的保護規則有沒有設定好。沒指派 reviewer 的話，審核關卡會一直等下去，而且不會有任何通知。在 GitHub Actions 中，確認 **Settings → Environments → production** 的 `Required reviewers` 已設為既有的使用者或團隊。
+
+### Docker layer cache 每次都失效，導致 build 很慢
+
+如果 `COPY . .` 出現在安裝相依套件之前，任何一個原始碼檔案有變動，都會讓相依套件那一層失效。調整順序，先複製相依套件的 manifest：
+
+```dockerfile
+# 好的做法：相依套件和原始碼分開快取
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+```
+
+### Rollback 之後資料庫 migration 還留在舊程式碼上
+
+只 rollback 服務、沒有 rollback migration，會造成 schema 和程式碼不一致的錯誤。至少在一個 release 週期內，migration 一律要保持向下相容（只做新增），並把 undo 腳本跟 migration 一起版本化：
+
+```bash
+# migrations/V20240315__add_nullable_column.sql       （正向）
+# migrations/V20240315__add_nullable_column.undo.sql  （反向）
+```
+
+在舊版程式碼完全從所有環境下線之前，絕對不准執行破壞性的 migration（DROP COLUMN、ALTER NOT NULL）。
+
+## 進階主題
+
+平台專屬的 pipeline 設定、多 region promotion 流程，以及進階的 Argo Rollouts 模式，請見：
+
+- [`references/advanced-strategies.md`](references/advanced-strategies.md)：延伸的 YAML 範例、平台專屬設定（GitHub Actions、GitLab CI、Azure Pipelines）、多 region canary 模式，以及資料庫 migration 的 rollback 策略
+
+## 相關 Skill
+
+- `github-actions-templates`：GitHub Actions 實作模式與可重用 workflow
+- `gitlab-ci-patterns`：GitLab CI/CD pipeline 實作
+- `secrets-management`：CI/CD pipeline 中的 secret 處理</pre></section><section><h2>英文原文</h2><pre>---
+name: deployment-pipeline-design
+description: Design multi-stage CI/CD pipelines with approval gates, security checks, and deployment orchestration. Use this skill when designing zero-downtime deployment pipelines, implementing canary rollout strategies, setting up multi-environment promotion workflows, or debugging failed deployment gates in CI/CD.
+---
+
+# Deployment Pipeline Design
+
+Architecture patterns for multi-stage CI/CD pipelines with approval gates, deployment strategies, and environment promotion workflows.
+
+## Purpose
+
+Design robust, secure deployment pipelines that balance speed with safety through proper stage organization, automated quality gates, and progressive delivery strategies. This skill covers both the structural design of pipeline architecture and the operational patterns for reliable production deployments.
+
+## Input / Output
+
+### What You Provide
+
+- **Application type**: Language/runtime, containerized or bare-metal, monolith or microservices
+- **Deployment target**: Kubernetes, ECS, VMs, serverless, or platform-as-a-service
+- **Environment topology**: Number of environments (dev/staging/prod), region layout, air-gap requirements
+- **Rollout requirements**: Acceptable downtime, rollback SLA, traffic splitting needs, canary vs blue-green preference
+- **Gate constraints**: Approval teams, required test coverage thresholds, compliance scans (SAST, DAST, SCA)
+- **Monitoring stack**: Prometheus, Datadog, CloudWatch, or other metrics sources used for automated promotion decisions
+
+### What This Skill Produces
+
+- **Pipeline configuration**: Stage definitions, job dependencies, parallelism, and caching strategy
+- **Deployment strategy**: Chosen rollout pattern with annotated configuration (canary weights, blue-green switchover, rolling parameters)
+- **Health check setup**: Shallow vs deep readiness probes, post-deployment smoke test scripts
+- **Gate definitions**: Automated metric thresholds and manual approval workflows
+- **Rollback plan**: Automated rollback triggers and manual runbook steps
+
+## When to Use
+
+- Design CI/CD architecture for a new service or platform migration
+- Implement deployment gates between environments
+- Configure multi-environment pipelines with mandatory security scanning
+- Establish progressive delivery with canary or blue-green strategies
+- Debug pipelines where stages succeed but production behavior is wrong
+- Reduce mean time to recovery by automating rollback on metric degradation
+
+## Detailed patterns and worked examples
+
+Detailed pattern documentation lives in `references/details.md`. Read that file when the navigation tier above is insufficient.
+
+## Troubleshooting
+
+### Health check passes in pipeline but service is unhealthy in production
+
+The pipeline health check is hitting a shallow `/ping` endpoint that returns 200 even when the database is unreachable. Use a deep readiness check that verifies actual dependencies (see Health Checks section above).
+
+### Canary deployment never promotes to 100%
+
+Argo Rollouts requires a valid `AnalysisTemplate` to auto-promote. If the Prometheus query returns no data (e.g., metric name changed), the analysis stays inconclusive and promotion stalls. Add `inconclusiveLimit` so the rollout fails fast rather than hanging:
+
+```yaml
+spec:
+  metrics:
+  - name: error-rate
+    failureCondition: &quot;result[0] &gt; 0.05&quot;
+    inconclusiveLimit: 2   # fail after 2 inconclusive results, not hang indefinitely
+    provider:
+      prometheus:
+        query: |
+          sum(rate(http_requests_total{status=~&quot;5..&quot;}[2m]))
+          / sum(rate(http_requests_total[2m]))
+```
+
+### Staging deploy succeeds but production job never starts
+
+Check that production environment protection rules are configured — a missing reviewer assignment means the approval gate waits indefinitely with no notification. In GitHub Actions, ensure `Required reviewers` is set to an existing user or team in **Settings → Environments → production**.
+
+### Docker layer cache busted on every run causing slow builds
+
+If `COPY . .` appears before dependency installation, any source file change invalidates the dependency layer. Reorder to copy dependency manifests first:
+
+```dockerfile
+# Good: dependencies cached separately from source code
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+```
+
+### Rollback leaves database migrations applied to old code
+
+A service rollback without a migration rollback causes schema/code mismatch errors. Always make migrations backward-compatible (additive only) for at least one release cycle, and keep undo scripts versioned alongside the migration:
+
+```bash
+# migrations/V20240315__add_nullable_column.sql       (forward)
+# migrations/V20240315__add_nullable_column.undo.sql  (backward)
+```
+
+Never run destructive migrations (DROP COLUMN, ALTER NOT NULL) until the old code version is fully retired from all environments.
+
+## Advanced Topics
+
+For platform-specific pipeline configurations, multi-region promotion workflows, and advanced Argo Rollouts patterns, see:
+
+- [`references/advanced-strategies.md`](references/advanced-strategies.md) — Extended YAML examples, platform-specific configs (GitHub Actions, GitLab CI, Azure Pipelines), multi-region canary patterns, and database migration rollback strategies
+
+## Related Skills
+
+- `github-actions-templates` - For GitHub Actions implementation patterns and reusable workflows
+- `gitlab-ci-patterns` - For GitLab CI/CD pipeline implementation
+- `secrets-management` - For secrets handling in CI/CD pipelines</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

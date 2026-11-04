@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-security-keyvault-keys-java｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Java 管理 Key Vault 金鑰，做加密、簽章與輪替">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-security-keyvault-keys-java</h1>
+<p class="meta">Microsoft ｜ 安全護欄 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-java/skills/azure-security-keyvault-keys-java/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Java 管理 Key Vault 金鑰，做加密、簽章與輪替</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-security-keyvault-keys-java
+description: 用於加密金鑰管理的 Azure Key Vault Keys Java SDK。用於建立、管理或使用 RSA/EC 金鑰、執行加密／解密／簽章／驗章操作，或處理由 HSM 支援的金鑰。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-security-keyvault-keys
+---
+
+# Azure Key Vault Keys (Java)
+
+在 Azure Key Vault 和 Managed HSM 裡管理加密金鑰並執行加密操作。
+
+## 安裝
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-security-keyvault-keys&lt;/artifactId&gt;
+    &lt;version&gt;4.9.0&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## 建立 Client
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.azure.security.keyvault.keys.KeyClient;
+import com.azure.security.keyvault.keys.KeyClientBuilder;
+import com.azure.security.keyvault.keys.cryptography.CryptographyClient;
+import com.azure.security.keyvault.keys.cryptography.CryptographyClientBuilder;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+// 金鑰管理 client
+KeyClient keyClient = new KeyClientBuilder()
+    .vaultUrl(&quot;https://&lt;vault-name&gt;.vault.azure.net&quot;)
+    .credential(credential)
+    .buildClient();
+
+// 非同步 client
+KeyAsyncClient keyAsyncClient = new KeyClientBuilder()
+    .vaultUrl(&quot;https://&lt;vault-name&gt;.vault.azure.net&quot;)
+    .credential(credential)
+    .buildAsyncClient();
+
+// 加密 client（用於加密／解密／簽章／驗章）
+CryptographyClient cryptoClient = new CryptographyClientBuilder()
+    .keyIdentifier(&quot;https://&lt;vault-name&gt;.vault.azure.net/keys/&lt;key-name&gt;/&lt;key-version&gt;&quot;)
+    .credential(credential)
+    .buildClient();
+```
+
+## 金鑰型別
+
+| 型別 | 說明 |
+|------|-------------|
+| `RSA` | RSA 金鑰（2048、3072、4096 bits） |
+| `RSA_HSM` | HSM 中的 RSA 金鑰 |
+| `EC` | Elliptic Curve 金鑰 |
+| `EC_HSM` | HSM 中的 Elliptic Curve 金鑰 |
+| `OCT` | 對稱金鑰（僅限 Managed HSM） |
+| `OCT_HSM` | HSM 中的對稱金鑰 |
+
+## 建立金鑰
+
+### 建立 RSA 金鑰
+
+```java
+import com.azure.security.keyvault.keys.models.*;
+
+// 簡單的 RSA 金鑰
+KeyVaultKey rsaKey = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-rsa-key&quot;)
+    .setKeySize(2048));
+
+System.out.println(&quot;Key name: &quot; + rsaKey.getName());
+System.out.println(&quot;Key ID: &quot; + rsaKey.getId());
+System.out.println(&quot;Key type: &quot; + rsaKey.getKeyType());
+
+// 帶選項的 RSA 金鑰
+KeyVaultKey rsaKeyWithOptions = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-rsa-key-2&quot;)
+    .setKeySize(4096)
+    .setExpiresOn(OffsetDateTime.now().plusYears(1))
+    .setNotBefore(OffsetDateTime.now())
+    .setEnabled(true)
+    .setKeyOperations(KeyOperation.ENCRYPT, KeyOperation.DECRYPT, 
+                       KeyOperation.WRAP_KEY, KeyOperation.UNWRAP_KEY)
+    .setTags(Map.of(&quot;environment&quot;, &quot;production&quot;)));
+
+// 由 HSM 支援的 RSA 金鑰
+KeyVaultKey hsmKey = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-hsm-key&quot;)
+    .setKeySize(2048)
+    .setHardwareProtected(true));
+```
+
+### 建立 EC 金鑰
+
+```java
+// 使用 P-256 曲線的 EC 金鑰
+KeyVaultKey ecKey = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key&quot;)
+    .setCurveName(KeyCurveName.P_256));
+
+// 使用其他曲線的 EC 金鑰
+KeyVaultKey ecKey384 = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key-384&quot;)
+    .setCurveName(KeyCurveName.P_384));
+
+KeyVaultKey ecKey521 = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key-521&quot;)
+    .setCurveName(KeyCurveName.P_521));
+
+// 由 HSM 支援的 EC 金鑰
+KeyVaultKey ecHsmKey = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-hsm-key&quot;)
+    .setCurveName(KeyCurveName.P_256)
+    .setHardwareProtected(true));
+```
+
+### 建立對稱金鑰（僅限 Managed HSM）
+
+```java
+KeyVaultKey octKey = keyClient.createOctKey(new CreateOctKeyOptions(&quot;my-symmetric-key&quot;)
+    .setKeySize(256)
+    .setHardwareProtected(true));
+```
+
+## 取得金鑰
+
+```java
+// 取得最新版本
+KeyVaultKey key = keyClient.getKey(&quot;my-key&quot;);
+
+// 取得特定版本
+KeyVaultKey keyVersion = keyClient.getKey(&quot;my-key&quot;, &quot;&lt;version-id&gt;&quot;);
+
+// 只取得金鑰屬性（不含金鑰素材）
+KeyProperties keyProps = keyClient.getKey(&quot;my-key&quot;).getProperties();
+```
+
+## 更新金鑰屬性
+
+```java
+KeyVaultKey key = keyClient.getKey(&quot;my-key&quot;);
+
+// 更新屬性
+key.getProperties()
+    .setEnabled(false)
+    .setExpiresOn(OffsetDateTime.now().plusMonths(6))
+    .setTags(Map.of(&quot;status&quot;, &quot;archived&quot;));
+
+KeyVaultKey updatedKey = keyClient.updateKeyProperties(key.getProperties(),
+    KeyOperation.ENCRYPT, KeyOperation.DECRYPT);
+```
+
+## 列出金鑰
+
+```java
+import com.azure.core.util.paging.PagedIterable;
+
+// 列出所有金鑰
+for (KeyProperties keyProps : keyClient.listPropertiesOfKeys()) {
+    System.out.println(&quot;Key: &quot; + keyProps.getName());
+    System.out.println(&quot;  Enabled: &quot; + keyProps.isEnabled());
+    System.out.println(&quot;  Created: &quot; + keyProps.getCreatedOn());
+}
+
+// 列出金鑰的各個版本
+for (KeyProperties version : keyClient.listPropertiesOfKeyVersions(&quot;my-key&quot;)) {
+    System.out.println(&quot;Version: &quot; + version.getVersion());
+    System.out.println(&quot;Created: &quot; + version.getCreatedOn());
+}
+```
+
+## 刪除金鑰
+
+```java
+import com.azure.core.util.polling.SyncPoller;
+
+// 開始刪除（有啟用 soft-delete 的 vault）
+SyncPoller&lt;DeletedKey, Void&gt; deletePoller = keyClient.beginDeleteKey(&quot;my-key&quot;);
+
+// 等待刪除完成
+DeletedKey deletedKey = deletePoller.poll().getValue();
+System.out.println(&quot;Deleted: &quot; + deletedKey.getDeletedOn());
+
+deletePoller.waitForCompletion();
+
+// Purge 已刪除的金鑰（永久刪除）
+keyClient.purgeDeletedKey(&quot;my-key&quot;);
+
+// 復原已刪除的金鑰
+SyncPoller&lt;KeyVaultKey, Void&gt; recoverPoller = keyClient.beginRecoverDeletedKey(&quot;my-key&quot;);
+recoverPoller.waitForCompletion();
+```
+
+## 加密操作
+
+### 加密／解密
+
+```java
+import com.azure.security.keyvault.keys.cryptography.models.*;
+
+CryptographyClient cryptoClient = new CryptographyClientBuilder()
+    .keyIdentifier(&quot;https://&lt;vault&gt;.vault.azure.net/keys/&lt;key-name&gt;&quot;)
+    .credential(new DefaultAzureCredentialBuilder().build())
+    .buildClient();
+
+byte[] plaintext = &quot;Hello, World!&quot;.getBytes(StandardCharsets.UTF_8);
+
+// 加密
+EncryptResult encryptResult = cryptoClient.encrypt(EncryptionAlgorithm.RSA_OAEP, plaintext);
+byte[] ciphertext = encryptResult.getCipherText();
+System.out.println(&quot;Ciphertext length: &quot; + ciphertext.length);
+
+// 解密
+DecryptResult decryptResult = cryptoClient.decrypt(EncryptionAlgorithm.RSA_OAEP, ciphertext);
+String decrypted = new String(decryptResult.getPlainText(), StandardCharsets.UTF_8);
+System.out.println(&quot;Decrypted: &quot; + decrypted);
+```
+
+### 簽章／驗章
+
+```java
+import java.security.MessageDigest;
+
+// 建立資料的 digest
+byte[] data = &quot;Data to sign&quot;.getBytes(StandardCharsets.UTF_8);
+MessageDigest md = MessageDigest.getInstance(&quot;SHA-256&quot;);
+byte[] digest = md.digest(data);
+
+// 簽章
+SignResult signResult = cryptoClient.sign(SignatureAlgorithm.RS256, digest);
+byte[] signature = signResult.getSignature();
+
+// 驗章
+VerifyResult verifyResult = cryptoClient.verify(SignatureAlgorithm.RS256, digest, signature);
+System.out.println(&quot;Valid signature: &quot; + verifyResult.isValid());
+```
+
+### Wrap／Unwrap 金鑰
+
+```java
+// 要 wrap 的金鑰（例如 AES 金鑰）
+byte[] keyToWrap = new byte[32];  // 256-bit 金鑰
+new SecureRandom().nextBytes(keyToWrap);
+
+// Wrap
+WrapResult wrapResult = cryptoClient.wrapKey(KeyWrapAlgorithm.RSA_OAEP, keyToWrap);
+byte[] wrappedKey = wrapResult.getEncryptedKey();
+
+// Unwrap
+UnwrapResult unwrapResult = cryptoClient.unwrapKey(KeyWrapAlgorithm.RSA_OAEP, wrappedKey);
+byte[] unwrappedKey = unwrapResult.getKey();
+```
+
+## 備份與還原
+
+```java
+// 備份
+byte[] backup = keyClient.backupKey(&quot;my-key&quot;);
+
+// 把備份存成檔案
+Files.write(Paths.get(&quot;key-backup.blob&quot;), backup);
+
+// 還原
+byte[] backupData = Files.readAllBytes(Paths.get(&quot;key-backup.blob&quot;));
+KeyVaultKey restoredKey = keyClient.restoreKeyBackup(backupData);
+```
+
+## 金鑰輪替
+
+```java
+// 輪替成新版本
+KeyVaultKey rotatedKey = keyClient.rotateKey(&quot;my-key&quot;);
+System.out.println(&quot;New version: &quot; + rotatedKey.getProperties().getVersion());
+
+// 設定輪替政策
+KeyRotationPolicy policy = new KeyRotationPolicy()
+    .setExpiresIn(&quot;P90D&quot;)  // 90 天後到期
+    .setLifetimeActions(Arrays.asList(
+        new KeyRotationLifetimeAction(KeyRotationPolicyAction.ROTATE)
+            .setTimeBeforeExpiry(&quot;P30D&quot;)));  // 到期前 30 天輪替
+
+keyClient.updateKeyRotationPolicy(&quot;my-key&quot;, policy);
+
+// 取得輪替政策
+KeyRotationPolicy currentPolicy = keyClient.getKeyRotationPolicy(&quot;my-key&quot;);
+```
+
+## 匯入金鑰
+
+```java
+import com.azure.security.keyvault.keys.models.ImportKeyOptions;
+import com.azure.security.keyvault.keys.models.JsonWebKey;
+
+// 匯入既有的金鑰素材
+JsonWebKey jsonWebKey = new JsonWebKey()
+    .setKeyType(KeyType.RSA)
+    .setN(modulus)
+    .setE(exponent)
+    .setD(privateExponent)
+    // ... 其他 RSA 元件
+    ;
+
+ImportKeyOptions importOptions = new ImportKeyOptions(&quot;imported-key&quot;, jsonWebKey)
+    .setHardwareProtected(false);
+
+KeyVaultKey importedKey = keyClient.importKey(importOptions);
+```
+
+## 加密演算法
+
+| 演算法 | 金鑰型別 | 說明 |
+|-----------|----------|-------------|
+| `RSA1_5` | RSA | RSAES-PKCS1-v1_5 |
+| `RSA_OAEP` | RSA | 搭配 OAEP 的 RSAES（建議使用） |
+| `RSA_OAEP_256` | RSA | 搭配 OAEP 並使用 SHA-256 的 RSAES |
+| `A128GCM` | OCT | AES-GCM 128-bit |
+| `A256GCM` | OCT | AES-GCM 256-bit |
+| `A128CBC` | OCT | AES-CBC 128-bit |
+| `A256CBC` | OCT | AES-CBC 256-bit |
+
+## 簽章演算法
+
+| 演算法 | 金鑰型別 | Hash |
+|-----------|----------|------|
+| `RS256` | RSA | SHA-256 |
+| `RS384` | RSA | SHA-384 |
+| `RS512` | RSA | SHA-512 |
+| `PS256` | RSA | SHA-256 (PSS) |
+| `ES256` | EC P-256 | SHA-256 |
+| `ES384` | EC P-384 | SHA-384 |
+| `ES512` | EC P-521 | SHA-512 |
+
+## 錯誤處理
+
+```java
+import com.azure.core.exception.HttpResponseException;
+import com.azure.core.exception.ResourceNotFoundException;
+
+try {
+    KeyVaultKey key = keyClient.getKey(&quot;non-existent-key&quot;);
+} catch (ResourceNotFoundException e) {
+    System.out.println(&quot;Key not found: &quot; + e.getMessage());
+} catch (HttpResponseException e) {
+    System.out.println(&quot;HTTP error &quot; + e.getResponse().getStatusCode());
+    System.out.println(&quot;Message: &quot; + e.getMessage());
+}
+```
+
+## 環境變數
+
+```bash
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net  # vault URL 必填
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 最佳實務
+
+1. **Production 用 HSM 金鑰** - 敏感金鑰要設 `setHardwareProtected(true)`
+2. **啟用 Soft Delete** - 防止誤刪
+3. **金鑰輪替** - 設定自動輪替政策
+4. **最小權限** - 不同操作用不同的金鑰
+5. **盡量在本地做加密** - 搭配本地金鑰素材使用 `CryptographyClient`，減少來回的 round-trip
+
+## 觸發用語
+
+- &quot;Key Vault keys Java&quot;, &quot;cryptographic keys Java&quot;
+- &quot;encrypt decrypt Java&quot;, &quot;sign verify Java&quot;
+- &quot;RSA key&quot;, &quot;EC key&quot;, &quot;HSM key&quot;
+- &quot;key rotation&quot;, &quot;wrap unwrap key&quot;</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-security-keyvault-keys-java
+description: Azure Key Vault Keys Java SDK for cryptographic key management. Use when creating, managing, or using RSA/EC keys, performing encrypt/decrypt/sign/verify operations, or working with HSM-backed keys.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: com.azure:azure-security-keyvault-keys
+---
+
+# Azure Key Vault Keys (Java)
+
+Manage cryptographic keys and perform cryptographic operations in Azure Key Vault and Managed HSM.
+
+## Installation
+
+```xml
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-security-keyvault-keys&lt;/artifactId&gt;
+    &lt;version&gt;4.9.0&lt;/version&gt;
+&lt;/dependency&gt;
+```
+
+## Client Creation
+
+```java
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.azure.security.keyvault.keys.KeyClient;
+import com.azure.security.keyvault.keys.KeyClientBuilder;
+import com.azure.security.keyvault.keys.cryptography.CryptographyClient;
+import com.azure.security.keyvault.keys.cryptography.CryptographyClientBuilder;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+TokenCredential credential = new DefaultAzureCredentialBuilder()
+    .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+    .build();
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#credential-classes
+// TokenCredential credential = new ManagedIdentityCredentialBuilder().build();
+
+// Key management client
+KeyClient keyClient = new KeyClientBuilder()
+    .vaultUrl(&quot;https://&lt;vault-name&gt;.vault.azure.net&quot;)
+    .credential(credential)
+    .buildClient();
+
+// Async client
+KeyAsyncClient keyAsyncClient = new KeyClientBuilder()
+    .vaultUrl(&quot;https://&lt;vault-name&gt;.vault.azure.net&quot;)
+    .credential(credential)
+    .buildAsyncClient();
+
+// Cryptography client (for encrypt/decrypt/sign/verify)
+CryptographyClient cryptoClient = new CryptographyClientBuilder()
+    .keyIdentifier(&quot;https://&lt;vault-name&gt;.vault.azure.net/keys/&lt;key-name&gt;/&lt;key-version&gt;&quot;)
+    .credential(credential)
+    .buildClient();
+```
+
+## Key Types
+
+| Type | Description |
+|------|-------------|
+| `RSA` | RSA key (2048, 3072, 4096 bits) |
+| `RSA_HSM` | RSA key in HSM |
+| `EC` | Elliptic Curve key |
+| `EC_HSM` | Elliptic Curve key in HSM |
+| `OCT` | Symmetric key (Managed HSM only) |
+| `OCT_HSM` | Symmetric key in HSM |
+
+## Create Keys
+
+### Create RSA Key
+
+```java
+import com.azure.security.keyvault.keys.models.*;
+
+// Simple RSA key
+KeyVaultKey rsaKey = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-rsa-key&quot;)
+    .setKeySize(2048));
+
+System.out.println(&quot;Key name: &quot; + rsaKey.getName());
+System.out.println(&quot;Key ID: &quot; + rsaKey.getId());
+System.out.println(&quot;Key type: &quot; + rsaKey.getKeyType());
+
+// RSA key with options
+KeyVaultKey rsaKeyWithOptions = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-rsa-key-2&quot;)
+    .setKeySize(4096)
+    .setExpiresOn(OffsetDateTime.now().plusYears(1))
+    .setNotBefore(OffsetDateTime.now())
+    .setEnabled(true)
+    .setKeyOperations(KeyOperation.ENCRYPT, KeyOperation.DECRYPT, 
+                       KeyOperation.WRAP_KEY, KeyOperation.UNWRAP_KEY)
+    .setTags(Map.of(&quot;environment&quot;, &quot;production&quot;)));
+
+// HSM-backed RSA key
+KeyVaultKey hsmKey = keyClient.createRsaKey(new CreateRsaKeyOptions(&quot;my-hsm-key&quot;)
+    .setKeySize(2048)
+    .setHardwareProtected(true));
+```
+
+### Create EC Key
+
+```java
+// EC key with P-256 curve
+KeyVaultKey ecKey = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key&quot;)
+    .setCurveName(KeyCurveName.P_256));
+
+// EC key with other curves
+KeyVaultKey ecKey384 = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key-384&quot;)
+    .setCurveName(KeyCurveName.P_384));
+
+KeyVaultKey ecKey521 = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-key-521&quot;)
+    .setCurveName(KeyCurveName.P_521));
+
+// HSM-backed EC key
+KeyVaultKey ecHsmKey = keyClient.createEcKey(new CreateEcKeyOptions(&quot;my-ec-hsm-key&quot;)
+    .setCurveName(KeyCurveName.P_256)
+    .setHardwareProtected(true));
+```
+
+### Create Symmetric Key (Managed HSM only)
+
+```java
+KeyVaultKey octKey = keyClient.createOctKey(new CreateOctKeyOptions(&quot;my-symmetric-key&quot;)
+    .setKeySize(256)
+    .setHardwareProtected(true));
+```
+
+## Get Key
+
+```java
+// Get latest version
+KeyVaultKey key = keyClient.getKey(&quot;my-key&quot;);
+
+// Get specific version
+KeyVaultKey keyVersion = keyClient.getKey(&quot;my-key&quot;, &quot;&lt;version-id&gt;&quot;);
+
+// Get only key properties (no key material)
+KeyProperties keyProps = keyClient.getKey(&quot;my-key&quot;).getProperties();
+```
+
+## Update Key Properties
+
+```java
+KeyVaultKey key = keyClient.getKey(&quot;my-key&quot;);
+
+// Update properties
+key.getProperties()
+    .setEnabled(false)
+    .setExpiresOn(OffsetDateTime.now().plusMonths(6))
+    .setTags(Map.of(&quot;status&quot;, &quot;archived&quot;));
+
+KeyVaultKey updatedKey = keyClient.updateKeyProperties(key.getProperties(),
+    KeyOperation.ENCRYPT, KeyOperation.DECRYPT);
+```
+
+## List Keys
+
+```java
+import com.azure.core.util.paging.PagedIterable;
+
+// List all keys
+for (KeyProperties keyProps : keyClient.listPropertiesOfKeys()) {
+    System.out.println(&quot;Key: &quot; + keyProps.getName());
+    System.out.println(&quot;  Enabled: &quot; + keyProps.isEnabled());
+    System.out.println(&quot;  Created: &quot; + keyProps.getCreatedOn());
+}
+
+// List key versions
+for (KeyProperties version : keyClient.listPropertiesOfKeyVersions(&quot;my-key&quot;)) {
+    System.out.println(&quot;Version: &quot; + version.getVersion());
+    System.out.println(&quot;Created: &quot; + version.getCreatedOn());
+}
+```
+
+## Delete Key
+
+```java
+import com.azure.core.util.polling.SyncPoller;
+
+// Begin delete (soft-delete enabled vaults)
+SyncPoller&lt;DeletedKey, Void&gt; deletePoller = keyClient.beginDeleteKey(&quot;my-key&quot;);
+
+// Wait for deletion
+DeletedKey deletedKey = deletePoller.poll().getValue();
+System.out.println(&quot;Deleted: &quot; + deletedKey.getDeletedOn());
+
+deletePoller.waitForCompletion();
+
+// Purge deleted key (permanent deletion)
+keyClient.purgeDeletedKey(&quot;my-key&quot;);
+
+// Recover deleted key
+SyncPoller&lt;KeyVaultKey, Void&gt; recoverPoller = keyClient.beginRecoverDeletedKey(&quot;my-key&quot;);
+recoverPoller.waitForCompletion();
+```
+
+## Cryptographic Operations
+
+### Encrypt/Decrypt
+
+```java
+import com.azure.security.keyvault.keys.cryptography.models.*;
+
+CryptographyClient cryptoClient = new CryptographyClientBuilder()
+    .keyIdentifier(&quot;https://&lt;vault&gt;.vault.azure.net/keys/&lt;key-name&gt;&quot;)
+    .credential(new DefaultAzureCredentialBuilder().build())
+    .buildClient();
+
+byte[] plaintext = &quot;Hello, World!&quot;.getBytes(StandardCharsets.UTF_8);
+
+// Encrypt
+EncryptResult encryptResult = cryptoClient.encrypt(EncryptionAlgorithm.RSA_OAEP, plaintext);
+byte[] ciphertext = encryptResult.getCipherText();
+System.out.println(&quot;Ciphertext length: &quot; + ciphertext.length);
+
+// Decrypt
+DecryptResult decryptResult = cryptoClient.decrypt(EncryptionAlgorithm.RSA_OAEP, ciphertext);
+String decrypted = new String(decryptResult.getPlainText(), StandardCharsets.UTF_8);
+System.out.println(&quot;Decrypted: &quot; + decrypted);
+```
+
+### Sign/Verify
+
+```java
+import java.security.MessageDigest;
+
+// Create digest of data
+byte[] data = &quot;Data to sign&quot;.getBytes(StandardCharsets.UTF_8);
+MessageDigest md = MessageDigest.getInstance(&quot;SHA-256&quot;);
+byte[] digest = md.digest(data);
+
+// Sign
+SignResult signResult = cryptoClient.sign(SignatureAlgorithm.RS256, digest);
+byte[] signature = signResult.getSignature();
+
+// Verify
+VerifyResult verifyResult = cryptoClient.verify(SignatureAlgorithm.RS256, digest, signature);
+System.out.println(&quot;Valid signature: &quot; + verifyResult.isValid());
+```
+
+### Wrap/Unwrap Key
+
+```java
+// Key to wrap (e.g., AES key)
+byte[] keyToWrap = new byte[32];  // 256-bit key
+new SecureRandom().nextBytes(keyToWrap);
+
+// Wrap
+WrapResult wrapResult = cryptoClient.wrapKey(KeyWrapAlgorithm.RSA_OAEP, keyToWrap);
+byte[] wrappedKey = wrapResult.getEncryptedKey();
+
+// Unwrap
+UnwrapResult unwrapResult = cryptoClient.unwrapKey(KeyWrapAlgorithm.RSA_OAEP, wrappedKey);
+byte[] unwrappedKey = unwrapResult.getKey();
+```
+
+## Backup and Restore
+
+```java
+// Backup
+byte[] backup = keyClient.backupKey(&quot;my-key&quot;);
+
+// Save backup to file
+Files.write(Paths.get(&quot;key-backup.blob&quot;), backup);
+
+// Restore
+byte[] backupData = Files.readAllBytes(Paths.get(&quot;key-backup.blob&quot;));
+KeyVaultKey restoredKey = keyClient.restoreKeyBackup(backupData);
+```
+
+## Key Rotation
+
+```java
+// Rotate to new version
+KeyVaultKey rotatedKey = keyClient.rotateKey(&quot;my-key&quot;);
+System.out.println(&quot;New version: &quot; + rotatedKey.getProperties().getVersion());
+
+// Set rotation policy
+KeyRotationPolicy policy = new KeyRotationPolicy()
+    .setExpiresIn(&quot;P90D&quot;)  // Expire after 90 days
+    .setLifetimeActions(Arrays.asList(
+        new KeyRotationLifetimeAction(KeyRotationPolicyAction.ROTATE)
+            .setTimeBeforeExpiry(&quot;P30D&quot;)));  // Rotate 30 days before expiry
+
+keyClient.updateKeyRotationPolicy(&quot;my-key&quot;, policy);
+
+// Get rotation policy
+KeyRotationPolicy currentPolicy = keyClient.getKeyRotationPolicy(&quot;my-key&quot;);
+```
+
+## Import Key
+
+```java
+import com.azure.security.keyvault.keys.models.ImportKeyOptions;
+import com.azure.security.keyvault.keys.models.JsonWebKey;
+
+// Import existing key material
+JsonWebKey jsonWebKey = new JsonWebKey()
+    .setKeyType(KeyType.RSA)
+    .setN(modulus)
+    .setE(exponent)
+    .setD(privateExponent)
+    // ... other RSA components
+    ;
+
+ImportKeyOptions importOptions = new ImportKeyOptions(&quot;imported-key&quot;, jsonWebKey)
+    .setHardwareProtected(false);
+
+KeyVaultKey importedKey = keyClient.importKey(importOptions);
+```
+
+## Encryption Algorithms
+
+| Algorithm | Key Type | Description |
+|-----------|----------|-------------|
+| `RSA1_5` | RSA | RSAES-PKCS1-v1_5 |
+| `RSA_OAEP` | RSA | RSAES with OAEP (recommended) |
+| `RSA_OAEP_256` | RSA | RSAES with OAEP using SHA-256 |
+| `A128GCM` | OCT | AES-GCM 128-bit |
+| `A256GCM` | OCT | AES-GCM 256-bit |
+| `A128CBC` | OCT | AES-CBC 128-bit |
+| `A256CBC` | OCT | AES-CBC 256-bit |
+
+## Signature Algorithms
+
+| Algorithm | Key Type | Hash |
+|-----------|----------|------|
+| `RS256` | RSA | SHA-256 |
+| `RS384` | RSA | SHA-384 |
+| `RS512` | RSA | SHA-512 |
+| `PS256` | RSA | SHA-256 (PSS) |
+| `ES256` | EC P-256 | SHA-256 |
+| `ES384` | EC P-384 | SHA-384 |
+| `ES512` | EC P-521 | SHA-512 |
+
+## Error Handling
+
+```java
+import com.azure.core.exception.HttpResponseException;
+import com.azure.core.exception.ResourceNotFoundException;
+
+try {
+    KeyVaultKey key = keyClient.getKey(&quot;non-existent-key&quot;);
+} catch (ResourceNotFoundException e) {
+    System.out.println(&quot;Key not found: &quot; + e.getMessage());
+} catch (HttpResponseException e) {
+    System.out.println(&quot;HTTP error &quot; + e.getResponse().getStatusCode());
+    System.out.println(&quot;Message: &quot; + e.getMessage());
+}
+```
+
+## Environment Variables
+
+```bash
+AZURE_KEYVAULT_URL=https://&lt;vault-name&gt;.vault.azure.net  # Required for vault URL
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Best Practices
+
+1. **Use HSM Keys for Production** - Set `setHardwareProtected(true)` for sensitive keys
+2. **Enable Soft Delete** - Protects against accidental deletion
+3. **Key Rotation** - Set up automatic rotation policies
+4. **Least Privilege** - Use separate keys for different operations
+5. **Local Crypto When Possible** - Use `CryptographyClient` with local key material to reduce round-trips
+
+## Trigger Phrases
+
+- &quot;Key Vault keys Java&quot;, &quot;cryptographic keys Java&quot;
+- &quot;encrypt decrypt Java&quot;, &quot;sign verify Java&quot;
+- &quot;RSA key&quot;, &quot;EC key&quot;, &quot;HSM key&quot;
+- &quot;key rotation&quot;, &quot;wrap unwrap key&quot;</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

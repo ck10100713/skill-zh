@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>binary-analysis-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="分析編譯後 binary 的模式：反組譯、反編譯、控制流程和 Ghidra/IDA 技巧">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>binary-analysis-patterns</h1>
+<p class="meta">wshobson ｜ 除錯與調查 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/reverse-engineering/skills/binary-analysis-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">分析編譯後 binary 的模式：反組譯、反編譯、控制流程和 Ghidra/IDA 技巧</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: binary-analysis-patterns
+description: 掌握 binary 分析模式，包括反組譯、反編譯、控制流程分析和程式碼模式辨識。在分析執行檔、理解編譯後的程式碼，或對 binary 做靜態分析時使用。
+---
+
+# Binary 分析模式
+
+分析編譯後的 binary、理解組合語言程式碼，並重建程式邏輯的完整模式與技巧。
+
+## 何時使用這個 Skill
+
+- 逆向未知的執行檔，了解它的行為
+- 用 Ghidra / IDA Pro / Binary Ninja 分析惡意程式或被混淆的 binary
+- 辨認常見的組合語言慣用寫法（function prologue、switch table、vtable dispatch）
+- 從編譯後的程式碼重建高階的控制流程
+- 辨識編譯器引入的模式（stack canary、PIC trampoline）
+
+## 詳細章節：反組譯基礎
+
+原本是這個 SKILL.md 裡一段 2047 byte 的章節。為了符合 Codex 8 KB 的 skill 本文上限，已移到 `references/details.md`。
+
+## 控制流程模式
+
+### 條件分支
+
+```asm
+; if (a == b)
+cmp eax, ebx
+jne skip_block
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - signed
+cmp eax, ebx
+jge skip_block    ; Jump if greater or equal
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - unsigned
+cmp eax, ebx
+jae skip_block    ; Jump if above or equal
+; ... if body ...
+skip_block:
+```
+
+### 迴圈模式
+
+```asm
+; for (int i = 0; i &lt; n; i++)
+xor ecx, ecx           ; i = 0
+loop_start:
+cmp ecx, [n]           ; i &lt; n
+jge loop_end
+; ... loop body ...
+inc ecx                ; i++
+jmp loop_start
+loop_end:
+
+; while (condition)
+jmp loop_check
+loop_body:
+; ... body ...
+loop_check:
+cmp eax, ebx
+jl loop_body
+
+; do-while
+loop_body:
+; ... body ...
+cmp eax, ebx
+jl loop_body
+```
+
+### Switch 敘述模式
+
+```asm
+; Jump table pattern
+mov eax, [switch_var]
+cmp eax, max_case
+ja default_case
+jmp [jump_table + eax*8]
+
+; Sequential comparison (small switch)
+cmp eax, 1
+je case_1
+cmp eax, 2
+je case_2
+cmp eax, 3
+je case_3
+jmp default_case
+```
+
+## 資料結構模式
+
+### 陣列存取
+
+```asm
+; array[i] - 4-byte elements
+mov eax, [rbx + rcx*4]        ; rbx=base, rcx=index
+
+; array[i] - 8-byte elements
+mov rax, [rbx + rcx*8]
+
+; Multi-dimensional array[i][j]
+; arr[i][j] = base + (i * cols + j) * element_size
+imul eax, [cols]
+add eax, [j]
+mov edx, [rbx + rax*4]
+```
+
+### 結構存取
+
+```c
+struct Example {
+    int a;      // offset 0
+    char b;     // offset 4
+    // padding  // offset 5-7
+    long c;     // offset 8
+    short d;    // offset 16
+};
+```
+
+```asm
+; Accessing struct fields
+mov rdi, [struct_ptr]
+mov eax, [rdi]         ; s-&gt;a (offset 0)
+movzx eax, byte [rdi+4] ; s-&gt;b (offset 4)
+mov rax, [rdi+8]       ; s-&gt;c (offset 8)
+movzx eax, word [rdi+16] ; s-&gt;d (offset 16)
+```
+
+### Linked List 走訪
+
+```asm
+; while (node != NULL)
+list_loop:
+test rdi, rdi          ; node == NULL?
+jz list_done
+; ... process node ...
+mov rdi, [rdi+8]       ; node = node-&gt;next (assuming next at offset 8)
+jmp list_loop
+list_done:
+```
+
+## 常見程式碼模式
+
+### 字串操作
+
+```asm
+; strlen pattern
+xor ecx, ecx
+strlen_loop:
+cmp byte [rdi + rcx], 0
+je strlen_done
+inc ecx
+jmp strlen_loop
+strlen_done:
+; ecx contains length
+
+; strcpy pattern
+strcpy_loop:
+mov al, [rsi]
+mov [rdi], al
+test al, al
+jz strcpy_done
+inc rsi
+inc rdi
+jmp strcpy_loop
+strcpy_done:
+
+; memcpy using rep movsb
+mov rdi, dest
+mov rsi, src
+mov rcx, count
+rep movsb
+```
+
+### 算術模式
+
+```asm
+; Multiplication by constant
+; x * 3
+lea eax, [rax + rax*2]
+
+; x * 5
+lea eax, [rax + rax*4]
+
+; x * 10
+lea eax, [rax + rax*4]  ; x * 5
+add eax, eax            ; * 2
+
+; Division by power of 2 (signed)
+mov eax, [x]
+cdq                     ; Sign extend to EDX:EAX
+and edx, 7              ; For divide by 8
+add eax, edx            ; Adjust for negative
+sar eax, 3              ; Arithmetic shift right
+
+; Modulo power of 2
+and eax, 7              ; x % 8
+```
+
+### 位元操作
+
+```asm
+; Test specific bit
+test eax, 0x80          ; Test bit 7
+jnz bit_set
+
+; Set bit
+or eax, 0x10            ; Set bit 4
+
+; Clear bit
+and eax, ~0x10          ; Clear bit 4
+
+; Toggle bit
+xor eax, 0x10           ; Toggle bit 4
+
+; Count leading zeros
+bsr eax, ecx            ; Bit scan reverse
+xor eax, 31             ; Convert to leading zeros
+
+; Population count (popcnt)
+popcnt eax, ecx         ; Count set bits
+```
+
+## 反編譯模式
+
+### 變數還原
+
+```asm
+; Local variable at rbp-8
+mov qword [rbp-8], rax  ; Store to local
+mov rax, [rbp-8]        ; Load from local
+
+; Stack-allocated array
+lea rax, [rbp-0x40]     ; Array starts at rbp-0x40
+mov [rax], edx          ; array[0] = value
+mov [rax+4], ecx        ; array[1] = value
+```
+
+### 函式簽章還原
+
+```asm
+; Identify parameters by register usage
+func:
+    ; rdi used as first param (System V)
+    mov [rbp-8], rdi    ; Save param to local
+    ; rsi used as second param
+    mov [rbp-16], rsi
+    ; Identify return by RAX at end
+    mov rax, [result]
+    ret
+```
+
+### 型別還原
+
+```asm
+; 1-byte operations suggest char/bool
+movzx eax, byte [rdi]   ; Zero-extend byte
+movsx eax, byte [rdi]   ; Sign-extend byte
+
+; 2-byte operations suggest short
+movzx eax, word [rdi]
+movsx eax, word [rdi]
+
+; 4-byte operations suggest int/float
+mov eax, [rdi]
+movss xmm0, [rdi]       ; Float
+
+; 8-byte operations suggest long/double/pointer
+mov rax, [rdi]
+movsd xmm0, [rdi]       ; Double
+```
+
+## Ghidra 分析技巧
+
+### 改善反編譯結果
+
+```java
+// In Ghidra scripting
+// Fix function signature
+Function func = getFunctionAt(toAddr(0x401000));
+func.setReturnType(IntegerDataType.dataType, SourceType.USER_DEFINED);
+
+// Create structure type
+StructureDataType struct = new StructureDataType(&quot;MyStruct&quot;, 0);
+struct.add(IntegerDataType.dataType, &quot;field_a&quot;, null);
+struct.add(PointerDataType.dataType, &quot;next&quot;, null);
+
+// Apply to memory
+createData(toAddr(0x601000), struct);
+```
+
+### 模式比對 Script
+
+```python
+# Find all calls to dangerous functions
+for func in currentProgram.getFunctionManager().getFunctions(True):
+    for ref in getReferencesTo(func.getEntryPoint()):
+        if func.getName() in [&quot;strcpy&quot;, &quot;sprintf&quot;, &quot;gets&quot;]:
+            print(f&quot;Dangerous call at {ref.getFromAddress()}&quot;)
+```
+
+## IDA Pro 模式
+
+### IDAPython 分析
+
+```python
+import idaapi
+import idautils
+import idc
+
+# Find all function calls
+def find_calls(func_name):
+    for func_ea in idautils.Functions():
+        for head in idautils.Heads(func_ea, idc.find_func_end(func_ea)):
+            if idc.print_insn_mnem(head) == &quot;call&quot;:
+                target = idc.get_operand_value(head, 0)
+                if idc.get_func_name(target) == func_name:
+                    print(f&quot;Call to {func_name} at {hex(head)}&quot;)
+
+# Rename functions based on strings
+def auto_rename():
+    for s in idautils.Strings():
+        for xref in idautils.XrefsTo(s.ea):
+            func = idaapi.get_func(xref.frm)
+            if func and &quot;sub_&quot; in idc.get_func_name(func.start_ea):
+                # Use string as hint for naming
+                pass
+```
+
+## 最佳實務
+
+### 分析工作流程
+
+1. **初步分流**：檔案類型、架構、imports/exports
+2. **字串分析**：找出有意思的字串、錯誤訊息
+3. **函式辨識**：進入點、exports、交叉參照
+4. **控制流程對應**：理解程式結構
+5. **資料結構還原**：辨識 struct、陣列、全域變數
+6. **演算法辨識**：加密、雜湊、壓縮
+7. **文件化**：註解、重新命名的符號、型別定義
+
+### 常見陷阱
+
+- **最佳化器的產物**：程式碼可能跟原始碼結構不一致
+- **Inline 函式**：函式可能被展開成 inline
+- **Tail call 最佳化**：用 `jmp` 而不是 `call` + `ret`
+- **Dead code**：最佳化留下來、不可能執行到的程式碼
+- **Position-independent code**：RIP-relative 定址</pre></section><section><h2>英文原文</h2><pre>---
+name: binary-analysis-patterns
+description: Master binary analysis patterns including disassembly, decompilation, control flow analysis, and code pattern recognition. Use when analyzing executables, understanding compiled code, or performing static analysis on binaries.
+---
+
+# Binary Analysis Patterns
+
+Comprehensive patterns and techniques for analyzing compiled binaries, understanding assembly code, and reconstructing program logic.
+
+## When to Use This Skill
+
+- Reverse-engineering an unknown executable to understand its behavior
+- Analyzing malware or obfuscated binaries with Ghidra / IDA Pro / Binary Ninja
+- Recognizing common assembly idioms (function prologues, switch tables, vtable dispatch)
+- Reconstructing high-level control flow from compiled code
+- Identifying compiler-introduced patterns (stack canaries, PIC trampolines)
+
+## Detailed section: Disassembly Fundamentals
+
+Originally a 2047-byte section in this SKILL.md. Moved to `references/details.md` to fit Codex&#x27;s 8 KB skill body cap.
+
+## Control Flow Patterns
+
+### Conditional Branches
+
+```asm
+; if (a == b)
+cmp eax, ebx
+jne skip_block
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - signed
+cmp eax, ebx
+jge skip_block    ; Jump if greater or equal
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - unsigned
+cmp eax, ebx
+jae skip_block    ; Jump if above or equal
+; ... if body ...
+skip_block:
+```
+
+### Loop Patterns
+
+```asm
+; for (int i = 0; i &lt; n; i++)
+xor ecx, ecx           ; i = 0
+loop_start:
+cmp ecx, [n]           ; i &lt; n
+jge loop_end
+; ... loop body ...
+inc ecx                ; i++
+jmp loop_start
+loop_end:
+
+; while (condition)
+jmp loop_check
+loop_body:
+; ... body ...
+loop_check:
+cmp eax, ebx
+jl loop_body
+
+; do-while
+loop_body:
+; ... body ...
+cmp eax, ebx
+jl loop_body
+```
+
+### Switch Statement Patterns
+
+```asm
+; Jump table pattern
+mov eax, [switch_var]
+cmp eax, max_case
+ja default_case
+jmp [jump_table + eax*8]
+
+; Sequential comparison (small switch)
+cmp eax, 1
+je case_1
+cmp eax, 2
+je case_2
+cmp eax, 3
+je case_3
+jmp default_case
+```
+
+## Data Structure Patterns
+
+### Array Access
+
+```asm
+; array[i] - 4-byte elements
+mov eax, [rbx + rcx*4]        ; rbx=base, rcx=index
+
+; array[i] - 8-byte elements
+mov rax, [rbx + rcx*8]
+
+; Multi-dimensional array[i][j]
+; arr[i][j] = base + (i * cols + j) * element_size
+imul eax, [cols]
+add eax, [j]
+mov edx, [rbx + rax*4]
+```
+
+### Structure Access
+
+```c
+struct Example {
+    int a;      // offset 0
+    char b;     // offset 4
+    // padding  // offset 5-7
+    long c;     // offset 8
+    short d;    // offset 16
+};
+```
+
+```asm
+; Accessing struct fields
+mov rdi, [struct_ptr]
+mov eax, [rdi]         ; s-&gt;a (offset 0)
+movzx eax, byte [rdi+4] ; s-&gt;b (offset 4)
+mov rax, [rdi+8]       ; s-&gt;c (offset 8)
+movzx eax, word [rdi+16] ; s-&gt;d (offset 16)
+```
+
+### Linked List Traversal
+
+```asm
+; while (node != NULL)
+list_loop:
+test rdi, rdi          ; node == NULL?
+jz list_done
+; ... process node ...
+mov rdi, [rdi+8]       ; node = node-&gt;next (assuming next at offset 8)
+jmp list_loop
+list_done:
+```
+
+## Common Code Patterns
+
+### String Operations
+
+```asm
+; strlen pattern
+xor ecx, ecx
+strlen_loop:
+cmp byte [rdi + rcx], 0
+je strlen_done
+inc ecx
+jmp strlen_loop
+strlen_done:
+; ecx contains length
+
+; strcpy pattern
+strcpy_loop:
+mov al, [rsi]
+mov [rdi], al
+test al, al
+jz strcpy_done
+inc rsi
+inc rdi
+jmp strcpy_loop
+strcpy_done:
+
+; memcpy using rep movsb
+mov rdi, dest
+mov rsi, src
+mov rcx, count
+rep movsb
+```
+
+### Arithmetic Patterns
+
+```asm
+; Multiplication by constant
+; x * 3
+lea eax, [rax + rax*2]
+
+; x * 5
+lea eax, [rax + rax*4]
+
+; x * 10
+lea eax, [rax + rax*4]  ; x * 5
+add eax, eax            ; * 2
+
+; Division by power of 2 (signed)
+mov eax, [x]
+cdq                     ; Sign extend to EDX:EAX
+and edx, 7              ; For divide by 8
+add eax, edx            ; Adjust for negative
+sar eax, 3              ; Arithmetic shift right
+
+; Modulo power of 2
+and eax, 7              ; x % 8
+```
+
+### Bit Manipulation
+
+```asm
+; Test specific bit
+test eax, 0x80          ; Test bit 7
+jnz bit_set
+
+; Set bit
+or eax, 0x10            ; Set bit 4
+
+; Clear bit
+and eax, ~0x10          ; Clear bit 4
+
+; Toggle bit
+xor eax, 0x10           ; Toggle bit 4
+
+; Count leading zeros
+bsr eax, ecx            ; Bit scan reverse
+xor eax, 31             ; Convert to leading zeros
+
+; Population count (popcnt)
+popcnt eax, ecx         ; Count set bits
+```
+
+## Decompilation Patterns
+
+### Variable Recovery
+
+```asm
+; Local variable at rbp-8
+mov qword [rbp-8], rax  ; Store to local
+mov rax, [rbp-8]        ; Load from local
+
+; Stack-allocated array
+lea rax, [rbp-0x40]     ; Array starts at rbp-0x40
+mov [rax], edx          ; array[0] = value
+mov [rax+4], ecx        ; array[1] = value
+```
+
+### Function Signature Recovery
+
+```asm
+; Identify parameters by register usage
+func:
+    ; rdi used as first param (System V)
+    mov [rbp-8], rdi    ; Save param to local
+    ; rsi used as second param
+    mov [rbp-16], rsi
+    ; Identify return by RAX at end
+    mov rax, [result]
+    ret
+```
+
+### Type Recovery
+
+```asm
+; 1-byte operations suggest char/bool
+movzx eax, byte [rdi]   ; Zero-extend byte
+movsx eax, byte [rdi]   ; Sign-extend byte
+
+; 2-byte operations suggest short
+movzx eax, word [rdi]
+movsx eax, word [rdi]
+
+; 4-byte operations suggest int/float
+mov eax, [rdi]
+movss xmm0, [rdi]       ; Float
+
+; 8-byte operations suggest long/double/pointer
+mov rax, [rdi]
+movsd xmm0, [rdi]       ; Double
+```
+
+## Ghidra Analysis Tips
+
+### Improving Decompilation
+
+```java
+// In Ghidra scripting
+// Fix function signature
+Function func = getFunctionAt(toAddr(0x401000));
+func.setReturnType(IntegerDataType.dataType, SourceType.USER_DEFINED);
+
+// Create structure type
+StructureDataType struct = new StructureDataType(&quot;MyStruct&quot;, 0);
+struct.add(IntegerDataType.dataType, &quot;field_a&quot;, null);
+struct.add(PointerDataType.dataType, &quot;next&quot;, null);
+
+// Apply to memory
+createData(toAddr(0x601000), struct);
+```
+
+### Pattern Matching Scripts
+
+```python
+# Find all calls to dangerous functions
+for func in currentProgram.getFunctionManager().getFunctions(True):
+    for ref in getReferencesTo(func.getEntryPoint()):
+        if func.getName() in [&quot;strcpy&quot;, &quot;sprintf&quot;, &quot;gets&quot;]:
+            print(f&quot;Dangerous call at {ref.getFromAddress()}&quot;)
+```
+
+## IDA Pro Patterns
+
+### IDAPython Analysis
+
+```python
+import idaapi
+import idautils
+import idc
+
+# Find all function calls
+def find_calls(func_name):
+    for func_ea in idautils.Functions():
+        for head in idautils.Heads(func_ea, idc.find_func_end(func_ea)):
+            if idc.print_insn_mnem(head) == &quot;call&quot;:
+                target = idc.get_operand_value(head, 0)
+                if idc.get_func_name(target) == func_name:
+                    print(f&quot;Call to {func_name} at {hex(head)}&quot;)
+
+# Rename functions based on strings
+def auto_rename():
+    for s in idautils.Strings():
+        for xref in idautils.XrefsTo(s.ea):
+            func = idaapi.get_func(xref.frm)
+            if func and &quot;sub_&quot; in idc.get_func_name(func.start_ea):
+                # Use string as hint for naming
+                pass
+```
+
+## Best Practices
+
+### Analysis Workflow
+
+1. **Initial triage**: File type, architecture, imports/exports
+2. **String analysis**: Identify interesting strings, error messages
+3. **Function identification**: Entry points, exports, cross-references
+4. **Control flow mapping**: Understand program structure
+5. **Data structure recovery**: Identify structs, arrays, globals
+6. **Algorithm identification**: Crypto, hashing, compression
+7. **Documentation**: Comments, renamed symbols, type definitions
+
+### Common Pitfalls
+
+- **Optimizer artifacts**: Code may not match source structure
+- **Inline functions**: Functions may be expanded inline
+- **Tail call optimization**: `jmp` instead of `call` + `ret`
+- **Dead code**: Unreachable code from optimization
+- **Position-independent code**: RIP-relative addressing</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

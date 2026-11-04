@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-blob-rust｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Rust 對 Azure Blob Storage 上傳、下載與管理 blob">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-blob-rust</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-rust/skills/azure-storage-blob-rust/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Rust 對 Azure Blob Storage 上傳、下載與管理 blob</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-blob-rust
+description: |
+  Rust 版的 Azure Blob Storage library。上傳、下載並管理 blob 和 container。
+  Triggers: &quot;blob storage rust&quot;, &quot;BlobClient rust&quot;, &quot;upload blob rust&quot;, &quot;download blob rust&quot;, &quot;storage container rust&quot;, &quot;BlobServiceClient rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_storage_blob
+---
+
+# Rust 版 Azure Blob Storage library
+
+Azure Blob Storage 的 client library，用來上傳、下載並管理 blob 和 container。
+
+在這些情況下使用這個 skill：
+
+- 應用程式要用 Rust 從 Azure Storage 上傳或下載 blob
+- 需要建立或管理 blob container
+- 需要分頁列出 blob
+- blob 操作需要 RBAC 驗證
+
+&gt; **重要：** 只能用 [azure-sdk](https://crates.io/users/azure-sdk) 這個 crates.io 使用者發布的官方 `azure_storage_blob` crate。絕對不要用非官方的 `azure_storage`、`azure_storage_blobs` 或 `azure_sdk_for_rust` 社群 crate。官方 crate 的名稱用底線，而且沒有任何一個版本是 0.21.0。
+
+## 安裝
+
+```sh
+cargo add azure_storage_blob azure_identity azure_core tokio futures
+```
+
+&gt; 如果你的程式碼直接用到 `azure_core` 的型別（例如 `azure_core::http::Url` 或 `azure_core::http::RequestContent`），要把 `azure_core` 加進 `Cargo.toml`。如果只用 `azure_storage_blob` re-export 出來的東西，直接依賴 `azure_core` 是選用的。
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_ACCOUNT=&lt;account-name&gt;                         # 呼叫者給的是 account 名稱時優先用這個
+AZURE_STORAGE_ENDPOINT=https://&lt;account&gt;.blob.core.windows.net/ # 呼叫者給的是完整 endpoint 時的選用替代方案
+```
+
+兩個都有的時候，優先用 `AZURE_STORAGE_ACCOUNT` 組出 endpoint，這樣程式碼才會跟常見的評測 prompt 一致。
+
+## 驗證
+
+Rust 的 Azure SDK 程式碼不能用 `DefaultAzureCredential`。Rust 的 identity crate 沒有提供這個型別。
+
+```rust
+// 本機開發的正確寫法
+use azure_identity::DeveloperToolsCredential;
+
+let credential = DeveloperToolsCredential::new(None)?;
+```
+
+```rust
+// 在 Rust 裡是錯的：azure_identity 沒有這個型別
+use azure_identity::DefaultAzureCredential;
+```
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 本機開發：DeveloperToolsCredential。Production：用 ManagedIdentityCredential。
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+    let service_client = BlobServiceClient::new(
+        service_url,
+        Some(credential),
+        None,
+    )?;
+
+    // 用名稱衍生出 container 和 blob client。
+    let container_client = service_client.blob_container_client(&quot;&lt;container_name&gt;&quot;);
+    let blob_client = container_client.blob_client(&quot;&lt;blob_name&gt;&quot;);
+    Ok(())
+}
+```
+
+## Client 類型
+
+| Client                | 用途                                   |
+| --------------------- | ----------------------------------------- |
+| `BlobServiceClient`   | Account 層級的操作、列出 container |
+| `BlobContainerClient` | Container 操作、列出 blob          |
+| `BlobClient`          | 單一 blob 的操作                |
+
+## 核心工作流程
+
+### 上傳 Blob
+
+```rust
+use azure_core::http::{RequestContent, Url};
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // 本機開發：DeveloperToolsCredential。Production：用 ManagedIdentityCredential。
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+    let service_client = BlobServiceClient::new(service_url, Some(credential), None)?;
+    let blob_client = service_client.blob_client(&quot;&lt;container_name&gt;&quot;, &quot;&lt;blob_name&gt;&quot;);
+
+    let data = b&quot;hello world&quot;;
+    blob_client.upload(RequestContent::from(data.to_vec()), None).await?;
+    Ok(())
+}
+```
+
+### 下載 Blob／取得屬性
+
+```rust
+// 取得 blob 屬性
+let props = blob_client.get_properties(None).await?;
+
+// 下載 blob 內容
+let response = blob_client.download(None).await?;
+let content = String::from_utf8(response.body.collect().await?.into())?;
+```
+
+### 刪除 Blob
+
+```rust
+blob_client.delete(None).await?;
+```
+
+### Container 操作
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+use futures::TryStreamExt as _;
+
+let credential = DeveloperToolsCredential::new(None)?;
+let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+let service_client = BlobServiceClient::new(service_url, Some(credential), None)?;
+let container_client = service_client.blob_container_client(&quot;&lt;container_name&gt;&quot;);
+
+// 建立 container
+container_client.create(None).await?;
+
+// 列出 blob（這種 client 用法下，pager 直接吐出 BlobItem）
+let mut pager = container_client.list_blobs(None)?;
+while let Some(blob) = pager.try_next().await? {
+    let name = blob.name.as_deref().unwrap_or(&quot;&lt;unnamed&gt;&quot;);
+    let size = blob
+        .properties
+        .as_ref()
+        .and_then(|properties| properties.content_length);
+
+    match size {
+        Some(size) =&gt; println!(&quot;Blob: {name} ({size} bytes)&quot;),
+        None =&gt; println!(&quot;Blob: {name}&quot;),
+    }
+}
+```
+
+`azure_storage_blob` 1.x 不要以為需要像 `for item in &amp;page.blob_items` 這樣的巢狀分頁迴圈。在這種用法下，`try_next()` 吐出來的就已經是你要印的 blob item。
+
+## 錯誤處理
+
+要用程式方式存取 storage 專屬的錯誤代碼，就用 `StorageError`：
+
+```rust
+use azure_core::error::ErrorKind;
+use azure_storage_blob::StorageError;
+use azure_storage_blob::models::StorageErrorCode;
+
+let result = blob_client.download(None).await;
+
+match result {
+    Ok(response) =&gt; {
+        let content: Vec&lt;u8&gt; = response.body.collect().await?.into();
+        println!(&quot;Downloaded {} bytes&quot;, content.len());
+    }
+    Err(error) =&gt; {
+        if matches!(error.kind(), ErrorKind::HttpResponse { .. }) {
+            // 轉成 StorageError 以便用程式存取
+            let storage_error: StorageError = error.try_into()?;
+            println!(&quot;HTTP Status: {}&quot;, storage_error.status_code);
+
+            if let Some(error_code) = &amp;storage_error.error_code {
+                match error_code {
+                    StorageErrorCode::BlobNotFound =&gt; {
+                        println!(&quot;The blob does not exist.&quot;);
+                    }
+                    StorageErrorCode::ContainerNotFound =&gt; {
+                        println!(&quot;The container does not exist.&quot;);
+                    }
+                    StorageErrorCode::AuthorizationFailure =&gt; {
+                        println!(&quot;Authorization failed. Check RBAC roles.&quot;);
+                    }
+                    _ =&gt; println!(&quot;Storage error: {error_code}&quot;),
+                }
+            }
+
+            if let Some(request_id) = &amp;storage_error.request_id {
+                println!(&quot;Request ID (for Azure support): {request_id}&quot;);
+            }
+        } else {
+            println!(&quot;Non-HTTP error: {:?}&quot;, error);
+        }
+    }
+}
+```
+
+&gt; **注意：** `StorageError::try_into` 需要擁有所有權的 error 物件，如果傳進去的是 error 的參照，就編譯不過。
+
+## RBAC 角色
+
+用 Entra ID 驗證時，要把下列其中一個角色指派給該身分：
+
+| 角色                            | 存取權限                     |
+| ------------------------------- | -------------------------- |
+| `Storage Blob Data Reader`      | 唯讀                  |
+| `Storage Blob Data Contributor` | 讀寫                 |
+| `Storage Blob Data Owner`       | 完整存取，包含 RBAC |
+
+## 最佳實務
+
+1. **用 `cargo add` 管理相依套件，不要直接編輯 `Cargo.toml`。** 新增和移除 Rust SDK 的相依套件，要用 cargo 指令，不要手動改 manifest。
+2. **只有在直接 import `azure_core` 型別時才加 `azure_core`。** 如果你的程式碼 import 了 `azure_core::http::Url`、`azure_core::http::RequestContent` 或 `azure_core::error::ErrorKind`，就要加 `azure_core`；否則直接依賴是選用的。
+3. 本機開發**用 `DeveloperToolsCredential`**，production 用 **`ManagedIdentityCredential`**。Rust 沒有提供單一的 `DefaultAzureCredential` 型別
+4. **絕對不要把憑證寫死**，要用環境變數或 managed identity
+5. **用 `RequestContent::from()`** 包住要上傳到 blob 的資料，這樣 SDK 才能正確處理內容
+6. **指派 RBAC 角色**，要寫入就要有 &quot;Storage Blob Data Contributor&quot;
+7. **重複使用 client**，client 是 thread-safe 的，建立一次，在各個 task 之間共用
+8. **優先把 `BlobServiceClient` 當作進入點**，再從它衍生出 container 和 blob client
+9. **把很多 storage model 欄位當成選用的。** `blob.name` 是 `Option&lt;String&gt;`，內容長度要用 `blob.properties.as_ref().and_then(|p| p.content_length)` 取得。
+10. 當 prompt 或 CI 要求嚴格的 lint 合規時，**在認定工作完成之前先跑 `cargo clippy -- -D warnings`**，連 collapsible `if` 區塊這類風格 lint 也要修，不只是編譯錯誤。
+11. 驗證公開 API 的形狀（例如分頁結果）時，**優先參考 crate 的 README／範例**，不要看自動產生的內部型別名稱
+12. **讓 `#[non_exhaustive]` 的 SDK model 面向未來**：建構 SDK model／options struct 時，initializer 最後要加 `..Default::default()`（並加上 `#[allow(clippy::needless_update)]`），比對 SDK enum 時要用 `_` 萬用分支，這樣服務之後新增欄位或 variant 時，你的 build 才不會壞
+
+## Rust Blob 常見的坑
+
+- 不要 import `azure_identity::DefaultAzureCredential`，要用 `DeveloperToolsCredential` 或其他真正存在的 Rust credential 型別。
+- 不要以為自動產生的內部 model 名稱就代表公開的 pager item 型別，要照這個 crate 文件裡的 `list_blobs` 範例寫。
+- 不要直接用 `{}` 印 `blob.name`，它是選用的，要先 unwrap 或提供 fallback。
+- 當任務同時要求 `cargo clippy -- -D warnings` 時，不要在 `cargo build` 通過後就停手。
+
+## 參考連結
+
+| 資源      | 連結                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------ |
+| API Reference | https://docs.rs/crate/azure_storage_blob/latest                                      |
+| crates.io     | https://crates.io/crates/azure_storage_blob                                          |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/storage/azure_storage_blob |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-blob-rust
+description: |
+  Azure Blob Storage library for Rust. Upload, download, and manage blobs and containers.
+  Triggers: &quot;blob storage rust&quot;, &quot;BlobClient rust&quot;, &quot;upload blob rust&quot;, &quot;download blob rust&quot;, &quot;storage container rust&quot;, &quot;BlobServiceClient rust&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  package: azure_storage_blob
+---
+
+# Azure Blob Storage library for Rust
+
+Client library for Azure Blob Storage — upload, download, and manage blobs and containers.
+
+Use this skill when:
+
+- An app needs to upload or download blobs from Azure Storage in Rust
+- You need to create or manage blob containers
+- You need to list blobs with pagination
+- You need RBAC-based auth for blob operations
+
+&gt; **IMPORTANT:** Only use the official `azure_storage_blob` crate published by the [azure-sdk](https://crates.io/users/azure-sdk) crates.io user. Do NOT use the unofficial `azure_storage`, `azure_storage_blobs`, or `azure_sdk_for_rust` community crates. Official crates use underscores in names and none have version 0.21.0.
+
+## Installation
+
+```sh
+cargo add azure_storage_blob azure_identity azure_core tokio futures
+```
+
+&gt; If your code uses `azure_core` types directly (for example, `azure_core::http::Url` or `azure_core::http::RequestContent`), add `azure_core` to `Cargo.toml`. If you only use `azure_storage_blob` re-exports, direct `azure_core` dependency is optional.
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_ACCOUNT=&lt;account-name&gt;                         # Preferred when the caller gives an account name
+AZURE_STORAGE_ENDPOINT=https://&lt;account&gt;.blob.core.windows.net/ # Optional alternative when the caller gives a full endpoint
+```
+
+When both are available, prefer constructing the endpoint from `AZURE_STORAGE_ACCOUNT` so the code matches common evaluation prompts.
+
+## Authentication
+
+Rust Azure SDK code must not use `DefaultAzureCredential`. The Rust identity crate does not provide that type.
+
+```rust
+// Correct for local development
+use azure_identity::DeveloperToolsCredential;
+
+let credential = DeveloperToolsCredential::new(None)?;
+```
+
+```rust
+// Incorrect in Rust: this type does not exist in azure_identity
+use azure_identity::DefaultAzureCredential;
+```
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Local dev: DeveloperToolsCredential. Production: use ManagedIdentityCredential.
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+    let service_client = BlobServiceClient::new(
+        service_url,
+        Some(credential),
+        None,
+    )?;
+
+    // Derive container and blob clients by name.
+    let container_client = service_client.blob_container_client(&quot;&lt;container_name&gt;&quot;);
+    let blob_client = container_client.blob_client(&quot;&lt;blob_name&gt;&quot;);
+    Ok(())
+}
+```
+
+## Client Types
+
+| Client                | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `BlobServiceClient`   | Account-level operations, list containers |
+| `BlobContainerClient` | Container operations, list blobs          |
+| `BlobClient`          | Individual blob operations                |
+
+## Core Workflow
+
+### Upload Blob
+
+```rust
+use azure_core::http::{RequestContent, Url};
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Local dev: DeveloperToolsCredential. Production: use ManagedIdentityCredential.
+    let credential = DeveloperToolsCredential::new(None)?;
+    let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+    let service_client = BlobServiceClient::new(service_url, Some(credential), None)?;
+    let blob_client = service_client.blob_client(&quot;&lt;container_name&gt;&quot;, &quot;&lt;blob_name&gt;&quot;);
+
+    let data = b&quot;hello world&quot;;
+    blob_client.upload(RequestContent::from(data.to_vec()), None).await?;
+    Ok(())
+}
+```
+
+### Download Blob / Get Properties
+
+```rust
+// Get blob properties
+let props = blob_client.get_properties(None).await?;
+
+// Download blob content
+let response = blob_client.download(None).await?;
+let content = String::from_utf8(response.body.collect().await?.into())?;
+```
+
+### Delete Blob
+
+```rust
+blob_client.delete(None).await?;
+```
+
+### Container Operations
+
+```rust
+use azure_core::http::Url;
+use azure_identity::DeveloperToolsCredential;
+use azure_storage_blob::BlobServiceClient;
+use futures::TryStreamExt as _;
+
+let credential = DeveloperToolsCredential::new(None)?;
+let service_url = Url::parse(&quot;https://&lt;storage_account_name&gt;.blob.core.windows.net/&quot;)?;
+let service_client = BlobServiceClient::new(service_url, Some(credential), None)?;
+let container_client = service_client.blob_container_client(&quot;&lt;container_name&gt;&quot;);
+
+// Create container
+container_client.create(None).await?;
+
+// List blobs (the pager yields BlobItem values directly for this client pattern)
+let mut pager = container_client.list_blobs(None)?;
+while let Some(blob) = pager.try_next().await? {
+    let name = blob.name.as_deref().unwrap_or(&quot;&lt;unnamed&gt;&quot;);
+    let size = blob
+        .properties
+        .as_ref()
+        .and_then(|properties| properties.content_length);
+
+    match size {
+        Some(size) =&gt; println!(&quot;Blob: {name} ({size} bytes)&quot;),
+        None =&gt; println!(&quot;Blob: {name}&quot;),
+    }
+}
+```
+
+For `azure_storage_blob` 1.x, do not assume you need a nested page loop like `for item in &amp;page.blob_items`. In this usage pattern, `try_next()` already yields the blob item you want to print.
+
+## Error Handling
+
+Use `StorageError` for programmatic access to storage-specific error codes:
+
+```rust
+use azure_core::error::ErrorKind;
+use azure_storage_blob::StorageError;
+use azure_storage_blob::models::StorageErrorCode;
+
+let result = blob_client.download(None).await;
+
+match result {
+    Ok(response) =&gt; {
+        let content: Vec&lt;u8&gt; = response.body.collect().await?.into();
+        println!(&quot;Downloaded {} bytes&quot;, content.len());
+    }
+    Err(error) =&gt; {
+        if matches!(error.kind(), ErrorKind::HttpResponse { .. }) {
+            // Convert to StorageError for programmatic access
+            let storage_error: StorageError = error.try_into()?;
+            println!(&quot;HTTP Status: {}&quot;, storage_error.status_code);
+
+            if let Some(error_code) = &amp;storage_error.error_code {
+                match error_code {
+                    StorageErrorCode::BlobNotFound =&gt; {
+                        println!(&quot;The blob does not exist.&quot;);
+                    }
+                    StorageErrorCode::ContainerNotFound =&gt; {
+                        println!(&quot;The container does not exist.&quot;);
+                    }
+                    StorageErrorCode::AuthorizationFailure =&gt; {
+                        println!(&quot;Authorization failed. Check RBAC roles.&quot;);
+                    }
+                    _ =&gt; println!(&quot;Storage error: {error_code}&quot;),
+                }
+            }
+
+            if let Some(request_id) = &amp;storage_error.request_id {
+                println!(&quot;Request ID (for Azure support): {request_id}&quot;);
+            }
+        } else {
+            println!(&quot;Non-HTTP error: {:?}&quot;, error);
+        }
+    }
+}
+```
+
+&gt; **Note:** `StorageError::try_into` requires an owned error object — it will not compile if handed a reference to an error.
+
+## RBAC Roles
+
+For Entra ID auth, assign one of these roles to the identity:
+
+| Role                            | Access                     |
+| ------------------------------- | -------------------------- |
+| `Storage Blob Data Reader`      | Read-only                  |
+| `Storage Blob Data Contributor` | Read/write                 |
+| `Storage Blob Data Owner`       | Full access including RBAC |
+
+## Best Practices
+
+1. **Use `cargo add` to manage dependencies, never edit `Cargo.toml` directly.** Add and remove Rust SDK dependencies with cargo commands instead of manual manifest edits.
+2. **Add `azure_core` only when importing `azure_core` types directly.** If your code imports `azure_core::http::Url`, `azure_core::http::RequestContent`, or `azure_core::error::ErrorKind`, include `azure_core`; otherwise a direct dependency is optional.
+3. **Use `DeveloperToolsCredential`** for local dev, **`ManagedIdentityCredential`** for production — Rust does not provide a single `DefaultAzureCredential` type
+4. **Never hardcode credentials** — use environment variables or managed identity
+5. **Use `RequestContent::from()`** to wrap data for blob uploads — ensures proper content handling by the SDK
+6. **Assign RBAC roles** — ensure &quot;Storage Blob Data Contributor&quot; for write access
+7. **Reuse clients** — clients are thread-safe; create once, share across tasks
+8. **Prefer `BlobServiceClient` as the entry point** and derive container/blob clients from it
+9. **Treat many storage model fields as optional.** `blob.name` is an `Option&lt;String&gt;` and content length is accessed via `blob.properties.as_ref().and_then(|p| p.content_length)`.
+10. **Run `cargo clippy -- -D warnings` before considering the task complete** when the prompt or CI expects strict lint compliance; fix style lints such as collapsible `if` blocks, not just compiler errors.
+11. **Prefer crate README/examples over generated internal type names** when validating public API shapes such as pagination results
+12. **Future-proof `#[non_exhaustive]` SDK models** — when constructing SDK model/options structs, end the initializer with `..Default::default()` (add `#[allow(clippy::needless_update)]`) and use a `_` wildcard arm when matching SDK enums, so new service-added fields/variants don&#x27;t break your build
+
+## Common Rust Blob Pitfalls
+
+- Do not import `azure_identity::DefaultAzureCredential`; use `DeveloperToolsCredential` or another real Rust credential type.
+- Do not assume generated internal model names describe the public pager item type; follow the documented `list_blobs` example for this crate.
+- Do not print `blob.name` with `{}` directly; unwrap or provide a fallback because it is optional.
+- Do not stop after `cargo build` passes when the task also requires `cargo clippy -- -D warnings`.
+
+## Reference Links
+
+| Resource      | Link                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------ |
+| API Reference | https://docs.rs/crate/azure_storage_blob/latest                                      |
+| crates.io     | https://crates.io/crates/azure_storage_blob                                          |
+| Source Code   | https://github.com/Azure/azure-sdk-for-rust/tree/main/sdk/storage/azure_storage_blob |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

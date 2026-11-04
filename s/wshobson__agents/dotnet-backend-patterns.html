@@ -1,0 +1,1644 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dotnet-backend-patterns｜Skill 寫法圖鑑</title>
+<meta name="description" content="C#/.NET 後端模式：DI、async、EF Core、Dapper、設定、快取和 xUnit 測試">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>dotnet-backend-patterns</h1>
+<p class="meta">wshobson ｜ 架構與重構 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/dotnet-contribution/skills/dotnet-backend-patterns/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">C#/.NET 後端模式：DI、async、EF Core、Dapper、設定、快取和 xUnit 測試</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: dotnet-backend-patterns
+description: 精通 C#/.NET 後端開發模式，用來建構穩健的 API、MCP server 與企業級應用。涵蓋 async/await、dependency injection、Entity Framework Core、Dapper、設定、快取，以及用 xUnit 做測試。適用於開發 .NET 後端、review C# 程式碼，或設計 API 架構的時候。
+---
+
+# .NET 後端開發模式
+
+精通 C#/.NET 模式，用現代最佳實務（2024/2025）建構 production 等級的 API、MCP server 與企業後端。
+
+## 什麼時候用這個 Skill
+
+- 開發新的 .NET Web API 或 MCP server
+- Review C# 程式碼的品質與效能
+- 用 dependency injection 設計服務架構
+- 用 Redis 實作快取策略
+- 撰寫單元測試與整合測試
+- 用 EF Core 或 Dapper 最佳化資料庫存取
+- 用 IOptions 模式設定應用程式
+- 處理錯誤並實作 resilience 模式
+
+## 核心概念
+
+### 1. 專案結構（Clean Architecture）
+
+```
+src/
+├── Domain/                     # 核心商業邏輯（無相依）
+│   ├── Entities/
+│   ├── Interfaces/
+│   ├── Exceptions/
+│   └── ValueObjects/
+├── Application/                # Use case、DTO、驗證
+│   ├── Services/
+│   ├── DTOs/
+│   ├── Validators/
+│   └── Interfaces/
+├── Infrastructure/             # 外部實作
+│   ├── Data/                   # EF Core、Dapper repository
+│   ├── Caching/                # Redis、Memory cache
+│   ├── External/               # HTTP client、第三方 API
+│   └── DependencyInjection/    # 服務註冊
+└── Api/                        # 進入點
+    ├── Controllers/            # 或 MinimalAPI endpoint
+    ├── Middleware/
+    ├── Filters/
+    └── Program.cs
+```
+
+### 2. Dependency Injection 模式
+
+```csharp
+// 依生命週期註冊服務
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Scoped：每個 HTTP 請求一個實例
+        services.AddScoped&lt;IProductService, ProductService&gt;();
+        services.AddScoped&lt;IOrderService, OrderService&gt;();
+
+        // Singleton：整個應用程式生命週期一個實例
+        services.AddSingleton&lt;ICacheService, RedisCacheService&gt;();
+        services.AddSingleton&lt;IConnectionMultiplexer&gt;(_ =&gt;
+            ConnectionMultiplexer.Connect(configuration[&quot;Redis:Connection&quot;]!));
+
+        // Transient：每次都建立新實例
+        services.AddTransient&lt;IValidator&lt;CreateOrderRequest&gt;, CreateOrderValidator&gt;();
+
+        // 用 Options 模式處理設定
+        services.Configure&lt;CatalogOptions&gt;(configuration.GetSection(&quot;Catalog&quot;));
+        services.Configure&lt;RedisOptions&gt;(configuration.GetSection(&quot;Redis&quot;));
+
+        // 用 Factory 模式做條件式建立
+        services.AddScoped&lt;IPriceCalculator&gt;(sp =&gt;
+        {
+            var options = sp.GetRequiredService&lt;IOptions&lt;PricingOptions&gt;&gt;().Value;
+            return options.UseNewEngine
+                ? sp.GetRequiredService&lt;NewPriceCalculator&gt;()
+                : sp.GetRequiredService&lt;LegacyPriceCalculator&gt;();
+        });
+
+        // Keyed service（.NET 8+）
+        services.AddKeyedScoped&lt;IPaymentProcessor, StripeProcessor&gt;(&quot;stripe&quot;);
+        services.AddKeyedScoped&lt;IPaymentProcessor, PayPalProcessor&gt;(&quot;paypal&quot;);
+
+        return services;
+    }
+}
+
+// 使用 keyed service
+public class CheckoutService
+{
+    public CheckoutService(
+        [FromKeyedServices(&quot;stripe&quot;)] IPaymentProcessor stripeProcessor)
+    {
+        _processor = stripeProcessor;
+    }
+}
+```
+
+### 3. Async/Await 模式
+
+```csharp
+// ✅ 正確：從頭到尾都用 async
+public async Task&lt;Product&gt; GetProductAsync(string id, CancellationToken ct = default)
+{
+    return await _repository.GetByIdAsync(id, ct);
+}
+
+// ✅ 正確：用 WhenAll 平行執行
+public async Task&lt;(Stock, Price)&gt; GetStockAndPriceAsync(
+    string productId,
+    CancellationToken ct = default)
+{
+    var stockTask = _stockService.GetAsync(productId, ct);
+    var priceTask = _priceService.GetAsync(productId, ct);
+
+    await Task.WhenAll(stockTask, priceTask);
+
+    return (await stockTask, await priceTask);
+}
+
+// ✅ 正確：在函式庫中用 ConfigureAwait
+public async Task&lt;T&gt; LibraryMethodAsync&lt;T&gt;(CancellationToken ct = default)
+{
+    var result = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+    return await result.Content.ReadFromJsonAsync&lt;T&gt;(ct).ConfigureAwait(false);
+}
+
+// ✅ 正確：有快取的熱路徑用 ValueTask
+public ValueTask&lt;Product?&gt; GetCachedProductAsync(string id)
+{
+    if (_cache.TryGetValue(id, out Product? product))
+        return ValueTask.FromResult(product);
+
+    return new ValueTask&lt;Product?&gt;(GetFromDatabaseAsync(id));
+}
+
+// ❌ 錯誤：對 async 做阻塞（有 deadlock 風險）
+var result = GetProductAsync(id).Result;  // 絕對不要這樣做
+var result2 = GetProductAsync(id).GetAwaiter().GetResult(); // 一樣很糟
+
+// ❌ 錯誤：async void（event handler 除外）
+public async void ProcessOrder() { }  // Exception 會遺失
+
+// ❌ 錯誤：對已經是 async 的程式碼多包一層不必要的 Task.Run
+await Task.Run(async () =&gt; await GetDataAsync());  // 浪費 thread
+```
+
+### 4. 用 IOptions 做設定
+
+```csharp
+// 設定類別
+public class CatalogOptions
+{
+    public const string SectionName = &quot;Catalog&quot;;
+
+    public int DefaultPageSize { get; set; } = 50;
+    public int MaxPageSize { get; set; } = 200;
+    public TimeSpan CacheDuration { get; set; } = TimeSpan.FromMinutes(15);
+    public bool EnableEnrichment { get; set; } = true;
+}
+
+public class RedisOptions
+{
+    public const string SectionName = &quot;Redis&quot;;
+
+    public string Connection { get; set; } = &quot;localhost:6379&quot;;
+    public string KeyPrefix { get; set; } = &quot;mcp:&quot;;
+    public int Database { get; set; } = 0;
+}
+
+// appsettings.json
+{
+    &quot;Catalog&quot;: {
+        &quot;DefaultPageSize&quot;: 50,
+        &quot;MaxPageSize&quot;: 200,
+        &quot;CacheDuration&quot;: &quot;00:15:00&quot;,
+        &quot;EnableEnrichment&quot;: true
+    },
+    &quot;Redis&quot;: {
+        &quot;Connection&quot;: &quot;localhost:6379&quot;,
+        &quot;KeyPrefix&quot;: &quot;mcp:&quot;,
+        &quot;Database&quot;: 0
+    }
+}
+
+// 註冊
+services.Configure&lt;CatalogOptions&gt;(configuration.GetSection(CatalogOptions.SectionName));
+services.Configure&lt;RedisOptions&gt;(configuration.GetSection(RedisOptions.SectionName));
+
+// 搭配 IOptions 使用（singleton，啟動時只讀一次）
+public class CatalogService
+{
+    private readonly CatalogOptions _options;
+
+    public CatalogService(IOptions&lt;CatalogOptions&gt; options)
+    {
+        _options = options.Value;
+    }
+}
+
+// 搭配 IOptionsSnapshot 使用（scoped，每次請求重新讀取）
+public class DynamicService
+{
+    private readonly CatalogOptions _options;
+
+    public DynamicService(IOptionsSnapshot&lt;CatalogOptions&gt; options)
+    {
+        _options = options.Value;  // 每次請求都是最新的值
+    }
+}
+
+// 搭配 IOptionsMonitor 使用（singleton，有變更時會收到通知）
+public class MonitoredService
+{
+    private CatalogOptions _options;
+
+    public MonitoredService(IOptionsMonitor&lt;CatalogOptions&gt; monitor)
+    {
+        _options = monitor.CurrentValue;
+        monitor.OnChange(newOptions =&gt; _options = newOptions);
+    }
+}
+```
+
+### 5. Result 模式（避免用 Exception 控制流程）
+
+```csharp
+// 泛型 Result 型別
+public class Result&lt;T&gt;
+{
+    public bool IsSuccess { get; }
+    public T? Value { get; }
+    public string? Error { get; }
+    public string? ErrorCode { get; }
+
+    private Result(bool isSuccess, T? value, string? error, string? errorCode)
+    {
+        IsSuccess = isSuccess;
+        Value = value;
+        Error = error;
+        ErrorCode = errorCode;
+    }
+
+    public static Result&lt;T&gt; Success(T value) =&gt; new(true, value, null, null);
+    public static Result&lt;T&gt; Failure(string error, string? code = null) =&gt; new(false, default, error, code);
+
+    public Result&lt;TNew&gt; Map&lt;TNew&gt;(Func&lt;T, TNew&gt; mapper) =&gt;
+        IsSuccess ? Result&lt;TNew&gt;.Success(mapper(Value!)) : Result&lt;TNew&gt;.Failure(Error!, ErrorCode);
+
+    public async Task&lt;Result&lt;TNew&gt;&gt; MapAsync&lt;TNew&gt;(Func&lt;T, Task&lt;TNew&gt;&gt; mapper) =&gt;
+        IsSuccess ? Result&lt;TNew&gt;.Success(await mapper(Value!)) : Result&lt;TNew&gt;.Failure(Error!, ErrorCode);
+}
+
+// 在 service 中使用
+public async Task&lt;Result&lt;Order&gt;&gt; CreateOrderAsync(CreateOrderRequest request, CancellationToken ct)
+{
+    // 驗證
+    var validation = await _validator.ValidateAsync(request, ct);
+    if (!validation.IsValid)
+        return Result&lt;Order&gt;.Failure(
+            validation.Errors.First().ErrorMessage,
+            &quot;VALIDATION_ERROR&quot;);
+
+    // 商業規則檢查
+    var stock = await _stockService.CheckAsync(request.ProductId, request.Quantity, ct);
+    if (!stock.IsAvailable)
+        return Result&lt;Order&gt;.Failure(
+            $&quot;Insufficient stock: {stock.Available} available, {request.Quantity} requested&quot;,
+            &quot;INSUFFICIENT_STOCK&quot;);
+
+    // 建立訂單
+    var order = await _repository.CreateAsync(request.ToEntity(), ct);
+
+    return Result&lt;Order&gt;.Success(order);
+}
+
+// 在 controller/endpoint 中使用
+app.MapPost(&quot;/orders&quot;, async (
+    CreateOrderRequest request,
+    IOrderService orderService,
+    CancellationToken ct) =&gt;
+{
+    var result = await orderService.CreateOrderAsync(request, ct);
+
+    return result.IsSuccess
+        ? Results.Created($&quot;/orders/{result.Value!.Id}&quot;, result.Value)
+        : Results.BadRequest(new { error = result.Error, code = result.ErrorCode });
+});
+```
+
+## 資料存取模式
+
+### Entity Framework Core
+
+```csharp
+// DbContext 設定
+public class AppDbContext : DbContext
+{
+    public DbSet&lt;Product&gt; Products =&gt; Set&lt;Product&gt;();
+    public DbSet&lt;Order&gt; Orders =&gt; Set&lt;Order&gt;();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // 套用 assembly 中所有的設定
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        // 全域 query filter
+        modelBuilder.Entity&lt;Product&gt;().HasQueryFilter(p =&gt; !p.IsDeleted);
+    }
+}
+
+// Entity 設定
+public class ProductConfiguration : IEntityTypeConfiguration&lt;Product&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Product&gt; builder)
+    {
+        builder.ToTable(&quot;Products&quot;);
+
+        builder.HasKey(p =&gt; p.Id);
+        builder.Property(p =&gt; p.Id).HasMaxLength(40);
+        builder.Property(p =&gt; p.Name).HasMaxLength(200).IsRequired();
+        builder.Property(p =&gt; p.Price).HasPrecision(18, 2);
+
+        builder.HasIndex(p =&gt; p.Sku).IsUnique();
+        builder.HasIndex(p =&gt; new { p.CategoryId, p.Name });
+
+        builder.HasMany(p =&gt; p.OrderItems)
+            .WithOne(oi =&gt; oi.Product)
+            .HasForeignKey(oi =&gt; oi.ProductId);
+    }
+}
+
+// 搭配 EF Core 的 Repository
+public class ProductRepository : IProductRepository
+{
+    private readonly AppDbContext _context;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        return await _context.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p =&gt; p.Id == id, ct);
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Product&gt;&gt; SearchAsync(
+        ProductSearchCriteria criteria,
+        CancellationToken ct = default)
+    {
+        var query = _context.Products.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(criteria.SearchTerm))
+            query = query.Where(p =&gt; EF.Functions.Like(p.Name, $&quot;%{criteria.SearchTerm}%&quot;));
+
+        if (criteria.CategoryId.HasValue)
+            query = query.Where(p =&gt; p.CategoryId == criteria.CategoryId);
+
+        if (criteria.MinPrice.HasValue)
+            query = query.Where(p =&gt; p.Price &gt;= criteria.MinPrice);
+
+        if (criteria.MaxPrice.HasValue)
+            query = query.Where(p =&gt; p.Price &lt;= criteria.MaxPrice);
+
+        return await query
+            .OrderBy(p =&gt; p.Name)
+            .Skip((criteria.Page - 1) * criteria.PageSize)
+            .Take(criteria.PageSize)
+            .ToListAsync(ct);
+    }
+}
+```
+
+### 用 Dapper 追求效能
+
+```csharp
+public class DapperProductRepository : IProductRepository
+{
+    private readonly IDbConnection _connection;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        const string sql = &quot;&quot;&quot;
+            SELECT Id, Name, Sku, Price, CategoryId, Stock, CreatedAt
+            FROM Products
+            WHERE Id = @Id AND IsDeleted = 0
+            &quot;&quot;&quot;;
+
+        return await _connection.QueryFirstOrDefaultAsync&lt;Product&gt;(
+            new CommandDefinition(sql, new { Id = id }, cancellationToken: ct));
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Product&gt;&gt; SearchAsync(
+        ProductSearchCriteria criteria,
+        CancellationToken ct = default)
+    {
+        var sql = new StringBuilder(&quot;&quot;&quot;
+            SELECT Id, Name, Sku, Price, CategoryId, Stock, CreatedAt
+            FROM Products
+            WHERE IsDeleted = 0
+            &quot;&quot;&quot;);
+
+        var parameters = new DynamicParameters();
+
+        if (!string.IsNullOrWhiteSpace(criteria.SearchTerm))
+        {
+            sql.Append(&quot; AND Name LIKE @SearchTerm&quot;);
+            parameters.Add(&quot;SearchTerm&quot;, $&quot;%{criteria.SearchTerm}%&quot;);
+        }
+
+        if (criteria.CategoryId.HasValue)
+        {
+            sql.Append(&quot; AND CategoryId = @CategoryId&quot;);
+            parameters.Add(&quot;CategoryId&quot;, criteria.CategoryId);
+        }
+
+        if (criteria.MinPrice.HasValue)
+        {
+            sql.Append(&quot; AND Price &gt;= @MinPrice&quot;);
+            parameters.Add(&quot;MinPrice&quot;, criteria.MinPrice);
+        }
+
+        if (criteria.MaxPrice.HasValue)
+        {
+            sql.Append(&quot; AND Price &lt;= @MaxPrice&quot;);
+            parameters.Add(&quot;MaxPrice&quot;, criteria.MaxPrice);
+        }
+
+        sql.Append(&quot; ORDER BY Name OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY&quot;);
+        parameters.Add(&quot;Offset&quot;, (criteria.Page - 1) * criteria.PageSize);
+        parameters.Add(&quot;PageSize&quot;, criteria.PageSize);
+
+        var results = await _connection.QueryAsync&lt;Product&gt;(
+            new CommandDefinition(sql.ToString(), parameters, cancellationToken: ct));
+
+        return results.ToList();
+    }
+
+    // 對關聯資料做 multi-mapping
+    public async Task&lt;Order?&gt; GetOrderWithItemsAsync(int orderId, CancellationToken ct = default)
+    {
+        const string sql = &quot;&quot;&quot;
+            SELECT o.*, oi.*, p.*
+            FROM Orders o
+            LEFT JOIN OrderItems oi ON o.Id = oi.OrderId
+            LEFT JOIN Products p ON oi.ProductId = p.Id
+            WHERE o.Id = @OrderId
+            &quot;&quot;&quot;;
+
+        var orderDictionary = new Dictionary&lt;int, Order&gt;();
+
+        await _connection.QueryAsync&lt;Order, OrderItem, Product, Order&gt;(
+            new CommandDefinition(sql, new { OrderId = orderId }, cancellationToken: ct),
+            (order, item, product) =&gt;
+            {
+                if (!orderDictionary.TryGetValue(order.Id, out var existingOrder))
+                {
+                    existingOrder = order;
+                    existingOrder.Items = new List&lt;OrderItem&gt;();
+                    orderDictionary.Add(order.Id, existingOrder);
+                }
+
+                if (item != null)
+                {
+                    item.Product = product;
+                    existingOrder.Items.Add(item);
+                }
+
+                return existingOrder;
+            },
+            splitOn: &quot;Id,Id&quot;);
+
+        return orderDictionary.Values.FirstOrDefault();
+    }
+}
+```
+
+## 快取模式
+
+### 搭配 Redis 的多層快取
+
+```csharp
+public class CachedProductService : IProductService
+{
+    private readonly IProductRepository _repository;
+    private readonly IMemoryCache _memoryCache;
+    private readonly IDistributedCache _distributedCache;
+    private readonly ILogger&lt;CachedProductService&gt; _logger;
+
+    private static readonly TimeSpan MemoryCacheDuration = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan DistributedCacheDuration = TimeSpan.FromMinutes(15);
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        var cacheKey = $&quot;product:{id}&quot;;
+
+        // L1：Memory cache（行程內，最快）
+        if (_memoryCache.TryGetValue(cacheKey, out Product? cached))
+        {
+            _logger.LogDebug(&quot;L1 cache hit for {CacheKey}&quot;, cacheKey);
+            return cached;
+        }
+
+        // L2：分散式快取（Redis）
+        var distributed = await _distributedCache.GetStringAsync(cacheKey, ct);
+        if (distributed != null)
+        {
+            _logger.LogDebug(&quot;L2 cache hit for {CacheKey}&quot;, cacheKey);
+            var product = JsonSerializer.Deserialize&lt;Product&gt;(distributed);
+
+            // 填入 L1
+            _memoryCache.Set(cacheKey, product, MemoryCacheDuration);
+            return product;
+        }
+
+        // L3：資料庫
+        _logger.LogDebug(&quot;Cache miss for {CacheKey}, fetching from database&quot;, cacheKey);
+        var fromDb = await _repository.GetByIdAsync(id, ct);
+
+        if (fromDb != null)
+        {
+            var serialized = JsonSerializer.Serialize(fromDb);
+
+            // 兩層快取都填入
+            await _distributedCache.SetStringAsync(
+                cacheKey,
+                serialized,
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = DistributedCacheDuration
+                },
+                ct);
+
+            _memoryCache.Set(cacheKey, fromDb, MemoryCacheDuration);
+        }
+
+        return fromDb;
+    }
+
+    public async Task InvalidateAsync(string id, CancellationToken ct = default)
+    {
+        var cacheKey = $&quot;product:{id}&quot;;
+
+        _memoryCache.Remove(cacheKey);
+        await _distributedCache.RemoveAsync(cacheKey, ct);
+
+        _logger.LogInformation(&quot;Invalidated cache for {CacheKey}&quot;, cacheKey);
+    }
+}
+
+// Stale-while-revalidate 模式
+public class StaleWhileRevalidateCache&lt;T&gt;
+{
+    private readonly IDistributedCache _cache;
+    private readonly TimeSpan _freshDuration;
+    private readonly TimeSpan _staleDuration;
+
+    public async Task&lt;T?&gt; GetOrCreateAsync(
+        string key,
+        Func&lt;CancellationToken, Task&lt;T&gt;&gt; factory,
+        CancellationToken ct = default)
+    {
+        var cached = await _cache.GetStringAsync(key, ct);
+
+        if (cached != null)
+        {
+            var entry = JsonSerializer.Deserialize&lt;CacheEntry&lt;T&gt;&gt;(cached)!;
+
+            if (entry.IsStale &amp;&amp; !entry.IsExpired)
+            {
+                // 立即回傳過期資料，同時在背景重新整理
+                _ = Task.Run(async () =&gt;
+                {
+                    var fresh = await factory(CancellationToken.None);
+                    await SetAsync(key, fresh, CancellationToken.None);
+                });
+            }
+
+            if (!entry.IsExpired)
+                return entry.Value;
+        }
+
+        // 快取未命中或已過期
+        var value = await factory(ct);
+        await SetAsync(key, value, ct);
+        return value;
+    }
+
+    private record CacheEntry&lt;TValue&gt;(TValue Value, DateTime CreatedAt)
+    {
+        public bool IsStale =&gt; DateTime.UtcNow - CreatedAt &gt; _freshDuration;
+        public bool IsExpired =&gt; DateTime.UtcNow - CreatedAt &gt; _staleDuration;
+    }
+}
+```
+
+## 測試模式
+
+### 用 xUnit 和 Moq 做單元測試
+
+```csharp
+public class OrderServiceTests
+{
+    private readonly Mock&lt;IOrderRepository&gt; _mockRepository;
+    private readonly Mock&lt;IStockService&gt; _mockStockService;
+    private readonly Mock&lt;IValidator&lt;CreateOrderRequest&gt;&gt; _mockValidator;
+    private readonly OrderService _sut; // 受測系統（System Under Test）
+
+    public OrderServiceTests()
+    {
+        _mockRepository = new Mock&lt;IOrderRepository&gt;();
+        _mockStockService = new Mock&lt;IStockService&gt;();
+        _mockValidator = new Mock&lt;IValidator&lt;CreateOrderRequest&gt;&gt;();
+
+        // 預設：驗證通過
+        _mockValidator
+            .Setup(v =&gt; v.ValidateAsync(It.IsAny&lt;CreateOrderRequest&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new ValidationResult());
+
+        _sut = new OrderService(
+            _mockRepository.Object,
+            _mockStockService.Object,
+            _mockValidator.Object);
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_WithValidRequest_ReturnsSuccess()
+    {
+        // Arrange（準備）
+        var request = new CreateOrderRequest
+        {
+            ProductId = &quot;PROD-001&quot;,
+            Quantity = 5,
+            CustomerOrderCode = &quot;ORD-2024-001&quot;
+        };
+
+        _mockStockService
+            .Setup(s =&gt; s.CheckAsync(&quot;PROD-001&quot;, 5, It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new StockResult { IsAvailable = true, Available = 10 });
+
+        _mockRepository
+            .Setup(r =&gt; r.CreateAsync(It.IsAny&lt;Order&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new Order { Id = 1, CustomerOrderCode = &quot;ORD-2024-001&quot; });
+
+        // Act（執行）
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert（驗證）
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.Equal(1, result.Value.Id);
+
+        _mockRepository.Verify(
+            r =&gt; r.CreateAsync(It.Is&lt;Order&gt;(o =&gt; o.CustomerOrderCode == &quot;ORD-2024-001&quot;),
+            It.IsAny&lt;CancellationToken&gt;()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_WithInsufficientStock_ReturnsFailure()
+    {
+        // Arrange（準備）
+        var request = new CreateOrderRequest { ProductId = &quot;PROD-001&quot;, Quantity = 100 };
+
+        _mockStockService
+            .Setup(s =&gt; s.CheckAsync(It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new StockResult { IsAvailable = false, Available = 5 });
+
+        // Act（執行）
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert（驗證）
+        Assert.False(result.IsSuccess);
+        Assert.Equal(&quot;INSUFFICIENT_STOCK&quot;, result.ErrorCode);
+        Assert.Contains(&quot;5 available&quot;, result.Error);
+
+        _mockRepository.Verify(
+            r =&gt; r.CreateAsync(It.IsAny&lt;Order&gt;(), It.IsAny&lt;CancellationToken&gt;()),
+            Times.Never);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-100)]
+    public async Task CreateOrderAsync_WithInvalidQuantity_ReturnsValidationError(int quantity)
+    {
+        // Arrange（準備）
+        var request = new CreateOrderRequest { ProductId = &quot;PROD-001&quot;, Quantity = quantity };
+
+        _mockValidator
+            .Setup(v =&gt; v.ValidateAsync(request, It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new ValidationResult(new[]
+            {
+                new ValidationFailure(&quot;Quantity&quot;, &quot;Quantity must be greater than 0&quot;)
+            }));
+
+        // Act（執行）
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert（驗證）
+        Assert.False(result.IsSuccess);
+        Assert.Equal(&quot;VALIDATION_ERROR&quot;, result.ErrorCode);
+    }
+}
+```
+
+### 用 WebApplicationFactory 做整合測試
+
+```csharp
+public class ProductsApiTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly WebApplicationFactory&lt;Program&gt; _factory;
+    private readonly HttpClient _client;
+
+    public ProductsApiTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        _factory = factory.WithWebHostBuilder(builder =&gt;
+        {
+            builder.ConfigureServices(services =&gt;
+            {
+                // 用 in-memory 取代真實資料庫
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;();
+                services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;));
+
+                // 用 memory cache 取代 Redis
+                services.RemoveAll&lt;IDistributedCache&gt;();
+                services.AddDistributedMemoryCache();
+            });
+        });
+
+        _client = _factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetProduct_WithValidId_ReturnsProduct()
+    {
+        // Arrange（準備）
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+
+        context.Products.Add(new Product
+        {
+            Id = &quot;TEST-001&quot;,
+            Name = &quot;Test Product&quot;,
+            Price = 99.99m
+        });
+        await context.SaveChangesAsync();
+
+        // Act（執行）
+        var response = await _client.GetAsync(&quot;/api/products/TEST-001&quot;);
+
+        // Assert（驗證）
+        response.EnsureSuccessStatusCode();
+        var product = await response.Content.ReadFromJsonAsync&lt;Product&gt;();
+        Assert.Equal(&quot;Test Product&quot;, product!.Name);
+    }
+
+    [Fact]
+    public async Task GetProduct_WithInvalidId_Returns404()
+    {
+        // Act（執行）
+        var response = await _client.GetAsync(&quot;/api/products/NONEXISTENT&quot;);
+
+        // Assert（驗證）
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+}
+```
+
+## 最佳實務
+
+### 該做的
+
+1. **全面使用 async/await**：整條 call stack 都用
+2. **注入相依項目**：用 constructor injection
+3. **用 IOptions&lt;T&gt;** 處理具型別的設定
+4. **回傳 Result 型別**，不要在商業邏輯中丟 exception
+5. **所有 async 方法都用 CancellationToken**
+6. **讀取量大、對效能要求高的查詢優先用 Dapper**
+7. **複雜的 domain model 需要 change tracking 時用 EF Core**
+8. **積極快取**，並搭配適當的失效策略
+9. **商業邏輯寫單元測試，API 寫整合測試**
+10. **DTO 與不可變資料用 record 型別**
+
+### 不該做的
+
+1. **不要對 async 做阻塞**，例如 `.Result` 或 `.Wait()`
+2. **不要用 async void**，event handler 除外
+3. **不要捕捉泛型 Exception**，除非會重新丟出或記錄
+4. **不要寫死**設定值
+5. **不要直接在 API 暴露 EF entity**（用 DTO）
+6. **不要忘記**在唯讀查詢用 `AsNoTracking()`
+7. **不要忽略** CancellationToken 參數
+8. **不要手動** `new HttpClient()`（用 IHttpClientFactory）
+9. **不要沒必要地混用**同步與非同步程式碼
+10. **不要跳過** API 邊界的驗證
+
+## 常見陷阱
+
+- **N+1 Query**：用 `.Include()` 或明確的 join
+- **記憶體洩漏**：釋放 IDisposable 資源，用 `using`
+- **Deadlock**：不要混用同步與非同步，函式庫中用 ConfigureAwait(false)
+- **過度撈取**：只 select 需要的欄位，用 projection
+- **缺少索引**：看 query plan，為常見的 filter 加索引
+- **Timeout 問題**：為 HTTP client 設定適當的 timeout
+- **Cache Stampede**：快取填入時用分散式鎖</pre></section><section><h2>英文原文</h2><pre>---
+name: dotnet-backend-patterns
+description: Master C#/.NET backend development patterns for building robust APIs, MCP servers, and enterprise applications. Covers async/await, dependency injection, Entity Framework Core, Dapper, configuration, caching, and testing with xUnit. Use when developing .NET backends, reviewing C# code, or designing API architectures.
+---
+
+# .NET Backend Development Patterns
+
+Master C#/.NET patterns for building production-grade APIs, MCP servers, and enterprise backends with modern best practices (2024/2025).
+
+## When to Use This Skill
+
+- Developing new .NET Web APIs or MCP servers
+- Reviewing C# code for quality and performance
+- Designing service architectures with dependency injection
+- Implementing caching strategies with Redis
+- Writing unit and integration tests
+- Optimizing database access with EF Core or Dapper
+- Configuring applications with IOptions pattern
+- Handling errors and implementing resilience patterns
+
+## Core Concepts
+
+### 1. Project Structure (Clean Architecture)
+
+```
+src/
+├── Domain/                     # Core business logic (no dependencies)
+│   ├── Entities/
+│   ├── Interfaces/
+│   ├── Exceptions/
+│   └── ValueObjects/
+├── Application/                # Use cases, DTOs, validation
+│   ├── Services/
+│   ├── DTOs/
+│   ├── Validators/
+│   └── Interfaces/
+├── Infrastructure/             # External implementations
+│   ├── Data/                   # EF Core, Dapper repositories
+│   ├── Caching/                # Redis, Memory cache
+│   ├── External/               # HTTP clients, third-party APIs
+│   └── DependencyInjection/    # Service registration
+└── Api/                        # Entry point
+    ├── Controllers/            # Or MinimalAPI endpoints
+    ├── Middleware/
+    ├── Filters/
+    └── Program.cs
+```
+
+### 2. Dependency Injection Patterns
+
+```csharp
+// Service registration by lifetime
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Scoped: One instance per HTTP request
+        services.AddScoped&lt;IProductService, ProductService&gt;();
+        services.AddScoped&lt;IOrderService, OrderService&gt;();
+
+        // Singleton: One instance for app lifetime
+        services.AddSingleton&lt;ICacheService, RedisCacheService&gt;();
+        services.AddSingleton&lt;IConnectionMultiplexer&gt;(_ =&gt;
+            ConnectionMultiplexer.Connect(configuration[&quot;Redis:Connection&quot;]!));
+
+        // Transient: New instance every time
+        services.AddTransient&lt;IValidator&lt;CreateOrderRequest&gt;, CreateOrderValidator&gt;();
+
+        // Options pattern for configuration
+        services.Configure&lt;CatalogOptions&gt;(configuration.GetSection(&quot;Catalog&quot;));
+        services.Configure&lt;RedisOptions&gt;(configuration.GetSection(&quot;Redis&quot;));
+
+        // Factory pattern for conditional creation
+        services.AddScoped&lt;IPriceCalculator&gt;(sp =&gt;
+        {
+            var options = sp.GetRequiredService&lt;IOptions&lt;PricingOptions&gt;&gt;().Value;
+            return options.UseNewEngine
+                ? sp.GetRequiredService&lt;NewPriceCalculator&gt;()
+                : sp.GetRequiredService&lt;LegacyPriceCalculator&gt;();
+        });
+
+        // Keyed services (.NET 8+)
+        services.AddKeyedScoped&lt;IPaymentProcessor, StripeProcessor&gt;(&quot;stripe&quot;);
+        services.AddKeyedScoped&lt;IPaymentProcessor, PayPalProcessor&gt;(&quot;paypal&quot;);
+
+        return services;
+    }
+}
+
+// Usage with keyed services
+public class CheckoutService
+{
+    public CheckoutService(
+        [FromKeyedServices(&quot;stripe&quot;)] IPaymentProcessor stripeProcessor)
+    {
+        _processor = stripeProcessor;
+    }
+}
+```
+
+### 3. Async/Await Patterns
+
+```csharp
+// ✅ CORRECT: Async all the way down
+public async Task&lt;Product&gt; GetProductAsync(string id, CancellationToken ct = default)
+{
+    return await _repository.GetByIdAsync(id, ct);
+}
+
+// ✅ CORRECT: Parallel execution with WhenAll
+public async Task&lt;(Stock, Price)&gt; GetStockAndPriceAsync(
+    string productId,
+    CancellationToken ct = default)
+{
+    var stockTask = _stockService.GetAsync(productId, ct);
+    var priceTask = _priceService.GetAsync(productId, ct);
+
+    await Task.WhenAll(stockTask, priceTask);
+
+    return (await stockTask, await priceTask);
+}
+
+// ✅ CORRECT: ConfigureAwait in libraries
+public async Task&lt;T&gt; LibraryMethodAsync&lt;T&gt;(CancellationToken ct = default)
+{
+    var result = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+    return await result.Content.ReadFromJsonAsync&lt;T&gt;(ct).ConfigureAwait(false);
+}
+
+// ✅ CORRECT: ValueTask for hot paths with caching
+public ValueTask&lt;Product?&gt; GetCachedProductAsync(string id)
+{
+    if (_cache.TryGetValue(id, out Product? product))
+        return ValueTask.FromResult(product);
+
+    return new ValueTask&lt;Product?&gt;(GetFromDatabaseAsync(id));
+}
+
+// ❌ WRONG: Blocking on async (deadlock risk)
+var result = GetProductAsync(id).Result;  // NEVER do this
+var result2 = GetProductAsync(id).GetAwaiter().GetResult(); // Also bad
+
+// ❌ WRONG: async void (except event handlers)
+public async void ProcessOrder() { }  // Exceptions are lost
+
+// ❌ WRONG: Unnecessary Task.Run for already async code
+await Task.Run(async () =&gt; await GetDataAsync());  // Wastes thread
+```
+
+### 4. Configuration with IOptions
+
+```csharp
+// Configuration classes
+public class CatalogOptions
+{
+    public const string SectionName = &quot;Catalog&quot;;
+
+    public int DefaultPageSize { get; set; } = 50;
+    public int MaxPageSize { get; set; } = 200;
+    public TimeSpan CacheDuration { get; set; } = TimeSpan.FromMinutes(15);
+    public bool EnableEnrichment { get; set; } = true;
+}
+
+public class RedisOptions
+{
+    public const string SectionName = &quot;Redis&quot;;
+
+    public string Connection { get; set; } = &quot;localhost:6379&quot;;
+    public string KeyPrefix { get; set; } = &quot;mcp:&quot;;
+    public int Database { get; set; } = 0;
+}
+
+// appsettings.json
+{
+    &quot;Catalog&quot;: {
+        &quot;DefaultPageSize&quot;: 50,
+        &quot;MaxPageSize&quot;: 200,
+        &quot;CacheDuration&quot;: &quot;00:15:00&quot;,
+        &quot;EnableEnrichment&quot;: true
+    },
+    &quot;Redis&quot;: {
+        &quot;Connection&quot;: &quot;localhost:6379&quot;,
+        &quot;KeyPrefix&quot;: &quot;mcp:&quot;,
+        &quot;Database&quot;: 0
+    }
+}
+
+// Registration
+services.Configure&lt;CatalogOptions&gt;(configuration.GetSection(CatalogOptions.SectionName));
+services.Configure&lt;RedisOptions&gt;(configuration.GetSection(RedisOptions.SectionName));
+
+// Usage with IOptions (singleton, read once at startup)
+public class CatalogService
+{
+    private readonly CatalogOptions _options;
+
+    public CatalogService(IOptions&lt;CatalogOptions&gt; options)
+    {
+        _options = options.Value;
+    }
+}
+
+// Usage with IOptionsSnapshot (scoped, re-reads on each request)
+public class DynamicService
+{
+    private readonly CatalogOptions _options;
+
+    public DynamicService(IOptionsSnapshot&lt;CatalogOptions&gt; options)
+    {
+        _options = options.Value;  // Fresh value per request
+    }
+}
+
+// Usage with IOptionsMonitor (singleton, notified on changes)
+public class MonitoredService
+{
+    private CatalogOptions _options;
+
+    public MonitoredService(IOptionsMonitor&lt;CatalogOptions&gt; monitor)
+    {
+        _options = monitor.CurrentValue;
+        monitor.OnChange(newOptions =&gt; _options = newOptions);
+    }
+}
+```
+
+### 5. Result Pattern (Avoiding Exceptions for Flow Control)
+
+```csharp
+// Generic Result type
+public class Result&lt;T&gt;
+{
+    public bool IsSuccess { get; }
+    public T? Value { get; }
+    public string? Error { get; }
+    public string? ErrorCode { get; }
+
+    private Result(bool isSuccess, T? value, string? error, string? errorCode)
+    {
+        IsSuccess = isSuccess;
+        Value = value;
+        Error = error;
+        ErrorCode = errorCode;
+    }
+
+    public static Result&lt;T&gt; Success(T value) =&gt; new(true, value, null, null);
+    public static Result&lt;T&gt; Failure(string error, string? code = null) =&gt; new(false, default, error, code);
+
+    public Result&lt;TNew&gt; Map&lt;TNew&gt;(Func&lt;T, TNew&gt; mapper) =&gt;
+        IsSuccess ? Result&lt;TNew&gt;.Success(mapper(Value!)) : Result&lt;TNew&gt;.Failure(Error!, ErrorCode);
+
+    public async Task&lt;Result&lt;TNew&gt;&gt; MapAsync&lt;TNew&gt;(Func&lt;T, Task&lt;TNew&gt;&gt; mapper) =&gt;
+        IsSuccess ? Result&lt;TNew&gt;.Success(await mapper(Value!)) : Result&lt;TNew&gt;.Failure(Error!, ErrorCode);
+}
+
+// Usage in service
+public async Task&lt;Result&lt;Order&gt;&gt; CreateOrderAsync(CreateOrderRequest request, CancellationToken ct)
+{
+    // Validation
+    var validation = await _validator.ValidateAsync(request, ct);
+    if (!validation.IsValid)
+        return Result&lt;Order&gt;.Failure(
+            validation.Errors.First().ErrorMessage,
+            &quot;VALIDATION_ERROR&quot;);
+
+    // Business rule check
+    var stock = await _stockService.CheckAsync(request.ProductId, request.Quantity, ct);
+    if (!stock.IsAvailable)
+        return Result&lt;Order&gt;.Failure(
+            $&quot;Insufficient stock: {stock.Available} available, {request.Quantity} requested&quot;,
+            &quot;INSUFFICIENT_STOCK&quot;);
+
+    // Create order
+    var order = await _repository.CreateAsync(request.ToEntity(), ct);
+
+    return Result&lt;Order&gt;.Success(order);
+}
+
+// Usage in controller/endpoint
+app.MapPost(&quot;/orders&quot;, async (
+    CreateOrderRequest request,
+    IOrderService orderService,
+    CancellationToken ct) =&gt;
+{
+    var result = await orderService.CreateOrderAsync(request, ct);
+
+    return result.IsSuccess
+        ? Results.Created($&quot;/orders/{result.Value!.Id}&quot;, result.Value)
+        : Results.BadRequest(new { error = result.Error, code = result.ErrorCode });
+});
+```
+
+## Data Access Patterns
+
+### Entity Framework Core
+
+```csharp
+// DbContext configuration
+public class AppDbContext : DbContext
+{
+    public DbSet&lt;Product&gt; Products =&gt; Set&lt;Product&gt;();
+    public DbSet&lt;Order&gt; Orders =&gt; Set&lt;Order&gt;();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Apply all configurations from assembly
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        // Global query filters
+        modelBuilder.Entity&lt;Product&gt;().HasQueryFilter(p =&gt; !p.IsDeleted);
+    }
+}
+
+// Entity configuration
+public class ProductConfiguration : IEntityTypeConfiguration&lt;Product&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Product&gt; builder)
+    {
+        builder.ToTable(&quot;Products&quot;);
+
+        builder.HasKey(p =&gt; p.Id);
+        builder.Property(p =&gt; p.Id).HasMaxLength(40);
+        builder.Property(p =&gt; p.Name).HasMaxLength(200).IsRequired();
+        builder.Property(p =&gt; p.Price).HasPrecision(18, 2);
+
+        builder.HasIndex(p =&gt; p.Sku).IsUnique();
+        builder.HasIndex(p =&gt; new { p.CategoryId, p.Name });
+
+        builder.HasMany(p =&gt; p.OrderItems)
+            .WithOne(oi =&gt; oi.Product)
+            .HasForeignKey(oi =&gt; oi.ProductId);
+    }
+}
+
+// Repository with EF Core
+public class ProductRepository : IProductRepository
+{
+    private readonly AppDbContext _context;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        return await _context.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p =&gt; p.Id == id, ct);
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Product&gt;&gt; SearchAsync(
+        ProductSearchCriteria criteria,
+        CancellationToken ct = default)
+    {
+        var query = _context.Products.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(criteria.SearchTerm))
+            query = query.Where(p =&gt; EF.Functions.Like(p.Name, $&quot;%{criteria.SearchTerm}%&quot;));
+
+        if (criteria.CategoryId.HasValue)
+            query = query.Where(p =&gt; p.CategoryId == criteria.CategoryId);
+
+        if (criteria.MinPrice.HasValue)
+            query = query.Where(p =&gt; p.Price &gt;= criteria.MinPrice);
+
+        if (criteria.MaxPrice.HasValue)
+            query = query.Where(p =&gt; p.Price &lt;= criteria.MaxPrice);
+
+        return await query
+            .OrderBy(p =&gt; p.Name)
+            .Skip((criteria.Page - 1) * criteria.PageSize)
+            .Take(criteria.PageSize)
+            .ToListAsync(ct);
+    }
+}
+```
+
+### Dapper for Performance
+
+```csharp
+public class DapperProductRepository : IProductRepository
+{
+    private readonly IDbConnection _connection;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        const string sql = &quot;&quot;&quot;
+            SELECT Id, Name, Sku, Price, CategoryId, Stock, CreatedAt
+            FROM Products
+            WHERE Id = @Id AND IsDeleted = 0
+            &quot;&quot;&quot;;
+
+        return await _connection.QueryFirstOrDefaultAsync&lt;Product&gt;(
+            new CommandDefinition(sql, new { Id = id }, cancellationToken: ct));
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Product&gt;&gt; SearchAsync(
+        ProductSearchCriteria criteria,
+        CancellationToken ct = default)
+    {
+        var sql = new StringBuilder(&quot;&quot;&quot;
+            SELECT Id, Name, Sku, Price, CategoryId, Stock, CreatedAt
+            FROM Products
+            WHERE IsDeleted = 0
+            &quot;&quot;&quot;);
+
+        var parameters = new DynamicParameters();
+
+        if (!string.IsNullOrWhiteSpace(criteria.SearchTerm))
+        {
+            sql.Append(&quot; AND Name LIKE @SearchTerm&quot;);
+            parameters.Add(&quot;SearchTerm&quot;, $&quot;%{criteria.SearchTerm}%&quot;);
+        }
+
+        if (criteria.CategoryId.HasValue)
+        {
+            sql.Append(&quot; AND CategoryId = @CategoryId&quot;);
+            parameters.Add(&quot;CategoryId&quot;, criteria.CategoryId);
+        }
+
+        if (criteria.MinPrice.HasValue)
+        {
+            sql.Append(&quot; AND Price &gt;= @MinPrice&quot;);
+            parameters.Add(&quot;MinPrice&quot;, criteria.MinPrice);
+        }
+
+        if (criteria.MaxPrice.HasValue)
+        {
+            sql.Append(&quot; AND Price &lt;= @MaxPrice&quot;);
+            parameters.Add(&quot;MaxPrice&quot;, criteria.MaxPrice);
+        }
+
+        sql.Append(&quot; ORDER BY Name OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY&quot;);
+        parameters.Add(&quot;Offset&quot;, (criteria.Page - 1) * criteria.PageSize);
+        parameters.Add(&quot;PageSize&quot;, criteria.PageSize);
+
+        var results = await _connection.QueryAsync&lt;Product&gt;(
+            new CommandDefinition(sql.ToString(), parameters, cancellationToken: ct));
+
+        return results.ToList();
+    }
+
+    // Multi-mapping for related data
+    public async Task&lt;Order?&gt; GetOrderWithItemsAsync(int orderId, CancellationToken ct = default)
+    {
+        const string sql = &quot;&quot;&quot;
+            SELECT o.*, oi.*, p.*
+            FROM Orders o
+            LEFT JOIN OrderItems oi ON o.Id = oi.OrderId
+            LEFT JOIN Products p ON oi.ProductId = p.Id
+            WHERE o.Id = @OrderId
+            &quot;&quot;&quot;;
+
+        var orderDictionary = new Dictionary&lt;int, Order&gt;();
+
+        await _connection.QueryAsync&lt;Order, OrderItem, Product, Order&gt;(
+            new CommandDefinition(sql, new { OrderId = orderId }, cancellationToken: ct),
+            (order, item, product) =&gt;
+            {
+                if (!orderDictionary.TryGetValue(order.Id, out var existingOrder))
+                {
+                    existingOrder = order;
+                    existingOrder.Items = new List&lt;OrderItem&gt;();
+                    orderDictionary.Add(order.Id, existingOrder);
+                }
+
+                if (item != null)
+                {
+                    item.Product = product;
+                    existingOrder.Items.Add(item);
+                }
+
+                return existingOrder;
+            },
+            splitOn: &quot;Id,Id&quot;);
+
+        return orderDictionary.Values.FirstOrDefault();
+    }
+}
+```
+
+## Caching Patterns
+
+### Multi-Level Cache with Redis
+
+```csharp
+public class CachedProductService : IProductService
+{
+    private readonly IProductRepository _repository;
+    private readonly IMemoryCache _memoryCache;
+    private readonly IDistributedCache _distributedCache;
+    private readonly ILogger&lt;CachedProductService&gt; _logger;
+
+    private static readonly TimeSpan MemoryCacheDuration = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan DistributedCacheDuration = TimeSpan.FromMinutes(15);
+
+    public async Task&lt;Product?&gt; GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        var cacheKey = $&quot;product:{id}&quot;;
+
+        // L1: Memory cache (in-process, fastest)
+        if (_memoryCache.TryGetValue(cacheKey, out Product? cached))
+        {
+            _logger.LogDebug(&quot;L1 cache hit for {CacheKey}&quot;, cacheKey);
+            return cached;
+        }
+
+        // L2: Distributed cache (Redis)
+        var distributed = await _distributedCache.GetStringAsync(cacheKey, ct);
+        if (distributed != null)
+        {
+            _logger.LogDebug(&quot;L2 cache hit for {CacheKey}&quot;, cacheKey);
+            var product = JsonSerializer.Deserialize&lt;Product&gt;(distributed);
+
+            // Populate L1
+            _memoryCache.Set(cacheKey, product, MemoryCacheDuration);
+            return product;
+        }
+
+        // L3: Database
+        _logger.LogDebug(&quot;Cache miss for {CacheKey}, fetching from database&quot;, cacheKey);
+        var fromDb = await _repository.GetByIdAsync(id, ct);
+
+        if (fromDb != null)
+        {
+            var serialized = JsonSerializer.Serialize(fromDb);
+
+            // Populate both caches
+            await _distributedCache.SetStringAsync(
+                cacheKey,
+                serialized,
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = DistributedCacheDuration
+                },
+                ct);
+
+            _memoryCache.Set(cacheKey, fromDb, MemoryCacheDuration);
+        }
+
+        return fromDb;
+    }
+
+    public async Task InvalidateAsync(string id, CancellationToken ct = default)
+    {
+        var cacheKey = $&quot;product:{id}&quot;;
+
+        _memoryCache.Remove(cacheKey);
+        await _distributedCache.RemoveAsync(cacheKey, ct);
+
+        _logger.LogInformation(&quot;Invalidated cache for {CacheKey}&quot;, cacheKey);
+    }
+}
+
+// Stale-while-revalidate pattern
+public class StaleWhileRevalidateCache&lt;T&gt;
+{
+    private readonly IDistributedCache _cache;
+    private readonly TimeSpan _freshDuration;
+    private readonly TimeSpan _staleDuration;
+
+    public async Task&lt;T?&gt; GetOrCreateAsync(
+        string key,
+        Func&lt;CancellationToken, Task&lt;T&gt;&gt; factory,
+        CancellationToken ct = default)
+    {
+        var cached = await _cache.GetStringAsync(key, ct);
+
+        if (cached != null)
+        {
+            var entry = JsonSerializer.Deserialize&lt;CacheEntry&lt;T&gt;&gt;(cached)!;
+
+            if (entry.IsStale &amp;&amp; !entry.IsExpired)
+            {
+                // Return stale data immediately, refresh in background
+                _ = Task.Run(async () =&gt;
+                {
+                    var fresh = await factory(CancellationToken.None);
+                    await SetAsync(key, fresh, CancellationToken.None);
+                });
+            }
+
+            if (!entry.IsExpired)
+                return entry.Value;
+        }
+
+        // Cache miss or expired
+        var value = await factory(ct);
+        await SetAsync(key, value, ct);
+        return value;
+    }
+
+    private record CacheEntry&lt;TValue&gt;(TValue Value, DateTime CreatedAt)
+    {
+        public bool IsStale =&gt; DateTime.UtcNow - CreatedAt &gt; _freshDuration;
+        public bool IsExpired =&gt; DateTime.UtcNow - CreatedAt &gt; _staleDuration;
+    }
+}
+```
+
+## Testing Patterns
+
+### Unit Tests with xUnit and Moq
+
+```csharp
+public class OrderServiceTests
+{
+    private readonly Mock&lt;IOrderRepository&gt; _mockRepository;
+    private readonly Mock&lt;IStockService&gt; _mockStockService;
+    private readonly Mock&lt;IValidator&lt;CreateOrderRequest&gt;&gt; _mockValidator;
+    private readonly OrderService _sut; // System Under Test
+
+    public OrderServiceTests()
+    {
+        _mockRepository = new Mock&lt;IOrderRepository&gt;();
+        _mockStockService = new Mock&lt;IStockService&gt;();
+        _mockValidator = new Mock&lt;IValidator&lt;CreateOrderRequest&gt;&gt;();
+
+        // Default: validation passes
+        _mockValidator
+            .Setup(v =&gt; v.ValidateAsync(It.IsAny&lt;CreateOrderRequest&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new ValidationResult());
+
+        _sut = new OrderService(
+            _mockRepository.Object,
+            _mockStockService.Object,
+            _mockValidator.Object);
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_WithValidRequest_ReturnsSuccess()
+    {
+        // Arrange
+        var request = new CreateOrderRequest
+        {
+            ProductId = &quot;PROD-001&quot;,
+            Quantity = 5,
+            CustomerOrderCode = &quot;ORD-2024-001&quot;
+        };
+
+        _mockStockService
+            .Setup(s =&gt; s.CheckAsync(&quot;PROD-001&quot;, 5, It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new StockResult { IsAvailable = true, Available = 10 });
+
+        _mockRepository
+            .Setup(r =&gt; r.CreateAsync(It.IsAny&lt;Order&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new Order { Id = 1, CustomerOrderCode = &quot;ORD-2024-001&quot; });
+
+        // Act
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.Equal(1, result.Value.Id);
+
+        _mockRepository.Verify(
+            r =&gt; r.CreateAsync(It.Is&lt;Order&gt;(o =&gt; o.CustomerOrderCode == &quot;ORD-2024-001&quot;),
+            It.IsAny&lt;CancellationToken&gt;()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_WithInsufficientStock_ReturnsFailure()
+    {
+        // Arrange
+        var request = new CreateOrderRequest { ProductId = &quot;PROD-001&quot;, Quantity = 100 };
+
+        _mockStockService
+            .Setup(s =&gt; s.CheckAsync(It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;(), It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new StockResult { IsAvailable = false, Available = 5 });
+
+        // Act
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal(&quot;INSUFFICIENT_STOCK&quot;, result.ErrorCode);
+        Assert.Contains(&quot;5 available&quot;, result.Error);
+
+        _mockRepository.Verify(
+            r =&gt; r.CreateAsync(It.IsAny&lt;Order&gt;(), It.IsAny&lt;CancellationToken&gt;()),
+            Times.Never);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-100)]
+    public async Task CreateOrderAsync_WithInvalidQuantity_ReturnsValidationError(int quantity)
+    {
+        // Arrange
+        var request = new CreateOrderRequest { ProductId = &quot;PROD-001&quot;, Quantity = quantity };
+
+        _mockValidator
+            .Setup(v =&gt; v.ValidateAsync(request, It.IsAny&lt;CancellationToken&gt;()))
+            .ReturnsAsync(new ValidationResult(new[]
+            {
+                new ValidationFailure(&quot;Quantity&quot;, &quot;Quantity must be greater than 0&quot;)
+            }));
+
+        // Act
+        var result = await _sut.CreateOrderAsync(request);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal(&quot;VALIDATION_ERROR&quot;, result.ErrorCode);
+    }
+}
+```
+
+### Integration Tests with WebApplicationFactory
+
+```csharp
+public class ProductsApiTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly WebApplicationFactory&lt;Program&gt; _factory;
+    private readonly HttpClient _client;
+
+    public ProductsApiTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        _factory = factory.WithWebHostBuilder(builder =&gt;
+        {
+            builder.ConfigureServices(services =&gt;
+            {
+                // Replace real database with in-memory
+                services.RemoveAll&lt;DbContextOptions&lt;AppDbContext&gt;&gt;();
+                services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+                    options.UseInMemoryDatabase(&quot;TestDb&quot;));
+
+                // Replace Redis with memory cache
+                services.RemoveAll&lt;IDistributedCache&gt;();
+                services.AddDistributedMemoryCache();
+            });
+        });
+
+        _client = _factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetProduct_WithValidId_ReturnsProduct()
+    {
+        // Arrange
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService&lt;AppDbContext&gt;();
+
+        context.Products.Add(new Product
+        {
+            Id = &quot;TEST-001&quot;,
+            Name = &quot;Test Product&quot;,
+            Price = 99.99m
+        });
+        await context.SaveChangesAsync();
+
+        // Act
+        var response = await _client.GetAsync(&quot;/api/products/TEST-001&quot;);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var product = await response.Content.ReadFromJsonAsync&lt;Product&gt;();
+        Assert.Equal(&quot;Test Product&quot;, product!.Name);
+    }
+
+    [Fact]
+    public async Task GetProduct_WithInvalidId_Returns404()
+    {
+        // Act
+        var response = await _client.GetAsync(&quot;/api/products/NONEXISTENT&quot;);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+}
+```
+
+## Best Practices
+
+### DO
+
+1. **Use async/await** all the way through the call stack
+2. **Inject dependencies** through constructor injection
+3. **Use IOptions&lt;T&gt;** for typed configuration
+4. **Return Result types** instead of throwing exceptions for business logic
+5. **Use CancellationToken** in all async methods
+6. **Prefer Dapper** for read-heavy, performance-critical queries
+7. **Use EF Core** for complex domain models with change tracking
+8. **Cache aggressively** with proper invalidation strategies
+9. **Write unit tests** for business logic, integration tests for APIs
+10. **Use record types** for DTOs and immutable data
+
+### DON&#x27;T
+
+1. **Don&#x27;t block on async** with `.Result` or `.Wait()`
+2. **Don&#x27;t use async void** except for event handlers
+3. **Don&#x27;t catch generic Exception** without re-throwing or logging
+4. **Don&#x27;t hardcode** configuration values
+5. **Don&#x27;t expose EF entities** directly in APIs (use DTOs)
+6. **Don&#x27;t forget** `AsNoTracking()` for read-only queries
+7. **Don&#x27;t ignore** CancellationToken parameters
+8. **Don&#x27;t create** `new HttpClient()` manually (use IHttpClientFactory)
+9. **Don&#x27;t mix** sync and async code unnecessarily
+10. **Don&#x27;t skip** validation at API boundaries
+
+## Common Pitfalls
+
+- **N+1 Queries**: Use `.Include()` or explicit joins
+- **Memory Leaks**: Dispose IDisposable resources, use `using`
+- **Deadlocks**: Don&#x27;t mix sync and async, use ConfigureAwait(false) in libraries
+- **Over-fetching**: Select only needed columns, use projections
+- **Missing Indexes**: Check query plans, add indexes for common filters
+- **Timeout Issues**: Configure appropriate timeouts for HTTP clients
+- **Cache Stampede**: Use distributed locks for cache population</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

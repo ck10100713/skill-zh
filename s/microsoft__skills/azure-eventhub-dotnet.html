@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-eventhub-dotnet｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 .NET 對 Event Hubs 做高吞吐量事件串流與 checkpoint">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-eventhub-dotnet</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-dotnet/skills/azure-eventhub-dotnet/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 .NET 對 Event Hubs 做高吞吐量事件串流與 checkpoint</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-eventhub-dotnet
+description: |
+  .NET 版 Azure Event Hubs SDK。用於高吞吐量的事件串流：送出事件（EventHubProducerClient、EventHubBufferedProducerClient）、接收事件（帶 checkpoint 的 EventProcessorClient）、partition 管理，以及即時資料匯入。Triggers: &quot;Event Hubs&quot;, &quot;event streaming&quot;, &quot;EventHubProducerClient&quot;, &quot;EventProcessorClient&quot;, &quot;send events&quot;, &quot;receive events&quot;, &quot;checkpointing&quot;, &quot;partition&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Messaging.EventHubs
+---
+
+# Azure.Messaging.EventHubs (.NET)
+
+透過 Azure Event Hubs 收發事件的高吞吐量事件串流 SDK。
+
+## 安裝
+
+```bash
+# Core package (sending and simple receiving)
+dotnet add package Azure.Messaging.EventHubs
+
+# Processor package (production receiving with checkpointing)
+dotnet add package Azure.Messaging.EventHubs.Processor
+
+# Authentication
+dotnet add package Azure.Identity
+
+# For checkpointing (required by EventProcessorClient)
+dotnet add package Azure.Storage.Blobs
+```
+
+**目前版本**：Azure.Messaging.EventHubs v5.12.2、Azure.Messaging.EventHubs.Processor v5.12.2
+
+## 環境變數
+
+```bash
+EVENTHUB_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # 必須設定：Event Hubs 的完整 namespace 名稱
+EVENTHUB_NAME=&lt;event-hub-name&gt;  # 必須設定：Event Hub 名稱
+BLOB_STORAGE_CONNECTION_STRING=&lt;storage-connection-string&gt;  # Entra ID 驗證的替代方案
+BLOB_CONTAINER_NAME=&lt;checkpoint-container&gt;  # 必須設定：checkpoint container 名稱
+EVENTHUB_CONNECTION_STRING=Endpoint=sb://&lt;namespace&gt;.servicebus.windows.net/;SharedAccessKeyName=...  # Entra ID 驗證的替代方案
+AZURE_TOKEN_CREDENTIALS=prod  # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// 或是在正式環境直接用特定的 credential：
+// 參考 https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+
+var fullyQualifiedNamespace = Environment.GetEnvironmentVariable(&quot;EVENTHUB_FULLY_QUALIFIED_NAMESPACE&quot;);
+var eventHubName = Environment.GetEnvironmentVariable(&quot;EVENTHUB_NAME&quot;);
+
+var producer = new EventHubProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    credential);
+```
+
+**需要的 RBAC 角色**：
+- **送出**：`Azure Event Hubs Data Sender`
+- **接收**：`Azure Event Hubs Data Receiver`
+- **兩者都要**：`Azure Event Hubs Data Owner`
+
+## Client 類型
+
+| Client | 用途 | 何時使用 |
+|--------|---------|-------------|
+| `EventHubProducerClient` | 立刻分批送出事件 | 即時傳送，完全掌控批次 |
+| `EventHubBufferedProducerClient` | 自動批次，在背景送出 | 大量、送出後不管的情境 |
+| `EventHubConsumerClient` | 簡單的事件讀取 | 只限做原型，**不要**用在正式環境 |
+| `EventProcessorClient` | 正式環境的事件處理 | **正式環境接收一律用這個** |
+
+## 核心流程
+
+### 1. 送出事件（批次）
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+
+await using var producer = new EventHubProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential());
+
+// 建立批次（自動遵守大小上限）
+using EventDataBatch batch = await producer.CreateBatchAsync();
+
+// 把事件加進批次
+var events = new[]
+{
+    new EventData(BinaryData.FromString(&quot;{\&quot;id\&quot;: 1, \&quot;message\&quot;: \&quot;Hello\&quot;}&quot;)),
+    new EventData(BinaryData.FromString(&quot;{\&quot;id\&quot;: 2, \&quot;message\&quot;: \&quot;World\&quot;}&quot;))
+};
+
+foreach (var eventData in events)
+{
+    if (!batch.TryAdd(eventData))
+    {
+        // 批次滿了：先送出，再建新的
+        await producer.SendAsync(batch);
+        batch = await producer.CreateBatchAsync();
+        
+        if (!batch.TryAdd(eventData))
+        {
+            throw new Exception(&quot;Event too large for empty batch&quot;);
+        }
+    }
+}
+
+// 送出剩下的事件
+if (batch.Count &gt; 0)
+{
+    await producer.SendAsync(batch);
+}
+```
+
+### 2. 送出事件（Buffered，大量）
+
+```csharp
+using Azure.Messaging.EventHubs.Producer;
+
+var options = new EventHubBufferedProducerClientOptions
+{
+    MaximumWaitTime = TimeSpan.FromSeconds(1)
+};
+
+await using var producer = new EventHubBufferedProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential(),
+    options);
+
+// 處理送出成功／失敗
+producer.SendEventBatchSucceededAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Batch sent: {args.EventBatch.Count} events&quot;);
+    return Task.CompletedTask;
+};
+
+producer.SendEventBatchFailedAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Batch failed: {args.Exception.Message}&quot;);
+    return Task.CompletedTask;
+};
+
+// 把事件排入佇列（在背景自動送出）
+for (int i = 0; i &lt; 1000; i++)
+{
+    await producer.EnqueueEventAsync(new EventData($&quot;Event {i}&quot;));
+}
+
+// dispose 之前先 flush 剩下的事件
+await producer.FlushAsync();
+```
+
+### 3. 接收事件（正式環境：EventProcessorClient）
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Consumer;
+using Azure.Messaging.EventHubs.Processor;
+using Azure.Storage.Blobs;
+
+// 用來做 checkpoint 的 Blob container
+var blobClient = new BlobContainerClient(
+    Environment.GetEnvironmentVariable(&quot;BLOB_STORAGE_CONNECTION_STRING&quot;),
+    Environment.GetEnvironmentVariable(&quot;BLOB_CONTAINER_NAME&quot;));
+
+await blobClient.CreateIfNotExistsAsync();
+
+// 建立 processor
+var processor = new EventProcessorClient(
+    blobClient,
+    EventHubConsumerClient.DefaultConsumerGroup,
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential());
+
+// 處理事件
+processor.ProcessEventAsync += async args =&gt;
+{
+    Console.WriteLine($&quot;Partition: {args.Partition.PartitionId}&quot;);
+    Console.WriteLine($&quot;Data: {args.Data.EventBody}&quot;);
+    
+    // 處理完之後做 checkpoint（或批次做 checkpoint）
+    await args.UpdateCheckpointAsync();
+};
+
+// 處理錯誤
+processor.ProcessErrorAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Error: {args.Exception.Message}&quot;);
+    Console.WriteLine($&quot;Partition: {args.PartitionId}&quot;);
+    return Task.CompletedTask;
+};
+
+// 開始處理
+await processor.StartProcessingAsync();
+
+// 跑到被取消為止
+await Task.Delay(Timeout.Infinite, cancellationToken);
+
+// 優雅停止
+await processor.StopProcessingAsync();
+```
+
+### 4. Partition 操作
+
+```csharp
+// 取得 partition ID
+string[] partitionIds = await producer.GetPartitionIdsAsync();
+
+// 送到特定 partition（少用）
+var options = new SendEventOptions
+{
+    PartitionId = &quot;0&quot;
+};
+await producer.SendAsync(events, options);
+
+// 用 partition key（要保證順序時建議用）
+var batchOptions = new CreateBatchOptions
+{
+    PartitionKey = &quot;customer-123&quot;  // key 相同的事件會進同一個 partition
+};
+using var batch = await producer.CreateBatchAsync(batchOptions);
+```
+
+## EventPosition 選項
+
+控制從哪裡開始讀：
+
+```csharp
+// 從頭開始
+EventPosition.Earliest
+
+// 從尾端開始（只讀新事件）
+EventPosition.Latest
+
+// 從特定 offset 開始
+EventPosition.FromOffset(12345)
+
+// 從特定 sequence number 開始
+EventPosition.FromSequenceNumber(100)
+
+// 從特定時間開始
+EventPosition.FromEnqueuedTime(DateTimeOffset.UtcNow.AddHours(-1))
+```
+
+## ASP.NET Core 整合
+
+```csharp
+// Program.cs
+using Azure.Identity;
+using Azure.Messaging.EventHubs.Producer;
+using Microsoft.Extensions.Azure;
+
+builder.Services.AddAzureClients(clientBuilder =&gt;
+{
+    clientBuilder.AddEventHubProducerClient(
+        builder.Configuration[&quot;EventHub:FullyQualifiedNamespace&quot;],
+        builder.Configuration[&quot;EventHub:Name&quot;]);
+    
+    clientBuilder.UseCredential(new DefaultAzureCredential());
+});
+
+// 注入到 controller/service
+public class EventService
+{
+    private readonly EventHubProducerClient _producer;
+    
+    public EventService(EventHubProducerClient producer)
+    {
+        _producer = producer;
+    }
+    
+    public async Task SendAsync(string message)
+    {
+        using var batch = await _producer.CreateBatchAsync();
+        batch.TryAdd(new EventData(message));
+        await _producer.SendAsync(batch);
+    }
+}
+```
+
+## 最佳實務
+
+1. **接收用 `EventProcessorClient`**：正式環境絕對不要用 `EventHubConsumerClient`
+2. **有策略地做 checkpoint**：每 N 個事件或每隔一段時間做一次，不要每個事件都做
+3. **用 partition key**：保證同一個 partition 內的順序
+4. **重複使用 client**：建一次，當 singleton 用（thread-safe）
+5. **用 `await using`**：確保正確 dispose
+6. **處理 `ProcessErrorAsync`**：一定要註冊錯誤 handler
+7. **批次送事件**：用 `CreateBatchAsync()` 來遵守大小上限
+8. **用 buffered producer**：大量情境下可以自動批次
+
+## 錯誤處理
+
+```csharp
+using Azure.Messaging.EventHubs;
+
+try
+{
+    await producer.SendAsync(batch);
+}
+catch (EventHubsException ex) when (ex.Reason == EventHubsException.FailureReason.ServiceBusy)
+{
+    // 用 backoff 重試
+    await Task.Delay(TimeSpan.FromSeconds(5));
+}
+catch (EventHubsException ex) when (ex.IsTransient)
+{
+    // 暫時性錯誤：可以安全重試
+    Console.WriteLine($&quot;Transient error: {ex.Message}&quot;);
+}
+catch (EventHubsException ex)
+{
+    // 非暫時性錯誤
+    Console.WriteLine($&quot;Error: {ex.Reason} - {ex.Message}&quot;);
+}
+```
+
+## Checkpoint 策略
+
+| 策略 | 何時使用 |
+|----------|-------------|
+| 每個事件 | 低流量、關鍵資料 |
+| 每 N 個事件 | 吞吐量和可靠性之間取得平衡 |
+| 依時間 | 固定的 checkpoint 間隔 |
+| 批次完成 | 處理完一個邏輯批次之後 |
+
+```csharp
+// 每 100 個事件做一次 checkpoint
+private int _eventCount = 0;
+
+processor.ProcessEventAsync += async args =&gt;
+{
+    // 處理事件...
+    
+    _eventCount++;
+    if (_eventCount &gt;= 100)
+    {
+        await args.UpdateCheckpointAsync();
+        _eventCount = 0;
+    }
+};
+```
+
+## 相關 SDK
+
+| SDK | 用途 | 安裝 |
+|-----|---------|---------|
+| `Azure.Messaging.EventHubs` | 核心收發 | `dotnet add package Azure.Messaging.EventHubs` |
+| `Azure.Messaging.EventHubs.Processor` | 正式環境處理 | `dotnet add package Azure.Messaging.EventHubs.Processor` |
+| `Azure.ResourceManager.EventHubs` | Management plane（建立 hub） | `dotnet add package Azure.ResourceManager.EventHubs` |
+| `Microsoft.Azure.WebJobs.Extensions.EventHubs` | Azure Functions binding | `dotnet add package Microsoft.Azure.WebJobs.Extensions.EventHubs` |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-eventhub-dotnet
+description: |
+  Azure Event Hubs SDK for .NET. Use for high-throughput event streaming: sending events (EventHubProducerClient, EventHubBufferedProducerClient), receiving events (EventProcessorClient with checkpointing), partition management, and real-time data ingestion. Triggers: &quot;Event Hubs&quot;, &quot;event streaming&quot;, &quot;EventHubProducerClient&quot;, &quot;EventProcessorClient&quot;, &quot;send events&quot;, &quot;receive events&quot;, &quot;checkpointing&quot;, &quot;partition&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: Azure.Messaging.EventHubs
+---
+
+# Azure.Messaging.EventHubs (.NET)
+
+High-throughput event streaming SDK for sending and receiving events via Azure Event Hubs.
+
+## Installation
+
+```bash
+# Core package (sending and simple receiving)
+dotnet add package Azure.Messaging.EventHubs
+
+# Processor package (production receiving with checkpointing)
+dotnet add package Azure.Messaging.EventHubs.Processor
+
+# Authentication
+dotnet add package Azure.Identity
+
+# For checkpointing (required by EventProcessorClient)
+dotnet add package Azure.Storage.Blobs
+```
+
+**Current Versions**: Azure.Messaging.EventHubs v5.12.2, Azure.Messaging.EventHubs.Processor v5.12.2
+
+## Environment Variables
+
+```bash
+EVENTHUB_FULLY_QUALIFIED_NAMESPACE=&lt;namespace&gt;.servicebus.windows.net  # Required: Event Hubs fully qualified namespace
+EVENTHUB_NAME=&lt;event-hub-name&gt;  # Required: Event Hub name
+BLOB_STORAGE_CONNECTION_STRING=&lt;storage-connection-string&gt;  # Alternative to Entra ID auth
+BLOB_CONTAINER_NAME=&lt;checkpoint-container&gt;  # Required: checkpoint container name
+EVENTHUB_CONNECTION_STRING=Endpoint=sb://&lt;namespace&gt;.servicebus.windows.net/;SharedAccessKeyName=...  # Alternative to Entra ID auth
+AZURE_TOKEN_CREDENTIALS=prod  # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+var credential = new DefaultAzureCredential(
+    DefaultAzureCredential.DefaultEnvironmentVariableName
+);
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/dotnet/api/overview/azure/identity-readme?view=azure-dotnet#credential-classes
+// var credential = new ManagedIdentityCredential();
+
+var fullyQualifiedNamespace = Environment.GetEnvironmentVariable(&quot;EVENTHUB_FULLY_QUALIFIED_NAMESPACE&quot;);
+var eventHubName = Environment.GetEnvironmentVariable(&quot;EVENTHUB_NAME&quot;);
+
+var producer = new EventHubProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    credential);
+```
+
+**Required RBAC Roles**:
+- **Sending**: `Azure Event Hubs Data Sender`
+- **Receiving**: `Azure Event Hubs Data Receiver`
+- **Both**: `Azure Event Hubs Data Owner`
+
+## Client Types
+
+| Client | Purpose | When to Use |
+|--------|---------|-------------|
+| `EventHubProducerClient` | Send events immediately in batches | Real-time sending, full control over batching |
+| `EventHubBufferedProducerClient` | Automatic batching with background sending | High-volume, fire-and-forget scenarios |
+| `EventHubConsumerClient` | Simple event reading | Prototyping only, NOT for production |
+| `EventProcessorClient` | Production event processing | **Always use this for receiving in production** |
+
+## Core Workflow
+
+### 1. Send Events (Batch)
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+
+await using var producer = new EventHubProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential());
+
+// Create a batch (respects size limits automatically)
+using EventDataBatch batch = await producer.CreateBatchAsync();
+
+// Add events to batch
+var events = new[]
+{
+    new EventData(BinaryData.FromString(&quot;{\&quot;id\&quot;: 1, \&quot;message\&quot;: \&quot;Hello\&quot;}&quot;)),
+    new EventData(BinaryData.FromString(&quot;{\&quot;id\&quot;: 2, \&quot;message\&quot;: \&quot;World\&quot;}&quot;))
+};
+
+foreach (var eventData in events)
+{
+    if (!batch.TryAdd(eventData))
+    {
+        // Batch is full - send it and create a new one
+        await producer.SendAsync(batch);
+        batch = await producer.CreateBatchAsync();
+        
+        if (!batch.TryAdd(eventData))
+        {
+            throw new Exception(&quot;Event too large for empty batch&quot;);
+        }
+    }
+}
+
+// Send remaining events
+if (batch.Count &gt; 0)
+{
+    await producer.SendAsync(batch);
+}
+```
+
+### 2. Send Events (Buffered - High Volume)
+
+```csharp
+using Azure.Messaging.EventHubs.Producer;
+
+var options = new EventHubBufferedProducerClientOptions
+{
+    MaximumWaitTime = TimeSpan.FromSeconds(1)
+};
+
+await using var producer = new EventHubBufferedProducerClient(
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential(),
+    options);
+
+// Handle send success/failure
+producer.SendEventBatchSucceededAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Batch sent: {args.EventBatch.Count} events&quot;);
+    return Task.CompletedTask;
+};
+
+producer.SendEventBatchFailedAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Batch failed: {args.Exception.Message}&quot;);
+    return Task.CompletedTask;
+};
+
+// Enqueue events (sent automatically in background)
+for (int i = 0; i &lt; 1000; i++)
+{
+    await producer.EnqueueEventAsync(new EventData($&quot;Event {i}&quot;));
+}
+
+// Flush remaining events before disposing
+await producer.FlushAsync();
+```
+
+### 3. Receive Events (Production - EventProcessorClient)
+
+```csharp
+using Azure.Identity;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Consumer;
+using Azure.Messaging.EventHubs.Processor;
+using Azure.Storage.Blobs;
+
+// Blob container for checkpointing
+var blobClient = new BlobContainerClient(
+    Environment.GetEnvironmentVariable(&quot;BLOB_STORAGE_CONNECTION_STRING&quot;),
+    Environment.GetEnvironmentVariable(&quot;BLOB_CONTAINER_NAME&quot;));
+
+await blobClient.CreateIfNotExistsAsync();
+
+// Create processor
+var processor = new EventProcessorClient(
+    blobClient,
+    EventHubConsumerClient.DefaultConsumerGroup,
+    fullyQualifiedNamespace,
+    eventHubName,
+    new DefaultAzureCredential());
+
+// Handle events
+processor.ProcessEventAsync += async args =&gt;
+{
+    Console.WriteLine($&quot;Partition: {args.Partition.PartitionId}&quot;);
+    Console.WriteLine($&quot;Data: {args.Data.EventBody}&quot;);
+    
+    // Checkpoint after processing (or batch checkpoints)
+    await args.UpdateCheckpointAsync();
+};
+
+// Handle errors
+processor.ProcessErrorAsync += args =&gt;
+{
+    Console.WriteLine($&quot;Error: {args.Exception.Message}&quot;);
+    Console.WriteLine($&quot;Partition: {args.PartitionId}&quot;);
+    return Task.CompletedTask;
+};
+
+// Start processing
+await processor.StartProcessingAsync();
+
+// Run until cancelled
+await Task.Delay(Timeout.Infinite, cancellationToken);
+
+// Stop gracefully
+await processor.StopProcessingAsync();
+```
+
+### 4. Partition Operations
+
+```csharp
+// Get partition IDs
+string[] partitionIds = await producer.GetPartitionIdsAsync();
+
+// Send to specific partition (use sparingly)
+var options = new SendEventOptions
+{
+    PartitionId = &quot;0&quot;
+};
+await producer.SendAsync(events, options);
+
+// Use partition key (recommended for ordering)
+var batchOptions = new CreateBatchOptions
+{
+    PartitionKey = &quot;customer-123&quot;  // Events with same key go to same partition
+};
+using var batch = await producer.CreateBatchAsync(batchOptions);
+```
+
+## EventPosition Options
+
+Control where to start reading:
+
+```csharp
+// Start from beginning
+EventPosition.Earliest
+
+// Start from end (new events only)
+EventPosition.Latest
+
+// Start from specific offset
+EventPosition.FromOffset(12345)
+
+// Start from specific sequence number
+EventPosition.FromSequenceNumber(100)
+
+// Start from specific time
+EventPosition.FromEnqueuedTime(DateTimeOffset.UtcNow.AddHours(-1))
+```
+
+## ASP.NET Core Integration
+
+```csharp
+// Program.cs
+using Azure.Identity;
+using Azure.Messaging.EventHubs.Producer;
+using Microsoft.Extensions.Azure;
+
+builder.Services.AddAzureClients(clientBuilder =&gt;
+{
+    clientBuilder.AddEventHubProducerClient(
+        builder.Configuration[&quot;EventHub:FullyQualifiedNamespace&quot;],
+        builder.Configuration[&quot;EventHub:Name&quot;]);
+    
+    clientBuilder.UseCredential(new DefaultAzureCredential());
+});
+
+// Inject in controller/service
+public class EventService
+{
+    private readonly EventHubProducerClient _producer;
+    
+    public EventService(EventHubProducerClient producer)
+    {
+        _producer = producer;
+    }
+    
+    public async Task SendAsync(string message)
+    {
+        using var batch = await _producer.CreateBatchAsync();
+        batch.TryAdd(new EventData(message));
+        await _producer.SendAsync(batch);
+    }
+}
+```
+
+## Best Practices
+
+1. **Use `EventProcessorClient` for receiving** — Never use `EventHubConsumerClient` in production
+2. **Checkpoint strategically** — After N events or time interval, not every event
+3. **Use partition keys** — For ordering guarantees within a partition
+4. **Reuse clients** — Create once, use as singleton (thread-safe)
+5. **Use `await using`** — Ensures proper disposal
+6. **Handle `ProcessErrorAsync`** — Always register error handler
+7. **Batch events** — Use `CreateBatchAsync()` to respect size limits
+8. **Use buffered producer** — For high-volume scenarios with automatic batching
+
+## Error Handling
+
+```csharp
+using Azure.Messaging.EventHubs;
+
+try
+{
+    await producer.SendAsync(batch);
+}
+catch (EventHubsException ex) when (ex.Reason == EventHubsException.FailureReason.ServiceBusy)
+{
+    // Retry with backoff
+    await Task.Delay(TimeSpan.FromSeconds(5));
+}
+catch (EventHubsException ex) when (ex.IsTransient)
+{
+    // Transient error - safe to retry
+    Console.WriteLine($&quot;Transient error: {ex.Message}&quot;);
+}
+catch (EventHubsException ex)
+{
+    // Non-transient error
+    Console.WriteLine($&quot;Error: {ex.Reason} - {ex.Message}&quot;);
+}
+```
+
+## Checkpointing Strategies
+
+| Strategy | When to Use |
+|----------|-------------|
+| Every event | Low volume, critical data |
+| Every N events | Balanced throughput/reliability |
+| Time-based | Consistent checkpoint intervals |
+| Batch completion | After processing a logical batch |
+
+```csharp
+// Checkpoint every 100 events
+private int _eventCount = 0;
+
+processor.ProcessEventAsync += async args =&gt;
+{
+    // Process event...
+    
+    _eventCount++;
+    if (_eventCount &gt;= 100)
+    {
+        await args.UpdateCheckpointAsync();
+        _eventCount = 0;
+    }
+};
+```
+
+## Related SDKs
+
+| SDK | Purpose | Install |
+|-----|---------|---------|
+| `Azure.Messaging.EventHubs` | Core sending/receiving | `dotnet add package Azure.Messaging.EventHubs` |
+| `Azure.Messaging.EventHubs.Processor` | Production processing | `dotnet add package Azure.Messaging.EventHubs.Processor` |
+| `Azure.ResourceManager.EventHubs` | Management plane (create hubs) | `dotnet add package Azure.ResourceManager.EventHubs` |
+| `Microsoft.Azure.WebJobs.Extensions.EventHubs` | Azure Functions binding | `dotnet add package Microsoft.Azure.WebJobs.Extensions.EventHubs` |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

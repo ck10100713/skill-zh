@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-kusto｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 KQL 查詢分析 Azure Data Explorer 的 log、遙測和時間序列">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-kusto</h1>
+<p class="meta">Microsoft ｜ 資料與分析 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-skills/skills/azure-kusto/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 KQL 查詢分析 Azure Data Explorer 的 log、遙測和時間序列</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-kusto
+description: &quot;用 KQL 查詢和分析 Azure Data Explorer（Kusto/ADX）裡的資料，適用於 log 分析、遙測和時間序列分析。WHEN: KQL queries, Kusto database queries, Azure Data Explorer, ADX clusters, log analytics, time series data, IoT telemetry, anomaly detection.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.2&quot;
+---
+
+# Azure Data Explorer（Kusto）查詢與分析
+
+執行 KQL 查詢並管理 Azure Data Explorer 資源，對 log、遙測和時間序列資料做快速、可擴展的大數據分析。
+
+## 概觀
+
+這個 skill 讓你查詢和管理 Azure Data Explorer（Kusto）。這是一個快速、高度可擴展的資料探索服務，專門為 log 和遙測資料最佳化。Azure Data Explorer 用 Kusto Query Language（KQL）對數十億筆紀錄做到次秒級的查詢效能。
+
+主要能力：
+- **執行查詢**：對海量資料集跑 KQL 查詢
+- **探索 Schema**：找出 table、欄位和資料型別
+- **資源管理**：列出叢集和資料庫
+- **分析**：聚合、時間序列、異常偵測、機器學習
+
+## 核心流程
+
+1. **探索資源**：列出 subscription 裡可用的叢集和資料庫。如果不知道目標 table 在哪，而且有多個候選的叢集、資料庫或 Log Analytics workspace，就批次搜尋（見 Pattern 6），所有候選都查完之後才能回報「找不到」。
+2. **探索 Schema**：取得 table 結構，了解資料模型
+3. **查詢資料**：執行 KQL 查詢做分析、過濾、聚合
+4. **分析結果**：處理查詢輸出，整理出洞見和報告
+
+## 查詢模式
+
+### Pattern 1：基本資料擷取
+用簡單的過濾條件抓 table 裡最近的紀錄。
+
+**KQL 範例**：
+```kql
+Events
+| where Timestamp &gt; ago(1h)
+| take 100
+```
+
+**適用於**：快速檢視資料、擷取最近的事件
+
+### Pattern 2：聚合分析
+依維度彙總資料，用於洞見和報告。
+
+**KQL 範例**：
+```kql
+Events
+| summarize count() by EventType, bin(Timestamp, 1h)
+| order by count_ desc
+```
+
+**適用於**：事件計數、分佈分析、top-N 查詢
+
+### Pattern 3：時間序列分析
+在時間視窗內分析資料，找出趨勢和模式。
+
+**KQL 範例**：
+```kql
+Telemetry
+| where Timestamp &gt; ago(24h)
+| summarize avg(ResponseTime), percentiles(ResponseTime, 50, 95, 99) by bin(Timestamp, 5m)
+| render timechart
+```
+
+**適用於**：效能監控、趨勢分析、異常偵測
+
+### Pattern 4：Join 與關聯
+合併多個 table，做跨資料集分析。
+
+**KQL 範例**：
+```kql
+Events
+| where EventType == &quot;Error&quot;
+| join kind=inner (
+    Logs
+    | where Severity == &quot;Critical&quot;
+) on CorrelationId
+| project Timestamp, EventType, LogMessage, Severity
+```
+
+**適用於**：根本原因分析、追蹤相關聯的事件
+
+### Pattern 5：Schema 探索
+查詢之前先看 table 結構。
+
+**工具**：`kusto_table_schema_get`
+
+**適用於**：了解資料模型、規劃查詢
+
+### Pattern 6：跨候選來源批次搜尋
+不知道 table 在哪，而且有好幾個候選的叢集、資料庫或 workspace 時，批次做唯讀的 metadata 探索，不要一個一個查。列出每個候選資料庫或 workspace 裡的 table，先比對 table 的完整名稱，再去查資料。
+
+確認哪些來源有這個 table 之後，需要的話可以一起查這些來源：
+```kql
+union workspace(&#x27;ws1&#x27;).Requests, workspace(&#x27;ws2&#x27;).Requests
+| take 1
+```
+
+**適用於**：在很多候選資源裡找 table，避免把空結果誤當成 table 不存在
+
+## 主要資料欄位
+
+執行查詢時，常見的欄位模式：
+- **Timestamp**：事件時間（datetime），時間過濾用 `ago()`、`between()`、`bin()`
+- **EventType/Category**：分類欄位，用來分組
+- **CorrelationId/SessionId**：用來追蹤相關事件
+- **Severity/Level**：依重要性過濾
+- **Dimensions**：自訂屬性，用於分組和過濾
+
+## 結果格式
+
+查詢結果包含：
+- **Columns**：欄位名稱和資料型別
+- **Rows**：符合查詢的資料紀錄
+- **Statistics**：筆數、執行時間、資源使用量
+- **Visualization**：圖表呈現的提示（timechart、barchart 等）
+
+## KQL 最佳實務
+
+**🔵 查詢模式：**
+- 聚合用 `summarize`，不要只用 `count()`
+- 時間序列的時間分桶用 `bin()`
+- 用 `project` 只選需要的欄位
+- 用 `extend` 新增計算欄位
+
+**🟡 常用函式：**
+- `ago(timespan)`：相對時間（ago(1h)、ago(7d)）
+- `between(start .. end)`：範圍過濾
+- `startswith()`、`contains()`、`matches regex`：字串過濾
+- `parse`、`extract`：從字串擷取值
+- `percentiles()`、`avg()`、`sum()`、`max()`、`min()`：聚合
+
+## 最佳實務
+
+- 先用時間範圍過濾，並優先用有索引的欄位，這樣查詢效能最好
+- 探索性的查詢用 `take` 或 `limit`，避免拿到太大的結果集
+- 聚合用 `summarize`，不要在 client 端處理
+- 常用的查詢存成資料庫裡的 function
+- 重複的聚合用 materialized view
+- 監控查詢效能和資源消耗
+- 套用資料保留政策來控制儲存成本
+- 即時分析用 streaming ingestion（延遲 &lt; 1 秒）
+- 整合 Azure Monitor 取得營運洞見
+
+## 使用的 MCP 工具
+
+| 工具 | 用途 |
+|------|---------|
+| `kusto_cluster_list` | 列出 subscription 裡所有 Azure Data Explorer 叢集 |
+| `kusto_database_list` | 列出特定 Kusto 叢集裡所有資料庫 |
+| `kusto_query` | 對 Kusto 資料庫執行 KQL 查詢 |
+| `kusto_table_schema_get` | 取得特定 table 的 schema 資訊 |
+
+**必要參數**：
+- `subscription`：Azure subscription ID 或顯示名稱
+- `cluster`：Kusto 叢集名稱（例如 &quot;mycluster&quot;）
+- `database`：資料庫名稱
+- `query`：KQL 查詢字串（查詢操作用）
+- `table`：table 名稱（schema 操作用）
+
+**選用參數**：
+- `resource-group`：resource group 名稱（列表操作用）
+- `tenant`：Azure AD tenant ID
+
+## Fallback 策略：Azure CLI 指令
+
+如果 Azure MCP 的 Kusto 工具失敗、逾時或不可用，就改用 Azure CLI 指令當 fallback。
+
+### CLI 指令對照
+
+| 操作 | Azure CLI 指令 |
+|-----------|-------------------|
+| 列出叢集 | `az kusto cluster list --resource-group &lt;rg-name&gt;` |
+| 列出資料庫 | `az kusto database list --cluster-name &lt;cluster&gt; --resource-group &lt;rg-name&gt;` |
+| 顯示叢集 | `az kusto cluster show --name &lt;cluster&gt; --resource-group &lt;rg-name&gt;` |
+| 顯示資料庫 | `az kusto database show --cluster-name &lt;cluster&gt; --database-name &lt;db&gt; --resource-group &lt;rg-name&gt;` |
+
+### 透過 Azure CLI 執行 KQL 查詢
+
+查詢要用 Kusto REST API 或直接打叢集 URL：
+```bash
+az rest --method post \
+  --url &quot;https://&lt;cluster&gt;.&lt;region&gt;.kusto.windows.net/v1/rest/query&quot; \
+  --body &quot;{ \&quot;db\&quot;: \&quot;&lt;database&gt;\&quot;, \&quot;csl\&quot;: \&quot;&lt;kql-query&gt;\&quot; }&quot;
+```
+
+### 何時改用 Fallback
+
+遇到這些情況就切到 Azure CLI：
+- MCP 工具回傳逾時錯誤（查詢超過 60 秒）
+- MCP 工具回傳「service unavailable」或連線錯誤
+- MCP 工具認證失敗
+- 明明知道資料庫有資料，回應卻是空的
+
+## 常見問題
+
+- **Access Denied**：確認資料庫權限（查詢至少要 Viewer 角色）
+- **Query Timeout**：用時間過濾最佳化查詢、縮小結果集，或調高 timeout
+- **Syntax Error**：檢查 KQL 語法，常見問題是漏了 pipe、運算子用錯
+- **Empty Results**：檢查時間範圍過濾（可能太嚴格），確認 table 名稱
+- **Table Location Unknown**：先用 Pattern 6 批次搜尋所有候選來源，再下「資料不存在」的結論
+- **Cluster Not Found**：檢查叢集名稱格式（不要加 &quot;.kusto.windows.net&quot; 後綴）
+- **High CPU Usage**：查詢範圍太廣，加過濾條件、縮短時間範圍、減少聚合
+- **Ingestion Lag**：串流資料依 ingestion 方式不同，可能有 1 到 30 秒的延遲
+
+## 使用情境
+
+- **Log 分析**：應用程式 log、系統 log、稽核 log
+- **IoT 分析**：感測器資料、裝置遙測、即時監控
+- **資安分析**：SIEM 資料、威脅偵測、資安事件關聯
+- **APM**：應用程式效能指標、使用者行為、錯誤追蹤
+- **商業智慧**：點擊流分析、使用者分析、營運 KPI</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-kusto
+description: &quot;Query and analyze data in Azure Data Explorer (Kusto/ADX) using KQL for log analytics, telemetry, and time series analysis. WHEN: KQL queries, Kusto database queries, Azure Data Explorer, ADX clusters, log analytics, time series data, IoT telemetry, anomaly detection.&quot;
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.2.2&quot;
+---
+
+# Azure Data Explorer (Kusto) Query &amp; Analytics
+
+Execute KQL queries and manage Azure Data Explorer resources for fast, scalable big data analytics on log, telemetry, and time series data.
+
+## Overview
+
+This skill enables querying and managing Azure Data Explorer (Kusto), a fast and highly scalable data exploration service optimized for log and telemetry data. Azure Data Explorer provides sub-second query performance on billions of records using the Kusto Query Language (KQL).
+
+Key capabilities:
+- **Query Execution**: Run KQL queries against massive datasets
+- **Schema Exploration**: Discover tables, columns, and data types
+- **Resource Management**: List clusters and databases
+- **Analytics**: Aggregations, time series, anomaly detection, machine learning
+
+## Core Workflow
+
+1. **Discover Resources**: List available clusters and databases in subscription. If the target table&#x27;s location is unknown and multiple candidate clusters, databases, or Log Analytics workspaces exist, batch the search (see Pattern 6) and only report &quot;not found&quot; after all candidates are checked.
+2. **Explore Schema**: Retrieve table structures to understand data model
+3. **Query Data**: Execute KQL queries for analysis, filtering, aggregation
+4. **Analyze Results**: Process query output for insights and reporting
+
+## Query Patterns
+
+### Pattern 1: Basic Data Retrieval
+Fetch recent records from a table with simple filtering.
+
+**Example KQL**:
+```kql
+Events
+| where Timestamp &gt; ago(1h)
+| take 100
+```
+
+**Use for**: Quick data inspection, recent event retrieval
+
+### Pattern 2: Aggregation Analysis
+Summarize data by dimensions for insights and reporting.
+
+**Example KQL**:
+```kql
+Events
+| summarize count() by EventType, bin(Timestamp, 1h)
+| order by count_ desc
+```
+
+**Use for**: Event counting, distribution analysis, top-N queries
+
+### Pattern 3: Time Series Analytics
+Analyze data over time windows for trends and patterns.
+
+**Example KQL**:
+```kql
+Telemetry
+| where Timestamp &gt; ago(24h)
+| summarize avg(ResponseTime), percentiles(ResponseTime, 50, 95, 99) by bin(Timestamp, 5m)
+| render timechart
+```
+
+**Use for**: Performance monitoring, trend analysis, anomaly detection
+
+### Pattern 4: Join and Correlation
+Combine multiple tables for cross-dataset analysis.
+
+**Example KQL**:
+```kql
+Events
+| where EventType == &quot;Error&quot;
+| join kind=inner (
+    Logs
+    | where Severity == &quot;Critical&quot;
+) on CorrelationId
+| project Timestamp, EventType, LogMessage, Severity
+```
+
+**Use for**: Root cause analysis, correlated event tracking
+
+### Pattern 5: Schema Discovery
+Explore table structure before querying.
+
+**Tools**: `kusto_table_schema_get`
+
+**Use for**: Understanding data model, query planning
+
+### Pattern 6: Batch Search Across Candidate Sources
+When a table&#x27;s location is unknown and there are several candidate clusters, databases, or workspaces, batch read-only metadata discovery instead of querying candidates one at a time. List tables in each candidate database or workspace and match the exact table name before querying data.
+
+After confirming which sources contain the table, query those sources together when needed:
+```kql
+union workspace(&#x27;ws1&#x27;).Requests, workspace(&#x27;ws2&#x27;).Requests
+| take 1
+```
+
+**Use for**: Locating a table among many candidate resources without confusing an empty result with a missing table
+
+## Key Data Fields
+
+When executing queries, common field patterns:
+- **Timestamp**: Time of event (datetime) - use `ago()`, `between()`, `bin()` for time filtering
+- **EventType/Category**: Classification field for grouping
+- **CorrelationId/SessionId**: For tracing related events
+- **Severity/Level**: For filtering by importance
+- **Dimensions**: Custom properties for grouping and filtering
+
+## Result Format
+
+Query results include:
+- **Columns**: Field names and data types
+- **Rows**: Data records matching query
+- **Statistics**: Row count, execution time, resource utilization
+- **Visualization**: Chart rendering hints (timechart, barchart, etc.)
+
+## KQL Best Practices
+
+**🔵 Query Patterns:**
+- Use `summarize` for aggregations instead of `count()` alone
+- Use `bin()` for time bucketing in time series
+- Use `project` to select only needed columns
+- Use `extend` to add calculated fields
+
+**🟡 Common Functions:**
+- `ago(timespan)`: Relative time (ago(1h), ago(7d))
+- `between(start .. end)`: Range filtering
+- `startswith()`, `contains()`, `matches regex`: String filtering
+- `parse`, `extract`: Extract values from strings
+- `percentiles()`, `avg()`, `sum()`, `max()`, `min()`: Aggregations
+
+## Best Practices
+
+- Filter early with time range filters to optimize query performance and use indexed columns first
+- Use `take` or `limit` for exploratory queries to avoid large result sets
+- Leverage `summarize` for aggregations instead of client-side processing
+- Store frequently-used queries as functions in the database
+- Use materialized views for repeated aggregations
+- Monitor query performance and resource consumption
+- Apply data retention policies to manage storage costs
+- Use streaming ingestion for real-time analytics (&lt; 1 second latency)
+- Integrate with Azure Monitor for operational insights
+
+## MCP Tools Used
+
+| Tool | Purpose |
+|------|---------|
+| `kusto_cluster_list` | List all Azure Data Explorer clusters in a subscription |
+| `kusto_database_list` | List all databases in a specific Kusto cluster |
+| `kusto_query` | Execute KQL queries against a Kusto database |
+| `kusto_table_schema_get` | Retrieve schema information for a specific table |
+
+**Required Parameters**:
+- `subscription`: Azure subscription ID or display name
+- `cluster`: Kusto cluster name (e.g., &quot;mycluster&quot;)
+- `database`: Database name
+- `query`: KQL query string (for query operations)
+- `table`: Table name (for schema operations)
+
+**Optional Parameters**:
+- `resource-group`: Resource group name (for listing operations)
+- `tenant`: Azure AD tenant ID
+
+## Fallback Strategy: Azure CLI Commands
+
+If Azure MCP Kusto tools fail, timeout, or are unavailable, use Azure CLI commands as fallback.
+
+### CLI Command Reference
+
+| Operation | Azure CLI Command |
+|-----------|-------------------|
+| List clusters | `az kusto cluster list --resource-group &lt;rg-name&gt;` |
+| List databases | `az kusto database list --cluster-name &lt;cluster&gt; --resource-group &lt;rg-name&gt;` |
+| Show cluster | `az kusto cluster show --name &lt;cluster&gt; --resource-group &lt;rg-name&gt;` |
+| Show database | `az kusto database show --cluster-name &lt;cluster&gt; --database-name &lt;db&gt; --resource-group &lt;rg-name&gt;` |
+
+### KQL Query via Azure CLI
+
+For queries, use the Kusto REST API or direct cluster URL:
+```bash
+az rest --method post \
+  --url &quot;https://&lt;cluster&gt;.&lt;region&gt;.kusto.windows.net/v1/rest/query&quot; \
+  --body &quot;{ \&quot;db\&quot;: \&quot;&lt;database&gt;\&quot;, \&quot;csl\&quot;: \&quot;&lt;kql-query&gt;\&quot; }&quot;
+```
+
+### When to Fallback
+
+Switch to Azure CLI when:
+- MCP tool returns timeout error (queries &gt; 60 seconds)
+- MCP tool returns &quot;service unavailable&quot; or connection errors
+- Authentication failures with MCP tools
+- Empty response when database is known to have data
+
+## Common Issues
+
+- **Access Denied**: Verify database permissions (Viewer role minimum for queries)
+- **Query Timeout**: Optimize query with time filters, reduce result set, or increase timeout
+- **Syntax Error**: Validate KQL syntax - common issues: missing pipes, incorrect operators
+- **Empty Results**: Check time range filters (may be too restrictive), verify table name
+- **Table Location Unknown**: Use Pattern 6 to batch-search all candidate sources before concluding the data does not exist
+- **Cluster Not Found**: Check cluster name format (exclude &quot;.kusto.windows.net&quot; suffix)
+- **High CPU Usage**: Query too broad - add filters, reduce time range, limit aggregations
+- **Ingestion Lag**: Streaming data may have 1-30 second delay depending on ingestion method
+
+## Use Cases
+
+- **Log Analytics**: Application logs, system logs, audit logs
+- **IoT Analytics**: Sensor data, device telemetry, real-time monitoring
+- **Security Analytics**: SIEM data, threat detection, security event correlation
+- **APM**: Application performance metrics, user behavior, error tracking
+- **Business Intelligence**: Clickstream analysis, user analytics, operational KPIs</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

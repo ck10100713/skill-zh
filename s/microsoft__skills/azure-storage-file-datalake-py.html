@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-file-datalake-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 Python 操作 Data Lake Gen2 的階層式檔案系統、目錄與 ACL">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-file-datalake-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-storage-file-datalake-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 Python 操作 Data Lake Gen2 的階層式檔案系統、目錄與 ACL</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-file-datalake-py
+description: |
+  Python 版的 Azure Data Lake Storage Gen2 SDK。用於階層式檔案系統、大數據分析，以及檔案／目錄操作。
+  Triggers: &quot;data lake&quot;, &quot;DataLakeServiceClient&quot;, &quot;FileSystemClient&quot;, &quot;ADLS Gen2&quot;, &quot;hierarchical namespace&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-storage-file-datalake
+---
+
+# Python 版 Azure Data Lake Storage Gen2 SDK
+
+給大數據分析工作負載用的階層式檔案系統。
+
+## 安裝
+
+```bash
+pip install azure-storage-file-datalake azure-identity
+```
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.dfs.core.windows.net  # 所有驗證方式都必填
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個程式碼範例都適用兩條規則：**
+&gt;
+&gt; 1. **優先用 `DefaultAzureCredential`。** 它在本機（Azure CLI / VS Code / Developer CLI）和 Azure 上（managed identity、workload identity）都能用，不用改程式碼。避免用 connection string、account key 或 API key，它們會繞過 Entra 的稽核和輪替。
+&gt;    - 本機開發：直接用 `DefaultAzureCredential` 就好。
+&gt;    - Production：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限縮在 production 安全的 credential。
+&gt; 2. **每個 client 都用 context manager 包起來**，這樣 HTTP transport、socket 和 token cache 才會確實釋放：
+&gt;    - 同步：`with &lt;Client&gt;(...) as client:`
+&gt;    - 非同步：`async with &lt;Client&gt;(...) as client:` **而且** `async with DefaultAzureCredential() as credential:`（來自 `azure.identity.aio`）
+&gt;
+&gt; 範例片段可能會簡化這段設定，但 production 的程式碼一定要兩條規則都遵守。
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.storage.filedatalake import DataLakeServiceClient
+
+# 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在 production 直接用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+account_url = &quot;https://&lt;account&gt;.dfs.core.windows.net&quot;
+
+with DataLakeServiceClient(account_url=account_url, credential=credential) as service_client:
+    # 在這裡使用 service_client（各種操作請看後面的章節）
+    ...
+```
+
+## Client 階層
+
+| Client | 用途 |
+|--------|---------|
+| `DataLakeServiceClient` | Account 層級的操作 |
+| `FileSystemClient` | Container（檔案系統）操作 |
+| `DataLakeDirectoryClient` | 目錄操作 |
+| `DataLakeFileClient` | 檔案操作 |
+
+## 檔案系統操作
+
+```python
+# 建立檔案系統（container）
+file_system_client = service_client.create_file_system(&quot;myfilesystem&quot;)
+
+# 取得既有的
+file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+
+# 刪除
+service_client.delete_file_system(&quot;myfilesystem&quot;)
+
+# 列出檔案系統
+for fs in service_client.list_file_systems():
+    print(fs.name)
+```
+
+## 目錄操作
+
+```python
+file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+
+# 建立目錄
+directory_client = file_system_client.create_directory(&quot;mydir&quot;)
+
+# 建立巢狀目錄
+directory_client = file_system_client.create_directory(&quot;path/to/nested/dir&quot;)
+
+# 取得目錄 client
+directory_client = file_system_client.get_directory_client(&quot;mydir&quot;)
+
+# 刪除目錄
+directory_client.delete_directory()
+
+# 重新命名／移動目錄
+directory_client.rename_directory(new_name=&quot;myfilesystem/newname&quot;)
+```
+
+## 檔案操作
+
+### 上傳檔案
+
+```python
+# 取得檔案 client
+file_client = file_system_client.get_file_client(&quot;path/to/file.txt&quot;)
+
+# 從本機檔案上傳
+with open(&quot;local-file.txt&quot;, &quot;rb&quot;) as data:
+    file_client.upload_data(data, overwrite=True)
+
+# 上傳 bytes
+file_client.upload_data(b&quot;Hello, Data Lake!&quot;, overwrite=True)
+
+# 附加資料（用於大檔案）
+file_client.append_data(data=b&quot;chunk1&quot;, offset=0, length=6)
+file_client.append_data(data=b&quot;chunk2&quot;, offset=6, length=6)
+file_client.flush_data(12)  # 提交資料
+```
+
+### 下載檔案
+
+```python
+file_client = file_system_client.get_file_client(&quot;path/to/file.txt&quot;)
+
+# 下載全部內容
+download = file_client.download_file()
+content = download.readall()
+
+# 下載到檔案
+with open(&quot;downloaded.txt&quot;, &quot;wb&quot;) as f:
+    download = file_client.download_file()
+    download.readinto(f)
+
+# 下載指定範圍
+download = file_client.download_file(offset=0, length=100)
+```
+
+### 刪除檔案
+
+```python
+file_client.delete_file()
+```
+
+## 列出內容
+
+```python
+# 列出路徑（檔案和目錄）
+for path in file_system_client.get_paths():
+    print(f&quot;{&#x27;DIR&#x27; if path.is_directory else &#x27;FILE&#x27;}: {path.name}&quot;)
+
+# 列出目錄裡的路徑
+for path in file_system_client.get_paths(path=&quot;mydir&quot;):
+    print(path.name)
+
+# 遞迴列出
+for path in file_system_client.get_paths(path=&quot;mydir&quot;, recursive=True):
+    print(path.name)
+```
+
+## 檔案／目錄屬性
+
+```python
+# 取得屬性
+properties = file_client.get_file_properties()
+print(f&quot;Size: {properties.size}&quot;)
+print(f&quot;Last modified: {properties.last_modified}&quot;)
+
+# 設定 metadata
+file_client.set_metadata(metadata={&quot;processed&quot;: &quot;true&quot;})
+```
+
+## 存取控制（ACL）
+
+```python
+# 取得 ACL
+acl = directory_client.get_access_control()
+print(f&quot;Owner: {acl[&#x27;owner&#x27;]}&quot;)
+print(f&quot;Permissions: {acl[&#x27;permissions&#x27;]}&quot;)
+
+# 設定 ACL
+directory_client.set_access_control(
+    owner=&quot;user-id&quot;,
+    permissions=&quot;rwxr-x---&quot;
+)
+
+# 更新 ACL 項目
+from azure.storage.filedatalake import AccessControlChangeResult
+directory_client.update_access_control_recursive(
+    acl=&quot;user:user-id:rwx&quot;
+)
+```
+
+## 非同步 Client
+
+```python
+from azure.storage.filedatalake.aio import DataLakeServiceClient
+from azure.identity.aio import DefaultAzureCredential
+
+async def datalake_operations():
+    async with DefaultAzureCredential() as credential:
+        async with DataLakeServiceClient(
+            account_url=&quot;https://&lt;account&gt;.dfs.core.windows.net&quot;,
+            credential=credential
+        ) as service_client:
+            file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+            file_client = file_system_client.get_file_client(&quot;test.txt&quot;)
+            
+            await file_client.upload_data(b&quot;async content&quot;, overwrite=True)
+            
+            download = await file_client.download_file()
+            content = await download.readall()
+
+import asyncio
+asyncio.run(datalake_operations())
+```
+
+## 最佳實務
+
+1. **同步或非同步選一個，然後保持一致。** 同一條呼叫路徑裡，不要混用 `azure.storage.filedatalake` 同步 client 和 `azure.storage.filedatalake.aio` 非同步 client。每個 module 只選一種模式。
+2. **client 和非同步 credential 一律用 context manager。** 每個 client 都用 `with DataLakeServiceClient(...) as client:`（同步）或 `async with DataLakeServiceClient(...) as client:`（非同步）包起來。非同步的 `DefaultAzureCredential`（來自 `azure.identity.aio`）也要用 `async with credential:`，token 和 transport 才會清乾淨。
+3. **用 `DefaultAzureCredential`**，在本機開發和 Azure 之間都能用同一套驗證（盡量避免 connection string／API key）。
+4. 要有檔案系統語意，就**用 hierarchical namespace**
+5. 大檔案上傳**用 `append_data` + `flush_data`**
+6. **在目錄層級設定 ACL**，讓子項目繼承
+7. 高吞吐量的情境**用非同步 client**
+8. 要完整列出目錄，**用 `get_paths` 搭配 `recursive=True`**
+9. 自訂檔案屬性要**設定 metadata**
+10. 簡單的物件儲存情境，**考慮改用 Blob API**
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | 其他非主要的能力、operation group 涵蓋範圍，以及 production 檢查清單。 |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | 次要／進階情境的專屬非主要流程範例。 |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-file-datalake-py
+description: |
+  Azure Data Lake Storage Gen2 SDK for Python. Use for hierarchical file systems, big data analytics, and file/directory operations.
+  Triggers: &quot;data lake&quot;, &quot;DataLakeServiceClient&quot;, &quot;FileSystemClient&quot;, &quot;ADLS Gen2&quot;, &quot;hierarchical namespace&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-storage-file-datalake
+---
+
+# Azure Data Lake Storage Gen2 SDK for Python
+
+Hierarchical file system for big data analytics workloads.
+
+## Installation
+
+```bash
+pip install azure-storage-file-datalake azure-identity
+```
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_ACCOUNT_URL=https://&lt;account&gt;.dfs.core.windows.net  # Required for all auth methods
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential`.** It works locally (Azure CLI / VS Code / Developer CLI) and in Azure (managed identity, workload identity) with no code change. Avoid connection strings, account/API keys — they bypass Entra audit and rotation.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Wrap every client in a context manager** so HTTP transports, sockets, and token caches are released deterministically:
+&gt;    - Sync: `with &lt;Client&gt;(...) as client:`
+&gt;    - Async: `async with &lt;Client&gt;(...) as client:` **and** `async with DefaultAzureCredential() as credential:` (from `azure.identity.aio`)
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.storage.filedatalake import DataLakeServiceClient
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+account_url = &quot;https://&lt;account&gt;.dfs.core.windows.net&quot;
+
+with DataLakeServiceClient(account_url=account_url, credential=credential) as service_client:
+    # Use service_client here (see following sections for operations)
+    ...
+```
+
+## Client Hierarchy
+
+| Client | Purpose |
+|--------|---------|
+| `DataLakeServiceClient` | Account-level operations |
+| `FileSystemClient` | Container (file system) operations |
+| `DataLakeDirectoryClient` | Directory operations |
+| `DataLakeFileClient` | File operations |
+
+## File System Operations
+
+```python
+# Create file system (container)
+file_system_client = service_client.create_file_system(&quot;myfilesystem&quot;)
+
+# Get existing
+file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+
+# Delete
+service_client.delete_file_system(&quot;myfilesystem&quot;)
+
+# List file systems
+for fs in service_client.list_file_systems():
+    print(fs.name)
+```
+
+## Directory Operations
+
+```python
+file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+
+# Create directory
+directory_client = file_system_client.create_directory(&quot;mydir&quot;)
+
+# Create nested directories
+directory_client = file_system_client.create_directory(&quot;path/to/nested/dir&quot;)
+
+# Get directory client
+directory_client = file_system_client.get_directory_client(&quot;mydir&quot;)
+
+# Delete directory
+directory_client.delete_directory()
+
+# Rename/move directory
+directory_client.rename_directory(new_name=&quot;myfilesystem/newname&quot;)
+```
+
+## File Operations
+
+### Upload File
+
+```python
+# Get file client
+file_client = file_system_client.get_file_client(&quot;path/to/file.txt&quot;)
+
+# Upload from local file
+with open(&quot;local-file.txt&quot;, &quot;rb&quot;) as data:
+    file_client.upload_data(data, overwrite=True)
+
+# Upload bytes
+file_client.upload_data(b&quot;Hello, Data Lake!&quot;, overwrite=True)
+
+# Append data (for large files)
+file_client.append_data(data=b&quot;chunk1&quot;, offset=0, length=6)
+file_client.append_data(data=b&quot;chunk2&quot;, offset=6, length=6)
+file_client.flush_data(12)  # Commit the data
+```
+
+### Download File
+
+```python
+file_client = file_system_client.get_file_client(&quot;path/to/file.txt&quot;)
+
+# Download all content
+download = file_client.download_file()
+content = download.readall()
+
+# Download to file
+with open(&quot;downloaded.txt&quot;, &quot;wb&quot;) as f:
+    download = file_client.download_file()
+    download.readinto(f)
+
+# Download range
+download = file_client.download_file(offset=0, length=100)
+```
+
+### Delete File
+
+```python
+file_client.delete_file()
+```
+
+## List Contents
+
+```python
+# List paths (files and directories)
+for path in file_system_client.get_paths():
+    print(f&quot;{&#x27;DIR&#x27; if path.is_directory else &#x27;FILE&#x27;}: {path.name}&quot;)
+
+# List paths in directory
+for path in file_system_client.get_paths(path=&quot;mydir&quot;):
+    print(path.name)
+
+# Recursive listing
+for path in file_system_client.get_paths(path=&quot;mydir&quot;, recursive=True):
+    print(path.name)
+```
+
+## File/Directory Properties
+
+```python
+# Get properties
+properties = file_client.get_file_properties()
+print(f&quot;Size: {properties.size}&quot;)
+print(f&quot;Last modified: {properties.last_modified}&quot;)
+
+# Set metadata
+file_client.set_metadata(metadata={&quot;processed&quot;: &quot;true&quot;})
+```
+
+## Access Control (ACL)
+
+```python
+# Get ACL
+acl = directory_client.get_access_control()
+print(f&quot;Owner: {acl[&#x27;owner&#x27;]}&quot;)
+print(f&quot;Permissions: {acl[&#x27;permissions&#x27;]}&quot;)
+
+# Set ACL
+directory_client.set_access_control(
+    owner=&quot;user-id&quot;,
+    permissions=&quot;rwxr-x---&quot;
+)
+
+# Update ACL entries
+from azure.storage.filedatalake import AccessControlChangeResult
+directory_client.update_access_control_recursive(
+    acl=&quot;user:user-id:rwx&quot;
+)
+```
+
+## Async Client
+
+```python
+from azure.storage.filedatalake.aio import DataLakeServiceClient
+from azure.identity.aio import DefaultAzureCredential
+
+async def datalake_operations():
+    async with DefaultAzureCredential() as credential:
+        async with DataLakeServiceClient(
+            account_url=&quot;https://&lt;account&gt;.dfs.core.windows.net&quot;,
+            credential=credential
+        ) as service_client:
+            file_system_client = service_client.get_file_system_client(&quot;myfilesystem&quot;)
+            file_client = file_system_client.get_file_client(&quot;test.txt&quot;)
+            
+            await file_client.upload_data(b&quot;async content&quot;, overwrite=True)
+            
+            download = await file_client.download_file()
+            content = await download.readall()
+
+import asyncio
+asyncio.run(datalake_operations())
+```
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.storage.filedatalake` sync clients with `azure.storage.filedatalake.aio` async clients in the same call path. Choose one mode per module.
+2. **Always use context managers for clients and async credentials.** Wrap every client in `with DataLakeServiceClient(...) as client:` (sync) or `async with DataLakeServiceClient(...) as client:` (async). For async `DefaultAzureCredential` from `azure.identity.aio`, also use `async with credential:` so tokens and transports are cleaned up.
+3. **Use `DefaultAzureCredential`** for portable auth across local dev and Azure (avoid connection strings / API keys when possible).
+4. **Use hierarchical namespace** for file system semantics
+5. **Use `append_data` + `flush_data`** for large file uploads
+6. **Set ACLs at directory level** and inherit to children
+7. **Use async client** for high-throughput scenarios
+8. **Use `get_paths` with `recursive=True`** for full directory listing
+9. **Set metadata** for custom file attributes
+10. **Consider Blob API** for simple object storage use cases
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | Additional non-hero capabilities, operation-group coverage, and production checklists. |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | Dedicated non-hero examples for secondary/advanced scenarios. |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

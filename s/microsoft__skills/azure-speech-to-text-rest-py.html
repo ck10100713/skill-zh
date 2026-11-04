@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-speech-to-text-rest-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 REST API 和 Python 把 60 秒內的短音訊轉成文字">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-speech-to-text-rest-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-speech-to-text-rest-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 REST API 和 Python 把 60 秒內的短音訊轉成文字</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-speech-to-text-rest-py
+description: |-
+  用於短音訊的 Azure Speech to Text REST API（Python）。不用 Speech SDK，就能對 60 秒以內的音訊檔做簡單的語音辨識。
+  Triggers: &quot;speech to text REST&quot;, &quot;short audio transcription&quot;, &quot;speech recognition REST API&quot;, &quot;STT REST&quot;, &quot;recognize speech REST&quot;.
+  DO NOT USE FOR: 長音訊（超過 60 秒）、即時串流、批次轉錄、自訂語音模型、語音翻譯。這些情況請改用 Speech SDK 或 Batch Transcription API。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+---
+
+# 用於短音訊的 Azure Speech to Text REST API
+
+簡單的 REST API，用來把短音訊檔（60 秒以內）轉成文字。不需要 SDK，只要發 HTTP request。
+
+## 前置需求
+
+1. **Azure subscription** - [免費建立一個](https://azure.microsoft.com/free/)
+2. **Speech 資源** - 在 [Azure Portal](https://portal.azure.com/#create/Microsoft.CognitiveServicesSpeechServices) 建立
+3. **取得憑證** - 部署完成後，到資源 &gt; Keys and Endpoint
+
+## 環境變數
+
+```bash
+# 必填
+AZURE_SPEECH_KEY=&lt;your-speech-resource-key&gt;
+AZURE_SPEECH_REGION=&lt;region&gt;  # 例如 eastus、westus2、westeurope
+
+# 替代做法：直接用 endpoint
+AZURE_SPEECH_ENDPOINT=https://&lt;region&gt;.stt.speech.microsoft.com
+```
+
+## 安裝
+
+```bash
+pip install requests
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每個程式碼範例都適用兩條規則：**
+&gt;
+&gt; 1. **支援兩種驗證模式。** 想快速存取就用 subscription key（`Ocp-Apim-Subscription-Key` header），或是透過 `Authorization` request header 帶 Microsoft Entra token（包含用 `DefaultAzureCredential` 取得的 token），見下面的「Option 2」。絕對不要把憑證寫死在原始碼裡。
+&gt; 2. **檔案和 HTTP 資源都用 context manager**，這樣檔案 handle 和網路連線才會確實釋放：
+&gt;    - 同步：`with open(...) as f:`，要重複使用連線時再加 `with requests.Session() as session:`
+&gt;    - 非同步：`async with aiohttp.ClientSession() as session:`
+&gt;
+&gt; 範例片段可能會簡化這段設定，但 production 的程式碼一定要兩條規則都遵守。
+
+## 快速開始
+
+```python
+import os
+import requests
+
+def transcribe_audio(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Transcribe short audio file (max 60 seconds) using REST API.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;
+    }
+    
+    params = {
+        &quot;language&quot;: language,
+        &quot;format&quot;: &quot;detailed&quot;  # 或 &quot;simple&quot;
+    }
+    
+    with open(audio_file_path, &quot;rb&quot;) as audio_file:
+        response = requests.post(url, headers=headers, params=params, data=audio_file)
+    
+    response.raise_for_status()
+    return response.json()
+
+# 用法
+result = transcribe_audio(&quot;audio.wav&quot;, &quot;en-US&quot;)
+print(result[&quot;DisplayText&quot;])
+```
+
+## 音訊需求
+
+| 格式 | Codec | 取樣率 | 備註 |
+|--------|-------|-------------|-------|
+| WAV | PCM | 16 kHz、單聲道 | **建議使用** |
+| OGG | OPUS | 16 kHz、單聲道 | 檔案比較小 |
+
+**限制：**
+- 音訊最長 60 秒
+- 發音評估：最長 30 秒
+- 沒有部分／中間結果（只有最終結果）
+
+## Content-Type Header
+
+```python
+# WAV PCM 16kHz
+wav_headers = {
+    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;
+}
+
+# OGG OPUS
+ogg_headers = {
+    &quot;Content-Type&quot;: &quot;audio/ogg; codecs=opus&quot;
+}
+```
+
+## 回應格式
+
+### Simple 格式（預設）
+
+```python
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;format&quot;: &quot;simple&quot;}
+```
+
+```json
+{
+  &quot;RecognitionStatus&quot;: &quot;Success&quot;,
+  &quot;DisplayText&quot;: &quot;Remind me to buy 5 pencils.&quot;,
+  &quot;Offset&quot;: &quot;1236645672289&quot;,
+  &quot;Duration&quot;: &quot;1236645672289&quot;
+}
+```
+
+### Detailed 格式
+
+```python
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;format&quot;: &quot;detailed&quot;}
+```
+
+```json
+{
+  &quot;RecognitionStatus&quot;: &quot;Success&quot;,
+  &quot;Offset&quot;: &quot;1236645672289&quot;,
+  &quot;Duration&quot;: &quot;1236645672289&quot;,
+  &quot;NBest&quot;: [
+    {
+      &quot;Confidence&quot;: 0.9052885,
+      &quot;Display&quot;: &quot;What&#x27;s the weather like?&quot;,
+      &quot;ITN&quot;: &quot;what&#x27;s the weather like&quot;,
+      &quot;Lexical&quot;: &quot;what&#x27;s the weather like&quot;,
+      &quot;MaskedITN&quot;: &quot;what&#x27;s the weather like&quot;
+    }
+  ]
+}
+```
+
+## Chunked Transfer（建議使用）
+
+想要更低的延遲，就把音訊分 chunk 串流：
+
+```python
+import os
+import requests
+
+def transcribe_chunked(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Stream audio in chunks for lower latency.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;,
+        &quot;Transfer-Encoding&quot;: &quot;chunked&quot;,
+        &quot;Expect&quot;: &quot;100-continue&quot;
+    }
+    
+    params = {&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;}
+    
+    def generate_chunks(file_path: str, chunk_size: int = 1024):
+        with open(file_path, &quot;rb&quot;) as f:
+            while chunk := f.read(chunk_size):
+                yield chunk
+    
+    response = requests.post(
+        url, 
+        headers=headers, 
+        params=params, 
+        data=generate_chunks(audio_file_path)
+    )
+    
+    response.raise_for_status()
+    return response.json()
+```
+
+## 驗證選項
+
+### Option 1：Subscription Key（簡單）
+
+```python
+headers = {
+    &quot;Ocp-Apim-Subscription-Key&quot;: os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+}
+```
+
+### Option 2：Bearer Token
+
+```python
+import requests
+import os
+
+def get_access_token() -&gt; str:
+    &quot;&quot;&quot;Get access token from the token endpoint.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    token_url = f&quot;https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken&quot;
+    
+    response = requests.post(
+        token_url,
+        headers={
+            &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+            &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;,
+            &quot;Content-Length&quot;: &quot;0&quot;
+        }
+    )
+    response.raise_for_status()
+    return response.text
+
+# 在 request 裡使用 token（有效期 10 分鐘）
+token = get_access_token()
+headers = {
+    &quot;Authorization&quot;: f&quot;Bearer {token}&quot;,
+    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+    &quot;Accept&quot;: &quot;application/json&quot;
+}
+```
+
+## Query 參數
+
+| 參數 | 必填 | 值 | 說明 |
+|-----------|----------|--------|-------------|
+| `language` | **是** | `en-US`、`de-DE` 等 | 語音的語言 |
+| `format` | 否 | `simple`、`detailed` | 結果格式（預設：simple） |
+| `profanity` | 否 | `masked`、`removed`、`raw` | 髒話處理方式（預設：masked） |
+
+## Recognition Status 值
+
+| 狀態 | 說明 |
+|--------|-------------|
+| `Success` | 辨識成功 |
+| `NoMatch` | 偵測到語音，但沒有符合的字詞 |
+| `InitialSilenceTimeout` | 只偵測到靜音 |
+| `BabbleTimeout` | 只偵測到雜訊 |
+| `Error` | 服務內部錯誤 |
+
+## 髒話處理
+
+```python
+# 用星號遮蔽髒話（預設）
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;masked&quot;}
+
+# 完全移除髒話
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;removed&quot;}
+
+# 原樣保留髒話
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;raw&quot;}
+```
+
+## 錯誤處理
+
+```python
+import requests
+
+def transcribe_with_error_handling(audio_path: str, language: str = &quot;en-US&quot;) -&gt; dict | None:
+    &quot;&quot;&quot;Transcribe with proper error handling.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    try:
+        with open(audio_path, &quot;rb&quot;) as audio_file:
+            response = requests.post(
+                url,
+                headers={
+                    &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+                    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+                    &quot;Accept&quot;: &quot;application/json&quot;
+                },
+                params={&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;},
+                data=audio_file
+            )
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get(&quot;RecognitionStatus&quot;) == &quot;Success&quot;:
+                return result
+            else:
+                print(f&quot;Recognition failed: {result.get(&#x27;RecognitionStatus&#x27;)}&quot;)
+                return None
+        elif response.status_code == 400:
+            print(f&quot;Bad request: Check language code or audio format&quot;)
+        elif response.status_code == 401:
+            print(f&quot;Unauthorized: Check API key or token&quot;)
+        elif response.status_code == 403:
+            print(f&quot;Forbidden: Missing authorization header&quot;)
+        else:
+            print(f&quot;Error {response.status_code}: {response.text}&quot;)
+        
+        return None
+        
+    except requests.exceptions.RequestException as e:
+        print(f&quot;Request failed: {e}&quot;)
+        return None
+```
+
+## 非同步版本
+
+```python
+import os
+import aiohttp
+import asyncio
+
+async def transcribe_async(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Async version using aiohttp.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;
+    }
+    
+    params = {&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;}
+    
+    async with aiohttp.ClientSession() as session:
+        with open(audio_file_path, &quot;rb&quot;) as f:
+            audio_data = f.read()
+        
+        async with session.post(url, headers=headers, params=params, data=audio_data) as response:
+            response.raise_for_status()
+            return await response.json()
+
+# 用法
+result = asyncio.run(transcribe_async(&quot;audio.wav&quot;, &quot;en-US&quot;))
+print(result[&quot;DisplayText&quot;])
+```
+
+## 支援的語言
+
+常用的語言代碼（[完整清單](https://learn.microsoft.com/azure/ai-services/speech-service/language-support)）：
+
+| 代碼 | 語言 |
+|------|----------|
+| `en-US` | 英文（美國） |
+| `en-GB` | 英文（英國） |
+| `de-DE` | 德文 |
+| `fr-FR` | 法文 |
+| `es-ES` | 西班牙文（西班牙） |
+| `es-MX` | 西班牙文（墨西哥） |
+| `zh-CN` | 中文（普通話） |
+| `ja-JP` | 日文 |
+| `ko-KR` | 韓文 |
+| `pt-BR` | 葡萄牙文（巴西） |
+
+## 最佳實務
+
+1. **同步或非同步選一個，然後保持一致。** 同一條呼叫路徑裡，不要混用 `azure.xxx` 同步 client 和 `azure.xxx.aio` 非同步 client。每個 module 只選一種模式。
+2. **檔案和 HTTP 資源都用 context manager。** 同步程式碼用 `with open(...) as f:`，要重複使用連線時再加 `with requests.Session() as session:`；非同步程式碼用 `async with aiohttp.ClientSession() as session:`。
+3. **用 WAV PCM 16kHz 單聲道**，相容性最好
+4. **啟用 chunked transfer**，延遲比較低
+5. **快取 access token** 9 分鐘（有效期是 10 分鐘）
+6. **指定正確的語言**，辨識才會準
+7. 需要信心分數時**用 detailed 格式**
+8. production 程式碼要**處理所有的 RecognitionStatus 值**
+
+## 什麼時候不要用這個 API
+
+遇到下列需求，請改用 Speech SDK 或 Batch Transcription API：
+
+- 音訊超過 60 秒
+- 即時串流轉錄
+- 部分／中間結果
+- 語音翻譯
+- 自訂語音模型
+- 批次轉錄大量檔案
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/pronunciation-assessment.md](references/pronunciation-assessment.md) | 發音評估的參數和評分 |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-speech-to-text-rest-py
+description: |-
+  Azure Speech to Text REST API for short audio (Python). Use for simple speech recognition of audio files up to 60 seconds without the Speech SDK.
+  Triggers: &quot;speech to text REST&quot;, &quot;short audio transcription&quot;, &quot;speech recognition REST API&quot;, &quot;STT REST&quot;, &quot;recognize speech REST&quot;.
+  DO NOT USE FOR: Long audio (&gt;60 seconds), real-time streaming, batch transcription, custom speech models, speech translation. Use Speech SDK or Batch Transcription API instead.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+---
+
+# Azure Speech to Text REST API for Short Audio
+
+Simple REST API for speech-to-text transcription of short audio files (up to 60 seconds). No SDK required - just HTTP requests.
+
+## Prerequisites
+
+1. **Azure subscription** - [Create one free](https://azure.microsoft.com/free/)
+2. **Speech resource** - Create in [Azure Portal](https://portal.azure.com/#create/Microsoft.CognitiveServicesSpeechServices)
+3. **Get credentials** - After deployment, go to resource &gt; Keys and Endpoint
+
+## Environment Variables
+
+```bash
+# Required
+AZURE_SPEECH_KEY=&lt;your-speech-resource-key&gt;
+AZURE_SPEECH_REGION=&lt;region&gt;  # e.g., eastus, westus2, westeurope
+
+# Alternative: Use endpoint directly
+AZURE_SPEECH_ENDPOINT=https://&lt;region&gt;.stt.speech.microsoft.com
+```
+
+## Installation
+
+```bash
+pip install requests
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Two auth modes are supported.** Use a subscription key (`Ocp-Apim-Subscription-Key` header) for quick access, or a Microsoft Entra token (including one acquired with `DefaultAzureCredential`) via the `Authorization` request header (see &quot;Option 2&quot; below). Never hardcode credentials in source.
+&gt; 2. **Use context managers for files and HTTP resources** so file handles and network connections are released deterministically:
+&gt;    - Sync: `with open(...) as f:` and (when reusing connections) `with requests.Session() as session:`
+&gt;    - Async: `async with aiohttp.ClientSession() as session:`
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+## Quick Start
+
+```python
+import os
+import requests
+
+def transcribe_audio(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Transcribe short audio file (max 60 seconds) using REST API.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;
+    }
+    
+    params = {
+        &quot;language&quot;: language,
+        &quot;format&quot;: &quot;detailed&quot;  # or &quot;simple&quot;
+    }
+    
+    with open(audio_file_path, &quot;rb&quot;) as audio_file:
+        response = requests.post(url, headers=headers, params=params, data=audio_file)
+    
+    response.raise_for_status()
+    return response.json()
+
+# Usage
+result = transcribe_audio(&quot;audio.wav&quot;, &quot;en-US&quot;)
+print(result[&quot;DisplayText&quot;])
+```
+
+## Audio Requirements
+
+| Format | Codec | Sample Rate | Notes |
+|--------|-------|-------------|-------|
+| WAV | PCM | 16 kHz, mono | **Recommended** |
+| OGG | OPUS | 16 kHz, mono | Smaller file size |
+
+**Limitations:**
+- Maximum 60 seconds of audio
+- For pronunciation assessment: maximum 30 seconds
+- No partial/interim results (final only)
+
+## Content-Type Headers
+
+```python
+# WAV PCM 16kHz
+wav_headers = {
+    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;
+}
+
+# OGG OPUS
+ogg_headers = {
+    &quot;Content-Type&quot;: &quot;audio/ogg; codecs=opus&quot;
+}
+```
+
+## Response Formats
+
+### Simple Format (default)
+
+```python
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;format&quot;: &quot;simple&quot;}
+```
+
+```json
+{
+  &quot;RecognitionStatus&quot;: &quot;Success&quot;,
+  &quot;DisplayText&quot;: &quot;Remind me to buy 5 pencils.&quot;,
+  &quot;Offset&quot;: &quot;1236645672289&quot;,
+  &quot;Duration&quot;: &quot;1236645672289&quot;
+}
+```
+
+### Detailed Format
+
+```python
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;format&quot;: &quot;detailed&quot;}
+```
+
+```json
+{
+  &quot;RecognitionStatus&quot;: &quot;Success&quot;,
+  &quot;Offset&quot;: &quot;1236645672289&quot;,
+  &quot;Duration&quot;: &quot;1236645672289&quot;,
+  &quot;NBest&quot;: [
+    {
+      &quot;Confidence&quot;: 0.9052885,
+      &quot;Display&quot;: &quot;What&#x27;s the weather like?&quot;,
+      &quot;ITN&quot;: &quot;what&#x27;s the weather like&quot;,
+      &quot;Lexical&quot;: &quot;what&#x27;s the weather like&quot;,
+      &quot;MaskedITN&quot;: &quot;what&#x27;s the weather like&quot;
+    }
+  ]
+}
+```
+
+## Chunked Transfer (Recommended)
+
+For lower latency, stream audio in chunks:
+
+```python
+import os
+import requests
+
+def transcribe_chunked(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Stream audio in chunks for lower latency.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;,
+        &quot;Transfer-Encoding&quot;: &quot;chunked&quot;,
+        &quot;Expect&quot;: &quot;100-continue&quot;
+    }
+    
+    params = {&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;}
+    
+    def generate_chunks(file_path: str, chunk_size: int = 1024):
+        with open(file_path, &quot;rb&quot;) as f:
+            while chunk := f.read(chunk_size):
+                yield chunk
+    
+    response = requests.post(
+        url, 
+        headers=headers, 
+        params=params, 
+        data=generate_chunks(audio_file_path)
+    )
+    
+    response.raise_for_status()
+    return response.json()
+```
+
+## Authentication Options
+
+### Option 1: Subscription Key (Simple)
+
+```python
+headers = {
+    &quot;Ocp-Apim-Subscription-Key&quot;: os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+}
+```
+
+### Option 2: Bearer Token
+
+```python
+import requests
+import os
+
+def get_access_token() -&gt; str:
+    &quot;&quot;&quot;Get access token from the token endpoint.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    token_url = f&quot;https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken&quot;
+    
+    response = requests.post(
+        token_url,
+        headers={
+            &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+            &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;,
+            &quot;Content-Length&quot;: &quot;0&quot;
+        }
+    )
+    response.raise_for_status()
+    return response.text
+
+# Use token in requests (valid for 10 minutes)
+token = get_access_token()
+headers = {
+    &quot;Authorization&quot;: f&quot;Bearer {token}&quot;,
+    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+    &quot;Accept&quot;: &quot;application/json&quot;
+}
+```
+
+## Query Parameters
+
+| Parameter | Required | Values | Description |
+|-----------|----------|--------|-------------|
+| `language` | **Yes** | `en-US`, `de-DE`, etc. | Language of speech |
+| `format` | No | `simple`, `detailed` | Result format (default: simple) |
+| `profanity` | No | `masked`, `removed`, `raw` | Profanity handling (default: masked) |
+
+## Recognition Status Values
+
+| Status | Description |
+|--------|-------------|
+| `Success` | Recognition succeeded |
+| `NoMatch` | Speech detected but no words matched |
+| `InitialSilenceTimeout` | Only silence detected |
+| `BabbleTimeout` | Only noise detected |
+| `Error` | Internal service error |
+
+## Profanity Handling
+
+```python
+# Mask profanity with asterisks (default)
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;masked&quot;}
+
+# Remove profanity entirely
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;removed&quot;}
+
+# Include profanity as-is
+params = {&quot;language&quot;: &quot;en-US&quot;, &quot;profanity&quot;: &quot;raw&quot;}
+```
+
+## Error Handling
+
+```python
+import requests
+
+def transcribe_with_error_handling(audio_path: str, language: str = &quot;en-US&quot;) -&gt; dict | None:
+    &quot;&quot;&quot;Transcribe with proper error handling.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    try:
+        with open(audio_path, &quot;rb&quot;) as audio_file:
+            response = requests.post(
+                url,
+                headers={
+                    &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+                    &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+                    &quot;Accept&quot;: &quot;application/json&quot;
+                },
+                params={&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;},
+                data=audio_file
+            )
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get(&quot;RecognitionStatus&quot;) == &quot;Success&quot;:
+                return result
+            else:
+                print(f&quot;Recognition failed: {result.get(&#x27;RecognitionStatus&#x27;)}&quot;)
+                return None
+        elif response.status_code == 400:
+            print(f&quot;Bad request: Check language code or audio format&quot;)
+        elif response.status_code == 401:
+            print(f&quot;Unauthorized: Check API key or token&quot;)
+        elif response.status_code == 403:
+            print(f&quot;Forbidden: Missing authorization header&quot;)
+        else:
+            print(f&quot;Error {response.status_code}: {response.text}&quot;)
+        
+        return None
+        
+    except requests.exceptions.RequestException as e:
+        print(f&quot;Request failed: {e}&quot;)
+        return None
+```
+
+## Async Version
+
+```python
+import os
+import aiohttp
+import asyncio
+
+async def transcribe_async(audio_file_path: str, language: str = &quot;en-US&quot;) -&gt; dict:
+    &quot;&quot;&quot;Async version using aiohttp.&quot;&quot;&quot;
+    region = os.environ[&quot;AZURE_SPEECH_REGION&quot;]
+    api_key = os.environ[&quot;AZURE_SPEECH_KEY&quot;]
+    
+    url = f&quot;https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1&quot;
+    
+    headers = {
+        &quot;Ocp-Apim-Subscription-Key&quot;: api_key,
+        &quot;Content-Type&quot;: &quot;audio/wav; codecs=audio/pcm; samplerate=16000&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;
+    }
+    
+    params = {&quot;language&quot;: language, &quot;format&quot;: &quot;detailed&quot;}
+    
+    async with aiohttp.ClientSession() as session:
+        with open(audio_file_path, &quot;rb&quot;) as f:
+            audio_data = f.read()
+        
+        async with session.post(url, headers=headers, params=params, data=audio_data) as response:
+            response.raise_for_status()
+            return await response.json()
+
+# Usage
+result = asyncio.run(transcribe_async(&quot;audio.wav&quot;, &quot;en-US&quot;))
+print(result[&quot;DisplayText&quot;])
+```
+
+## Supported Languages
+
+Common language codes (see [full list](https://learn.microsoft.com/azure/ai-services/speech-service/language-support)):
+
+| Code | Language |
+|------|----------|
+| `en-US` | English (US) |
+| `en-GB` | English (UK) |
+| `de-DE` | German |
+| `fr-FR` | French |
+| `es-ES` | Spanish (Spain) |
+| `es-MX` | Spanish (Mexico) |
+| `zh-CN` | Chinese (Mandarin) |
+| `ja-JP` | Japanese |
+| `ko-KR` | Korean |
+| `pt-BR` | Portuguese (Brazil) |
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.xxx` sync clients with `azure.xxx.aio` async clients in the same call path. Choose one mode per module.
+2. **Use context managers for files and HTTP resources.** Use `with open(...) as f:` and (when reusing connections) `with requests.Session() as session:` for sync code, or `async with aiohttp.ClientSession() as session:` for async code.
+3. **Use WAV PCM 16kHz mono** for best compatibility
+4. **Enable chunked transfer** for lower latency
+5. **Cache access tokens** for 9 minutes (valid for 10)
+6. **Specify the correct language** for accurate recognition
+7. **Use detailed format** when you need confidence scores
+8. **Handle all RecognitionStatus values** in production code
+
+## When NOT to Use This API
+
+Use the Speech SDK or Batch Transcription API instead when you need:
+
+- Audio longer than 60 seconds
+- Real-time streaming transcription
+- Partial/interim results
+- Speech translation
+- Custom speech models
+- Batch transcription of many files
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/pronunciation-assessment.md](references/pronunciation-assessment.md) | Pronunciation assessment parameters and scoring |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

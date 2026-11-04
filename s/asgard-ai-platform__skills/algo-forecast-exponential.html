@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>algo-forecast-exponential｜Skill 寫法圖鑑</title>
+<meta name="description" content="用指數平滑與 Holt-Winters 做簡單穩健的預測">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>algo-forecast-exponential</h1>
+<p class="meta">asgard-ai-platform ｜ 資料與分析 ｜ <a href="https://github.com/asgard-ai-platform/skills/blob/main/algo-forecast-exponential/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用指數平滑與 Holt-Winters 做簡單穩健的預測</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: &quot;algo-forecast-exponential&quot;
+description: &quot;用指數平滑法（加權移動平均）做時間序列預測。當使用者需要簡單穩健的預測、為季節性資料實作 Holt-Winters，或想在不用複雜模型下建立輕量預測時使用，即使他們說的是『simple forecast』『moving average prediction』或『smoothing method』。&quot;
+metadata:
+  category: &quot;WP-47 時間序列預測&quot;
+  tags: [&quot;forecasting&quot;, &quot;exponential-smoothing&quot;, &quot;holt-winters&quot;, &quot;time-series&quot;]
+---
+
+# 指數平滑
+
+## 概述
+
+指數平滑對過去的觀測值給予呈指數遞減的權重。三種變體：Simple（SES，只有水準）、Holt（水準 + 趨勢）、Holt-Winters（水準 + 趨勢 + 季節性）。ETS 框架（Error-Trend-Seasonality）提供一個統一的統計模型。快、可解釋，在短期預測上能和複雜模型一較高下。
+
+## 何時使用
+
+**觸發條件：**
+- 要快速預測、設定越少越好
+- 短期預測（往前 1-2 個季節週期）
+- 資料有明確的水準、趨勢和（或）季節性成分
+
+**不該使用的情況：**
+- 長期預測（不確定性累積太快）
+- 外部回歸變數很重要時（用迴歸或 ML 模型）
+
+## 演算法
+
+```
+IRON LAW: Smoothing Parameters Control the Bias-Variance Trade-Off
+α (level), β (trend), γ (seasonality) range [0,1].
+- α near 1: react quickly to changes, noisy forecasts (high variance)
+- α near 0: smooth forecasts, slow to adapt (high bias)
+Optimize via minimizing MSE on training data (or use information criteria).
+Never hand-pick smoothing parameters without validation.
+```
+
+### 階段 1：輸入驗證
+辨識成分：只有水準（SES）、水準+趨勢（Holt）、水準+趨勢+季節性（Holt-Winters）。判斷：趨勢 / 季節性是加法還是乘法。
+**關卡：** 已辨識成分結構，且知道季節週期。
+
+### 階段 2：核心演算法
+**Holt-Winters（加法）：**
+1. 初始化：level₀ = mean(第一季)，trend₀ = (mean(第 2 季) - mean(第 1 季))/s，seasonal₀ 取自第一季的偏差
+2. 每個 t 的更新公式：
+   - Level: ℓₜ = α(yₜ - sₜ₋ₛ) + (1-α)(ℓₜ₋₁ + bₜ₋₁)
+   - Trend: bₜ = β(ℓₜ - ℓₜ₋₁) + (1-β)bₜ₋₁
+   - Seasonal: sₜ = γ(yₜ - ℓₜ) + (1-γ)sₜ₋ₛ
+3. 預測：ŷₜ₊ₕ = ℓₜ + h×bₜ + sₜ₊ₕ₋ₛ
+
+### 階段 3：驗證
+檢查：樣本內 RMSE、殘差模式。和 naive 基準（最後一個值、季節性 naive）比較。
+**關卡：** 贏過 naive 基準，殘差沒有系統性模式。
+
+### 階段 4：輸出
+回傳預測值，附上平滑後的各成分。
+
+## 輸出格式
+
+```json
+{
+  &quot;forecasts&quot;: [{&quot;period&quot;: &quot;2025-04&quot;, &quot;forecast&quot;: 1150, &quot;level&quot;: 1100, &quot;trend&quot;: 20, &quot;seasonal&quot;: 30}],
+  &quot;parameters&quot;: {&quot;alpha&quot;: 0.3, &quot;beta&quot;: 0.1, &quot;gamma&quot;: 0.15},
+  &quot;metadata&quot;: {&quot;method&quot;: &quot;holt_winters_additive&quot;, &quot;seasonal_period&quot;: 12, &quot;rmse&quot;: 45}
+}
+```
+
+## 範例
+
+### 輸入輸出範例
+**輸入：** 36 個月的月銷售額，明顯上升趨勢，12 月有高峰
+**預期：** Holt-Winters 加法。預測延續趨勢，並重複 12 月的季節性。
+
+### 邊界情況
+| 輸入 | 預期 | 原因 |
+|-------|----------|-----|
+| 沒有趨勢、沒有季節性 | SES（只有 α） | 最簡單的變體就夠了 |
+| 季節振幅越來越大 | 用乘法 | 加法會低估高峰 |
+| 序列非常短（&lt;2 個季節） | 只能用 SES 或 Holt | 無法估計季節性 |
+
+## 注意事項
+
+- **加法 vs 乘法**：如果季節波動隨水準等比例放大，就用乘法。選錯會讓預測很差，尤其在極端值。
+- **初始化的敏感度**：第一季的值設定了基準。早期資料雜訊大、初始化不好，會一路影響整個預測。
+- **阻尼趨勢**：長期預測時，線性趨勢外推不切實際。用阻尼趨勢（φ 參數）讓趨勢隨時間變平。
+- **多重季節性**：標準 Holt-Winters 只處理一個季節週期。如果日資料同時有週和年的模式，用 TBATS 或 STL+ETS。
+- **對離群值敏感**：一個離群值就可能讓水準估計大幅位移（尤其 α 高的時候）。要先偵測並處理離群值。
+
+## 參考資料
+
+- ETS 框架與模型選擇，見 `references/ets-framework.md`
+- 阻尼趨勢的變體，見 `references/damped-trend.md`</pre></section><section><h2>英文原文</h2><pre>---
+name: &quot;algo-forecast-exponential&quot;
+description: &quot;Apply exponential smoothing methods for time series forecasting with weighted moving averages. Use this skill when the user needs simple, robust forecasts, implement Holt-Winters for seasonal data, or build lightweight forecasting without complex models — even if they say &#x27;simple forecast&#x27;, &#x27;moving average prediction&#x27;, or &#x27;smoothing method&#x27;.&quot;
+metadata:
+  category: &quot;WP-47 時間序列預測&quot;
+  tags: [&quot;forecasting&quot;, &quot;exponential-smoothing&quot;, &quot;holt-winters&quot;, &quot;time-series&quot;]
+---
+
+# Exponential Smoothing
+
+## Overview
+
+Exponential smoothing assigns exponentially decreasing weights to past observations. Three variants: Simple (SES, level only), Holt (level + trend), Holt-Winters (level + trend + seasonality). ETS framework (Error-Trend-Seasonality) provides a unified statistical model. Fast, interpretable, and competitive with complex models for short horizons.
+
+## When to Use
+
+**Trigger conditions:**
+- Quick forecasting with minimal configuration
+- Short-horizon forecasts (1-2 seasonal cycles ahead)
+- Data with clear level, trend, and/or seasonal components
+
+**When NOT to use:**
+- For long-range forecasts (uncertainty accumulates too fast)
+- When external regressors are important (use regression or ML models)
+
+## Algorithm
+
+```
+IRON LAW: Smoothing Parameters Control the Bias-Variance Trade-Off
+α (level), β (trend), γ (seasonality) range [0,1].
+- α near 1: react quickly to changes, noisy forecasts (high variance)
+- α near 0: smooth forecasts, slow to adapt (high bias)
+Optimize via minimizing MSE on training data (or use information criteria).
+Never hand-pick smoothing parameters without validation.
+```
+
+### Phase 1: Input Validation
+Identify components: level only (SES), level+trend (Holt), level+trend+seasonality (Holt-Winters). Determine: additive vs multiplicative trend/seasonality.
+**Gate:** Component structure identified, seasonal period known.
+
+### Phase 2: Core Algorithm
+**Holt-Winters (additive):**
+1. Initialize: level₀ = mean(first season), trend₀ = (mean(season 2) - mean(season 1))/s, seasonal₀ from first season deviations
+2. Update equations at each t:
+   - Level: ℓₜ = α(yₜ - sₜ₋ₛ) + (1-α)(ℓₜ₋₁ + bₜ₋₁)
+   - Trend: bₜ = β(ℓₜ - ℓₜ₋₁) + (1-β)bₜ₋₁
+   - Seasonal: sₜ = γ(yₜ - ℓₜ) + (1-γ)sₜ₋ₛ
+3. Forecast: ŷₜ₊ₕ = ℓₜ + h×bₜ + sₜ₊ₕ₋ₛ
+
+### Phase 3: Verification
+Check: in-sample RMSE, residual patterns. Compare against naive baselines (last value, seasonal naive).
+**Gate:** Beats naive baseline, residuals show no systematic pattern.
+
+### Phase 4: Output
+Return forecasts with smoothed components.
+
+## Output Format
+
+```json
+{
+  &quot;forecasts&quot;: [{&quot;period&quot;: &quot;2025-04&quot;, &quot;forecast&quot;: 1150, &quot;level&quot;: 1100, &quot;trend&quot;: 20, &quot;seasonal&quot;: 30}],
+  &quot;parameters&quot;: {&quot;alpha&quot;: 0.3, &quot;beta&quot;: 0.1, &quot;gamma&quot;: 0.15},
+  &quot;metadata&quot;: {&quot;method&quot;: &quot;holt_winters_additive&quot;, &quot;seasonal_period&quot;: 12, &quot;rmse&quot;: 45}
+}
+```
+
+## Examples
+
+### Sample I/O
+**Input:** 36 months of monthly sales, clear upward trend, December spike
+**Expected:** Holt-Winters additive. Forecast continues trend with repeated December seasonality.
+
+### Edge Cases
+| Input | Expected | Why |
+|-------|----------|-----|
+| No trend, no seasonality | SES (α only) | Simplest variant suffices |
+| Seasonal amplitude grows | Use multiplicative | Additive would underestimate peaks |
+| Very short series (&lt;2 seasons) | SES or Holt only | Can&#x27;t estimate seasonality |
+
+## Gotchas
+
+- **Additive vs multiplicative**: If seasonal swings grow proportionally with level, use multiplicative. Wrong choice produces poor forecasts, especially at extremes.
+- **Initialization sensitivity**: The first season&#x27;s values set the baseline. Poor initialization from noisy early data propagates through the entire forecast.
+- **Damped trend**: For long horizons, linear trend extrapolation is unrealistic. Use damped trend (φ parameter) to flatten the trend over time.
+- **Multiple seasonalities**: Standard Holt-Winters handles one seasonal period. For daily data with weekly AND yearly patterns, use TBATS or STL+ETS.
+- **Outlier sensitivity**: A single outlier can shift the level estimate significantly (especially with high α). Pre-detect and handle outliers.
+
+## References
+
+- For ETS framework and model selection, see `references/ets-framework.md`
+- For damped trend variants, see `references/damped-trend.md`</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

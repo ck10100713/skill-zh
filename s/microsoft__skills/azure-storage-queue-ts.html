@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-storage-queue-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 TypeScript 對 Azure Queue Storage 傳送、接收、peek 與處理訊息">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-storage-queue-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-storage-queue-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 TypeScript 對 Azure Queue Storage 傳送、接收、peek 與處理訊息</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-storage-queue-ts
+description: |
+  用於訊息 queue 操作的 Azure Queue Storage JavaScript/TypeScript SDK（@azure/storage-queue）。用於在 queue 中傳送、接收、peek 和刪除訊息。支援 visibility timeout、訊息編碼和批次操作。Triggers: &quot;queue storage&quot;, &quot;@azure/storage-queue&quot;, &quot;QueueServiceClient&quot;, &quot;QueueClient&quot;, &quot;send message&quot;, &quot;receive message&quot;, &quot;dequeue&quot;, &quot;visibility timeout&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/storage-queue&#x27;
+---
+
+# @azure/storage-queue (TypeScript/JavaScript)
+
+Azure Queue Storage 操作的 SDK，可在 queue 中傳送、接收、peek 並管理訊息。
+
+## 安裝
+
+```bash
+npm install @azure/storage-queue @azure/identity
+```
+
+**目前版本**：12.x  
+**Node.js**：&gt;= 18.0.0
+
+## 環境變數
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;account-name&gt;
+AZURE_STORAGE_ACCOUNT_KEY=&lt;account-key&gt;
+# 或用 connection string
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+AZURE_TOKEN_CREDENTIALS=prod # 只有在 production 使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證
+
+### Microsoft Entra Token Credential（建議）
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// 本機開發：DefaultAzureCredential。Production：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或在 production 直接用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net`,
+  credential
+);
+```
+
+### Connection String
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+
+const client = QueueServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING!
+);
+```
+
+### StorageSharedKeyCredential（僅限 Node.js）
+
+```typescript
+import { QueueServiceClient, StorageSharedKeyCredential } from &quot;@azure/storage-queue&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net`,
+  sharedKeyCredential
+);
+```
+
+### SAS Token
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const sasToken = process.env.AZURE_STORAGE_SAS_TOKEN!;
+
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net${sasToken}`
+);
+```
+
+## Client 階層
+
+```
+QueueServiceClient (account level)
+└── QueueClient (queue level)
+    └── Messages (send, receive, peek, delete)
+```
+
+## Queue 操作
+
+### 建立 Queue
+
+```typescript
+const queueClient = client.getQueueClient(&quot;my-queue&quot;);
+await queueClient.create();
+
+// 或不存在才建立
+await queueClient.createIfNotExists();
+```
+
+### 列出 Queue
+
+```typescript
+for await (const queue of client.listQueues()) {
+  console.log(queue.name);
+}
+
+// 用 prefix 篩選
+for await (const queue of client.listQueues({ prefix: &quot;task-&quot; })) {
+  console.log(queue.name);
+}
+```
+
+### 刪除 Queue
+
+```typescript
+await queueClient.delete();
+
+// 或存在才刪除
+await queueClient.deleteIfExists();
+```
+
+### 取得 Queue 屬性
+
+```typescript
+const properties = await queueClient.getProperties();
+console.log(&quot;Approximate message count:&quot;, properties.approximateMessagesCount);
+console.log(&quot;Metadata:&quot;, properties.metadata);
+```
+
+### 設定 Queue Metadata
+
+```typescript
+await queueClient.setMetadata({
+  department: &quot;engineering&quot;,
+  priority: &quot;high&quot;,
+});
+```
+
+## 訊息操作
+
+### 傳送訊息
+
+```typescript
+const queueClient = client.getQueueClient(&quot;my-queue&quot;);
+
+// 簡單訊息
+await queueClient.sendMessage(&quot;Hello, World!&quot;);
+
+// 帶選項
+await queueClient.sendMessage(&quot;Delayed message&quot;, {
+  visibilityTimeout: 60, // 隱藏 60 秒
+  messageTimeToLive: 3600, // 1 小時後過期
+});
+
+// JSON 訊息（必須是字串）
+const task = { type: &quot;process&quot;, data: { id: 123 } };
+await queueClient.sendMessage(JSON.stringify(task));
+```
+
+### 接收訊息
+
+```typescript
+// 最多接收 32 則訊息（預設：1）
+const response = await queueClient.receiveMessages({
+  numberOfMessages: 10,
+  visibilityTimeout: 30, // 30 秒內處理完
+});
+
+for (const message of response.receivedMessageItems) {
+  console.log(&quot;Message ID:&quot;, message.messageId);
+  console.log(&quot;Content:&quot;, message.messageText);
+  console.log(&quot;Dequeue Count:&quot;, message.dequeueCount);
+  console.log(&quot;Pop Receipt:&quot;, message.popReceipt);
+  
+  // 處理訊息...
+  
+  // 處理完後刪除
+  await queueClient.deleteMessage(message.messageId, message.popReceipt);
+}
+```
+
+### Peek 訊息
+
+Peek 但不從 queue 移除（沒有 visibility timeout）。
+
+```typescript
+const response = await queueClient.peekMessages({
+  numberOfMessages: 5,
+});
+
+for (const message of response.peekedMessageItems) {
+  console.log(&quot;Message ID:&quot;, message.messageId);
+  console.log(&quot;Content:&quot;, message.messageText);
+  // 注意：沒有 popReceipt，peek 到的訊息不能刪除
+}
+```
+
+### 更新訊息
+
+延長 visibility timeout 或更新內容。
+
+```typescript
+// 接收一則訊息
+const response = await queueClient.receiveMessages();
+const message = response.receivedMessageItems[0];
+
+if (message) {
+  // 更新內容並延長可見時間
+  const updateResponse = await queueClient.updateMessage(
+    message.messageId,
+    message.popReceipt,
+    &quot;Updated content&quot;,
+    60 // 新的 visibility timeout（秒）
+  );
+  
+  // 後續操作要用新的 popReceipt
+  console.log(&quot;New pop receipt:&quot;, updateResponse.popReceipt);
+}
+```
+
+### 刪除訊息
+
+```typescript
+// 接收之後
+const response = await queueClient.receiveMessages();
+const message = response.receivedMessageItems[0];
+
+if (message) {
+  await queueClient.deleteMessage(message.messageId, message.popReceipt);
+}
+```
+
+### 清除所有訊息
+
+```typescript
+await queueClient.clearMessages();
+```
+
+## 訊息處理模式
+
+### 基本 Worker 模式
+
+```typescript
+async function processQueue(queueClient: QueueClient): Promise&lt;void&gt; {
+  while (true) {
+    const response = await queueClient.receiveMessages({
+      numberOfMessages: 10,
+      visibilityTimeout: 30,
+    });
+
+    if (response.receivedMessageItems.length === 0) {
+      // 沒有訊息，等一下再輪詢
+      await sleep(5000);
+      continue;
+    }
+
+    for (const message of response.receivedMessageItems) {
+      try {
+        await processMessage(message.messageText);
+        await queueClient.deleteMessage(message.messageId, message.popReceipt);
+      } catch (error) {
+        console.error(`Failed to process message ${message.messageId}:`, error);
+        // 逾時後訊息會再變成可見
+      }
+    }
+  }
+}
+
+async function processMessage(content: string): Promise&lt;void&gt; {
+  const task = JSON.parse(content);
+  // 處理 task...
+}
+
+function sleep(ms: number): Promise&lt;void&gt; {
+  return new Promise((resolve) =&gt; setTimeout(resolve, ms));
+}
+```
+
+### Poison Message 處理
+
+```typescript
+const MAX_DEQUEUE_COUNT = 5;
+
+async function processWithPoisonHandling(
+  queueClient: QueueClient,
+  poisonQueueClient: QueueClient
+): Promise&lt;void&gt; {
+  const response = await queueClient.receiveMessages({
+    numberOfMessages: 10,
+    visibilityTimeout: 30,
+  });
+
+  for (const message of response.receivedMessageItems) {
+    if (message.dequeueCount &gt; MAX_DEQUEUE_COUNT) {
+      // 移到 poison queue
+      await poisonQueueClient.sendMessage(message.messageText);
+      await queueClient.deleteMessage(message.messageId, message.popReceipt);
+      console.log(`Moved message ${message.messageId} to poison queue`);
+      continue;
+    }
+
+    try {
+      await processMessage(message.messageText);
+      await queueClient.deleteMessage(message.messageId, message.popReceipt);
+    } catch (error) {
+      console.error(`Processing failed (attempt ${message.dequeueCount}):`, error);
+    }
+  }
+}
+```
+
+### 搭配 Visibility 延長的批次處理
+
+```typescript
+async function processBatchWithExtension(queueClient: QueueClient): Promise&lt;void&gt; {
+  const response = await queueClient.receiveMessages({
+    numberOfMessages: 1,
+    visibilityTimeout: 60,
+  });
+
+  const message = response.receivedMessageItems[0];
+  if (!message) return;
+
+  let popReceipt = message.popReceipt;
+
+  // 啟動 visibility 延長計時器
+  const extensionInterval = setInterval(async () =&gt; {
+    try {
+      const updateResponse = await queueClient.updateMessage(
+        message.messageId,
+        popReceipt,
+        message.messageText,
+        60 // 再延長 60 秒
+      );
+      popReceipt = updateResponse.popReceipt;
+    } catch (error) {
+      console.error(&quot;Failed to extend visibility:&quot;, error);
+    }
+  }, 45000); // 每 45 秒延長一次
+
+  try {
+    await longRunningProcess(message.messageText);
+    await queueClient.deleteMessage(message.messageId, popReceipt);
+  } finally {
+    clearInterval(extensionInterval);
+  }
+}
+```
+
+## 訊息編碼
+
+預設情況下，訊息會用 Base64 編碼。你可以自訂：
+
+```typescript
+import { QueueClient } from &quot;@azure/storage-queue&quot;;
+
+// 純文字的自訂 encoder/decoder
+const queueClient = new QueueClient(
+  `https://${accountName}.queue.core.windows.net/my-queue`,
+  credential,
+  {
+    messageEncoding: &quot;text&quot;, // &quot;base64&quot;（預設）或 &quot;text&quot;
+  }
+);
+
+// 或用自訂 encoder
+const customQueueClient = new QueueClient(
+  `https://${accountName}.queue.core.windows.net/my-queue`,
+  credential,
+  {
+    messageEncoding: {
+      encode: (message: string) =&gt; Buffer.from(message).toString(&quot;base64&quot;),
+      decode: (message: string) =&gt; Buffer.from(message, &quot;base64&quot;).toString(),
+    },
+  }
+);
+```
+
+## 產生 SAS Token（僅限 Node.js）
+
+### 產生 Queue SAS
+
+```typescript
+import {
+  QueueSASPermissions,
+  generateQueueSASQueryParameters,
+  StorageSharedKeyCredential,
+} from &quot;@azure/storage-queue&quot;;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+const sasToken = generateQueueSASQueryParameters(
+  {
+    queueName: &quot;my-queue&quot;,
+    permissions: QueueSASPermissions.parse(&quot;raup&quot;), // read, add, update, process
+    startsOn: new Date(),
+    expiresOn: new Date(Date.now() + 3600 * 1000), // 1 小時
+  },
+  sharedKeyCredential
+).toString();
+
+const sasUrl = `https://${accountName}.queue.core.windows.net/my-queue?${sasToken}`;
+```
+
+### 產生 Account SAS
+
+```typescript
+import {
+  AccountSASPermissions,
+  AccountSASResourceTypes,
+  AccountSASServices,
+  generateAccountSASQueryParameters,
+} from &quot;@azure/storage-queue&quot;;
+
+const sasToken = generateAccountSASQueryParameters(
+  {
+    services: AccountSASServices.parse(&quot;q&quot;).toString(), // queue
+    resourceTypes: AccountSASResourceTypes.parse(&quot;sco&quot;).toString(),
+    permissions: AccountSASPermissions.parse(&quot;rwdlacupi&quot;),
+    expiresOn: new Date(Date.now() + 24 * 3600 * 1000),
+  },
+  sharedKeyCredential
+).toString();
+```
+
+## 錯誤處理
+
+```typescript
+import { RestError } from &quot;@azure/storage-queue&quot;;
+
+try {
+  await queueClient.sendMessage(&quot;test&quot;);
+} catch (error) {
+  if (error instanceof RestError) {
+    switch (error.statusCode) {
+      case 404:
+        console.log(&quot;Queue not found&quot;);
+        break;
+      case 400:
+        console.log(&quot;Bad request - message too large or invalid&quot;);
+        break;
+      case 403:
+        console.log(&quot;Access denied&quot;);
+        break;
+      case 409:
+        console.log(&quot;Queue already exists or being deleted&quot;);
+        break;
+      default:
+        console.error(`Storage error ${error.statusCode}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## TypeScript 型別參考
+
+```typescript
+import {
+  // Clients
+  QueueServiceClient,
+  QueueClient,
+
+  // Authentication
+  StorageSharedKeyCredential,
+  AnonymousCredential,
+
+  // SAS
+  QueueSASPermissions,
+  AccountSASPermissions,
+  AccountSASServices,
+  AccountSASResourceTypes,
+  generateQueueSASQueryParameters,
+  generateAccountSASQueryParameters,
+
+  // Messages
+  DequeuedMessageItem,
+  PeekedMessageItem,
+  QueueSendMessageResponse,
+  QueueReceiveMessageResponse,
+  QueueUpdateMessageResponse,
+
+  // Queue
+  QueueItem,
+  QueueGetPropertiesResponse,
+
+  // Errors
+  RestError,
+} from &quot;@azure/storage-queue&quot;;
+```
+
+## 訊息限制
+
+| 限制 | 值 |
+|-------|-------|
+| 訊息大小上限 | 64 KB |
+| Visibility timeout 上限 | 7 天 |
+| Time-to-live 上限 | 7 天（或 -1 代表無限期） |
+| 每次接收的訊息數上限 | 32 |
+| 預設 visibility timeout | 30 秒 |
+
+## 最佳實務
+
+1. **本機開發用 `DefaultAzureCredential`；production 用 `ManagedIdentityCredential` 或 `WorkloadIdentityCredential`**
+2. **處理完一定要刪除** — 避免重複處理
+3. **處理 poison message** — 把失敗的訊息移到 dead-letter queue
+4. **用適當的 visibility timeout** — 依預期的處理時間設定
+5. **長時間任務要延長 visibility** — 更新訊息，避免逾時
+6. **結構化資料用 JSON** — 把物件序列化成 JSON 字串
+7. **檢查 dequeueCount** — 偵測一再失敗的訊息
+8. **用批次接收** — 一次接收多則訊息比較有效率
+
+## 平台差異
+
+| 功能 | Node.js | 瀏覽器 |
+|---------|---------|---------|
+| `StorageSharedKeyCredential` | ✅ | ❌ |
+| SAS 產生 | ✅ | ❌ |
+| DefaultAzureCredential | ✅ | ❌ |
+| Anonymous/SAS 存取 | ✅ | ✅ |
+| 所有訊息操作 | ✅ | ✅ |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-storage-queue-ts
+description: |
+  Azure Queue Storage JavaScript/TypeScript SDK (@azure/storage-queue) for message queue operations. Use for sending, receiving, peeking, and deleting messages in queues. Supports visibility timeout, message encoding, and batch operations. Triggers: &quot;queue storage&quot;, &quot;@azure/storage-queue&quot;, &quot;QueueServiceClient&quot;, &quot;QueueClient&quot;, &quot;send message&quot;, &quot;receive message&quot;, &quot;dequeue&quot;, &quot;visibility timeout&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/storage-queue&#x27;
+---
+
+# @azure/storage-queue (TypeScript/JavaScript)
+
+SDK for Azure Queue Storage operations — send, receive, peek, and manage messages in queues.
+
+## Installation
+
+```bash
+npm install @azure/storage-queue @azure/identity
+```
+
+**Current Version**: 12.x  
+**Node.js**: &gt;= 18.0.0
+
+## Environment Variables
+
+```bash
+AZURE_STORAGE_ACCOUNT_NAME=&lt;account-name&gt;
+AZURE_STORAGE_ACCOUNT_KEY=&lt;account-key&gt;
+# OR connection string
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication
+
+### Microsoft Entra Token Credential (Recommended)
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net`,
+  credential
+);
+```
+
+### Connection String
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+
+const client = QueueServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING!
+);
+```
+
+### StorageSharedKeyCredential (Node.js only)
+
+```typescript
+import { QueueServiceClient, StorageSharedKeyCredential } from &quot;@azure/storage-queue&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net`,
+  sharedKeyCredential
+);
+```
+
+### SAS Token
+
+```typescript
+import { QueueServiceClient } from &quot;@azure/storage-queue&quot;;
+
+const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+const sasToken = process.env.AZURE_STORAGE_SAS_TOKEN!;
+
+const client = new QueueServiceClient(
+  `https://${accountName}.queue.core.windows.net${sasToken}`
+);
+```
+
+## Client Hierarchy
+
+```
+QueueServiceClient (account level)
+└── QueueClient (queue level)
+    └── Messages (send, receive, peek, delete)
+```
+
+## Queue Operations
+
+### Create Queue
+
+```typescript
+const queueClient = client.getQueueClient(&quot;my-queue&quot;);
+await queueClient.create();
+
+// Or create if not exists
+await queueClient.createIfNotExists();
+```
+
+### List Queues
+
+```typescript
+for await (const queue of client.listQueues()) {
+  console.log(queue.name);
+}
+
+// With prefix filter
+for await (const queue of client.listQueues({ prefix: &quot;task-&quot; })) {
+  console.log(queue.name);
+}
+```
+
+### Delete Queue
+
+```typescript
+await queueClient.delete();
+
+// Or delete if exists
+await queueClient.deleteIfExists();
+```
+
+### Get Queue Properties
+
+```typescript
+const properties = await queueClient.getProperties();
+console.log(&quot;Approximate message count:&quot;, properties.approximateMessagesCount);
+console.log(&quot;Metadata:&quot;, properties.metadata);
+```
+
+### Set Queue Metadata
+
+```typescript
+await queueClient.setMetadata({
+  department: &quot;engineering&quot;,
+  priority: &quot;high&quot;,
+});
+```
+
+## Message Operations
+
+### Send Message
+
+```typescript
+const queueClient = client.getQueueClient(&quot;my-queue&quot;);
+
+// Simple message
+await queueClient.sendMessage(&quot;Hello, World!&quot;);
+
+// With options
+await queueClient.sendMessage(&quot;Delayed message&quot;, {
+  visibilityTimeout: 60, // Hidden for 60 seconds
+  messageTimeToLive: 3600, // Expires in 1 hour
+});
+
+// JSON message (must be string)
+const task = { type: &quot;process&quot;, data: { id: 123 } };
+await queueClient.sendMessage(JSON.stringify(task));
+```
+
+### Receive Messages
+
+```typescript
+// Receive up to 32 messages (default: 1)
+const response = await queueClient.receiveMessages({
+  numberOfMessages: 10,
+  visibilityTimeout: 30, // 30 seconds to process
+});
+
+for (const message of response.receivedMessageItems) {
+  console.log(&quot;Message ID:&quot;, message.messageId);
+  console.log(&quot;Content:&quot;, message.messageText);
+  console.log(&quot;Dequeue Count:&quot;, message.dequeueCount);
+  console.log(&quot;Pop Receipt:&quot;, message.popReceipt);
+  
+  // Process the message...
+  
+  // Delete after processing
+  await queueClient.deleteMessage(message.messageId, message.popReceipt);
+}
+```
+
+### Peek Messages
+
+Peek without removing from queue (no visibility timeout).
+
+```typescript
+const response = await queueClient.peekMessages({
+  numberOfMessages: 5,
+});
+
+for (const message of response.peekedMessageItems) {
+  console.log(&quot;Message ID:&quot;, message.messageId);
+  console.log(&quot;Content:&quot;, message.messageText);
+  // Note: No popReceipt - cannot delete peeked messages
+}
+```
+
+### Update Message
+
+Extend visibility timeout or update content.
+
+```typescript
+// Receive a message
+const response = await queueClient.receiveMessages();
+const message = response.receivedMessageItems[0];
+
+if (message) {
+  // Update content and extend visibility
+  const updateResponse = await queueClient.updateMessage(
+    message.messageId,
+    message.popReceipt,
+    &quot;Updated content&quot;,
+    60 // New visibility timeout in seconds
+  );
+  
+  // Use new popReceipt for subsequent operations
+  console.log(&quot;New pop receipt:&quot;, updateResponse.popReceipt);
+}
+```
+
+### Delete Message
+
+```typescript
+// After receiving
+const response = await queueClient.receiveMessages();
+const message = response.receivedMessageItems[0];
+
+if (message) {
+  await queueClient.deleteMessage(message.messageId, message.popReceipt);
+}
+```
+
+### Clear All Messages
+
+```typescript
+await queueClient.clearMessages();
+```
+
+## Message Processing Patterns
+
+### Basic Worker Pattern
+
+```typescript
+async function processQueue(queueClient: QueueClient): Promise&lt;void&gt; {
+  while (true) {
+    const response = await queueClient.receiveMessages({
+      numberOfMessages: 10,
+      visibilityTimeout: 30,
+    });
+
+    if (response.receivedMessageItems.length === 0) {
+      // No messages, wait before polling again
+      await sleep(5000);
+      continue;
+    }
+
+    for (const message of response.receivedMessageItems) {
+      try {
+        await processMessage(message.messageText);
+        await queueClient.deleteMessage(message.messageId, message.popReceipt);
+      } catch (error) {
+        console.error(`Failed to process message ${message.messageId}:`, error);
+        // Message will become visible again after timeout
+      }
+    }
+  }
+}
+
+async function processMessage(content: string): Promise&lt;void&gt; {
+  const task = JSON.parse(content);
+  // Process task...
+}
+
+function sleep(ms: number): Promise&lt;void&gt; {
+  return new Promise((resolve) =&gt; setTimeout(resolve, ms));
+}
+```
+
+### Poison Message Handling
+
+```typescript
+const MAX_DEQUEUE_COUNT = 5;
+
+async function processWithPoisonHandling(
+  queueClient: QueueClient,
+  poisonQueueClient: QueueClient
+): Promise&lt;void&gt; {
+  const response = await queueClient.receiveMessages({
+    numberOfMessages: 10,
+    visibilityTimeout: 30,
+  });
+
+  for (const message of response.receivedMessageItems) {
+    if (message.dequeueCount &gt; MAX_DEQUEUE_COUNT) {
+      // Move to poison queue
+      await poisonQueueClient.sendMessage(message.messageText);
+      await queueClient.deleteMessage(message.messageId, message.popReceipt);
+      console.log(`Moved message ${message.messageId} to poison queue`);
+      continue;
+    }
+
+    try {
+      await processMessage(message.messageText);
+      await queueClient.deleteMessage(message.messageId, message.popReceipt);
+    } catch (error) {
+      console.error(`Processing failed (attempt ${message.dequeueCount}):`, error);
+    }
+  }
+}
+```
+
+### Batch Processing with Visibility Extension
+
+```typescript
+async function processBatchWithExtension(queueClient: QueueClient): Promise&lt;void&gt; {
+  const response = await queueClient.receiveMessages({
+    numberOfMessages: 1,
+    visibilityTimeout: 60,
+  });
+
+  const message = response.receivedMessageItems[0];
+  if (!message) return;
+
+  let popReceipt = message.popReceipt;
+
+  // Start visibility extension timer
+  const extensionInterval = setInterval(async () =&gt; {
+    try {
+      const updateResponse = await queueClient.updateMessage(
+        message.messageId,
+        popReceipt,
+        message.messageText,
+        60 // Extend by another 60 seconds
+      );
+      popReceipt = updateResponse.popReceipt;
+    } catch (error) {
+      console.error(&quot;Failed to extend visibility:&quot;, error);
+    }
+  }, 45000); // Extend every 45 seconds
+
+  try {
+    await longRunningProcess(message.messageText);
+    await queueClient.deleteMessage(message.messageId, popReceipt);
+  } finally {
+    clearInterval(extensionInterval);
+  }
+}
+```
+
+## Message Encoding
+
+By default, messages are Base64 encoded. You can customize this:
+
+```typescript
+import { QueueClient } from &quot;@azure/storage-queue&quot;;
+
+// Custom encoder/decoder for plain text
+const queueClient = new QueueClient(
+  `https://${accountName}.queue.core.windows.net/my-queue`,
+  credential,
+  {
+    messageEncoding: &quot;text&quot;, // &quot;base64&quot; (default) or &quot;text&quot;
+  }
+);
+
+// Or with custom encoder
+const customQueueClient = new QueueClient(
+  `https://${accountName}.queue.core.windows.net/my-queue`,
+  credential,
+  {
+    messageEncoding: {
+      encode: (message: string) =&gt; Buffer.from(message).toString(&quot;base64&quot;),
+      decode: (message: string) =&gt; Buffer.from(message, &quot;base64&quot;).toString(),
+    },
+  }
+);
+```
+
+## SAS Token Generation (Node.js only)
+
+### Generate Queue SAS
+
+```typescript
+import {
+  QueueSASPermissions,
+  generateQueueSASQueryParameters,
+  StorageSharedKeyCredential,
+} from &quot;@azure/storage-queue&quot;;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+
+const sasToken = generateQueueSASQueryParameters(
+  {
+    queueName: &quot;my-queue&quot;,
+    permissions: QueueSASPermissions.parse(&quot;raup&quot;), // read, add, update, process
+    startsOn: new Date(),
+    expiresOn: new Date(Date.now() + 3600 * 1000), // 1 hour
+  },
+  sharedKeyCredential
+).toString();
+
+const sasUrl = `https://${accountName}.queue.core.windows.net/my-queue?${sasToken}`;
+```
+
+### Generate Account SAS
+
+```typescript
+import {
+  AccountSASPermissions,
+  AccountSASResourceTypes,
+  AccountSASServices,
+  generateAccountSASQueryParameters,
+} from &quot;@azure/storage-queue&quot;;
+
+const sasToken = generateAccountSASQueryParameters(
+  {
+    services: AccountSASServices.parse(&quot;q&quot;).toString(), // queue
+    resourceTypes: AccountSASResourceTypes.parse(&quot;sco&quot;).toString(),
+    permissions: AccountSASPermissions.parse(&quot;rwdlacupi&quot;),
+    expiresOn: new Date(Date.now() + 24 * 3600 * 1000),
+  },
+  sharedKeyCredential
+).toString();
+```
+
+## Error Handling
+
+```typescript
+import { RestError } from &quot;@azure/storage-queue&quot;;
+
+try {
+  await queueClient.sendMessage(&quot;test&quot;);
+} catch (error) {
+  if (error instanceof RestError) {
+    switch (error.statusCode) {
+      case 404:
+        console.log(&quot;Queue not found&quot;);
+        break;
+      case 400:
+        console.log(&quot;Bad request - message too large or invalid&quot;);
+        break;
+      case 403:
+        console.log(&quot;Access denied&quot;);
+        break;
+      case 409:
+        console.log(&quot;Queue already exists or being deleted&quot;);
+        break;
+      default:
+        console.error(`Storage error ${error.statusCode}: ${error.message}`);
+    }
+  }
+  throw error;
+}
+```
+
+## TypeScript Types Reference
+
+```typescript
+import {
+  // Clients
+  QueueServiceClient,
+  QueueClient,
+
+  // Authentication
+  StorageSharedKeyCredential,
+  AnonymousCredential,
+
+  // SAS
+  QueueSASPermissions,
+  AccountSASPermissions,
+  AccountSASServices,
+  AccountSASResourceTypes,
+  generateQueueSASQueryParameters,
+  generateAccountSASQueryParameters,
+
+  // Messages
+  DequeuedMessageItem,
+  PeekedMessageItem,
+  QueueSendMessageResponse,
+  QueueReceiveMessageResponse,
+  QueueUpdateMessageResponse,
+
+  // Queue
+  QueueItem,
+  QueueGetPropertiesResponse,
+
+  // Errors
+  RestError,
+} from &quot;@azure/storage-queue&quot;;
+```
+
+## Message Limits
+
+| Limit | Value |
+|-------|-------|
+| Max message size | 64 KB |
+| Max visibility timeout | 7 days |
+| Max time-to-live | 7 days (or -1 for infinite) |
+| Max messages per receive | 32 |
+| Default visibility timeout | 30 seconds |
+
+## Best Practices
+
+1. **Use `DefaultAzureCredential` for local development; use `ManagedIdentityCredential` or `WorkloadIdentityCredential` for production**
+2. **Always delete after processing** — Prevent duplicate processing
+3. **Handle poison messages** — Move failed messages to a dead-letter queue
+4. **Use appropriate visibility timeout** — Set based on expected processing time
+5. **Extend visibility for long tasks** — Update message to prevent timeout
+6. **Use JSON for structured data** — Serialize objects to JSON strings
+7. **Check dequeueCount** — Detect repeatedly failing messages
+8. **Use batch receive** — Receive multiple messages for efficiency
+
+## Platform Differences
+
+| Feature | Node.js | Browser |
+|---------|---------|---------|
+| `StorageSharedKeyCredential` | ✅ | ❌ |
+| SAS generation | ✅ | ❌ |
+| DefaultAzureCredential | ✅ | ❌ |
+| Anonymous/SAS access | ✅ | ✅ |
+| All message operations | ✅ | ✅ |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

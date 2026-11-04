@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-monitor-opentelemetry-exporter-py｜Skill 寫法圖鑑</title>
+<meta name="description" content="Python 版底層 exporter，把 OpenTelemetry 資料送到 Application Insights">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-monitor-opentelemetry-exporter-py</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-python/skills/azure-monitor-opentelemetry-exporter-py/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">Python 版底層 exporter，把 OpenTelemetry 資料送到 Application Insights</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-monitor-opentelemetry-exporter-py
+description: |
+  Python 版 Azure Monitor OpenTelemetry Exporter。用於底層的 OpenTelemetry 匯出到 Application Insights。
+  Triggers: &quot;azure-monitor-opentelemetry-exporter&quot;, &quot;AzureMonitorTraceExporter&quot;, &quot;AzureMonitorMetricExporter&quot;, &quot;AzureMonitorLogExporter&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-monitor-opentelemetry-exporter
+---
+
+# Azure Monitor OpenTelemetry Exporter for Python
+
+底層 exporter，把 OpenTelemetry 的 trace、metric 和 log 送到 Application Insights。
+
+## 安裝
+
+```bash
+pip install azure-monitor-opentelemetry-exporter
+```
+
+## 環境變數
+
+```bash
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=xxx;IngestionEndpoint=https://xxx.in.applicationinsights.azure.com/  # 所有驗證方式都必填
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 驗證與生命週期
+
+&gt; **🔑 下面每一段程式碼都適用兩條規則：**
+&gt;
+&gt; 1. **有支援時，ingestion 驗證優先使用 `DefaultAzureCredential`。** `APPLICATIONINSIGHTS_CONNECTION_STRING` 用來指出目標 Application Insights 資源，`credential=DefaultAzureCredential(...)` 則提供 Microsoft Entra 驗證。
+&gt;    - 本機開發：直接用 `DefaultAzureCredential` 即可。
+&gt;    - 正式環境：設定 `AZURE_TOKEN_CREDENTIALS=prod`（或 `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`），把 credential chain 限制在適合正式環境的 credential。
+&gt; 2. **Provider 不是 context manager。** 程序結束時要明確 flush 並 shut down 遙測 provider，緩衝區的資料才會確定被匯出。
+&gt;
+&gt; 範例程式碼可能會省略這段設定，但正式環境的程式碼一定要同時遵守這兩條規則。
+
+## 何時使用
+
+| 情境 | 使用 |
+|----------|-----|
+| 快速設定、自動 instrumentation | `azure-monitor-opentelemetry`（distro） |
+| 自訂 OpenTelemetry pipeline | `azure-monitor-opentelemetry-exporter`（本套件） |
+| 需要細緻控制遙測資料 | `azure-monitor-opentelemetry-exporter`（本套件） |
+
+## Trace Exporter
+
+```python
+from azure.identity import DefaultAzureCredential
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# 從環境變數讀取 APPLICATIONINSIGHTS_CONNECTION_STRING 來識別資源；
+# DefaultAzureCredential 透過 Microsoft Entra ID 驗證 ingestion。
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# 設定 tracer provider
+trace.set_tracer_provider(TracerProvider())
+trace.get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(exporter)
+)
+
+# 使用 tracer
+tracer = trace.get_tracer(__name__)
+with tracer.start_as_current_span(&quot;my-span&quot;):
+    print(&quot;Hello, World!&quot;)
+```
+
+## Metric Exporter
+
+```python
+from azure.identity import DefaultAzureCredential
+from opentelemetry import metrics
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from azure.monitor.opentelemetry.exporter import AzureMonitorMetricExporter
+
+# 從環境變數讀取 APPLICATIONINSIGHTS_CONNECTION_STRING；透過 DefaultAzureCredential 以 AAD 驗證 ingestion。
+exporter = AzureMonitorMetricExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# 設定 meter provider
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60000)
+metrics.set_meter_provider(MeterProvider(metric_readers=[reader]))
+
+# 使用 meter
+meter = metrics.get_meter(__name__)
+counter = meter.create_counter(&quot;requests_total&quot;)
+counter.add(1, {&quot;route&quot;: &quot;/api/users&quot;})
+```
+
+## Log Exporter
+
+```python
+import logging
+from azure.identity import DefaultAzureCredential
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
+
+# 從環境變數讀取 APPLICATIONINSIGHTS_CONNECTION_STRING；透過 DefaultAzureCredential 以 AAD 驗證 ingestion。
+exporter = AzureMonitorLogExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# 設定 logger provider
+logger_provider = LoggerProvider()
+logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+set_logger_provider(logger_provider)
+
+# 把 handler 加到 Python logging
+handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
+logging.getLogger().addHandler(handler)
+
+# 使用 logging
+logger = logging.getLogger(__name__)
+logger.info(&quot;This will be sent to Application Insights&quot;)
+```
+
+## 從環境變數讀取
+
+Exporter 會自動讀取 `APPLICATIONINSIGHTS_CONNECTION_STRING`：
+
+```python
+from azure.identity import DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# connection string 來自環境變數；透過 DefaultAzureCredential 以 AAD 驗證 ingestion。
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+)
+```
+
+## Azure AD 驗證
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# 或在正式環境直接使用特定的 credential：
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+exporter = AzureMonitorTraceExporter(
+    credential=credential
+)
+```
+
+## 取樣
+
+用 `ApplicationInsightsSampler` 做一致的取樣：
+
+```python
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.sampling import ParentBasedTraceIdRatio
+from azure.monitor.opentelemetry.exporter import ApplicationInsightsSampler
+
+# 取樣 10% 的 trace
+sampler = ApplicationInsightsSampler(sampling_ratio=0.1)
+
+trace.set_tracer_provider(TracerProvider(sampler=sampler))
+```
+
+## 離線儲存
+
+設定離線儲存以便重試：
+
+```python
+from azure.identity import DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+    storage_directory=&quot;/path/to/storage&quot;,  # 自訂儲存路徑
+    disable_offline_storage=False  # 啟用重試（預設）
+)
+```
+
+## 停用離線儲存
+
+```python
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+    disable_offline_storage=True  # 失敗時不重試
+)
+```
+
+## 主權雲（Sovereign Clouds）
+
+```python
+from azure.identity import AzureAuthorityHosts, DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# Azure Government
+credential = DefaultAzureCredential(authority=AzureAuthorityHosts.AZURE_GOVERNMENT)
+exporter = AzureMonitorTraceExporter(
+    connection_string=&quot;InstrumentationKey=xxx;IngestionEndpoint=https://xxx.in.applicationinsights.azure.us/&quot;,
+    credential=credential
+)
+```
+
+## Exporter 類型
+
+| Exporter | 遙測類型 | Application Insights 資料表 |
+|----------|---------------|---------------------------|
+| `AzureMonitorTraceExporter` | Trace/Span | requests, dependencies, exceptions |
+| `AzureMonitorMetricExporter` | Metric | customMetrics, performanceCounters |
+| `AzureMonitorLogExporter` | Log | traces, customEvents |
+
+## 設定選項
+
+| 參數 | 說明 | 預設值 |
+|-----------|-------------|---------|
+| `connection_string` | Application Insights connection string | 來自環境變數 |
+| `credential` | 用於 AAD 驗證的 Azure credential | None |
+| `disable_offline_storage` | 停用重試用的儲存 | False |
+| `storage_directory` | 自訂儲存路徑 | 暫存目錄 |
+
+## 最佳實務
+
+1. **同步或非同步擇一，並保持一致。** 在同一條呼叫路徑裡，不要混用 `azure.xxx` 同步 client 和 `azure.xxx.aio` 非同步 client。每個 module 選一種模式。
+2. **程序結束時呼叫 `provider.shutdown()` / `force_flush()` 來 flush 遙測資料，provider 不是 context manager。**
+3. **正式環境用 BatchSpanProcessor**（不要用 SimpleSpanProcessor）
+4. **用 ApplicationInsightsSampler**，讓各服務的取樣一致
+5. **啟用離線儲存**，提升正式環境的可靠性
+6. **用 Microsoft Entra 驗證**，不要用 instrumentation key
+7. **設定適合你工作負載的匯出間隔**
+8. **使用 distro**（`azure-monitor-opentelemetry`），除非你需要自訂 pipeline
+
+## 參考檔案
+
+| 檔案 | 內容 |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | 其他非主打功能、operation group 涵蓋範圍，以及正式環境檢查清單。 |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | 針對次要／進階情境的專屬非主打範例。 |</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-monitor-opentelemetry-exporter-py
+description: |
+  Azure Monitor OpenTelemetry Exporter for Python. Use for low-level OpenTelemetry export to Application Insights.
+  Triggers: &quot;azure-monitor-opentelemetry-exporter&quot;, &quot;AzureMonitorTraceExporter&quot;, &quot;AzureMonitorMetricExporter&quot;, &quot;AzureMonitorLogExporter&quot;.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: azure-monitor-opentelemetry-exporter
+---
+
+# Azure Monitor OpenTelemetry Exporter for Python
+
+Low-level exporter for sending OpenTelemetry traces, metrics, and logs to Application Insights.
+
+## Installation
+
+```bash
+pip install azure-monitor-opentelemetry-exporter
+```
+
+## Environment Variables
+
+```bash
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=xxx;IngestionEndpoint=https://xxx.in.applicationinsights.azure.com/  # Required for all auth methods
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Authentication &amp; Lifecycle
+
+&gt; **🔑 Two rules apply to every code sample below:**
+&gt;
+&gt; 1. **Prefer `DefaultAzureCredential` for ingestion auth when supported.** `APPLICATIONINSIGHTS_CONNECTION_STRING` identifies the target Application Insights resource, and `credential=DefaultAzureCredential(...)` provides Microsoft Entra authentication.
+&gt;    - Local dev: `DefaultAzureCredential` works as-is.
+&gt;    - Production: set `AZURE_TOKEN_CREDENTIALS=prod` (or `AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;`) to constrain the credential chain to production-safe credentials.
+&gt; 2. **Providers are not context managers.** Flush and shut down telemetry providers explicitly at process exit so buffers are exported deterministically.
+&gt;
+&gt; Snippets may abbreviate this setup, but production code should always follow both rules.
+
+## When to Use
+
+| Scenario | Use |
+|----------|-----|
+| Quick setup, auto-instrumentation | `azure-monitor-opentelemetry` (distro) |
+| Custom OpenTelemetry pipeline | `azure-monitor-opentelemetry-exporter` (this) |
+| Fine-grained control over telemetry | `azure-monitor-opentelemetry-exporter` (this) |
+
+## Trace Exporter
+
+```python
+from azure.identity import DefaultAzureCredential
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# Reads APPLICATIONINSIGHTS_CONNECTION_STRING from env to identify the resource;
+# DefaultAzureCredential authenticates ingestion via Microsoft Entra ID.
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# Configure tracer provider
+trace.set_tracer_provider(TracerProvider())
+trace.get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(exporter)
+)
+
+# Use tracer
+tracer = trace.get_tracer(__name__)
+with tracer.start_as_current_span(&quot;my-span&quot;):
+    print(&quot;Hello, World!&quot;)
+```
+
+## Metric Exporter
+
+```python
+from azure.identity import DefaultAzureCredential
+from opentelemetry import metrics
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from azure.monitor.opentelemetry.exporter import AzureMonitorMetricExporter
+
+# Reads APPLICATIONINSIGHTS_CONNECTION_STRING from env; AAD-authenticated ingestion via DefaultAzureCredential.
+exporter = AzureMonitorMetricExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# Configure meter provider
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60000)
+metrics.set_meter_provider(MeterProvider(metric_readers=[reader]))
+
+# Use meter
+meter = metrics.get_meter(__name__)
+counter = meter.create_counter(&quot;requests_total&quot;)
+counter.add(1, {&quot;route&quot;: &quot;/api/users&quot;})
+```
+
+## Log Exporter
+
+```python
+import logging
+from azure.identity import DefaultAzureCredential
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
+
+# Reads APPLICATIONINSIGHTS_CONNECTION_STRING from env; AAD-authenticated ingestion via DefaultAzureCredential.
+exporter = AzureMonitorLogExporter(
+    credential=DefaultAzureCredential(),
+)
+
+# Configure logger provider
+logger_provider = LoggerProvider()
+logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
+set_logger_provider(logger_provider)
+
+# Add handler to Python logging
+handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
+logging.getLogger().addHandler(handler)
+
+# Use logging
+logger = logging.getLogger(__name__)
+logger.info(&quot;This will be sent to Application Insights&quot;)
+```
+
+## From Environment Variable
+
+Exporters read `APPLICATIONINSIGHTS_CONNECTION_STRING` automatically:
+
+```python
+from azure.identity import DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# Connection string from environment; AAD-authenticated ingestion via DefaultAzureCredential.
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+)
+```
+
+## Azure AD Authentication
+
+```python
+from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+credential = DefaultAzureCredential(require_envvar=True)
+# Or use a specific credential directly in production:
+# See https://learn.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes
+# credential = ManagedIdentityCredential()
+
+exporter = AzureMonitorTraceExporter(
+    credential=credential
+)
+```
+
+## Sampling
+
+Use `ApplicationInsightsSampler` for consistent sampling:
+
+```python
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.sampling import ParentBasedTraceIdRatio
+from azure.monitor.opentelemetry.exporter import ApplicationInsightsSampler
+
+# Sample 10% of traces
+sampler = ApplicationInsightsSampler(sampling_ratio=0.1)
+
+trace.set_tracer_provider(TracerProvider(sampler=sampler))
+```
+
+## Offline Storage
+
+Configure offline storage for retry:
+
+```python
+from azure.identity import DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+    storage_directory=&quot;/path/to/storage&quot;,  # Custom storage path
+    disable_offline_storage=False  # Enable retry (default)
+)
+```
+
+## Disable Offline Storage
+
+```python
+exporter = AzureMonitorTraceExporter(
+    credential=DefaultAzureCredential(),
+    disable_offline_storage=True  # No retry on failure
+)
+```
+
+## Sovereign Clouds
+
+```python
+from azure.identity import AzureAuthorityHosts, DefaultAzureCredential
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+# Azure Government
+credential = DefaultAzureCredential(authority=AzureAuthorityHosts.AZURE_GOVERNMENT)
+exporter = AzureMonitorTraceExporter(
+    connection_string=&quot;InstrumentationKey=xxx;IngestionEndpoint=https://xxx.in.applicationinsights.azure.us/&quot;,
+    credential=credential
+)
+```
+
+## Exporter Types
+
+| Exporter | Telemetry Type | Application Insights Table |
+|----------|---------------|---------------------------|
+| `AzureMonitorTraceExporter` | Traces/Spans | requests, dependencies, exceptions |
+| `AzureMonitorMetricExporter` | Metrics | customMetrics, performanceCounters |
+| `AzureMonitorLogExporter` | Logs | traces, customEvents |
+
+## Configuration Options
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `connection_string` | Application Insights connection string | From env var |
+| `credential` | Azure credential for AAD auth | None |
+| `disable_offline_storage` | Disable retry storage | False |
+| `storage_directory` | Custom storage path | Temp directory |
+
+## Best Practices
+
+1. **Pick sync OR async and stay consistent.** Do not mix `azure.xxx` sync clients with `azure.xxx.aio` async clients in the same call path. Choose one mode per module.
+2. **Call `provider.shutdown()` / `force_flush()` at process exit to flush telemetry — providers are not context managers.**
+3. **Use BatchSpanProcessor** for production (not SimpleSpanProcessor)
+4. **Use ApplicationInsightsSampler** for consistent sampling across services
+5. **Enable offline storage** for reliability in production
+6. **Use Microsoft Entra authentication** instead of instrumentation keys
+7. **Set export intervals** appropriate for your workload
+8. **Use the distro** (`azure-monitor-opentelemetry`) unless you need custom pipelines
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [references/capabilities.md](references/capabilities.md) | Additional non-hero capabilities, operation-group coverage, and production checklists. |
+| [references/non-hero-scenarios.md](references/non-hero-scenarios.md) | Dedicated non-hero examples for secondary/advanced scenarios. |</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>azure-monitor-opentelemetry-ts｜Skill 寫法圖鑑</title>
+<meta name="description" content="用 @azure/monitor-opentelemetry 替 Node.js 應用程式加分散式追蹤與 metric">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>azure-monitor-opentelemetry-ts</h1>
+<p class="meta">Microsoft ｜ 雲端與基礎設施 ｜ <a href="https://github.com/microsoft/skills/blob/main/.github/plugins/azure-sdk-typescript/skills/azure-monitor-opentelemetry-ts/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">用 @azure/monitor-opentelemetry 替 Node.js 應用程式加分散式追蹤與 metric</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: azure-monitor-opentelemetry-ts
+description: 用 Azure Monitor 與 OpenTelemetry for JavaScript（@azure/monitor-opentelemetry）替應用程式加上 instrumentation。用於替搭配 Application Insights 的 Node.js 應用程式加入分散式追蹤、metric 與 log。
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/monitor-opentelemetry&#x27;
+---
+
+# Azure Monitor OpenTelemetry SDK for TypeScript
+
+替 Node.js 應用程式自動 instrument 分散式追蹤、metric 與 log。
+
+## 安裝
+
+```bash
+# Distro（建議，自動 instrumentation）
+npm install @azure/monitor-opentelemetry
+
+# 底層 exporter（自訂 OpenTelemetry 設定）
+npm install @azure/monitor-opentelemetry-exporter
+
+# 自訂 log ingestion
+npm install @azure/monitor-ingestion
+```
+
+## 環境變數
+
+```bash
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=...;IngestionEndpoint=...
+AZURE_TOKEN_CREDENTIALS=prod # 只有在正式環境使用 DefaultAzureCredential 時才需要
+```
+
+## 快速開始（自動 Instrumentation）
+
+**重要：** 一定要在 import 其他模組**之前**呼叫 `useAzureMonitor()`。
+
+```typescript
+import { useAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+useAzureMonitor({
+  azureMonitorExporterOptions: {
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+  }
+});
+
+// 現在才 import 你的應用程式
+import express from &quot;express&quot;;
+const app = express();
+```
+
+## ESM 支援（Node.js 18.19+）
+
+```bash
+node --import @azure/monitor-opentelemetry/loader ./dist/index.js
+```
+
+**package.json:**
+```json
+{
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node --import @azure/monitor-opentelemetry/loader ./dist/index.js&quot;
+  }
+}
+```
+
+## 完整設定
+
+```typescript
+import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from &quot;@azure/monitor-opentelemetry&quot;;
+import { resourceFromAttributes } from &quot;@opentelemetry/resources&quot;;
+
+const options: AzureMonitorOpenTelemetryOptions = {
+  azureMonitorExporterOptions: {
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    storageDirectory: &quot;/path/to/offline/storage&quot;,
+    disableOfflineStorage: false
+  },
+  
+  // 取樣
+  samplingRatio: 1.0,  // 0-1，trace 的取樣百分比
+  
+  // 功能
+  enableLiveMetrics: true,
+  enableStandardMetrics: true,
+  enablePerformanceCounters: true,
+  
+  // Instrumentation library
+  instrumentationOptions: {
+    azureSdk: { enabled: true },
+    http: { enabled: true },
+    mongoDb: { enabled: true },
+    mySql: { enabled: true },
+    postgreSql: { enabled: true },
+    redis: { enabled: true },
+    bunyan: { enabled: false },
+    winston: { enabled: false }
+  },
+  
+  // 自訂 resource
+  resource: resourceFromAttributes({ &quot;service.name&quot;: &quot;my-service&quot; })
+};
+
+useAzureMonitor(options);
+```
+
+## 自訂 Trace
+
+```typescript
+import { trace } from &quot;@opentelemetry/api&quot;;
+
+const tracer = trace.getTracer(&quot;my-tracer&quot;);
+
+const span = tracer.startSpan(&quot;doWork&quot;);
+try {
+  span.setAttribute(&quot;component&quot;, &quot;worker&quot;);
+  span.setAttribute(&quot;operation.id&quot;, &quot;42&quot;);
+  span.addEvent(&quot;processing started&quot;);
+  
+  // 你的工作寫在這裡
+  
+} catch (error) {
+  span.recordException(error as Error);
+  span.setStatus({ code: 2, message: (error as Error).message });
+} finally {
+  span.end();
+}
+```
+
+## 自訂 Metric
+
+```typescript
+import { metrics } from &quot;@opentelemetry/api&quot;;
+
+const meter = metrics.getMeter(&quot;my-meter&quot;);
+
+// Counter
+const counter = meter.createCounter(&quot;requests_total&quot;);
+counter.add(1, { route: &quot;/api/users&quot;, method: &quot;GET&quot; });
+
+// Histogram
+const histogram = meter.createHistogram(&quot;request_duration_ms&quot;);
+histogram.record(150, { route: &quot;/api/users&quot; });
+
+// Observable Gauge
+const gauge = meter.createObservableGauge(&quot;active_connections&quot;);
+gauge.addCallback((result) =&gt; {
+  result.observe(getActiveConnections(), { pool: &quot;main&quot; });
+});
+```
+
+## 手動設定 Exporter
+
+### Trace Exporter
+
+```typescript
+import { AzureMonitorTraceExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { NodeTracerProvider, BatchSpanProcessor } from &quot;@opentelemetry/sdk-trace-node&quot;;
+
+const exporter = new AzureMonitorTraceExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const provider = new NodeTracerProvider({
+  spanProcessors: [new BatchSpanProcessor(exporter)]
+});
+
+provider.register();
+```
+
+### Metric Exporter
+
+```typescript
+import { AzureMonitorMetricExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { PeriodicExportingMetricReader, MeterProvider } from &quot;@opentelemetry/sdk-metrics&quot;;
+import { metrics } from &quot;@opentelemetry/api&quot;;
+
+const exporter = new AzureMonitorMetricExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const meterProvider = new MeterProvider({
+  readers: [new PeriodicExportingMetricReader({ exporter })]
+});
+
+metrics.setGlobalMeterProvider(meterProvider);
+```
+
+### Log Exporter
+
+```typescript
+import { AzureMonitorLogExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { BatchLogRecordProcessor, LoggerProvider } from &quot;@opentelemetry/sdk-logs&quot;;
+import { logs } from &quot;@opentelemetry/api-logs&quot;;
+
+const exporter = new AzureMonitorLogExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const loggerProvider = new LoggerProvider();
+loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(exporter));
+
+logs.setGlobalLoggerProvider(loggerProvider);
+```
+
+## 自訂 Log Ingestion
+
+```typescript
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+import { LogsIngestionClient, isAggregateLogsUploadError } from &quot;@azure/monitor-ingestion&quot;;
+
+const endpoint = &quot;https://&lt;dce&gt;.ingest.monitor.azure.com&quot;;
+const ruleId = &quot;&lt;data-collection-rule-id&gt;&quot;;
+const streamName = &quot;Custom-MyTable_CL&quot;;
+
+// 本機開發：DefaultAzureCredential。正式環境：設定 AZURE_TOKEN_CREDENTIALS=prod 或 AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// 或在正式環境直接使用特定的 credential：
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const client = new LogsIngestionClient(endpoint, credential);
+
+const logs = [
+  {
+    Time: new Date().toISOString(),
+    Computer: &quot;Server1&quot;,
+    Message: &quot;Application started&quot;,
+    Level: &quot;Information&quot;
+  }
+];
+
+try {
+  await client.upload(ruleId, streamName, logs);
+} catch (error) {
+  if (isAggregateLogsUploadError(error)) {
+    for (const uploadError of error.errors) {
+      console.error(&quot;Failed logs:&quot;, uploadError.failedLogs);
+    }
+  }
+}
+```
+
+## 自訂 Span Processor
+
+```typescript
+import { SpanProcessor, ReadableSpan } from &quot;@opentelemetry/sdk-trace-base&quot;;
+import { Span, Context, SpanKind, TraceFlags } from &quot;@opentelemetry/api&quot;;
+import { useAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+class FilteringSpanProcessor implements SpanProcessor {
+  forceFlush(): Promise&lt;void&gt; { return Promise.resolve(); }
+  shutdown(): Promise&lt;void&gt; { return Promise.resolve(); }
+  onStart(span: Span, context: Context): void {}
+  
+  onEnd(span: ReadableSpan): void {
+    // 加入自訂屬性
+    span.attributes[&quot;CustomDimension&quot;] = &quot;value&quot;;
+    
+    // 過濾掉內部 span
+    if (span.kind === SpanKind.INTERNAL) {
+      span.spanContext().traceFlags = TraceFlags.NONE;
+    }
+  }
+}
+
+useAzureMonitor({
+  spanProcessors: [new FilteringSpanProcessor()]
+});
+```
+
+## 取樣
+
+```typescript
+import { ApplicationInsightsSampler } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { NodeTracerProvider } from &quot;@opentelemetry/sdk-trace-node&quot;;
+
+// 取樣 75% 的 trace
+const sampler = new ApplicationInsightsSampler(0.75);
+
+const provider = new NodeTracerProvider({ sampler });
+```
+
+## Shutdown
+
+```typescript
+import { useAzureMonitor, shutdownAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+useAzureMonitor();
+
+// 應用程式 shutdown 時
+process.on(&quot;SIGTERM&quot;, async () =&gt; {
+  await shutdownAzureMonitor();
+  process.exit(0);
+});
+```
+
+## 主要型別
+
+```typescript
+import {
+  useAzureMonitor,
+  shutdownAzureMonitor,
+  AzureMonitorOpenTelemetryOptions,
+  InstrumentationOptions
+} from &quot;@azure/monitor-opentelemetry&quot;;
+
+import {
+  AzureMonitorTraceExporter,
+  AzureMonitorMetricExporter,
+  AzureMonitorLogExporter,
+  ApplicationInsightsSampler,
+  AzureMonitorExporterOptions
+} from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+
+import {
+  LogsIngestionClient,
+  isAggregateLogsUploadError
+} from &quot;@azure/monitor-ingestion&quot;;
+```
+
+## 最佳實務
+
+1. **先呼叫 useAzureMonitor()**：要在 import 其他模組之前
+2. **ESM 專案用 ESM loader**：`--import @azure/monitor-opentelemetry/loader`
+3. **啟用離線儲存**：斷線情境下遙測資料才可靠
+4. **設定取樣比例**：高流量應用程式要設
+5. **加入自訂維度**：用 span processor 來豐富資料
+6. **優雅地 shutdown**：呼叫 `shutdownAzureMonitor()` 來 flush 遙測資料</pre></section><section><h2>英文原文</h2><pre>---
+name: azure-monitor-opentelemetry-ts
+description: Instrument applications with Azure Monitor and OpenTelemetry for JavaScript (@azure/monitor-opentelemetry). Use when adding distributed tracing, metrics, and logs to Node.js applications with Application Insights.
+license: MIT
+metadata:
+  author: Microsoft
+  version: &quot;1.0.0&quot;
+  package: &#x27;@azure/monitor-opentelemetry&#x27;
+---
+
+# Azure Monitor OpenTelemetry SDK for TypeScript
+
+Auto-instrument Node.js applications with distributed tracing, metrics, and logs.
+
+## Installation
+
+```bash
+# Distro (recommended - auto-instrumentation)
+npm install @azure/monitor-opentelemetry
+
+# Low-level exporters (custom OpenTelemetry setup)
+npm install @azure/monitor-opentelemetry-exporter
+
+# Custom logs ingestion
+npm install @azure/monitor-ingestion
+```
+
+## Environment Variables
+
+```bash
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=...;IngestionEndpoint=...
+AZURE_TOKEN_CREDENTIALS=prod # Required only if DefaultAzureCredential is used in production
+```
+
+## Quick Start (Auto-Instrumentation)
+
+**IMPORTANT:** Call `useAzureMonitor()` BEFORE importing other modules.
+
+```typescript
+import { useAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+useAzureMonitor({
+  azureMonitorExporterOptions: {
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+  }
+});
+
+// Now import your application
+import express from &quot;express&quot;;
+const app = express();
+```
+
+## ESM Support (Node.js 18.19+)
+
+```bash
+node --import @azure/monitor-opentelemetry/loader ./dist/index.js
+```
+
+**package.json:**
+```json
+{
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node --import @azure/monitor-opentelemetry/loader ./dist/index.js&quot;
+  }
+}
+```
+
+## Full Configuration
+
+```typescript
+import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from &quot;@azure/monitor-opentelemetry&quot;;
+import { resourceFromAttributes } from &quot;@opentelemetry/resources&quot;;
+
+const options: AzureMonitorOpenTelemetryOptions = {
+  azureMonitorExporterOptions: {
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    storageDirectory: &quot;/path/to/offline/storage&quot;,
+    disableOfflineStorage: false
+  },
+  
+  // Sampling
+  samplingRatio: 1.0,  // 0-1, percentage of traces
+  
+  // Features
+  enableLiveMetrics: true,
+  enableStandardMetrics: true,
+  enablePerformanceCounters: true,
+  
+  // Instrumentation libraries
+  instrumentationOptions: {
+    azureSdk: { enabled: true },
+    http: { enabled: true },
+    mongoDb: { enabled: true },
+    mySql: { enabled: true },
+    postgreSql: { enabled: true },
+    redis: { enabled: true },
+    bunyan: { enabled: false },
+    winston: { enabled: false }
+  },
+  
+  // Custom resource
+  resource: resourceFromAttributes({ &quot;service.name&quot;: &quot;my-service&quot; })
+};
+
+useAzureMonitor(options);
+```
+
+## Custom Traces
+
+```typescript
+import { trace } from &quot;@opentelemetry/api&quot;;
+
+const tracer = trace.getTracer(&quot;my-tracer&quot;);
+
+const span = tracer.startSpan(&quot;doWork&quot;);
+try {
+  span.setAttribute(&quot;component&quot;, &quot;worker&quot;);
+  span.setAttribute(&quot;operation.id&quot;, &quot;42&quot;);
+  span.addEvent(&quot;processing started&quot;);
+  
+  // Your work here
+  
+} catch (error) {
+  span.recordException(error as Error);
+  span.setStatus({ code: 2, message: (error as Error).message });
+} finally {
+  span.end();
+}
+```
+
+## Custom Metrics
+
+```typescript
+import { metrics } from &quot;@opentelemetry/api&quot;;
+
+const meter = metrics.getMeter(&quot;my-meter&quot;);
+
+// Counter
+const counter = meter.createCounter(&quot;requests_total&quot;);
+counter.add(1, { route: &quot;/api/users&quot;, method: &quot;GET&quot; });
+
+// Histogram
+const histogram = meter.createHistogram(&quot;request_duration_ms&quot;);
+histogram.record(150, { route: &quot;/api/users&quot; });
+
+// Observable Gauge
+const gauge = meter.createObservableGauge(&quot;active_connections&quot;);
+gauge.addCallback((result) =&gt; {
+  result.observe(getActiveConnections(), { pool: &quot;main&quot; });
+});
+```
+
+## Manual Exporter Setup
+
+### Trace Exporter
+
+```typescript
+import { AzureMonitorTraceExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { NodeTracerProvider, BatchSpanProcessor } from &quot;@opentelemetry/sdk-trace-node&quot;;
+
+const exporter = new AzureMonitorTraceExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const provider = new NodeTracerProvider({
+  spanProcessors: [new BatchSpanProcessor(exporter)]
+});
+
+provider.register();
+```
+
+### Metric Exporter
+
+```typescript
+import { AzureMonitorMetricExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { PeriodicExportingMetricReader, MeterProvider } from &quot;@opentelemetry/sdk-metrics&quot;;
+import { metrics } from &quot;@opentelemetry/api&quot;;
+
+const exporter = new AzureMonitorMetricExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const meterProvider = new MeterProvider({
+  readers: [new PeriodicExportingMetricReader({ exporter })]
+});
+
+metrics.setGlobalMeterProvider(meterProvider);
+```
+
+### Log Exporter
+
+```typescript
+import { AzureMonitorLogExporter } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { BatchLogRecordProcessor, LoggerProvider } from &quot;@opentelemetry/sdk-logs&quot;;
+import { logs } from &quot;@opentelemetry/api-logs&quot;;
+
+const exporter = new AzureMonitorLogExporter({
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+});
+
+const loggerProvider = new LoggerProvider();
+loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(exporter));
+
+logs.setGlobalLoggerProvider(loggerProvider);
+```
+
+## Custom Logs Ingestion
+
+```typescript
+import { DefaultAzureCredential, ManagedIdentityCredential } from &quot;@azure/identity&quot;;
+import { LogsIngestionClient, isAggregateLogsUploadError } from &quot;@azure/monitor-ingestion&quot;;
+
+const endpoint = &quot;https://&lt;dce&gt;.ingest.monitor.azure.com&quot;;
+const ruleId = &quot;&lt;data-collection-rule-id&gt;&quot;;
+const streamName = &quot;Custom-MyTable_CL&quot;;
+
+// Local dev: DefaultAzureCredential. Production: set AZURE_TOKEN_CREDENTIALS=prod or AZURE_TOKEN_CREDENTIALS=&lt;specific_credential&gt;
+const credential = new DefaultAzureCredential({requiredEnvVars: [&quot;AZURE_TOKEN_CREDENTIALS&quot;]});
+// Or use a specific credential directly in production:
+// See https://learn.microsoft.com/javascript/api/overview/azure/identity-readme?view=azure-node-latest#credential-classes
+// const credential = new ManagedIdentityCredential();
+
+const client = new LogsIngestionClient(endpoint, credential);
+
+const logs = [
+  {
+    Time: new Date().toISOString(),
+    Computer: &quot;Server1&quot;,
+    Message: &quot;Application started&quot;,
+    Level: &quot;Information&quot;
+  }
+];
+
+try {
+  await client.upload(ruleId, streamName, logs);
+} catch (error) {
+  if (isAggregateLogsUploadError(error)) {
+    for (const uploadError of error.errors) {
+      console.error(&quot;Failed logs:&quot;, uploadError.failedLogs);
+    }
+  }
+}
+```
+
+## Custom Span Processor
+
+```typescript
+import { SpanProcessor, ReadableSpan } from &quot;@opentelemetry/sdk-trace-base&quot;;
+import { Span, Context, SpanKind, TraceFlags } from &quot;@opentelemetry/api&quot;;
+import { useAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+class FilteringSpanProcessor implements SpanProcessor {
+  forceFlush(): Promise&lt;void&gt; { return Promise.resolve(); }
+  shutdown(): Promise&lt;void&gt; { return Promise.resolve(); }
+  onStart(span: Span, context: Context): void {}
+  
+  onEnd(span: ReadableSpan): void {
+    // Add custom attributes
+    span.attributes[&quot;CustomDimension&quot;] = &quot;value&quot;;
+    
+    // Filter out internal spans
+    if (span.kind === SpanKind.INTERNAL) {
+      span.spanContext().traceFlags = TraceFlags.NONE;
+    }
+  }
+}
+
+useAzureMonitor({
+  spanProcessors: [new FilteringSpanProcessor()]
+});
+```
+
+## Sampling
+
+```typescript
+import { ApplicationInsightsSampler } from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+import { NodeTracerProvider } from &quot;@opentelemetry/sdk-trace-node&quot;;
+
+// Sample 75% of traces
+const sampler = new ApplicationInsightsSampler(0.75);
+
+const provider = new NodeTracerProvider({ sampler });
+```
+
+## Shutdown
+
+```typescript
+import { useAzureMonitor, shutdownAzureMonitor } from &quot;@azure/monitor-opentelemetry&quot;;
+
+useAzureMonitor();
+
+// On application shutdown
+process.on(&quot;SIGTERM&quot;, async () =&gt; {
+  await shutdownAzureMonitor();
+  process.exit(0);
+});
+```
+
+## Key Types
+
+```typescript
+import {
+  useAzureMonitor,
+  shutdownAzureMonitor,
+  AzureMonitorOpenTelemetryOptions,
+  InstrumentationOptions
+} from &quot;@azure/monitor-opentelemetry&quot;;
+
+import {
+  AzureMonitorTraceExporter,
+  AzureMonitorMetricExporter,
+  AzureMonitorLogExporter,
+  ApplicationInsightsSampler,
+  AzureMonitorExporterOptions
+} from &quot;@azure/monitor-opentelemetry-exporter&quot;;
+
+import {
+  LogsIngestionClient,
+  isAggregateLogsUploadError
+} from &quot;@azure/monitor-ingestion&quot;;
+```
+
+## Best Practices
+
+1. **Call useAzureMonitor() first** - Before importing other modules
+2. **Use ESM loader for ESM projects** - `--import @azure/monitor-opentelemetry/loader`
+3. **Enable offline storage** - For reliable telemetry in disconnected scenarios
+4. **Set sampling ratio** - For high-traffic applications
+5. **Add custom dimensions** - Use span processors for enrichment
+6. **Graceful shutdown** - Call `shutdownAzureMonitor()` to flush telemetry</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

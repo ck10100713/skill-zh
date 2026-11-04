@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build-iterated-agentic-loop｜Skill 寫法圖鑑</title>
+<meta name="description" content="建立 repo 專用 skill 加排程跑 coding agent 的 GitHub Actions 迭代循環">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>build-iterated-agentic-loop</h1>
+<p class="meta">HumanLayer ｜ Agent 與工作流 ｜ <a href="https://github.com/humanlayer/skills/blob/main/plugins/build-iterated-agentic-loop/skills/build-iterated-agentic-loop/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">建立 repo 專用 skill 加排程跑 coding agent 的 GitHub Actions 迭代循環</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: build-iterated-agentic-loop
+description: 建立一個 repo 專用的 skill，並安裝配套的迭代式 coding agent GitHub Actions workflow、prompt、memory 檔案和參考範本
+---
+
+# Build Iterated Agentic Loop
+
+使用者想把一個可重複的 agent 任務，變成 repo 專用的 skill 加上一個 GitHub Actions workflow，讓 coding agent 定時跑、手動跑，或兩者都有，就用這個 skill。
+
+目標的形狀是迭代式 agentic loop：一個聚焦的 skill 定義 agent 的判斷方式，一個 workflow 用 repo 專屬的 prompt 去呼叫 coding agent，一個 agent-memory 檔案在每次執行之間帶著長期的回饋，而且每個 workflow 都會替自己開的 PR 加 label，讓每個 loop 同時只會有一個開著的 PR。`narrow-react-prop-types` skill 就是具體的參考範例。
+
+## 產出
+
+在目標 repo 建立或更新這些檔案：
+
+- `.claude/skills/&lt;skill-name&gt;/SKILL.md`：repo 專用的 agent 行為。
+- `.github/workflows/agent-&lt;task-name&gt;.yml`：定期執行的 coding-agent 自動化。
+- `.github/agent-memory/&lt;task-name&gt;.md`：穩定的回饋和範圍限制。
+- 選用：`.claude/skills/&lt;skill-name&gt;/references/` 底下的參考檔，skill 需要範本、範例或較長的輔助資料時才放。
+
+## 工作流程
+
+### 1. 探索目標 repo
+
+在問設定問題之前，先讀：
+
+- 現有的 `.github/workflows/*.yml` 和 `.github/actions/**`，搞懂 runner、checkout、安裝相依套件、cache 和 PR 的慣用做法。
+- 套件管理相關的檔案，像是 `package.json`、`bun.lock`、`pnpm-lock.yaml`、`yarn.lock`、`package-lock.json`、`pyproject.toml`、`go.mod` 或 `Cargo.toml`，或其他跟套件管理有關的檔案
+- 現有的驗證腳本，特別是 typecheck、lint、test、quality、format，以及以 package 為範圍的指令。
+- 現有的 `.claude/skills` 和 `.agents/skills`，避免重複已有的慣例。
+
+完成標準：你能說出這個 repo 的套件管理工具、安裝指令、可能的驗證指令，以及現有的 workflow 慣例。
+
+### 2. 問設定問題
+
+帶使用者逐一過下面這些決定。根據 repo 裡看到的證據推薦預設值，不要丟一張空白表單給人填。
+
+1. **Coding Agent**：Claude Code、Codex、OpenCode 或 CodeLayer。說明推薦選項需要的 secret 和 headless 指令。用 `references/agent-runner-templates.md`。CodeLayer 是 Humanlayer 的超輕量 agent harness。
+2. **執行頻率**：每天、每週、平日、每月、只能手動，或自訂 cron。依任務的風險和 review 負擔推薦頻率，最可能是平日、每天或每週。
+3. **任務**：這個 agent loop 要完成什麼任務？
+  - 有沒有現成的 skill 可以做這件事？（問使用者之前可以先自己查）
+  - 問使用者，要不要去看最近的 PR、git 歷史，或 codebase 裡某些特定的地方當參考。
+4. **範圍**：這個 loop 可以改哪些目錄/package，又有哪些只能看不能改
+5. **驗證**：agent 在 commit 之前必須通過哪些指令（根據你前面的調查提出建議，請使用者確認）
+6. **PR 上限**：問使用者，排程執行時，如果這個 agent 已經有開著的 PR，要不要直接 no-op；如果要，允許開幾個 PR 之後就擋住新的執行。
+  - **建議：要，每個 agent loop 限制 1 個開著的 PR。**這樣 agent 不會製造無限增長的工作量，讓人 review 都來不及。沒有上限的話，每天跑的 agent 一週可能產出 5 個以上沒人看的 PR，造成 review 疲勞和 merge conflict。
+  - workflow 用 label（例如 `agent-&lt;task-slug&gt;`）來辨識每個 agent loop 開的 PR。排程執行時會檢查 `gh pr list --label &lt;label&gt; --state open`，數量達到或超過上限就跳過。
+  - 手動的 `workflow_dispatch` 執行會繞過上限檢查，需要時可以強制執行。
+7. **PR 的 metadata**：label 名稱、PR 標題前綴和 branch 前綴。
+  - 建議用 `[MM/DD][Agent: &lt;Agent Name&gt;]: &lt;Concise Description&gt;` 當範本，例如 `[6/23][Agent: Effect Migrator]: Migrate XYZ module`
+8. **回應格式**：CI agent 的最終回應（會變成 PR 內文）要用什麼格式？
+  - 把 `references/response-template.md` 給使用者看，裡面有範例（修復/遷移、產生、重構）。
+  - 問 reviewer 需要哪些資訊：摘要統計、風險等級、驗證步驟、檔案清單等。
+  - 做出客製化的回應範本，放在產生出來的 skill 的 `references/` 目錄裡讓 skill 引用
+9. **迭代行為**：`/iterate` 留言要不要更新既有的 PR。
+  - 啟用的話，把 `references/agent-iteration.ts` 裝進 repo。問使用者偏好放哪裡：`.github/scripts/`、`ci-scripts/` 或 `scripts/`。
+  - 這個腳本有兩種模式：`footer`（加上 PR 內文的標記）和 `prompt`（從 PR 的 context 組出迭代用的 prompt）。
+  - 停用的話，把 `issue_comment` trigger 和只給迭代用的步驟從 workflow 移掉。
+
+完成標準：workflow、prompt 和 memory 範本裡的每個佔位符，都有選好的值或明確的預設值。
+
+### 3. 定義 agent 的工作
+
+抽出 agent 該做的最小、可重複的工作。跟使用者一起過這三個問題：
+
+**要找什麼？**agent 怎麼找出這次執行的目標？
+- 會回報問題的 CLI 工具（例如 `bunx react-doctor`、`eslint --format json`）
+- 搜尋模式（例如沒有 coverage 的 `*.test.ts` 檔案、用了已棄用 API 的元件）
+- diff 或 changelog（例如上次發版之後的新相依套件、PR 裡改動的檔案）
+- 該換成新寫法或遷移到新框架的舊寫法
+- 依據先前 CI 執行紀錄判斷出來的 flaky test
+
+**要改什麼？**agent 對每個目標做什麼轉換？
+- 修復：原地解決回報出來的問題
+- 遷移：把程式碼從一種寫法改成另一種
+- 產生：依據現有的來源建立新檔案
+- 重構：改結構但不改行為
+
+**怎麼驗證？**什麼能證明改動是對的？
+- build/typecheck 通過
+- 測試通過（或某個特定子集）
+- 當初找出問題的同一個工具，現在回報問題已解決
+- lint 或 format 檢查通過
+
+完成標準：你能用一句話講完這個工作，例如「找出 5 個 react-doctor 違規，修掉，並確認 typecheck 和 quality 都過」。
+
+### 4. 寫 skill
+
+寫一個 repo 專用的 skill，把 agent 在這個任務上的判斷方式寫進去。這個 skill 因為就放在這個 repo 裡，可以放 repo 專屬的路徑、package 名稱和慣例。
+
+用這些寫 skill 的規則：
+
+- 有順序的行為放在 skill 目錄裡的 `SKILL.md`（`.claude/skill-slug-here` 或 `.agents/skill-slug-here`，看 repo 的慣例和使用者偏好），步驟要附上可檢查的完成標準
+- 長的範本和範例搬到旁邊的參考檔，再從 `SKILL.md` 指過去。
+- 每條規則只留一個來源；不要在 skill、prompt 和 memory 檔案裡重複同樣的指引。
+- 放一份回應範本當參考檔（例如 skill 目錄下的 `references/response-template.md`），定義 CI agent 最終輸出的格式。skill 要指示 agent 讀這份範本並照著格式化最終回應，這個回應會拿來當 PR 內文。
+- 用 `references/skill-template.md` 的 skill 範本。範例 skill 在 `references/example-skill.md`
+- 想了解 skill 規格可以參考 https://agentskills.io/specification 。
+
+**IMPORTANT**：`SKILL.md` frontmatter 的 `name` 欄位必須跟 skill 的 slug 一致，例如名稱是 `fix-eslint-issues` 的 skill，就必須放在 `.claude/skills/fix-eslint-issues/SKILL.md` 或 `.agents/skills/fix-eslint-issues/SKILL.md`
+
+
+
+完成標準：skill 把怎麼做這份工作講得夠清楚，agent 不用額外提示就能照做，包括怎麼格式化最終回應。
+
+### 5. 寫 workflow 的 prompt
+
+repo 專屬的目標設定放在 GitHub Actions 的 prompt 裡，不要放進通用的 skill。內容要包含：
+
+- `Begin by using the &lt;skill-name&gt; skill.`
+- 範圍：agent 可以改哪些目錄/package，可以看哪些。
+- 指示：可 review 的工作單位、要避免什麼，以及怎麼驗證。
+- 驗證指令（適用的話用 fenced bash 寫）
+- 從 `.github/agent-memory/&lt;task-name&gt;.md` 內插進來的 agent memory。
+- 收尾要求：驗證、commit、push，並回傳可以直接當 PR 用的摘要。
+
+用 `references/workflow-template.yml` 當基底範本。草擬內嵌的 prompt 時用 `references/prompt-template.md`。
+
+完成標準：prompt 包含無人值守執行所需的所有 repo 專屬限制。
+
+### 6. 安裝 memory 檔案
+
+用 `references/memory-template.md` 當起點，建立 `.github/agent-memory/&lt;task-name&gt;.md`。memory 檔案放的是會影響之後每次執行的長期回饋。保持精簡。
+
+好的 memory 項目：
+
+- 永久的範圍排除。
+- 已知的誤報區域。
+- 應該改變 agent 之後選擇目標的 review 回饋。
+
+不好的 memory 項目：
+
+- 一次性的任務指示。
+- 單次執行的驗證輸出。
+- skill 裡已經寫過的規則。
+
+完成標準：把 memory 檔案刪掉，會失去對未來執行有用的 context，而不只是歷史紀錄。
+
+### 7. 建立 workflow
+
+用 `references/workflow-template.yml` 建立 `.github/workflows/agent-&lt;task-name&gt;.yml`，並把每個佔位符都換掉。
+
+必須客製化的部分：
+
+- workflow 名稱、cron、branch 前綴、workflow id、agent label、PR 標題。
+- runner label 和這個 repo 的 setup 步驟。
+- 安裝相依套件的指令。
+- coding agent 的安裝、secret 和 headless 執行指令（來自 `references/agent-runner-templates.md`）。
+- 擷取回應的步驟：每個 agent 的輸出形式不同（JSON、stream-json、純文字）。用 `references/agent-runner-templates.md` 裡各 agent 專屬的擷取方式，把最終回應存到 `/tmp/pr-body.md` 當 PR 內文。
+- skill 名稱、範圍、驗證指令和 memory 路徑。
+- PR 上限閘門：workflow 在執行前會檢查有沒有帶 agent label 而且開著的 PR。依使用者在第 2 步的選擇設定上限（預設：1）。閘門用 `gh pr list --label &quot;$AGENT_LABEL&quot; --state open` 比對數量。如果不設上限，就把這個閘門步驟整個移掉。
+- 如果啟用 `/iterate`：把 `references/agent-iteration.ts` 裝到使用者偏好的位置，並更新 workflow 裡的路徑。這個腳本同時處理 PR footer 的產生和迭代 prompt 的組裝。這個檔案可以用使用者偏好的 TypeScript 工具鏈執行（支援 type-stripping 的 node、**Bun（建議）**、Deno、tsx 等），使用者要求的話也可以改寫成其他語言。
+
+如果停用 `/iterate`，就移掉 `issue_comment` trigger 和只給迭代用的步驟，也不要安裝 `agent-iteration.ts`。
+
+完成標準：workflow 可以從 `workflow_dispatch` 執行，而且不依賴任何不存在的檔案。
+
+### 8. 驗證與確認
+
+**驗證 workflow YAML：**commit 之前先 parse 一次 workflow 檔案，及早抓出語法錯誤。用下面任一種：
+
+```bash
+# Node.js / bun (js-yaml)
+bunx js-yaml .github/workflows/agent-&lt;task-name&gt;.yml &gt; /dev/null &amp;&amp; echo &quot;Valid YAML&quot;
+
+# Python
+python -c &quot;import yaml; yaml.safe_load(open(&#x27;.github/workflows/agent-&lt;task-name&gt;.yml&#x27;))&quot;
+
+# yq (if installed)
+yq eval &#x27;.name&#x27; .github/workflows/agent-&lt;task-name&gt;.yml
+```
+
+parser 失敗的話，先修好 YAML 語法再往下走。
+
+**確認參考與路徑：**檢查 skill、workflow 和 memory 檔案裡提到的每個路徑，不是已經存在，就是這次任務有意要建立的。
+
+完成標準：workflow YAML 能無錯誤地 parse，而且所有被引用的檔案都存在。
+
+### 9. 試跑 workflow
+
+GitHub Actions workflow 要先實際跑過至少一次，才能手動用 `workflow_dispatch` 觸發。要讓 workflow 啟動：
+
+1. 暫時為目前的 branch 加上 `push` trigger（如果不是 main）：
+   ```yaml
+   on:
+     push:
+       branches:
+         - &lt;current-branch-name&gt;  # Remove after first run
+     schedule:
+       - cron: &quot;0 13 * * *&quot;
+     workflow_dispatch:
+       # ...
+   ```
+
+2. commit 並 push 所有新檔案（workflow、skill、memory 檔案、腳本）。
+
+3. workflow 會在 push 時觸發。到 Actions 分頁確認它有成功跑完。
+
+4. 第一次成功執行之後，把暫時的 `push` trigger 移掉再 push 一次。之後就可以從 Actions UI 或 `gh workflow run` 手動觸發 workflow。
+
+5. 如果試跑開出了 PR，先 review 確認 agent 的行為，再視情況關掉或 merge。
+
+完成標準：workflow 出現在 Actions 分頁，而且可以用 `workflow_dispatch` 觸發。
+
+## 參考檔案
+
+- `references/workflow-template.yml`：coding-agent 的 GitHub Actions workflow 骨架。
+- `references/agent-runner-templates.md`：Claude Code、Codex、OpenCode 和 CodeLayer 的 headless 指令與 secret。
+- `references/agent-iteration.ts`：支援 `/iterate` 的輔助腳本（PR footer 和迭代 prompt 的組裝）。依使用者偏好裝到 `.github/scripts/`、`ci-scripts/` 或 `scripts/`。
+- `references/prompt-template.md`：workflow 內嵌 prompt 的結構。
+- `references/memory-template.md`：agent-memory 檔案的骨架。
+- `references/skill-template.md`：產生出來的任務 skill 的骨架。
+- `references/response-template.md`：CI agent 該怎麼格式化最終回應（PR 內文）的範例。
+- `references/example-skill.md`：範例 skill</pre></section><section><h2>英文原文</h2><pre>---
+name: build-iterated-agentic-loop
+description: build a repo-local skill and install a matching iterated coding-agent GitHub Actions workflow, prompt, memory file, and reference templates
+---
+
+# Build Iterated Agentic Loop
+
+Use this skill when the user wants to turn a repeatable agent task into a repo-local skill plus a GitHub Actions workflow that runs a coding agent on a schedule, manually, or both.
+
+The target shape is an iterated agentic loop: a focused skill defines the agent&#x27;s judgement, a workflow invokes a coding agent with a repo-specific prompt, an agent-memory file carries standing feedback between runs, and each workflow labels its PRs so only one open PR exists per loop. The `narrow-react-prop-types` skill is the concrete reference pattern.
+
+## Outputs
+
+Create or update these files in the target repo:
+
+- `.claude/skills/&lt;skill-name&gt;/SKILL.md` for the repo-local agent behavior.
+- `.github/workflows/agent-&lt;task-name&gt;.yml` for the recurring coding-agent automation.
+- `.github/agent-memory/&lt;task-name&gt;.md` for stable feedback and scope constraints.
+- Optional references under `.claude/skills/&lt;skill-name&gt;/references/` when the skill needs templates, examples, or long supporting material.
+
+## Workflow
+
+### 1. Explore the target repo
+
+Read before asking setup questions:
+
+- Existing `.github/workflows/*.yml` and `.github/actions/**` to understand runner, checkout, dependency install, cache, and PR patterns.
+- Package manager files such as `package.json`, `bun.lock`, `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `pyproject.toml`, `go.mod`, or `Cargo.toml`, or other package management-related files
+- Existing validation scripts, especially typecheck, lint, test, quality, format, and package-scoped commands.
+- Existing `.claude/skills` and `.agents/skills` to avoid duplicating conventions.
+
+Completion criterion: you can name the repo&#x27;s package manager, install command, likely validation commands, and existing workflow conventions.
+
+### 2. Ask setup questions
+
+Walk the user through these decisions. Recommend defaults from repo evidence instead of presenting a blank form.
+
+1. **Coding Agent**: Claude Code, Codex, OpenCode, or CodeLayer. Explain the required secret and headless command for the recommended choice. Use `references/agent-runner-templates.md`. CodeLayer is Humanlayer&#x27;s ultra-lightweight agent harness.
+2. **Cadence**: daily, weekly, weekdays, monthly, manual-only, or custom cron. Recommend a cadence based on task risk and review burden - most likely weekdays, daily, or weekly. 
+3. **Task**: What task should the agent loop accomplish?
+  - Are there existing skills for doing this? (you can do research before asking the user this)
+  - Ask the user if you should look at recent PRs, git history, or other particular parts of the codebase for reference.
+4. **Scope**: which directories/packages the loop may change and which it may only inspect
+5. **Validation**: which commands must pass before the agent commits (You should propose this to the user based on your earlier research and ask them to confirm)
+6. **PR bounding**: Ask if scheduled runs should no-op when open PRs from this agent already exist, and if so, how many open PRs to allow before blocking new runs.
+  - **Recommended: Yes, bound to 1 open PR per agent loop.** This prevents the agent from creating unbounded work that piles up faster than humans can review. Without bounding, a daily agent could generate 5+ unreviewed PRs in a week, creating review fatigue and merge conflicts.
+  - The workflow uses a label (e.g., `agent-&lt;task-slug&gt;`) to identify PRs from each agent loop. Scheduled runs check `gh pr list --label &lt;label&gt; --state open` and skip if the count meets or exceeds the bound.
+  - Manual `workflow_dispatch` runs bypass the bound check, allowing forced runs when needed.
+7. **PR metadata**: label name, PR title prefix, and branch prefix.
+  - Suggest `[MM/DD][Agent: &lt;Agent Name&gt;]: &lt;Concise Description&gt;` as a template, e.g. `[6/23][Agent: Effect Migrator]: Migrate XYZ module`
+8. **Response format**: How should the CI agent format its final response (which becomes the PR body)?
+  - Show the user `references/response-template.md` for examples (fix/migration, generation, refactor).
+  - Ask what information reviewers need: summary stats, risk levels, verification steps, file lists, etc.
+  - Create a customized response template that the generated skill will reference in its `references/` directory
+9. **Iteration behavior**: whether `/iterate` comments should update the existing PR.
+  - If enabled, install `references/agent-iteration.ts` to the repo. Ask the user&#x27;s preferred location: `.github/scripts/`, `ci-scripts/`, or `scripts/`.
+  - The script has two modes: `footer` (adds the PR body marker) and `prompt` (builds the iteration prompt from PR context).
+  - If disabled, remove the `issue_comment` trigger and iteration-only steps from the workflow.
+
+Completion criterion: every placeholder in the workflow, prompt, and memory template has a chosen value or an explicit default.
+
+### 3. Define the agent job
+
+Extract the smallest repeatable job the agent should perform. Work through these three questions with the user:
+
+**What are we finding?** How does the agent identify targets for this run?
+- A CLI tool that reports issues (e.g., `bunx react-doctor`, `eslint --format json`)
+- A search pattern (e.g., files matching `*.test.ts` without coverage, components using deprecated APIs)
+- A diff or changelog (e.g., new dependencies since last release, changed files in a PR)
+- An old pattern that should be replaced with a new pattern or migrated to a new framework
+- A flaky test based on previous CI runs 
+
+**What are we changing?** What transformation does the agent apply to each target?
+- Fix: resolve a reported issue in place
+- Migrate: update code from one pattern to another
+- Generate: create new files based on existing sources
+- Refactor: restructure without changing behavior
+
+**How do we validate?** What proves the change is correct?
+- Build/typecheck passes
+- Tests pass (or a specific subset)
+- The same tool that found the issue now reports it resolved
+- Linting or formatting checks pass
+
+Completion criterion: you can state the job in one sentence, e.g., &quot;Find 5 react-doctor violations, fix them, and verify typecheck and quality pass.&quot;
+
+### 4. Write the skill
+
+Write a repo-local skill that captures the agent&#x27;s judgement for this task. The skill can include repo-specific paths, package names, and conventions since it lives in this repository.
+
+Use these skill-writing rules:
+
+- Put ordered behavior in `SKILL.md` in the skill directory (`.claude/skill-slug-here` or `.agents/skill-slug-here` depending on repo patterns and user preferences) steps with checkable completion criteria  
+- Move long templates and examples into sibling reference files, then point to them from `SKILL.md`.
+- Keep one source of truth for each rule; do not repeat the same guidance in the skill, prompt, and memory file.
+- Include a response template as a reference file (e.g., `references/response-template.md` under the skill directory) that defines how the CI agent should format its final output. The skill should instruct the agent to read and follow this template when formatting its final response which will be used as the PR body.
+- Use the skill template in `references/skill-template.md`. An EXAMPLE skill can be found in `references/example-skill.md`
+- You may refer to https://agentskills.io/specification to understand skill specification. 
+
+**IMPORTANT**: the `name` field in the `SKILL.md` frontmatter must match the skill slug - e.g. a skill with name `fix-eslint-issues` must be in `.claude/skills/fix-eslint-issues/SKILL.md` or `.agents/skills/fix-eslint-issues/SKILL.md`
+
+
+
+Completion criterion: the skill explains how to do the job clearly enough that the agent can follow it without additional prompting, including how to format the final response.
+
+### 5. Write the workflow prompt
+
+Put repo-specific targeting in the GitHub Actions prompt, not in the generic skill. Include:
+
+- `Begin by using the &lt;skill-name&gt; skill.`
+- Scope: directories/packages the agent may change and may inspect.
+- Instructions: the reviewable unit of work, what to avoid, and how to validate.
+- Validation commands in fenced bash if applicable
+- Agent memory interpolation from `.github/agent-memory/&lt;task-name&gt;.md`.
+- Finishing requirements: validate, commit, push, and return a PR-ready summary.
+
+Use `references/workflow-template.yml` as the base template. Use `references/prompt-template.md` when drafting the embedded prompt.
+
+Completion criterion: the prompt contains all repo-specific constraints needed for an unattended run.
+
+### 6. Install the memory file
+
+Create `.github/agent-memory/&lt;task-name&gt;.md` using `references/memory-template.md` as a starting point. The memory file carries standing feedback that should affect future runs. Keep it short.
+
+Good memory entries:
+
+- Permanent scope exclusions.
+- Known false-positive areas.
+- Review feedback that should change future agent selection.
+
+Bad memory entries:
+
+- One-off task instructions.
+- Validation output from a single run.
+- Rules already stated in the skill.
+
+Completion criterion: deleting the memory file would lose useful future-run context, not just history.
+
+### 7. Create the workflow
+
+Create `.github/workflows/agent-&lt;task-name&gt;.yml` from `references/workflow-template.yml` and replace every placeholder.
+
+Required customizations:
+
+- Workflow name, cron, branch prefix, workflow id, agent label, PR title.
+- Runner label and setup steps for the repo.
+- Dependency install command.
+- Coding-agent install, secret, and headless run command (from `references/agent-runner-templates.md`).
+- Response extraction step: each agent outputs differently (JSON, stream-json, plain text). Use the agent-specific extraction from `references/agent-runner-templates.md` to get the final response into `/tmp/pr-body.md` for the PR body.
+- Skill name, scope, validation commands, and memory path.
+- PR bounding gate: the workflow checks for open PRs with the agent label before running. Configure the bound based on the user&#x27;s choice from step 2 (default: 1). The gate uses `gh pr list --label &quot;$AGENT_LABEL&quot; --state open` and compares the count. If bounding is disabled, remove the gate step entirely.
+- If `/iterate` is enabled: install `references/agent-iteration.ts` to the user&#x27;s preferred location and update the workflow paths to match. The script handles both PR footer generation and iteration prompt building. This file can be run with the user&#x27;s preferred typescript toolchain (node with type-stripping, **Bun (recommended)**, Deno, tsx, etc) or can at the user&#x27;s request be rewritten into another language.
+
+If `/iterate` is disabled, remove the `issue_comment` trigger, the iteration-only steps, and skip installing `agent-iteration.ts`.
+
+Completion criterion: the workflow can run from `workflow_dispatch` without relying on files that do not exist.
+
+### 8. Validate and verify
+
+**Validate workflow YAML:** Before committing, parse the workflow file to catch syntax errors early. Use one of:
+
+```bash
+# Node.js / bun (js-yaml)
+bunx js-yaml .github/workflows/agent-&lt;task-name&gt;.yml &gt; /dev/null &amp;&amp; echo &quot;Valid YAML&quot;
+
+# Python
+python -c &quot;import yaml; yaml.safe_load(open(&#x27;.github/workflows/agent-&lt;task-name&gt;.yml&#x27;))&quot;
+
+# yq (if installed)
+yq eval &#x27;.name&#x27; .github/workflows/agent-&lt;task-name&gt;.yml
+```
+
+If the parser fails, fix the YAML syntax before proceeding.
+
+**Verify references and paths:** Check that every path named by the skill, workflow, and memory file exists or is intentionally created by this task.
+
+Completion criterion: the workflow YAML parses without errors and all referenced files exist.
+
+### 9. Dry-run the workflow
+
+GitHub Actions workflows cannot be manually dispatched via `workflow_dispatch` until they have run at least once. To bootstrap the workflow:
+
+1. Temporarily add a `push` trigger for the current branch (if not main):
+   ```yaml
+   on:
+     push:
+       branches:
+         - &lt;current-branch-name&gt;  # Remove after first run
+     schedule:
+       - cron: &quot;0 13 * * *&quot;
+     workflow_dispatch:
+       # ...
+   ```
+
+2. Commit and push all the new files (workflow, skill, memory file, scripts).
+
+3. The workflow will trigger on push. Watch the Actions tab to verify it runs successfully.
+
+4. After the first successful run, remove the temporary `push` trigger and push again. The workflow can now be dispatched manually via the Actions UI or `gh workflow run`.
+
+5. If the dry-run creates a PR, review it to verify the agent behavior, then close or merge as appropriate.
+
+Completion criterion: the workflow appears in the Actions tab and can be triggered via `workflow_dispatch`.
+
+## Reference Files
+
+- `references/workflow-template.yml` - coding-agent GitHub Actions workflow skeleton.
+- `references/agent-runner-templates.md` - headless commands and secrets for Claude Code, Codex, OpenCode, and CodeLayer.
+- `references/agent-iteration.ts` - helper script for `/iterate` support (PR footer and iteration prompt building). Install to `.github/scripts/`, `ci-scripts/`, or `scripts/` based on user preference.
+- `references/prompt-template.md` - embedded prompt structure for the workflow.
+- `references/memory-template.md` - agent-memory file skeleton.
+- `references/skill-template.md` - skill skeleton for the generated task skill.
+- `references/response-template.md` - examples for how the CI agent should format its final response (PR body).
+- `references/example-skill.md` - example skill</pre></section></div>
+  </main>
+</div>
+</body>
+</html>

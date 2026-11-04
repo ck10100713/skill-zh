@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eval-harness-first｜Skill 寫法圖鑑</title>
+<meta name="description" content="fine-tuning 之前先建 eval harness：golden、grader、drift suite 和 baseline">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="../../index.html">Skill 寫法圖鑑</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side"><details open><summary>分類</summary><ul><li><a href="../../c/0.html">規劃與釐清<span>86</span></a></li><li><a href="../../c/1.html">架構與重構<span>80</span></a></li><li><a href="../../c/2.html">測試與驗證<span>63</span></a></li><li><a href="../../c/3.html">除錯與調查<span>33</span></a></li><li><a href="../../c/4.html">Code Review<span>18</span></a></li><li><a href="../../c/5.html">設計與前端<span>91</span></a></li><li><a href="../../c/6.html">寫作與文件<span>80</span></a></li><li><a href="../../c/7.html">部署與發布<span>37</span></a></li><li><a href="../../c/8.html">安全護欄<span>43</span></a></li><li><a href="../../c/9.html">瀏覽器自動化<span>9</span></a></li><li><a href="../../c/10.html">Office 與 PDF<span>12</span></a></li><li><a href="../../c/11.html">Cloudflare 平台<span>18</span></a></li><li><a href="../../c/12.html">雲端與基礎設施<span>163</span></a></li><li><a href="../../c/13.html">資料與分析<span>94</span></a></li><li><a href="../../c/14.html">行銷與 SEO<span>136</span></a></li><li><a href="../../c/15.html">商業與營運<span>266</span></a></li><li><a href="../../c/16.html">金融與投資<span>112</span></a></li><li><a href="../../c/17.html">遊戲開發<span>57</span></a></li><li><a href="../../c/18.html">個人與生活<span>31</span></a></li><li><a href="../../c/19.html">Agent 與工作流<span>113</span></a></li><li><a href="../../c/20.html">設定與維護<span>47</span></a></li></ul></details><details><summary>來源</summary><ul><li><a href="../../r/affaan-m__everything-claude-code.html">affaan-m/everything-claude-code<span>316</span></a></li><li><a href="../../r/asgard-ai-platform__skills.html">asgard-ai-platform/skills<span>314</span></a></li><li><a href="../../r/anthropics__knowledge-work-plugins.html">anthropics/knowledge-work-plugins<span>232</span></a></li><li><a href="../../r/microsoft__skills.html">microsoft/skills<span>197</span></a></li><li><a href="../../r/Donchitos__Claude-Code-Game-Studios.html">Donchitos/Claude-Code-Game-Studios<span>74</span></a></li><li><a href="../../r/anthropics__financial-services.html">anthropics/financial-services<span>64</span></a></li><li><a href="../../r/jezweb__claude-skills.html">jezweb/claude-skills<span>63</span></a></li><li><a href="../../r/wshobson__agents.html">wshobson/agents<span>49</span></a></li><li><a href="../../r/garrytan__gstack.html">garrytan/gstack<span>41</span></a></li><li><a href="../../r/mattpocock__skills.html">mattpocock/skills<span>35</span></a></li><li><a href="../../r/AgriciDaniel__claude-ads.html">AgriciDaniel/claude-ads<span>34</span></a></li><li><a href="../../r/AgriciDaniel__claude-seo.html">AgriciDaniel/claude-seo<span>33</span></a></li><li><a href="../../r/KerberosClaw__kc_ai_skills.html">KerberosClaw/kc_ai_skills<span>26</span></a></li><li><a href="../../r/alchaincyf__nuwa-skill.html">alchaincyf/nuwa-skill<span>16</span></a></li><li><a href="../../r/anthropics__skills.html">anthropics/skills<span>15</span></a></li><li><a href="../../r/obra__superpowers.html">obra/superpowers<span>13</span></a></li><li><a href="../../r/cloudflare__skills.html">cloudflare/skills<span>11</span></a></li><li><a href="../../r/MadsLorentzen__ai-job-search.html">MadsLorentzen/ai-job-search<span>9</span></a></li><li><a href="../../r/humanlayer__skills.html">humanlayer/skills<span>7</span></a></li><li><a href="../../r/nextlevelbuilder__ui-ux-pro-max-skill.html">nextlevelbuilder/ui-ux-pro-max-skill<span>7</span></a></li><li><a href="../../r/DietrichGebert__ponytail.html">DietrichGebert/ponytail<span>6</span></a></li><li><a href="../../r/KKKKhazix__khazix-skills.html">KKKKhazix/khazix-skills<span>6</span></a></li><li><a href="../../r/Hao0321__claude-skill-social-post.html">Hao0321/claude-skill-social-post<span>2</span></a></li><li><a href="../../r/WalterSumbon__claude-agent-sdk-skill.html">WalterSumbon/claude-agent-sdk-skill<span>2</span></a></li><li><a href="../../r/microsoft__SkillOpt.html">microsoft/SkillOpt<span>2</span></a></li><li><a href="../../r/Kappaemme-git__codex-complexity-optimizer.html">Kappaemme-git/codex-complexity-optimizer<span>1</span></a></li><li><a href="../../r/alibaba-flyai__flyai-skill.html">alibaba-flyai/flyai-skill<span>1</span></a></li><li><a href="../../r/ayghri__i-have-adhd.html">ayghri/i-have-adhd<span>1</span></a></li><li><a href="../../r/cathrynlavery__diagram-design.html">cathrynlavery/diagram-design<span>1</span></a></li><li><a href="../../r/chuspeeism__dashi-ppt-skill.html">chuspeeism/dashi-ppt-skill<span>1</span></a></li><li><a href="../../r/drpwchen__lecture-to-notes.html">drpwchen/lecture-to-notes<span>1</span></a></li><li><a href="../../r/eternity4719__HowToLiveBetter.html">eternity4719/HowToLiveBetter<span>1</span></a></li><li><a href="../../r/goldmansachs__gs-quant.html">goldmansachs/gs-quant<span>1</span></a></li><li><a href="../../r/mars-tw__open-seo-advisor-skill.html">mars-tw/open-seo-advisor-skill<span>1</span></a></li><li><a href="../../r/teng-lin__notebooklm-py.html">teng-lin/notebooklm-py<span>1</span></a></li><li><a href="../../r/titanwings__colleague-skill.html">titanwings/colleague-skill<span>1</span></a></li><li><a href="../../r/truongduy2611__app-store-preflight-skills.html">truongduy2611/app-store-preflight-skills<span>1</span></a></li><li><a href="../../r/unclebob__ub-mode.html">unclebob/ub-mode<span>1</span></a></li><li><a href="../../r/virgiliojr94__book-to-skill.html">virgiliojr94/book-to-skill<span>1</span></a></li><li><a href="../../r/yazelin__slide-deck-skill.html">yazelin/slide-deck-skill<span>1</span></a></li></ul></details></nav>
+  <main class="content">
+<h1>eval-harness-first</h1>
+<p class="meta">wshobson ｜ 測試與驗證 ｜ <a href="https://github.com/wshobson/agents/blob/main/plugins/llm-finetuning/skills/eval-harness-first/SKILL.md">原文</a> ｜ MIT</p>
+<p class="summary">fine-tuning 之前先建 eval harness：golden、grader、drift suite 和 baseline</p>
+<div class="pair"><section><h2>中文翻譯</h2><pre>---
+name: eval-harness-first
+description: 在任何 fine-tuning 之前，先建好 eval harness：用 golden、一個 bucket 一個 grader、drift suite 和 base-model baseline 當作 Phase 0 的關卡。適用於還沒有 eval 就要開始訓練的時候。
+---
+
+# Eval Harness First
+
+整個 plugin 的 Phase 0 關卡：`finetuning-method-selection` 和每一個下游 skill，都假設在寫訓練 config 之前，這個 harness 已經存在。這個 harness 不是跑完才附帶產生的東西，它是資料整理的引擎。用來建立 golden 的那批標註 trace，扣掉明確留出的 holdout 之後，就是訓練資料。
+
+**輸入：** 如果有 production/agent trace 就用它，沒有就用任務規格，另外要有願意標註 ≥100 筆範例的標註者。
+**輸出格式：** 下面的 `eval/` 目錄，包含 golden、grader、drift suite，以及後續階段要拿來當關卡的 base-model baseline。
+
+## 關卡
+
+沒有 eval harness，就不准 fine-tune。直接跳去寫訓練 config 的話，沒有東西可以量測、沒有東西能抓 regression，也沒有標註資料可以拿來訓練。整個飛輪是這樣轉的：
+
+1. **蒐集 trace**：production/agent 的 span，如果還沒有就用合成任務。
+2. **錯誤分析**：對 ≥100 筆 trace 做 open coding，再用 axial coding 歸成 4–8 個失敗 bucket。
+3. **每個 bucket 一個 grader**：先用 deterministic 的；只有真正主觀的標準才用校準過的 LLM-judge。
+4. **依優先順序排序**：頻率 × 嚴重度 × 價值。
+5. **標註過的 trace 餵給資料整理，扣掉明確的 holdout。** 每個 `eval/goldens.jsonl` 的 ID，都要依 ID 從訓練資料中排除。
+6. **訓練。**
+7. **對 checkpoint 重跑同一個 harness**，不是換一個比較寬鬆的。
+8. **Drift detection 回饋到步驟 2**：production 出現新的失敗模式，就重新開啟錯誤分析。
+
+步驟 2–4 是在建 harness；步驟 5–8 說明了為什麼它必須先存在，因為它既是訓練資料的來源，也是 checkpoint 的出關閘門。
+
+## 建立 Golden
+
+- **有 trace 的時候，從 trace 來：** 做錯誤分析。先對 ≥100 筆真實 trace 做 open coding（去讀、用你自己的話標記失敗，還不要有固定分類），再用 axial coding 把這些標記收斂成 4–8 個有命名的失敗 bucket。少於 4 個，代表編碼做得太淺；多於 8 個，代表 bucket 需要合併。**例外：** 只有單一失敗面的任務（例如嚴格 schema 的抽取），可以只有 1–2 個 bucket，在一個 grader 裡面用各欄位的子指標，不要在沒有證據的情況下硬做人工切分。
+- **還沒有 trace 的時候，用合成資料：** 以維度為基礎的生成，先列出重要的軸（任務類型、難度、邊界案例、persona），再對交叉乘積取樣；自由生成的 prompt 會集中在最容易寫的那幾類。
+- **Golden 要像程式碼一樣做版本控制**：commit `eval/goldens.jsonl`、在 review 時看 diff、每次 release 打 tag。它同時也是 CI 的 regression 測試集。
+
+## Grader
+
+error analysis 得出的每個失敗 bucket 各配一個 grader，不是整個 eval 集只用一個。單一的混合分數會藏住是哪個 bucket 退步了。
+
+- **先用 deterministic 的。** Regex、schema 驗證或執行檢查，比較便宜、可重現，而且不需要校準。
+- **只有真正主觀的標準才用 LLM-judge**，例如語氣、忠實度、「哪個回應比較好」這類沒有 deterministic 檢查能表達的東西。
+- **用二元的 pass/fail，不要用 Likert。** 1–5 或 1–10 的量表，校準起來雜訊比較大，也比較難一致地套用；收斂成 pass/fail。
+- **Drift suite 的 MMLU 風格計分：優先用 logprob，不要用 generate-and-extract。** token 預算很緊的時候，generate-and-extract 對會先講一堆開場白的模型來說很容易 parse 失敗，把格式遵守度和被量測的知識混在一起。四種 grader 的範本和這個計分說明都在：`references/grader-templates.md`。
+
+## Judge 校準是前提
+
+任何交給 LLM-judge 的 bucket，在它的判決能算數（而不只是拿來探索）之前都需要校準，這是硬性前提，不是加分項。**沒有任何 bucket 交給 judge 的時候就不適用（N/A）**，全部都是 deterministic 的 harness 沒有東西需要校準，要把這點講清楚，不要讓這一節沒交代。
+
+- 標註 ≥100 筆，切成 **train**/**dev**/**sealed test**（只報告一次，之後不准再碰）。
+- 回報 **TPR 和 TNR**，不要只給一個混合的準確率數字，因為 judge 在偏斜的資料集上，只要一直說「pass」就能拿到 90%。
+- **把 judge 釘在固定的模型 snapshot**，judge 模型一換就重新校準，不管怎樣每季也要校準一次。
+- **Judge 必須來自和受測模型不同的模型家族。**
+- 沒達到約定的 TPR/TNR 門檻的 judge，只能**作為參考**：標記出來給人工 review，絕對不能當作 promotion 的關卡。完整的流程、bias 修正和重新校準檢查表：`references/judge-calibration.md`。
+
+## Baseline
+
+在 Phase 1（方法選擇）開始之前，先對沒有修改過的 base model 跑完整個 harness，也就是 golden 加上 capability-drift suite。這個數字就是之後每個 checkpoint 要拿來比較的對象。
+
+`eval/baseline-&lt;model&gt;.json` 就是關卡的憑證。沒有 baseline 檔案，`checkpoint-promotion` 就沒有比較的依據，一個對著沒量測過的東西「看起來比較好」的 checkpoint，不算是發現。
+
+## 目錄規範
+
+```
+eval/
+├── goldens.jsonl          # 標註過的 trace + 合成 golden，有版本控制
+├── graders/                # 每個失敗 bucket 一個模組
+│   ├── schema_compliance.py
+│   ├── exact_match.py
+│   └── rubric_judge.py
+├── drift-suite.yaml        # 凍結的 benchmark + 200-500 筆相近領域的項目
+└── baseline-&lt;model&gt;.json   # 關卡憑證：harness + drift suite 對 base model 的結果
+runs/
+└── &lt;run-id&gt;/
+    └── results.json         # 每次執行的 harness 輸出，每個 checkpoint 一份
+```
+
+`eval/` 會跨執行保留，而且放在 `runs/` 外面，它是固定的量尺，不是某次執行的產物。`runs/` 是用完即丟的，`eval/` 不是。絕對不准讓執行腳本寫進 `eval/`。**標準位置：** 每份針對個別 trace 的 `results.json`，包含 Phase 0 的 baseline，都放在 `runs/&lt;run-id&gt;/results.json`，絕對不放在 `eval/runs/...` 底下；要求放後者的指示是錯的，不是這份規範有問題。
+
+### Phase 0 離場檢查表
+
+進入 `finetuning-method-selection` 之前，先確認：
+
+1. ≥100 筆 trace 已做 open coding；4–8 個失敗 bucket（單一失敗面任務的合成 golden 不適用這個下限，見 Building Goldens 的例外；這時 bucket 數量改由 baseline 之後的錯誤分析決定）。
+2. `eval/goldens.jsonl` 已 commit 並做版本控制。
+3. 每個 bucket 一個 grader，先用 deterministic 的。
+4. Judge 已校準：TPR/TNR、snapshot 已釘住、不同模型家族（**沒有 bucket 交給 LLM-judge 時不適用**，要明確寫出來）。
+5. `eval/drift-suite.yaml` 已凍結。
+6. `eval/baseline-&lt;model&gt;.json` 已寫入。
+
+六項裡缺任何一項（或它明確標的 N/A）？那就不算 Phase 0 完成，`/finetune` 在每次執行前都會檢查 baseline 檔案。
+
+## 相關 Skill
+
+通用的評估指引（dashboard、A/B 測試、非 fine-tuning 的 harness）放在 `llm-application-dev` plugin 的 `llm-evaluation` skill，這個 skill 只涵蓋和 fine-tuning 耦合的部分：可兼作訓練資料的 golden，以及作為 checkpoint 關卡的 baseline。
+
+- `finetuning-method-selection`：最先導到這裡。
+- `dataset-curation`：把這些 trace 整理成訓練資料列。
+- `trace-to-training-data`：把評分過的 trace 轉成訓練範例。
+- `checkpoint-promotion`：使用 `baseline-&lt;model&gt;.json`，對每個候選 checkpoint 重跑這個 harness。
+
+## 參考資料
+
+- `references/grader-templates.md`：每種形狀可執行的 grader 範例，加上 `drift-suite.yaml` 範例和 MMLU logprob 計分說明。
+- `references/judge-calibration.md`：校準流程，包含全部都是 deterministic 時的 N/A 路徑。</pre></section><section><h2>英文原文</h2><pre>---
+name: eval-harness-first
+description: Build the evaluation harness that gates every fine-tuning run — golden sets, per-failure-mode graders, judge calibration, and base-model baselines. Use when starting a fine-tuning effort, when converting traces into an eval set, or when calibrating a judge against human labels.
+---
+
+# Eval Harness First
+
+The Phase 0 gate for the whole plugin:
+`finetuning-method-selection` and every downstream
+skill assume this harness exists before a training
+config gets written. The harness is not a run-end
+side artifact — it is the data-curation engine. The
+same labeled traces that build the goldens feed
+training data, minus an explicit holdout.
+
+**Input:** production/agent traces if they exist, or
+a task spec if they don&#x27;t, plus labelers willing to
+grade ≥100 examples.
+**Output format:** the `eval/` directory below —
+goldens, graders, drift suite, and the base-model
+baseline that later phases gate on.
+
+## The Gate
+
+No eval harness, no fine-tune. Skip to a training
+config and there is nothing to measure against,
+nothing to catch regressions, and no labeled data
+to train on. The flywheel:
+
+1. **Collect traces** — production/agent spans, or
+   synthetic tasks if none exist yet.
+2. **Error analysis** — open coding on ≥100 traces,
+   axial coding into 4–8 failure buckets.
+3. **One grader per bucket** — deterministic first;
+   calibrated LLM-judge only for genuinely
+   subjective criteria.
+4. **Prioritize** by frequency × severity × value.
+5. **The labeled traces feed dataset curation, minus
+   an explicit holdout.** Every `eval/goldens.jsonl`
+   ID stays excluded from training data by ID.
+6. **Train.**
+7. **Re-run the same harness** on the checkpoint —
+   not a different, looser one.
+8. **Drift detection feeds back to step 2** — new
+   production failure modes re-open error analysis.
+
+Steps 2–4 build the harness; steps 5–8 are why it
+must exist first — it is both the training data
+source and the checkpoint&#x27;s exit gate.
+
+## Building Goldens
+
+- **From traces, when they exist:** run error
+  analysis — open coding on ≥100 real traces (read
+  them, tag failures in your own words, no fixed
+  taxonomy yet), then axial coding to collapse those
+  tags into 4–8 named failure buckets. Fewer than 4
+  means the coding pass was too shallow; more than 8
+  means buckets need merging. **Exception:**
+  single-failure-surface tasks (e.g. strict-schema
+  extraction) may land at 1–2 buckets with per-field
+  sub-metrics inside one grader — don&#x27;t invent
+  artificial splits with no evidence behind them.
+- **Synthetic, when traces don&#x27;t exist yet:**
+  dimension-based generation — enumerate the axes
+  that matter (task type, difficulty, edge case,
+  persona) and sample the cross-product; free-
+  generated prompts cluster around whatever&#x27;s
+  easiest to write.
+- **Goldens are versioned like code** — commit
+  `eval/goldens.jsonl`, diff it in review, tag it per
+  release. It doubles as the CI regression suite.
+
+## Graders
+
+One grader per failure bucket from error analysis —
+not one for the whole eval set. A single blended
+score hides which bucket regressed.
+
+- **Deterministic first.** Regex, schema validation,
+  or execution checks are cheaper, reproducible, and
+  need no calibration.
+- **LLM-judge only for genuinely subjective
+  criteria** — tone, faithfulness, &quot;which response
+  is better&quot; — where no deterministic check can
+  express it.
+- **Binary pass/fail over Likert.** A 1–5 or 1–10
+  scale is noisier to calibrate and harder to apply
+  consistently; collapse to pass/fail.
+- **Drift-suite MMLU-style scoring: prefer logprob
+  over generate-and-extract** — a tight token budget
+  makes generate-and-extract parse-brittle for models
+  that preamble, conflating format compliance with
+  the knowledge being measured. Templates for all
+  four grader shapes and this scoring note:
+  `references/grader-templates.md`.
+
+## Judge Calibration Is a Prerequisite
+
+Any bucket routed to an LLM-judge needs calibration
+before its verdicts count for anything beyond
+exploration — a hard prerequisite, not a
+nice-to-have. **N/A when no bucket routes to a
+judge** — an all-deterministic harness has nothing
+to calibrate; state that rather than leaving this
+section unaddressed.
+
+- Label ≥100 items, split **train**/**dev**/**sealed
+  test** (report once, no re-touching after).
+- Report **TPR and TNR**, not one blended accuracy
+  number — a judge can hit 90% by always saying
+  &quot;pass&quot; on a skewed set.
+- **Pin the judge to a fixed model snapshot** and
+  recalibrate on judge-model change, quarterly
+  regardless.
+- **The judge must come from a different model family
+  than the model under test.**
+- A judge that misses the agreed TPR/TNR bar ships
+  **advisory-only** — flags for human review, never
+  gates a promotion. Full protocol, bias correction,
+  and recalibration checklist:
+  `references/judge-calibration.md`.
+
+## The Baseline
+
+Before Phase 1 (method selection) starts, run the
+full harness — goldens plus the capability-drift
+suite — against the unmodified base model. This is
+the number every later checkpoint gets compared
+against.
+
+`eval/baseline-&lt;model&gt;.json` is the gate token. No
+baseline file, no comparison basis for
+`checkpoint-promotion` — a checkpoint that &quot;looks
+better&quot; against nothing measured isn&#x27;t a finding.
+
+## Directory Contract
+
+```
+eval/
+├── goldens.jsonl          # labeled traces + synthetic goldens, versioned
+├── graders/                # one module per failure bucket
+│   ├── schema_compliance.py
+│   ├── exact_match.py
+│   └── rubric_judge.py
+├── drift-suite.yaml        # frozen benchmarks + 200-500 domain-adjacent items
+└── baseline-&lt;model&gt;.json   # gate token: harness + drift suite vs the base model
+runs/
+└── &lt;run-id&gt;/
+    └── results.json         # per-run harness output, one per checkpoint
+```
+
+`eval/` persists across runs and lives outside
+`runs/` — the fixed measuring stick, not a run
+artifact. `runs/` is disposable; `eval/` is not.
+Never let a run script write into `eval/`. **Canonical
+location:** every per-trace `results.json` — the
+Phase 0 baseline included — lives at
+`runs/&lt;run-id&gt;/results.json`, never under
+`eval/runs/...`; an instruction requesting the
+latter is wrong, not this contract.
+
+### Phase 0 Exit Checklist
+
+Before `finetuning-method-selection`, confirm:
+
+1. ≥100 traces open-coded; 4–8 failure buckets (N/A
+   floor for synthetic goldens on a single-failure-
+   surface task — see the Building Goldens exception;
+   bucket count then comes from post-baseline error
+   analysis instead).
+2. `eval/goldens.jsonl` committed and versioned.
+3. One grader per bucket, deterministic first.
+4. Judges calibrated — TPR/TNR, snapshot pinned,
+   different family (**N/A when no bucket routes to
+   an LLM-judge**; state that explicitly).
+5. `eval/drift-suite.yaml` frozen.
+6. `eval/baseline-&lt;model&gt;.json` written.
+
+Missing any of the six (or its stated N/A)? Not
+Phase 0 complete — `/finetune` checks the baseline
+file before a run.
+
+## Related Skills
+
+General-purpose evaluation guidance (dashboards, A/B
+testing, non-fine-tuning harnesses) lives in the
+`llm-application-dev` plugin&#x27;s `llm-evaluation`
+skill — this skill covers only the fine-tuning
+coupling: goldens that double as training data, and
+the baseline that gates a checkpoint.
+
+- `finetuning-method-selection` — routes here first.
+- `dataset-curation` — formats these traces into
+  training rows.
+- `trace-to-training-data` — turns graded traces into
+  training examples.
+- `checkpoint-promotion` — consumes
+  `baseline-&lt;model&gt;.json`, re-runs this harness on
+  each candidate checkpoint.
+
+## References
+
+- `references/grader-templates.md` — runnable grader
+  examples per shape, plus a `drift-suite.yaml`
+  example and MMLU logprob-scoring note.
+- `references/judge-calibration.md` — the
+  calibration protocol, including the all-
+  deterministic N/A path.</pre></section></div>
+  </main>
+</div>
+</body>
+</html>
