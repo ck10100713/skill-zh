@@ -2,13 +2,17 @@
 
 收集知名人士寫的 Claude Code skill。每頁先放中文翻譯，再放英文原文，方便對照學寫法。
 
+網站：https://ck10100713.github.io/skill-zh/
+
+新增 skill：在 `<作者>/<skill>.md` 放一頁，front matter 填 `skill`、`author`、`category`、`summary`、`source`、`license`，分類要先列在 `_config.yml` 的 `skill_categories`。
+
 | 作者 | Skill | 在幹嘛 |
 |---|---|---|
-| Matt Pocock | [grilling](mattpocock/grilling) | 用設計樹一輪一輪拷問你的想法 |
-| Matt Pocock | [tdd](mattpocock/tdd) | 紅綠迴圈、seam、測試反模式 |
-| Garry Tan | [careful](garrytan/careful) | 用 hook 攔截破壞性指令 |
-| Jesse Vincent | [verification-before-completion](obra/verification-before-completion) | 沒跑過驗證不准說完成 |
-| Anthropic | [frontend-design](anthropic/frontend-design) | 做出不像 AI 套版的前端設計 |
+| Matt Pocock | [grilling](mattpocock/grilling.md) | 用設計樹一輪一輪拷問你的想法 |
+| Matt Pocock | [tdd](mattpocock/tdd.md) | 紅綠迴圈、seam、測試反模式 |
+| Garry Tan | [careful](garrytan/careful.md) | 用 hook 攔截破壞性指令 |
+| Jesse Vincent | [verification-before-completion](obra/verification-before-completion.md) | 沒跑過驗證不准說完成 |
+| Anthropic | [frontend-design](anthropic/frontend-design.md) | 做出不像 AI 套版的前端設計 |
 
 ## 授權
 

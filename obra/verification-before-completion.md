@@ -1,12 +1,15 @@
 ---
-title: verification-before-completion（Jesse Vincent）
+layout: default
+skill: verification-before-completion
+author: Jesse Vincent
+category: 測試與驗證
+summary: 沒跑過驗證指令，不准說完成
+source: https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md
+license: MIT
 ---
 
-# verification-before-completion
-
-作者：Jesse Vincent ｜ 原文：[obra/superpowers](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md) ｜ 授權：MIT
-
-[← 回目錄](../)
+<div class="pair" markdown="1">
+<section markdown="1">
 
 ## 中文翻譯
 
@@ -133,6 +136,9 @@ description: 當你準備宣稱工作已完成、已修好或已通過時使用�
 - 「任何」暗示完成或正確的溝通
 ~~~~~
 
+</section>
+<section markdown="1">
+
 ## 英文原文
 
 ~~~~~markdown
@@ -257,3 +263,6 @@ Skip any step = lying, not verifying
 - Implications of success
 - ANY communication suggesting completion/correctness
 ~~~~~
+
+</section>
+</div>

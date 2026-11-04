@@ -1,12 +1,15 @@
 ---
-title: tdd（Matt Pocock）
+layout: default
+skill: tdd
+author: Matt Pocock
+category: 測試與驗證
+summary: 紅綠迴圈、只在講好的 seam 上測、三種測試反模式
+source: https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md
+license: MIT
 ---
 
-# tdd
-
-作者：Matt Pocock ｜ 原文：[mattpocock/skills](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md) ｜ 授權：MIT
-
-[← 回目錄](../)
+<div class="pair" markdown="1">
+<section markdown="1">
 
 ## 中文翻譯
 
@@ -51,6 +54,9 @@ TDD 就是 red → green 的迴圈。這份 skill 是讓這個迴圈產出「值
 - **重構不屬於這個迴圈。** 它屬於 review 階段（見 `code-review` skill），不屬於 red → green 的實作循環。
 ~~~~~
 
+</section>
+<section markdown="1">
+
 ## 英文原文
 
 ~~~~~markdown
@@ -93,3 +99,6 @@ When the shape of that interface is itself in question (how deep the module is, 
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
 - **Refactoring is not part of the loop.** It belongs to the review stage (see the `code-review` skill), not the red → green implementation cycle.
 ~~~~~
+
+</section>
+</div>

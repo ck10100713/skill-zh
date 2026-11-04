@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.skill %}{{ page.skill }}｜{% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ page.summary | default: site.description }}">
+<link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+</head>
+<body>
+<input type="checkbox" id="nav-toggle" hidden>
+<header class="top">
+  <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+  <label for="nav-toggle" class="burger" aria-label="開關選單">☰</label>
+</header>
+<div class="shell">
+  <nav class="side">
+    {% assign skills = site.pages | where_exp: "p", "p.category" %}
+    {% for cat in site.skill_categories %}
+    <h2>{{ cat }}</h2>
+    <ul>
+      {% assign items = skills | where: "category", cat | sort: "skill" %}
+      {% for p in items %}
+      <li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} aria-current="page"{% endif %}>{{ p.skill }}<span>{{ p.author }}</span></a></li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+  </nav>
+  <main class="content">
+    {% if page.skill %}
+    <h1>{{ page.skill }}</h1>
+    <p class="meta">{{ page.author }} ｜ <a href="{{ page.source }}">原文</a> ｜ {{ page.license }}</p>
+    {% if page.summary %}<p class="summary">{{ page.summary }}</p>{% endif %}
+    {% endif %}
+    {{ content }}
+  </main>
+</div>
+</body>
+</html>

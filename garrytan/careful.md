@@ -1,12 +1,15 @@
 ---
-title: careful（Garry Tan）
+layout: default
+skill: careful
+author: Garry Tan
+category: 安全護欄
+summary: 用 PreToolUse hook 攔截 rm -rf、force push 等破壞性指令
+source: https://github.com/garrytan/gstack/blob/main/careful/SKILL.md
+license: MIT
 ---
 
-# careful
-
-作者：Garry Tan ｜ 原文：[garrytan/gstack](https://github.com/garrytan/gstack/blob/main/careful/SKILL.md) ｜ 授權：MIT
-
-[← 回目錄](../)
+<div class="pair" markdown="1">
+<section markdown="1">
 
 ## 中文翻譯
 
@@ -93,6 +96,9 @@ hook 從工具輸入的 JSON 讀出 `tool_name` 和指令，拿去比對上面�
 
 要關閉的話，結束這段對話或開一段新的就好。hook 只在當前 session 有效。
 ~~~~~
+
+</section>
+<section markdown="1">
 
 ## 英文原文
 
@@ -201,3 +207,6 @@ baseline warning. Invalid regex lines are skipped.
 
 To deactivate, end the conversation or start a new one. Hooks are session-scoped.
 ~~~~~
+
+</section>
+</div>
