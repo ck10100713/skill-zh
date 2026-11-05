@@ -2,7 +2,7 @@
 
 收集各家 Claude Code skill。每頁先放中文翻譯，再放英文原文，方便對照學寫法。
 
-網站：https://ck10100713.github.io/skill-zh/
+網站：https://skill.pochenkuo.com/
 
 <!-- sources:start -->
 | 作者 | 來源 | 授權 | 份數 |
