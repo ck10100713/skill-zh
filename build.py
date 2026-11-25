@@ -139,30 +139,36 @@ for k, items in sources.items():
             f'<a href="https://github.com/{e(first["repo"])}">GitHub</a> ｜ {e(first["license"])} ｜ {len(items)} 份</p>\n')
     write(f'r/{k}.html', shell(f'{src_label[k]}｜{TITLE}', head + cards(items, 1, True), 1))
 
-index = [{'n': s['skill'], 'a': s['author'], 'd': s['summary'], 'c': '、'.join(s['cats']), 'u': s['url']} for s in skills]
+index = [{'n': s['skill'], 'a': s['author'], 'd': s['summary'], 'c': s['cats'], 'u': s['url']} for s in skills]
 write('search.json', json.dumps(index, ensure_ascii=False, separators=(',', ':')))
-cats = ''.join(f'<a href="c/{i}.html"><strong>{e(c)}</strong><small>{len(by_cat[c])} 份</small></a>'
-               for i, c in enumerate(CATEGORIES) if by_cat[c])
+chips = ''.join(f'<button type="button" class="chip" data-c="{e(c)}">{e(c)}<span>{len(by_cat[c])}</span></button>'
+                for c in CATEGORIES if by_cat[c])
 home = f'''<h1>{TITLE}</h1>
 <p class="summary">{DESC}，目前收錄 {len(skills)} 份。</p>
 <input id="q" class="search" type="search" placeholder="搜尋 skill、作者或用途" autocomplete="off">
+<div class="chips">{chips}</div>
 <div id="results"></div>
-<div id="browse"><h2 class="cat">分類</h2><div class="cards compact">{cats}</div>
-<h2 class="cat">最近收錄</h2>{cards(by_date(skills)[:12], 0)}</div>
+<div id="browse"><h2 class="cat">最近收錄</h2>{cards(by_date(skills)[:12], 0)}</div>
 <script>
-// ponytail: 全部載入後純文字比對，幾千筆內夠快
-let data = null;
+// ponytail: 全部載入後純文字比對，幾千筆內夠快；分類按鈕單選，可和文字搜尋疊加
+let data = null, cat = '';
 const q = document.getElementById('q'), out = document.getElementById('results'), browse = document.getElementById('browse');
 const esc = t => t.replace(/[&<>"]/g, ch => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}})[ch]);
-q.addEventListener('focus', async () => {{ data ??= await (await fetch('search.json')).json(); }}, {{ once: true }});
-q.addEventListener('input', async () => {{
+async function run() {{
   data ??= await (await fetch('search.json')).json();
   const t = q.value.trim().toLowerCase();
-  browse.hidden = !!t;
-  if (!t) {{ out.innerHTML = ''; return; }}
-  const hits = data.filter(s => (s.n + ' ' + s.a + ' ' + s.d + ' ' + s.c).toLowerCase().includes(t));
+  browse.hidden = !!(t || cat);
+  if (!t && !cat) {{ out.innerHTML = ''; return; }}
+  const hits = data.filter(s => (!cat || s.c.includes(cat)) && (s.n + ' ' + s.a + ' ' + s.d).toLowerCase().includes(t));
   out.innerHTML = `<p class="summary">${{hits.length}} 筆</p><div class="cards">` + hits.slice(0, 200).map(s =>
-    `<a href="${{s.u}}"><strong>${{esc(s.n)}}</strong><small>${{esc(s.a)}} ｜ ${{esc(s.c)}}</small><p>${{esc(s.d)}}</p></a>`).join('') + '</div>';
+    `<a href="${{s.u}}"><strong>${{esc(s.n)}}</strong><small>${{esc(s.a)}}</small><span class="tags">${{s.c.map(c => `<i>${{esc(c)}}</i>`).join('')}}</span><p>${{esc(s.d)}}</p></a>`).join('') + '</div>';
+}}
+q.addEventListener('input', run);
+document.querySelector('.chips').addEventListener('click', ev => {{
+  const b = ev.target.closest('.chip'); if (!b) return;
+  cat = cat === b.dataset.c ? '' : b.dataset.c;
+  document.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x.dataset.c === cat));
+  run();
 }});
 </script>'''
 write('index.html', shell(TITLE, home, 0))
