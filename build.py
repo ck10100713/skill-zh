@@ -78,11 +78,21 @@ def shell(title, body, depth, desc=DESC):
 '''
 
 
-def cards(items, depth):
+def cards(items, depth, filt=False):
     up = '../' * depth
-    return '<div class="cards">' + ''.join(
-        f'<a href="{up}{s["url"]}"><strong>{e(s["skill"])}</strong><small>{e(s["author"])} ｜ {s["added"]}</small><p>{e(s["summary"])}</p></a>'
-        for s in by_date(items)) + '</div>'
+    box = '<input class="search filter" type="search" placeholder="在這頁篩選名稱、用途或分類" autocomplete="off">' if filt else ''
+    script = """<script>
+const f = document.querySelector('.filter');
+f.addEventListener('input', () => {
+  const t = f.value.trim().toLowerCase();
+  document.querySelectorAll('.cards a').forEach(a => { a.hidden = !!t && !a.dataset.q.includes(t); });
+});
+</script>""" if filt else ''
+    return box + '<div class="cards">' + ''.join(
+        f'<a href="{up}{s["url"]}" data-q="{e((s["skill"] + " " + s["summary"] + " " + " ".join(s["cats"])).lower())}">'
+        f'<strong>{e(s["skill"])}</strong><small>{e(s["author"])} ｜ {s["added"]}</small>'
+        f'<span class="tags">{"".join(f"<i>{e(c)}</i>" for c in s["cats"])}</span><p>{e(s["summary"])}</p></a>'
+        for s in by_date(items)) + '</div>' + script
 
 
 def by_date(items):  # 新收錄的在前，同一天照名稱
@@ -122,12 +132,12 @@ for s in skills:
 
 for i, c in enumerate(CATEGORIES):
     if by_cat[c]:
-        write(f'c/{i}.html', shell(f'{c}｜{TITLE}', f'<h1>{e(c)}</h1>\n<p class="summary">{len(by_cat[c])} 份</p>\n' + cards(by_cat[c], 1), 1))
+        write(f'c/{i}.html', shell(f'{c}｜{TITLE}', f'<h1>{e(c)}</h1>\n<p class="summary">{len(by_cat[c])} 份</p>\n' + cards(by_cat[c], 1, True), 1))
 for k, items in sources.items():
     first = items[0]
     head = (f'<h1>{e(src_label[k])}</h1>\n<p class="meta">{e(first["author"])} ｜ '
             f'<a href="https://github.com/{e(first["repo"])}">GitHub</a> ｜ {e(first["license"])} ｜ {len(items)} 份</p>\n')
-    write(f'r/{k}.html', shell(f'{src_label[k]}｜{TITLE}', head + cards(items, 1), 1))
+    write(f'r/{k}.html', shell(f'{src_label[k]}｜{TITLE}', head + cards(items, 1, True), 1))
 
 index = [{'n': s['skill'], 'a': s['author'], 'd': s['summary'], 'c': '、'.join(s['cats']), 'u': s['url']} for s in skills]
 write('search.json', json.dumps(index, ensure_ascii=False, separators=(',', ':')))
