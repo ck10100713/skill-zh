@@ -23,6 +23,7 @@
 | alchaincyf | [alchaincyf/nuwa-skill](https://github.com/alchaincyf/nuwa-skill) | MIT | 16 |
 | Anthropic | [anthropics/skills](https://github.com/anthropics/skills) | Apache-2.0 | 15 |
 | Jesse Vincent | [obra/superpowers](https://github.com/obra/superpowers) | MIT | 15 |
+| Jake Schincariol | [Jakeschincariol/instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) | MIT | 13 |
 | Cloudflare | [cloudflare/skills](https://github.com/cloudflare/skills) | Apache-2.0 | 11 |
 | MadsLorentzen | [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) | MIT | 9 |
 | HumanLayer | [humanlayer/skills](https://github.com/humanlayer/skills) | MIT | 7 |
