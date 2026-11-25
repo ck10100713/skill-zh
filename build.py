@@ -4,8 +4,10 @@ data/<來源>/<skill>/
   en.md      英文原文（原文就是中文的 skill 沒有這個檔）
   zh.md      中文翻譯，或中文原文
   meta.json  {skill, author, repo, source, license, category, summary}
+             category 可以是字串或陣列（一份掛多個分類）
+收錄日期取自 git：meta.json 第一次被 commit 的那天，還沒 commit 的算今天。
 """
-import html, json, os, shutil
+import datetime, html, json, os, shutil, subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TITLE = 'Skill 寫法圖鑑'
@@ -19,14 +21,29 @@ OUT_DIRS = ['s', 'c', 'r']
 e = html.escape
 
 
+def added_dates():
+    # git log 由新到舊，一路覆蓋下去留下的就是最早那次
+    out = subprocess.run(['git', 'log', '--diff-filter=A', '--format=%cs', '--name-only', '--', 'data'],
+                         cwd=ROOT, capture_output=True, text=True, check=True).stdout
+    dates, cur = {}, None
+    for line in out.splitlines():
+        if len(line) == 10 and line[4] == '-':
+            cur = line
+        elif line.endswith('/meta.json'):
+            dates[line] = cur
+    return dates
+
+
 def load():
-    skills = []
+    skills, dates, today = [], added_dates(), datetime.date.today().isoformat()
     for src in sorted(os.listdir(f'{ROOT}/data')):
         for name in sorted(os.listdir(f'{ROOT}/data/{src}')):
             d = f'{ROOT}/data/{src}/{name}'
             meta = json.load(open(f'{d}/meta.json'))
-            assert meta['category'] in CATEGORIES, (d, meta['category'])
-            meta.update(src=src, name=name, url=f's/{src}/{name}.html',
+            cats = meta['category'] if isinstance(meta['category'], list) else [meta['category']]
+            assert cats and all(c in CATEGORIES for c in cats), (d, cats)
+            meta.update(src=src, name=name, url=f's/{src}/{name}.html', cats=cats,
+                        added=dates.get(f'data/{src}/{name}/meta.json', today),
                         zh=open(f'{d}/zh.md').read(),
                         en=open(f'{d}/en.md').read() if os.path.exists(f'{d}/en.md') else None)
             skills.append(meta)
@@ -64,8 +81,12 @@ def shell(title, body, depth, desc=DESC):
 def cards(items, depth):
     up = '../' * depth
     return '<div class="cards">' + ''.join(
-        f'<a href="{up}{s["url"]}"><strong>{e(s["skill"])}</strong><small>{e(s["author"])}</small><p>{e(s["summary"])}</p></a>'
-        for s in sorted(items, key=lambda s: s['skill'].lower())) + '</div>'
+        f'<a href="{up}{s["url"]}"><strong>{e(s["skill"])}</strong><small>{e(s["author"])} ｜ {s["added"]}</small><p>{e(s["summary"])}</p></a>'
+        for s in by_date(items)) + '</div>'
+
+
+def by_date(items):  # 新收錄的在前，同一天照名稱
+    return sorted(sorted(items, key=lambda s: s['skill'].lower()), key=lambda s: s['added'], reverse=True)
 
 
 def write(path, text):
@@ -74,7 +95,7 @@ def write(path, text):
 
 
 skills = load()
-by_cat = {c: [s for s in skills if s['category'] == c] for c in CATEGORIES}
+by_cat = {c: [s for s in skills if c in s['cats']] for c in CATEGORIES}
 sources = {}
 for s in skills:
     sources.setdefault(s['src'], []).append(s)
@@ -92,8 +113,9 @@ for d in OUT_DIRS:  # 產出物整個重建；ponytail: 不保留舊檔，data/ 
 
 for s in skills:
     pane = lambda label, text: f'<section><h2>{label}</h2><pre>{e(text.rstrip())}</pre></section>'
-    body = (f'<h1>{e(s["skill"])}</h1>\n<p class="meta">{e(s["author"])} ｜ {e(s["category"])} ｜ '
-            f'<a href="{e(s["source"])}">原文</a> ｜ {e(s["license"])}</p>\n<p class="summary">{e(s["summary"])}</p>\n')
+    cat_links = '、'.join(f'<a href="../../c/{CATEGORIES.index(c)}.html">{e(c)}</a>' for c in s['cats'])
+    body = (f'<h1>{e(s["skill"])}</h1>\n<p class="meta">{e(s["author"])} ｜ {cat_links} ｜ '
+            f'<a href="{e(s["source"])}">原文</a> ｜ {e(s["license"])} ｜ {s["added"]} 收錄</p>\n<p class="summary">{e(s["summary"])}</p>\n')
     body += (f'<div class="pair">{pane("中文翻譯", s["zh"])}{pane("英文原文", s["en"])}</div>' if s['en']
              else f'<div class="pair single">{pane("中文原文", s["zh"])}</div>')
     write(s['url'], shell(f'{s["skill"]}｜{TITLE}', body, 2, s['summary']))
@@ -107,7 +129,7 @@ for k, items in sources.items():
             f'<a href="https://github.com/{e(first["repo"])}">GitHub</a> ｜ {e(first["license"])} ｜ {len(items)} 份</p>\n')
     write(f'r/{k}.html', shell(f'{src_label[k]}｜{TITLE}', head + cards(items, 1), 1))
 
-index = [{'n': s['skill'], 'a': s['author'], 'd': s['summary'], 'c': s['category'], 'u': s['url']} for s in skills]
+index = [{'n': s['skill'], 'a': s['author'], 'd': s['summary'], 'c': '、'.join(s['cats']), 'u': s['url']} for s in skills]
 write('search.json', json.dumps(index, ensure_ascii=False, separators=(',', ':')))
 cats = ''.join(f'<a href="c/{i}.html"><strong>{e(c)}</strong><small>{len(by_cat[c])} 份</small></a>'
                for i, c in enumerate(CATEGORIES) if by_cat[c])
@@ -115,7 +137,8 @@ home = f'''<h1>{TITLE}</h1>
 <p class="summary">{DESC}，目前收錄 {len(skills)} 份。</p>
 <input id="q" class="search" type="search" placeholder="搜尋 skill、作者或用途" autocomplete="off">
 <div id="results"></div>
-<div id="browse"><h2 class="cat">分類</h2><div class="cards compact">{cats}</div></div>
+<div id="browse"><h2 class="cat">分類</h2><div class="cards compact">{cats}</div>
+<h2 class="cat">最近收錄</h2>{cards(by_date(skills)[:12], 0)}</div>
 <script>
 // ponytail: 全部載入後純文字比對，幾千筆內夠快
 let data = null;
